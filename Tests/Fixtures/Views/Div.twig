@@ -1,0 +1,7 @@
+<div class="filter-group"><span class="group-rem">Remove group</span> <span class="group-clone">Copy group</span>
+{% for field_name, field in fields %}
+    <div>{{ labels[field_name] }}: <textarea name="{{ field_name }}"></textarea>
+        <span class="add-btn" data-type="single">Single</span>{% if field.AcceptRanges %}<span class="add-btn" data-type="range">Range</span>{% endif %}{% if field.AcceptCompares %}<span class="add-btn" data-type="compare">Compare</span>{% endif %}
+    </div>
+{% endfor %}
+</div>

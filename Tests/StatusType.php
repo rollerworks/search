@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * This file is part of the RollerworksRecordFilterBundle.
+ *
+ * (c) Rollerscapes
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @link    http://projects.rollerscapes.net/RollerFramework
+ * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
+ */
+
+namespace Rollerworks\RecordFilterBundle\Tests;
+
+use \Rollerworks\RecordFilterBundle\FilterStruct;
+use \Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use \Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
+
+class StatusType implements FilterType, OptimizableInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function sanitizeString($input)
+    {
+        $replacement      = array('Active', 'Not-active', 'Removed');
+        $replacementValue = array(1, 0, -1);
+
+        return str_replace($replacement, $replacementValue, mb_strtolower($input));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isHigher($input, $nextValue)
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isLower($input, $nextValue)
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEquals($input, $nextValue)
+    {
+        return ($input === $nextValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateValue($input, &$message = null)
+    {
+        $message = 'This is not an valid status';
+
+        $input = $this->sanitizeString($input);
+
+        return in_array($input, array(1, 0, -1));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function optimizeField(FilterStruct $field, &$paMessage)
+    {
+        // Since there are no duplicates and only three values are legal.
+        return (count($field->getSingleValues()) === 3 ? null : true);
+    }
+}

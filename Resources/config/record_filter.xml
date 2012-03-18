@@ -1,0 +1,81 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="rollerworks_record_filter.formatter_factory.class">Rollerworks\RecordFilterBundle\Factory\FormatterFactory</parameter>
+        <parameter key="rollerworks_record_filter.sqlstruct_factory.class">Rollerworks\RecordFilterBundle\Factory\SQLStructFactory</parameter>
+        <parameter key="rollerworks_record_filter.querybuilder_factory.class">Rollerworks\RecordFilterBundle\Factory\QueryBuilderFactory</parameter>
+        <parameter key="rollerworks_record_filter.cache_warmer.class">Rollerworks\RecordFilterBundle\CacheWarmer\RecordFilterCacheWarmer</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers_registry.class">Rollerworks\RecordFilterBundle\Formatter\ModifiersRegistry</parameter>
+
+        <parameter key="rollerworks_record_filter.formatter.modifiers.validator.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\Validator</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.duplicate_remove.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.range_normalizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\RangeNormalizer</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.compare_normalizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\CompareNormalizer</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.value_optimizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer</parameter>
+    </parameters>
+
+    <services>
+        <service id="rollerworks_record_filter.annotations_reader" class="%annotations.reader.class%" public="false"/>
+
+        <service id="rollerworks_record_filter.formatter_factory" class="%rollerworks_record_filter.formatter_factory.class%">
+            <argument type="service" id="rollerworks_record_filter.annotations_reader"/>
+            <argument>%rollerworks_record_filter.filters_directory%</argument>
+            <argument>%rollerworks_record_filter.filters_namespace%</argument>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
+            </call>
+            <call method="setModifiersRegistry">
+                <argument type="service" id="rollerworks_record_filter.formatter.modifiers_registry"/>
+            </call>
+        </service>
+
+        <service id="rollerworks_record_filter.sqlstruct_factory" class="%rollerworks_record_filter.sqlstruct_factory.class%">
+            <argument type="service" id="rollerworks_record_filter.annotations_reader"/>
+            <argument>%rollerworks_record_filter.filters_directory%</argument>
+            <argument>%rollerworks_record_filter.filters_namespace%</argument>
+        </service>
+
+        <service id="rollerworks_record_filter.querybuilder_factory" class="%rollerworks_record_filter.querybuilder_factory.class%">
+            <argument type="service" id="rollerworks_record_filter.annotations_reader"/>
+            <argument>%rollerworks_record_filter.filters_directory%</argument>
+            <argument>%rollerworks_record_filter.filters_namespace%</argument>
+        </service>
+
+        <service id="rollerworks_record_filter.cache_warmer" class="%rollerworks_record_filter.cache_warmer.class%" public="false">
+            <tag name="kernel.cache_warmer"/>
+            <argument type="service" id="kernel"/>
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="rollerworks_record_filter.formatter_factory.modifiers_registry" class="%rollerworks_record_filter.formatter.modifiers_registry.class%" scope="prototype"/>
+
+        <!-- Formatter modifiers -->
+        <service id="rollerworks_record_filter.formatter_factory.modifiers.validator" class="%rollerworks_record_filter.formatter.modifiers.validator.class%">
+            <tag name="rollerworks_record_filter.formatter_post_modifier" priority="1000"/>
+        </service>
+
+        <service id="rollerworks_record_filter.formatter_factory.modifiers.duplicate_remove" class="%rollerworks_record_filter.formatter.modifiers.duplicate_remove.class%">
+            <tag name="rollerworks_record_filter.formatter_post_modifier" priority="500"/>
+        </service>
+
+        <service id="rollerworks_record_filter.formatter_factory.modifiers.range_normalizer" class="%rollerworks_record_filter.formatter.modifiers.range_normalizer.class%">
+            <tag name="rollerworks_record_filter.formatter_post_modifier" priority="100"/>
+        </service>
+
+        <service id="rollerworks_record_filter.formatter_factory.modifiers.compare_normalizer" class="%rollerworks_record_filter.formatter.modifiers.compare_normalizer.class%">
+            <tag name="rollerworks_record_filter.formatter_post_modifier" priority="50"/>
+        </service>
+
+        <service id="rollerworks_record_filter.formatter_factory.modifiers.value_optimizer" class="%rollerworks_record_filter.formatter.modifiers.value_optimizer.class%">
+            <tag name="rollerworks_record_filter.formatter_post_modifier" priority="-128"/>
+        </service>
+
+    </services>
+</container>

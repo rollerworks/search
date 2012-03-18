@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="messages.xliff">
+        <body>
+            <trans-unit id="1">
+                <source>record_filter.duplicate</source>
+                <target>{0} Duplicate value '%value%' in field '%field%' (removed).|Duplicate value '%value%' in field '%field%' (removed) in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>record_filter.value_in_range</source>
+                <target>{0} Value '%value%' in field '%field%' is also in range '%range%'.|Value '%value%' in field '%field%' is also in range '%range%' in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>record_filter.merged</source>
+                <target>{0} Merged '%field%' to '%destination%'.|Merged '%field%' to '%destination%' in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>record_filter.no_range_support</source>
+                <target>{0} Field '%field%' does not accept ranges.|Field '%field%' does not accept ranges in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>record_filter.not_lower</source>
+                <target>{0} Validation error in field '%field%': '%value1%' is not lower then '%value2%'|Validation error in field '%field%': '%value1%' is not lower then '%value2%' in group %group%</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>record_filter.parse_error</source>
+                <target>{0} Failed to parse of values of '%field%', possible syntax error.|Failed to parse of values of '%field%', possible syntax error in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>record_filter.range_overlap</source>
+                <target>{0} Range '%range1%' in field '%field%' is overlapping in range '%range2%'.|Range '%range1%' in field '%field%' is overlapping in range '%range2%' in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>record_filter.required</source>
+                <target>{0} Field '%field%' is required.|Field '%field%' is required in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>record_filter.validation_warning</source>
+                <target>{0} Validation error(s) in field '%field%' at value '%value%': %msg%|Validation error(s) in field '%field%' at value '%value%' in group %group%: %msg%</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>record_filter.value_in_exclude</source>
+                <target>{0} Value '%value%' in field '%field%' is already marked as excluded and can't be included.|Value '%value%' in field '%field%' is already marked as excluded and can't be included in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>record_filter.value_in_include</source>
+                <target>{0} Value '%value%' in field '%field%' is already marked as included and can't be excluded.|Value '%value%' in field '%field%' is already marked as included and can't be excluded in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>record_filter.no_compare_support</source>
+                <target>{0} Field '%field%' does not accept comparisons.|Field '%field%' does not accept comparisons in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>record_filter.range_connected</source>
+                <target>{0} Range higher-value of '%range1%' equals lower-value of range '%range2%' in field '%field%' (ranges merged to '%range3%').|Range higher-value of '%range1%' equals lower-value of range '%range2%' in field '%field%' in group %group% (ranges merged to '%range3%').</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>record_filter.range_same_as_excluded</source>
+                <target>{0} Excluded range '%value%' also exists as normal range in field '%field%'.|Excluded range '%value%' also exists as normal range in field '%field%' in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>record_filter.redundant_comparison</source>
+                <target>{0} Comparison '%value%' is already covered by '%comparison%' field '%field%' (removed).|Comparison '%value%' is already covered by '%comparison%' field '%field%' (removed) in group %group%.</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>record_filter.comp.eh</source>
+                <target>Higher or equal then</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>record_filter.comp.le</source>
+                <target>Lower or equal then</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>record_filter.comp.lh</source>
+                <target>Lower or higher then</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>record_filter.comp.lt</source>
+                <target>Lower</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>record_filter.comp.ht</source>
+                <target>Higher then</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>record_filter.group.rem_title</source>
+                <target>Remove group</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>record_filter.group.rem_msg</source>
+                <target>This group contains (changed) filters, do you really want to remove this group? This can't be undone.</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>record_filter.group.rem_btns.remove</source>
+                <target>Remove group</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>record_filter.group.rem_btns.cancell</source>
+                <target>Cancell</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>record_filter.group.add</source>
+                <target>New group</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>record_filter.dialog.add_val</source>
+                <target>Add new value</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>record_filter.dialog.mod_val</source>
+                <target>Modify value</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>record_filter.dialog.btn.ok</source>
+                <target>Oke</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>record_filter.dialog.btn.close</source>
+                <target>Cancell</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>record_filter.exclude</source>
+                <target>Exclude</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>record_filter.prompt</source>
+                <target>Add filter...</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>record_filter.error.no_accept_range</source>
+                <target>This filter does not accept ranges</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>record_filter.error.no_accept_compare</source>
+                <target>This filter does not accept compares</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="messages.xliff" target-language="nl">
+        <body>
+            <trans-unit id="1">
+                <source>record_filter.duplicate</source>
+                <target state="needs-translation">{0} Dubbele waarde '%value%' in '%field%' (verwijderd).|Dubbele waarde '%value%' in '%field%' in groep %group% (verwijderd).</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>record_filter.in_range</source>
+                <target>{0} Waarde '%value%' in '%field%' bestaat ook in bereik van '%range%'.|Waarde '%value%' in '%field%' bestaat ook in bereik van '%range%'in groep %group%.</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>record_filter.merged</source>
+                <target>{0} '%field%' samengevoegd met '%destination%'.|'%field%' samengevoegd met '%destination%' in groep %group%.</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>record_filter.no_range_support</source>
+                <target>{0} '%field%' accepteert geen bereikwaardes.|'%field%' accepteert geen bereikwaardes groep %group%.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>record_filter.not_lower</source>
+                <target>{0} Validatie fout in '%field%': '%value1%' is niet lager dan '%value2%'|Validatie fout in '%field%': '%value1%' is niet lager dan '%value2%' in groep %group%</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>record_filter.parse_error</source>
+                <target>{0} Het is niet gelukt om de waarde van '%field%' te verwerken, mogelijke syntax fout.|Het is niet gelukt om de waarde van '%field%' te verwerken, mogelijke syntax fout in groep %group%.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>record_filter.range_overlap</source>
+                <target>{0} Bereik '%range1%' in '%field%' overlapt in bereik '%range2%'.|Bereik '%range1%' in '%field%' overlapt in bereik '%range2%' in groep %group%.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>record_filter.required</source>
+                <target>{0} '%field%' mag niet leeg zijn.|'%field%' mag niet leeg zijn in groep %group%.</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>record_filter.skip_rangecheck</source>
+                <target>{0} Geen type ingesteld voor '%field%', bereikcontroles worden overgeslagen.|Geen type ingesteld voor '%field%', bereikcontroles worden overgeslagen in groep %group%.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>record_filter.validation_warning</source>
+                <target>{0} Validatie fout(en) in '%field%' in de buurt van waarde '%value%': %msg%|Validatie fout(en) in '%field%' in de buurt van waarde '%value%' in groep %group%: %msg%</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>record_filter.value_in_exclude</source>
+                <target>{0} Waarde '%value%' in '%field%' bestaat al als uitgesloten en kan niet als losse waarde worden gebruikt.|Waarde '%value%' in '%field%' bestaat al als uitgesloten en kan niet als losse waarde worden gebruikt in groep %group%.</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>record_filter.value_in_include</source>
+                <target>{0} Waarde '%value%' in '%field%' bestaat al als losse waarde en kan niet worden uitgesloten.|Waarde '%value%' in '%field%' bestaat al als losse waarde en kan niet worden uitgesloten in groep %group%.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
