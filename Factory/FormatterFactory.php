@@ -206,7 +206,7 @@ class FormatterFactory extends AbstractFactory
                 $filterType = '\\'. ltrim($filterType, '\\');
             }
 
-            $validations .= '       $this->addField(';
+            $validations .= '       $this->setField(';
             $validations .= var_export($annotation->getName(), true) . ',';
 
             if (!empty($filterType)) {

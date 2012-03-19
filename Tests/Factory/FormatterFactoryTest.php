@@ -36,7 +36,7 @@ class FormatterFactoryTest extends FactoryTestCase
 
         $this->assertEquals(array(
             'id' => new FilterConfig(null, false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
 
     }
 
@@ -47,7 +47,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id' => new FilterConfig(null, false, false, false),
             'name' => new FilterConfig(null, false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
     }
 
     function testReq()
@@ -57,7 +57,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id' => new FilterConfig(null, true),
             'name' => new FilterConfig(null)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
     }
 
     function testWithType()
@@ -67,7 +67,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), true, false, false),
             'name' => new FilterConfig(null, false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
     }
 
     function testWithTypeAndConstructor()
@@ -80,7 +80,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id'         => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), false, false, false),
             'event_date' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\DateTime(), false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
     }
 
     function testWithTypeAndConstructor2()
@@ -90,7 +90,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id'         => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), false, false, false),
             'event_date' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\DateTime(true), false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
     }
 
     function testAcceptRanges()
@@ -100,7 +100,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), true, true, false),
             'name' => new FilterConfig(null, false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
     }
 
     function testAcceptCompares()
@@ -110,7 +110,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), true, true, true),
             'name' => new FilterConfig(null, false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
 
         $input = new QueryInput();
 
@@ -144,7 +144,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), true, true, true),
             'name' => new FilterConfig(null, false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
 
         $input = new QueryInput();
 
@@ -168,7 +168,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertEquals(array(
             'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), false, false, false),
             'label' => new FilterConfig($oInvoiceType, false, false, false)
-        ), $formatter->getFiltersConfig());
+        ), $formatter->getFields());
 
     }
 

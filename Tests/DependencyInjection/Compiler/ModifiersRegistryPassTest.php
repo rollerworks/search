@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-use Rollerworks\FrameworkBundle\DependencyInjection\Compiler\FormatterModifiersRegistryPass;
+use Rollerworks\RecordFilterBundle\DependencyInjection\Compiler\FormatterModifiersRegistryPass;
 use Rollerworks\RecordFilterBundle\Tests\TestCase;
 
 class ModifiersRegistryPassTest extends TestCase
@@ -55,11 +55,11 @@ class ModifiersRegistryPassTest extends TestCase
 
         $this->assertEquals(4, count($methodCalls));
 
-        $this->assertEquals('registerPostModifier', $methodCalls[0][0]);
-        $this->assertEquals('registerPostModifier', $methodCalls[1][0]);
+        $this->assertEquals('addPostModifier', $methodCalls[0][0]);
+        $this->assertEquals('addPostModifier', $methodCalls[1][0]);
 
-        $this->assertEquals('registerPreModifier', $methodCalls[2][0]);
-        $this->assertEquals('registerPreModifier', $methodCalls[3][0]);
+        $this->assertEquals('addPreModifier', $methodCalls[2][0]);
+        $this->assertEquals('addPreModifier', $methodCalls[3][0]);
 
         $this->assertEquals(array(new Reference('validation_modifier_service')),        $methodCalls[0][1]);
         $this->assertEquals(array(new Reference('value_optimizer_modifier_service')),   $methodCalls[1][1]);
@@ -100,8 +100,8 @@ class ModifiersRegistryPassTest extends TestCase
 
         $this->assertEquals(4, count($methodCalls));
 
-        $this->assertEquals('registerPostModifier', $methodCalls[0][0]);
-        $this->assertEquals('registerPostModifier', $methodCalls[1][0]);
+        $this->assertEquals('addPostModifier', $methodCalls[0][0]);
+        $this->assertEquals('addPostModifier', $methodCalls[1][0]);
 
         $this->assertEquals(array(new Reference('validation_modifier_service')),         $methodCalls[0][1]);
         $this->assertEquals(array(new Reference('value_optimizer_modifier_service')),    $methodCalls[1][1]);

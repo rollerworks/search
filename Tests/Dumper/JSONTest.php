@@ -23,7 +23,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testFlattenedOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
+        $formatter->setField('user');
 
         $this->assertTrue($formatter->formatInput(new Query('user=1;')));
 
@@ -34,7 +34,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testFlattenedTwoGroupsOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
+        $formatter->setField('user');
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1;),(user=2;)')));
 
@@ -48,8 +48,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testFlattenedFlattenedOneGroupTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice');
+        $formatter->setField('user');
+        $formatter->setField('invoice');
 
         $this->assertTrue($formatter->formatInput(new Query('user=1; invoice="F2012-800";')));
 
@@ -60,8 +60,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testFlattenedTwoGroupsTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice');
+        $formatter->setField('user');
+        $formatter->setField('invoice');
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)')));
 
@@ -75,8 +75,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testFlattenedRangeValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice', null, false, true);
+        $formatter->setField('user');
+        $formatter->setField('invoice', null, false, true);
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)')));
 
@@ -90,8 +90,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testFlattenedExcludedValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice', null, false, true);
+        $formatter->setField('user');
+        $formatter->setField('invoice', null, false, true);
 
         $this->assertTrue($formatter->formatInput(new Query('(user=!1; invoice=!"F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)')));
 
@@ -105,8 +105,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testFlattenedCompareValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user', null, false, true, true);
-        $formatter->addField('invoice');
+        $formatter->setField('user', null, false, true, true);
+        $formatter->setField('invoice');
 
         $this->assertTrue($formatter->formatInput(new Query('(user=>1,<>2,>=5,<8,<=9;)')));
 
@@ -118,7 +118,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
+        $formatter->setField('user');
 
         $this->assertTrue($formatter->formatInput(new Query('user=1;')));
 
@@ -129,7 +129,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testTwoGroupsOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
+        $formatter->setField('user');
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1;),(user=2;)')));
 
@@ -143,8 +143,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testOneGroupTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice');
+        $formatter->setField('user');
+        $formatter->setField('invoice');
 
         $this->assertTrue($formatter->formatInput(new Query('user=1; invoice="F2012-800";')));
 
@@ -155,8 +155,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testTwoGroupsTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice');
+        $formatter->setField('user');
+        $formatter->setField('invoice');
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)')));
 
@@ -170,8 +170,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testRangeValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice', null, false, true);
+        $formatter->setField('user');
+        $formatter->setField('invoice', null, false, true);
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)')));
 
@@ -185,8 +185,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testExcludedValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice', null, false, true);
+        $formatter->setField('user');
+        $formatter->setField('invoice', null, false, true);
 
         $this->assertTrue($formatter->formatInput(new Query('(user=!1; invoice=!"F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)')));
 
@@ -200,8 +200,8 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTest
     function testCompareValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user', null, false, true, true);
-        $formatter->addField('invoice');
+        $formatter->setField('user', null, false, true, true);
+        $formatter->setField('invoice');
 
         $this->assertTrue($formatter->formatInput(new Query('(user=>1,<>2,>=5,<8,<=9;)')));
 

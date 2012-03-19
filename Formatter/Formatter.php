@@ -282,12 +282,11 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Add an new filter-field configuration.
+     * Set the configuration of an (new) filter-name.
+     *
      * The configuration can be used by all modifiers.
      *
-     * Fieldname is always converted to lowercase.
-     *
-     * @param string            $fieldName
+     * @param string            $fieldName          Converted to lower-case
      * @param null|FilterType   $valueType          Optional filter-type
      * @param boolean           $required           Whether the field must have an value (default is false)
      * @param boolean           $acceptRanges       Whether ranges are accepted (default is false)
@@ -296,16 +295,16 @@ class Formatter implements FormatterInterface
      *
      * @api
      */
-    public function addField($fieldName, FilterType $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
+    public function setField($fieldName, FilterType $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
         if (!is_bool($acceptRanges)) {
-            throw (new InvalidArgumentException('Formatter::addField(): $acceptRanges must be an boolean'));
+            throw (new InvalidArgumentException('Formatter::setField(): $acceptRanges must be an boolean'));
         }
         elseif (!is_bool($acceptCompares)) {
-            throw (new InvalidArgumentException('Formatter::addField(): $acceptCompares must be an boolean'));
+            throw (new InvalidArgumentException('Formatter::setField(): $acceptCompares must be an boolean'));
         }
         elseif (!is_bool($required)) {
-            throw (new InvalidArgumentException('Formatter::addField(): $required must be an boolean'));
+            throw (new InvalidArgumentException('Formatter::setField(): $required must be an boolean'));
         }
 
         $this->isFormatted = false;
@@ -327,7 +326,7 @@ class Formatter implements FormatterInterface
      *
      * @api
      */
-    public function getFiltersConfig()
+    public function getFields()
     {
         return $this->filtersConfig;
     }
@@ -415,14 +414,14 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Register an pre-modifier instance.
+     * Add/replace an pre-modifier instance.
      *
      * @param PreModifierInterface $modifier
      * @return Formatter
      *
      * @api
      */
-    public function registerPreModifier(PreModifierInterface $modifier)
+    public function addPreModifier(PreModifierInterface $modifier)
     {
         $this->getModifiersRegistry(true)->registerPreModifier($modifier);
 
@@ -430,14 +429,14 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Register an pre-modifier instance.
+     * Add/replace an pre-modifier instance.
      *
      * @param PostModifierInterface $modifier
      * @return Formatter
      *
      * @api
      */
-    public function registerPostModifier(PostModifierInterface $modifier)
+    public function addPostModifier(PostModifierInterface $modifier)
     {
         $this->getModifiersRegistry(true)->registerPostModifier($modifier);
 

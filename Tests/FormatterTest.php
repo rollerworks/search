@@ -45,11 +45,11 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter = new Formatter($this->translator);
 
         if ($loadModifiers) {
-            $formatter->registerPostModifier(new Validator());
-            $formatter->registerPostModifier(new DuplicateRemove());
-            $formatter->registerPostModifier(new RangeNormalizer());
-            $formatter->registerPostModifier(new CompareNormalizer());
-            $formatter->registerPostModifier(new ValueOptimizer());
+            $formatter->addPostModifier(new Validator());
+            $formatter->addPostModifier(new DuplicateRemove());
+            $formatter->addPostModifier(new RangeNormalizer());
+            $formatter->addPostModifier(new CompareNormalizer());
+            $formatter->addPostModifier(new ValueOptimizer());
         }
 
         return $formatter;
@@ -63,8 +63,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; date=29.10.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true);
-        $formatter->addField('User', null, true);
+        $formatter->setField('period', new Date(), true);
+        $formatter->setField('User', null, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -78,8 +78,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; date=29.10.2010; period=,;');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true);
-        $formatter->addField('User', null, true);
+        $formatter->setField('period', new Date(), true);
+        $formatter->setField('User', null, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -93,8 +93,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; date=29.10.2010; period=,;');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period');
-        $formatter->addField('User');
+        $formatter->setField('period');
+        $formatter->setField('User');
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -110,8 +110,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=2910.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), false, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), false, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -125,8 +125,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=2910.2010;)');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), false, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), false, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -140,8 +140,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=29.10.2010;)');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), false, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), false, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -158,8 +158,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=25.10.2010-3110.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), true, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -173,8 +173,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=2510.2010-3110.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), true, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -190,8 +190,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=31.10.2010-25.10.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), true, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -205,8 +205,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=<10.10.2010,>3110.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true, true, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), true, true, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -220,7 +220,7 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2-5; Status=Active; date=29.10.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('User', null, true);
+        $formatter->setField('User', null, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -234,9 +234,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -250,8 +250,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=10.10.2010,!3110.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), true, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -265,8 +265,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=10.10.2010,!31.10.2010,31.10.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), true, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -280,8 +280,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=10.10.2010,31.10.2010,!31.10.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), true, true);
-        $formatter->addField('User', null, false, true);
+        $formatter->setField('period', new Date(), true, true);
+        $formatter->setField('User', null, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -295,7 +295,7 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2; Status=Active; period=29.10.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', new Date(), false, true);
+        $formatter->setField('period', new Date(), false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -309,8 +309,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2-5,8-10; Status=Active; period=25.10.2010-31.10.2010,25.10.2011-31.10.2011');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('period', null, true, true);
-        $formatter->addField('User', null, true, true);
+        $formatter->setField('period', null, true, true);
+        $formatter->setField('User', null, true, true);
 
         $this->assertTrue($formatter->formatInput($input));
     }
@@ -321,9 +321,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-"20"; Status=Active; period=29.10.2010');
 
         $formatter = $this->newFormatter(false);
-        $formatter->addField('user', new Number(), true, true);
-        $formatter->addField('status', null, false, true);
-        $formatter->addField('period', new Date(), false, true);
+        $formatter->setField('user', new Number(), true, true);
+        $formatter->setField('status', null, false, true);
+        $formatter->setField('period', new Date(), false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -348,10 +348,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -374,10 +374,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date', new Date());
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date', new Date());
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -403,10 +403,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,20-10; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', new Number(), false, true);
-        $formatter->addField('status');
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', new Number(), false, true);
+        $formatter->setField('status');
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
@@ -437,10 +437,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20,!15; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -463,10 +463,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -489,10 +489,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,,3,10-20; Status=Active; date=29.10.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date');
-        $formatter->addField('period');
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date');
+        $formatter->setField('period');
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -514,10 +514,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date="29-10-2010"; period=>"20""","""20""",10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -542,10 +542,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', null, true, true);
-        $formatter->addField('period', null, true, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', null, true, true);
+        $formatter->setField('period', null, true, true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -571,10 +571,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date="29.10.2010",29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', null, true, true);
-        $formatter->addField('period', null, true, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', null, true, true);
+        $formatter->setField('period', null, true, true, true);
 
         if (! $formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -600,9 +600,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date="29.10.2010","29-10-2010",29.10.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -627,9 +627,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -659,9 +659,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -693,9 +693,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -727,9 +727,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date="10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010", "30.10.2010"-"08.12.2010"');//"30-10-2010"-01.01.2011
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -757,9 +757,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -785,9 +785,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -849,9 +849,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=>25.05.2010,>=25.05.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -876,9 +876,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20,!15,!"15"; Status=Active; date=25.05.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', new Number(), true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', new Number(), true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -904,9 +904,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=5,1-10; Status=Active; date=29.10.2010-29.12.2010,20.12.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', new Number(), true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', new Number(), true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -935,10 +935,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,!28,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', new Number(), false, true);
-        $formatter->addField('status');
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', new Number(), false, true);
+        $formatter->setField('status');
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -964,10 +964,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,25-30,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', new Number(), false, true);
-        $formatter->addField('status');
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', new Number(), false, true);
+        $formatter->setField('status');
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -982,9 +982,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=5,1-20,5-10; Status=Active; date=29.10.2010-29.12.2010, 30.10.2010-20.12.2010');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', new Number(), true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', new Number(), true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1015,10 +1015,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user',  new Number(), false, true);
-        $formatter->addField('status', new StatusType());
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user',  new Number(), false, true);
+        $formatter->setField('status', new StatusType());
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1040,10 +1040,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status', new StatusType());
-        $formatter->addField('date');
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status', new StatusType());
+        $formatter->setField('date');
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1070,9 +1070,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter->setFieldAlias('user', 'gebruiker');
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', null, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', null, true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1102,10 +1102,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 
         $formatter->setFieldAlias('period', array('periods'));
 
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', null, true, true);
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', null, true, true);
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1130,9 +1130,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter = $this->newFormatter();
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', null, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', null, true, true);
 
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
@@ -1162,9 +1162,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter = $this->newFormatter();
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', null, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', null, true, true);
 
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
@@ -1199,9 +1199,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter = $this->newFormatter();
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', null, true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', null, true, true);
 
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
@@ -1236,10 +1236,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date', new Date());
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date', new Date());
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1262,10 +1262,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; invoice=F2010-48932,F2011-48932-F2012-48932; date=29-10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('invoice', new InvoiceType(), false, true);
-        $formatter->addField('date', new Date());
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('invoice', new InvoiceType(), false, true);
+        $formatter->setField('date', new Date());
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1288,10 +1288,10 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date', new Date());
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date', new Date());
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1323,8 +1323,8 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 
         $this->assertEquals($formatter->getModifiersRegistry(), $oRegistry);
 
-        $formatter->addField('period', new Date(), true);
-        $formatter->addField('User', null, true);
+        $formatter->setField('period', new Date(), true);
+        $formatter->setField('User', null, true);
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -1371,9 +1371,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter->setFieldAlias('user', 'gebruiker');
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1393,9 +1393,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter->setFieldAlias('user', 'gebruiker');
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         $this->assertNull($formatter->__toString());
     }
@@ -1410,9 +1410,9 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter->setFieldAlias('user', 'gebruiker');
         $formatter->setFieldAlias('date', array('datum', 'datung'));
 
-        $formatter->addField('user', null, true, true);
-        $formatter->addField('status', null, true, true);
-        $formatter->addField('date', new Date(), true, true);
+        $formatter->setField('user', null, true, true);
+        $formatter->setField('status', null, true, true);
+        $formatter->setField('date', new Date(), true, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -1465,7 +1465,7 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
     function testGetFilterNoValidationPerformed()
     {
         $formatter = $this->newFormatter();
-        $formatter->addField('user', null, true, true);
+        $formatter->setField('user', null, true, true);
 
         $this->setExpectedException('\RuntimeException', 'Formatter::getFilters(): formatInput() must be executed first.');
 
@@ -1475,24 +1475,24 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
     function testAddFieldAcceptRangesNotBoolean()
     {
         $formatter = $this->newFormatter();
-        $this->setExpectedException('\InvalidArgumentException', 'Formatter::addField(): $acceptRanges must be an boolean');
+        $this->setExpectedException('\InvalidArgumentException', 'Formatter::setField(): $acceptRanges must be an boolean');
 
-        $formatter->addField('user', null, false, -1);
+        $formatter->setField('user', null, false, -1);
     }
 
     function testAddFieldAcceptComparesNotBoolean()
     {
         $formatter = $this->newFormatter();
-        $this->setExpectedException('\InvalidArgumentException', 'Formatter::addField(): $acceptCompares must be an boolean');
+        $this->setExpectedException('\InvalidArgumentException', 'Formatter::setField(): $acceptCompares must be an boolean');
 
-        $formatter->addField('user', null, false, false, -1);
+        $formatter->setField('user', null, false, false, -1);
     }
 
     function testAddFieldReqNotBoolean()
     {
         $formatter = $this->newFormatter();
-        $this->setExpectedException('\InvalidArgumentException', 'Formatter::addField(): $required must be an boolean');
+        $this->setExpectedException('\InvalidArgumentException', 'Formatter::setField(): $required must be an boolean');
 
-        $formatter->addField('user', null, -1);
+        $formatter->setField('user', null, -1);
     }
 }

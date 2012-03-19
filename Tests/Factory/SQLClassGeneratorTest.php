@@ -267,15 +267,15 @@ class SQLClassGeneratorTest extends FactoryTestCase
 
     function testGenerateClasses()
     {
-        $this->assertFileNotExists(__DIR__ . '/_generated/RollerworksFrameworkBundleTestsRecordFilterFixturesBaseBundleEntityECommerceECommerceProductSimple/SQLStruct.php');
+        $this->assertFileNotExists(__DIR__ . '/_generated/RollerworksRecordFilterBundleTestsFixturesBaseBundleEntityECommerceECommerceProductSimple/SQLStruct.php');
         $this->assertFileNotExists(__DIR__ . '/_generated/RollerworksFrameworkBundleTestsRecordFilterFixturesBaseBundleEntityECommerceECommerceProductCompares/SQLStruct.php');
 
         $this->SQLFactory->generateClasses(array(
-            'Rollerworks\\FrameworkBundle\\Tests\\RecordFilter\\Fixtures\\BaseBundle\\Entity\\ECommerce\\ECommerceProductSimple',
-            'Rollerworks\\FrameworkBundle\\Tests\\RecordFilter\\Fixtures\\BaseBundle\\Entity\\ECommerce\\ECommerceProductCompares'
+            'Rollerworks\\RecordFilterBundle\\Tests\\Fixtures\\BaseBundle\\Entity\\ECommerce\\ECommerceProductSimple',
+            'Rollerworks\\RecordFilterBundle\\Tests\\Fixtures\\BaseBundle\\Entity\\ECommerce\\ECommerceProductCompares'
         ));
 
-        $this->assertFileExists(__DIR__ . '/_generated/RollerworksFrameworkBundleTestsRecordFilterFixturesBaseBundleEntityECommerceECommerceProductSimple/SQLStruct.php');
-        $this->assertFileExists(__DIR__ . '/_generated/RollerworksFrameworkBundleTestsRecordFilterFixturesBaseBundleEntityECommerceECommerceProductCompares/SQLStruct.php');
+        $this->assertFileExists(__DIR__ . '/_generated/RollerworksRecordFilterBundleTestsFixturesBaseBundleEntityECommerceECommerceProductSimple/SQLStruct.php');
+        $this->assertFileExists(__DIR__ . '/_generated/RollerworksRecordFilterBundleTestsFixturesBaseBundleEntityECommerceECommerceProductCompares/SQLStruct.php');
     }
 }

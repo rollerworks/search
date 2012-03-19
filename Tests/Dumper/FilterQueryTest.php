@@ -26,10 +26,10 @@ class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\Fact
         $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date', null);
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date', null);
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -47,10 +47,10 @@ class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\Fact
         $input->setQueryString('User="2""",3,"10"""-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date', null);
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date', null);
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -68,10 +68,10 @@ class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\Fact
         $input->setQueryString('(User=2,3,10-20,!30-50; Status=Active; date=29.10.2010; period=>20,10;), (User=5,9; Status="None-active"; date=29.10.2012;)');
 
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user', null, false, true);
-        $formatter->addField('status');
-        $formatter->addField('date', null);
-        $formatter->addField('period', null, false, false, true);
+        $formatter->setField('user', null, false, true);
+        $formatter->setField('status');
+        $formatter->setField('date', null);
+        $formatter->setField('period', null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));

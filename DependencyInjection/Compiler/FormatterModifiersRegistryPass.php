@@ -12,7 +12,7 @@
  * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
  */
 
-namespace Symfony\Bundle\RollerworksRecordFilter\DependencyInjection\Compiler;
+namespace Rollerworks\RecordFilterBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FormatterModifyRegistryPass implements CompilerPassInterface
+class FormatterModifiersRegistryPass implements CompilerPassInterface
 {
     /**
      * {@inheritDoc}
@@ -64,11 +64,11 @@ class FormatterModifyRegistryPass implements CompilerPassInterface
         $definition = $container->getDefinition('rollerworks_framework.record_filter.formatter_factory.modifiers_registry');
 
         foreach ($postModifiers as $service) {
-            $definition->addMethodCall('registerPostModifier', array($service));
+            $definition->addMethodCall('addPostModifier', array($service));
         }
 
         foreach ($preModifiers as $service) {
-            $definition->addMethodCall('registerPreModifier', array($service));
+            $definition->addMethodCall('addPreModifier', array($service));
         }
     }
 }

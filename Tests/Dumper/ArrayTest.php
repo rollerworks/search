@@ -23,7 +23,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
+        $formatter->setField('user');
 
         $this->assertTrue($formatter->formatInput(new Query('user=1;')));
 
@@ -34,7 +34,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testTwoGroupsOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
+        $formatter->setField('user');
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1;),(user=2;)')));
 
@@ -49,8 +49,8 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testOneGroupTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice');
+        $formatter->setField('user');
+        $formatter->setField('invoice');
 
         $this->assertTrue($formatter->formatInput(new Query('user=1; invoice="F2012-800";')));
 
@@ -61,8 +61,8 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testTwoGroupsTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice');
+        $formatter->setField('user');
+        $formatter->setField('invoice');
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)')));
 
@@ -76,8 +76,8 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testRangeValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->addField('user');
-        $formatter->addField('invoice', null, false, true);
+        $formatter->setField('user');
+        $formatter->setField('invoice', null, false, true);
 
         $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)')));
 
