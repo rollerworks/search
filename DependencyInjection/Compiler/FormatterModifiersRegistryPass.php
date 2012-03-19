@@ -30,7 +30,7 @@ class FormatterModifiersRegistryPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if ($container->hasDefinition('rollerworks_recordfilter')) {
+        if (!$container->hasDefinition('rollerworks_recordfilter')) {
             return;
         }
 
