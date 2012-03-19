@@ -45,11 +45,11 @@ class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter = new Formatter($this->translator);
 
         if ($loadModifiers) {
-            $formatter->addPostModifier(new Validator());
-            $formatter->addPostModifier(new DuplicateRemove());
-            $formatter->addPostModifier(new RangeNormalizer());
-            $formatter->addPostModifier(new CompareNormalizer());
-            $formatter->addPostModifier(new ValueOptimizer());
+            $formatter->registerPostModifier(new Validator());
+            $formatter->registerPostModifier(new DuplicateRemove());
+            $formatter->registerPostModifier(new RangeNormalizer());
+            $formatter->registerPostModifier(new CompareNormalizer());
+            $formatter->registerPostModifier(new ValueOptimizer());
         }
 
         return $formatter;

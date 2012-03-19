@@ -64,11 +64,11 @@ class FormatterModifiersRegistryPass implements CompilerPassInterface
         $definition = $container->getDefinition('rollerworks_record_filter.formatter_factory.modifiers_registry');
 
         foreach ($postModifiers as $service) {
-            $definition->addMethodCall('addPostModifier', array($service));
+            $definition->addMethodCall('registerPostModifier', array($service));
         }
 
         foreach ($preModifiers as $service) {
-            $definition->addMethodCall('addPreModifier', array($service));
+            $definition->addMethodCall('registerPreModifier', array($service));
         }
     }
 }

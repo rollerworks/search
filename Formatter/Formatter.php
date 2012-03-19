@@ -414,14 +414,14 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Add/replace an pre-modifier instance.
+     * Register an pre-modifier instance.
      *
      * @param PreModifierInterface $modifier
      * @return Formatter
      *
      * @api
      */
-    public function addPreModifier(PreModifierInterface $modifier)
+    public function registerPreModifier(PreModifierInterface $modifier)
     {
         $this->getModifiersRegistry(true)->registerPreModifier($modifier);
 
@@ -429,14 +429,14 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Add/replace an pre-modifier instance.
+     * Register an pre-modifier instance.
      *
      * @param PostModifierInterface $modifier
      * @return Formatter
      *
      * @api
      */
-    public function addPostModifier(PostModifierInterface $modifier)
+    public function registerPostModifier(PostModifierInterface $modifier)
     {
         $this->getModifiersRegistry(true)->registerPostModifier($modifier);
 
