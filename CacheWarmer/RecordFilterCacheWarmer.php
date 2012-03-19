@@ -41,8 +41,6 @@ class RecordFilterCacheWarmer extends CacheWarmer
 
     protected $kernel;
 
-    private $EntitiesMappingCacheCreated = false;
-
     /**
      * Constructor.
      *
