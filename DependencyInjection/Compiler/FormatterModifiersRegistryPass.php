@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of the RollerworksRecordFilterBundle package.
+ * This file is part of the RollerworksRecordFilterBundle.
  *
  * (c) Rollerscapes
  *
@@ -30,13 +30,13 @@ class FormatterModifiersRegistryPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('rollerworks_recordfilter')) {
+        if (!$container->hasDefinition('rollerworks_record_filter.formatter_factory.modifiers_registry')) {
             return;
         }
 
         $postModifiers = array();
 
-        foreach ($container->findTaggedServiceIds('rollerworks_framework.record_filter.formatter_post_modifier') as $id => $attributes) {
+        foreach ($container->findTaggedServiceIds('rollerworks_record_filter.formatter_post_modifier') as $id => $attributes) {
             $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;
 
             $postModifiers[$priority][] = new Reference($id);
@@ -44,7 +44,7 @@ class FormatterModifiersRegistryPass implements CompilerPassInterface
 
         $preModifiers = array();
 
-        foreach ($container->findTaggedServiceIds('rollerworks_framework.record_filter.formatter_pre_modifier') as $id => $attributes) {
+        foreach ($container->findTaggedServiceIds('rollerworks_record_filter.formatter_pre_modifier') as $id => $attributes) {
             $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;
 
             $preModifiers[$priority][] = new Reference($id);
@@ -61,7 +61,7 @@ class FormatterModifiersRegistryPass implements CompilerPassInterface
             $preModifiers  = call_user_func_array('array_merge', $preModifiers);
         }
 
-        $definition = $container->getDefinition('rollerworks_framework.record_filter.formatter_factory.modifiers_registry');
+        $definition = $container->getDefinition('rollerworks_record_filter.formatter_factory.modifiers_registry');
 
         foreach ($postModifiers as $service) {
             $definition->addMethodCall('addPostModifier', array($service));

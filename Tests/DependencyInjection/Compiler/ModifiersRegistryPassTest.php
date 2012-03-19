@@ -26,16 +26,16 @@ class ModifiersRegistryPassTest extends TestCase
     public function testTaggedModifier()
     {
         $validationModifier = new Definition('ValidatorClass');
-        $validationModifier->addTag('rollerworks_framework.record_filter.formatter_post_modifier');
+        $validationModifier->addTag('rollerworks_record_filter.formatter_post_modifier');
 
         $valueOptimizerModifier = new Definition('ValueOptimizerClass');
-        $valueOptimizerModifier->addTag('rollerworks_framework.record_filter.formatter_post_modifier');
+        $valueOptimizerModifier->addTag('rollerworks_record_filter.formatter_post_modifier');
 
         $preModifier = new Definition('PreModifierClass');
-        $preModifier->addTag('rollerworks_framework.record_filter.formatter_pre_modifier');
+        $preModifier->addTag('rollerworks_record_filter.formatter_pre_modifier');
 
         $preModifier2 = new Definition('PreModifier2Class');
-        $preModifier2->addTag('rollerworks_framework.record_filter.formatter_pre_modifier');
+        $preModifier2->addTag('rollerworks_record_filter.formatter_pre_modifier');
 
         $modifiersRegistry = new Definition('Rollerworks\RecordFilterBundle\Formatter\ModifiersRegistry');
 
@@ -46,12 +46,12 @@ class ModifiersRegistryPassTest extends TestCase
         $container->setDefinition('pre_modifier_service',   $preModifier);
         $container->setDefinition('pre2_modifier_service',  $preModifier2);
 
-        $container->setDefinition('rollerworks_framework.record_filter.formatter_factory.modifiers_registry', $modifiersRegistry);
+        $container->setDefinition('rollerworks_record_filter.formatter_factory.modifiers_registry', $modifiersRegistry);
 
         $profilerPass = new FormatterModifiersRegistryPass();
         $profilerPass->process($container);
 
-        $methodCalls = $container->getDefinition('rollerworks_framework.record_filter.formatter_factory.modifiers_registry')->getMethodCalls();
+        $methodCalls = $container->getDefinition('rollerworks_record_filter.formatter_factory.modifiers_registry')->getMethodCalls();
 
         $this->assertEquals(4, count($methodCalls));
 
@@ -71,16 +71,16 @@ class ModifiersRegistryPassTest extends TestCase
     public function testTaggedModifierSorting()
     {
         $validationModifier = new Definition('ValidatorClass');
-        $validationModifier->addTag('rollerworks_framework.record_filter.formatter_post_modifier', array('priority' => 1));
+        $validationModifier->addTag('rollerworks_record_filter.formatter_post_modifier', array('priority' => 1));
 
         $valueOptimizerModifier = new Definition('ValueOptimizerClass');
-        $valueOptimizerModifier->addTag('rollerworks_framework.record_filter.formatter_post_modifier', array('priority' => 0));
+        $valueOptimizerModifier->addTag('rollerworks_record_filter.formatter_post_modifier', array('priority' => 0));
 
         $preModifier = new Definition('PreModifierClass');
-        $preModifier->addTag('rollerworks_framework.record_filter.formatter_pre_modifier', array('priority' => 1));
+        $preModifier->addTag('rollerworks_record_filter.formatter_pre_modifier', array('priority' => 1));
 
         $preModifier2 = new Definition('PreModifier2Class');
-        $preModifier2->addTag('rollerworks_framework.record_filter.formatter_pre_modifier', array('priority' => 0));
+        $preModifier2->addTag('rollerworks_record_filter.formatter_pre_modifier', array('priority' => 0));
 
         $modifiersRegistry = new Definition('Rollerworks\RecordFilterBundle\Formatter\ModifiersRegistry');
 
@@ -91,12 +91,12 @@ class ModifiersRegistryPassTest extends TestCase
         $container->setDefinition('pre2_modifier_service',    $preModifier2);
         $container->setDefinition('pre_modifier_service',     $preModifier);
 
-        $container->setDefinition('rollerworks_framework.record_filter.formatter_factory.modifiers_registry', $modifiersRegistry);
+        $container->setDefinition('rollerworks_record_filter.formatter_factory.modifiers_registry', $modifiersRegistry);
 
         $profilerPass = new FormatterModifiersRegistryPass();
         $profilerPass->process($container);
 
-        $methodCalls = $container->getDefinition('rollerworks_framework.record_filter.formatter_factory.modifiers_registry')->getMethodCalls();
+        $methodCalls = $container->getDefinition('rollerworks_record_filter.formatter_factory.modifiers_registry')->getMethodCalls();
 
         $this->assertEquals(4, count($methodCalls));
 
