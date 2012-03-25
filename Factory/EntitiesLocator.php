@@ -40,9 +40,9 @@ use Symfony\Component\Finder\Finder;
  */
 class EntitiesLocator
 {
-    protected $cache = array(
-        'hashes'   => array(),
-        'classes'  => array());
+    protected $cache = array('hashes'          => array(),
+                             'classes'         => array(),
+                             'trimmed_hashes'  => array());
 
     /**
      * @var \Doctrine\Common\Annotations\AnnotationReader
@@ -62,8 +62,8 @@ class EntitiesLocator
     /**
      * Constructor.
      *
-     * @param \Symfony\Component\HttpKernel\KernelInterface     $kernel
-     * @param string                                            $cacheDir The cache path
+     * @param KernelInterface     $kernel
+     * @param string              $cacheDir The cache path
      */
     public function __construct(KernelInterface $kernel, $cacheDir = null)
     {
@@ -89,8 +89,15 @@ class EntitiesLocator
             $this->initCache();
         }
 
+        if (strlen($hash) > 40) {
+            throw new \InvalidArgumentException('Unable to find entity hash mapping. Illegal hash given.');
+        }
+
         if (isset($this->cache['hashes'][$hash])) {
             return $this->cache['hashes'][$hash];
+        }
+        elseif (isset($this->cache['trimmed_hashes'][$hash])) {
+            return $this->cache['trimmed_hashes'][$hash];
         }
         else {
             throw new \InvalidArgumentException(sprintf('Unable to find entity hash mapping "%s".', $hash), 0);
@@ -115,8 +122,7 @@ class EntitiesLocator
     /**
      * Return all the found Entities in all the bundles.
      *
-     * @return array
-     * @return array Array containing all the Entity classes
+     * @return string[] Array containing all the Entity classes
      */
     public function getAllEntities()
     {
@@ -134,6 +140,28 @@ class EntitiesLocator
     }
 
     /**
+     * Return all the found hashes and the corresponding the Entity class
+     *
+     * Trimmed hashes are at minimum 11 characters, and bigger when they are not unique
+     *
+     * @param bool $trimmed Return the trimmed hashes
+     * @return Array containing all hashes and the corresponding the Entity class
+     */
+    public function getAllHashes($trimmed = false)
+    {
+        if (count($this->cache['hashes']) < 1) {
+            $this->initCache();
+        }
+
+        if ($trimmed) {
+            return $this->cache['trimmed_hashes'];
+        }
+        else {
+            return $this->cache['hashes'];
+        }
+    }
+
+    /**
      * Initialize the hashes-cache.
      *
      * Search all entities and create hashes from the found-names.
@@ -143,9 +171,33 @@ class EntitiesLocator
         foreach ($this->getAllEntities() as $entityName) {
             $hash = sha1($entityName);
 
-            $this->cache['hashes'][$hash]        = $entityName;
-            $this->cache['classes'][$entityName] = $hash;
+            $this->cache['hashes'][$hash]                              = $entityName;
+            $this->cache['classes'][$entityName]                       = $hash;
+            $this->cache['trimmed_hashes'][$this->getUniqueHash($hash)] = $entityName;
         }
+    }
+
+    /**
+     * Return a unique trimmed hash.
+     *
+     * @param string $hash
+     * @return string
+     */
+    protected function getUniqueHash($hash)
+    {
+        $trimmedHash = substr($hash, 0, 11);
+
+        if (isset($this->cache['trimmed_hashes'][$trimmedHash])) {
+            for ($i = 12; $ $i <= 40; $i++) {
+                $trimmedHash = substr($hash, 0, $i);
+
+                if (!isset($this->cache['trimmed_hashes'][$trimmedHash])) {
+                    break;
+                }
+            }
+        }
+
+        return $trimmedHash;
     }
 
     /**

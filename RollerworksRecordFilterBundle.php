@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the RollerworksRecordFilterBundle.
  *
@@ -21,11 +22,11 @@
  * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
  */
 
-
 namespace Rollerworks\RecordFilterBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class RollerworksRecordFilterBundle extends Bundle
+/**
+ * RollerworksRecordFilterBundle.
+ */
+class RollerworksRecordFilterBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
 }
