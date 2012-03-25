@@ -27,36 +27,18 @@ namespace Rollerworks\RecordFilterBundle\Formatter;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
- * RecordFiltering formatting interface.
+ * DomainAwareFormatter interface should be implemented by formatter classes that are domain-aware.
+ *
+ * An formatter is domain-aware when the configuration only applies to one class (domain).
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FormatterInterface extends ContainerAwareInterface
+interface DomainAwareFormatterInterface extends FormatterInterface
 {
     /**
-     * Returns the filters to apply on a Record-Formatter.
+     * Returns the class name from which the configuration was read.
      *
-     * This will return an array contain all the groups and there fields (per group).
-     *
-     * Like:
-     * [group-n] => array(
-     *   'field-name' => {\Rollerworks\RecordFilterBundle\FilterStruct object}
-     * )
-     *
-     * The FilterStruct contains all the filtering information of the field.
-     *
-     * @return array
-     *
-     * @api
+     * @return string
      */
-    public function getFilters();
-
-    /**
-     * Returns whether the value list is an or-case.
-     *
-     * @return boolean
-     *
-     * @api
-     */
-    public function hasGroups();
+    public function getBaseClassName();
 }
