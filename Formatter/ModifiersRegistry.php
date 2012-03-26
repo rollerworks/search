@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the RollerworksRecordFilterBundle.
  *
@@ -23,13 +24,11 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PreModifierInterface;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PostModifierInterface;
-
+use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
  * The Modifiers Registry keeps all the registered pre and post modifiers.

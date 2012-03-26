@@ -24,16 +24,15 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests;
 
-use Symfony\Component\Translation\Translator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-
 use Rollerworks\RecordFilterBundle\Tests\TwigEngine;
-use Symfony\Component\Templating\TemplateNameParserInterface;
 use Twig_Loader_Filesystem, Twig_Environment;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase

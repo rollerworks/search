@@ -24,13 +24,12 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException;
+use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FilterType;
-use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Struct\Range;
-
-use Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException;
+use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
  * Validates the values and formats the value with the sanitized version

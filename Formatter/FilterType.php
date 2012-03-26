@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the RollerworksRecordFilterBundle.
  *
@@ -36,7 +37,7 @@ interface FilterType
     /**
      * Sanitize the input string to an normal useful value
      *
-     * @param string $psInput
+     * @param $input
      * @return string
      */
     public function sanitizeString($input);

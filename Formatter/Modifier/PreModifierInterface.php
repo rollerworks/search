@@ -49,9 +49,9 @@ interface PreModifierInterface
      *
      * Returns the modified filter list.
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface $formatter
-     * @param array                                                                  $filters
-     * @param integer                                                                $groupIndex
+     * @param FormatterInterface    $formatter
+     * @param array                 $filters
+     * @param integer               $groupIndex
      * @return array
      */
     public function modFilters(FormatterInterface $formatter, $filters, $groupIndex);

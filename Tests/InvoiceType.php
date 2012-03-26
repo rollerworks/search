@@ -27,9 +27,9 @@ namespace Rollerworks\RecordFilterBundle\Tests;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
 use Rollerworks\RecordFilterBundle\Formatter\FilterType;
 use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\FilterStruct;
 
 class InvoiceType implements FilterType, ValueMatcherInterface, ContainerAwareInterface
 {

@@ -29,19 +29,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 use Rollerworks\RecordFilterBundle\Exception as RecordFilterException;
-use Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Formatter\Exception\ReqFilterException;
-
+use Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PreModifierInterface;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PostModifierInterface;
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
-use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
-
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
+use Rollerworks\RecordFilterBundle\Formatter\FilterType;
 use Rollerworks\RecordFilterBundle\Struct\Compare;
 use Rollerworks\RecordFilterBundle\Struct\Range;
 use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\FilterStruct;
 
 use \InvalidArgumentException, \RuntimeException;
 

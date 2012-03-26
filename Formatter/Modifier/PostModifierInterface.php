@@ -24,9 +24,9 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
-use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
+use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
  * Post modifier interface.

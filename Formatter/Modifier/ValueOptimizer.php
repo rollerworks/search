@@ -24,10 +24,10 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
-use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
  * Optimizes the value by there own implementation.

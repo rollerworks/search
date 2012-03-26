@@ -53,8 +53,8 @@ abstract class WhereStruct extends AbstractSQL
     /**
      * Constructor
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface  $formatter
-     * @param \Doctrine\DBAL\Connection                                     $DBAL
+     * @param FormatterInterface  $formatter
+     * @param Connection          $DBAL
      */
     public function __construct(FormatterInterface $formatter, \Doctrine\DBAL\Connection $DBAL)
     {
@@ -106,11 +106,11 @@ abstract class WhereStruct extends AbstractSQL
             return floatval($value);
         }
         else {
-            if (isset($this->fieldCasts[ $this->DBAL->getDriver()->getName() ][ $fieldname ])) {
-                $cast = $this->fieldCasts[ $this->DBAL->getDriver()->getName() ][ $fieldname ];
+            if (isset($this->fieldCasts[$this->DBAL->getDriver()->getName()][$fieldname])) {
+                $cast = $this->fieldCasts[$this->DBAL->getDriver()->getName()][$fieldname];
             }
-            elseif (isset($this->fieldCasts[ 'all' ][ $fieldname ])) {
-                $cast = $this->fieldCasts[ 'all' ][ $fieldname ];
+            elseif (isset($this->fieldCasts['all'][$fieldname])) {
+                $cast = $this->fieldCasts['all'][$fieldname];
             }
 
             $value = $this->DBAL->quote($value);

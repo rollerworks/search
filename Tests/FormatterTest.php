@@ -24,25 +24,23 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests;
 
+use Rollerworks\RecordFilterBundle\FilterStruct;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Formatter\ModifiersRegistry;
+
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\Validator;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\RangeNormalizer;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\CompareNormalizer;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
-
-use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
-
-use \Rollerworks\RecordFilterBundle\FilterStruct;
-use \Rollerworks\RecordFilterBundle\Struct\Compare;
-use \Rollerworks\RecordFilterBundle\Struct\Range;
-use \Rollerworks\RecordFilterBundle\Struct\Value;
-
 use Rollerworks\RecordFilterBundle\Formatter\Type\Date;
 use Rollerworks\RecordFilterBundle\Formatter\Type\DateTime;
-use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Decimal;
+use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
+use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
+use Rollerworks\RecordFilterBundle\Struct\Compare;
+use Rollerworks\RecordFilterBundle\Struct\Range;
+use Rollerworks\RecordFilterBundle\Struct\Value;
 
 class FormatterTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {

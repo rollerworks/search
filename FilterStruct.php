@@ -27,7 +27,6 @@ namespace Rollerworks\RecordFilterBundle;
 use Rollerworks\RecordFilterBundle\Struct\Compare;
 use Rollerworks\RecordFilterBundle\Struct\Range;
 use Rollerworks\RecordFilterBundle\Struct\Value;
-
 use \InvalidArgumentException;
 
 /**

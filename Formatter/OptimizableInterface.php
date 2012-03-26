@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the RollerworksRecordFilterBundle.
  *
@@ -23,7 +24,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use \Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
  * Filter-value optimizable interface.
@@ -55,8 +56,8 @@ interface OptimizableInterface
      * $messages may contain an array of information messages.
      * ***These will be run trough the translator later on.***
      *
-     * @param \Rollerworks\RecordFilterBundle\FilterStruct   $field
-     * @param array                                          $messages
+     * @param FilterStruct   $field
+     * @param array          $messages
      * @param array|null
      */
     public function optimizeField(FilterStruct $field, &$messages);

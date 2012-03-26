@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the RollerworksRecordFilterBundle.
  *
@@ -23,8 +24,8 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
 
 /**
  * Filter-field configuration class.
@@ -58,9 +59,9 @@ class FilterConfig
      * Constructor
      *
      * @param FilterType|ValueMatcherInterface|null  $type
-     * @param bool                          $required
-     * @param bool                          $acceptRanges
-     * @param bool                          $acceptCompares
+     * @param bool                                   $required
+     * @param bool                                   $acceptRanges
+     * @param bool                                   $acceptCompares
      */
     public function __construct($type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
