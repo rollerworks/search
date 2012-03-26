@@ -31,7 +31,7 @@ class Range
 {
     protected $lower;
 
-    protected $higher;
+    protected $upper;
 
     /**
      * Original lower range value
@@ -41,44 +41,44 @@ class Range
     protected $originalLower;
 
     /**
-     * Original higher range value
+     * Original upper range value
      *
      * @var string|float|integer
      */
-    protected $originalHigher;
+    protected $originalUpper;
 
     /**
      * Constructor
      *
      * @param mixed $lower
-     * @param mixed $higher
+     * @param mixed $upper
      * @param mixed $originalLower
-     * @param mixed $originalHigher
+     * @param mixed $originalUpper
      *
      * @api
      */
-    public function __construct($lower, $higher, $originalLower = null, $originalHigher = null)
+    public function __construct($lower, $upper, $originalLower = null, $originalUpper = null)
     {
         if (!is_string($lower) && !is_float($lower) && !is_integer($lower)) {
             throw new \UnexpectedValueException('Lower value type for is not accepted, only string, float and integer are accepted.');
         }
-        elseif (!is_string($higher) && !is_float($higher) && !is_integer($higher)) {
+        elseif (!is_string($upper) && !is_float($upper) && !is_integer($upper)) {
             throw new \UnexpectedValueException('Higher value type for is not accepted, only string, float and integer are accepted.');
         }
 
         $this->lower  = $lower;
-        $this->higher = $higher;
+        $this->upper = $upper;
 
         if (is_null($originalLower)) {
             $originalLower = $lower;
         }
 
-        if (is_null($originalHigher)) {
-            $originalHigher = $higher;
+        if (is_null($originalUpper)) {
+            $originalUpper = $upper;
         }
 
-        $this->originalLower  = $originalLower;
-        $this->originalHigher = $originalHigher;
+        $this->originalLower = $originalLower;
+        $this->originalUpper = $originalUpper;
     }
 
     /**
@@ -94,15 +94,15 @@ class Range
     }
 
     /**
-     * Get the higher value of the range
+     * Get the upper value of the range
      *
      * @return string|float|integer
      *
      * @api
      */
-    public function getHigher()
+    public function getUpper()
     {
-        return $this->higher;
+        return $this->upper;
     }
 
     /**
@@ -118,46 +118,46 @@ class Range
     }
 
     /**
-     * Get the original higher value of the range
+     * Get the original upper value of the range
      *
      * @return string|float|integer
      *
      * @api
      */
-    public function getOriginalHigher()
+    public function getOriginalUpper()
     {
-        return $this->originalHigher;
+        return $this->originalUpper;
     }
 
     /**
      * Set the lower value of the range
      *
-     * @param string|float|integer $pmValue
+     * @param string|float|integer $value
      *
      * @api
      */
-    public function setLower($pmValue)
+    public function setLower($value)
     {
-        if (!is_string($pmValue) && !is_float($pmValue) && !is_integer($pmValue)) {
+        if (!is_string($value) && !is_float($value) && !is_integer($value)) {
             throw new \UnexpectedValueException('Lower value type for is not accepted, only string, float and integer are accepted.');
         }
 
-        $this->lower = $pmValue;
+        $this->lower = $value;
     }
 
     /**
-     * Set the higher value of the range
+     * Set the upper value of the range
      *
-     * @param string|float|integer $pmValue
+     * @param string|float|integer $value
      *
      * @api
      */
-    public function setHigher($pmValue)
+    public function setUpper($value)
     {
-        if (!is_string($pmValue) && !is_float($pmValue) && !is_integer($pmValue)) {
-            throw new \UnexpectedValueException('Higher value type for is not accepted, only string, float and integer are accepted.');
+        if (!is_string($value) && !is_float($value) && !is_integer($value)) {
+            throw new \UnexpectedValueException('Upper value type for is not accepted, only string, float and integer are accepted.');
         }
 
-        $this->higher = $pmValue;
+        $this->upper = $value;
     }
 }

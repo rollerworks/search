@@ -92,36 +92,36 @@ class Validator implements PostModifierInterface
         }
 
         foreach ($filterStruct->getRanges() as $range) {
-            $this->validateValue($type, $range->getLower(), $range->getLower() . '-' . $range->getHigher());
-            $this->validateValue($type, $range->getHigher(), $range->getLower() . '-' . $range->getHigher());
+            $this->validateValue($type, $range->getLower(), $range->getLower() . '-' . $range->getUpper());
+            $this->validateValue($type, $range->getUpper(), $range->getLower() . '-' . $range->getUpper());
 
             $range->setLower($type->sanitizeString($range->getLower()));
-            $range->setHigher($type->sanitizeString($range->getHigher()));
+            $range->setUpper($type->sanitizeString($range->getUpper()));
 
             $this->validateRange($type, $range);
 
-            $_value = $range->getLower() . '-' . $range->getHigher();
+            $_value = $range->getLower() . '-' . $range->getUpper();
 
             if (in_array($_value, $excludedRanges)) {
-                throw new ValidationException('value_in_exclude', $range->getOriginalLower() . '-' . $range->getOriginalHigher());
+                throw new ValidationException('value_in_exclude', $range->getOriginalLower() . '-' . $range->getOriginalUpper());
             }
 
             $ranges[] = $_value;
         }
 
         foreach ($filterStruct->getExcludedRanges() as $range) {
-            $this->validateValue($type, $range->getLower(), '!' . $range->getLower() . '-' . $range->getHigher());
-            $this->validateValue($type, $range->getHigher(), '!' . $range->getLower() . '-' . $range->getHigher());
+            $this->validateValue($type, $range->getLower(), '!' . $range->getLower() . '-' . $range->getUpper());
+            $this->validateValue($type, $range->getUpper(), '!' . $range->getLower() . '-' . $range->getUpper());
 
             $range->setLower($type->sanitizeString($range->getLower()));
-            $range->setHigher($type->sanitizeString($range->getHigher()));
+            $range->setUpper($type->sanitizeString($range->getUpper()));
 
             $this->validateRange($type, $range);
 
-            $_value = $range->getLower() . '-' . $range->getHigher();
+            $_value = $range->getLower() . '-' . $range->getUpper();
 
             if (in_array($_value, $ranges)) {
-                throw new ValidationException('range_same_as_excluded', '!"' . $range->getOriginalLower() . '"-"' . $range->getOriginalHigher() . '"');
+                throw new ValidationException('range_same_as_excluded', '!"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
             }
 
             $excludedRanges[] = $_value;
@@ -174,10 +174,10 @@ class Validator implements PostModifierInterface
      */
     protected function validateRange(FilterType $type, Range $range)
     {
-        if (!$type->isLower($range->getLower(), $range->getHigher())) {
-            throw new ValidationException('not_lower', $range->getOriginalLower().'-'.$range->getOriginalHigher(), array(
+        if (!$type->isLower($range->getLower(), $range->getUpper())) {
+            throw new ValidationException('not_lower', $range->getOriginalLower().'-'.$range->getOriginalUpper(), array(
                 '%value1%' => $range->getOriginalLower(),
-                '%value2%' => $range->getOriginalHigher()));
+                '%value2%' => $range->getOriginalUpper()));
         }
     }
 }

@@ -124,7 +124,7 @@ class JSON extends AbstractDumper
 
             foreach ($filter->getRanges() as $range) {
                 $field['ranges'] = array('lower'  => (string) $range->getLower(),
-                                         'higher' => (string) $range->getHigher());
+                                         'higher' => (string) $range->getUpper());
             }
         }
 
@@ -133,7 +133,7 @@ class JSON extends AbstractDumper
 
             foreach ($filter->getExcludedRanges() as $range) {
                 $field['excluded-ranges'] = array('lower'  => (string) $range->getLower(),
-                                                  'higher' => (string) $range->getHigher());
+                                                  'higher' => (string) $range->getUpper());
             }
         }
 

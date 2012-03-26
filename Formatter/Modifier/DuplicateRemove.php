@@ -110,10 +110,10 @@ class DuplicateRemove implements PostModifierInterface
         }
 
         foreach ($filterStruct->getRanges() as $index => $range) {
-            $_value = $range->getLower() . '-' . $range->getHigher();
+            $_value = $range->getLower() . '-' . $range->getUpper();
 
             if (in_array($_value, $ranges)) {
-                $this->informDuplicate($index, '"' . $range->getOriginalLower() . '"-"' . $range->getOriginalHigher() . '"');
+                $this->informDuplicate($index, '"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
                 $filterStruct->removeRange($index);
 
                 continue;
@@ -123,10 +123,10 @@ class DuplicateRemove implements PostModifierInterface
         }
 
         foreach ($filterStruct->getExcludedRanges() as $index => $range) {
-            $_value = $range->getLower() . '-' . $range->getHigher();
+            $_value = $range->getLower() . '-' . $range->getUpper();
 
             if (in_array($_value, $excludedRanges)) {
-                $this->informDuplicate($index, '!"' . $range->getOriginalLower() . '"-"' . $range->getOriginalHigher() . '"');
+                $this->informDuplicate($index, '!"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
                 $filterStruct->removeExcludedRange($index);
 
                 continue;

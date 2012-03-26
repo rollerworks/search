@@ -72,20 +72,20 @@ abstract class AbstractSQLFactory extends AbstractFactory
                 }
 
                 if($field->hasRanges()) {
-                    foreach ($field->getRanges() as $oRange) {
-                        $query .= "$Field BETWEEN ".$this->getValStr($oRange->getLower(), $origField)." AND ".$this->getValStr($oRange->getHigher(), $origField)." AND ";
+                    foreach ($field->getRanges() as $range) {
+                        $query .= "$Field BETWEEN ".$this->getValStr($range->getLower(), $origField)." AND ".$this->getValStr($range->getUpper(), $origField)." AND ";
                     }
                 }
 
                 if($field->hasExcludedRanges()) {
-                    foreach ($field->getExcludedRanges() as $oRange) {
-                        $query .= "$Field NOT BETWEEN ".$this->getValStr($oRange->getLower(), $origField)." AND ".$this->getValStr($oRange->getHigher(), $origField)." AND ";
+                    foreach ($field->getExcludedRanges() as $range) {
+                        $query .= "$Field NOT BETWEEN ".$this->getValStr($range->getLower(), $origField)." AND ".$this->getValStr($range->getUpper(), $origField)." AND ";
                     }
                 }
 
                 if($field->hasCompares()) {
-                    foreach ($field->getCompares() as $oComp) {
-                        $query .= "$Field ".$oComp->getOperator()." ".$this->getValStr($oComp->getValue(), $origField)." AND ";
+                    foreach ($field->getCompares() as $comp) {
+                        $query .= "$Field ".$comp->getOperator()." ".$this->getValStr($comp->getValue(), $origField)." AND ";
                     }
                 }
             }';

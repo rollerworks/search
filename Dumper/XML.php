@@ -164,7 +164,7 @@ class XML implements DumperInterface
         $lowerValNode->appendChild($dom->createTextNode((string) $range->getLower()));
 
         $higherValNode = $dom->createElement('higher');
-        $higherValNode->appendChild($dom->createTextNode((string) $range->getHigher()));
+        $higherValNode->appendChild($dom->createTextNode((string) $range->getUpper()));
 
         $rangeNode->appendChild($lowerValNode);
         $rangeNode->appendChild($higherValNode);

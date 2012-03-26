@@ -67,11 +67,11 @@ abstract class AbstractDumper implements DumperInterface
         }
 
         foreach ($filter->getRanges() as $range) {
-            $filters[] = self::quoteValue($range->getLower()) . '-' . self::quoteValue($range->getHigher());
+            $filters[] = self::quoteValue($range->getLower()) . '-' . self::quoteValue($range->getUpper());
         }
 
         foreach ($filter->getExcludedRanges() as $range) {
-            $filters[] = '!' . self::quoteValue($range->getLower()) . '-' . self::quoteValue($range->getHigher());
+            $filters[] = '!' . self::quoteValue($range->getLower()) . '-' . self::quoteValue($range->getUpper());
         }
 
         foreach ($filter->getCompares() as $value) {
