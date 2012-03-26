@@ -35,7 +35,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Modifier\PreModifierInterface;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PostModifierInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Struct\Compare;
 use Rollerworks\RecordFilterBundle\Struct\Range;
 use Rollerworks\RecordFilterBundle\Struct\Value;
@@ -295,7 +295,7 @@ class Formatter implements FormatterInterface
      * The configuration can be used by all modifiers.
      *
      * @param string            $fieldName          Converted to lower-case
-     * @param null|FilterType   $valueType          Optional filter-type
+     * @param null|FilterTypeInterface   $valueType          Optional filter-type
      * @param boolean           $required           Whether the field must have an value (default is false)
      * @param boolean           $acceptRanges       Whether ranges are accepted (default is false)
      * @param boolean           $acceptCompares     Whether comparisons are accepted (default is false)
@@ -303,7 +303,7 @@ class Formatter implements FormatterInterface
      *
      * @api
      */
-    public function setField($fieldName, FilterType $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
+    public function setField($fieldName, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
         if (!is_bool($acceptRanges)) {
             throw (new InvalidArgumentException('Formatter::setField(): $acceptRanges must be an boolean'));

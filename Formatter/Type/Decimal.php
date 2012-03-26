@@ -24,7 +24,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Type;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 
 /**
  * Decimal Formatter-validation type
@@ -33,7 +33,7 @@ use Rollerworks\RecordFilterBundle\Formatter\FilterType;
  *
  * @todo Filter extension instead of an Regex and detect proper decimal-sign
  */
-class Decimal implements FilterType
+class Decimal implements FilterTypeInterface
 {
     /**
      * Sanitize the input string to an normal useful value

@@ -27,7 +27,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 use Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Struct\Range;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
@@ -146,12 +146,12 @@ class Validator implements PostModifierInterface
     /**
      * Validates an 'single' value and throws an ValidationException in case of failure.
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FilterType $type
+     * @param \Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface $type
      * @param string                                                         $value
      * @param string                                                         $originalValue
      * @throws \Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException In case of an validation error
      */
-    protected function validateValue(FilterType $type, $value, $originalValue = null)
+    protected function validateValue(FilterTypeInterface $type, $value, $originalValue = null)
     {
         $sMessage = '';
 
@@ -167,11 +167,11 @@ class Validator implements PostModifierInterface
     /**
      * Validates an range value and throws an ValidationException in case of failure.
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FilterType $type
+     * @param \Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface $type
      * @param \Rollerworks\RecordFilterBundle\Struct\Range         $range
      * @throws \Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException
      */
-    protected function validateRange(FilterType $type, Range $range)
+    protected function validateRange(FilterTypeInterface $type, Range $range)
     {
         if (!$type->isLower($range->getLower(), $range->getUpper())) {
             throw new ValidationException('not_lower', $range->getOriginalLower().'-'.$range->getOriginalUpper(), array(

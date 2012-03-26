@@ -231,8 +231,8 @@ class FormatterFactory extends AbstractFactory
                     if ($classReflection->isAbstract() || $classReflection->isInterface()) {
                         throw new \InvalidArgumentException('Filter-type annotations can not be abstract or interface: ' . $filterType);
                     }
-                    elseif (!$classReflection->implementsInterface('\\Rollerworks\\RecordFilterBundle\\Formatter\\FilterType')) {
-                        throw new \InvalidArgumentException('Filter-type annotations does seem to implement the FilterType interface: ' . $filterType);
+                    elseif (!$classReflection->implementsInterface('\\Rollerworks\\RecordFilterBundle\\Formatter\\FilterTypeInterface')) {
+                        throw new \InvalidArgumentException('Filter-type annotations does seem to implement the FilterTypeInterface interface: ' . $filterType);
                     }
 
                     if ($classReflection->hasMethod('__construct')) {

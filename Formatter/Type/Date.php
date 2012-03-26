@@ -24,7 +24,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Type;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
 
 /**
@@ -32,7 +32,7 @@ use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Date implements FilterType, ValueMatcherInterface
+class Date implements FilterTypeInterface, ValueMatcherInterface
 {
     /**
      * Sanitize the input string to an normal useful value.

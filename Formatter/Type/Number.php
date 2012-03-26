@@ -24,14 +24,14 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Type;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 
 /**
  * Integer Formatter-validation type
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Number implements FilterType
+class Number implements FilterTypeInterface
 {
     /**
      * Sanitize the input string to an normal useful value

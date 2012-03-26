@@ -24,14 +24,14 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Type;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 
 /**
  * Time Formatter value-type
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Time implements FilterType
+class Time implements FilterTypeInterface
 {
     /**
      * Get timestamp of an value

@@ -24,11 +24,11 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
-class StatusType implements FilterType, OptimizableInterface
+class StatusType implements FilterTypeInterface, OptimizableInterface
 {
     /**
      * {@inheritdoc}

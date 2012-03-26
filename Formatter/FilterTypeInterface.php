@@ -32,7 +32,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FilterType
+interface FilterTypeInterface
 {
     /**
      * Sanitize the input string to an normal useful value

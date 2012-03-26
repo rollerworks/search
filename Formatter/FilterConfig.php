@@ -24,7 +24,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
 
 /**
@@ -36,7 +36,7 @@ use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
 class FilterConfig
 {
     /**
-     * @var null|FilterType|ValueMatcherInterface
+     * @var null|FilterTypeInterface|ValueMatcherInterface
      */
     protected $filterType;
 
@@ -58,7 +58,7 @@ class FilterConfig
     /**
      * Constructor
      *
-     * @param FilterType|ValueMatcherInterface|null  $type
+     * @param FilterTypeInterface|ValueMatcherInterface|null  $type
      * @param bool                                   $required
      * @param bool                                   $acceptRanges
      * @param bool                                   $acceptCompares
@@ -74,7 +74,7 @@ class FilterConfig
     /**
      * Get the type of the filter.
      *
-     * @return FilterType|ValueMatcherInterface|null
+     * @return FilterTypeInterface|ValueMatcherInterface|null
      */
     public function getType()
     {

@@ -27,13 +27,14 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 use Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
-use Rollerworks\RecordFilterBundle\Formatter\FilterType;
+use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Struct\Range;
 use Rollerworks\RecordFilterBundle\Struct\Value;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
  * Validate and formats the filters.
+ *
  * After this the values can be considered valid.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -51,7 +52,7 @@ class RangeNormalizer implements PostModifierInterface
     protected $removeIndexes = array();
 
     /**
-     * @var FilterType
+     * @var FilterTypeInterface
      */
     protected $type;
 
