@@ -74,7 +74,7 @@ class FilterConfig
     /**
      * Get the type of the filter.
      *
-     * @return FilterTypeInterface|ValueMatcherInterface|null
+     * @return FilterTypeInterface|ValueMatcherInterface|object|null
      */
     public function getType()
     {

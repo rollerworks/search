@@ -41,27 +41,27 @@ use \InvalidArgumentException;
 class FilterStruct
 {
     /**
-     * @var \Rollerworks\RecordFilterBundle\Struct\Value[]
+     * @var Value[]
      */
     protected $singleValues = array();
 
     /**
-     * @var \Rollerworks\RecordFilterBundle\Struct\Value[]
+     * @var Value[]
      */
     protected $excludes = array();
 
     /**
-     * @var \Rollerworks\RecordFilterBundle\Struct\Range[]
+     * @var Range[]
      */
     protected $ranges = array();
 
     /**
-     * @var \Rollerworks\RecordFilterBundle\Struct\Range[]
+     * @var Range[]
      */
     protected $excludedRanges = array();
 
     /**
-     * @var \Rollerworks\RecordFilterBundle\Struct\Compare[]
+     * @var Compare[]
      */
     protected $compares = array();
 
@@ -73,6 +73,13 @@ class FilterStruct
     protected $label;
 
     /**
+     * The last-value index
+     *
+     * @var integer
+     */
+    protected $lastValIndex;
+
+    /**
      * 'Original' field input
      *
      * @var string
@@ -82,17 +89,19 @@ class FilterStruct
     /**
      * Constructor.
      *
-     * @param string                                                     $label
-     * @param string                                                     $originalInput
+     * @param string                                           $label
+     * @param string                                           $originalInput
      * @param \Rollerworks\RecordFilterBundle\Struct\Value[]   $singleValues
      * @param \Rollerworks\RecordFilterBundle\Struct\Value[]   $excludes
      * @param \Rollerworks\RecordFilterBundle\Struct\Range[]   $ranges
      * @param \Rollerworks\RecordFilterBundle\Struct\Compare[] $compares
      * @param \Rollerworks\RecordFilterBundle\Struct\Range[]   $excludedRanges
+     * @param integer                                          $lastValIndex
      *
+     * @internal param \Rollerworks\RecordFilterBundle\Struct\Range[] $excludedRange
      * @api
      */
-    public function __construct($label, $originalInput = null, array $singleValues = array(), array $excludes = array(), array $ranges = array(), array $compares = array(), array $excludedRanges = array())
+    public function __construct($label, $originalInput = null, array $singleValues = array(), array $excludes = array(), array $ranges = array(), array $compares = array(), array $excludedRanges = array(), $lastValIndex = -1)
     {
         $this->singleValues   = $singleValues;
         $this->excludes       = $excludes;
@@ -114,6 +123,36 @@ class FilterStruct
     public function getLabel()
     {
         return $this->label;
+    }
+
+    /**
+     * Set the last value index.
+     *
+     * This value can not be lower then the current-value.
+     *
+     * @param integer $index
+     *
+     * @api
+     */
+    public function setLastValueIndex($index)
+    {
+        if ($index < $this->lastValIndex) {
+            throw new \InvalidArgumentException(sprintf('New value "%s" index may not be lower then the current "%s".', $index, $this->lastValIndex));
+        }
+
+        $this->lastValIndex = $index;
+    }
+
+    /**
+     * Get the last value index
+     *
+     * @return string|null
+     *
+     * @api
+     */
+    public function getLastValueIndex()
+    {
+        return $this->lastValIndex;
     }
 
     /**
@@ -329,6 +368,81 @@ class FilterStruct
         if (isset($this->compares[$piIndex])) {
             unset($this->compares[$piIndex]);
         }
+
+        return $this;
+    }
+
+    /**
+     * Add a single-value to the filter
+     *
+     * @param Value $value
+     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     *
+     * @api
+     */
+    function addSingleValue(Value $value)
+    {
+        $this->singleValues[++$this->lastValIndex] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Add a Exclude to the filter
+     *
+     * @param Value $value
+     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     *
+     * @api
+     */
+    function addExclude(Value $value)
+    {
+        $this->excludes[++$this->lastValIndex] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Add a range to the filter
+     *
+     * @param Range $range
+     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     *
+     * @api
+     */
+    function addRange(Range $range)
+    {
+        $this->ranges[++$this->lastValIndex] = $range;
+
+        return $this;
+    }
+
+    /**
+     * Add an Excluded Range to the filter
+     *
+     * @param Range $range
+     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     *
+     * @api
+     */
+    function addExcludedRange(Range $range)
+    {
+        $this->excludedRanges[++$this->lastValIndex] = $range;
+
+        return $this;
+    }
+
+    /**
+     * Add a Compare to the filter
+     *
+     * @param Compare $compare
+     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     *
+     * @api
+     */
+    function addCompare(Compare $compare)
+    {
+        $this->compares[++$this->lastValIndex] = $compare;
 
         return $this;
     }

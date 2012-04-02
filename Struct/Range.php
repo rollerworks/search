@@ -60,10 +60,10 @@ class Range
     public function __construct($lower, $upper, $originalLower = null, $originalUpper = null)
     {
         if (!is_string($lower) && !is_float($lower) && !is_integer($lower)) {
-            throw new \UnexpectedValueException('Lower value type for is not accepted, only string, float and integer are accepted.');
+            throw new \UnexpectedValueException('Lower value for is not accepted, only string, float and integer are accepted.');
         }
         elseif (!is_string($upper) && !is_float($upper) && !is_integer($upper)) {
-            throw new \UnexpectedValueException('Higher value type for is not accepted, only string, float and integer are accepted.');
+            throw new \UnexpectedValueException('Upper value for is not accepted, only string, float and integer are accepted.');
         }
 
         $this->lower  = $lower;

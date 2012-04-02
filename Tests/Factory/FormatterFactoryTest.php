@@ -32,7 +32,7 @@ use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
 use Rollerworks\RecordFilterBundle\Factory\FormatterFactory;
 
-use Rollerworks\RecordFilterBundle\Tests\InvoiceType;
+use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
 
 /**
  * Test the Validation generator. Its work is generating on-the-fly subclasses of a given model.

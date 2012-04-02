@@ -8,7 +8,7 @@ use \Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
  * ECommerce-Invoice
  *
  * @RecordFilter\Field("id", type="Number")
- * @RecordFilter\Field("label", type="Rollerworks\RecordFilterBundle\Tests\InvoiceType")
+ * @RecordFilter\Field("label", type="Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType")
  */
 class ECommerceInvoice
 {

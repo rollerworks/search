@@ -22,7 +22,7 @@
  * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
 
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
