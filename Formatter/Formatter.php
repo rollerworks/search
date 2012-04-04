@@ -734,9 +734,10 @@ class Formatter implements FormatterInterface
             }
             else {
                 $this->addValidationMessage('parse_error', $fieldName, $groupIndex);
+                continue;
             }
 
-            $fieldStruct = new FilterStruct($label, $values[ $fieldName ], $singleValues, $excludesValues, $ranges, $compares, $excludedRanges);
+            $fieldStruct = new FilterStruct($label, $values[ $fieldName ], $singleValues, $excludesValues, $ranges, $compares, $excludedRanges, $valueIndex);
 
             /** @var \Rollerworks\RecordFilterBundle\Formatter\PostModifierInterface $modifier */
             foreach ($this->modifiersRegistry->getPostModifiers() as $modifier) {

@@ -87,4 +87,15 @@ class DaterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($type->isEquals('03.10.2010', '04-10-2010'));
         $this->assertFalse($type->isEquals('03-10-2010', '04.10.2010'));
     }
+
+    function testHigherValue()
+    {
+        $type = new Date();
+
+        $this->assertEquals('2010-10-05', $type->getHigherValue('2010-10-04'));
+        $this->assertEquals('2012-01-01', $type->getHigherValue('2011-12-31'));
+
+        $this->assertEquals('2012-02-29', $type->getHigherValue('2012-02-28'));
+        $this->assertEquals('2011-03-01', $type->getHigherValue('2011-02-28'));
+    }
 }

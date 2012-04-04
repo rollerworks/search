@@ -12,13 +12,15 @@
 namespace Rollerworks\RecordFilterBundle\Formatter\Type;
 
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
+use Rollerworks\RecordFilterBundle\Struct\Value;
 
 /**
  * Time Formatter value-type
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Time implements FilterTypeInterface
+class Time implements FilterTypeInterface, ValuesToRangeInterface
 {
     /**
      * Get timestamp of an value
@@ -132,5 +134,37 @@ class Time implements FilterTypeInterface
         $message = 'This value is not an valid time';
 
         return DateTimeHelper::isTime($input);
+    }
+
+     /**
+     * {@inheritdoc}
+     */
+    public function sortValuesList(Value $first, Value $second)
+    {
+        $a = $this->getTimestamp($first->getValue());
+        $b = $this->getTimestamp($second->getValue());
+
+        if ($a == $b) {
+            return 0;
+        }
+
+        return $a < $b ? -1 : 1;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHigherValue($input)
+    {
+        $date = new \DateTime($input);
+
+        if (preg_match('#\d{1,2}:\d{1,2}:\d{1,2}([+-]\d{1,2}([:.]?\d{1,2})?)?$#', $input)) {
+            $date->modify('+1 second');
+        }
+        else {
+            $date->modify('+1 minute');
+        }
+
+        return $date->format('H:i:s');
     }
 }

@@ -13,13 +13,15 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Type;
 
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
+use Rollerworks\RecordFilterBundle\Struct\Value;
 
 /**
  * Date Formatter-validation type
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Date implements FilterTypeInterface, ValueMatcherInterface
+class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
 {
     /**
      * Sanitize the input string to an normal useful value.
@@ -36,22 +38,18 @@ class Date implements FilterTypeInterface, ValueMatcherInterface
     /**
      * Get timestamp of an value
      *
-     * @param string $psTime
+     * @param string $date
      * @return integer
      */
-    protected function getTimestamp($psTime)
+    protected function getTimestamp($date)
     {
-        $date = new \DateTime($psTime);
+        $date = new \DateTime($date);
 
         return $date->getTimestamp();
     }
 
     /**
-     * Returns whether the first value is higher then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isHigher($input, $nextValue)
     {
@@ -59,11 +57,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface
     }
 
     /**
-     * Returns whether the first value is lower then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isLower($input, $nextValue)
     {
@@ -71,11 +65,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface
     }
 
     /**
-     * Returns whether the first value equals then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isEquals($input, $nextValue)
     {
@@ -83,11 +73,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface
     }
 
     /**
-     * Returns whether the input value is legally formatted
-     *
-     * @param string $input
-     * @param string $message
-     * @return boolean
+     * {@inheritdoc}
      */
     public function validateValue($input, &$message = null)
     {
@@ -98,8 +84,6 @@ class Date implements FilterTypeInterface, ValueMatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return string
      */
     public function getRegex()
     {
@@ -108,11 +92,35 @@ class Date implements FilterTypeInterface, ValueMatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return bool
      */
     public function supportsJs()
     {
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function sortValuesList(Value $first, Value $second)
+    {
+        $a = $this->getTimestamp($first->getValue());
+        $b = $this->getTimestamp($second->getValue());
+
+        if ($a == $b) {
+            return 0;
+        }
+
+        return $a < $b ? -1 : 1;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHigherValue($input)
+    {
+        $date = new \DateTime($input);
+        $date->modify('+1 day');
+
+        return $date->format('Y-m-d');
     }
 }

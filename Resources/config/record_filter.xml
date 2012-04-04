@@ -14,6 +14,7 @@
         <parameter key="rollerworks_record_filter.formatter.modifiers.validator.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\Validator</parameter>
         <parameter key="rollerworks_record_filter.formatter.modifiers.duplicate_remove.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove</parameter>
         <parameter key="rollerworks_record_filter.formatter.modifiers.range_normalizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\RangeNormalizer</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.values_to_range.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\ValuesToRange</parameter>
         <parameter key="rollerworks_record_filter.formatter.modifiers.compare_normalizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\CompareNormalizer</parameter>
         <parameter key="rollerworks_record_filter.formatter.modifiers.value_optimizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer</parameter>
     </parameters>
@@ -67,6 +68,10 @@
 
         <service id="rollerworks_record_filter.formatter_factory.modifiers.range_normalizer" class="%rollerworks_record_filter.formatter.modifiers.range_normalizer.class%">
             <tag name="rollerworks_record_filter.formatter_post_modifier" priority="100"/>
+        </service>
+
+        <service id="rollerworks_record_filter.formatter_factory.modifiers.values_to_range" class="%rollerworks_record_filter.formatter.modifiers.values_to_range.class%">
+            <tag name="rollerworks_record_filter.formatter_post_modifier" priority="80"/>
         </service>
 
         <service id="rollerworks_record_filter.formatter_factory.modifiers.compare_normalizer" class="%rollerworks_record_filter.formatter.modifiers.compare_normalizer.class%">

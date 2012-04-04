@@ -139,4 +139,21 @@ class TimeTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($type->isEquals(date('H:i:sO'), date('H:i:sO', time() - 60)));
         $this->assertFalse($type->isEquals(date('H:i:sP'), date('H:i:sP', time() - 60)));
     }
+
+    function testHigherValue()
+    {
+        $type = new Time();
+
+        $this->assertEquals('15:16:00', $type->getHigherValue('15:15'));
+        $this->assertEquals('15:15:01', $type->getHigherValue('15:15:00'));
+
+        $this->assertEquals('00:00:00', $type->getHigherValue('23:59'));
+        $this->assertEquals('23:59:01', $type->getHigherValue('23:59:00'));
+        $this->assertEquals('00:00:00', $type->getHigherValue('23:59:59'));
+
+        $this->assertEquals('00:00:00', $type->getHigherValue('23:59:59'));
+
+        $this->assertEquals('00:00:00', $type->getHigherValue('23:59'));
+        $this->assertEquals('00:00:00', $type->getHigherValue('23:59:59'));
+    }
 }

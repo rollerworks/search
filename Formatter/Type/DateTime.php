@@ -81,4 +81,21 @@ class DateTime extends Time implements ValueMatcherInterface
     {
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHigherValue($input)
+    {
+        $date = new \DateTime($input);
+
+        if (preg_match('#\d{1,2}:\d{1,2}:\d{1,2}([+-]\d{1,2}([:.]?\d{1,2})?)?$#', $input)) {
+            $date->modify('+1 second');
+        }
+        else {
+            $date->modify('+1 minute');
+        }
+
+        return $date->format('Y-m-d H:i:s');
+    }
 }

@@ -196,4 +196,21 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($type->isEquals('2010-10-04 03:00:01+02:00', '2010-10-04 03:00:01+03:00'));
         $this->assertFalse($type->isEquals('2010-10-04 03:00:01+04:00', '2010-10-04 03:00:01+02:00'));
     }
+
+    function testHigherValue()
+    {
+        $type = new DateTime();
+
+        $this->assertEquals('2010-10-04 15:16:00', $type->getHigherValue('2010-10-04 15:15'));
+        $this->assertEquals('2010-10-04 15:15:01', $type->getHigherValue('2010-10-04 15:15:00'));
+
+        $this->assertEquals('2010-10-05 00:00:00', $type->getHigherValue('2010-10-04 23:59'));
+        $this->assertEquals('2010-10-04 23:59:01', $type->getHigherValue('2010-10-04 23:59:00'));
+        $this->assertEquals('2010-10-05 00:00:00', $type->getHigherValue('2010-10-04 23:59:59'));
+
+        $this->assertEquals('2011-01-01 00:00:00', $type->getHigherValue('2010-12-31 23:59:59'));
+
+        $this->assertEquals('2012-02-29 00:00:00', $type->getHigherValue('2012-02-28 23:59'));
+        $this->assertEquals('2011-03-01 00:00:00', $type->getHigherValue('2011-02-28 23:59:59'));
+    }
 }

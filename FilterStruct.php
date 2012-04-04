@@ -98,6 +98,7 @@ class FilterStruct
 
         $this->label         = $label;
         $this->originalInput = $originalInput;
+        $this->lastValIndex  = $lastValIndex;
     }
 
     /**
