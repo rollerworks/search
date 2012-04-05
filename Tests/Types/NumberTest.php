@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
+use Rollerworks\RecordFilterBundle\Type\Number;
 
 class NumberTest extends \PHPUnit_Framework_TestCase
 {

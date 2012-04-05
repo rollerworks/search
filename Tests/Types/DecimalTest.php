@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Formatter\Type\Decimal;
+use Rollerworks\RecordFilterBundle\Type\Decimal;
 
 class DecimalTest extends \PHPUnit_Framework_TestCase
 {

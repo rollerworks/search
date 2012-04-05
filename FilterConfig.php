@@ -9,14 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Formatter;
+namespace Rollerworks\RecordFilterBundle;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
 
 /**
- * Filter-field configuration class.
- * Holds the configuration options for filter-field.
+ * FilterConfig.
+ *
+ * Holds the configuration options of an field.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -46,9 +47,9 @@ class FilterConfig
      * Constructor
      *
      * @param FilterTypeInterface|ValueMatcherInterface|null  $type
-     * @param bool                                   $required
-     * @param bool                                   $acceptRanges
-     * @param bool                                   $acceptCompares
+     * @param bool                                            $required
+     * @param bool                                            $acceptRanges
+     * @param bool                                            $acceptCompares
      */
     public function __construct($type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {

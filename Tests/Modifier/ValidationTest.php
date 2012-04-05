@@ -12,10 +12,10 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
 
 use Rollerworks\RecordFilterBundle\FilterStruct;
-use Rollerworks\RecordFilterBundle\Formatter\Type\Date;
-use Rollerworks\RecordFilterBundle\Formatter\Type\DateTime;
-use Rollerworks\RecordFilterBundle\Formatter\Type\Decimal;
-use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
+use Rollerworks\RecordFilterBundle\Type\Date;
+use Rollerworks\RecordFilterBundle\Type\DateTime;
+use Rollerworks\RecordFilterBundle\Type\Decimal;
+use Rollerworks\RecordFilterBundle\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
 use Rollerworks\RecordFilterBundle\Struct\Compare;
 use Rollerworks\RecordFilterBundle\Struct\Range;

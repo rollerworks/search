@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Formatter\Type\Date;
+use Rollerworks\RecordFilterBundle\Type\Date;
 
 class DaterTest extends \PHPUnit_Framework_TestCase
 {

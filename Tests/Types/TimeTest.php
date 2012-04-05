@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Formatter\Type\Time;
+use Rollerworks\RecordFilterBundle\Type\Time;
 
 class TimeTest extends \PHPUnit_Framework_TestCase
 {

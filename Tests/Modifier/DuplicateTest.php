@@ -16,10 +16,10 @@ use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Formatter\ModifiersRegistry;
 
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove;
-use Rollerworks\RecordFilterBundle\Formatter\Type\Date;
-use Rollerworks\RecordFilterBundle\Formatter\Type\DateTime;
-use Rollerworks\RecordFilterBundle\Formatter\Type\Decimal;
-use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
+use Rollerworks\RecordFilterBundle\Type\Date;
+use Rollerworks\RecordFilterBundle\Type\DateTime;
+use Rollerworks\RecordFilterBundle\Type\Decimal;
+use Rollerworks\RecordFilterBundle\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;

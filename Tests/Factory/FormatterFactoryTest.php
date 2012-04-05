@@ -15,7 +15,7 @@ use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
 use Rollerworks\RecordFilterBundle\Factory\FormatterFactory;
 
@@ -62,7 +62,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $formatter = $this->getFormatter('ECommerceProductType');
 
         $this->assertEquals(array(
-            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), true, false, false),
+            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), true, false, false),
             'name' => new FilterConfig(null, false, false, false)
         ), $formatter->getFields());
     }
@@ -75,8 +75,8 @@ class FormatterFactoryTest extends FactoryTestCase
         $formatter->setContainer($container);
 
         $this->assertEquals(array(
-            'id'         => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), false, false, false),
-            'event_date' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\DateTime(), false, false, false)
+            'id'         => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), false, false, false),
+            'event_date' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\DateTime(), false, false, false)
         ), $formatter->getFields());
     }
 
@@ -85,8 +85,8 @@ class FormatterFactoryTest extends FactoryTestCase
         $formatter = $this->getFormatter('ECommerceProductWithType2');
 
         $this->assertEquals(array(
-            'id'         => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), false, false, false),
-            'event_date' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\DateTime(true), false, false, false)
+            'id'         => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), false, false, false),
+            'event_date' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\DateTime(true), false, false, false)
         ), $formatter->getFields());
     }
 
@@ -95,7 +95,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $formatter = $this->getFormatter('ECommerceProductRange');
 
         $this->assertEquals(array(
-            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), true, true, false),
+            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), true, true, false),
             'name' => new FilterConfig(null, false, false, false)
         ), $formatter->getFields());
     }
@@ -105,7 +105,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $formatter = $this->getFormatter('ECommerceProductCompares');
 
         $this->assertEquals(array(
-            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), true, true, true),
+            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), true, true, true),
             'name' => new FilterConfig(null, false, false, false)
         ), $formatter->getFields());
 
@@ -139,7 +139,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $this->assertInstanceOf('\\RecordFilter\\RollerworksRecordFilterBundleTestsFixturesBaseBundleEntityECommerceECommerceProductCompares\\Formatter', $formatter);
 
         $this->assertEquals(array(
-            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), true, true, true),
+            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), true, true, true),
             'name' => new FilterConfig(null, false, false, false)
         ), $formatter->getFields());
 
@@ -163,7 +163,7 @@ class FormatterFactoryTest extends FactoryTestCase
         $oInvoiceType->setContainer($oContainer);
 
         $this->assertEquals(array(
-            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Formatter\Type\Number(), false, false, false),
+            'id' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), false, false, false),
             'label' => new FilterConfig($oInvoiceType, false, false, false)
         ), $formatter->getFields());
 

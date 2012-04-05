@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Formatter\Type;
+namespace Rollerworks\RecordFilterBundle\Type;
 
 /**
  * DateTime validation-type helper class

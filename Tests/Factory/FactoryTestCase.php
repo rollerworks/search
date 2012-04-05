@@ -16,7 +16,7 @@ use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 
 use Rollerworks\RecordFilterBundle\Factory\FormatterFactory;
-use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;

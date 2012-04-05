@@ -9,18 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Formatter;
+namespace Rollerworks\RecordFilterBundle;
 
 /**
- * Filter ValueMatcherInterface Interface.
+ * ValueMatcherInterface.
  *
- * An field-type can implement this to provide an regex-based matcher for the value.
+ * An filter type can implement this to provide an regex-based matcher for the value.
  * This way the user is not required to 'always' use quotes when the value contains an dash.
  *
  * Remember this is intended for __matching__ not ***validating***, make the regex as simple as possible.
  * And __never__ match more then necessary!
- *
- * Validating the value is always performed after matching the value.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

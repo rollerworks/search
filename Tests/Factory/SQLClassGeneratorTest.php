@@ -13,7 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Tests\Factory;
 
 use Rollerworks\RecordFilterBundle\Factory\FormatterFactory;
 use Rollerworks\RecordFilterBundle\Factory\SQLStructFactory;
-use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
 
 /**

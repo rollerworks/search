@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 

@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PreModifierInterface;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PostModifierInterface;

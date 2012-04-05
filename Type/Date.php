@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Formatter\Type;
+namespace Rollerworks\RecordFilterBundle\Type;
 
-use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
