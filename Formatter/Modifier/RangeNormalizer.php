@@ -15,14 +15,14 @@ use Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Struct\Range;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
- * Validate and formats the filters.
+ * Removes overlapping ranges/values and merges connected ranges.
  *
- * After this the values can be considered valid.
+ * This should be run after validation.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -90,12 +90,10 @@ class RangeNormalizer implements PostModifierInterface
         // Ranges as index => value, for checking existence later on
         $rangesValues = array();
 
-        // TODO Convert connected values-lists to an ranges (needs test-cases and interface first)
-
         /**
-         * @var \Rollerworks\RecordFilterBundle\Struct\Range $range
-         * @var \Rollerworks\RecordFilterBundle\Struct\Range $myRange
-         * @var \Rollerworks\RecordFilterBundle\Struct\Value $singeValue
+         * @var \Rollerworks\RecordFilterBundle\Value\Range $range
+         * @var \Rollerworks\RecordFilterBundle\Value\Range $myRange
+         * @var \Rollerworks\RecordFilterBundle\Value\SingleValue $singeValue
          */
 
         foreach ($ranges as $valIndex => $range) {
@@ -243,8 +241,8 @@ class RangeNormalizer implements PostModifierInterface
     /**
      * Returns the 'original' range values between quotes.
      *
-     * @param \Rollerworks\RecordFilterBundle\Struct\Range $range
-     * @param \Rollerworks\RecordFilterBundle\Struct\Range $range2
+     * @param \Rollerworks\RecordFilterBundle\Value\Range $range
+     * @param \Rollerworks\RecordFilterBundle\Value\Range $range2
      * @return string
      */
     protected static function getRangeQuoted(Range $range, Range $range2 = null)
@@ -259,11 +257,11 @@ class RangeNormalizer implements PostModifierInterface
     /**
      * Checks if the value is overlapping in the range
      *
-     * @param \Rollerworks\RecordFilterBundle\Struct\Value $singeValue
-     * @param \Rollerworks\RecordFilterBundle\Struct\Range $range
+     * @param \Rollerworks\RecordFilterBundle\Value\SingleValue $singeValue
+     * @param \Rollerworks\RecordFilterBundle\Value\Range $range
      * @return bool
      */
-    protected function isValInRange(Value $singeValue, Range $range)
+    protected function isValInRange(SingleValue $singeValue, Range $range)
     {
         if (($this->type->isLower($singeValue->getValue(), $range->getUpper()) && $this->type->isHigher($singeValue->getValue(), $range->getLower())))
         {

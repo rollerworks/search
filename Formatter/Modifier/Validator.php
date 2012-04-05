@@ -15,7 +15,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Struct\Range;
+use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**

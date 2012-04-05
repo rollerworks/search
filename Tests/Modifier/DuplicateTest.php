@@ -21,9 +21,9 @@ use Rollerworks\RecordFilterBundle\Formatter\Type\DateTime;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Decimal;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
-use Rollerworks\RecordFilterBundle\Struct\Compare;
-use Rollerworks\RecordFilterBundle\Struct\Range;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 class DuplicateTest extends TestCase
 {
@@ -50,10 +50,10 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010,29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 1);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010,29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 1);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -79,10 +79,10 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '"29.10.2010",29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 1);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '"29.10.2010",29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 1);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -107,9 +107,9 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '"29.10.2010","29-10-2010",29.10.2010', array(new Value('2010-10-29', '29.10.2010')), array(), array(), array(), array(), 2);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '"29.10.2010","29-10-2010",29.10.2010', array(new SingleValue('2010-10-29', '29.10.2010')), array(), array(), array(), array(), 2);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -137,9 +137,9 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"', array(new Value('2010-10-29', '29.10.2010')), array(), array(2 => new Range('2010-10-29', '2010-12-10', '29.10.2010', '10.12.2010')), array(), array(), 4);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"', array(new SingleValue('2010-10-29', '29.10.2010')), array(), array(2 => new Range('2010-10-29', '2010-12-10', '29.10.2010', '10.12.2010')), array(), array(), 4);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -172,9 +172,9 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011', array(new Value('2010-10-29', '29.10.2010')), array(), array(2 => new Range('2010-10-29', '2011-01-10', '29.10.2010', '10.12.2010')), array(), array(), 5);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011', array(new SingleValue('2010-10-29', '29.10.2010')), array(), array(2 => new Range('2010-10-29', '2011-01-10', '29.10.2010', '10.12.2010')), array(), array(), 5);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -206,9 +206,9 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"', array(new Value('2010-10-29', '29.10.2010')), array(), array(2 => new Range('2010-10-29', '2011-01-10', '29-10-2010', '10.12.2010')), array(), array(), 5);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"', array(new SingleValue('2010-10-29', '29.10.2010')), array(), array(2 => new Range('2010-10-29', '2011-01-10', '29-10-2010', '10.12.2010')), array(), array(), 5);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -237,8 +237,8 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
         $expectedValues['date']   = new FilterStruct('date', '"10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010", "30.10.2010"-"08.12.2010"', array(), array(), array(1 => new Range('2010-10-29', '2011-01-10', '29.10.2010', '10.12.2010')), array(), array(), 2);
 
         $this->assertEquals($expectedValues, $filters[0]);
@@ -264,9 +264,9 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"', array(new Value('2010-05-25', '25.05.2010')), array(), array(), array(1 => new Compare('2010-05-25', '>', '25.5.2010'),
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"', array(new SingleValue('2010-05-25', '25.05.2010')), array(), array(), array(1 => new Compare('2010-05-25', '>', '25.5.2010'),
                                                                                                                                                                                                     3 => new Compare('2010-05-25', '<=', '25.05.2010')), array(), 4);
 
         $this->assertEquals($expectedValues, $filters[0]);
@@ -356,8 +356,8 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
         $expectedValues['date']   = new FilterStruct('date', '>25.05.2010,>=25.05.2010', array(), array(), array(), array(1 => new Compare('2010-05-25', '>=', '25.05.2010')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
@@ -383,9 +383,9 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,4,10-20,!15,!"15"', array(new Value('2'), new Value('4')), array(3 => new Value('15')), array(2 => new Range('10', '20')), array(), array(), 4);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '25.05.2010', array(new Value('2010-05-25', '25.05.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['user']   = new FilterStruct('user', '2,4,10-20,!15,!"15"', array(new SingleValue('2'), new SingleValue('4')), array(3 => new SingleValue('15')), array(2 => new Range('10', '20')), array(), array(), 4);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '25.05.2010', array(new SingleValue('2010-05-25', '25.05.2010')), array(), array(), array(), array(), 0);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -415,7 +415,7 @@ class DuplicateTest extends TestCase
 
         $expectedValues = array();
         $expectedValues['user']   = new FilterStruct('user', '5,1-10', array(), array(), array(1 => new Range('1', '10')), array(), array(), 1);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
         $expectedValues['date']   = new FilterStruct('date', '29.10.2010-29.12.2010,20.12.2010', array(), array(), array(new Range('2010-10-29', '2010-12-29', '29.10.2010', '29.12.2010')), array(), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
@@ -443,10 +443,10 @@ class DuplicateTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,4,!28,20-50,!25-30', array(new Value('2'), new Value('4')), array(), array(3 => new Range('20', '50')), array(), array(4 => new Range('25', '30')), 4);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,4,!28,20-50,!25-30', array(new SingleValue('2'), new SingleValue('4')), array(), array(3 => new Range('20', '50')), array(), array(4 => new Range('25', '30')), 4);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -494,7 +494,7 @@ class DuplicateTest extends TestCase
 
         $expectedValues = array();
         $expectedValues['user']   = new FilterStruct('user', '5,1-20,5-10', array(), array(), array(1 => new Range('1', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
         $expectedValues['date']   = new FilterStruct('date', '29.10.2010-29.12.2010, 30.10.2010-20.12.2010', array(), array(), array(new Range('2010-10-29', '2010-12-29', '29.10.2010', '29.12.2010')), array(), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);

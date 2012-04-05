@@ -16,8 +16,9 @@ use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
- * Validate and formats the filters.
- * After this the values can be considered valid.
+ * Normalizes comparisons.
+ *
+ * Changes: >=1, >1 to >=1 (> is already coverted)
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

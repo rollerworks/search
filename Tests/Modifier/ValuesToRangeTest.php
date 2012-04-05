@@ -20,9 +20,9 @@ use Rollerworks\RecordFilterBundle\Formatter\Type\DateTime;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Decimal;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
-use Rollerworks\RecordFilterBundle\Struct\Compare;
-use Rollerworks\RecordFilterBundle\Struct\Range;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType;
 
@@ -83,7 +83,7 @@ class ValuesToRangeTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterStruct('user', '1,2,3,4,5,6,7,10,11,12,13,14,15,18', array(13 => new Value('18')), array(), array(14 => new Range('1', '7'), 15 => new Range('10', '15')), array(), array(), 15);
+        $expectedValues['user'] = new FilterStruct('user', '1,2,3,4,5,6,7,10,11,12,13,14,15,18', array(13 => new SingleValue('18')), array(), array(14 => new Range('1', '7'), 15 => new Range('10', '15')), array(), array(), 15);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -144,7 +144,7 @@ class ValuesToRangeTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterStruct('user', '!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18', array(), array(13 => new Value('18')), array(), array(), array(14 => new Range('1', '7'), 15 => new Range('10', '15')), 15);
+        $expectedValues['user'] = new FilterStruct('user', '!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18', array(), array(13 => new SingleValue('18')), array(), array(), array(14 => new Range('1', '7'), 15 => new Range('10', '15')), 15);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }

@@ -20,9 +20,9 @@ use Rollerworks\RecordFilterBundle\Formatter\Type\DateTime;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Decimal;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
-use Rollerworks\RecordFilterBundle\Struct\Compare;
-use Rollerworks\RecordFilterBundle\Struct\Range;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType;
 
@@ -46,9 +46,9 @@ class OptimizeTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,4,10-20', array(new Value('2'), new Value('4')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,4,10-20', array(new SingleValue('2'), new SingleValue('4')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -71,9 +71,9 @@ class OptimizeTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }

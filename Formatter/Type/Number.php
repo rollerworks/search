@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Type;
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 /**
  * Integer Formatter-validation type
@@ -72,7 +72,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
     /**
      * {@inheritdoc}
      */
-    public function sortValuesList(Value $first, Value $second)
+    public function sortValuesList(SingleValue $first, SingleValue $second)
     {
         if ($first->getValue() == $second->getValue()) {
             return 0;

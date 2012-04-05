@@ -32,8 +32,8 @@ abstract class TestCase extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         if ($loadModifiers) {
             $formatter->registerPostModifier(new Validator());
             $formatter->registerPostModifier(new DuplicateRemove());
-            $formatter->registerPostModifier(new ValuesToRange());
             $formatter->registerPostModifier(new RangeNormalizer());
+            $formatter->registerPostModifier(new ValuesToRange());
             $formatter->registerPostModifier(new CompareNormalizer());
             $formatter->registerPostModifier(new ValueOptimizer());
         }

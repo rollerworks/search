@@ -26,9 +26,9 @@ use Rollerworks\RecordFilterBundle\Formatter\Type\DateTime;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Decimal;
 use Rollerworks\RecordFilterBundle\Formatter\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
-use Rollerworks\RecordFilterBundle\Struct\Compare;
-use Rollerworks\RecordFilterBundle\Struct\Range;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
 
@@ -51,9 +51,9 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-"20"', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-"20"', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -78,10 +78,10 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -141,10 +141,10 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,5,10-20', array(new Value('2'), new Value('5')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,5,10-20', array(new SingleValue('2'), new SingleValue('5')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -167,10 +167,10 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterStruct('user', '2,3,10-20,!15', array(new Value('2'), new Value('3')), array(3 => new Value('15')), array(2 => new Range('10', '20')), array(), array(), 3);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date'] = new FilterStruct('date', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user'] = new FilterStruct('user', '2,3,10-20,!15', array(new SingleValue('2'), new SingleValue('3')), array(3 => new SingleValue('15')), array(2 => new Range('10', '20')), array(), array(), 3);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date'] = new FilterStruct('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -193,15 +193,15 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,20-50,!25-30', array(new Value('2'), new Value('3')), array(), array(2 => new Range('20', '50')), array(), array(3 => new Range('25', '30')), 3);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,20-50,!25-30', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('20', '50')), array(), array(3 => new Range('25', '30')), 3);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testGetFiltersEmptyFieldAndValue()
+    function testGetFiltersEmptyFieldAndSingleValue()
     {
         $input = new QueryInput();
         $input->setQueryString('User=2,,3,10-20; Status=Active; date=29.10.2010');
@@ -219,9 +219,9 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['user']   = new FilterStruct('user', '2,,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -244,10 +244,10 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '"29-10-2010"', array(new Value('29-10-2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>"20""","""20""",10', array(1 => new Value('"20"'), 2 => new Value('10')), array(), array(), array(0 => new Compare('20"', '>')), array(), 2);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>"20""","""20""",10', array(1 => new SingleValue('"20"'), 2 => new SingleValue('10')), array(), array(), array(0 => new Compare('20"', '>')), array(), 2);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -274,9 +274,9 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('gebruiker', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('datung', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['user']   = new FilterStruct('gebruiker', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('datung', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -307,10 +307,10 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('gebruiker', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('datung', '29.10.2010', array(new Value('29.10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('periods', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('gebruiker', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('datung', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('periods', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -340,9 +340,9 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3', array(new Value('2'), new Value('3')), array(), array(), array(), array(), 1);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('datung', '29.10.2010,30.10.2010', array(new Value('29.10.2010'), new Value('30.10.2010')), array(), array(), array(), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('datung', '29.10.2010,30.10.2010', array(new SingleValue('29.10.2010'), new SingleValue('30.10.2010')), array(), array(), array(), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -373,13 +373,13 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues[0]['user']   = new FilterStruct('user', '2,3', array(new Value('2'), new Value('3')), array(), array(), array(), array(), 1);
-        $expectedValues[0]['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues[0]['date']   = new FilterStruct('datung', '29.10.2010,30.10.2010', array(new Value('29.10.2010'), new Value('30.10.2010')), array(), array(), array(), array(), 1);
+        $expectedValues[0]['user']   = new FilterStruct('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1);
+        $expectedValues[0]['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues[0]['date']   = new FilterStruct('datung', '29.10.2010,30.10.2010', array(new SingleValue('29.10.2010'), new SingleValue('30.10.2010')), array(), array(), array(), array(), 1);
 
-        $expectedValues[1]['user']   = new FilterStruct('user', '2,3', array(new Value('2'), new Value('3')), array(), array(), array(), array(), 1);
-        $expectedValues[1]['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues[1]['date']   = new FilterStruct('datung', '29.10.2011,30.10.2011', array(new Value('29.10.2011'), new Value('30.10.2011')), array(), array(), array(), array(), 1);
+        $expectedValues[1]['user']   = new FilterStruct('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1);
+        $expectedValues[1]['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues[1]['date']   = new FilterStruct('datung', '29.10.2011,30.10.2011', array(new SingleValue('29.10.2011'), new SingleValue('30.10.2011')), array(), array(), array(), array(), 1);
 
         $this->assertEquals($expectedValues, $filters);
     }
@@ -410,13 +410,13 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues[0]['user']   = new FilterStruct('user', '2,3', array(new Value('2'), new Value('3')), array(), array(), array(), array(), 1);
-        $expectedValues[0]['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues[0]['date']   = new FilterStruct('datung', '29.10.2010,30.10.2010', array(new Value('29.10.2010'), new Value('30.10.2010')), array(), array(), array(), array(), 1);
+        $expectedValues[0]['user']   = new FilterStruct('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1);
+        $expectedValues[0]['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues[0]['date']   = new FilterStruct('datung', '29.10.2010,30.10.2010', array(new SingleValue('29.10.2010'), new SingleValue('30.10.2010')), array(), array(), array(), array(), 1);
 
-        $expectedValues[1]['user']   = new FilterStruct('user', '2,3', array(new Value('2'), new Value('3')), array(), array(), array(), array(), 1);
-        $expectedValues[1]['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues[1]['date']   = new FilterStruct('datung', '29.10.2011', array(new Value('29.10.2011')), array(), array(), array(), array(), 0);
+        $expectedValues[1]['user']   = new FilterStruct('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1);
+        $expectedValues[1]['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues[1]['date']   = new FilterStruct('datung', '29.10.2011', array(new SingleValue('29.10.2011')), array(), array(), array(), array(), 0);
 
         $this->assertEquals($expectedValues, $filters);
     }
@@ -441,10 +441,10 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29-10-2010', array(new Value('2010-10-29', '29-10-2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29-10-2010', array(new SingleValue('2010-10-29', '29-10-2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -467,10 +467,10 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']    = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['invoice'] = new FilterStruct('invoice', 'F2010-48932,F2011-48932-F2012-48932', array(new Value('F2010-48932')), array(), array(1 => new Range('F2011-48932', 'F2012-48932')), array(), array(), 1);
-        $expectedValues['date']    = new FilterStruct('date', '29-10.2010', array(new Value('2010-10-29', '29-10.2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period']  = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']    = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['invoice'] = new FilterStruct('invoice', 'F2010-48932,F2011-48932-F2012-48932', array(new SingleValue('F2010-48932')), array(), array(1 => new Range('F2011-48932', 'F2012-48932')), array(), array(), 1);
+        $expectedValues['date']    = new FilterStruct('date', '29-10.2010', array(new SingleValue('2010-10-29', '29-10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period']  = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -493,10 +493,10 @@ class FormatterTest extends TestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new Value('2'), new Value('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
-        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new Value('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterStruct('date', '29-10-2010', array(new Value('2010-10-29', '29-10-2010')), array(), array(), array(), array(), 0);
-        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new Value('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
+        $expectedValues['user']   = new FilterStruct('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterStruct('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterStruct('date', '29-10-2010', array(new SingleValue('2010-10-29', '29-10-2010')), array(), array(), array(), array(), 0);
+        $expectedValues['period'] = new FilterStruct('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
     }

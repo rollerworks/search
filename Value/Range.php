@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Struct;
+namespace Rollerworks\RecordFilterBundle\Value;
 
 /**
- * Range filter structure
+ * Range value
  */
 class Range
 {

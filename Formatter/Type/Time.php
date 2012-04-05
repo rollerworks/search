@@ -13,7 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Type;
 
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 /**
  * Time Formatter value-type
@@ -139,7 +139,7 @@ class Time implements FilterTypeInterface, ValuesToRangeInterface
      /**
      * {@inheritdoc}
      */
-    public function sortValuesList(Value $first, Value $second)
+    public function sortValuesList(SingleValue $first, SingleValue $second)
     {
         $a = $this->getTimestamp($first->getValue());
         $b = $this->getTimestamp($second->getValue());

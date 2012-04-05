@@ -23,9 +23,9 @@ use Rollerworks\RecordFilterBundle\Formatter\Modifier\PostModifierInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Struct\Compare;
-use Rollerworks\RecordFilterBundle\Struct\Range;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
 use \InvalidArgumentException, \RuntimeException;
@@ -717,7 +717,7 @@ class Formatter implements FormatterInterface
                         }
                         // Single (exclude) value
                         else {
-                            $value = new Value(self::fixQuotes($currentValue));
+                            $value = new SingleValue(self::fixQuotes($currentValue));
 
                             if ($isExclude) {
                                 $excludesValues[ $valueIndex ] = $value;

@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Dumper;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 
 use Rollerworks\RecordFilterBundle\FilterStruct;
-use Rollerworks\RecordFilterBundle\Struct\Range;
+use Rollerworks\RecordFilterBundle\Value\Range;
 
 /**
  * Dump the filtering preferences as formatted XML (Extensible Markup Language).

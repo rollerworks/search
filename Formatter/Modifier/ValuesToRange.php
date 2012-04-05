@@ -15,8 +15,8 @@ use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
-use Rollerworks\RecordFilterBundle\Struct\Range;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
@@ -102,7 +102,7 @@ class ValuesToRange implements PostModifierInterface
     /**
      * Converts a list of values to ranges.
      *
-     * @param Value[]                 $values
+     * @param SingleValue[]           $values
      * @param ValuesToRangeInterface  $type
      * @param bool                    $exclude
      */
@@ -117,7 +117,7 @@ class ValuesToRange implements PostModifierInterface
         $valuesCount = count($values);
         $curCount    = 0;
 
-        /** @var \Rollerworks\RecordFilterBundle\Struct\Value $value */
+        /** @var \Rollerworks\RecordFilterBundle\Value\SingleValue $value */
         foreach ($values as $valIndex => $value) {
             $curCount++;
 

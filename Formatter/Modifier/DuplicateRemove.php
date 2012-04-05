@@ -16,8 +16,7 @@ use Rollerworks\RecordFilterBundle\Formatter\FilterConfig;
 use Rollerworks\RecordFilterBundle\FilterStruct;
 
 /**
- * Validate and formats the filters.
- * After this the values can be considered valid.
+ * Removes duplicate values.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 /**
  * Filter type supporting connected-list of values to ranges should impelement this interface.
@@ -27,11 +27,11 @@ interface ValuesToRangeInterface
      *
      * @link http://php.net/uasort
      *
-     * @param Value $first
-     * @param Value $second
+     * @param SingleValue $first
+     * @param SingleValue $second
      * @return integer
      */
-    public function sortValuesList(Value $first, Value $second);
+    public function sortValuesList(SingleValue $first, SingleValue $second);
 
     /**
      * Returns the higher-by-one value of the input.

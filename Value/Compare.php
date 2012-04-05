@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Struct;
+namespace Rollerworks\RecordFilterBundle\Value;
 
 /**
- * Compare filter structure
+ * Compare value structure
  */
-class Compare extends Value
+class Compare extends SingleValue
 {
     /**
      * Comparison operator

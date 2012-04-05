@@ -9,23 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Struct;
+namespace Rollerworks\RecordFilterBundle\Value;
 
 /**
- * Loos-value filter structure
+ * Single value
  */
-class Value
+class SingleValue
 {
     /**
-     * The actual value
-     *
      * @var string|integer|float
      */
     protected $value;
 
     /**
-     * The actual value (copy)
-     *
      * @var string|integer|float
      */
     protected $originalValue;
@@ -34,7 +30,7 @@ class Value
      * Constructor
      *
      * @param mixed $value
-     * @param mixed $original Original value (only used in test cases)
+     * @param mixed $original
      *
      * @api
      */

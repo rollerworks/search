@@ -11,9 +11,9 @@
 
 namespace Rollerworks\RecordFilterBundle;
 
-use Rollerworks\RecordFilterBundle\Struct\Compare;
-use Rollerworks\RecordFilterBundle\Struct\Range;
-use Rollerworks\RecordFilterBundle\Struct\Value;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use \InvalidArgumentException;
 
 /**
@@ -28,12 +28,12 @@ use \InvalidArgumentException;
 class FilterStruct
 {
     /**
-     * @var Value[]
+     * @var SingleValue[]
      */
     protected $singleValues = array();
 
     /**
-     * @var Value[]
+     * @var SingleValue[]
      */
     protected $excludes = array();
 
@@ -78,14 +78,14 @@ class FilterStruct
      *
      * @param string                                           $label
      * @param string                                           $originalInput
-     * @param \Rollerworks\RecordFilterBundle\Struct\Value[]   $singleValues
-     * @param \Rollerworks\RecordFilterBundle\Struct\Value[]   $excludes
-     * @param \Rollerworks\RecordFilterBundle\Struct\Range[]   $ranges
-     * @param \Rollerworks\RecordFilterBundle\Struct\Compare[] $compares
-     * @param \Rollerworks\RecordFilterBundle\Struct\Range[]   $excludedRanges
+     * @param \Rollerworks\RecordFilterBundle\Value\SingleValue[]   $singleValues
+     * @param \Rollerworks\RecordFilterBundle\Value\SingleValue[]   $excludes
+     * @param \Rollerworks\RecordFilterBundle\Value\Range[]   $ranges
+     * @param \Rollerworks\RecordFilterBundle\Value\Compare[] $compares
+     * @param \Rollerworks\RecordFilterBundle\Value\Range[]   $excludedRanges
      * @param integer                                          $lastValIndex
      *
-     * @internal param \Rollerworks\RecordFilterBundle\Struct\Range[] $excludedRange
+     * @internal param \Rollerworks\RecordFilterBundle\Value\Range[] $excludedRange
      * @api
      */
     public function __construct($label, $originalInput = null, array $singleValues = array(), array $excludes = array(), array $ranges = array(), array $compares = array(), array $excludedRanges = array(), $lastValIndex = -1)
@@ -170,7 +170,7 @@ class FilterStruct
     /**
      * Returns the Ranges of the filter
      *
-     * @return \Rollerworks\RecordFilterBundle\Struct\Range[]
+     * @return \Rollerworks\RecordFilterBundle\Value\Range[]
      *
      * @api
      */
@@ -194,7 +194,7 @@ class FilterStruct
     /**
      * Returns the Excluded Ranges of the filter
      *
-     * @return \Rollerworks\RecordFilterBundle\Struct\Range[]
+     * @return \Rollerworks\RecordFilterBundle\Value\Range[]
      *
      * @api
      */
@@ -218,7 +218,7 @@ class FilterStruct
     /**
      * Returns the Excludes of the filter
      *
-     * @return \Rollerworks\RecordFilterBundle\Struct\Value[]
+     * @return \Rollerworks\RecordFilterBundle\Value\Value[]
      *
      * @api
      */
@@ -242,7 +242,7 @@ class FilterStruct
     /**
      * Returns the Compares of the filter
      *
-     * @return \Rollerworks\RecordFilterBundle\Struct\Compare[]
+     * @return \Rollerworks\RecordFilterBundle\Value\Compare[]
      *
      * @api
      */
@@ -266,7 +266,7 @@ class FilterStruct
     /**
      * Removes the Values of the filter
      *
-     * @return \Rollerworks\RecordFilterBundle\Struct\Value[]
+     * @return \Rollerworks\RecordFilterBundle\Value\SingleValue[]
      *
      * @api
      */
@@ -363,12 +363,12 @@ class FilterStruct
     /**
      * Add a single-value to the filter
      *
-     * @param Value $value
+     * @param SingleValue $value
      * @return \Rollerworks\RecordFilterBundle\FilterStruct
      *
      * @api
      */
-    function addSingleValue(Value $value)
+    function addSingleValue(SingleValue $value)
     {
         $this->singleValues[++$this->lastValIndex] = $value;
 
@@ -378,12 +378,12 @@ class FilterStruct
     /**
      * Add a Exclude to the filter
      *
-     * @param Value $value
+     * @param SingleValue $value
      * @return \Rollerworks\RecordFilterBundle\FilterStruct
      *
      * @api
      */
-    function addExclude(Value $value)
+    function addExclude(SingleValue $value)
     {
         $this->excludes[++$this->lastValIndex] = $value;
 
