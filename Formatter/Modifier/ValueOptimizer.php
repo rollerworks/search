@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * Optimizes the value by there own implementation.
@@ -41,7 +41,7 @@ class ValueOptimizer implements PostModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterStruct $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         $this->messages = array();
 

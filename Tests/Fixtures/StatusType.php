@@ -13,7 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
 
 use Rollerworks\RecordFilterBundle\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 class StatusType implements FilterTypeInterface, OptimizableInterface
 {
@@ -67,7 +67,7 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
     /**
      * {@inheritdoc}
      */
-    public function optimizeField(FilterStruct $field, &$paMessage)
+    public function optimizeField(FilterValuesBag $field, &$paMessage)
     {
         // Since there are no duplicates and only three values are legal.
         return (count($field->getSingleValues()) === 3 ? null : true);

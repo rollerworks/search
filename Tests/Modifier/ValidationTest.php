@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Type\DateTime;
 use Rollerworks\RecordFilterBundle\Type\Decimal;

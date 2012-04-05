@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * Filter-value optimizable interface.
@@ -43,9 +43,9 @@ interface OptimizableInterface
      * $messages may contain an array of information messages.
      * ***These will be run trough the translator later on.***
      *
-     * @param FilterStruct   $field
+     * @param ValuesBag   $field
      * @param array          $messages
      * @param array|null
      */
-    public function optimizeField(FilterStruct $field, &$messages);
+    public function optimizeField(FilterValuesBag $field, &$messages);
 }

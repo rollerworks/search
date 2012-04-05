@@ -17,15 +17,15 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use \InvalidArgumentException;
 
 /**
- * FilterStructure class.
+ * ValuesBag.
  *
- * Holds all the filtering information for field
+ * Holds all the values (per type) of an filter
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * @api
  */
-class FilterStruct
+class FilterValuesBag
 {
     /**
      * @var SingleValue[]
@@ -76,16 +76,15 @@ class FilterStruct
     /**
      * Constructor.
      *
-     * @param string                                           $label
-     * @param string                                           $originalInput
+     * @param string                                                $label
+     * @param string                                                $originalInput
      * @param \Rollerworks\RecordFilterBundle\Value\SingleValue[]   $singleValues
      * @param \Rollerworks\RecordFilterBundle\Value\SingleValue[]   $excludes
-     * @param \Rollerworks\RecordFilterBundle\Value\Range[]   $ranges
-     * @param \Rollerworks\RecordFilterBundle\Value\Compare[] $compares
-     * @param \Rollerworks\RecordFilterBundle\Value\Range[]   $excludedRanges
-     * @param integer                                          $lastValIndex
+     * @param \Rollerworks\RecordFilterBundle\Value\Range[]         $ranges
+     * @param \Rollerworks\RecordFilterBundle\Value\Compare[]       $compares
+     * @param \Rollerworks\RecordFilterBundle\Value\Range[]         $excludedRanges
+     * @param integer                                               $lastValIndex
      *
-     * @internal param \Rollerworks\RecordFilterBundle\Value\Range[] $excludedRange
      * @api
      */
     public function __construct($label, $originalInput = null, array $singleValues = array(), array $excludes = array(), array $ranges = array(), array $compares = array(), array $excludedRanges = array(), $lastValIndex = -1)
@@ -279,7 +278,7 @@ class FilterStruct
      * Removes a single-value from the filter
      *
      * @param integer $piIndex
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -296,7 +295,7 @@ class FilterStruct
      * Removes a Exclude from the filter
      *
      * @param integer $piIndex
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -313,7 +312,7 @@ class FilterStruct
      * Removes a Range from the filter
      *
      * @param integer $piIndex
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -330,7 +329,7 @@ class FilterStruct
      * Removes an Excluded Range from the filter
      *
      * @param integer $piIndex
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -347,7 +346,7 @@ class FilterStruct
      * Removes a Compare from the filter
      *
      * @param integer $piIndex
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -364,7 +363,7 @@ class FilterStruct
      * Add a single-value to the filter
      *
      * @param SingleValue $value
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -379,7 +378,7 @@ class FilterStruct
      * Add a Exclude to the filter
      *
      * @param SingleValue $value
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -394,7 +393,7 @@ class FilterStruct
      * Add a range to the filter
      *
      * @param Range $range
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -409,7 +408,7 @@ class FilterStruct
      * Add an Excluded Range to the filter
      *
      * @param Range $range
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */
@@ -424,7 +423,7 @@ class FilterStruct
      * Add a Compare to the filter
      *
      * @param Compare $compare
-     * @return \Rollerworks\RecordFilterBundle\FilterStruct
+     * @return \Rollerworks\RecordFilterBundle\ValuesBag
      *
      * @api
      */

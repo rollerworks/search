@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Dumper;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**
@@ -29,11 +29,11 @@ abstract class AbstractDumper implements DumperInterface
      * Ranges will always have both-side values quoted like "lower"-"higher".
      * Single values are only quoted depending on $quoteLooseValue
      *
-     * @param \Rollerworks\RecordFilterBundle\FilterStruct $filter
+     * @param \Rollerworks\RecordFilterBundle\ValuesBag $filter
      * @param bool $quoteLooseValue
      * @return array
      */
-    protected static function filterStructToArray(FilterStruct $filter, $quoteLooseValue = false)
+    protected static function filterStructToArray(FilterValuesBag $filter, $quoteLooseValue = false)
     {
         $filters = array();
 

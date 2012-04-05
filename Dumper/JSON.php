@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Dumper;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * Dump the filtering preferences as JSON (JavaScript Object Notation).
@@ -83,10 +83,10 @@ class JSON extends AbstractDumper
     /**
      * Create the field {object}
      *
-     * @param \Rollerworks\RecordFilterBundle\FilterStruct $filter
+     * @param \Rollerworks\RecordFilterBundle\ValuesBag $filter
      * @return array
      */
-    private static function createField(FilterStruct $filter)
+    private static function createField(FilterValuesBag $filter)
     {
         $field = array();
 

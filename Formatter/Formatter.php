@@ -25,7 +25,7 @@ use Rollerworks\RecordFilterBundle\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 use \InvalidArgumentException, \RuntimeException;
 
@@ -538,7 +538,7 @@ class Formatter implements FormatterInterface
         }
 
         /**
-         * @var \Rollerworks\RecordFilterBundle\FilterStruct $filter
+         * @var \Rollerworks\RecordFilterBundle\ValuesBag $filter
          */
         if ($this->hasGroups) {
             foreach ($this->finalFilters as $groupFilters) {
@@ -736,7 +736,7 @@ class Formatter implements FormatterInterface
                 continue;
             }
 
-            $fieldStruct = new FilterStruct($label, $values[ $fieldName ], $singleValues, $excludesValues, $ranges, $compares, $excludedRanges, $valueIndex);
+            $fieldStruct = new FilterValuesBag($label, $values[ $fieldName ], $singleValues, $excludesValues, $ranges, $compares, $excludedRanges, $valueIndex);
 
             /** @var \Rollerworks\RecordFilterBundle\Formatter\PostModifierInterface $modifier */
             foreach ($this->modifiersRegistry->getPostModifiers() as $modifier) {

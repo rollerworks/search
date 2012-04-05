@@ -15,7 +15,7 @@ use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PreModifierInterface;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\PostModifierInterface;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * The Modifiers Registry keeps all the registered pre and post modifiers.

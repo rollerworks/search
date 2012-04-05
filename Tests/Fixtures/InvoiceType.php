@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Rollerworks\RecordFilterBundle\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, ContainerAwareInterface
 {

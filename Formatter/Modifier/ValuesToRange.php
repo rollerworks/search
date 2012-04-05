@@ -17,7 +17,7 @@ use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * Converts a connected-list of values to ranges.
@@ -42,7 +42,7 @@ class ValuesToRange implements PostModifierInterface
     protected $removeIndexes = array();
 
     /**
-     * @var FilterStruct
+     * @var ValuesBag
      */
     protected $filterStruct;
 
@@ -68,7 +68,7 @@ class ValuesToRange implements PostModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterStruct $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         $this->messages = array();
 

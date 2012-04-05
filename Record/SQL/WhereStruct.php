@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Record\SQL;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * RecordFilter SQL Where-case structure class.

@@ -13,7 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Dumper;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\Range;
 
 /**
@@ -69,11 +69,11 @@ class XML implements DumperInterface
     /**
      * Populates the field-node
      *
-     * @param \Rollerworks\RecordFilterBundle\FilterStruct  $filter
+     * @param \Rollerworks\RecordFilterBundle\ValuesBag  $filter
      * @param \DOMNode                                      $fieldNode
      * @param \DOMDocument                                  $dom
      */
-    private static function createField(FilterStruct $filter, \DOMNode $fieldNode, \DOMDocument $dom)
+    private static function createField(FilterValuesBag $filter, \DOMNode $fieldNode, \DOMDocument $dom)
     {
         if ($filter->hasSingleValues()) {
             $singleValues = $dom->createElement('single-values');

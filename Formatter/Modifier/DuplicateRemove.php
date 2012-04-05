@@ -13,7 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * Removes duplicate values.
@@ -57,7 +57,7 @@ class DuplicateRemove implements PostModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterStruct $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         $ranges         = array();
         $excludedRanges = array();

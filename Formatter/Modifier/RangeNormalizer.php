@@ -17,7 +17,7 @@ use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * Removes overlapping ranges/values and merges connected ranges.
@@ -44,7 +44,7 @@ class RangeNormalizer implements PostModifierInterface
     protected $type;
 
     /**
-     * @var FilterStruct
+     * @var ValuesBag
      */
     protected $filterStruct;
 
@@ -70,7 +70,7 @@ class RangeNormalizer implements PostModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterStruct $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         $this->messages = array();
 

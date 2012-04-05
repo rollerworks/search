@@ -16,7 +16,7 @@ use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Value\Range;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * Validates the values and formats the value with the sanitized version
@@ -37,7 +37,7 @@ class Validator implements PostModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterStruct $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         if (!$filterConfig->hasType()) {
             return true;

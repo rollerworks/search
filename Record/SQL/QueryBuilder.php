@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Record\SQL;
 use \Doctrine\ORM\EntityManager;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\RecordFilterBundle\FilterStruct;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * RecordFilter SQL QueryBuilder class.
