@@ -13,7 +13,6 @@ namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
 
 use Rollerworks\RecordFilterBundle\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Formatter\ModifiersRegistry;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
 use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Type\DateTime;
@@ -34,7 +33,7 @@ class ValuesToRangeTest extends TestCase
         $input->setQueryString('User=1,2,3,4,5,6,7');
 
         $formatter = $this->newFormatter();
-        $formatter->setField('user', new Number(), false, true);
+        $input->setField('user', 'user', new Number(), false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -54,7 +53,7 @@ class ValuesToRangeTest extends TestCase
         $input->setQueryString('User=3,6,7,1,2,4,5');
 
         $formatter = $this->newFormatter();
-        $formatter->setField('user', new Number(), false, true);
+        $input->setField('user', 'user', new Number(), false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -74,7 +73,7 @@ class ValuesToRangeTest extends TestCase
         $input->setQueryString('User=1,2,3,4,5,6,7,10,11,12,13,14,15,18');
 
         $formatter = $this->newFormatter();
-        $formatter->setField('user', new Number(), false, true);
+        $input->setField('user', 'user', new Number(), false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -95,7 +94,7 @@ class ValuesToRangeTest extends TestCase
         $input->setQueryString('User=!1,!2,!3,!4,!5,!6,!7');
 
         $formatter = $this->newFormatter();
-        $formatter->setField('user', new Number(), false, true);
+        $input->setField('user', 'user', new Number(), false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -115,7 +114,7 @@ class ValuesToRangeTest extends TestCase
         $input->setQueryString('User=!3,!6,!7,!1,!2,!4,!5');
 
         $formatter = $this->newFormatter();
-        $formatter->setField('user', new Number(), false, true);
+        $input->setField('user', 'user', new Number(), false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -135,7 +134,7 @@ class ValuesToRangeTest extends TestCase
         $input->setQueryString('User=!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18');
 
         $formatter = $this->newFormatter();
-        $formatter->setField('user', new Number(), false, true);
+        $input->setField('user', 'user', new Number(), false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));

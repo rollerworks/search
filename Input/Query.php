@@ -40,20 +40,22 @@ use \InvalidArgumentException;
  *
  * Single values containing no special characters, can be quoted. But this is not required.
  *
- * If you want to use OR-cases place the name=value; between round-bars '()'
+ * If you want to use OR-groups place the name=value; between round-bars '()'
  * and separate them by one comma ','.
  *
- * Important: the field=value pairs must 'always end' with an ';', especially when in an or-group.
+ * Important: the field=value pairs must 'always end' with an ';', especially when in an OR-group.
  * The parser will not accept an input like: (field=value),(field2=value)
  *
  * Comma at the end is always ignored.
  *
  * === Prefix ===
  *
+ * FIXME Prefix handling is changed
+ *
  * If you want to provide an global search field in your application,
  *  you can prefix the filter-query with an section like: section; field1=value
  *
- * Multiple sections are accepted, and are separated by comma.
+ * Multiple sections are accepted, and are separated by a comma.
  * Sections apply globally, *not* per OR-group.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -253,9 +255,9 @@ class Query extends AbstractInput
             for ($i = 0; $i < $filtersCount; $i++) {
                 $label = mb_strtolower($filterPairMatches[1][$i]);
                 $name  = $this->getFieldNameByLabel($label);
-                $value = $filterPairMatches[2][$i];
+                $value = trim($filterPairMatches[2][$i]);
 
-                if (!isset($this->filtersConfig[ $name ])) {
+                if (!isset($this->filtersConfig[ $name ]) || strlen($value) < 1) {
                     continue;
                 }
 
@@ -266,21 +268,21 @@ class Query extends AbstractInput
                     $filterPairs[$name] = $value;
                 }
             }
+        }
 
-            foreach ($this->filtersConfig as $name => $filter) {
-                /** @var FilterConfig $filterConfig */
-                $filterConfig = $filter['config'];
+        foreach ($this->filtersConfig as $name => $filter) {
+            /** @var FilterConfig $filterConfig */
+            $filterConfig = $filter['config'];
 
-                if (empty($filterPairs[$name])) {
-                    if (true === $filterConfig->isRequired()) {
-                        throw new ReqFilterException($filter['label']);
-                    }
-
-                    continue;
+            if (empty($filterPairs[$name])) {
+                if (true === $filterConfig->isRequired()) {
+                    throw new ReqFilterException($filter['label']);
                 }
 
-                $filterPairs[ $name ] = $this->valuesToBag($filter['label'], $filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]));
+                continue;
             }
+
+            $filterPairs[$name] = $this->valuesToBag($filter['label'], $filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]));
         }
 
         return $filterPairs;

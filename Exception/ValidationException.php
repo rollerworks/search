@@ -28,7 +28,7 @@ class ValidationException extends Exception
 
     public function __construct($errorCode, $value = null, array $transParams = array())
     {
-        parent::__construct($errorCode);
+        parent::__construct('record_filter.' . $errorCode);
 
         $this->params = $transParams;
 

@@ -20,9 +20,12 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
 
-        $this->assertTrue($formatter->formatInput(new Query('user=1;')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setQueryString('user=1;');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $dumper = new PHPArray();
         $this->assertEquals(array(array('user' => array('1'))), $dumper->dumpFilters($formatter));
@@ -31,9 +34,12 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testTwoGroupsOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
 
-        $this->assertTrue($formatter->formatInput(new Query('(user=1;),(user=2;)')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setQueryString('(user=1;),(user=2;)');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $dumper = new PHPArray();
         $this->assertEquals(array(
@@ -46,10 +52,13 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testOneGroupTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
-        $formatter->setField('invoice');
 
-        $this->assertTrue($formatter->formatInput(new Query('user=1; invoice="F2012-800";')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setField('invoice');
+        $input->setQueryString('user=1; invoice="F2012-800";');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $dumper = new PHPArray();
         $this->assertEquals(array(array('user' => array('1'), 'invoice' => array('F2012-800'))), $dumper->dumpFilters($formatter));
@@ -58,10 +67,13 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testTwoGroupsTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
-        $formatter->setField('invoice');
 
-        $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setField('invoice');
+        $input->setQueryString('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $dumper = new PHPArray();
         $this->assertEquals(array(
@@ -73,10 +85,13 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     function testRangeValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
-        $formatter->setField('invoice', null, false, true);
 
-        $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setField('invoice', null, null, false, true);
+        $input->setQueryString('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $dumper = new PHPArray();
         $this->assertEquals(array(

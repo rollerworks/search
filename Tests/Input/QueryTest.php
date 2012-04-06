@@ -12,124 +12,163 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Input;
 
 use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 class QueryTest extends \PHPUnit_Framework_TestCase
 {
     function testQuerySingleField()
     {
         $input = new QueryInput();
+        $input->setField('user');
+
         $input->setQueryString('User=2');
 
         $this->assertEquals('User=2', $input->getQueryString());
-
-        $this->assertEquals(array(array('user' => '2')), $input->getValues());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
     function testQuerySingleFieldWithSpaces()
     {
         $input = new QueryInput();
+        $input->setField('user');
+
         $input->setQueryString('User = 2');
 
-        $this->assertEquals(array(array('user' => '2')), $input->getValues());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
     function testQuerySingleFieldWithUnicode()
     {
         $input = new QueryInput();
+        $input->setField('foo', 'ß');
+        $input->setLabelToField('foo', 'ß');
+
         $input->setQueryString('ß = 2');
 
-        $this->assertEquals(array(array('ß' => '2')), $input->getValues());
+        $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
     function testQueryMultipleFields()
     {
         $input = new QueryInput();
+        $input->setField('user');
+        $input->setField('status');
+
         $input->setQueryString('User=2; Status=Active');
 
-        $this->assertEquals(array(array('user' => '2', 'status' => 'Active')), $input->getValues());
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
+        )), $input->getGroups());
     }
 
     function testQueryMultipleFieldsNoSpace()
     {
         $input = new QueryInput();
+        $input->setField('user');
+        $input->setField('status');
+
         $input->setQueryString('User=2;Status=Active');
 
-        $this->assertEquals(array(array('user' => '2', 'status' => 'Active')), $input->getValues());
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
+        )), $input->getGroups());
     }
 
     // Field-name appears more then once
     function testQueryDoubleFields()
     {
         $input = new QueryInput();
+        $input->setField('user');
+        $input->setField('status');
+
         $input->setQueryString('User=2; Status=Active; User=3;');
 
-        $this->assertEquals(array(array('user' => '2,3', 'status' => 'Active')), $input->getValues());
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0),
+        )), $input->getGroups());
     }
 
     // Test the escaping of the filter-delimiter
     function testEscapedFilter()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status="Active;None"; date=29-10-2010');
+        $input->setField('user');
+        $input->setField('status');
+        $input->setField('date');
 
-        $this->assertEquals(array(array('user' => '2','status' => '"Active;None"','date' => '29-10-2010')), $input->getValues());
+        $input->setQueryString('User=2; Status="Active;None"; date="29-10-2010"');
+
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+            'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None')), array(), array(), array(), array(), 0),
+            'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
+        )), $input->getGroups());
     }
 
     function testOrGroup()
     {
         $input = new QueryInput();
-        $input->setQueryString('(User=2; Status="Active;None"; date=29-10-2010;),(User=3; Status=Concept; date=30-10-2010;)');
+        $input->setField('user');
+        $input->setField('status');
+        $input->setField('date');
+
+        $input->setQueryString('(User=2; Status="Active;None"; date="29-10-2010";),(User=3; Status=Concept; date="30-10-2010";)');
 
         $this->assertEquals(array(
-                array(
-                    'user'   => '2',
-                    'status' => '"Active;None"',
-                    'date'   => '29-10-2010'
-                ),
-
-                array(
-                    'user'   => '3',
-                    'status' => 'Concept',
-                    'date'   => '30-10-2010'
-                ),
+            array(
+                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+                'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None')), array(), array(), array(), array(), 0),
+                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
             ),
-
-            $input->getValues());
-
-        $this->assertTrue($input->hasGroups());
+            array(
+                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3')), array(), array(), array(), array(), 0),
+                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept')), array(), array(), array(), array(), 0),
+                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010')), array(), array(), array(), array(), 0),
+            ),
+        ), $input->getGroups());
     }
 
     function testOrGroupValueWithBars()
     {
         $input = new QueryInput();
-        $input->setQueryString('(User=2; Status="(Active;None)"; date=29-10-2010;),(User=3; Status=Concept; date=30-10-2010;)');
+        $input->setField('user');
+        $input->setField('status');
+        $input->setField('date');
+
+        $input->setQueryString('(User=2; Status="(Active;None)"; date="29-10-2010";),(User=3; Status=Concept; date="30-10-2010";)');
 
         $this->assertEquals(array(
-                array(
-                    'user'      => '2',
-                    'status'    => '"(Active;None)"',
-                    'date'      => '29-10-2010'
-                ),
-
-                array(
-                    'user'      => '3',
-                    'status'    => 'Concept',
-                    'date'      => '30-10-2010'
-                ),
+            array(
+                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+                'status' => new FilterValuesBag('status', '"(Active;None)"', array(new SingleValue('(Active;None)')), array(), array(), array(), array(), 0),
+                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
             ),
-
-            $input->getValues()
-        );
-
-        $this->assertTrue( $input->hasGroups() );
+            array(
+                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3')), array(), array(), array(), array(), 0),
+                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept')), array(), array(), array(), array(), 0),
+                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010')), array(), array(), array(), array(), 0),
+            ),
+        ), $input->getGroups());
     }
 
     function testQueryWithSectionPrefix()
     {
         $input = new QueryInput();
+        $input->setField('user');
+        $input->setField('status');
+
         $input->setQueryString('user,web; User=2; Status=Active');
 
-        $this->assertEquals(array(array('user' => '2','status' => 'Active')), $input->getValues());
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
+        )), $input->getGroups());
 
         $this->assertEquals(array('user', 'web'), $input->getSections());
     }
@@ -137,12 +176,42 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     function testQueryWithSectionPrefixDuplicate()
     {
         $input = new QueryInput();
+        $input->setField('user');
+        $input->setField('status');
+
         $input->setQueryString('user,web,user; User=2; Status=Active');
 
         $this->assertEquals(array(array(
-            'user'   => '2',
-            'status' => 'Active')), $input->getValues());
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
+        )), $input->getGroups());
 
         $this->assertEquals(array('user', 'web'), $input->getSections());
+    }
+
+    function testValidationNoRange()
+    {
+        $input = new QueryInput();
+        $input->setField('User', null, null, true);
+        $input->setField('status');
+        $input->setField('date');
+
+        $input->setQueryString('User=2-5; Status=Active; date=29.10.2010');
+
+        $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ValidationException', 'record_filter.no_range_support');
+        $input->getGroups();
+    }
+
+    function testValidationNoCompare()
+    {
+        $input = new QueryInput();
+        $input->setQueryString('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010');
+
+        $input->setField('user', null, null, true, true);
+        $input->setField('status', null, null, true, true);
+        $input->setField('date', null, null, true, true);
+
+        $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ValidationException', 'record_filter.no_compare_support');
+        $input->getGroups();
     }
 }

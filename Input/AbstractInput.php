@@ -98,8 +98,13 @@ abstract class AbstractInput implements InputInterface
      */
     public function setField($fieldName, $label = null, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
+        $fieldName = mb_strtolower($fieldName);
+
         if (null === $label) {
             $label = $fieldName;
+        }
+        else {
+            $label = mb_strtolower($label);
         }
 
         if (!empty($valueType) && $valueType instanceof ContainerAwareInterface) {

@@ -13,7 +13,6 @@ namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
 
 use Rollerworks\RecordFilterBundle\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Formatter\ModifiersRegistry;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
 use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Type\DateTime;
@@ -34,10 +33,10 @@ class OptimizeTest extends TestCase
         $input->setQueryString('User=2,4,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->setField('user',  new Number(), false, true);
-        $formatter->setField('status', new StatusType());
-        $formatter->setField('date');
-        $formatter->setField('period', null, false, false, true);
+        $input->setField('user', null,  new Number(), false, true);
+        //$input->setField('status', null, new StatusType());
+        $input->setField('date');
+        $input->setField('period', null, null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -59,10 +58,10 @@ class OptimizeTest extends TestCase
         $input->setQueryString('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $formatter->setField('user', null, false, true);
-        $formatter->setField('status', new StatusType());
-        $formatter->setField('date');
-        $formatter->setField('period', null, false, false, true);
+        $input->setField('user', null, null, false, true);
+        //$input->setField('status', null, new StatusType());
+        $input->setField('date');
+        $input->setField('period', null, null, false, false, true);
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));

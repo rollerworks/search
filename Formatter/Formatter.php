@@ -164,7 +164,7 @@ class Formatter implements FormatterInterface
                 $params['%msg%'] = $this->translator->trans($params['%msg%'], $params);
             }
 
-            $this->messages['error'][] = $this->translator->trans('record_filter.' . $e->getMessage(), $params);
+            $this->messages['error'][] = $this->translator->trans($e->getMessage(), $params);
 
             return false;
         }
