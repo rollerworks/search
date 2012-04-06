@@ -50,7 +50,7 @@ class DuplicateRemove implements ModifierInterface
      */
     protected function informDuplicate($index, $value)
     {
-        $this->messages[]       = array('duplicate', array('%value%' => $value));
+        $this->messages[]       = array('message' => 'duplicate', 'params' => array('%value%' => $value));
         $this->removedIndexes[] = $index;
     }
 

@@ -71,9 +71,12 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     function testOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
 
-        $this->assertTrue($formatter->formatInput(new Query('user=1;')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setQueryString('user=1;');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $this->assertXmlStringEqualsXmlString('<'.'?xml version="1.0" encoding="utf-8"?>
         <filters>
@@ -92,9 +95,12 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     function testTwoGroupsOneField()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
 
-        $this->assertTrue($formatter->formatInput(new Query('(user=1;),(user=2;)')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setQueryString('(user=1;),(user=2;)');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $this->assertXmlStringEqualsXmlString('<'.'?xml version="1.0" encoding="utf-8"?>
         <filters>
@@ -121,10 +127,13 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     function testOneGroupTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
-        $formatter->setField('invoice');
 
-        $this->assertTrue($formatter->formatInput(new Query('user=1; invoice="F2012-800";')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setField('invoice');
+        $input->setQueryString('user=1; invoice="F2012-800";');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $this->assertXmlStringEqualsXmlString('<'.'?xml version="1.0" encoding="utf-8"?>
         <filters>
@@ -148,10 +157,13 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     function testTwoGroupsTwoFields()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
-        $formatter->setField('invoice');
 
-        $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setField('invoice');
+        $input->setQueryString('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $this->assertXmlStringEqualsXmlString('<'.'?xml version="1.0" encoding="utf-8"?>
         <filters>
@@ -187,10 +199,13 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     function testRangeValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user');
-        $formatter->setField('invoice', null, false, true);
 
-        $this->assertTrue($formatter->formatInput(new Query('(user=1; invoice="F2010-4242"-"F2012-4245";),(user=2; invoice="F2012-4248";)')));
+        $input = new Query();
+        $input->setField('user', 'user');
+        $input->setField('invoice', 'invoice', null, false, true);
+        $input->setQueryString('(user=1; invoice="F2010-4242"-"F2012-4245";),(user=2; invoice="F2012-4248";)');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $this->assertXmlStringEqualsXmlString('<'.'?xml version="1.0" encoding="utf-8"?>
         <filters>
@@ -229,10 +244,13 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     function testCompareValue()
     {
         $formatter = new Formatter($this->translator);
-        $formatter->setField('user', null, false, true, true);
-        $formatter->setField('invoice');
 
-        $this->assertTrue($formatter->formatInput(new Query('(user=>1,<>2,>=5,<8,<=9;)')));
+        $input = new Query();
+        $input->setField('user', 'user', null, false, true, true);
+        $input->setField('invoice');
+        $input->setQueryString('(user=>1,<>2,>=5,<8,<=9;)');
+
+        $this->assertTrue($formatter->formatInput($input));
 
         $this->assertXmlStringEqualsXmlString('<'.'?xml version="1.0" encoding="utf-8"?>
         <filters>

@@ -239,7 +239,7 @@ class Formatter implements FormatterInterface
                 foreach ($modifier->getMessages() as $currentMessage) {
                     if (is_array($currentMessage)) {
                         if (!isset($currentMessage['message'], $currentMessage['params'])) {
-                            throw new RuntimeException('Missing either index 0 or 1.');
+                            throw new RuntimeException('Missing either index message or params.');
                         }
 
                         $message       = $currentMessage['message'];

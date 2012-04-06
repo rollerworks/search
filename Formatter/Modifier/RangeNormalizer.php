@@ -64,7 +64,7 @@ class RangeNormalizer implements ModifierInterface
      */
     protected function addMessage($transMessage, $params = array())
     {
-        $this->messages[] = array($transMessage, $params);
+        $this->messages[] = array('message' => $transMessage, 'params' => $params);
     }
 
     /**

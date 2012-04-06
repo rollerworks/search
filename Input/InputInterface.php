@@ -37,7 +37,7 @@ interface InputInterface
      *
      * @api
      */
-    public function setField($fieldName, $label, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false);
+    public function setField($fieldName, $label = null, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false);
 
     /**
      * Returns the groups and the containing filtering values.

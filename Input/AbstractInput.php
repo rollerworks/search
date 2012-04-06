@@ -96,8 +96,12 @@ abstract class AbstractInput implements InputInterface
     /**
      * {@inheritdoc}
      */
-    public function setField($fieldName, $label, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
+    public function setField($fieldName, $label = null, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
+        if (null === $label) {
+            $label = $fieldName;
+        }
+
         if (!empty($valueType) && $valueType instanceof ContainerAwareInterface) {
             /** @var ContainerAwareInterface $valueType */
             $valueType->setContainer($this->container);
