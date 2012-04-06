@@ -47,16 +47,16 @@ class FilterConfig
      * Constructor
      *
      * @param FilterTypeInterface|ValueMatcherInterface|null  $type
-     * @param bool                                            $required
-     * @param bool                                            $acceptRanges
-     * @param bool                                            $acceptCompares
+     * @param boolean                                         $required
+     * @param boolean                                         $acceptRanges
+     * @param boolean                                         $acceptCompares
      */
     public function __construct($type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
         $this->filterType     = $type;
-        $this->acceptRanges   = $acceptRanges;
-        $this->acceptCompares = $acceptCompares;
-        $this->required       = $required;
+        $this->acceptRanges   = (bool) $acceptRanges;
+        $this->acceptCompares = (bool) $acceptCompares;
+        $this->required       = (bool) $required;
     }
 
     /**

@@ -11,6 +11,9 @@
 
 namespace Rollerworks\RecordFilterBundle\Input;
 
+use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
 /**
  * Interface for supplying input-values
@@ -20,23 +23,40 @@ namespace Rollerworks\RecordFilterBundle\Input;
 interface InputInterface
 {
     /**
-     * Get the input-values by field.
+     * Set the configuration of an filter field.
+     *
+     * Field-name is always converted to lowercase
+     *
+     * @param string                     $fieldName
+     * @param string                     $label
+     * @param null|FilterTypeInterface   $valueType
+     * @param boolean                    $required
+     * @param boolean                    $acceptRanges
+     * @param boolean                    $acceptCompares
+     * @return InputInterface
+     *
+     * @api
+     */
+    public function setField($fieldName, $label, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false);
+
+    /**
+     * Returns the groups and the containing filtering values.
+     *
      * The values are not formatted or validated.
      *
      * Returns the fields per group, like:
-     * [group-n] => array('field-name' => 'values')
-     *
-     * Depending on hasGroups(), the number of groups varies.
-     * When there are no values, an empty array is returned.
+     * [group-n] => array('field-name' => {\Rollerworks\RecordFilterBundle\FilterValuesBag object})
      *
      * @return array
      */
-    public function getValues();
+    public function getGroups();
 
     /**
-     * Returns whether the value list is an or-case.
+     * Returns all the configured fields and there configuration.
      *
-     * @return boolean
+     * Returns like: [field-name] => array('label' => 'field-label', 'config' => {\Rollerworks\RecordFilterBundle\FilterConfig object})
+     *
+     * @return array
      */
-    public function hasGroups();
+    public function getFieldsConfig();
 }

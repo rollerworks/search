@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FormatterInterface extends ContainerAwareInterface
+interface FormatterInterface
 {
     /**
      * Returns the filters to apply on a Record-Formatter.
@@ -37,13 +37,4 @@ interface FormatterInterface extends ContainerAwareInterface
      * @api
      */
     public function getFilters();
-
-    /**
-     * Returns whether the value list is an or-case.
-     *
-     * @return boolean
-     *
-     * @api
-     */
-    public function hasGroups();
 }

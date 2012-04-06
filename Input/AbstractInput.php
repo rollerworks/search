@@ -11,8 +11,15 @@
 
 namespace Rollerworks\RecordFilterBundle\Input;
 
+use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use \InvalidArgumentException;
+
 /**
- * Input bases Class.
+ * AbstractInput.
  *
  * Provide basic functionality for an Input Class.
  *
@@ -21,42 +28,91 @@ namespace Rollerworks\RecordFilterBundle\Input;
 abstract class AbstractInput implements InputInterface
 {
     /**
-     * Whether the input has an OR-list.
-     *
-     * @var boolean
-     */
-    protected $hasGroups = false;
-
-    /**
-     * Values per field.
-     *
-     * The value is stored as an string.
-     *
-     * Internal storage: field-name => value
+     * Filtering groups and there values-bag
      *
      * @var array
      */
     protected $groups = array();
 
     /**
-     * Get the input-values.
+     * Field aliases.
+     * An alias is kept as: alias => destination
      *
-     * The values are un-formatted or validated
-     *
-     * @return array
+     * @var array
      */
-    public function getValues()
+    protected $labelsResolv = array();
+
+    /**
+     * Optional field alias using the translator.
+     * Beginning with this prefix.
+     *
+     * @var string
+     */
+    protected $aliasTranslatorPrefix;
+
+    /**
+     * Optional field alias using the translator.
+     * Domain to search in.
+     *
+     * @var string
+     */
+    protected $aliasTranslatorDomain = 'filter';
+
+    /**
+     * Registered validations per field.
+     *
+     * @see setField()
+     *
+     * @var array
+     */
+    protected $filtersConfig = array();
+
+    /**
+     * Translator instance
+     *
+     * @var \Symfony\Component\Translation\TranslatorInterface
+     */
+    protected $translator;
+
+    /**
+     * DIC container instance
+     *
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * Set the DIC container for types that need it
+     *
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     *
+     * @api
+     */
+    public function setContainer(ContainerInterface $container = null)
     {
-        return $this->groups;
+        $this->container = $container;
     }
 
     /**
-     * Returns whether the value list has groups.
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
-    public function hasGroups()
+    public function setField($fieldName, $label, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
-        return $this->hasGroups;
+        if (!empty($valueType) && $valueType instanceof ContainerAwareInterface) {
+            /** @var ContainerAwareInterface $valueType */
+            $valueType->setContainer($this->container);
+        }
+
+        $this->filtersConfig[ $fieldName ] = array('label' => $label, 'config' => new FilterConfig($valueType, $required, $acceptRanges, $acceptCompares));
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFieldsConfig()
+    {
+        return $this->filtersConfig;
     }
 }
