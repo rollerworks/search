@@ -22,7 +22,7 @@ use Rollerworks\RecordFilterBundle\FilterValuesBag;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class CompareNormalizer implements PostModifierInterface
+class CompareNormalizer implements ModifierInterface
 {
     /**
      * Optimizer messages

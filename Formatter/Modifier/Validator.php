@@ -11,12 +11,12 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
-use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\Range;
 
 /**
  * Validates the values and formats the value with the sanitized version
@@ -24,7 +24,7 @@ use Rollerworks\RecordFilterBundle\FilterValuesBag;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Validator implements PostModifierInterface
+class Validator implements ModifierInterface
 {
     /**
      * {@inheritdoc}
@@ -57,7 +57,7 @@ class Validator implements PostModifierInterface
             $_value = $type->sanitizeString($value->getValue());
 
             if (in_array($_value, $excludedValues)) {
-                throw new ValidationException('value_in_exclude', $value->getOriginalValue());
+                throw new ValidationException('value_in_exclude',  $value->getOriginalValue());
             }
 
             $singleValues[] = $_value;
@@ -133,10 +133,10 @@ class Validator implements PostModifierInterface
     /**
      * Validates an 'single' value and throws an ValidationException in case of failure.
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface $type
+     * @param \Rollerworks\RecordFilterBundle\FilterTypeInterface $type
      * @param string                                                         $value
      * @param string                                                         $originalValue
-     * @throws \Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException In case of an validation error
+     * @throws \Rollerworks\RecordFilterBundle\Exception\ValidationException In case of an validation error
      */
     protected function validateValue(FilterTypeInterface $type, $value, $originalValue = null)
     {
@@ -154,9 +154,9 @@ class Validator implements PostModifierInterface
     /**
      * Validates an range value and throws an ValidationException in case of failure.
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FilterTypeInterface $type
-     * @param \Rollerworks\RecordFilterBundle\Struct\Range         $range
-     * @throws \Rollerworks\RecordFilterBundle\Formatter\Exception\ValidationException
+     * @param \Rollerworks\RecordFilterBundle\FilterTypeInterface $type
+     * @param \Rollerworks\RecordFilterBundle\Value\Range         $range
+     * @throws \Rollerworks\RecordFilterBundle\Exception\ValidationException
      */
     protected function validateRange(FilterTypeInterface $type, Range $range)
     {

@@ -30,12 +30,12 @@ abstract class TestCase extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter = new Formatter($this->translator);
 
         if ($loadModifiers) {
-            $formatter->registerPostModifier(new Validator());
-            $formatter->registerPostModifier(new DuplicateRemove());
-            $formatter->registerPostModifier(new RangeNormalizer());
-            $formatter->registerPostModifier(new ValuesToRange());
-            $formatter->registerPostModifier(new CompareNormalizer());
-            $formatter->registerPostModifier(new ValueOptimizer());
+            $formatter->registerModifier(new Validator());
+            $formatter->registerModifier(new DuplicateRemove());
+            $formatter->registerModifier(new RangeNormalizer());
+            $formatter->registerModifier(new ValuesToRange());
+            $formatter->registerModifier(new CompareNormalizer());
+            $formatter->registerModifier(new ValueOptimizer());
         }
 
         return $formatter;

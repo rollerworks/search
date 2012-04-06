@@ -20,7 +20,7 @@ use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
  * Test the Validation generator. Its work is generating on-the-fly subclasses of a given model.
  * As you may have guessed, this is based on the Doctrine\ORM\Proxy module.
  */
-class SQLClassGeneratorTest extends FactoryTestCase
+class SQLClassGeneratorTest// extends FactoryTestCase
 {
     /**
      * @var \Doctrine\DBAL\Connection

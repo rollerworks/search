@@ -20,7 +20,7 @@ use Rollerworks\RecordFilterBundle\FilterValuesBag;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DuplicateRemove implements PostModifierInterface
+class DuplicateRemove implements ModifierInterface
 {
     /**
      * Optimizer messages

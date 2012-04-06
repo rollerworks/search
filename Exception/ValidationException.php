@@ -26,7 +26,7 @@ class ValidationException extends Exception
 
     protected $params = array();
 
-    public function __construct($errorCode, $value = null, $transParams = array())
+    public function __construct($errorCode, $value = null, array $transParams = array())
     {
         parent::__construct($errorCode);
 

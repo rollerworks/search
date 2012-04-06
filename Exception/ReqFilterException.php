@@ -15,8 +15,10 @@ use Rollerworks\RecordFilterBundle\Exception;
 
 class ReqFilterException extends ValidationException
 {
-    public function __construct()
+    public function __construct($label)
     {
         parent::__construct('required');
+
+        $this->params['%label%'] = $label;
     }
 }
