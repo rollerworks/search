@@ -44,7 +44,7 @@ class RangeNormalizer implements ModifierInterface
     protected $type;
 
     /**
-     * @var ValuesBag
+     * @var FilterValuesBag
      */
     protected $filterStruct;
 
