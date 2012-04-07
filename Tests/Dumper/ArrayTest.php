@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Dumper;
 
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Input\Query;
+use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\Dumper\PHPArray;
 
 class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestCase
@@ -21,7 +21,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setQueryString('user=1;');
 
@@ -35,7 +35,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setQueryString('(user=1;),(user=2;)');
 
@@ -53,7 +53,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice');
         $input->setQueryString('user=1; invoice="F2012-800";');
@@ -68,7 +68,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice');
         $input->setQueryString('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
@@ -86,7 +86,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTes
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice', null, null, false, true);
         $input->setQueryString('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');

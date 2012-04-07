@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Tests\Factory;
 use Rollerworks\RecordFilterBundle\Factory\FormatterFactory;
 use Rollerworks\RecordFilterBundle\Factory\SQLStructFactory;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
+use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 
 /**
  * Test the Validation generator. Its work is generating on-the-fly subclasses of a given model.

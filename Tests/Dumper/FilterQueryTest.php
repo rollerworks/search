@@ -13,7 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Tests\Dumper;
 
 use Rollerworks\RecordFilterBundle\Dumper\FilterQuery;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
+use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 
 class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestCase
 {

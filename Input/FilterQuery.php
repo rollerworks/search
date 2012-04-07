@@ -27,7 +27,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 use \InvalidArgumentException;
 
 /**
- * Accept input in an filter-query format.
+ * FilterQuery.
+ *
+ * Accept input in an FilterQuery format.
  *
  * Every filter is an: name=values;
  *
@@ -50,7 +52,7 @@ use \InvalidArgumentException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Query extends AbstractInput
+class FilterQuery extends AbstractInput
 {
     /**
      * State of the parser
@@ -106,7 +108,7 @@ class Query extends AbstractInput
      *
      * @param string $pathPrefix    This prefix is added before every search, like filters.labels.
      * @param string $domain        Default is filter
-     * @return Query
+     * @return FilterQuery
      */
     public function setLabelToFieldByTranslator($pathPrefix, $domain = 'filter')
     {
@@ -131,7 +133,7 @@ class Query extends AbstractInput
      *
      * @param string        $fieldName Original field-name
      * @param string|array  $label
-     * @return Query
+     * @return FilterQuery
      */
     public function setLabelToField($fieldName, $label)
     {
@@ -151,7 +153,7 @@ class Query extends AbstractInput
      * Set the filter-query input
      *
      * @param string $query
-     * @return Query
+     * @return FilterQuery
      */
     public function setQueryString($query)
     {

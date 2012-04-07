@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Dumper;
 
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Input\Query;
+use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\Dumper\XML as XMLDumper;
 
 class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestCase
@@ -72,7 +72,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setQueryString('user=1;');
 
@@ -96,7 +96,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setQueryString('(user=1;),(user=2;)');
 
@@ -128,7 +128,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice');
         $input->setQueryString('user=1; invoice="F2012-800";');
@@ -158,7 +158,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice');
         $input->setQueryString('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
@@ -200,7 +200,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice', 'invoice', null, false, true);
         $input->setQueryString('(user=1; invoice="F2010-4242"-"F2012-4245";),(user=2; invoice="F2012-4248";)');
@@ -245,7 +245,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new Query();
+        $input = new FilterQuery();
         $input->setField('user', 'user', null, false, true, true);
         $input->setField('invoice');
         $input->setQueryString('(user=>1,<>2,>=5,<8,<=9;)');

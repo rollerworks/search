@@ -11,13 +11,13 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Input;
 
-use Rollerworks\RecordFilterBundle\Input\Query as QueryInput;
+use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
-class QueryTest extends \PHPUnit_Framework_TestCase
+class FilterQueryTest extends \PHPUnit_Framework_TestCase
 {
     function testQuerySingleField()
     {
