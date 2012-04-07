@@ -48,16 +48,6 @@ use \InvalidArgumentException;
  *
  * Comma at the end is always ignored.
  *
- * === Prefix ===
- *
- * FIXME Prefix handling is changed
- *
- * If you want to provide an global search field in your application,
- *  you can prefix the filter-query with an section like: section; field1=value
- *
- * Multiple sections are accepted, and are separated by a comma.
- * Sections apply globally, *not* per OR-group.
- *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class Query extends AbstractInput
@@ -182,17 +172,6 @@ class Query extends AbstractInput
     }
 
     /**
-     * Get the section where the filtering can be used.
-     * When none are set returns an empty array
-     *
-     * @return array
-     */
-    public function getSections()
-    {
-        return $this->sections;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getGroups()
@@ -209,16 +188,6 @@ class Query extends AbstractInput
      */
     protected function parseQuery()
     {
-        // Look if there is an section prefix
-        if (preg_match('/^((?:\p{L}[\p{L}\p{L}\d\p{M}\p{Pd}]*[;,])+)\h*/su', $this->query, $prefixMatch)) {
-            $this->query = mb_substr($this->query, mb_strlen($prefixMatch[0]));
-
-            $sections = explode(',', trim($prefixMatch[1], ',; '));
-            $sections = array_unique($sections);
-
-            $this->sections = $sections;
-        }
-
         // Look for the usage of OR-group(s)
         // There is 'minor problem', the field-value pairs must end with an ;, or else the parsing is ignored.
         // Various solutions have been tried, but did not work...

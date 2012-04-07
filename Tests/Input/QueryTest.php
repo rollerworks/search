@@ -157,38 +157,6 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         ), $input->getGroups());
     }
 
-    function testQueryWithSectionPrefix()
-    {
-        $input = new QueryInput();
-        $input->setField('user');
-        $input->setField('status');
-
-        $input->setQueryString('user,web; User=2; Status=Active');
-
-        $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
-        )), $input->getGroups());
-
-        $this->assertEquals(array('user', 'web'), $input->getSections());
-    }
-
-    function testQueryWithSectionPrefixDuplicate()
-    {
-        $input = new QueryInput();
-        $input->setField('user');
-        $input->setField('status');
-
-        $input->setQueryString('user,web,user; User=2; Status=Active');
-
-        $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
-        )), $input->getGroups());
-
-        $this->assertEquals(array('user', 'web'), $input->getSections());
-    }
-
     function testValidationNoRange()
     {
         $input = new QueryInput();
