@@ -20,7 +20,7 @@ class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\Fact
     function testSimple()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = new Formatter($this->translator);
         $input->setField('user', null, null, false, true);
@@ -41,7 +41,7 @@ class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\Fact
     function testQuoted()
     {
         $input = new QueryInput();
-        $input->setQueryString('User="2""",3,"10"""-20; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User="2""",3,"10"""-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = new Formatter($this->translator);
         $input->setField('user', null, null, false, true);
@@ -62,7 +62,7 @@ class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\Fact
     function testWithGroups()
     {
         $input = new QueryInput();
-        $input->setQueryString('(User=2,3,10-20,!30-50; Status=Active; date=29.10.2010; period=>20,10;), (User=5,9; Status="None-active"; date=29.10.2012;)');
+        $input->setInput('(User=2,3,10-20,!30-50; Status=Active; date=29.10.2010; period=>20,10;), (User=5,9; Status="None-active"; date=29.10.2012;)');
 
         $formatter = new Formatter($this->translator);
         $input->setField('user', null, null, false, true);

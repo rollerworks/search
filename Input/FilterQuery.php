@@ -62,14 +62,14 @@ class FilterQuery extends AbstractInput
     protected $isParsed = false;
 
     /**
-     * Filter-query (as-is)
+     * Filter-input (as-is)
      *
      * @var string
      */
     protected $query = null;
 
     /**
-     * Section where the filter-query can be used.
+     * Section where the filter-input can be used.
      *
      * @var string
      */
@@ -83,7 +83,7 @@ class FilterQuery extends AbstractInput
     public function __construct($query = null)
     {
         if (null !== $query) {
-            $this->setQueryString($query);
+            $this->setInput($query);
         }
     }
 
@@ -150,21 +150,21 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Set the filter-query input
+     * Set the filter input
      *
-     * @param string $query
+     * @param string $input
      * @return FilterQuery
      */
-    public function setQueryString($query)
+    public function setInput($input)
     {
         $this->isParsed = false;
-        $this->query    = trim($query);
+        $this->query    = trim($input);
 
         return $this;
     }
 
     /**
-     * Get the filter-query
+     * Get the filter-input
      *
      * @return string
      */
@@ -186,7 +186,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Parse the query-filter that is set
+     * Parse the input-filter that is set
      */
     protected function parseQuery()
     {
@@ -362,10 +362,10 @@ class FilterQuery extends AbstractInput
                     }
 
                     if ($isExclude) {
-                        $excludedRanges[ $valueIndex ] = $value;
+                        $excludedRanges[$valueIndex] = $value;
                     }
                     else {
-                        $ranges[ $valueIndex ] = $value;
+                        $ranges[$valueIndex] = $value;
                     }
                 }
                 // Single (exclude) value
@@ -373,10 +373,10 @@ class FilterQuery extends AbstractInput
                     $value = new SingleValue(self::fixQuotes($currentValue));
 
                     if ($isExclude) {
-                        $excludesValues[ $valueIndex ] = $value;
+                        $excludesValues[$valueIndex] = $value;
                     }
                     else {
-                        $singleValues[ $valueIndex ] = $value;
+                        $singleValues[$valueIndex] = $value;
                     }
                 }
             }

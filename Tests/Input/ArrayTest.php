@@ -12,215 +12,158 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Input;
 
 use Rollerworks\RecordFilterBundle\Input\ArrayInput;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 
 class ArrayTest extends \PHPUnit_Framework_TestCase
 {
     function testSingleField()
     {
-        $input = new ArrayInput(array('user' => '2'));
-        $this->assertEquals(array(array('user' => '2')), $input->getValues());
+        $input = new ArrayInput();
+        $input->setField('user');
+
+        $input->setInput(array('user' => '2'));
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
     function testSingleFieldWithUnicode()
     {
-        $input = new ArrayInput(array('ß' => '2'));
-        $this->assertEquals(array(array('ß' => '2')), $input->getValues());
+        $input = new ArrayInput();
+        $input->setField('foo', 'ß');
+        $input->setLabelToField('foo', 'ß');
+
+        $input->setInput(array('ß' => '2'));
+        $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
     function testMultipleFields()
     {
-        $input = new ArrayInput(array('User' => '2', 'Status' => 'Active'));
-        $this->assertEquals(array(array('user' => '2', 'status' => 'Active')), $input->getValues());
+        $input = new ArrayInput();
+        $input->setField('user');
+        $input->setField('status');
+
+        $input->setInput(array('User' => '2', 'Status' => 'Active'));
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
+        )), $input->getGroups());
     }
 
     // Field-name appears more then once
     function testDoubleFields()
     {
-        $input = new ArrayInput(array('User' => '2', 'Status' => 'Active', 'user' => '3'));
-        $this->assertEquals(array(array('user' => '2,3', 'status' => 'Active')), $input->getValues());
+        $input = new ArrayInput();
+        $input->setField('user');
+        $input->setField('status');
 
-        $input = new ArrayInput(array('User' => '2', 'Status' => 'Active', '0@User' => '3'));
-        $this->assertEquals(array(array('user' => '2,3', 'status' => 'Active')), $input->getValues());
+        $input->setLabelToField('status', 'status2');
+
+        $input->setInput(array('User' => '2', 'Status' => 'Active', 'Status2' => 'NoneActive', 'user' => '3'));
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1),
+            'status' => new FilterValuesBag('status', 'Active,NoneActive', array(new SingleValue('Active'), new SingleValue('NoneActive')), array(), array(), array(), array(), 1),
+        )), $input->getGroups());
     }
 
+    // Test the escaping of the filter-delimiter
     function testEscapedFilter()
     {
-        $input = new ArrayInput(array('User' => '2', 'Status' => '"Active;None"', 'date' => '29-10-2010', ));
+        $input = new ArrayInput();
+        $input->setField('user');
+        $input->setField('status');
+        $input->setField('date');
 
-        $this->assertEquals(array(array('user' => '2','status' => '"Active;None"','date' => '29-10-2010')), $input->getValues());
+        $input->setInput(array('User' => '2', 'Status' => '"Active;None"', 'date' => '"29-10-2010"'));
+
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+            'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None')), array(), array(), array(), array(), 0),
+            'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
+        )), $input->getGroups());
     }
 
     function testOrGroup()
     {
-        $input = new ArrayInput(array(
-            array('User' => '2', 'Status' => '"Active;None"', 'date' => '29-10-2010'),
-            array('User' => '3', 'Status' => 'Concept', 'date' => '30-10-2010')
+        $input = new ArrayInput();
+        $input->setField('user');
+        $input->setField('status');
+        $input->setField('date');
+
+        $input->setInput(array(
+            array('User' => '2', 'Status' => '"Active;None"', 'date' => '"29-10-2010"'),
+            array('User' => '3', 'Status' => 'Concept', 'date' => '"30-10-2010"')
         ));
 
         $this->assertEquals(array(
-                array(
-                    'user'   => '2',
-                    'status' => '"Active;None"',
-                    'date'   => '29-10-2010'
-                ),
-
-                array(
-                    'user'   => '3',
-                    'status' => 'Concept',
-                    'date'   => '30-10-2010'
-                ),
+            array(
+                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+                'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None')), array(), array(), array(), array(), 0),
+                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
             ),
+            array(
+                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3')), array(), array(), array(), array(), 0),
+                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept')), array(), array(), array(), array(), 0),
+                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010')), array(), array(), array(), array(), 0),
+            ),
+        ), $input->getGroups());
+    }
 
-            $input->getValues());
+    function testOrGroupValueWithBars()
+    {
+        $input = new ArrayInput();
+        $input->setField('user');
+        $input->setField('status');
+        $input->setField('date');
 
-        $this->assertTrue($input->hasGroups());
-
-        $input = new ArrayInput(array(
-            'User' => '2', 'Status' => '"Active;None"', 'date' => '29-10-2010',
-            '1@User' => '3', '1@Status' => 'Concept', '1@date' => '30-10-2010'
+        $input->setInput(array(
+            array('User' => '2', 'Status' => '"(Active;None)"', 'date' => '"29-10-2010"'),
+            array('User' => '3', 'Status' => 'Concept', 'date' => '"30-10-2010"')
         ));
 
         $this->assertEquals(array(
-                array(
-                    'user'   => '2',
-                    'status' => '"Active;None"',
-                    'date'   => '29-10-2010'
-                ),
-
-                array(
-                    'user'   => '3',
-                    'status' => 'Concept',
-                    'date'   => '30-10-2010'
-                ),
+            array(
+                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
+                'status' => new FilterValuesBag('status', '"(Active;None)"', array(new SingleValue('(Active;None)')), array(), array(), array(), array(), 0),
+                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
             ),
+            array(
+                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3')), array(), array(), array(), array(), 0),
+                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept')), array(), array(), array(), array(), 0),
+                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010')), array(), array(), array(), array(), 0),
+            ),
+        ), $input->getGroups());
+    }
 
-            $input->getValues());
+    function testValidationNoRange()
+    {
+        $input = new ArrayInput();
+        $input->setField('User', null, null, true);
+        $input->setField('status');
+        $input->setField('date');
 
-        $this->assertTrue($input->hasGroups());
-
-        $input = new ArrayInput(array(
-            array('User' => '2', 'Status' => '"Active;None"', 'date' => '29-10-2010', 'user' => '3'),
-            array('User' => '3', 'Status' => 'Concept', 'date' => '30-10-2010')
+        $input->setInput(array(
+            array('User' => '2-5', 'Status' => '"Active"', 'date' => '29.10.2010'),
         ));
 
-        $this->assertEquals(array(
-                array(
-                    'user'   => '2,3',
-                    'status' => '"Active;None"',
-                    'date'   => '29-10-2010'
-                ),
-
-                array(
-                    'user'   => '3',
-                    'status' => 'Concept',
-                    'date'   => '30-10-2010'
-                ),
-            ),
-
-            $input->getValues());
-
-        $this->assertTrue($input->hasGroups());
+        $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ValidationException', 'record_filter.no_range_support');
+        $input->getGroups();
     }
 
-    function testOrGroupIllegalFieldName()
+    function testValidationNoCompare()
     {
-        $input = new ArrayInput(array(
-            array('User' => '2', 'Status' => '"Active;None"', 'date' => '29-10-2010', '0@User' => '3'),
-            array('User' => '3', 'Status' => 'Concept', 'date' => '30-10-2010')
+        $input = new ArrayInput();
+        $input->setInput(array(
+            array('User' => '2,3,10-20', 'Status' => '"Active"', 'date' => '25.05.2010,>25.5.2010'),
         ));
 
-        $this->assertEquals(array(
-                array(
-                    'user'   => '2',
-                    'status' => '"Active;None"',
-                    'date'   => '29-10-2010'
-                ),
+        $input->setField('user', null, null, true, true);
+        $input->setField('status', null, null, true, true);
+        $input->setField('date', null, null, true, true);
 
-                array(
-                    'user'   => '3',
-                    'status' => 'Concept',
-                    'date'   => '30-10-2010'
-                ),
-            ),
-
-            $input->getValues());
-
-        $this->assertTrue($input->hasGroups());
-    }
-
-    function testIgnoreField()
-    {
-        $input = new ArrayInput(array('User' => '2', 'Status' => '"Active;None"', 'date' => '29-10-2010', 'period' => '20' ), array('period'));
-        $this->assertEquals(array(array('user' => '2','status' => '"Active;None"','date' => '29-10-2010')), $input->getValues());
-
-        $input = new ArrayInput(array('User' => '2', 'Status' => '"Active;None"', 'date' => '29-10-2010', 'Period' => '20' ), array('period'));
-        $this->assertEquals(array(array('user' => '2','status' => '"Active;None"','date' => '29-10-2010')), $input->getValues());
-
-        // Numeric key
-        $input = new ArrayInput(array('User' => '2', 'Status' => '"Active;None"', 'date' => '29-10-2010', 'Period' => '20', 0 => '20' ), array('period', '0'));
-        $this->assertEquals(array(array('user' => '2','status' => '"Active;None"', 'date' => '29-10-2010')), $input->getValues());
-    }
-
-    function testArrayAsGroupValue()
-    {
-        $this->setExpectedException('\UnexpectedValueException', 'Field value of "user" in group 0 must not be an array.');
-
-        new ArrayInput(array(
-            array('User' => array(2,3)),
-        ));
-    }
-
-    function testValueArrayWrongKey()
-    {
-        $this->setExpectedException('\UnexpectedValueException', 'Value is an array but the key does not seem numeric, consider adding "user" to the ignore list.');
-
-        new ArrayInput(array('User' => array(2,3)));
-    }
-
-    function testValueStringWrongKey()
-    {
-        $this->setExpectedException('\UnexpectedValueException', 'Value is not an array but the key seems numeric, consider adding "0" to the ignore list.');
-
-        new ArrayInput(array(0 => '3'));
-    }
-
-    function testSetValue()
-    {
-        $input = new ArrayInput(array('User' => '2', 'Status' => 'Active'));
-        $this->assertEquals(array(array('user' => '2', 'status' => 'Active')), $input->getValues());
-
-        $input->setValue('User', '3');
-        $this->assertEquals(array(array('user' => '3', 'status' => 'Active')), $input->getValues());
-
-        $input->setValue('User', '3', 1);
-        $this->assertEquals(array(array('user' => '3', 'status' => 'Active'), array('user' => '3')), $input->getValues());
-    }
-
-    function testSetValueNoLegalField()
-    {
-        $input = new ArrayInput(array('User' => '2', 'Status' => 'Active'));
-        $this->assertEquals(array(array('user' => '2', 'status' => 'Active')), $input->getValues());
-
-        $this->setExpectedException('\InvalidArgumentException', '$field is not an legal filter-field.');
-        $input->setValue('@User', '3');
-    }
-
-    function testSetValueNoLegalValue()
-    {
-        $input = new ArrayInput(array('User' => '2', 'Status' => 'Active'));
-        $this->assertEquals(array(array('user' => '2', 'status' => 'Active')), $input->getValues());
-
-        $this->setExpectedException('\InvalidArgumentException', '$value must be an string value.');
-        $input->setValue('User', false);
-    }
-
-    function testSetValueNoLegalGroup()
-    {
-        $input = new ArrayInput(array('User' => '2', 'Status' => 'Active'));
-        $this->assertEquals(array(array('user' => '2', 'status' => 'Active')), $input->getValues());
-
-        $this->setExpectedException('\InvalidArgumentException', '$group must be an positive integer or 0.');
-        $input->setValue('User', '3', -1);
+        $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ValidationException', 'record_filter.no_compare_support');
+        $input->getGroups();
     }
 }

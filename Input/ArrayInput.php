@@ -11,124 +11,126 @@
 
 namespace Rollerworks\RecordFilterBundle\Input;
 
+use Rollerworks\RecordFilterBundle\Exception\ReqFilterException;
+use Rollerworks\RecordFilterBundle\Exception\ValidationException;
+use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\Value\Compare;
+use Rollerworks\RecordFilterBundle\Value\Range;
+
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
+use \InvalidArgumentException;
+
 /**
- * RecordFilter Array input class.
+ * ArrayInput.
  *
- * Provide the filtering preference by an PHP associative array.
+ * Accept input in an PHP Array format.
  *
- * Array key is only 'used' when they begin with alphabetic an character (in unicode).
- * Array keys names contain dots or dashes (except underscore) are also ignored.
+ * If the value is an array and key is numeric its threaten as a group.
+ * And its value must be an array containing the input and there values (as comma seperated string).
  *
- * If the value is an array and key is numeric its threaten as an or-group.
- * An array key containing an @ is also seen as or group, like: '@field' => 'value1,1-2'
+ * If the key is not nummeric its an field-name.
+ *
+ * Values can not be as structured array per type.
+ *
+ * @see FilterQuery
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ArrayInput extends AbstractInput
+class ArrayInput extends FilterQuery
 {
     /**
-     * Constructor.
+     * Set the filter input
      *
-     * @param array $filters
-     * @param array $ignoreFields Optional list of array-keys to ignore (integers must be as string)
+     * @param array $input
+     * @return ArrayInput
      */
-    public function __construct($filters, $ignoreFields = array())
+    public function setInput($input)
     {
-        foreach ($filters as $key => $groupValue) {
-            $key = mb_strtolower((string) $key);
-
-            if (in_array($key, $ignoreFields)) {
-                continue;
-            }
-
-            if (is_array($groupValue) && !ctype_digit($key)) {
-                throw new \UnexpectedValueException('Value is an array but the key does not seem numeric, consider adding "' . $key . '" to the ignore list.');
-            }
-            elseif (!is_array($groupValue) && ctype_digit($key)) {
-                throw new \UnexpectedValueException('Value is not an array but the key seems numeric, consider adding "' . $key . '" to the ignore list.');
-            }
-
-            if (ctype_digit($key)) {
-                $groupIndex = $key;
-
-                foreach ($groupValue as $fieldname => $value) {
-                    if (!$this->isFieldname($fieldname)) {
-                        continue;
-                    }
-
-                    $fieldname = mb_strtolower($fieldname);
-
-                    if (is_array($value)) {
-                        throw new \UnexpectedValueException('Field value of "' . $fieldname . '" in group ' . $key . ' must not be an array.');
-                    }
-
-                    if (isset($this->groups[$groupIndex][$fieldname])) {
-                        $this->groups[$groupIndex][$fieldname] .= ',' . $value;
-                    }
-                    else {
-                        $this->groups[$groupIndex][$fieldname] = $value;
-                    }
-                }
-
-                continue;
-            }
-
-            $groupPos = mb_strpos($key, '@');
-
-            if (false !== $groupPos) {
-                list($groupIndex, $fieldname) = explode('@', $key, 2);
-            }
-            else {
-                $groupIndex = 0;
-                $fieldname  = $key;
-            }
-
-            $fieldname = mb_strtolower($fieldname);
-
-            if (isset($this->groups[$groupIndex][$fieldname])) {
-                $this->groups[$groupIndex][$fieldname] .= ',' . $groupValue;
-            }
-            else {
-                $this->groups[$groupIndex][$fieldname] = $groupValue;
-            }
+        if (!is_array($input)) {
+            throw new \InvalidArgumentException('$input must be an array');
         }
 
-        $this->hasGroups = count($this->groups) > 0;
-    }
-
-    /**
-     * Set/overwrite the raw-value for the field
-     *
-     * @param string     $field
-     * @param string     $value
-     * @param integer    $group    Optional group-index (default is 0 which is the first group)
-     * @return \Rollerworks\RecordFilterBundle\Input\ArrayInput
-     */
-    public function setValue($field, $value, $group = 0)
-    {
-        if (!$this->isFieldname($field)) {
-            throw new \InvalidArgumentException('$field is not an legal filter-field.');
-        }
-        elseif (!is_string($value)) {
-            throw new \InvalidArgumentException('$value must be an string value.');
-        }
-        elseif (!is_integer($group) || $group < 0) {
-            throw new \InvalidArgumentException('$group must be an positive integer or 0.');
-        }
-
-        $this->groups[$group][mb_strtolower($field)] = $value;
+        $this->isParsed = false;
+        $this->query    = $input;
 
         return $this;
     }
 
     /**
-     * Look if the field-name is legal.
-     *
-     * @param string $fieldname
-     * @return boolean
+     * {@inheritdoc}
      */
-    public function isFieldname($fieldname)
+    public function getGroups()
     {
-        return (is_string($fieldname) && preg_match('/^\p{L}[\p{L}\p{N}_]*$/iu', $fieldname) > 0);
+        if (false === $this->isParsed) {
+            if (isset($this->query[0])) {
+                foreach ($this->query as $groupIndex => $values) {
+                    if (!ctype_digit((string) $groupIndex) || !is_array($values)) {
+                        continue;
+                    }
+
+                    $this->groups[$groupIndex] = $this->parseFilterArray($values);
+                }
+            }
+            else {
+                $this->groups[0] = $this->parseFilterArray($this->query);
+            }
+        }
+
+        return $this->groups;
+    }
+
+    /**
+     * Parse the field=value array pairs from the input.
+     *
+     * @param array $input
+     * @return array
+     */
+    protected function parseFilterArray(array $input)
+    {
+        $filterPairs = array();
+
+        foreach ($input as $label => $value) {
+            if (is_array($value)) {
+                continue;
+            }
+
+            $label = mb_strtolower($label);
+            $name  = $this->getFieldNameByLabel($label);
+            $value = trim($value);
+
+            if (!isset($this->filtersConfig[$name]) || strlen($value) < 1) {
+                continue;
+            }
+
+            if (isset($filterPairs[$name])) {
+                $filterPairs[$name] .= ',' . $value;
+            }
+            else {
+                $filterPairs[$name] = $value;
+            }
+        }
+
+        foreach ($this->filtersConfig as $name => $filter) {
+            /** @var FilterConfig $filterConfig */
+            $filterConfig = $filter['config'];
+
+            if (empty($filterPairs[$name])) {
+                if (true === $filterConfig->isRequired()) {
+                    throw new ReqFilterException($filter['label']);
+                }
+
+                continue;
+            }
+
+            $filterPairs[$name] = $this->valuesToBag($filter['label'], $filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]));
+        }
+
+        return $filterPairs;
     }
 }

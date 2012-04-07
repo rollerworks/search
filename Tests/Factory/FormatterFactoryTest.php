@@ -111,10 +111,10 @@ class FormatterFactoryTest// extends FactoryTestCase
 
         $input = new QueryInput();
 
-        $input->setQueryString('id=2;');
+        $input->setInput('id=2;');
         $this->assertTrue($formatter->formatInput($input));
 
-        $input->setQueryString('name=me;');
+        $input->setInput('name=me;');
         $this->assertFalse($formatter->formatInput($input));
     }
 
@@ -145,10 +145,10 @@ class FormatterFactoryTest// extends FactoryTestCase
 
         $input = new QueryInput();
 
-        $input->setQueryString('id=2;');
+        $input->setInput('id=2;');
         $this->assertTrue($formatter->formatInput($input));
 
-        $input->setQueryString('name=me;');
+        $input->setInput('name=me;');
         $this->assertFalse($formatter->formatInput($input));
     }
 

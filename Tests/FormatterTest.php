@@ -40,7 +40,7 @@ class FormatterTest extends TestCase
         $input->setField('status', 'status', null, false, true);
         $input->setField('period', 'period', new Date(), false, true);
 
-        $input->setQueryString('User=2,3,10-"20"; Status=Active; period=29.10.2010');
+        $input->setInput('User=2,3,10-"20"; Status=Active; period=29.10.2010');
 
         $formatter = $this->newFormatter(false);
 
@@ -63,7 +63,7 @@ class FormatterTest extends TestCase
     function testGetFilters()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);
@@ -94,7 +94,7 @@ class FormatterTest extends TestCase
         $input->setField('date', 'date');
         $input->setField('period', 'period', null, false, false, true);
 
-        $input->setQueryString('User=2,5,20-10; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,5,20-10; Status=Active; date=29.10.2010; period=>20,10');
         $formatter = $this->newFormatter();
 
         $this->assertFalse($formatter->formatInput($input));
@@ -103,7 +103,7 @@ class FormatterTest extends TestCase
 
         $this->assertEquals(array("Validation error in field 'user': '20' is not lower then '10' in group 1."),  $messages['error']);
 
-        $input->setQueryString('User=2,5,10-20; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,5,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -124,7 +124,7 @@ class FormatterTest extends TestCase
     function testGetFiltersWithExcludes()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20,!15; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20,!15; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);
@@ -151,7 +151,7 @@ class FormatterTest extends TestCase
     function testGetFiltersWithExcludedRanges()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);
@@ -178,7 +178,7 @@ class FormatterTest extends TestCase
     function testGetFiltersEmptyFieldAndSingleValue()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,,3,10-20; Status=Active; date=29.10.2010');
+        $input->setInput('User=2,,3,10-20; Status=Active; date=29.10.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);
@@ -204,7 +204,7 @@ class FormatterTest extends TestCase
     function testQuoted()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date="29-10-2010"; period=>"20""","""20""",10');
+        $input->setInput('User=2,3,10-20; Status=Active; date="29-10-2010"; period=>"20""","""20""",10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);
@@ -233,7 +233,7 @@ class FormatterTest extends TestCase
     function testFieldAlias()
     {
         $input = new QueryInput();
-        $input->setQueryString('Gebruiker=2,3,10-20; Status=Active; datung=29.10.2010');
+        $input->setInput('Gebruiker=2,3,10-20; Status=Active; datung=29.10.2010');
 
         $formatter = $this->newFormatter();
         $input->setLabelToField('user', 'gebruiker');
@@ -262,7 +262,7 @@ class FormatterTest extends TestCase
     {
         $input = new QueryInput();
         $input->setTranslator($this->translator);
-        $input->setQueryString('Gebruiker=2,3,10-20; Status=Active; datung=29.10.2010; periods=>20,10; cat=10');
+        $input->setInput('Gebruiker=2,3,10-20; Status=Active; datung=29.10.2010; periods=>20,10; cat=10');
 
         $this->translator->addResource('array', array('search' => array('gebruiker'    => 'user',
                                                                         'datum'        => 'date',
@@ -296,7 +296,7 @@ class FormatterTest extends TestCase
     function testFieldAliasMerge()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010');
+        $input->setInput('User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010');
 
         $formatter = $this->newFormatter();
         $input->setLabelToField('date', array('datum', 'datung'));
@@ -323,7 +323,7 @@ class FormatterTest extends TestCase
     function testFieldAliasMergeWithGroups()
     {
         $input = new QueryInput();
-        $input->setQueryString('(User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010;),(User=2,3; Status=Active; datung=29.10.2011; datum=30.10.2011;)');
+        $input->setInput('(User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010;),(User=2,3; Status=Active; datung=29.10.2011; datum=30.10.2011;)');
 
         $formatter = $this->newFormatter();
         $input->setLabelToField('date', array('datum', 'datung'));
@@ -353,7 +353,7 @@ class FormatterTest extends TestCase
     function testFieldAliasMergeWithGroups2()
     {
         $input = new QueryInput();
-        $input->setQueryString('(User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010;),(User=2,3; Status=Active; datung=29.10.2011;)');
+        $input->setInput('(User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010;),(User=2,3; Status=Active; datung=29.10.2011;)');
 
         $formatter = $this->newFormatter();
         $input->setLabelToField('date', array('datum', 'datung'));
@@ -385,7 +385,7 @@ class FormatterTest extends TestCase
     function testValueMatcher()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);
@@ -411,7 +411,7 @@ class FormatterTest extends TestCase
     function testValueMatcher2()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; invoice=F2010-48932,F2011-48932-F2012-48932; date=29-10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; invoice=F2010-48932,F2011-48932-F2012-48932; date=29-10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);
@@ -437,7 +437,7 @@ class FormatterTest extends TestCase
     function testValueMatcherWithRange()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);

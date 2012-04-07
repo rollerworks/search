@@ -30,7 +30,7 @@ class DuplicateTest extends TestCase
     function testDuplicates()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, true, true);
@@ -59,7 +59,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesMore()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date="29.10.2010",29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; Status=Active; date="29.10.2010",29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -88,7 +88,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithType()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date="29.10.2010","29-10-2010",29.10.2010');
+        $input->setInput('User=2,3,10-20; Status=Active; date="29.10.2010","29-10-2010",29.10.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -115,7 +115,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithTypeAndRange()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"');
+        $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -147,7 +147,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithTypeAndConnectedRange()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011');
+        $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -181,7 +181,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithTypeAndConnectedRange2()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"');
+        $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -215,7 +215,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithTypeAndConnectedRange3()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date="10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010", "30.10.2010"-"08.12.2010"');//"30-10-2010"-01.01.2011
+        $input->setInput('User=2,3,10-20; Status=Active; date="10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010", "30.10.2010"-"08.12.2010"');//"30-10-2010"-01.01.2011
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -245,7 +245,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithTypeAndCompare()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
+        $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -273,7 +273,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithTypeAndCompareGetValues()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
+        $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -297,7 +297,7 @@ class DuplicateTest extends TestCase
         $this->assertEquals($expectedValues, $groups);
 
 
-        $input->setQueryString('
+        $input->setInput('
         (User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010";),
         (User=2,10-20; Status=Archived; date=26.05.2010,>26.5.2010,>"26.05.2010",<="26.05.2010","26-05-2010";)');
 
@@ -331,7 +331,7 @@ class DuplicateTest extends TestCase
     function testRedundantCompare()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=>25.05.2010,>=25.05.2010');
+        $input->setInput('User=2,3,10-20; Status=Active; date=>25.05.2010,>=25.05.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, true, true);
@@ -358,7 +358,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithTypeAndExclude()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,4,10-20,!15,!"15"; Status=Active; date=25.05.2010');
+        $input->setInput('User=2,4,10-20,!15,!"15"; Status=Active; date=25.05.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, new Number(), true, true);
@@ -386,7 +386,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithRange()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=5,1-10; Status=Active; date=29.10.2010-29.12.2010,20.12.2010');
+        $input->setInput('User=5,1-10; Status=Active; date=29.10.2010-29.12.2010,20.12.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, new Number(), true, true);
@@ -417,7 +417,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithExcludedRange()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,4,!28,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,4,!28,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, new Number(), false, true);
@@ -446,7 +446,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithExcludedRangeSameAsNormalRange()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,25-30,!25-30; Status=Active; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,25-30,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, new Number(), false, true);
@@ -464,7 +464,7 @@ class DuplicateTest extends TestCase
     function testDuplicatesWithRangeInRange()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=5,1-20,5-10; Status=Active; date=29.10.2010-29.12.2010, 30.10.2010-20.12.2010');
+        $input->setInput('User=5,1-20,5-10; Status=Active; date=29.10.2010-29.12.2010, 30.10.2010-20.12.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, new Number(), true, true);

@@ -60,7 +60,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = '(id IN(2))';
 
         $input = new QueryInput();
-        $input->setQueryString('id=2;');
+        $input->setInput('id=2;');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));
@@ -75,7 +75,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = '';
 
         $input = new QueryInput();
-        $input->setQueryString('(user=2;),(user=2;)');
+        $input->setInput('(user=2;),(user=2;)');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));
@@ -90,7 +90,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(id IN(2))\n OR (id IN(3))";
 
         $input = new QueryInput();
-        $input->setQueryString('(id=2;),(id=3;)');
+        $input->setInput('(id=2;),(id=3;)');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));
@@ -106,7 +106,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(id IN(2) AND name IN('Fab'))";
         $input = new QueryInput();
 
-        $input->setQueryString('id=2;name=Fab');
+        $input->setInput('id=2;name=Fab');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));
@@ -121,7 +121,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(user IN(2) AND name IN('Fab'))";
         $input = new QueryInput();
 
-        $input->setQueryString('id=2;name=Fab;');
+        $input->setInput('id=2;name=Fab;');
         $this->assertTrue($formatter->formatInput($input));
 
         $SQLStruct->setFieldAlias('id', 'user');
@@ -137,7 +137,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(user IN(2) AND name IN('Fab'))";
         $input = new QueryInput();
 
-        $input->setQueryString('id=2;name=Fab;');
+        $input->setInput('id=2;name=Fab;');
         $this->assertTrue($formatter->formatInput($input));
 
         $SQLStruct->setFieldAlias('id', 'user', 'pdo_pgsql');
@@ -156,7 +156,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(id IN(2) AND name IN(CAST('Fab' AS TEXT)))";
         $input = new QueryInput();
 
-        $input->setQueryString('id=2;name=Fab;');
+        $input->setInput('id=2;name=Fab;');
         $this->assertTrue($formatter->formatInput($input));
 
         $SQLStruct->setFieldCast('name', 'TEXT');
@@ -174,7 +174,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(user IN(CAST('me' AS USER_T)) AND name IN(CAST('Fab' AS TEXT)))";
         $input = new QueryInput();
 
-        $input->setQueryString('id=me;name=Fab;');
+        $input->setInput('id=me;name=Fab;');
         $this->assertTrue($formatter->formatInput($input));
 
         $SQLStruct->setFieldAlias('id', 'user', 'pdo_pgsql');
@@ -195,7 +195,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(id IN(2.1) AND name IN('Fab'))";
         $input = new QueryInput();
 
-        $input->setQueryString('id=2.1;name=Fab;');
+        $input->setInput('id=2.1;name=Fab;');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));
@@ -211,7 +211,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(id IN(2) AND name IN('Fab'))\n OR (id IN(3))";
 
         $input = new QueryInput();
-        $input->setQueryString('(id=2;name=Fab;),(id=3;)');
+        $input->setInput('(id=2;name=Fab;),(id=3;)');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));
@@ -226,7 +226,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(id IN(3) AND id BETWEEN 5 AND 20 AND name IN('Fab'))";
 
         $input = new QueryInput();
-        $input->setQueryString('id=3,5-20;name=Fab;');
+        $input->setInput('id=3,5-20;name=Fab;');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));
@@ -241,7 +241,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(id IN(3) AND id BETWEEN 10 AND 30 AND id NOT BETWEEN 15 AND 20 AND name IN('Fab'))";
 
         $input = new QueryInput();
-        $input->setQueryString('id=3,10-30,!15-20;name=Fab;');
+        $input->setInput('id=3,10-30,!15-20;name=Fab;');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));
@@ -256,7 +256,7 @@ class SQLClassGeneratorTest// extends FactoryTestCase
         $SQLExpected = "(id IN(3) AND id > 5 AND name IN('Fab'))";
 
         $input = new QueryInput();
-        $input->setQueryString('id=3,>5;name=Fab;');
+        $input->setInput('id=3,>5;name=Fab;');
 
         $this->assertTrue($formatter->formatInput($input));
         $this->assertEquals($SQLExpected, trim($SQLStruct->getWhereClause()));

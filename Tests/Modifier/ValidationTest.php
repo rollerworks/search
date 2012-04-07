@@ -29,7 +29,7 @@ class ValidationTest extends TestCase
         $input->setField('period', null, new Date(), true);
         $input->setField('User', null, null, true);
 
-        $input->setQueryString('User=2; Status=Active; date=29.10.2010');
+        $input->setInput('User=2; Status=Active; date=29.10.2010');
 
         $formatter = $this->newFormatter();
 
@@ -40,7 +40,7 @@ class ValidationTest extends TestCase
     function testValidationReqEmptyField()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; date=29.10.2010; period=,;');
+        $input->setInput('User=2; Status=Active; date=29.10.2010; period=,;');
         $input->setField('period', null, new Date(), true);
         $input->setField('User', null, null, true);
 
@@ -51,7 +51,7 @@ class ValidationTest extends TestCase
     function testValidationEmptyField()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; date=29.10.2010; period=,;');
+        $input->setInput('User=2; Status=Active; date=29.10.2010; period=,;');
 
         $formatter = $this->newFormatter();
 
@@ -66,7 +66,7 @@ class ValidationTest extends TestCase
     function testValidationFail()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=2910.2010');
+        $input->setInput('User=2; Status=Active; period=2910.2010');
 
         $formatter = $this->newFormatter();
 
@@ -85,7 +85,7 @@ class ValidationTest extends TestCase
     function testValidationFailInGroup()
     {
         $input = new QueryInput();
-        $input->setQueryString('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=2910.2010;)');
+        $input->setInput('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=2910.2010;)');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), false, true);
@@ -100,7 +100,7 @@ class ValidationTest extends TestCase
     function testValidationFailInGroupNoResult()
     {
         $input = new QueryInput();
-        $input->setQueryString('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=29.10.2010;)');
+        $input->setInput('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=29.10.2010;)');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), false, true);
@@ -118,7 +118,7 @@ class ValidationTest extends TestCase
     function testValidationFaiInlRange()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=25.10.2010-3110.2010');
+        $input->setInput('User=2; Status=Active; period=25.10.2010-3110.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), true, true);
@@ -133,7 +133,7 @@ class ValidationTest extends TestCase
     function testValidationFaiInlRange2()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=2510.2010-3110.2010');
+        $input->setInput('User=2; Status=Active; period=2510.2010-3110.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), true, true);
@@ -150,7 +150,7 @@ class ValidationTest extends TestCase
     function testValidationRangeNotLower()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=31.10.2010-25.10.2010');
+        $input->setInput('User=2; Status=Active; period=31.10.2010-25.10.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), true, true);
@@ -165,7 +165,7 @@ class ValidationTest extends TestCase
     function testValidationFaiInCompare()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=<10.10.2010,>3110.2010');
+        $input->setInput('User=2; Status=Active; period=<10.10.2010,>3110.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), true, true, true);
@@ -180,7 +180,7 @@ class ValidationTest extends TestCase
     function testValidationFaiInExclude()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=10.10.2010,!3110.2010');
+        $input->setInput('User=2; Status=Active; period=10.10.2010,!3110.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), true, true);
@@ -195,7 +195,7 @@ class ValidationTest extends TestCase
     function testValidationExcludeInInclude()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=10.10.2010,!31.10.2010,31.10.2010');
+        $input->setInput('User=2; Status=Active; period=10.10.2010,!31.10.2010,31.10.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), true, true);
@@ -210,7 +210,7 @@ class ValidationTest extends TestCase
     function testValidationIncludeInExclude()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=10.10.2010,31.10.2010,!31.10.2010');
+        $input->setInput('User=2; Status=Active; period=10.10.2010,31.10.2010,!31.10.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), true, true);
@@ -225,7 +225,7 @@ class ValidationTest extends TestCase
     function testNoValidation()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2; Status=Active; period=29.10.2010');
+        $input->setInput('User=2; Status=Active; period=29.10.2010');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, new Date(), false, true);
@@ -239,7 +239,7 @@ class ValidationTest extends TestCase
     function testValidationInlRangeNoValidation()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2-5,8-10; Status=Active; period=25.10.2010-31.10.2010,25.10.2011-31.10.2011');
+        $input->setInput('User=2-5,8-10; Status=Active; period=25.10.2010-31.10.2010,25.10.2011-31.10.2011');
 
         $formatter = $this->newFormatter();
         $input->setField('period', null, null, true, true);

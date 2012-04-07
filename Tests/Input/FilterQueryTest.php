@@ -24,7 +24,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input = new QueryInput();
         $input->setField('user');
 
-        $input->setQueryString('User=2');
+        $input->setInput('User=2');
 
         $this->assertEquals('User=2', $input->getQueryString());
         $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
@@ -35,7 +35,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input = new QueryInput();
         $input->setField('user');
 
-        $input->setQueryString('User = 2');
+        $input->setInput('User = 2');
 
         $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
@@ -46,7 +46,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->setField('foo', 'ß');
         $input->setLabelToField('foo', 'ß');
 
-        $input->setQueryString('ß = 2');
+        $input->setInput('ß = 2');
 
         $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
@@ -57,7 +57,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->setField('user');
         $input->setField('status');
 
-        $input->setQueryString('User=2; Status=Active');
+        $input->setInput('User=2; Status=Active');
 
         $this->assertEquals(array(array(
             'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
@@ -71,7 +71,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->setField('user');
         $input->setField('status');
 
-        $input->setQueryString('User=2;Status=Active');
+        $input->setInput('User=2;Status=Active');
 
         $this->assertEquals(array(array(
             'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
@@ -86,7 +86,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->setField('user');
         $input->setField('status');
 
-        $input->setQueryString('User=2; Status=Active; User=3;');
+        $input->setInput('User=2; Status=Active; User=3;');
 
         $this->assertEquals(array(array(
             'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1),
@@ -102,7 +102,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->setField('status');
         $input->setField('date');
 
-        $input->setQueryString('User=2; Status="Active;None"; date="29-10-2010"');
+        $input->setInput('User=2; Status="Active;None"; date="29-10-2010"');
 
         $this->assertEquals(array(array(
             'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
@@ -118,7 +118,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->setField('status');
         $input->setField('date');
 
-        $input->setQueryString('(User=2; Status="Active;None"; date="29-10-2010";),(User=3; Status=Concept; date="30-10-2010";)');
+        $input->setInput('(User=2; Status="Active;None"; date="29-10-2010";),(User=3; Status=Concept; date="30-10-2010";)');
 
         $this->assertEquals(array(
             array(
@@ -141,7 +141,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->setField('status');
         $input->setField('date');
 
-        $input->setQueryString('(User=2; Status="(Active;None)"; date="29-10-2010";),(User=3; Status=Concept; date="30-10-2010";)');
+        $input->setInput('(User=2; Status="(Active;None)"; date="29-10-2010";),(User=3; Status=Concept; date="30-10-2010";)');
 
         $this->assertEquals(array(
             array(
@@ -164,7 +164,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->setField('status');
         $input->setField('date');
 
-        $input->setQueryString('User=2-5; Status=Active; date=29.10.2010');
+        $input->setInput('User=2-5; Status=Active; date=29.10.2010');
 
         $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ValidationException', 'record_filter.no_range_support');
         $input->getGroups();
@@ -173,7 +173,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
     function testValidationNoCompare()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010');
+        $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010');
 
         $input->setField('user', null, null, true, true);
         $input->setField('status', null, null, true, true);

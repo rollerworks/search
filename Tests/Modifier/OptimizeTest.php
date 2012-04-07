@@ -30,7 +30,7 @@ class OptimizeTest extends TestCase
     function testOptimizeValue()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,4,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,4,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null,  new Number(), false, true);
@@ -55,7 +55,7 @@ class OptimizeTest extends TestCase
     function testOptimizeValueNoOptimize()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', null, null, false, true);

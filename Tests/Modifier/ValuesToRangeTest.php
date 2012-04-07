@@ -30,7 +30,7 @@ class ValuesToRangeTest extends TestCase
     function testOptimizeValue()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=1,2,3,4,5,6,7');
+        $input->setInput('User=1,2,3,4,5,6,7');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', new Number(), false, true);
@@ -50,7 +50,7 @@ class ValuesToRangeTest extends TestCase
     function testOptimizeValueUnordered()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=3,6,7,1,2,4,5');
+        $input->setInput('User=3,6,7,1,2,4,5');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', new Number(), false, true);
@@ -70,7 +70,7 @@ class ValuesToRangeTest extends TestCase
     function testOptimizeValueMultipleRanges()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=1,2,3,4,5,6,7,10,11,12,13,14,15,18');
+        $input->setInput('User=1,2,3,4,5,6,7,10,11,12,13,14,15,18');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', new Number(), false, true);
@@ -91,7 +91,7 @@ class ValuesToRangeTest extends TestCase
     function testOptimizeExcludes()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=!1,!2,!3,!4,!5,!6,!7');
+        $input->setInput('User=!1,!2,!3,!4,!5,!6,!7');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', new Number(), false, true);
@@ -111,7 +111,7 @@ class ValuesToRangeTest extends TestCase
     function testOptimizeExcludesUnordered()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=!3,!6,!7,!1,!2,!4,!5');
+        $input->setInput('User=!3,!6,!7,!1,!2,!4,!5');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', new Number(), false, true);
@@ -131,7 +131,7 @@ class ValuesToRangeTest extends TestCase
     function testOptimizeExcludesMultipleRanges()
     {
         $input = new QueryInput();
-        $input->setQueryString('User=!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18');
+        $input->setInput('User=!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', new Number(), false, true);

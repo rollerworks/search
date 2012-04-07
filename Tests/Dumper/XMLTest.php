@@ -74,7 +74,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
 
         $input = new FilterQuery();
         $input->setField('user', 'user');
-        $input->setQueryString('user=1;');
+        $input->setInput('user=1;');
 
         $this->assertTrue($formatter->formatInput($input));
 
@@ -98,7 +98,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
 
         $input = new FilterQuery();
         $input->setField('user', 'user');
-        $input->setQueryString('(user=1;),(user=2;)');
+        $input->setInput('(user=1;),(user=2;)');
 
         $this->assertTrue($formatter->formatInput($input));
 
@@ -131,7 +131,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
         $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice');
-        $input->setQueryString('user=1; invoice="F2012-800";');
+        $input->setInput('user=1; invoice="F2012-800";');
 
         $this->assertTrue($formatter->formatInput($input));
 
@@ -161,7 +161,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
         $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice');
-        $input->setQueryString('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
+        $input->setInput('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
 
         $this->assertTrue($formatter->formatInput($input));
 
@@ -203,7 +203,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
         $input = new FilterQuery();
         $input->setField('user', 'user');
         $input->setField('invoice', 'invoice', null, false, true);
-        $input->setQueryString('(user=1; invoice="F2010-4242"-"F2012-4245";),(user=2; invoice="F2012-4248";)');
+        $input->setInput('(user=1; invoice="F2010-4242"-"F2012-4245";),(user=2; invoice="F2012-4248";)');
 
         $this->assertTrue($formatter->formatInput($input));
 
@@ -248,7 +248,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestC
         $input = new FilterQuery();
         $input->setField('user', 'user', null, false, true, true);
         $input->setField('invoice');
-        $input->setQueryString('(user=>1,<>2,>=5,<8,<=9;)');
+        $input->setInput('(user=>1,<>2,>=5,<8,<=9;)');
 
         $this->assertTrue($formatter->formatInput($input));
 
