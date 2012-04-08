@@ -22,7 +22,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
 abstract class TestCase extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
     /**
-     * @param bool $loadModifiers
+     * @param boolean $loadModifiers
      * @return \Rollerworks\RecordFilterBundle\Formatter\Formatter
      */
     protected function newFormatter($loadModifiers = true)

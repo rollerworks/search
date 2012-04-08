@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This an direct copy of the Symfony\Bundle\TwigBundle\TwigEngine but without the depency hell for testing
+ * This an direct copy of the Symfony\Bundle\TwigBundle\TwigEngine but without the dependency hell for testing
  */
 
 namespace Rollerworks\RecordFilterBundle\Tests;

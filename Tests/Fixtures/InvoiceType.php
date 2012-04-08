@@ -98,7 +98,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     /**
      * Returns true
      *
-     * @return bool
+     * @return boolean
      */
     public function supportsJs()
     {

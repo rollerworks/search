@@ -206,7 +206,7 @@ class RangeNormalizer implements ModifierInterface
      * Remove an single-value
      *
      * @param integer  $index
-     * @param bool     $exclude
+     * @param boolean  $exclude
      */
     protected function unsetVal($index, $exclude = false)
     {
@@ -224,7 +224,7 @@ class RangeNormalizer implements ModifierInterface
      * Remove an range-value
      *
      * @param integer   $index
-     * @param bool      $exclude
+     * @param boolean   $exclude
      */
     protected function unsetRange($index, $exclude = false)
     {
@@ -241,8 +241,8 @@ class RangeNormalizer implements ModifierInterface
     /**
      * Returns the 'original' range values between quotes.
      *
-     * @param \Rollerworks\RecordFilterBundle\Value\Range $range
-     * @param \Rollerworks\RecordFilterBundle\Value\Range $range2
+     * @param \Rollerworks\RecordFilterBundle\Value\Range   $range
+     * @param \Rollerworks\RecordFilterBundle\Value\Range   $range2
      * @return string
      */
     protected static function getRangeQuoted(Range $range, Range $range2 = null)
@@ -257,9 +257,9 @@ class RangeNormalizer implements ModifierInterface
     /**
      * Checks if the value is overlapping in the range
      *
-     * @param \Rollerworks\RecordFilterBundle\Value\SingleValue $singeValue
-     * @param \Rollerworks\RecordFilterBundle\Value\Range $range
-     * @return bool
+     * @param \Rollerworks\RecordFilterBundle\Value\SingleValue  $singeValue
+     * @param \Rollerworks\RecordFilterBundle\Value\Range        $range
+     * @return boolean
      */
     protected function isValInRange(SingleValue $singeValue, Range $range)
     {

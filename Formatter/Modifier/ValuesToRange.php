@@ -42,7 +42,7 @@ class ValuesToRange implements ModifierInterface
     protected $removeIndexes = array();
 
     /**
-     * @var ValuesBag
+     * @var FilterValuesBag
      */
     protected $filterStruct;
 
@@ -104,7 +104,7 @@ class ValuesToRange implements ModifierInterface
      *
      * @param SingleValue[]           $values
      * @param ValuesToRangeInterface  $type
-     * @param bool                    $exclude
+     * @param boolean                 $exclude
      */
     protected function listToRanges($values, ValuesToRangeInterface $type, $exclude = false)
     {
@@ -170,7 +170,7 @@ class ValuesToRange implements ModifierInterface
      * Remove an single-value
      *
      * @param integer  $index
-     * @param bool     $exclude
+     * @param boolean  $exclude
      */
     protected function unsetVal($index, $exclude = false)
     {

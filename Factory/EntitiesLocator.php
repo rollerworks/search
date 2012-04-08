@@ -131,7 +131,7 @@ class EntitiesLocator
      *
      * Trimmed hashes are at minimum 11 characters, and bigger when they are not unique
      *
-     * @param bool $trimmed Return the trimmed hashes
+     * @param boolean $trimmed Return the trimmed hashes
      * @return Array containing all hashes and the corresponding the Entity class
      */
     public function getAllHashes($trimmed = false)

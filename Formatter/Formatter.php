@@ -132,7 +132,7 @@ class Formatter implements FormatterInterface
      *  this will throw an ValidationException containing the (user-friendly) error-message.
      *
      * @param \Rollerworks\RecordFilterBundle\Input\InputInterface $input
-     * @return bool
+     * @return boolean
      *
      * @api
      */
@@ -218,7 +218,7 @@ class Formatter implements FormatterInterface
      * @param array     $filtersConfig
      * @param array     $filters
      * @param integer   $groupIndex
-     * @return bool
+     * @return boolean
      */
     protected function filterFormatter(array $filtersConfig, array $filters, $groupIndex)
     {

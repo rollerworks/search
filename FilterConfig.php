@@ -29,17 +29,17 @@ class FilterConfig
     protected $filterType;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $acceptRanges;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $acceptCompares;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $required;
 
@@ -72,7 +72,7 @@ class FilterConfig
     /**
      * Returns whether an filter-type is registered
      *
-     * @return bool
+     * @return boolean
      */
     public function hasType()
     {
@@ -82,7 +82,7 @@ class FilterConfig
     /**
      * Returns whether ranges are accepted
      *
-     * @return bool
+     * @return boolean
      */
     public function acceptRanges()
     {
@@ -92,7 +92,7 @@ class FilterConfig
     /**
      * Returns whether comparisons are accepted
      *
-     * @return bool
+     * @return boolean
      */
     public function acceptCompares()
     {
@@ -102,7 +102,7 @@ class FilterConfig
     /**
      * Returns whether the field is required
      *
-     * @return bool
+     * @return boolean
      */
     public function isRequired()
     {

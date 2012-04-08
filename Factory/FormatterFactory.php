@@ -72,7 +72,7 @@ class FormatterFactory extends AbstractFactory
     /**
      * Returns whether is an modifier instance registered.
      *
-     * @return bool
+     * @return boolean
      *
      * @api
      */

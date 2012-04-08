@@ -54,8 +54,8 @@ class JSON extends AbstractDumper
      *     } ]
      * </code>
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface $formatter
-     * @param bool                                                                   $flattenValues
+     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface      $formatter
+     * @param boolean                                                           $flattenValues
      * @return string JSON array
      */
     public function dumpFilters(FormatterInterface $formatter, $flattenValues = false)

@@ -23,14 +23,14 @@ class DateTime extends Time implements ValueMatcherInterface
     /**
      * Is the time-part optional
      *
-     * @var bool
+     * @var boolean
      */
     protected $timeOptional = false;
 
     /**
      * Constructor
      *
-     * @param bool $time_optional
+     * @param boolean $time_optional
      */
     public function __construct($time_optional = false)
     {
@@ -75,7 +75,7 @@ class DateTime extends Time implements ValueMatcherInterface
     /**
      * {@inheritdoc}
      *
-     * @return bool
+     * @return boolean
      */
     public function supportsJs()
     {
