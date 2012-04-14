@@ -14,8 +14,8 @@ namespace Rollerworks\RecordFilterBundle\Input;
 use Rollerworks\RecordFilterBundle\Exception\ReqFilterException;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
-use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Value\Compare;
@@ -263,7 +263,7 @@ class FilterQuery extends AbstractInput
      * Parses the values list and returns them as an array
      *
      * @param string                     $values
-     * @param null|ValueMatcherInterface $valueMatcher
+     * @param ValueMatcherInterface|null $valueMatcher
      * @return array
      */
     protected function parseValuesList($values, ValueMatcherInterface $valueMatcher = null)

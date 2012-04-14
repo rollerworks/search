@@ -32,9 +32,9 @@ use \InvalidArgumentException;
  * Accept input in an PHP Array format.
  *
  * If the value is an array and key is numeric its threaten as a group.
- * And its value must be an array containing the input and there values (as comma seperated string).
+ * And its value must be an array containing the input and there values (as comma separated string).
  *
- * If the key is not nummeric its an field-name.
+ * If the key is not numeric its an field-name.
  *
  * Values can not be as structured array per type.
  *
