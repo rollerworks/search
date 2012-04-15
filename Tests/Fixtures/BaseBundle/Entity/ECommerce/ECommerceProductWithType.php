@@ -2,19 +2,30 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
 
-use \Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
+use Doctrine\ORM\Mapping as ORM;
+use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
  * ECommerce-Product
  *
- * @RecordFilter\Field("id", type="Number")
- * @RecordFilter\Field("event_date", type="DateTime")
+ * @ORM\Entity
+ * @ORM\Table(name="products")
  */
 class ECommerceProductWithType
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @RecordFilter\Field("id", req=true, type="Number")
+     */
     private $id;
 
-    public function __construct()
-    {
-    }
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @RecordFilter\Field("event_date", type="DateTime")
+     */
+    private $event_date;
 }

@@ -22,6 +22,9 @@ use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Rollerworks\RecordFilterBundle\Tests\TwigEngine;
 use Twig_Loader_Filesystem, Twig_Environment;
 
+/**
+ * Abstract TestCase for Unit testing
+ */
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**

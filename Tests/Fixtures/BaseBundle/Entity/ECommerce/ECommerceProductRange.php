@@ -2,19 +2,30 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
 
-use \Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
+use Doctrine\ORM\Mapping as ORM;
+use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
  * ECommerce-Product
  *
- * @RecordFilter\Field("id", req=true, type="number", AcceptRanges=true)
- * @RecordFilter\Field("name", req=false)
+ * @ORM\Entity
+ * @ORM\Table(name="products")
  */
 class ECommerceProductRange
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @RecordFilter\Field("product_id", req=true, type="number", AcceptRanges=true)
+     */
     private $id;
 
-    public function __construct()
-    {
-    }
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @RecordFilter\Field("product_name", req=false)
+     */
+    private $name;
 }

@@ -6,26 +6,24 @@ use Doctrine\ORM\Mapping as ORM;
 use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
- * ECommerce-Product
+ * ECommerce-Invoice
  *
  * @ORM\Entity
- * @ORM\Table(name="products")
+ * @ORM\Table(name="invoices")
  */
-class ECommerceProductWithType2
+class ECommerceInvoiceWithParams
 {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @RecordFilter\Field("product_id", req=true, type="Number")
+     * @RecordFilter\Field("invoice_id", type="Number")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string")
-     *
-     * @RecordFilter\Field("product_event_date", type="DateTime", _time_optional=true)
+     * @ORM\Column(type="string", unique=true)
+     * @RecordFilter\Field("invoice_label", type="Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType", _foo="%temp_service%:getSomething")
      */
-    private $event_date;
+    private $label;
 }

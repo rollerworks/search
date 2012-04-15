@@ -18,17 +18,27 @@ use Rollerworks\RecordFilterBundle\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\FilterValuesBag;
 
+/**
+ * InvoiceType
+ */
 class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, ContainerAwareInterface
 {
+    protected $fool;
+
+    /**
+     * @param string $foo
+     */
+    public function __construct($foo = 'bar', $bar = null)
+    {
+        $this->fool = $foo;
+    }
+
     public function setContainer(ContainerInterface $container = null)
     {
     }
 
     /**
-     * Sanitize the input string to an normal useful value
-     *
-     * @param string $input
-     * @return string
+     * {@inheritdoc}
      */
     public function sanitizeString($input)
     {
@@ -36,11 +46,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     }
 
     /**
-     * Returns whether the first value is higher then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isHigher($input, $nextValue)
     {
@@ -48,11 +54,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     }
 
     /**
-     * Returns whether the first value is lower then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isLower($input, $nextValue)
     {
@@ -60,11 +62,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     }
 
     /**
-     * Returns whether the first value equals then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isEquals($input, $nextValue)
     {
@@ -72,11 +70,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     }
 
     /**
-     * Returns whether the input value is legally formatted
-     *
-     * @param string $input
-     * @param string $message
-     * @return boolean
+     * {@inheritdoc}
      */
     public function validateValue($input, &$message = null)
     {
@@ -86,9 +80,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     }
 
     /**
-     * Returns the regex (without delimiters).
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getRegex()
     {
@@ -96,9 +88,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     }
 
     /**
-     * Returns true
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function supportsJs()
     {

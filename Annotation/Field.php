@@ -30,9 +30,9 @@ class Field
 
     private $acceptCompares;
 
-    private $_aParams = array();
+    private $params = array();
 
-    private $_aWidgets = array();
+    private $widgets = array();
 
     /**
      * Constructor.
@@ -60,21 +60,21 @@ class Field
 
         foreach ($data as $key => $value) {
             if ('_' === mb_substr($key, 0, 1)) {
-                $this->_aParams[ mb_substr($key, 1) ] = $value;
+                $this->params[ mb_substr($key, 1) ] = $value;
                 continue;
             }
             // Widgets are configured per widget-type
-            elseif (preg_match('/^widget_([^_]+)_(.+)/i', $key, $aWidgetParams)) {
-                $sWidgetType = $aWidgetParams[1];
-                $sWidgetKey  = $aWidgetParams[2];
+            elseif (preg_match('/^widget_([^_]+)_(.+)/i', $key, $widgetParams)) {
+                $widgetType = $widgetParams[1];
+                $widgetKey  = $widgetParams[2];
 
-                $this->_aWidgets[$sWidgetType][$sWidgetKey] = $value;
+                $this->widgets[$widgetType][$widgetKey] = $value;
                 continue;
             }
 
             $method = 'set' . ucfirst($key);
 
-            if (! method_exists($this, $method)) {
+            if (!method_exists($this, $method)) {
                 throw new \BadMethodCallException(sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this)));
             }
 
@@ -138,18 +138,22 @@ class Field
 
     function hasParams()
     {
-        return count($this->_aParams);
+        return count($this->params);
     }
 
     function getParams()
     {
-        return $this->_aParams;
+        return $this->params;
     }
 
-    function getWidget($type)
+    function getWidget($type = null)
     {
-        if (isset($this->_aWidgets[$type])) {
-            return $this->_aWidgets[$type];
+        if (null === $type) {
+            return $this->widgets;
+        }
+
+        if (isset($this->widgets[$type])) {
+            return $this->widgets[$type];
         }
         else {
             return array();

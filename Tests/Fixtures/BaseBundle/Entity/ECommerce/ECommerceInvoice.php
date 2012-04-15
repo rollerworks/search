@@ -2,19 +2,28 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
 
-use \Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
+use Doctrine\ORM\Mapping as ORM;
+use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
  * ECommerce-Invoice
  *
- * @RecordFilter\Field("id", type="Number")
- * @RecordFilter\Field("label", type="Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType")
+ * @ORM\Entity
+ * @ORM\Table(name="invoices")
  */
 class ECommerceInvoice
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @RecordFilter\Field("invoice_id", type="Number")
+     */
     private $id;
 
-    public function __construct()
-    {
-    }
+    /**
+     * @ORM\Column(type="string", unique=true)
+     * @RecordFilter\Field("invoice_label", type="Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType")
+     */
+    private $label;
 }
