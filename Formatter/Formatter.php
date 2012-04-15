@@ -87,8 +87,6 @@ class Formatter implements FormatterInterface
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
-
-        $this->__init();
     }
 
     /**
@@ -184,15 +182,6 @@ class Formatter implements FormatterInterface
     public function getMessages()
     {
         return $this->messages;
-    }
-
-    /**
-     * Init only used for the factory
-     *
-     * @api
-     */
-    protected function __init()
-    {
     }
 
     /**
