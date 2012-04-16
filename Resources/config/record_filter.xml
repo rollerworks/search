@@ -5,11 +5,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="rollerworks_record_filter.input.query_filter.class">Rollerworks\RecordFilterBundle\Input\QueryFilter</parameter>
+        <parameter key="rollerworks_record_filter.input.filter_query.class">Rollerworks\RecordFilterBundle\Input\FilterQuery</parameter>
         <parameter key="rollerworks_record_filter.input.config_processor.class">Rollerworks\RecordFilterBundle\Input\ConfigProcessor</parameter>
 
         <parameter key="rollerworks_record_filter.metadata_factory.class">Metadata\MetadataFactory</parameter>
+        <parameter key="rollerworks_record_filter.metadata.driver_chain.class">Metadata\Driver\DriverChain</parameter>
+
         <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\RecordFilterBundle\Metadata\Driver\AnnotationDriver</parameter>
+        <parameter key="rollerworks_record_filter.metadata.cache.class">Metadata\Cache\FileCache</parameter>
 
         <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\RecordFilterBundle\Formatter\Formatter</parameter>
 
@@ -27,18 +30,33 @@
             <argument type="service" id="annotation_reader" />
         </service>
 
+        <service id="rollerworks_record_filter.metadata.driver_chain" class="%rollerworks_record_filter.metadata.driver_chain.class%">
+            <argument type="collection">
+                <!--<argument type="service" id="rollerworks_record_filter.metadata.yaml_driver"/>-->
+                <argument type="service" id="rollerworks_record_filter.metadata.annotation_driver"/>
+            </argument>
+        </service>
+
+        <service id="rollerworks_record_filter.metadata.cache" class="%rollerworks_record_filter.metadata.cache.class%" public="false">
+            <argument/> <!-- the cache directory (to be set later) -->
+        </service>
+
         <service id="rollerworks_record_filter.metadata_factory" class="%rollerworks_record_filter.metadata_factory.class%" public="false">
-            <argument type="service" id="rollerworks_record_filter.metadata.annotation_driver" />
+            <argument type="service" id="rollerworks_record_filter.metadata.driver_chain"/>
+            <call method="setCache">
+                <argument type="service" id="rollerworks_record_filter.metadata.cache"/>
+            </call>
         </service>
 
         <!-- Input classes -->
-        <service id="rollerworks_record_filter.input.query_filter" class="%rollerworks_record_filter.input.query_filter.class%">
+        <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%">
             <call method="setTranslator">
                 <argument type="service" id="translator"/>
             </call>
         </service>
 
         <service id="rollerworks_record_filter.input.config_processor" class="%rollerworks_record_filter.input.config_processor.class%">
+            <argument type="service" id="rollerworks_record_filter.metadata_factory"/>
             <call method="setTranslator">
                 <argument type="service" id="translator"/>
             </call>
@@ -49,33 +67,30 @@
 
         <service id="rollerworks_record_filter.formatter" class="%rollerworks_record_filter.formatter.class%">
             <argument type="service" id="translator"/>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
         </service>
 
         <!-- Formatter modifiers services -->
-        <service id="rollerworks_record_filter.formatter_factory.modifiers.validator" class="%rollerworks_record_filter.formatter.modifiers.validator.class%">
+        <service id="rollerworks_record_filter.formatter_modifier.validator" class="%rollerworks_record_filter.formatter.modifiers.validator.class%">
             <tag name="rollerworks_record_filter.formatter_modifier" priority="1000"/>
         </service>
 
-        <service id="rollerworks_record_filter.formatter_factory.modifiers.duplicate_remove" class="%rollerworks_record_filter.formatter.modifiers.duplicate_remove.class%">
+        <service id="rollerworks_record_filter.formatter_modifier.duplicate_remove" class="%rollerworks_record_filter.formatter.modifiers.duplicate_remove.class%">
             <tag name="rollerworks_record_filter.formatter_modifier" priority="500"/>
         </service>
 
-        <service id="rollerworks_record_filter.formatter_factory.modifiers.range_normalizer" class="%rollerworks_record_filter.formatter.modifiers.range_normalizer.class%">
+        <service id="rollerworks_record_filter.formatter_modifier.range_normalizer" class="%rollerworks_record_filter.formatter.modifiers.range_normalizer.class%">
             <tag name="rollerworks_record_filter.formatter_modifier" priority="100"/>
         </service>
 
-        <service id="rollerworks_record_filter.formatter_factory.modifiers.values_to_range" class="%rollerworks_record_filter.formatter.modifiers.values_to_range.class%">
+        <service id="rollerworks_record_filter.formatter_modifier.values_to_range" class="%rollerworks_record_filter.formatter.modifiers.values_to_range.class%">
             <tag name="rollerworks_record_filter.formatter_modifier" priority="80"/>
         </service>
 
-        <service id="rollerworks_record_filter.formatter_factory.modifiers.compare_normalizer" class="%rollerworks_record_filter.formatter.modifiers.compare_normalizer.class%">
+        <service id="rollerworks_record_filter.formatter_modifier.compare_normalizer" class="%rollerworks_record_filter.formatter.modifiers.compare_normalizer.class%">
             <tag name="rollerworks_record_filter.formatter_modifier" priority="50"/>
         </service>
 
-        <service id="rollerworks_record_filter.formatter_factory.modifiers.value_optimizer" class="%rollerworks_record_filter.formatter.modifiers.value_optimizer.class%">
+        <service id="rollerworks_record_filter.formatter_modifier.value_optimizer" class="%rollerworks_record_filter.formatter.modifiers.value_optimizer.class%">
             <tag name="rollerworks_record_filter.formatter_modifier" priority="-128"/>
         </service>
 

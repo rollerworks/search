@@ -28,8 +28,20 @@ class RollerworksRecordFilterExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
+        $configuration = new Configuration();
+        $config        = $this->processConfiguration($configuration, $config);
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('record_filter.xml');
+
+        $cacheDirectory = $container->getParameterBag()->resolveValue($config['metadata_cache']);
+
+        if (!is_dir($cacheDirectory)) {
+            mkdir($cacheDirectory, 0777, true);
+        }
+
+        // the cache directory should be the first argument of the cache service
+        $container->getDefinition('rollerworks_record_filter.metadata.cache')->replaceArgument(0, $cacheDirectory);
     }
 }
 
