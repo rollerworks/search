@@ -13,9 +13,12 @@ namespace Rollerworks\RecordFilterBundle\Metadata;
 
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
+/**
+ * PropertyMetadata
+ */
 class PropertyMetadata extends BasePropertyMetadata
 {
-    public $name;
+    public $filter_name;
 
     public $required;
 
@@ -28,4 +31,33 @@ class PropertyMetadata extends BasePropertyMetadata
     public $params = array();
 
     public $widgetsConfig = array();
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->class,
+            $this->name,
+            $this->filter_name,
+            $this->required,
+            $this->type,
+            $this->acceptRanges,
+            $this->acceptCompares,
+            $this->params,
+            $this->widgetsConfig,
+        ));
+    }
+
+    /**
+     * @param string $str
+     */
+    public function unserialize($str)
+    {
+        list($this->class, $this->name, $this->filter_name, $this->required, $this->type, $this->acceptRanges, $this->acceptCompares, $this->params, $this->widgetsConfig) = unserialize($str);
+
+        $this->reflection = new \ReflectionProperty($this->class, $this->name);
+        $this->reflection->setAccessible(true);
+    }
 }

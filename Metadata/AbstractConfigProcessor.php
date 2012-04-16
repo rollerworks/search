@@ -76,7 +76,7 @@ abstract class AbstractConfigProcessor
                 $argument = $param->getDefaultValue();
             }
             else {
-                throw new \RuntimeException(sprintf('type "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $className, $param->getName()));
+                throw new \RuntimeException(sprintf('Type "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $className, $param->getName()));
             }
 
             if (is_scalar($argument)) {

@@ -95,7 +95,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      */
     public function fillInputConfig(InputInterface $input, $entity)
     {
-        if (!is_object($entity) && !is_string($entity) ) {
+        if (!is_object($entity) && !is_string($entity)) {
             throw new \InvalidArgumentException('No legal entity provided');
         }
 
@@ -112,9 +112,9 @@ class ConfigProcessor extends AbstractConfigProcessor
 
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             /* @var $propertyMetadata \Rollerworks\RecordFilterBundle\Metadata\PropertyMetadata */
-            if (isset($propertyMetadata->name)) {
+            if (isset($propertyMetadata->filter_name)) {
                 $type  = null;
-                $label = $this->getFieldLabel($propertyMetadata->name);
+                $label = $this->getFieldLabel($propertyMetadata->filter_name);
 
                 if (null !== $propertyMetadata->type) {
                     if (method_exists($propertyMetadata->type, '__construct')) {
@@ -128,7 +128,7 @@ class ConfigProcessor extends AbstractConfigProcessor
                     }
                 }
 
-                $input->setField($propertyMetadata->name, $label, $type, $propertyMetadata->required, $propertyMetadata->acceptRanges, $propertyMetadata->acceptCompares);
+                $input->setField($propertyMetadata->filter_name, $label, $type, $propertyMetadata->required, $propertyMetadata->acceptRanges, $propertyMetadata->acceptCompares);
             }
         }
 

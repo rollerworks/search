@@ -53,7 +53,7 @@ class AnnotationDriver extends AbstractDriver
 
             /** @var \Rollerworks\RecordFilterBundle\Annotation\Field $annotation */
             if (null !== $annotation) {
-                $propertyMetadata->name           = $annotation->getName();
+                $propertyMetadata->filter_name    = $annotation->getName();
                 $propertyMetadata->required       = $annotation->isRequired();
                 $propertyMetadata->type           = $this->getRealType($annotation->getType());
                 $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
