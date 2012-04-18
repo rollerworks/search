@@ -13,9 +13,9 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 

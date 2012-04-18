@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
 
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove;
 use Rollerworks\RecordFilterBundle\Type\Date;

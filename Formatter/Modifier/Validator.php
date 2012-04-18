@@ -13,9 +13,9 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\Range;
 
 /**
@@ -133,7 +133,7 @@ class Validator implements ModifierInterface
     /**
      * Validates an 'single' value and throws an ValidationException in case of failure.
      *
-     * @param \Rollerworks\RecordFilterBundle\FilterTypeInterface $type
+     * @param \Rollerworks\RecordFilterBundle\Type\FilterTypeInterface $type
      * @param string                                                         $value
      * @param string                                                         $originalValue
      * @throws \Rollerworks\RecordFilterBundle\Exception\ValidationException In case of an validation error
@@ -154,7 +154,7 @@ class Validator implements ModifierInterface
     /**
      * Validates an range value and throws an ValidationException in case of failure.
      *
-     * @param \Rollerworks\RecordFilterBundle\FilterTypeInterface $type
+     * @param \Rollerworks\RecordFilterBundle\Type\FilterTypeInterface $type
      * @param \Rollerworks\RecordFilterBundle\Value\Range         $range
      * @throws \Rollerworks\RecordFilterBundle\Exception\ValidationException
      */

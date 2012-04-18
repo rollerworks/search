@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Dumper;
 
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**

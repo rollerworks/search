@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
-use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 
 /**
  * Time Formatter-validation type

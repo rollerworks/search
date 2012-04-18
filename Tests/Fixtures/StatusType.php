@@ -11,9 +11,9 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
 
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 class StatusType implements FilterTypeInterface, OptimizableInterface
 {

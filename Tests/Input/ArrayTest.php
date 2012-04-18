@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Input;
 
 use Rollerworks\RecordFilterBundle\Input\ArrayInput;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;

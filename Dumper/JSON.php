@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Dumper;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
  * Dump the filtering preferences as JSON (JavaScript Object Notation).

@@ -52,8 +52,8 @@ abstract class AbstractDriver implements DriverInterface
         if ($r->isAbstract()) {
             throw new \InvalidArgumentException(sprintf('Filter-type "%s" can not be abstract.', $type));
         }
-        elseif (!$r->implementsInterface('\\Rollerworks\\RecordFilterBundle\\FilterTypeInterface')) {
-            throw new \InvalidArgumentException(sprintf('Filter-type "%s" does seem to implement the Rollerworks\RecordFilterBundle\FilterTypeInterface.', $type));
+        elseif (!$r->implementsInterface('\\Rollerworks\\RecordFilterBundle\\Type\\FilterTypeInterface')) {
+            throw new \InvalidArgumentException(sprintf('Filter-type "%s" does seem to implement the Rollerworks\RecordFilterBundle\Type\FilterTypeInterface.', $type));
         }
 
         if ($r->hasMethod('__construct') && !$r->getMethod('__construct')->isPublic() ) {

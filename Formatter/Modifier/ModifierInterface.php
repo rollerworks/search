@@ -13,7 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
  * ModifierInterface.

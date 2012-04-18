@@ -14,9 +14,9 @@ namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
  * InvoiceType

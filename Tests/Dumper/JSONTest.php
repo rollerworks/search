@@ -15,7 +15,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\Dumper\JSON;
 
-class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestCase
+class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
     function testFlattenedOneGroupOneField()
     {

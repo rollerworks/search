@@ -12,8 +12,8 @@
 namespace Rollerworks\RecordFilterBundle\Input;
 
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
  * Interface for supplying input-values
@@ -45,7 +45,7 @@ interface InputInterface
      * The values are not formatted or validated.
      *
      * Returns the fields per group, like:
-     * [group-n] => array('field-name' => {\Rollerworks\RecordFilterBundle\FilterValuesBag object})
+     * [group-n] => array('field-name' => {\Rollerworks\RecordFilterBundle\Value\FilterValuesBag object})
      *
      * @return array
      */

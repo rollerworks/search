@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 

@@ -13,10 +13,10 @@ namespace Rollerworks\RecordFilterBundle\Input;
 
 use Rollerworks\RecordFilterBundle\Exception\ReqFilterException;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
-use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;

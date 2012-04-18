@@ -11,6 +11,8 @@
 
 namespace Rollerworks\RecordFilterBundle\Record\SQL;
 
+use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+
 /**
  * SQL Record Interface
  *

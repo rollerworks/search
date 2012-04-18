@@ -15,7 +15,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\Dumper\PHPArray;
 
-class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestCase
+class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
     function testOneGroupOneField()
     {

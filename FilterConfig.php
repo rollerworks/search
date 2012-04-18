@@ -11,8 +11,8 @@
 
 namespace Rollerworks\RecordFilterBundle;
 
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 
 /**
  * FilterConfig.

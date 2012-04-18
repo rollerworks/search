@@ -11,7 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
  * Filter-value optimizable interface.

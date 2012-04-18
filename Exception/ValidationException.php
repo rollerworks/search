@@ -11,8 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Exception;
 
-use Rollerworks\RecordFilterBundle\Exception;
-
 /**
  * Formatter validation exception.
  *

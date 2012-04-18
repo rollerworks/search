@@ -11,8 +11,8 @@
 
 namespace Rollerworks\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\ValueMatcherInterface;
-use Rollerworks\RecordFilterBundle\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;

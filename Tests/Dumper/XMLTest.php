@@ -15,7 +15,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\Dumper\XML as XMLDumper;
 
-class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\Factory\FactoryTestCase
+class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
     /**
      * Retrieves libxml errors and clears them.
