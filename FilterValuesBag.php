@@ -217,7 +217,7 @@ class FilterValuesBag
     /**
      * Returns the Excludes of the filter
      *
-     * @return \Rollerworks\RecordFilterBundle\Value\Value[]
+     * @return \Rollerworks\RecordFilterBundle\Value\SingleValue[]
      *
      * @api
      */

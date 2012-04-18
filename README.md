@@ -5,6 +5,8 @@ This bundle provides the RollerworksRecordFilterBundle,
 
 ## Installation
 
+__Important__: jms/metadata must at least version 1.1.1. Any older version will fail.
+
 Installation depends on how your project is setup:
 
 ### Step 1: Installation using the `bin/vendors.php` method
@@ -74,22 +76,12 @@ public function registerBundles()
 
 ### Step4: Configure the bundle
 
-__Full documentation is currently missing sorry.__
-
 Finally, add the following to your config file:
 
 ``` yaml
 # app/config/config.yml
 
 rollerworks_recordfilter:
-    #filters_namespace: RecordFilter
-    #filters_directory: %kernel.cache_dir%/record_filters
-
-    # Following contains the configuration for the factory classes (all default to false).
-    # Can be set to false and configured per class
-    # The configuration is read from the Entity's annotation (see Resources/Docs/Factory for more information).
-
-    #formatter_factory.auto_generate: false
-    #sqlstruct_factory.auto_generate: false
-    #querybuilder_factory.auto_generate: false
+    # Cache location of the class metadata (must be writeable)
+    #metadata_cache: %kernel.cache_dir%/recordfilter_metedata
 ```
