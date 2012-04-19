@@ -112,7 +112,7 @@ abstract class AbstractInput implements InputInterface
             $valueType->setContainer($this->container);
         }
 
-        $this->filtersConfig[ $fieldName ] = array('label' => $label, 'config' => new FilterConfig($valueType, $required, $acceptRanges, $acceptCompares));
+        $this->filtersConfig[ $fieldName ] = new FilterConfig($label, $valueType, $required, $acceptRanges, $acceptCompares);
 
         return $this;
     }

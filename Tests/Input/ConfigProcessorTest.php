@@ -50,7 +50,7 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'product_id' => array('label' => 'product_id', 'config' => new FilterConfig())
+            'product_id' => new FilterConfig('product_id')
         ), $input->getFieldsConfig());
     }
 
@@ -62,8 +62,8 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'product_id' => array('label' => 'product_id', 'config' => new FilterConfig()),
-            'product_name' => array('label' => 'product_name', 'config' => new FilterConfig()),
+            'product_id' => new FilterConfig('product_id'),
+            'product_name' => new FilterConfig('product_name'),
         ), $input->getFieldsConfig());
     }
 
@@ -75,8 +75,8 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'product_id' => array('label' => 'product_id', 'config' => new FilterConfig(null, true)),
-            'product_name' => array('label' => 'product_name', 'config' => new FilterConfig(null, false)),
+            'product_id' => new FilterConfig('product_id', null, true),
+            'product_name' => new FilterConfig('product_name', null, false),
         ), $input->getFieldsConfig());
     }
 
@@ -88,8 +88,8 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'id' => array('label' => 'id', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), true)),
-            'event_date' => array('label' => 'event_date', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\DateTime())),
+            'id' => new FilterConfig('id', new \Rollerworks\RecordFilterBundle\Type\Number(), true),
+            'event_date' => new FilterConfig('event_date', new \Rollerworks\RecordFilterBundle\Type\DateTime()),
         ), $input->getFieldsConfig());
     }
 
@@ -101,8 +101,8 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'product_id' => array('label' => 'product_id', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), true)),
-            'product_event_date' => array('label' => 'product_event_date', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\DateTime(true))),
+            'product_id' => new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true),
+            'product_event_date' => new FilterConfig('product_event_date', new \Rollerworks\RecordFilterBundle\Type\DateTime(true)),
         ), $input->getFieldsConfig());
     }
 
@@ -118,8 +118,8 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'invoice_id' => array('label' => 'invoice_id', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number())),
-            'invoice_label' => array('label' => 'invoice_label', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType('bar%temp_service%:getSomething'))),
+            'invoice_id' => new FilterConfig('invoice_id', new \Rollerworks\RecordFilterBundle\Type\Number()),
+            'invoice_label' => new FilterConfig('invoice_label', new \Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType('bar%temp_service%:getSomething')),
         ), $input->getFieldsConfig());
     }
 
@@ -131,8 +131,8 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'product_id' => array('label' => 'product_id', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), true, true)),
-            'product_name' => array('label' => 'product_name', 'config' => new FilterConfig()),
+            'product_id' => new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true, true),
+            'product_name' => new FilterConfig('product_name'),
         ), $input->getFieldsConfig());
     }
 
@@ -144,8 +144,8 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'product_id' => array('label' => 'product_id', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number(), true, false, true)),
-            'product_name' => array('label' => 'product_name', 'config' => new FilterConfig()),
+            'product_id' => new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true, false, true),
+            'product_name' => new FilterConfig('product_name'),
         ), $input->getFieldsConfig());
     }
 
@@ -160,11 +160,11 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->configProcessor->fillInputConfig($input, $entity);
 
         $this->assertEquals(array(
-            'product_id' => array('label' => 'product_id', 'config' => new FilterConfig()),
-            'product_name' => array('label' => 'product_name', 'config' => new FilterConfig()),
+            'product_id' => new FilterConfig('product_id'),
+            'product_name' => new FilterConfig('product_name'),
 
-            'invoice_id' => array('label' => 'invoice_id', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Type\Number())),
-            'invoice_label' => array('label' => 'invoice_label', 'config' => new FilterConfig(new \Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType())),
+            'invoice_id' => new FilterConfig('invoice_id', new \Rollerworks\RecordFilterBundle\Type\Number()),
+            'invoice_label' => new FilterConfig('invoice_label', new \Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType()),
         ), $input->getFieldsConfig());
     }
 }

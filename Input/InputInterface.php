@@ -54,7 +54,7 @@ interface InputInterface
     /**
      * Returns all the configured fields and there configuration.
      *
-     * Returns like: [field-name] => array('label' => 'field-label', 'config' => {\Rollerworks\RecordFilterBundle\FilterConfig object})
+     * Returns like: [field-name] => {\Rollerworks\RecordFilterBundle\FilterConfig object})
      *
      * @return array
      */

@@ -241,19 +241,18 @@ class FilterQuery extends AbstractInput
             }
         }
 
-        foreach ($this->filtersConfig as $name => $filter) {
+        foreach ($this->filtersConfig as $name => $filterConfig) {
             /** @var FilterConfig $filterConfig */
-            $filterConfig = $filter['config'];
 
             if (empty($filterPairs[$name])) {
                 if (true === $filterConfig->isRequired()) {
-                    throw new ReqFilterException($filter['label']);
+                    throw new ReqFilterException($filterConfig->getLabel());
                 }
 
                 continue;
             }
 
-            $filterPairs[$name] = $this->valuesToBag($filter['label'], $filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]));
+            $filterPairs[$name] = $this->valuesToBag($filterConfig->getLabel(), $filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]));
         }
 
         return $filterPairs;

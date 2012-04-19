@@ -213,7 +213,7 @@ class Formatter implements FormatterInterface
     {
         /** @var FilterValuesBag $filter */
         foreach ($filters as $fieldName => $filter) {
-            $filterConfig = $filtersConfig[$fieldName]['config'];
+            $filterConfig = $filtersConfig[$fieldName];
 
             $this->currentFieldLabel = $filter->getLabel();
 

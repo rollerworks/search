@@ -29,6 +29,11 @@ class FilterConfig
     protected $filterType;
 
     /**
+     * @var string
+     */
+    protected $label;
+
+    /**
      * @var boolean
      */
     protected $acceptRanges;
@@ -46,17 +51,19 @@ class FilterConfig
     /**
      * Constructor
      *
+     * @param string                                          $label
      * @param FilterTypeInterface|ValueMatcherInterface|null  $type
      * @param boolean                                         $required
      * @param boolean                                         $acceptRanges
      * @param boolean                                         $acceptCompares
      */
-    public function __construct($type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
+    public function __construct($label, $type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
+        $this->label          = (string) $label;
         $this->filterType     = $type;
-        $this->acceptRanges   = (bool) $acceptRanges;
-        $this->acceptCompares = (bool) $acceptCompares;
-        $this->required       = (bool) $required;
+        $this->acceptRanges   = (boolean) $acceptRanges;
+        $this->acceptCompares = (boolean) $acceptCompares;
+        $this->required       = (boolean) $required;
     }
 
     /**
@@ -67,6 +74,16 @@ class FilterConfig
     public function getType()
     {
         return $this->filterType;
+    }
+
+    /**
+     * Get the label of the filter.
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
     }
 
     /**
