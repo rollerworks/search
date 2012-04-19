@@ -14,6 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Input;
 use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\FieldsSet;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use \InvalidArgumentException;
@@ -59,13 +60,9 @@ abstract class AbstractInput implements InputInterface
     protected $aliasTranslatorDomain = 'filter';
 
     /**
-     * Registered validations per field.
-     *
-     * @see setField()
-     *
-     * @var array
+     * @var FieldsSet
      */
-    protected $filtersConfig = array();
+    protected $fieldsSet;
 
     /**
      * Translator instance
@@ -80,6 +77,14 @@ abstract class AbstractInput implements InputInterface
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
     protected $container;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->fieldsSet = new FieldsSet();
+    }
 
     /**
      * Set the DIC container for types that need it
@@ -112,7 +117,7 @@ abstract class AbstractInput implements InputInterface
             $valueType->setContainer($this->container);
         }
 
-        $this->filtersConfig[ $fieldName ] = new FilterConfig($label, $valueType, $required, $acceptRanges, $acceptCompares);
+        $this->fieldsSet->set($fieldName, new FilterConfig($label, $valueType, $required, $acceptRanges, $acceptCompares));
 
         return $this;
     }
@@ -122,6 +127,6 @@ abstract class AbstractInput implements InputInterface
      */
     public function getFieldsConfig()
     {
-        return $this->filtersConfig;
+        return $this->fieldsSet;
     }
 }

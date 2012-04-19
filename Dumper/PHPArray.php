@@ -33,14 +33,14 @@ class PHPArray extends AbstractDumper
      */
     public function dumpFilters(FormatterInterface $formatter)
     {
-        $aFilters = array();
+        $filters = array();
 
         foreach ($formatter->getFilters() as $groupIndex => $fields) {
             foreach ($fields as $field => $values) {
-                $aFilters[$groupIndex][$field] = self::filterStructToArray($values);
+                $filters[$groupIndex][$field] = self::filterStructToArray($values);
             }
         }
 
-        return $aFilters;
+        return $filters;
     }
 }

@@ -104,7 +104,7 @@ class ArrayInput extends FilterQuery
             $name  = $this->getFieldNameByLabel($label);
             $value = trim($value);
 
-            if (!isset($this->filtersConfig[$name]) || strlen($value) < 1) {
+            if (!$this->fieldsSet->has($name) || strlen($value) < 1) {
                 continue;
             }
 
@@ -116,7 +116,7 @@ class ArrayInput extends FilterQuery
             }
         }
 
-        foreach ($this->filtersConfig as $name => $filterConfig) {
+        foreach ($this->fieldsSet->all() as $name => $filterConfig) {
             /** @var FilterConfig $filterConfig */
 
             if (empty($filterPairs[$name])) {

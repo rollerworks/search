@@ -15,6 +15,7 @@ use Rollerworks\RecordFilterBundle\Metadata\Driver\AnnotationDriver;
 use Rollerworks\RecordFilterBundle\Input\ConfigProcessor;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\FieldsSet;
 use Metadata\MetadataFactory;
 
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceProductSimple;
@@ -47,11 +48,12 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $entity = new ECommerceProductSimple();
         $input = new FilterQuery();
 
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'product_id' => new FilterConfig('product_id')
-        ), $input->getFieldsConfig());
+        $set = new FieldsSet();
+        $set->set('product_id', new FilterConfig('product_id'));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 
     function testTwoFields()
@@ -59,12 +61,13 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $entity = new ECommerceProductTwo();
         $input = new FilterQuery();
 
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'product_id' => new FilterConfig('product_id'),
-            'product_name' => new FilterConfig('product_name'),
-        ), $input->getFieldsConfig());
+        $set = new FieldsSet();
+        $set->set('product_id', new FilterConfig('product_id'));
+        $set->set('product_name', new FilterConfig('product_name'));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 
     function testWithRequired()
@@ -72,12 +75,13 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $entity = new ECommerceProductReq();
         $input = new FilterQuery();
 
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'product_id' => new FilterConfig('product_id', null, true),
-            'product_name' => new FilterConfig('product_name', null, false),
-        ), $input->getFieldsConfig());
+        $set = new FieldsSet();
+        $set->set('product_id', new FilterConfig('product_id', null, true));
+        $set->set('product_name', new FilterConfig('product_name', null, false));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 
     function testWithType()
@@ -85,12 +89,13 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $entity = new ECommerceProductWithType();
         $input = new FilterQuery();
 
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'id' => new FilterConfig('id', new \Rollerworks\RecordFilterBundle\Type\Number(), true),
-            'event_date' => new FilterConfig('event_date', new \Rollerworks\RecordFilterBundle\Type\DateTime()),
-        ), $input->getFieldsConfig());
+        $set = new FieldsSet();
+        $set->set('id', new FilterConfig('id', new \Rollerworks\RecordFilterBundle\Type\Number(), true));
+        $set->set('event_date', new FilterConfig('event_date', new \Rollerworks\RecordFilterBundle\Type\DateTime()));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 
     function testTypeWithParamater()
@@ -98,12 +103,13 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $entity = new ECommerceProductWithType2();
         $input = new FilterQuery();
 
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'product_id' => new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true),
-            'product_event_date' => new FilterConfig('product_event_date', new \Rollerworks\RecordFilterBundle\Type\DateTime(true)),
-        ), $input->getFieldsConfig());
+        $set = new FieldsSet();
+        $set->set('product_id', new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true));
+        $set->set('product_event_date', new FilterConfig('product_event_date', new \Rollerworks\RecordFilterBundle\Type\DateTime(true)));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 
     function testTypeWithDynamicParamater()
@@ -115,12 +121,13 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input = new FilterQuery();
 
         $this->configProcessor->setContainer($container);
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'invoice_id' => new FilterConfig('invoice_id', new \Rollerworks\RecordFilterBundle\Type\Number()),
-            'invoice_label' => new FilterConfig('invoice_label', new \Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType('bar%temp_service%:getSomething')),
-        ), $input->getFieldsConfig());
+        $set = new FieldsSet();
+        $set->set('invoice_id', new FilterConfig('invoice_id', new \Rollerworks\RecordFilterBundle\Type\Number()));
+        $set->set('invoice_label', new FilterConfig('invoice_label', new \Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType('bar%temp_service%:getSomething')));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 
     function testTypeWithRange()
@@ -128,12 +135,13 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $entity = new ECommerceProductRange();
         $input = new FilterQuery();
 
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'product_id' => new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true, true),
-            'product_name' => new FilterConfig('product_name'),
-        ), $input->getFieldsConfig());
+        $set = new FieldsSet();
+        $set->set('product_id', new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true, true));
+        $set->set('product_name', new FilterConfig('product_name'));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 
     function testTypeWitCompares()
@@ -141,12 +149,13 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $entity = new ECommerceProductCompares();
         $input = new FilterQuery();
 
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'product_id' => new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true, false, true),
-            'product_name' => new FilterConfig('product_name'),
-        ), $input->getFieldsConfig());
+        $set = new FieldsSet();
+        $set->set('product_id', new FilterConfig('product_id', new \Rollerworks\RecordFilterBundle\Type\Number(), true, false, true));
+        $set->set('product_name', new FilterConfig('product_name'));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 
     function testFromMultipleEntities()
@@ -154,18 +163,19 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $input = new FilterQuery();
 
         $entity = new ECommerceProductTwo();
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
         $entity = new ECommerceInvoice();
-        $this->configProcessor->fillInputConfig($input, $entity);
+        $this->configProcessor->fillInputConfig($input->getFieldsConfig(), $entity);
 
-        $this->assertEquals(array(
-            'product_id' => new FilterConfig('product_id'),
-            'product_name' => new FilterConfig('product_name'),
+        $set = new FieldsSet();
+        $set->set('product_id', new FilterConfig('product_id'));
+        $set->set('product_name', new FilterConfig('product_name'));
 
-            'invoice_id' => new FilterConfig('invoice_id', new \Rollerworks\RecordFilterBundle\Type\Number()),
-            'invoice_label' => new FilterConfig('invoice_label', new \Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType()),
-        ), $input->getFieldsConfig());
+        $set->set('invoice_id', new FilterConfig('invoice_id', new \Rollerworks\RecordFilterBundle\Type\Number()));
+        $set->set('invoice_label', new FilterConfig('invoice_label', new \Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType()));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
     }
 }
 

@@ -14,6 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\FieldsSet;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -204,18 +205,17 @@ class Formatter implements FormatterInterface
     /**
      * Perform the formatting of the given values (per group)
      *
-     * @param array     $filtersConfig
-     * @param array     $filters
-     * @param integer   $groupIndex
+     * @param FieldsSet     $filtersConfig
+     * @param array         $filters
+     * @param integer       $groupIndex
      * @return boolean
      */
-    protected function filterFormatter(array $filtersConfig, array $filters, $groupIndex)
+    protected function filterFormatter(FieldsSet $filtersConfig, array $filters, $groupIndex)
     {
         /** @var FilterValuesBag $filter */
         foreach ($filters as $fieldName => $filter) {
-            $filterConfig = $filtersConfig[$fieldName];
-
-            $this->currentFieldLabel = $filter->getLabel();
+            $filterConfig = $filtersConfig->get($fieldName);
+            $this->currentFieldLabel = $filterConfig->getLabel();
 
             /** @var ModifierInterface $modifier */
             foreach ($this->modifiers as $modifier) {
@@ -240,7 +240,6 @@ class Formatter implements FormatterInterface
                     }
 
                     $messageParams = array_merge($messageParams, array('%label%' => $this->currentFieldLabel, '%group%' => $groupIndex + 1));
-
                     $this->messages['info'][] = $this->translator->trans('record_filter.' . $message, $messageParams);
                 }
             }

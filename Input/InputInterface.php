@@ -12,6 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Input;
 
 use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\FieldsSet;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
@@ -54,9 +55,7 @@ interface InputInterface
     /**
      * Returns all the configured fields and there configuration.
      *
-     * Returns like: [field-name] => {\Rollerworks\RecordFilterBundle\FilterConfig object})
-     *
-     * @return array
+     * @return FieldsSet
      */
     public function getFieldsConfig();
 }

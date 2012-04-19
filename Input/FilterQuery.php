@@ -82,6 +82,8 @@ class FilterQuery extends AbstractInput
      */
     public function __construct($query = null)
     {
+        parent::__construct();
+
         if (null !== $query) {
             $this->setInput($query);
         }
@@ -228,7 +230,7 @@ class FilterQuery extends AbstractInput
                 $name  = $this->getFieldNameByLabel($label);
                 $value = trim($filterPairMatches[2][$i]);
 
-                if (!isset($this->filtersConfig[ $name ]) || strlen($value) < 1) {
+                if (!$this->fieldsSet->has($name) || strlen($value) < 1) {
                     continue;
                 }
 
@@ -241,7 +243,7 @@ class FilterQuery extends AbstractInput
             }
         }
 
-        foreach ($this->filtersConfig as $name => $filterConfig) {
+        foreach ($this->fieldsSet->all() as $name => $filterConfig) {
             /** @var FilterConfig $filterConfig */
 
             if (empty($filterPairs[$name])) {

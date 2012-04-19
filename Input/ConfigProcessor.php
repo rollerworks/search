@@ -12,11 +12,14 @@
 namespace Rollerworks\RecordFilterBundle\Input;
 
 use Rollerworks\RecordFilterBundle\Metadata\AbstractConfigProcessor;
+use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\FieldsSet;
+
 use Symfony\Component\Translation\TranslatorInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
- * Imports the configuration from Entities metadata to the input instance.
+ * Imports the configuration from Entities metadata to the fieldsSet instance.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -82,9 +85,9 @@ class ConfigProcessor extends AbstractConfigProcessor
     }
 
     /**
-     * Fill the Input entity with the configuration of an Entity.
+     * Fill the FieldsSet with the configuration of an Entity.
      *
-     * @param InputInterface    $input
+     * @param FieldsSet         $fieldsSet
      * @param object|string     $entity Entity object or full class-name
      * @return ConfigProcessor
      *
@@ -93,7 +96,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      *
      * @todo Allow an short notation (BundleName:Entity) (Need some good feedback on this first)
      */
-    public function fillInputConfig(InputInterface $input, $entity)
+    public function fillInputConfig(FieldsSet $fieldsSet, $entity)
     {
         if (!is_object($entity) && !is_string($entity)) {
             throw new \InvalidArgumentException('No legal entity provided');
@@ -128,7 +131,7 @@ class ConfigProcessor extends AbstractConfigProcessor
                     }
                 }
 
-                $input->setField($propertyMetadata->filter_name, $label, $type, $propertyMetadata->required, $propertyMetadata->acceptRanges, $propertyMetadata->acceptCompares);
+                $fieldsSet->set($propertyMetadata->filter_name, new FilterConfig($label, $type, $propertyMetadata->required, $propertyMetadata->acceptRanges, $propertyMetadata->acceptCompares));
             }
         }
 
