@@ -49,7 +49,7 @@
         </service>
 
         <!-- Input classes -->
-        <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%">
+        <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" scope="prototype">
             <call method="setTranslator">
                 <argument type="service" id="translator"/>
             </call>
