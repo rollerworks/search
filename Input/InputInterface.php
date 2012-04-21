@@ -49,6 +49,8 @@ interface InputInterface
      * [group-n] => array('field-name' => {\Rollerworks\RecordFilterBundle\Value\FilterValuesBag object})
      *
      * @return array
+     *
+     * @api
      */
     public function getGroups();
 
@@ -56,6 +58,8 @@ interface InputInterface
      * Returns all the configured fields and there configuration.
      *
      * @return FieldsSet
+     *
+     * @api
      */
     public function getFieldsConfig();
 }

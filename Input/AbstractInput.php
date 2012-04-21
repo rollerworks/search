@@ -15,8 +15,10 @@ use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldsSet;
+
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use \Symfony\Component\Translation\TranslatorInterface;
 use \InvalidArgumentException;
 
 /**
@@ -67,14 +69,14 @@ abstract class AbstractInput implements InputInterface
     /**
      * Translator instance
      *
-     * @var \Symfony\Component\Translation\TranslatorInterface
+     * @var TranslatorInterface
      */
     protected $translator;
 
     /**
      * DIC container instance
      *
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     * @var ContainerInterface
      */
     protected $container;
 
@@ -89,7 +91,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * Set the DIC container for types that need it
      *
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     * @param ContainerInterface $container
      *
      * @api
      */
@@ -112,7 +114,7 @@ abstract class AbstractInput implements InputInterface
             $label = mb_strtolower($label);
         }
 
-        if (!empty($valueType) && $valueType instanceof ContainerAwareInterface) {
+        if (null !== $valueType && $valueType instanceof ContainerAwareInterface) {
             /** @var ContainerAwareInterface $valueType */
             $valueType->setContainer($this->container);
         }
