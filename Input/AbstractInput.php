@@ -82,10 +82,16 @@ abstract class AbstractInput implements InputInterface
 
     /**
      * Constructor
+     *
+     * @param null|FieldsSet $fields
      */
-    public function __construct()
+    public function __construct(FieldsSet $fields = null)
     {
-        $this->fieldsSet = new FieldsSet();
+        if (null === $fields) {
+            $fields = new FieldsSet();
+        }
+
+        $this->fieldsSet = $fields;
     }
 
     /**

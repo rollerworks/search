@@ -79,11 +79,12 @@ class FilterQuery extends AbstractInput
     /**
      * Constructor
      *
-     * @param string $query
+     * @param null|FieldsSet $fields
+     * @param string         $query
      */
-    public function __construct($query = null)
+    public function __construct(FieldsSet $fields = null, $query = null)
     {
-        parent::__construct();
+        parent::__construct($fields);
 
         if (null !== $query) {
             $this->setInput($query);

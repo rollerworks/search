@@ -177,6 +177,22 @@ class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 
         $this->assertEquals($set, $input->getFieldsConfig());
     }
+
+    function testSetOnConstruct()
+    {
+        $fields = new FieldsSet();
+
+        $entity = new ECommerceProductTwo();
+        $this->configProcessor->fillInputConfig($fields, $entity);
+
+        $input = new FilterQuery($fields);
+
+        $set = new FieldsSet();
+        $set->set('product_id', new FilterConfig('product_id'));
+        $set->set('product_name', new FilterConfig('product_name'));
+
+        $this->assertEquals($set, $input->getFieldsConfig());
+    }
 }
 
 /**
