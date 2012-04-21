@@ -70,7 +70,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      * @param string $pathPrefix    This prefix is added before every search, like filters.labels.
      * @param string $domain        Default is filter
      */
-    public function setLabelToFieldByTranslator($pathPrefix, $domain = 'filter')
+    public function setFieldToLabelByTranslator($pathPrefix, $domain = 'filter')
     {
         if (!is_string($pathPrefix) || empty($pathPrefix)) {
             throw new \InvalidArgumentException('Prefix must be an string and can not be empty');
@@ -120,14 +120,14 @@ class ConfigProcessor extends AbstractConfigProcessor
                 $label = $this->getFieldLabel($propertyMetadata->filter_name);
 
                 if (null !== $propertyMetadata->type) {
-                    if (method_exists($propertyMetadata->type, '__construct')) {
-                        $r = new \ReflectionClass($propertyMetadata->type);
+                    $r = new \ReflectionClass($propertyMetadata->type);
 
+                    if ($r->hasMethod('__construct')) {
                         $propertyMetadata->params['_label'] = $label;
                         $type = $r->newInstanceArgs($this->doGetArguments($propertyMetadata->params, $propertyMetadata->type, $r->getMethod('__construct')->getParameters()));
                     }
                     else {
-                        $type = new $propertyMetadata->type;
+                        $type = $r->newInstance();
                     }
                 }
 
