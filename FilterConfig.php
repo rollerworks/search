@@ -49,6 +49,16 @@ class FilterConfig
     protected $required;
 
     /**
+     * @var string
+     */
+    protected $class;
+
+    /**
+     * @var string
+     */
+    protected $column;
+
+    /**
      * Constructor
      *
      * @param string                                          $label
@@ -64,6 +74,46 @@ class FilterConfig
         $this->acceptRanges   = (boolean) $acceptRanges;
         $this->acceptCompares = (boolean) $acceptCompares;
         $this->required       = (boolean) $required;
+    }
+
+    /**
+     * Set the Entity class-name for reading mapping.
+     *
+     * @param string $class
+     */
+    public function setEntityClass($class)
+    {
+        $this->class = $class;
+    }
+
+    /**
+     * Get the Entity class-name for reading mapping.
+     *
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * Set the Entity column for reading mapping.
+     *
+     * @param string $column
+     */
+    public function setEntityColumn($column)
+    {
+        $this->column = $column;
+    }
+
+    /**
+     * Get the Entity column for reading mapping.
+     *
+     * @return string
+     */
+    public function getEntityField()
+    {
+        return $this->column;
     }
 
     /**
