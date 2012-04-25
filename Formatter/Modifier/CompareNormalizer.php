@@ -18,7 +18,7 @@ use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 /**
  * Normalizes comparisons.
  *
- * Changes: >=1, >1 to >=1 (> is already coverted)
+ * Changes: >=1, >1 to >=1 (as > is already covert)
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

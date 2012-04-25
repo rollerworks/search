@@ -11,6 +11,9 @@
 
 namespace Rollerworks\RecordFilterBundle\Exception;
 
+/**
+ * ReqFilterException
+ */
 class ReqFilterException extends ValidationException
 {
     public function __construct($label)

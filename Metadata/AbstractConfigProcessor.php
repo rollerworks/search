@@ -105,6 +105,8 @@ abstract class AbstractConfigProcessor
      * @param string  $input
      * @param array   $parameters
      * @return mixed
+     *
+     * @throws \RuntimeException
      */
     private function callServiceMethod($input, array $parameters)
     {

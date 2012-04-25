@@ -118,9 +118,13 @@ abstract class AbstractFactory
         }
     }
 
-    protected static function isNamespace($Ns)
+    /**
+     * @param string $input
+     * @return boolean
+     */
+    protected static function isNamespace($input)
     {
-        return preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*$#s', $Ns) ? true : false;
+        return preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*$#s', $input) ? true : false;
     }
 
     /**

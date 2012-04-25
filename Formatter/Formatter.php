@@ -13,8 +13,9 @@ namespace Rollerworks\RecordFilterBundle\Formatter;
 
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
+use \Rollerworks\RecordFilterBundle\Input\InputInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FieldsSet;
+use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -81,7 +82,7 @@ class Formatter implements FormatterInterface
     /**
      * Constructor
      *
-     * @param \Symfony\Component\Translation\TranslatorInterface $translator
+     * @param TranslatorInterface $translator
      *
      * @api
      */
@@ -91,14 +92,7 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Returns the search-filters per group and field.
-     *
-     * This returns a array list of OR-groups and there fields.
-     * The fields-list is associative array where the value is an \Rollerworks\RecordFilterBundle\FilterStruct object.
-     *
-     * @return array
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function getFilters()
     {
@@ -130,12 +124,12 @@ class Formatter implements FormatterInterface
      * In case of an validation error (by modifier)
      *  this will throw an ValidationException containing the (user-friendly) error-message.
      *
-     * @param \Rollerworks\RecordFilterBundle\Input\InputInterface $input
+     * @param InputInterface $input
      * @return boolean
      *
      * @api
      */
-    public function formatInput(\Rollerworks\RecordFilterBundle\Input\InputInterface $input)
+    public function formatInput(InputInterface $input)
     {
         $this->formatted = false;
 
@@ -205,12 +199,14 @@ class Formatter implements FormatterInterface
     /**
      * Perform the formatting of the given values (per group)
      *
-     * @param FieldsSet     $filtersConfig
-     * @param array         $filters
-     * @param integer       $groupIndex
+     * @param FieldSet    $filtersConfig
+     * @param array       $filters
+     * @param integer     $groupIndex
      * @return boolean
+     *
+     * @throws \RuntimeException
      */
-    protected function filterFormatter(FieldsSet $filtersConfig, array $filters, $groupIndex)
+    protected function filterFormatter(FieldSet $filtersConfig, array $filters, $groupIndex)
     {
         /** @var FilterValuesBag $filter */
         foreach ($filters as $fieldName => $filter) {

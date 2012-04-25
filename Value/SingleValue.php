@@ -33,6 +33,8 @@ class SingleValue
      * @param mixed $original
      *
      * @api
+     *
+     * @throws \UnexpectedValueException
      */
     public function __construct($value, $original = null)
     {
@@ -54,6 +56,8 @@ class SingleValue
      * @param mixed $value
      *
      * @api
+     *
+     * @throws \UnexpectedValueException
      */
     public function setValue($value)
     {

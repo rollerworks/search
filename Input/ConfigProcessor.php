@@ -13,7 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Input;
 
 use Rollerworks\RecordFilterBundle\Metadata\AbstractConfigProcessor;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FieldsSet;
+use Rollerworks\RecordFilterBundle\FieldSet;
 
 use Symfony\Component\Translation\TranslatorInterface;
 use Metadata\MetadataFactoryInterface;
@@ -69,6 +69,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      *
      * @param string $pathPrefix    This prefix is added before every search, like filters.labels.
      * @param string $domain        Default is filter
+     * @throws \InvalidArgumentException
      */
     public function setFieldToLabelByTranslator($pathPrefix, $domain = 'filter')
     {
@@ -85,9 +86,9 @@ class ConfigProcessor extends AbstractConfigProcessor
     }
 
     /**
-     * Fill the FieldsSet with the configuration of an Entity.
+     * Fill the FieldSet with the configuration of an Entity.
      *
-     * @param FieldsSet         $fieldsSet
+     * @param FieldSet         $fieldsSet
      * @param object|string     $entity Entity object or full class-name
      * @return ConfigProcessor
      *
@@ -96,7 +97,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      *
      * @todo Allow an short notation (BundleName:Entity) (Need some good feedback on this first)
      */
-    public function fillInputConfig(FieldsSet $fieldsSet, $entity)
+    public function fillInputConfig(FieldSet $fieldsSet, $entity)
     {
         if (!is_object($entity) && !is_string($entity)) {
             throw new \InvalidArgumentException('No legal entity provided');
@@ -143,6 +144,8 @@ class ConfigProcessor extends AbstractConfigProcessor
      *
      * @param string $field
      * @return string
+     *
+     * @throws \RuntimeException
      */
     protected function getFieldLabel($field)
     {

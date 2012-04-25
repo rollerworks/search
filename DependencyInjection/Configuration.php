@@ -34,7 +34,7 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->root('rollerworks_record_filter')
             ->children()
-                ->scalarNode('metadata_cache')->defaultValue('%kernel.cache_dir%/recordfilter_metedata')->end()
+                ->scalarNode('metadata_cache')->defaultValue('%kernel.cache_dir%/recordfilter_metadata')->end()
             ->end()
         ->end();
 

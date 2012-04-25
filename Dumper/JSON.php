@@ -83,7 +83,7 @@ class JSON extends AbstractDumper
     /**
      * Create the field {object}
      *
-     * @param \Rollerworks\RecordFilterBundle\ValuesBag $filter
+     * @param FilterValuesBag $filter
      * @return array
      */
     private static function createField(FilterValuesBag $filter)

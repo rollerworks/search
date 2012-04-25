@@ -23,14 +23,14 @@ class Range
     /**
      * Original lower range value
      *
-     * @var string|float|integer
+     * @var mixed
      */
     protected $originalLower;
 
     /**
      * Original upper range value
      *
-     * @var string|float|integer
+     * @var mixed
      */
     protected $originalUpper;
 
@@ -43,6 +43,8 @@ class Range
      * @param mixed $originalUpper
      *
      * @api
+     *
+     * @throws \UnexpectedValueException
      */
     public function __construct($lower, $upper, $originalLower = null, $originalUpper = null)
     {
@@ -71,7 +73,7 @@ class Range
     /**
      * Get the lower value of the range
      *
-     * @return string|float|integer
+     * @return mixed
      *
      * @api
      */
@@ -83,7 +85,7 @@ class Range
     /**
      * Get the upper value of the range
      *
-     * @return string|float|integer
+     * @return mixed
      *
      * @api
      */
@@ -95,7 +97,7 @@ class Range
     /**
      * Get the original lower value of the range
      *
-     * @return string|float|integer
+     * @return mixed
      *
      * @api
      */
@@ -107,7 +109,7 @@ class Range
     /**
      * Get the original upper value of the range
      *
-     * @return string|float|integer
+     * @return mixed
      *
      * @api
      */
@@ -119,9 +121,11 @@ class Range
     /**
      * Set the lower value of the range
      *
-     * @param string|float|integer $value
+     * @param mixed $value
      *
      * @api
+     *
+     * @throws \UnexpectedValueException
      */
     public function setLower($value)
     {
@@ -135,9 +139,11 @@ class Range
     /**
      * Set the upper value of the range
      *
-     * @param string|float|integer $value
+     * @param mixed $value
      *
      * @api
+     *
+     * @throws \UnexpectedValueException
      */
     public function setUpper($value)
     {

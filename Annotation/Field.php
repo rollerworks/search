@@ -38,6 +38,8 @@ class Field
      * Constructor.
      *
      * @param array $data An array of key/value parameters.
+     * @throws \BadMethodCallException
+     * @throws \UnexpectedValueException
      */
     public function __construct(array $data)
     {

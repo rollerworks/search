@@ -29,8 +29,7 @@ interface OptimizableInterface
     /**
      * Optimize the Field.
      *
-     * The first value is the FilterStruct with all the field values.
-     * @see \Rollerworks\RecordFilterBundle\FilterStruct
+     * The first value is the FilterValuesBag with all the field values.
      *
      * To remove one value-object, cal remove[Range|ExcludedRange|SingeValue|Exclude|Compare]() with the value index.
      * To remove an range at value-index 1 call removeRange(1). If the index is none existent it's ignored.
@@ -38,13 +37,13 @@ interface OptimizableInterface
      * When actually removing values this function ***should*** return an array with the removed value-indexes.
      * This is for removing the values from the optimized values list.
      *
-     * Return null to remove the field completly.
+     * Return null to remove the field completely.
      *
      * $messages may contain an array of information messages.
      * ***These will be run trough the translator later on.***
      *
-     * @param ValuesBag   $field
-     * @param array          $messages
+     * @param FilterValuesBag   $field
+     * @param array             $messages
      * @param array|null
      */
     public function optimizeField(FilterValuesBag $field, &$messages);

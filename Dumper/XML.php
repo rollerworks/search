@@ -24,10 +24,7 @@ use Rollerworks\RecordFilterBundle\Value\Range;
 class XML implements DumperInterface
 {
     /**
-     * Returns the filtering preference as formatted XML.
-     *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface $formatter
-     * @return string
+     * {@inheritdoc}
      */
     public function dumpFilters(FormatterInterface $formatter)
     {
@@ -67,11 +64,20 @@ class XML implements DumperInterface
     }
 
     /**
+     * Set to return the output to an read friendly format.
+     *
+     * Setting this will make the XML more readable but also increase the content size.
+     */
+    public function setFormatOutput()
+    {
+    }
+
+    /**
      * Populates the field-node
      *
-     * @param \Rollerworks\RecordFilterBundle\ValuesBag  $filter
-     * @param \DOMNode                                      $fieldNode
-     * @param \DOMDocument                                  $dom
+     * @param FilterValuesBag  $filter
+     * @param \DOMNode         $fieldNode
+     * @param \DOMDocument     $dom
      */
     private static function createField(FilterValuesBag $filter, \DOMNode $fieldNode, \DOMDocument $dom)
     {
@@ -139,8 +145,8 @@ class XML implements DumperInterface
     /**
      * Creates an range node and returns it
      *
-     * @param \Rollerworks\RecordFilterBundle\Struct\Range $range
-     * @param \DOMDocument                                           $dom
+     * @param Range         $range
+     * @param \DOMDocument  $dom
      * @return \DOMElement
      */
     private static function createRangeNode(Range $range, \DOMDocument $dom)
@@ -157,14 +163,5 @@ class XML implements DumperInterface
         $rangeNode->appendChild($higherValNode);
 
         return $rangeNode;
-    }
-
-    /**
-     * Set to return the output to an read friendly format.
-     *
-     * Setting this will make the XML more readable but also increase the content size.
-     */
-    public function setFormatOutput()
-    {
     }
 }

@@ -16,7 +16,7 @@ use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FieldsSet;
+use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Value\Compare;
@@ -79,10 +79,10 @@ class FilterQuery extends AbstractInput
     /**
      * Constructor
      *
-     * @param null|FieldsSet $fields
+     * @param null|FieldSet $fields
      * @param string         $query
      */
-    public function __construct(FieldsSet $fields = null, $query = null)
+    public function __construct(FieldSet $fields = null, $query = null)
     {
         parent::__construct($fields);
 
@@ -113,6 +113,8 @@ class FilterQuery extends AbstractInput
      * @param string $pathPrefix    This prefix is added before every search, like filters.labels.
      * @param string $domain        Default is filter
      * @return FilterQuery
+     *
+     * @throws \InvalidArgumentException
      */
     public function setLabelToFieldByTranslator($pathPrefix, $domain = 'filter')
     {
@@ -143,11 +145,11 @@ class FilterQuery extends AbstractInput
     {
         if (is_array($label)) {
             foreach ($label as $fieldLabel) {
-                $this->labelsResolv[ $fieldLabel ] = $fieldName;
+                $this->labelsResolve[ $fieldLabel ] = $fieldName;
             }
         }
         elseif (is_string($label)) {
-            $this->labelsResolv[ $label ] = $fieldName;
+            $this->labelsResolve[ $label ] = $fieldName;
         }
 
         return $this;
@@ -219,6 +221,8 @@ class FilterQuery extends AbstractInput
      *
      * @param string $input
      * @return array
+     *
+     * @throws \Rollerworks\RecordFilterBundle\Exception\ReqFilterException
      */
     protected function parseFilterPairs($input)
     {
@@ -289,11 +293,13 @@ class FilterQuery extends AbstractInput
     /**
      * Perform the formatting of the given values (per group)
      *
-     * @param string                                       $label
-     * @param string                                       $originalInput
-     * @param \Rollerworks\RecordFilterBundle\FilterConfig $filterConfig
-     * @param array|string                                 $values
+     * @param string            $label
+     * @param string            $originalInput
+     * @param FilterConfig      $filterConfig
+     * @param array|string      $values
      * @return FilterValuesBag
+     *
+     * @throws \Rollerworks\RecordFilterBundle\Exception\ValidationException
      */
     protected function valuesToBag($label, $originalInput, FilterConfig $filterConfig, array $values)
     {
@@ -393,6 +399,8 @@ class FilterQuery extends AbstractInput
      *
      * @param string $label
      * @return string
+     *
+     * @throws \RuntimeException
      */
     protected function getFieldNameByLabel($label)
     {
@@ -402,8 +410,8 @@ class FilterQuery extends AbstractInput
 
         $fieldName = $label;
 
-        if (isset($this->labelsResolv[$label])) {
-            $fieldName = $this->labelsResolv[$label];
+        if (isset($this->labelsResolve[$label])) {
+            $fieldName = $this->labelsResolve[$label];
         }
         elseif (null !== $this->aliasTranslatorPrefix) {
             $fieldName = $this->translator->trans($this->aliasTranslatorPrefix . $label, array(), $this->aliasTranslatorDomain);

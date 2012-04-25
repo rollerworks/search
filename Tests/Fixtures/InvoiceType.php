@@ -27,12 +27,16 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
 
     /**
      * @param string $foo
+     * @param string $bar
      */
     public function __construct($foo = 'bar', $bar = null)
     {
         $this->fool = $foo;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setContainer(ContainerInterface $container = null)
     {
     }

@@ -50,7 +50,7 @@ interface ModifierInterface
      * Should return at least an empty array.
      *
      * The message should be translate string or an array as: [[message], [params]]
-     * [params] is an associative array containg the paramaters as %key% => value
+     * [params] is an associative array containing the parameters as %key% => value
      *
      * By default the following placeholders are available.
      * * %label%: Current field's label

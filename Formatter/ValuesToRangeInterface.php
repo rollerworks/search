@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Formatter;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 /**
- * Filter type supporting connected-list of values to ranges should impelement this interface.
+ * Filter type supporting connected-list of values to ranges should implement this interface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

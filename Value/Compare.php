@@ -30,6 +30,7 @@ class Compare extends SingleValue
      * @param string  $operator
      * @param mixed   $originalValue
      *
+     * @throws \InvalidArgumentException When the operator is invalid
      * @api
      */
     public function __construct($value, $operator, $originalValue = null)

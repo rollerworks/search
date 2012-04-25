@@ -49,6 +49,8 @@ class ArrayInput extends FilterQuery
      *
      * @param array $input
      * @return ArrayInput
+     *
+     * @throws \InvalidArgumentException
      */
     public function setInput($input)
     {
@@ -90,6 +92,8 @@ class ArrayInput extends FilterQuery
      *
      * @param array $input
      * @return array
+     *
+     * @throws \Rollerworks\RecordFilterBundle\Exception\ReqFilterException
      */
     protected function parseFilterArray(array $input)
     {

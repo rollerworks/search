@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Input;
 use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FieldsSet;
+use Rollerworks\RecordFilterBundle\FieldSet;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -43,7 +43,7 @@ abstract class AbstractInput implements InputInterface
      *
      * @var array
      */
-    protected $labelsResolv = array();
+    protected $labelsResolve = array();
 
     /**
      * Optional field alias using the translator.
@@ -62,7 +62,7 @@ abstract class AbstractInput implements InputInterface
     protected $aliasTranslatorDomain = 'filter';
 
     /**
-     * @var FieldsSet
+     * @var FieldSet
      */
     protected $fieldsSet;
 
@@ -83,12 +83,12 @@ abstract class AbstractInput implements InputInterface
     /**
      * Constructor
      *
-     * @param null|FieldsSet $fields
+     * @param null|FieldSet $fields
      */
-    public function __construct(FieldsSet $fields = null)
+    public function __construct(FieldSet $fields = null)
     {
         if (null === $fields) {
-            $fields = new FieldsSet();
+            $fields = new FieldSet();
         }
 
         $this->fieldsSet = $fields;
