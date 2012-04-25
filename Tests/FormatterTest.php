@@ -9,11 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
+namespace Rollerworks\RecordFilterBundle\Tests;
 
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\Validator;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValuesToRange;
@@ -29,9 +28,10 @@ use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
+use Rollerworks\RecordFilterBundle\Tests\Modifier\ModifierInterTestCase;
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
 
-class FormatterTest extends TestCase
+class FormatterTest extends ModifierInterTestCase
 {
     function testFormatterNoModifiers()
     {

@@ -25,7 +25,7 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType;
 
-class ValuesToRangeTest extends TestCase
+class ValuesToRangeTest extends ModifierInterTestCase
 {
     function testOptimizeValue()
     {

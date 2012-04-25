@@ -23,7 +23,7 @@ use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
-class DuplicateTest extends TestCase
+class DuplicateTest extends ModifierInterTestCase
 {
     // Output formatter: Duplicates
 

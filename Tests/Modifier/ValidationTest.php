@@ -21,7 +21,7 @@ use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
-class ValidationTest extends TestCase
+class ValidationTest extends ModifierInterTestCase
 {
     function testValidationReq()
     {

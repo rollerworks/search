@@ -19,7 +19,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Modifier\RangeNormalizer;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\CompareNormalizer;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
 
-abstract class TestCase extends \Rollerworks\RecordFilterBundle\Tests\TestCase
+abstract class ModifierInterTestCase extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
     /**
      * @param boolean $loadModifiers
