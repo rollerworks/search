@@ -14,18 +14,40 @@ namespace Rollerworks\RecordFilterBundle;
 use \Rollerworks\RecordFilterBundle\FilterConfig;
 
 /**
- * FieldsSet.
+ * FieldSet.
  *
  * Holds the set of filtering fields and there configuration.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldsSet
+class FieldSet
 {
     /**
      * @var array
      */
     protected $fields = array();
+
+    protected $name;
+
+    /**
+     * Constructor.
+     *
+     * @param string $name Optional fieldSet name.
+     */
+    public function __construct($name = null)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Returns the name of the fieldSet
+     *
+     * @return null|string
+     */
+    public function getSetName()
+    {
+        return $this->name;
+    }
 
     /**
      * Set an filtering field
@@ -51,7 +73,7 @@ class FieldsSet
     public function replace($name, FilterConfig $config)
     {
         if (!isset($this->fields[$name])) {
-            throw new \RuntimeException(sprintf('Unable to replace none existend field: %s', $name));
+            throw new \RuntimeException(sprintf('Unable to replace none existent field: %s', $name));
         }
 
         $this->fields[$name] = $config;
@@ -99,7 +121,7 @@ class FieldsSet
     }
 
     /**
-     * Returns wether there is a field with the given name.
+     * Returns whether there is a field with the given name.
      *
      * @param string $name
      * @return boolean
