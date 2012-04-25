@@ -36,12 +36,4 @@ interface ValueMatcherInterface
      * @return string
      */
     public function getRegex();
-
-    /**
-     * Returns whether the regex can be used in (a) JavaScript (Widget).
-     * When using byte ranges not supported by JavaScript this should return false
-     *
-     * @return boolean
-     */
-    public function supportsJs();
 }
