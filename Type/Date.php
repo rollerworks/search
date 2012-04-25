@@ -24,11 +24,7 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
 {
     /**
-     * Sanitize the input string to an normal useful value.
-     * This will format the output to: YYYY-MM-DD
-     *
-     * @param string $input
-     * @return string
+     * {@inheritdoc}
      */
     public function sanitizeString($input)
     {
@@ -88,14 +84,6 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     public function getRegex()
     {
         return '(?:\d{4}[-/. ]\d{1,2}[-/. ]\d{1,2}|\d{1,2}[-/. ]\d{1,2}[-/. ]\d{4})';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsJs()
-    {
-        return true;
     }
 
     /**

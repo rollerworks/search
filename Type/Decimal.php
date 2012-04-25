@@ -23,10 +23,7 @@ use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 class Decimal implements FilterTypeInterface
 {
     /**
-     * Sanitize the input string to an normal useful value
-     *
-     * @param string $input
-     * @return string
+     * {@inheritdoc}
      */
     public function sanitizeString($input)
     {
@@ -34,11 +31,7 @@ class Decimal implements FilterTypeInterface
     }
 
     /**
-     * Returns whether the first value is higher then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isHigher($input, $nextValue)
     {
@@ -46,11 +39,7 @@ class Decimal implements FilterTypeInterface
     }
 
     /**
-     * Returns whether the first value is lower then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isLower($input, $nextValue)
     {
@@ -58,11 +47,7 @@ class Decimal implements FilterTypeInterface
     }
 
     /**
-     * Returns whether the first value equals then the second
-     *
-     * @param string $input
-     * @param string $nextValue
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isEquals($input, $nextValue)
     {
@@ -70,11 +55,7 @@ class Decimal implements FilterTypeInterface
     }
 
     /**
-     * Returns whether the input value is legally formatted
-     *
-     * @param string $input
-     * @param string $message
-     * @return boolean
+     * {@inheritdoc}
      */
     public function validateValue($input, &$message=null)
     {

@@ -38,10 +38,7 @@ class DateTime extends Time implements ValueMatcherInterface
     }
 
     /**
-     * Sanitize the input string to an normal useful value
-     *
-     * @param string $input
-     * @return string
+     * {@inheritdoc}
      */
     public function sanitizeString($input)
     {
@@ -49,11 +46,7 @@ class DateTime extends Time implements ValueMatcherInterface
     }
 
     /**
-     * Returns whether the input value is legally formatted
-     *
-     * @param string $input
-     * @param string $message
-     * @return boolean
+     * {@inheritdoc}
      */
     public function validateValue($input, &$message = null)
     {
@@ -64,22 +57,10 @@ class DateTime extends Time implements ValueMatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return string
      */
     public function getRegex()
     {
         return '(?:\d{4}[-/. ]\d{1,2}[-/. ]\d{1,2}|\d{1,2}[-/. ]\d{1,2}[-/. ]\d{4}(?:(?:[T]|\s+)\d{1,2}[:.]\d{2}(?:[:.]\d{2})?(?:\s+[ap]m|(?:[+-]\d{1,2}(?:[:.]?\d{1,2})?))?)' . ($this->timeOptional ? '?' : '') .')';
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return boolean
-     */
-    public function supportsJs()
-    {
-        return true;
     }
 
     /**
