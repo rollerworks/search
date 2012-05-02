@@ -82,9 +82,10 @@ class FilterConfig
      * @param string $class
      * @param string $column
      */
-    public function setEntityClass($class)
+    public function setEntity($class, $column)
     {
         $this->class = $class;
+        $this->column = $column;
     }
 
     /**
@@ -95,16 +96,6 @@ class FilterConfig
     public function getEntityClass()
     {
         return $this->class;
-    }
-
-    /**
-     * Set the Entity column for reading mapping.
-     *
-     * @param string $column
-     */
-    public function setEntityColumn($column)
-    {
-        $this->column = $column;
     }
 
     /**
