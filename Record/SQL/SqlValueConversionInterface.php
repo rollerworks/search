@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * This file is part of the RollerworksRecordFilterBundle.
+ *
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Rollerworks\RecordFilterBundle\Record\Sql;
+
+/**
+ * SqlValueConversionInterface.
+ *
+ * An SQL value conversion class must implement this interface.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
+interface SqlValueConversionInterface
+{
+    /**
+     * Returns whether the base-conversion of the field-type is requires.
+     *
+     * If anything but true is returned its not performed.
+     *
+     * @return boolean
+     */
+    public function requiresBaseConversion();
+
+    /**
+     * Convert the input to save SQL statement.
+     *
+     * Input value is as-is and must be returned quoted when this required.
+     *
+     * @param mixed                      $input
+     * @param \Doctrine\DBAL\Types\Type  $type
+     * @param \Doctrine\DBAL\Connection  $connection
+     * @param boolean                    $isDql Whether the query should be DQL
+     * @return mixed
+     */
+    public function convertValue($input, \Doctrine\DBAL\Types\Type $type, \Doctrine\DBAL\Connection $connection, $isDql);
+}
