@@ -69,17 +69,18 @@ class FilterConfig
      */
     public function __construct($label, $type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
-        $this->label          = (string) $label;
-        $this->filterType     = $type;
-        $this->acceptRanges   = (boolean) $acceptRanges;
+        $this->label = (string) $label;
+        $this->filterType = $type;
+        $this->acceptRanges = (boolean) $acceptRanges;
         $this->acceptCompares = (boolean) $acceptCompares;
-        $this->required       = (boolean) $required;
+        $this->required = (boolean) $required;
     }
 
     /**
      * Set the Entity class-name for reading mapping.
      *
      * @param string $class
+     * @param string $column
      */
     public function setEntityClass($class)
     {

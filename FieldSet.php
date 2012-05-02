@@ -27,6 +27,9 @@ class FieldSet
      */
     protected $fields = array();
 
+    /**
+     * @var string
+     */
     protected $name;
 
     /**
@@ -40,7 +43,7 @@ class FieldSet
     }
 
     /**
-     * Returns the name of the fieldSet
+     * Returns the name of the fieldSet.
      *
      * @return null|string
      */
@@ -50,23 +53,27 @@ class FieldSet
     }
 
     /**
-     * Set an filtering field
+     * Set an filtering field.
      *
      * @param string       $name
      * @param FilterConfig $config
+     * @return FieldSet
      */
     public function set($name, FilterConfig $config)
     {
         $this->fields[$name] = $config;
+
+        return $this;
     }
 
     /**
      * Replace the given filtering field.
      *
-     * Same as {@see set()}, but throws an exception when there no field with the name
+     * Same as {@see set()}, but throws an exception when there no field with the name.
      *
      * @param string       $name
      * @param FilterConfig $config
+     * @return FieldSet
      *
      * @throws \RuntimeException when there is no field with the given name
      */
@@ -77,22 +84,27 @@ class FieldSet
         }
 
         $this->fields[$name] = $config;
+
+        return $this;
     }
 
     /**
-     * Remove the given field from the set
+     * Remove the given field from the set.
      *
      * @param string $name
+     * @return FieldSet
      */
     public function remove($name)
     {
         if (isset($this->fields[$name])) {
             unset($this->fields[$name]);
         }
+
+        return $this;
     }
 
     /**
-     * Returns the configuration of the requested field
+     * Returns the configuration of the requested field.
      *
      * @param string $name
      * @return FilterConfig
