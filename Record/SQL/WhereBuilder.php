@@ -14,6 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Record\Sql;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\FieldSet;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -105,10 +106,10 @@ class WhereBuilder
     /**
      * Returns the WHERE clause for the query.
      *
-     * @param FieldSet              $fieldSet
-     * @param FormatterInterface    $formatter
-     * @param array                 $entityAliases  Associative array with the Entity-class to 'in-query alias' mapping as alias => class
-     * @param boolean               $isDql          Is the WHERE case to be used inside DQL?
+     * @param FieldSet           $fieldSet
+     * @param FormatterInterface $formatter
+     * @param array              $entityAliases Array with the Entity-class to 'in-query alias' mapping as alias => class
+     * @param boolean            $isDql         Is the WHERE case to be used inside DQL?
      * @return null|string
      */
     public function getWhereClause(FieldSet $fieldSet, FormatterInterface $formatter, array $entityAliases = array(), $isDql = false)
@@ -134,6 +135,8 @@ class WhereBuilder
     }
 
     /**
+     * Returns the correct column name.
+     *
      * @param string $fieldName
      * @return string
      *
@@ -146,7 +149,7 @@ class WhereBuilder
         }
 
         if (!$this->fieldSet->has($fieldName)) {
-            throw new \InvalidArgumentException(sprintf('Unable to resolve column. Field "%s" is not in fieldSet "%s".', $fieldName, $this->fieldSet->getSetName()));
+            throw new \InvalidArgumentException(sprintf('Unable to get column. Field "%s" is not in fieldSet "%s".', $fieldName, $this->fieldSet->getSetName()));
         }
 
         $field = $this->fieldSet->get($fieldName);
@@ -162,28 +165,16 @@ class WhereBuilder
         if (isset($this->entityAliases[$metadata->getTableName()])) {
             $columnPrefix = $this->entityAliases[$metadata->getTableName()] . '.';
         }
-        $this->columnsMappingCache[$fieldName] = $columnPrefix . $this->getColumn($metadata, $field->getEntityField());
+        $this->columnsMappingCache[$fieldName] = $columnPrefix . $metadata->getColumnName($field->getEntityField());
 
         return $this->columnsMappingCache[$fieldName];
     }
 
     /**
-     * Returns the correct column-name.
-     *
-     * @param \Doctrine\ORM\Mapping\ClassMetadata $metadata
-     * @param string                              $column
-     * @return string
-     */
-    protected function getColumn(\Doctrine\ORM\Mapping\ClassMetadata $metadata, $column)
-    {
-        return $metadata->getColumnName($column);
-    }
-
-    /**
      * Returns an comma-separated list of values.
      *
-     * @param \Rollerworks\RecordFilterBundle\Value\SingleValue[] $values
-     * @param string                                              $fieldName
+     * @param SingleValue[] $values
+     * @param string        $fieldName
      * @return string
      */
     protected function createInList($values, $fieldName)
@@ -197,7 +188,7 @@ class WhereBuilder
     }
 
     /**
-     * Builds and returns the WHERE-clause
+     * Builds and returns the WHERE clause
      *
      * @param FormatterInterface $formatter
      * @return string
@@ -256,11 +247,12 @@ class WhereBuilder
     /**
      * Get an single value string.
      *
-     * @param string  $value
-     * @param string  $fieldName
-     * @throws \UnderflowException
+     * @param string $value
+     * @param string $fieldName
      * @return mixed
      *
+     * @throws \UnderflowException
+     * @throws \UnexpectedValueException When the returned value is not scalar
      */
     protected function getValStr($value, $fieldName)
     {
@@ -286,6 +278,10 @@ class WhereBuilder
         // String values must be quoted.
         elseif (\PDO::PARAM_STR === $type->getBindingType() || \PDO::PARAM_LOB === $type->getBindingType()) {
             $value = $this->entityManager->getConnection()->quote($value);
+        }
+
+        if (!is_scalar($value)) {
+            throw new \UnexpectedValueException(sprintf('Final value-type "%s" is not scalar.', (is_object($value) ? '(Object)' .  get_class($value) : gettype($value))));
         }
 
         return $value;
