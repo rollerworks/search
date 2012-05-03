@@ -28,12 +28,12 @@ interface InputInterface
      *
      * Field-name is always converted to lowercase
      *
-     * @param string                     $fieldName
-     * @param string                     $label
-     * @param FilterTypeInterface|null   $valueType
-     * @param boolean                    $required
-     * @param boolean                    $acceptRanges
-     * @param boolean                    $acceptCompares
+     * @param string                   $fieldName
+     * @param string                   $label
+     * @param FilterTypeInterface|null $valueType
+     * @param boolean                  $required
+     * @param boolean                  $acceptRanges
+     * @param boolean                  $acceptCompares
      * @return InputInterface
      *
      * @api

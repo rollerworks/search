@@ -61,11 +61,11 @@ class FilterConfig
     /**
      * Constructor
      *
-     * @param string                                          $label
-     * @param FilterTypeInterface|ValueMatcherInterface|null  $type
-     * @param boolean                                         $required
-     * @param boolean                                         $acceptRanges
-     * @param boolean                                         $acceptCompares
+     * @param string                                         $label
+     * @param FilterTypeInterface|ValueMatcherInterface|null $type
+     * @param boolean                                        $required
+     * @param boolean                                        $acceptRanges
+     * @param boolean                                        $acceptCompares
      */
     public function __construct($label, $type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {

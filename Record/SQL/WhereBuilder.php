@@ -127,9 +127,9 @@ class WhereBuilder
         }
 
         $this->columnsMappingCache = array();
-        $this->entityAliases = $entityAliases;
-        $this->fieldSet = $fieldSet;
-        $this->isDql = $isDql;
+        $this->entityAliases       = $entityAliases;
+        $this->fieldSet            = $fieldSet;
+        $this->isDql               = $isDql;
 
         return $this->buildWhere($formatter);
     }
@@ -153,18 +153,20 @@ class WhereBuilder
         }
 
         $field = $this->fieldSet->get($fieldName);
+
         if (null === $field->getEntityClass()) {
             $this->columnsMappingCache[$fieldName] = $fieldName;
 
             return $fieldName;
         }
 
-        $metadata = $this->entityManager->getClassMetadata($field->getEntityClass());
         $columnPrefix = '';
+        $metadata = $this->entityManager->getClassMetadata($field->getEntityClass());
 
         if (isset($this->entityAliases[$metadata->getTableName()])) {
             $columnPrefix = $this->entityAliases[$metadata->getTableName()] . '.';
         }
+
         $this->columnsMappingCache[$fieldName] = $columnPrefix . $metadata->getColumnName($field->getEntityField());
 
         return $this->columnsMappingCache[$fieldName];
@@ -180,6 +182,7 @@ class WhereBuilder
     protected function createInList($values, $fieldName)
     {
         $inList = '';
+
         foreach ($values as $value) {
             $inList .= $this->getValStr($value->getValue(), $fieldName) . ', ';
         }
@@ -207,8 +210,8 @@ class WhereBuilder
                 }
 
                 $columnName = $this->getFieldColumn($fieldName);
-
                 $field = $this->fieldSet->get($fieldName);
+
                 if (isset($this->sqlFieldConversions[$fieldName]) && null !== $field->getEntityClass()) {
                     $columnName = $this->sqlFieldConversions[$fieldName]->convertField(
                         $columnName,
@@ -237,8 +240,10 @@ class WhereBuilder
                     $query .= sprintf('%s %s %s AND ', $columnName, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName));
                 }
             }
+
             $query = trim($query, " AND ") . ")\n OR ";
         }
+
         $query = trim($query, " OR ");
 
         return $query;
@@ -261,6 +266,7 @@ class WhereBuilder
         }
 
         $field = $this->fieldSet->get($fieldName);
+
         if (null === $field->getEntityClass()) {
             return $this->entityManager->getConnection()->quote($value);
         }

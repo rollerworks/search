@@ -37,7 +37,7 @@ class ValuesToRange implements ModifierInterface
     protected $messages = array();
 
     /**
-     * @var array
+     * @var integer[]
      */
     protected $removeIndexes = array();
 
@@ -57,8 +57,8 @@ class ValuesToRange implements ModifierInterface
     /**
      * Add an new message to the list
      *
-     * @param string  $transMessage
-     * @param array   $params
+     * @param string $transMessage
+     * @param array  $params
      */
     protected function addMessage($transMessage, $params = array())
     {
@@ -77,7 +77,7 @@ class ValuesToRange implements ModifierInterface
         }
 
         $this->removeIndexes = array();
-        $this->filterStruct  = $filterStruct;
+        $this->filterStruct = $filterStruct;
 
         /** @var ValuesToRangeInterface $type */
         $type = $filterConfig->getType();
@@ -102,9 +102,9 @@ class ValuesToRange implements ModifierInterface
     /**
      * Converts a list of values to ranges.
      *
-     * @param SingleValue[]           $values
-     * @param ValuesToRangeInterface  $type
-     * @param boolean                 $exclude
+     * @param SingleValue[]          $values
+     * @param ValuesToRangeInterface $type
+     * @param boolean                $exclude
      */
     protected function listToRanges($values, ValuesToRangeInterface $type, $exclude = false)
     {
@@ -115,9 +115,8 @@ class ValuesToRange implements ModifierInterface
         $rangeUpper = null;
 
         $valuesCount = count($values);
-        $curCount    = 0;
+        $curCount = 0;
 
-        /** @var \Rollerworks\RecordFilterBundle\Value\SingleValue $value */
         foreach ($values as $valIndex => $value) {
             $curCount++;
 
@@ -169,8 +168,8 @@ class ValuesToRange implements ModifierInterface
     /**
      * Remove an single-value
      *
-     * @param integer  $index
-     * @param boolean  $exclude
+     * @param integer $index
+     * @param boolean $exclude
      */
     protected function unsetVal($index, $exclude = false)
     {

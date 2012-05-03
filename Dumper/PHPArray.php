@@ -28,7 +28,7 @@ class PHPArray extends AbstractDumper
      *
      * Each entry value is a group with the fields and there values (as Array)
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface $formatter
+     * @param FormatterInterface $formatter
      * @return array
      */
     public function dumpFilters(FormatterInterface $formatter)

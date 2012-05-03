@@ -54,14 +54,14 @@ class Formatter implements FormatterInterface
     /**
      * Translator instance
      *
-     * @var \Symfony\Component\Translation\TranslatorInterface
+     * @var TranslatorInterface
      */
     protected $translator;
 
     /**
      * DIC container instance
      *
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     * @var ContainerInterface
      */
     protected $container;
 
@@ -132,7 +132,6 @@ class Formatter implements FormatterInterface
     public function formatInput(InputInterface $input)
     {
         $this->formatted = false;
-
         $groups = $input->getGroups();
 
         if (empty($groups)) {
@@ -199,9 +198,9 @@ class Formatter implements FormatterInterface
     /**
      * Perform the formatting of the given values (per group)
      *
-     * @param FieldSet    $filtersConfig
-     * @param array       $filters
-     * @param integer     $groupIndex
+     * @param FieldSet $filtersConfig
+     * @param array    $filters
+     * @param integer  $groupIndex
      * @return boolean
      *
      * @throws \RuntimeException
@@ -213,7 +212,6 @@ class Formatter implements FormatterInterface
             $filterConfig = $filtersConfig->get($fieldName);
             $this->currentFieldLabel = $filterConfig->getLabel();
 
-            /** @var ModifierInterface $modifier */
             foreach ($this->modifiers as $modifier) {
                 $removeIndexes = $modifier->modFilters($this, $filterConfig, $filter, $groupIndex);
 
@@ -227,11 +225,11 @@ class Formatter implements FormatterInterface
                             throw new RuntimeException('Missing either index message or params.');
                         }
 
-                        $message       = $currentMessage['message'];
+                        $message = $currentMessage['message'];
                         $messageParams = $currentMessage['params'];
                     }
                     else {
-                        $message       = $currentMessage;
+                        $message = $currentMessage;
                         $messageParams = array();
                     }
 

@@ -32,7 +32,7 @@ class DuplicateRemove implements ModifierInterface
     /**
      * Index list of removed values
      *
-     * @var array
+     * @var integer[]
      */
     protected $removedIndexes = array();
 
@@ -59,15 +59,8 @@ class DuplicateRemove implements ModifierInterface
      */
     public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
-        $ranges         = array();
-        $excludedRanges = array();
-
-        $excludedValues = array();
-        $compares       = array();
-        $singleValues   = array();
-
-        $this->messages       = array();
-        $this->removedIndexes = array();
+        $ranges = $excludedRanges = $excludedValues = $compares = $singleValues = array();
+        $this->messages = $this->removedIndexes = array();
 
         foreach ($filterStruct->getSingleValues() as $index => $value) {
             $_value = $value->getValue();

@@ -17,12 +17,12 @@ namespace Rollerworks\RecordFilterBundle\Value;
 class SingleValue
 {
     /**
-     * @var string|integer|float
+     * @var mixed
      */
     protected $value;
 
     /**
-     * @var string|integer|float
+     * @var mixed
      */
     protected $originalValue;
 
@@ -46,7 +46,7 @@ class SingleValue
             $original = $value;
         }
 
-        $this->value         = $value;
+        $this->value = $value;
         $this->originalValue = $original;
     }
 

@@ -27,8 +27,8 @@ class FilterQuery extends AbstractDumper
      *
      * Single values and ranges are always quoted.
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface $formatter
-     * @param boolean                                                      $fieldPerLine  Return each field on a new line
+     * @param FormatterInterface $formatter
+     * @param boolean            $fieldPerLine  Return each field on a new line
      * @return string
      */
     public function dumpFilters(FormatterInterface $formatter, $fieldPerLine = false)

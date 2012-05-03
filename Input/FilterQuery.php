@@ -80,7 +80,7 @@ class FilterQuery extends AbstractInput
      * Constructor
      *
      * @param null|FieldSet $fields
-     * @param string         $query
+     * @param string        $query
      */
     public function __construct(FieldSet $fields = null, $query = null)
     {
@@ -110,8 +110,8 @@ class FilterQuery extends AbstractInput
      *
      * For this to work properly a Translator must be registered with setTranslator()
      *
-     * @param string $pathPrefix    This prefix is added before every search, like filters.labels.
-     * @param string $domain        Default is filter
+     * @param string $pathPrefix This prefix is added before every search, like filters.labels.
+     * @param string $domain     Default is filter
      * @return FilterQuery
      *
      * @throws \InvalidArgumentException
@@ -145,11 +145,11 @@ class FilterQuery extends AbstractInput
     {
         if (is_array($label)) {
             foreach ($label as $fieldLabel) {
-                $this->labelsResolve[ $fieldLabel ] = $fieldName;
+                $this->labelsResolve[$fieldLabel] = $fieldName;
             }
         }
         elseif (is_string($label)) {
-            $this->labelsResolve[ $label ] = $fieldName;
+            $this->labelsResolve[$label] = $fieldName;
         }
 
         return $this;
@@ -164,7 +164,7 @@ class FilterQuery extends AbstractInput
     public function setInput($input)
     {
         $this->isParsed = false;
-        $this->query    = trim($input);
+        $this->query = trim($input);
 
         return $this;
     }
@@ -222,7 +222,7 @@ class FilterQuery extends AbstractInput
      * @param string $input
      * @return array
      *
-     * @throws \Rollerworks\RecordFilterBundle\Exception\ReqFilterException
+     * @throws ReqFilterException
      */
     protected function parseFilterPairs($input)
     {
@@ -233,7 +233,7 @@ class FilterQuery extends AbstractInput
 
             for ($i = 0; $i < $filtersCount; $i++) {
                 $label = mb_strtolower($filterPairMatches[1][$i]);
-                $name  = $this->getFieldNameByLabel($label);
+                $name = $this->getFieldNameByLabel($label);
                 $value = trim($filterPairMatches[2][$i]);
 
                 if (!$this->fieldsSet->has($name) || strlen($value) < 1) {
@@ -278,7 +278,7 @@ class FilterQuery extends AbstractInput
         $valueMatcherRegex = '';
 
         if (!empty($valueMatcher)) {
-            $regex             = $valueMatcher->getRegex();
+            $regex = $valueMatcher->getRegex();
             $valueMatcherRegex = '|' . $regex . '-' . $regex . '|(?:>=|<=|<>|[<>!])?' . $regex;
         }
 
@@ -293,22 +293,17 @@ class FilterQuery extends AbstractInput
     /**
      * Perform the formatting of the given values (per group)
      *
-     * @param string            $label
-     * @param string            $originalInput
-     * @param FilterConfig      $filterConfig
-     * @param array|string      $values
+     * @param string       $label
+     * @param string       $originalInput
+     * @param FilterConfig $filterConfig
+     * @param array|string $values
      * @return FilterValuesBag
      *
-     * @throws \Rollerworks\RecordFilterBundle\Exception\ValidationException
+     * @throws ValidationException
      */
     protected function valuesToBag($label, $originalInput, FilterConfig $filterConfig, array $values)
     {
-        $ranges         = array();
-        $excludedRanges = array();
-        $excludesValues = array();
-        $compares       = array();
-        $singleValues   = array();
-
+        $ranges = $excludedRanges = $excludesValues = $compares = $singleValues = array();
         $valueMatcherRegex = '';
 
         if ($filterConfig->hasType() && ($filterConfig->getType() instanceof ValueMatcherInterface)) {
@@ -400,7 +395,7 @@ class FilterQuery extends AbstractInput
      * @param string $label
      * @return string
      *
-     * @throws \RuntimeException
+     * @throws \RuntimeException When no translator available
      */
     protected function getFieldNameByLabel($label)
     {

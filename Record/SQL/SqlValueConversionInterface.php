@@ -34,10 +34,10 @@ interface SqlValueConversionInterface
      *
      * Input value is as-is and must be returned quoted when this required.
      *
-     * @param mixed                      $input
-     * @param \Doctrine\DBAL\Types\Type  $type
-     * @param \Doctrine\DBAL\Connection  $connection
-     * @param boolean                    $isDql Whether the query should be DQL
+     * @param mixed                     $input
+     * @param \Doctrine\DBAL\Types\Type $type
+     * @param \Doctrine\DBAL\Connection $connection
+     * @param boolean                   $isDql Whether the query should be DQL
      * @return mixed
      */
     public function convertValue($input, \Doctrine\DBAL\Types\Type $type, \Doctrine\DBAL\Connection $connection, $isDql);

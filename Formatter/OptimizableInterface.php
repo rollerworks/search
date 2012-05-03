@@ -20,7 +20,7 @@ use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
  * Optimizing includes removing redundant values and changing the filtering strategy.
  *
  * An example can be, where you have an 'Status' type which only accepts 'active', 'not-active' and 'remove'.
- * If ***all*** the possible values are chosen, the values are redundant and should be removed.
+ * If ***all*** the possible values are chosen, the values are redundant and the filter should be removed.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -42,9 +42,11 @@ interface OptimizableInterface
      * $messages may contain an array of information messages.
      * ***These will be run trough the translator later on.***
      *
-     * @param FilterValuesBag   $field
-     * @param array             $messages
+     * @param FilterValuesBag $field
+     * @param array           $messages
      * @param array|null
+     *
+     * @api
      */
     public function optimizeField(FilterValuesBag $field, &$messages);
 }

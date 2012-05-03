@@ -43,12 +43,7 @@ class Validator implements ModifierInterface
             return true;
         }
 
-        $ranges         = array();
-        $excludedRanges = array();
-
-        $excludedValues = array();
-        $singleValues   = array();
-
+        $ranges = $excludedRanges = $excludedValues = $singleValues = array();
         $type = $filterConfig->getType();
 
         foreach ($filterStruct->getSingleValues() as $value) {
@@ -133,10 +128,10 @@ class Validator implements ModifierInterface
     /**
      * Validates an 'single' value and throws an ValidationException in case of failure.
      *
-     * @param \Rollerworks\RecordFilterBundle\Type\FilterTypeInterface $type
-     * @param string                                                         $value
-     * @param string                                                         $originalValue
-     * @throws \Rollerworks\RecordFilterBundle\Exception\ValidationException In case of an validation error
+     * @param FilterTypeInterface $type
+     * @param string              $value
+     * @param string              $originalValue
+     * @throws ValidationException In case of an validation error
      */
     protected function validateValue(FilterTypeInterface $type, $value, $originalValue = null)
     {
@@ -154,14 +149,14 @@ class Validator implements ModifierInterface
     /**
      * Validates an range value and throws an ValidationException in case of failure.
      *
-     * @param \Rollerworks\RecordFilterBundle\Type\FilterTypeInterface $type
-     * @param \Rollerworks\RecordFilterBundle\Value\Range         $range
-     * @throws \Rollerworks\RecordFilterBundle\Exception\ValidationException
+     * @param FilterTypeInterface $type
+     * @param Range               $range
+     * @throws ValidationException
      */
     protected function validateRange(FilterTypeInterface $type, Range $range)
     {
         if (!$type->isLower($range->getLower(), $range->getUpper())) {
-            throw new ValidationException('not_lower', $range->getOriginalLower().'-'.$range->getOriginalUpper(), array(
+            throw new ValidationException('not_lower', $range->getOriginalLower() . '-' . $range->getOriginalUpper(), array(
                 '%value1%' => $range->getOriginalLower(),
                 '%value2%' => $range->getOriginalUpper()));
         }

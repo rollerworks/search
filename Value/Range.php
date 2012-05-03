@@ -55,7 +55,7 @@ class Range
             throw new \UnexpectedValueException('Upper value for is not accepted, only string, float and integer are accepted.');
         }
 
-        $this->lower  = $lower;
+        $this->lower = $lower;
         $this->upper = $upper;
 
         if (is_null($originalLower)) {

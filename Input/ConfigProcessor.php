@@ -28,7 +28,7 @@ class ConfigProcessor extends AbstractConfigProcessor
     /**
      * Translator instance
      *
-     * @var \Symfony\Component\Translation\TranslatorInterface
+     * @var TranslatorInterface
      */
     protected $translator;
 
@@ -51,7 +51,7 @@ class ConfigProcessor extends AbstractConfigProcessor
     /**
      * Set the translator instance, for aliases by translator
      *
-     * @param \Symfony\Component\Translation\TranslatorInterface $translator
+     * @param TranslatorInterface $translator
      *
      * @api
      */
@@ -67,8 +67,8 @@ class ConfigProcessor extends AbstractConfigProcessor
      *
      * For this to work properly a Translator must be registered with setTranslator()
      *
-     * @param string $pathPrefix    This prefix is added before every search, like filters.labels.
-     * @param string $domain        Default is filter
+     * @param string $pathPrefix This prefix is added before every search, like filters.labels.
+     * @param string $domain     Default is filter
      * @throws \InvalidArgumentException
      */
     public function setFieldToLabelByTranslator($pathPrefix, $domain = 'filter')
@@ -88,8 +88,8 @@ class ConfigProcessor extends AbstractConfigProcessor
     /**
      * Fill the FieldSet with the configuration of an Entity.
      *
-     * @param FieldSet         $fieldsSet
-     * @param object|string     $entity Entity object or full class-name
+     * @param FieldSet      $fieldsSet
+     * @param object|string $entity Entity object or full class-name
      * @return ConfigProcessor
      *
      * @throws \InvalidArgumentException When $entity is not an object or string
@@ -115,9 +115,8 @@ class ConfigProcessor extends AbstractConfigProcessor
          */
 
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
-            /* @var $propertyMetadata \Rollerworks\RecordFilterBundle\Metadata\PropertyMetadata */
             if (isset($propertyMetadata->filter_name)) {
-                $type  = null;
+                $type = null;
                 $label = $this->getFieldLabel($propertyMetadata->filter_name);
 
                 if (null !== $propertyMetadata->type) {

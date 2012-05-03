@@ -29,8 +29,8 @@ abstract class AbstractDumper implements DumperInterface
      * Ranges will always have both-side values quoted like "lower"-"higher".
      * Single values are only quoted depending on $quoteLooseValue
      *
-     * @param FilterValuesBag  $filter
-     * @param boolean          $quoteLooseValue
+     * @param FilterValuesBag $filter
+     * @param boolean         $quoteLooseValue
      * @return array
      */
     protected static function filterStructToArray(FilterValuesBag $filter, $quoteLooseValue = false)

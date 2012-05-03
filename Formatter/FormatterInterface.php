@@ -11,8 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-
 /**
  * RecordFiltering formatting interface.
  *
@@ -27,10 +25,8 @@ interface FormatterInterface
      *
      * Like:
      * [group-n] => array(
-     *   'field-name' => {\Rollerworks\RecordFilterBundle\FilterStruct object}
+     *   'field-name' => {\Rollerworks\RecordFilterBundle\Value\FilterValuesBag object}
      * )
-     *
-     * The FilterStruct contains all the filtering information of the field.
      *
      * @return array
      *

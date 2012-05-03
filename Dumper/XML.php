@@ -67,6 +67,8 @@ class XML implements DumperInterface
      * Set to return the output to an read friendly format.
      *
      * Setting this will make the XML more readable but also increase the content size.
+     *
+     * FIXME Needs implementation
      */
     public function setFormatOutput()
     {
@@ -75,9 +77,9 @@ class XML implements DumperInterface
     /**
      * Populates the field-node
      *
-     * @param FilterValuesBag  $filter
-     * @param \DOMNode         $fieldNode
-     * @param \DOMDocument     $dom
+     * @param FilterValuesBag $filter
+     * @param \DOMNode        $fieldNode
+     * @param \DOMDocument    $dom
      */
     private static function createField(FilterValuesBag $filter, \DOMNode $fieldNode, \DOMDocument $dom)
     {
@@ -145,8 +147,8 @@ class XML implements DumperInterface
     /**
      * Creates an range node and returns it
      *
-     * @param Range         $range
-     * @param \DOMDocument  $dom
+     * @param Range        $range
+     * @param \DOMDocument $dom
      * @return \DOMElement
      */
     private static function createRangeNode(Range $range, \DOMDocument $dom)

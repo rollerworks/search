@@ -46,8 +46,8 @@ interface ValuesToRangeInterface
      * * 2011-12-31 12:00 + 1 = 2012-01-01 12:01
      * * 2012-00425       + 1 = 2012-00426 (Invoice)
      *
-     * @param string|float|integer $input
-     * @return string|float|integer
+     * @param mixed $input
+     * @return mixed
      */
     public function getHigherValue($input);
 }

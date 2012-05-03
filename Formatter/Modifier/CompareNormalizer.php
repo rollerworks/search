@@ -62,7 +62,7 @@ class CompareNormalizer implements ModifierInterface
                         '%comparison%' => $compare->getOperator(),
                     ));
 
-                    unset($compares[ $comparisonIndex ]);
+                    unset($compares[$comparisonIndex]);
                     $filterStruct->removeCompare($comparisonIndex);
                 }
             }
@@ -82,8 +82,8 @@ class CompareNormalizer implements ModifierInterface
     /**
      * Add an new message to the list
      *
-     * @param string  $transMessage
-     * @param array   $params
+     * @param string $transMessage
+     * @param array  $params
      */
     protected function addMsg($transMessage, $params = array())
     {

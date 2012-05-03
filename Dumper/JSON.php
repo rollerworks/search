@@ -33,29 +33,39 @@ class JSON extends AbstractDumper
      *
      * Example:
      * <code>
-     *   [ { "field1" : [ "value1", "value2" ] }, { "field1" : [ "value1", "value2" ] } ]
+     *  [ { "field1" : [ "value1", "value2" ] }, { "field1" : [ "value1", "value2" ] } ]
      * </code>
      *
      * In none-flattened format, the fields are returned as follow.
      * Each entry value is a group with the fields and there values per type, types maybe empty.
      *
      * <code>
-     *   [ { "field1" : {
+     *  [{
+     *      "field1": {
      *          "single-values": ["value", "value2"],
      *          "excluded-values": ["value", "value2"],
-     *          "ranges": [ { "lower": "12", "higher": "20" } ],
-     *          "excluded-ranges": [ { "lower": "12", "higher": "20" } ],
-     *          "compares": [ {"opr": ">", "value": "value" } ]
-     *        }
-     *     },
-     *     { "field1" : {
+     *          "ranges": [{
+     *              "lower": "12",
+     *              "higher": "20"
+     *          }],
+     *          "excluded-ranges": [{
+     *              "lower": "12",
+     *              "higher": "20"
+     *          }],
+     *          "compares": [{
+     *              "opr": ">",
+     *              "value": "value"
+     *          }]
+     *      }
+     *  }, {
+     *      "field1": {
      *          "single-values": ["value", "value2"]
-     *        }
-     *     } ]
+     *      }
+     *  }]
      * </code>
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface      $formatter
-     * @param boolean                                                           $flattenValues
+     * @param FormatterInterface $formatter
+     * @param boolean            $flattenValues
      * @return string JSON array
      */
     public function dumpFilters(FormatterInterface $formatter, $flattenValues = false)
@@ -81,7 +91,7 @@ class JSON extends AbstractDumper
     }
 
     /**
-     * Create the field {object}
+     * Create the field {Object}
      *
      * @param FilterValuesBag $filter
      * @return array
