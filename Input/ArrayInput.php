@@ -59,7 +59,7 @@ class ArrayInput extends FilterQuery
         }
 
         $this->isParsed = false;
-        $this->query    = $input;
+        $this->query = $input;
 
         return $this;
     }
@@ -69,20 +69,24 @@ class ArrayInput extends FilterQuery
      */
     public function getGroups()
     {
-        if (false === $this->isParsed) {
-            if (isset($this->query[0])) {
-                foreach ($this->query as $groupIndex => $values) {
-                    if (!ctype_digit((string) $groupIndex) || !is_array($values)) {
-                        continue;
-                    }
+        if ($this->isParsed) {
+            return $this->groups;
+        }
 
-                    $this->groups[$groupIndex] = $this->parseFilterArray($values);
+        if (isset($this->query[0])) {
+            foreach ($this->query as $groupIndex => $values) {
+                if (!ctype_digit((string)$groupIndex) || ! is_array($values)) {
+                    continue;
                 }
-            }
-            else {
-                $this->groups[0] = $this->parseFilterArray($this->query);
+
+                $this->groups[$groupIndex] = $this->parseFilterArray($values);
             }
         }
+        else {
+            $this->groups[0] = $this->parseFilterArray($this->query);
+        }
+
+        $this->isParsed = true;
 
         return $this->groups;
     }
@@ -105,7 +109,7 @@ class ArrayInput extends FilterQuery
             }
 
             $label = mb_strtolower($label);
-            $name  = $this->getFieldNameByLabel($label);
+            $name = $this->getFieldNameByLabel($label);
             $value = trim($value);
 
             if (!$this->fieldsSet->has($name) || strlen($value) < 1) {
