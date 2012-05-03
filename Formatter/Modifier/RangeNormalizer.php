@@ -46,7 +46,7 @@ class RangeNormalizer implements ModifierInterface
     /**
      * @var FilterValuesBag
      */
-    protected $filterStruct;
+    protected $valuesBag;
 
     /**
      * {@inheritdoc}
@@ -72,13 +72,16 @@ class RangeNormalizer implements ModifierInterface
      */
     public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
+        $this->messages = array();
+        $this->removeIndexes = array();
+
         if (!$filterConfig->hasType() || (!$filterStruct->hasRanges() && !$filterStruct->hasExcludedRanges())) {
             return true;
         }
 
-        $this->removeIndexes = $this->messages = array();
-        $this->filterStruct = $filterStruct;
-        $this->type = $type = $filterConfig->getType();
+        $this->valuesBag = $filterStruct;
+        $this->type = $filterConfig->getType();
+        $type = $filterConfig->getType();
 
         $values = $filterStruct->getSingleValues();
         $ranges = $filterStruct->getRanges();
@@ -201,10 +204,10 @@ class RangeNormalizer implements ModifierInterface
     protected function unsetVal($index, $exclude = false)
     {
         if ($exclude) {
-            $this->filterStruct->removeExclude($index);
+            $this->valuesBag->removeExclude($index);
         }
         else {
-            $this->filterStruct->removeSingleValue($index);
+            $this->valuesBag->removeSingleValue($index);
         }
 
         $this->removeIndexes[] = $index;
@@ -219,10 +222,10 @@ class RangeNormalizer implements ModifierInterface
     protected function unsetRange($index, $exclude = false)
     {
         if ($exclude) {
-            $this->filterStruct->removeExcludedRange($index);
+            $this->valuesBag->removeExcludedRange($index);
         }
         else {
-            $this->filterStruct->removeRange($index);
+            $this->valuesBag->removeRange($index);
         }
 
         $this->removeIndexes[] = $index;
