@@ -135,50 +135,50 @@ class RangeNormalizer implements ModifierInterface
         }
 
         if ($filterStruct->hasExcludedRanges()) {
-            $aRangesExcludes = $filterStruct->getExcludedRanges();
-            $aExcludes       = $filterStruct->getExcludes();
+            $rangesExcludes = $filterStruct->getExcludedRanges();
+            $excludes = $filterStruct->getExcludes();
 
-            foreach ($aRangesExcludes as $valIndex => $range) {
+            foreach ($rangesExcludes as $valIndex => $range) {
                 // Value is overlapping in range
-                foreach ($aExcludes as $myIndex => $singeValue) {
+                foreach ($excludes as $myIndex => $singeValue) {
                     if ($this->isValInRange($singeValue, $range)) {
                         $this->addMessage('value_in_range', array(
-                            '%value%' => '!"' . $aExcludes[$myIndex]->getOriginalValue() . '"',
-                            '%range%' => '!' . self::getRangeQuoted($aRangesExcludes[$valIndex])));
+                            '%value%' => '!"' . $excludes[$myIndex]->getOriginalValue() . '"',
+                            '%range%' => '!' . self::getRangeQuoted($rangesExcludes[$valIndex])));
 
                         $this->unsetVal($myIndex, true);
-                        unset($aExcludes[$myIndex]);
+                        unset($excludes[$myIndex]);
                     }
                 }
 
                 // Range is connected to other range
-                foreach ($aRangesExcludes as $myIndex => $myRange) {
+                foreach ($rangesExcludes as $myIndex => $myRange) {
                     if ($myIndex === $valIndex) {
                         continue;
                     }
 
                     if ($type->isEquals($range->getUpper(), $myRange->getLower())) {
                         $this->addMessage('range_connected', array(
-                            '%range1%' => '!' . self::getRangeQuoted($aRangesExcludes[$valIndex]),
-                            '%range2%' => '!' . self::getRangeQuoted($aRangesExcludes[$myIndex]),
-                            '%range3%' => '!' . self::getRangeQuoted($aRangesExcludes[$valIndex], $aRangesExcludes[$myIndex]),
+                            '%range1%' => '!' . self::getRangeQuoted($rangesExcludes[$valIndex]),
+                            '%range2%' => '!' . self::getRangeQuoted($rangesExcludes[$myIndex]),
+                            '%range3%' => '!' . self::getRangeQuoted($rangesExcludes[$valIndex], $rangesExcludes[$myIndex]),
                         ));
 
                         $range->setUpper($myRange->getUpper());
 
                         $this->unsetRange($myIndex, true);
-                        unset($aRangesExcludes[$myIndex]);
+                        unset($rangesExcludes[$myIndex]);
                     }
 
                     // Range overlaps in other range
                     if ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
                         $this->addMessage('range_overlap', array(
-                            '%range1%' => '!' . self::getRangeQuoted($aRangesExcludes[$myIndex]),
-                            '%range2%' => '!' . self::getRangeQuoted($aRangesExcludes[$valIndex]),
+                            '%range1%' => '!' . self::getRangeQuoted($rangesExcludes[$myIndex]),
+                            '%range2%' => '!' . self::getRangeQuoted($rangesExcludes[$valIndex]),
                         ));
 
                         $this->unsetRange($myIndex, true);
-                        unset($aRangesExcludes[$myIndex]);
+                        unset($rangesExcludes[$myIndex]);
                     }
                 }
 

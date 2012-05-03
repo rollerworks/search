@@ -25,8 +25,8 @@ class DateTimeHelper
      *
      * Accepts both European format and US.
      *
-     * @param string          $input
-     * @param bool|integer    $withTime
+     * @param string       $input
+     * @param bool|integer $withTime
      * @return boolean
      */
     public static function isDate($input, $withTime = false)
@@ -74,6 +74,8 @@ class DateTimeHelper
      *
      * @param string $input
      * @return string
+     *
+     * @throws \InvalidArgumentException
      */
     public static function dateToISO($input)
     {
@@ -113,8 +115,10 @@ class DateTimeHelper
      *
      * The input must be already validated.
      *
-     * @param string  $input
+     * @param string $input
      * @return string
+     *
+     * @throws \InvalidArgumentException
      */
     public static function timeToISO($input)
     {

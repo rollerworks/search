@@ -73,8 +73,8 @@ class Time implements FilterTypeInterface, ValuesToRangeInterface
     {
         $times = $this->addTimezone($input, $nextValue);
 
-        $input     = $times[ 0 ];
-        $nextValue = $times[ 1 ];
+        $input = $times[0];
+        $nextValue = $times[1];
 
         return ($this->getTimestamp($input) > $this->getTimestamp($nextValue));
     }
@@ -86,8 +86,8 @@ class Time implements FilterTypeInterface, ValuesToRangeInterface
     {
         $times = $this->addTimezone($input, $nextValue);
 
-        $input     = $times[ 0 ];
-        $nextValue = $times[ 1 ];
+        $input = $times[0];
+        $nextValue = $times[1];
 
         return ($this->getTimestamp($input) < $this->getTimestamp($nextValue));
     }
@@ -99,8 +99,8 @@ class Time implements FilterTypeInterface, ValuesToRangeInterface
     {
         $times = $this->addTimezone($input, $nextValue);
 
-        $input     = $times[ 0 ];
-        $nextValue = $times[ 1 ];
+        $input = $times[0];
+        $nextValue = $times[1];
 
         return ($this->getTimestamp($input) === $this->getTimestamp($nextValue));
     }
