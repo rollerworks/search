@@ -17,7 +17,6 @@ namespace Rollerworks\RecordFilterBundle\Value;
 class Range
 {
     protected $lower;
-
     protected $upper;
 
     /**
@@ -42,9 +41,9 @@ class Range
      * @param mixed $originalLower
      * @param mixed $originalUpper
      *
-     * @api
-     *
      * @throws \UnexpectedValueException
+     *
+     * @api
      */
     public function __construct($lower, $upper, $originalLower = null, $originalUpper = null)
     {
@@ -123,9 +122,9 @@ class Range
      *
      * @param mixed $value
      *
-     * @api
-     *
      * @throws \UnexpectedValueException
+     *
+     * @api
      */
     public function setLower($value)
     {
@@ -141,9 +140,9 @@ class Range
      *
      * @param mixed $value
      *
-     * @api
-     *
      * @throws \UnexpectedValueException
+     *
+     * @api
      */
     public function setUpper($value)
     {

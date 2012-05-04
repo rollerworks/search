@@ -29,6 +29,16 @@ interface FilterTypeInterface
      */
     public function sanitizeString($input);
 
+    /*
+     * Formats the value for display and return it as a string.
+     *
+     * This function does the opposite of sanitizeString().
+     *
+     * @param mixed $value
+     * @return string
+     */
+    //public function formatOutput($value);
+
     /**
      * Returns whether the first value is higher then the second
      *

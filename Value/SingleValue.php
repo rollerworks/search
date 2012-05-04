@@ -32,9 +32,9 @@ class SingleValue
      * @param mixed $value
      * @param mixed $original
      *
-     * @api
-     *
      * @throws \UnexpectedValueException
+     *
+     * @api
      */
     public function __construct($value, $original = null)
     {
@@ -55,9 +55,9 @@ class SingleValue
      *
      * @param mixed $value
      *
-     * @api
-     *
      * @throws \UnexpectedValueException
+     *
+     * @api
      */
     public function setValue($value)
     {
@@ -94,6 +94,8 @@ class SingleValue
 
     /**
      * @return string
+     *
+     * @deprecated The type is mixed and thus not an value
      */
     public function __toString()
     {
