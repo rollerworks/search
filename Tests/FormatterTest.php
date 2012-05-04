@@ -28,10 +28,10 @@ use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
-use Rollerworks\RecordFilterBundle\Tests\Modifier\ModifierInterTestCase;
+use Rollerworks\RecordFilterBundle\Tests\Modifier\ModifierTestCase;
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
 
-class FormatterTest extends ModifierInterTestCase
+class FormatterTest extends ModifierTestCase
 {
     function testFormatterNoModifiers()
     {
