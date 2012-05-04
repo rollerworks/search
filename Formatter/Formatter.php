@@ -54,14 +54,14 @@ class Formatter implements FormatterInterface
     /**
      * Translator instance
      *
-     * @var TranslatorInterface
+     * @var \Symfony\Component\Translation\TranslatorInterface
      */
     protected $translator;
 
     /**
      * DIC container instance
      *
-     * @var ContainerInterface
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
     protected $container;
 
