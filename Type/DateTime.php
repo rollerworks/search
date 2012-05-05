@@ -66,7 +66,7 @@ class DateTime extends Time implements ValueMatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function getRegex()
+    public function getMatcherRegex()
     {
         return '(?:\d{4}[-/. ]\d{1,2}[-/. ]\d{1,2}|\d{1,2}[-/. ]\d{1,2}[-/. ]\d{4}(?:(?:[T]|\s+)\d{1,2}[:.]\d{2}(?:[:.]\d{2})?(?:\s+[ap]m|(?:[+-]\d{1,2}(?:[:.]?\d{1,2})?))?)' . ($this->timeOptional ? '?' : '') .')';
     }

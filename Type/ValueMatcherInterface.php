@@ -35,5 +35,5 @@ interface ValueMatcherInterface
      *
      * @return string
      */
-    public function getRegex();
+    public function getMatcherRegex();
 }

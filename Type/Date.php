@@ -89,7 +89,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      */
-    public function getRegex()
+    public function getMatcherRegex()
     {
         return '(?:\d{4}[-/. ]\d{1,2}[-/. ]\d{1,2}|\d{1,2}[-/. ]\d{1,2}[-/. ]\d{4})';
     }

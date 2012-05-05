@@ -93,7 +93,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     /**
      * {@inheritdoc}
      */
-    public function getRegex()
+    public function getMatcherRegex()
     {
         return '(?:F\d{4}-\d+)';
     }
