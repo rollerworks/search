@@ -33,6 +33,14 @@ class Decimal implements FilterTypeInterface
     /**
      * {@inheritdoc}
      */
+    public function formatOutput($value)
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isHigher($input, $nextValue)
     {
         return ($input > $nextValue);

@@ -44,6 +44,14 @@ class Time implements FilterTypeInterface, ValuesToRangeInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function formatOutput($value)
+    {
+
+    }
+
+    /**
      * Internal helper function for fixing cases with timezone usage.
      *
      * @param string $input

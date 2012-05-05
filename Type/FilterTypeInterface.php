@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Type;
 /**
  * FilterTypeInterface.
  *
- * Each field filter-type must implement this interface.
+ * An field filter-type must implement this interface.
  * The input for comparing values is always sanitized.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -29,7 +29,7 @@ interface FilterTypeInterface
      */
     public function sanitizeString($input);
 
-    /*
+    /**
      * Formats the value for display and return it as a string.
      *
      * This function does the opposite of sanitizeString().
@@ -37,7 +37,7 @@ interface FilterTypeInterface
      * @param mixed $value
      * @return string
      */
-    //public function formatOutput($value);
+    public function formatOutput($value);
 
     /**
      * Returns whether the first value is higher then the second

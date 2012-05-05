@@ -34,6 +34,14 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
     /**
      * {@inheritdoc}
      */
+    public function formatOutput($value)
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isHigher($input, $nextValue)
     {
         return ($input > $nextValue);

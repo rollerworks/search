@@ -32,6 +32,14 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function formatOutput($value)
+    {
+
+    }
+
+    /**
      * Get timestamp of an value
      *
      * @param string $date

@@ -48,6 +48,14 @@ class DateTime extends Time implements ValueMatcherInterface
     /**
      * {@inheritdoc}
      */
+    public function formatOutput($value)
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function validateValue($input, &$message = null)
     {
         $message = 'This value is not an valid date with ' . ($this->timeOptional ? 'optional ' : '') . 'time';
