@@ -40,6 +40,16 @@ interface FilterTypeInterface
     public function formatOutput($value);
 
     /**
+     * Returns the scalar representation of the value.
+     *
+     * This is used for duplicate detection and debugging.
+     *
+     * @param mixed $input
+     * @return string
+     */
+    public function dumpValue($input);
+
+    /**
      * Returns whether the first value is higher then the second
      *
      * @param mixed $input

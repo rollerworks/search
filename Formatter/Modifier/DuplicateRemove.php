@@ -12,8 +12,10 @@
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\Range;
 
 /**
  * Removes duplicate values.
@@ -45,16 +47,6 @@ class DuplicateRemove implements ModifierInterface
     }
 
     /**
-     * @param integer $index
-     * @param string  $value
-     */
-    protected function informDuplicate($index, $value)
-    {
-        $this->messages[]       = array('message' => 'duplicate', 'params' => array('%value%' => $value));
-        $this->removedIndexes[] = $index;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
@@ -62,8 +54,10 @@ class DuplicateRemove implements ModifierInterface
         $ranges = $excludedRanges = $excludedValues = $compares = $singleValues = array();
         $this->messages = $this->removedIndexes = array();
 
+        $type = $filterConfig->getType();
+
         foreach ($filterStruct->getSingleValues() as $index => $value) {
-            $_value = $value->getValue();
+            $_value = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
             if (in_array($_value, $singleValues)) {
                 $this->informDuplicate($index, '"' . $value->getOriginalValue() . '"');
@@ -76,7 +70,7 @@ class DuplicateRemove implements ModifierInterface
         }
 
         foreach ($filterStruct->getExcludes() as $index => $value) {
-            $_value = $value->getValue();
+            $_value = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
             if (in_array($_value, $excludedValues)) {
                 $this->informDuplicate($index, '!"' . $value->getOriginalValue() . '"');
@@ -89,7 +83,7 @@ class DuplicateRemove implements ModifierInterface
         }
 
         foreach ($filterStruct->getRanges() as $index => $range) {
-            $_value = $range->getLower() . '-' . $range->getUpper();
+            $_value = $this->dumpRange($type, $range);
 
             if (in_array($_value, $ranges)) {
                 $this->informDuplicate($index, '"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
@@ -102,7 +96,7 @@ class DuplicateRemove implements ModifierInterface
         }
 
         foreach ($filterStruct->getExcludedRanges() as $index => $range) {
-            $_value = $range->getLower() . '-' . $range->getUpper();
+            $_value = $this->dumpRange($type, $range);
 
             if (in_array($_value, $excludedRanges)) {
                 $this->informDuplicate($index, '!"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
@@ -115,7 +109,7 @@ class DuplicateRemove implements ModifierInterface
         }
 
         foreach ($filterStruct->getCompares() as $index => $compare) {
-            $_value = $compare->getOperator() . $compare->getValue();
+            $_value = $compare->getOperator() . ($type ? $type->dumpValue($compare->getValue()) : $compare->getValue());
 
             if (in_array($_value, $compares)) {
                 $this->informDuplicate($index, $compare->getOperator() . '"' . $compare->getOriginalValue() . '"');
@@ -136,5 +130,30 @@ class DuplicateRemove implements ModifierInterface
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    /**
+     * @param integer $index
+     * @param string  $value
+     */
+    protected function informDuplicate($index, $value)
+    {
+        $this->messages[]       = array('message' => 'duplicate', 'params' => array('%value%' => $value));
+        $this->removedIndexes[] = $index;
+    }
+
+    /**
+     * @param FilterTypeInterface $type
+     * @param Range               $range
+     * @return string
+     * @throws \RuntimeException
+     */
+    protected function dumpRange(FilterTypeInterface $type = null, Range $range)
+    {
+        if ($type) {
+            return $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
+        }
+
+        return $range->getLower() . '-' . $range->getUpper();
     }
 }

@@ -9,151 +9,132 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\RecordFilterBundle\Tests\Types;
 
 use Rollerworks\RecordFilterBundle\Type\Time;
 
-class TimeTest extends \PHPUnit_Framework_TestCase
+class TimeTest extends DateTimeTestCase
 {
-    function testSanitize()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testSanitize($locale, $input, $expected, $expectFail = false)
     {
+        \Locale::setDefault($locale);
+
         $type = new Time();
 
-        $this->assertEquals('11:17', $type->sanitizeString('11.17'));
-        $this->assertEquals('11:17', $type->sanitizeString('11:17'));
+        if ($expectFail) {
+            $this->setExpectedException('\UnexpectedValueException', sprintf('Input value "%s" is not properly validated.', $input));
+        }
 
-        $this->assertEquals('11:17', $type->sanitizeString('11.17AM'));
-        $this->assertEquals('11:17', $type->sanitizeString('11:17AM'));
-
-        $this->assertEquals('23:17', $type->sanitizeString('11.17PM'));
-        $this->assertEquals('23:17', $type->sanitizeString('11:17PM'));
-
-        $this->assertEquals('23:17', $type->sanitizeString('11.17pm'));
-        $this->assertEquals('23:17', $type->sanitizeString('11:17pm'));
-
-        $this->assertEquals('11:17:00', $type->sanitizeString('11.17:00AM'));
-        $this->assertEquals('11:17:00', $type->sanitizeString('11:17:00AM'));
-
-        $this->assertEquals('23:17:00', $type->sanitizeString('11.17:00PM'));
-        $this->assertEquals('23:17:00', $type->sanitizeString('11:17:00PM'));
-
-        $this->assertEquals('23:17:00', $type->sanitizeString('11.17:00pm'));
-        $this->assertEquals('23:17:00', $type->sanitizeString('11:17:00pm'));
-
-        $this->assertEquals('00:17:00', $type->sanitizeString('12.17:00pm'));
-        $this->assertEquals('00:17:00', $type->sanitizeString('12:17:00pm'));
+        $value = $type->sanitizeString($input);
+        $this->assertEquals($expected, $value->format('H:i'));
     }
 
-    function testValidation()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testValidation($locale, $input, $expected, $expectFail = false)
     {
+        \Locale::setDefault($locale);
+
         $type = new Time();
 
-        $this->assertTrue($type->validateValue('11:17'));
-        $this->assertTrue($type->validateValue('11:17+02:00'));
-        $this->assertTrue($type->validateValue('11:17+02:30'));
-        $this->assertTrue($type->validateValue('11:17+0200'));
-        $this->assertTrue($type->validateValue('11.17'));
-
-        $this->assertFalse($type->validateValue('1117'));
-        $this->assertFalse($type->validateValue('11-17'));
-        $this->assertFalse($type->validateValue('11+17'));
-
-        $this->assertFalse($type->validateValue('25:17'));
-        $this->assertFalse($type->validateValue('25.17'));
+        if ($expectFail) {
+            $this->assertFalse($type->validateValue($input));
+        }
+        else {
+            $this->assertTrue($type->validateValue($input));
+        }
     }
 
-
-    function testHigher()
+    /**
+     * @dataProvider getDataForCompare
+     */
+    function testCompares($locale, $first, $second, $comparison = null)
     {
+        \Locale::setDefault($locale);
+
         $type = new Time();
 
-        $this->assertTrue($type->isHigher('11:17', '10:17'));
+        $_first  = $type->sanitizeString($first);
+        $_second = $type->sanitizeString($second);
 
-        // Timezone (note: will automatically convert to UTC)
-        $this->assertTrue($type->isHigher(date('H:i:sP', time() + 1020), date('H:i:s')));
-        $this->assertTrue($type->isHigher(date('H:i:sO', time() + 1020), date('H:i:s')));
-        $this->assertTrue($type->isHigher('13:17+02:00', '11:12+01:00'));
+        if ('==' === $comparison) {
+            $this->assertTrue($type->isEquals($_first, $_second), sprintf('"%s" should equal "%s"', $first, $second));
+        }
+        elseif ('!=' === $comparison) {
+            $this->assertFalse($type->isEquals($_first, $_second), sprintf('"%s" should not equal "%s"', $first, $second));
+        }
+        else {
+            $this->assertTrue($type->isLower($_second, $_first), sprintf('"%s" should be lower then "%s"', $first, $second));
+
+            // 00 is both higher and lower
+            if ('</>' !== $comparison) {
+                $this->assertFalse($type->isLower($_first, $_second), sprintf('"%s" should not be lower then "%s"', $first, $second));
+                 $this->assertFalse($type->isHigher($_second, $_first), sprintf('"%s" should be higher then "%s"', $first, $second));
+            }
+
+            $this->assertTrue($type->isHigher($_first, $_second), sprintf('"%s" should not higher then "%s"', $first, $second));
+        }
     }
 
-
-    function testNotHigher()
+    /**
+     * @dataProvider getDataForGetHigherValue
+     */
+    function testGetHigherValue($locale, $input, $expected)
     {
+        \Locale::setDefault($locale);
+
         $type = new Time();
-
-        $this->assertFalse($type->isHigher('10:17', '11:17'));
-
-        // Timezone (note: will automatically convert to UTC)
-        $this->assertFalse($type->isHigher(date('H:i:s'), date('H:i:sP', time() + 1020)));
-        $this->assertFalse($type->isHigher(date('H:i:s'), date('H:i:sO', time() + 1020)));
-        $this->assertFalse($type->isHigher('10:17+01:00', '13:17+02:00'));
+        $this->assertEquals($type->sanitizeString($expected)->format('H:i:s'), $type->getHigherValue($type->sanitizeString($input))->format('H:i:s'));
     }
 
-
-    function testLower()
+    public static function getDataForSanitation()
     {
-        $type = new Time();
+        return array(
+            // $locale, $input, $expected, $expectFail
+            array('nl_NL', '12:00', '12:00'),
+            array('nl_NL', '03:00', '03:00'),
+            array('nl_NL', '15:00', '15:00'),
 
-        $this->assertTrue($type->isLower('10:17', '11:17'));
+            array('nl_NL', '04-10-2010', '', true),
+            array('nl_NL', '24:00',      '', true),
 
-        // Timezone (note: will automatically convert to UTC)
-        $this->assertTrue($type->isLower(date('H:i:s', time() - 1020), date('H:i:sP')));
-        $this->assertTrue($type->isLower(date('H:i:s', time() - 1020), date('H:i:sO')));
-        $this->assertTrue($type->isLower('10:12+01:00', '11:17+02:00'));
+            array('en_US', '12:00 AM',    '12:00'),
+            array('en_US', '12:00 PM',    '00:00'),
+            array('en_US', '03:00 AM',    '03:00'),
+            array('en_US', '03:00 PM',    '15:00'),
+
+            array('en_US', '04/10/2010', '', true),
+            array('en_US', '15:00 PM',   '', true),
+            array('en_US', '15:00',      '', true),
+            array('en_US', '03:00',      '', true),
+            array('en_US', '03:00',      '', true),
+        );
     }
 
-
-    function testNotLower()
+    public static function getDataForCompare()
     {
-        $type = new Time();
+        return array(
+            // $locale, $_first (higher), $_second (lower), $comparison
+            array('nl_NL', '15:15', '15:15', '=='),
+            array('nl_NL', '15:15', '15:00', '!='),
+            array('nl_NL', '16:15', '15:15', '!='),
 
-        $this->assertFalse($type->isLower('11:17', '10:17'));
-
-        // Timezone (note: will automatically convert to UTC)
-        $this->assertFalse($type->isLower(date('H:i:sP'), date('H:i:s', time() - 1020)));
-        $this->assertFalse($type->isLower(date('H:i:sO'), date('H:i:s', time() - 1020)));
-        $this->assertFalse($type->isLower('13:17+02:00', '11:17+01:00'));
+            array('nl_NL', '14:15', '12:15'),
+            array('nl_NL', '00:15', '12:15', '</>'),
+            array('nl_NL', '03:00', '02:00'),
+        );
     }
 
-
-    function testEquals()
+    public static function getDataForGetHigherValue()
     {
-        $type = new Time();
-
-        $this->assertTrue($type->isEquals('10:17', '10:17'));
-
-        // Timezone (note: will automatically convert to UTC)
-        $this->assertTrue($type->isEquals('12:10+0100', '13:10+0200'));
-        $this->assertTrue($type->isEquals('12:10+01:00', '13:10+02:00'));
-    }
-
-
-    function testNotEquals()
-    {
-        $type = new Time();
-
-        $this->assertFalse($type->isEquals('10:17', '11:17'));
-
-        // Timezone (note: will automatically convert to UTC)
-        $this->assertFalse($type->isEquals(date('H:i:sO'), date('H:i:s', time() - 60)));
-        $this->assertFalse($type->isEquals(date('H:i:sP'), date('H:i:s', time() - 60)));
-        $this->assertFalse($type->isEquals(date('H:i:sO'), date('H:i:sO', time() - 60)));
-        $this->assertFalse($type->isEquals(date('H:i:sP'), date('H:i:sP', time() - 60)));
-    }
-
-    function testHigherValue()
-    {
-        $type = new Time();
-
-        $this->assertEquals('15:16:00', $type->getHigherValue('15:15'));
-        $this->assertEquals('15:15:01', $type->getHigherValue('15:15:00'));
-
-        $this->assertEquals('00:00:00', $type->getHigherValue('23:59'));
-        $this->assertEquals('23:59:01', $type->getHigherValue('23:59:00'));
-        $this->assertEquals('00:00:00', $type->getHigherValue('23:59:59'));
-
-        $this->assertEquals('00:00:00', $type->getHigherValue('23:59:59'));
-
-        $this->assertEquals('00:00:00', $type->getHigherValue('23:59'));
-        $this->assertEquals('00:00:00', $type->getHigherValue('23:59:59'));
+        return array(
+            // $locale, $input, $expected
+            array('nl_NL', '15:15', '15:16'),
+            array('nl_NL', '23:59', '00:00'),
+        );
     }
 }

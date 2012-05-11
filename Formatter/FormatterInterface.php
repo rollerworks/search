@@ -11,6 +11,8 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
+use Rollerworks\RecordFilterBundle\FieldSet;
+
 /**
  * RecordFiltering formatting interface.
  *
@@ -33,4 +35,11 @@ interface FormatterInterface
      * @api
      */
     public function getFilters();
+
+    /**
+     * Get the fieldSet of the last performed input formatting.
+     *
+     * @return null|FieldSet
+     */
+    public function getFieldSet();
 }

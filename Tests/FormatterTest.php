@@ -384,6 +384,8 @@ class FormatterTest extends ModifierTestCase
 
     function testValueMatcher()
     {
+        \Locale::setDefault('nl');
+
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
@@ -402,7 +404,7 @@ class FormatterTest extends ModifierTestCase
         $expectedValues = array();
         $expectedValues['user']   = new FilterValuesBag('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
         $expectedValues['status'] = new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterValuesBag('date', '29-10-2010', array(new SingleValue('2010-10-29', '29-10-2010')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterValuesBag('date', '29-10-2010', array(new SingleValue(new \DateTime('2010-10-29'), '29-10-2010')), array(), array(), array(), array(), 0);
         $expectedValues['period'] = new FilterValuesBag('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
@@ -411,7 +413,7 @@ class FormatterTest extends ModifierTestCase
     function testValueMatcher2()
     {
         $input = new QueryInput();
-        $input->setInput('User=2,3,10-20; invoice=F2010-48932,F2011-48932-F2012-48932; date=29-10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; invoice=F2010-48932,F2011-48932-F2012-48932; date=29-10/2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', 'user', null, false, true);
@@ -428,7 +430,7 @@ class FormatterTest extends ModifierTestCase
         $expectedValues = array();
         $expectedValues['user']    = new FilterValuesBag('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
         $expectedValues['invoice'] = new FilterValuesBag('invoice', 'F2010-48932,F2011-48932-F2012-48932', array(new SingleValue('F2010-48932')), array(), array(1 => new Range('F2011-48932', 'F2012-48932')), array(), array(), 1);
-        $expectedValues['date']    = new FilterValuesBag('date', '29-10.2010', array(new SingleValue('2010-10-29', '29-10.2010')), array(), array(), array(), array(), 0);
+        $expectedValues['date']    = new FilterValuesBag('date', '29-10/2010', array(new SingleValue(new \DateTime('2010-10-29'), '29-10/2010')), array(), array(), array(), array(), 0);
         $expectedValues['period']  = new FilterValuesBag('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);
@@ -454,7 +456,7 @@ class FormatterTest extends ModifierTestCase
         $expectedValues = array();
         $expectedValues['user']   = new FilterValuesBag('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
         $expectedValues['status'] = new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0);
-        $expectedValues['date']   = new FilterValuesBag('date', '29-10-2010', array(new SingleValue('2010-10-29', '29-10-2010')), array(), array(), array(), array(), 0);
+        $expectedValues['date']   = new FilterValuesBag('date', '29-10-2010', array(new SingleValue(new \DateTime('2010-10-29'), '29-10-2010')), array(), array(), array(), array(), 0);
         $expectedValues['period'] = new FilterValuesBag('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
         $this->assertEquals($expectedValues, $filters[0]);

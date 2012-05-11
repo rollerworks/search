@@ -71,6 +71,11 @@ class Formatter implements FormatterInterface
     protected $modifiers = array();
 
     /**
+     * @var \Rollerworks\RecordFilterBundle\FieldSet|null
+     */
+    protected $fieldSet;
+
+    /**
      * Current field-label.
      *
      * Used for exception handling
@@ -104,6 +109,14 @@ class Formatter implements FormatterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getFieldSet()
+    {
+        return $this->fieldSet;
+    }
+
+    /**
      * Register modifier
      *
      * @param ModifierInterface $modifier
@@ -132,6 +145,8 @@ class Formatter implements FormatterInterface
     public function formatInput(InputInterface $input)
     {
         $this->formatted = false;
+        $this->fieldSet = $input->getFieldsConfig();
+
         $groups = $input->getGroups();
 
         if (empty($groups)) {

@@ -47,13 +47,6 @@ class Range
      */
     public function __construct($lower, $upper, $originalLower = null, $originalUpper = null)
     {
-        if (!is_string($lower) && !is_float($lower) && !is_integer($lower)) {
-            throw new \UnexpectedValueException('Lower value for is not accepted, only string, float and integer are accepted.');
-        }
-        elseif (!is_string($upper) && !is_float($upper) && !is_integer($upper)) {
-            throw new \UnexpectedValueException('Upper value for is not accepted, only string, float and integer are accepted.');
-        }
-
         $this->lower = $lower;
         $this->upper = $upper;
 
@@ -128,10 +121,6 @@ class Range
      */
     public function setLower($value)
     {
-        if (!is_string($value) && !is_float($value) && !is_integer($value)) {
-            throw new \UnexpectedValueException('Lower value type for is not accepted, only string, float and integer are accepted.');
-        }
-
         $this->lower = $value;
     }
 
@@ -146,10 +135,6 @@ class Range
      */
     public function setUpper($value)
     {
-        if (!is_string($value) && !is_float($value) && !is_integer($value)) {
-            throw new \UnexpectedValueException('Upper value type for is not accepted, only string, float and integer are accepted.');
-        }
-
         $this->upper = $value;
     }
 }

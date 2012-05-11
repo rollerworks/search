@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Dumper;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\Range;
 
@@ -21,7 +21,7 @@ use Rollerworks\RecordFilterBundle\Value\Range;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class XML implements DumperInterface
+class XML extends AbstractDumper
 {
     /**
      * {@inheritdoc}
@@ -38,10 +38,12 @@ class XML implements DumperInterface
             $group = $dom->createElement('group');
 
             foreach ($fields as $field => $values) {
+                $type = $formatter->getFieldSet()->get($field)->getType();
+
                 $fieldNode = $dom->createElement('field');
                 $fieldNode->setAttribute('name', $field);
 
-                self::createField($values, $fieldNode, $dom);
+                self::createField($type, $values, $fieldNode, $dom);
 
                 if (count($fieldNode->childNodes) > 0) {
                     $group->appendChild($fieldNode);
@@ -77,11 +79,12 @@ class XML implements DumperInterface
     /**
      * Populates the field-node
      *
-     * @param FilterValuesBag $filter
-     * @param \DOMNode        $fieldNode
-     * @param \DOMDocument    $dom
+     * @param null|FilterTypeInterface $type
+     * @param FilterValuesBag          $filter
+     * @param \DOMNode                 $fieldNode
+     * @param \DOMDocument             $dom
      */
-    private static function createField(FilterValuesBag $filter, \DOMNode $fieldNode, \DOMDocument $dom)
+    private static function createField(FilterTypeInterface $type = null, FilterValuesBag $filter, \DOMNode $fieldNode, \DOMDocument $dom)
     {
         if ($filter->hasSingleValues()) {
             $singleValues = $dom->createElement('single-values');
@@ -89,7 +92,7 @@ class XML implements DumperInterface
             foreach ($filter->getSingleValues() as $value) {
                 $valueNode = $dom->createElement('value');
 
-                $valueNode->appendChild($dom->createTextNode((string) $value));
+                $valueNode->appendChild($dom->createTextNode(self::dumpValue($type, $value->getValue())));
                 $singleValues->appendChild($valueNode);
             }
 
@@ -102,7 +105,7 @@ class XML implements DumperInterface
             foreach ($filter->getExcludes() as $value) {
                 $valueNode = $dom->createElement('value');
 
-                $valueNode->appendChild($dom->createTextNode((string) $value));
+                $valueNode->appendChild($dom->createTextNode(self::dumpValue($type, $value->getValue())));
                 $excludedValues->appendChild($valueNode);
             }
 
@@ -113,7 +116,7 @@ class XML implements DumperInterface
             $ranges = $dom->createElement('ranges');
 
             foreach ($filter->getRanges() as $range) {
-                $ranges->appendChild(self::createRangeNode($range, $dom));
+                $ranges->appendChild(self::createRangeNode($type, $range, $dom));
             }
 
             $fieldNode->appendChild($ranges);
@@ -123,7 +126,7 @@ class XML implements DumperInterface
             $ranges = $dom->createElement('excluded-ranges');
 
             foreach ($filter->getExcludedRanges() as $range) {
-                $ranges->appendChild(self::createRangeNode($range, $dom));
+                $ranges->appendChild(self::createRangeNode($type, $range, $dom));
             }
 
             $fieldNode->appendChild($ranges);
@@ -135,7 +138,7 @@ class XML implements DumperInterface
             foreach ($filter->getCompares() as $compare) {
                 $compareNode = $dom->createElement('compare');
                 $compareNode->setAttribute('opr', $compare->getOperator());
-                $compareNode->appendChild($dom->createTextNode((string) $compare->getValue()));
+                $compareNode->appendChild($dom->createTextNode(self::dumpValue($type, $compare->getValue())));
 
                 $compares->appendChild($compareNode);
             }
@@ -147,19 +150,20 @@ class XML implements DumperInterface
     /**
      * Creates an range node and returns it
      *
-     * @param Range        $range
-     * @param \DOMDocument $dom
+     * @param null|FilterTypeInterface $type
+     * @param Range                    $range
+     * @param \DOMDocument             $dom
      * @return \DOMElement
      */
-    private static function createRangeNode(Range $range, \DOMDocument $dom)
+    private static function createRangeNode(FilterTypeInterface $type = null, Range $range, \DOMDocument $dom)
     {
         $rangeNode = $dom->createElement('range');
 
         $lowerValNode = $dom->createElement('lower');
-        $lowerValNode->appendChild($dom->createTextNode((string) $range->getLower()));
+        $lowerValNode->appendChild($dom->createTextNode(self::dumpValue($type, $range->getLower())));
 
         $higherValNode = $dom->createElement('higher');
-        $higherValNode->appendChild($dom->createTextNode((string) $range->getUpper()));
+        $higherValNode->appendChild($dom->createTextNode(self::dumpValue($type,  $range->getUpper())));
 
         $rangeNode->appendChild($lowerValNode);
         $rangeNode->appendChild($higherValNode);

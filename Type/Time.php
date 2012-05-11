@@ -20,27 +20,24 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Time implements FilterTypeInterface, ValuesToRangeInterface
+class Time extends Date
 {
-    /**
-     * Get timestamp of an value
-     *
-     * @param string $time
-     * @return integer
-     */
-    protected function getTimestamp($time)
-    {
-        $date = new \DateTime($time);
-
-        return $date->getTimestamp();
-    }
-
     /**
      * {@inheritdoc}
      */
     public function sanitizeString($input)
     {
-        return DateTimeHelper::timeToISO($input);
+        if (is_object($input)) {
+            return $input;
+        }
+
+        if ($input !== $this->lastResult && !DateTimeHelper::validateLocalDateTime($input, DateTimeHelper::ONLY_TIME, $this->lastResult) ) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        }
+
+        $input = $this->lastResult;
+
+        return new \DateTime($input);
     }
 
     /**
@@ -48,69 +45,27 @@ class Time implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function formatOutput($value)
     {
+        if (!$value instanceof \DateTime) {
+            return $value;
+        }
 
+        return \IntlDateFormatter::create(
+            \Locale::getDefault(),
+            \IntlDateFormatter::NONE,
+            \IntlDateFormatter::SHORT,
+            date_default_timezone_get(),
+            \IntlDateFormatter::GREGORIAN
+        )->format($value);
     }
 
     /**
-     * Internal helper function for fixing cases with timezone usage.
+     * {@inheritdoc}
      *
-     * @param string $input
-     * @param string $input2
-     * @return array
+     * @param \DateTime $input
      */
-    protected function addTimezone($input, $input2)
+    public function dumpValue($input)
     {
-        $time1 = strpos($input, '+');
-        $time2 = strpos($input2, '+');
-
-        if (false !== $time1 && false === $time2) {
-            return array($input, $input2 . \date('P'));
-        }
-        elseif (false === $time1 && false !== $time2) {
-            return array($input . \date('P'), $input2);
-        }
-        else {
-            return array($input, $input2);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isHigher($input, $nextValue)
-    {
-        $times = $this->addTimezone($input, $nextValue);
-
-        $input = $times[0];
-        $nextValue = $times[1];
-
-        return ($this->getTimestamp($input) > $this->getTimestamp($nextValue));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isLower($input, $nextValue)
-    {
-        $times = $this->addTimezone($input, $nextValue);
-
-        $input = $times[0];
-        $nextValue = $times[1];
-
-        return ($this->getTimestamp($input) < $this->getTimestamp($nextValue));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEquals($input, $nextValue)
-    {
-        $times = $this->addTimezone($input, $nextValue);
-
-        $input = $times[0];
-        $nextValue = $times[1];
-
-        return ($this->getTimestamp($input) === $this->getTimestamp($nextValue));
+        return $input->format('H:i:s');
     }
 
     /**
@@ -118,42 +73,58 @@ class Time implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function validateValue($input, &$message = null)
     {
-        $input = str_replace('.', ':', $input);
-
         $message = 'This value is not an valid time';
 
-        return DateTimeHelper::isTime($input);
-    }
-
-     /**
-     * {@inheritdoc}
-     */
-    public function sortValuesList(SingleValue $first, SingleValue $second)
-    {
-        $a = $this->getTimestamp($first->getValue());
-        $b = $this->getTimestamp($second->getValue());
-
-        if ($a == $b) {
-            return 0;
-        }
-
-        return $a < $b ? -1 : 1;
+        return DateTimeHelper::validateLocalDateTime($input, DateTimeHelper::ONLY_TIME, $this->lastResult);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     * @param \DateTime $nextValue
+     */
+    public function isHigher($input, $nextValue)
+    {
+        $firstHour  = (integer) $input->format('H');
+        $secondHour = (integer) $nextValue->format('H');
+
+        if ($firstHour <> $secondHour && (0 == $firstHour || 0 == $secondHour)) {
+            return true;
+        }
+
+        return ($input->getTimestamp() > $nextValue->getTimestamp());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     * @param \DateTime $nextValue
+     */
+    public function isLower($input, $nextValue)
+    {
+        $firstHour  = (integer) $input->format('H');
+        $secondHour = (integer) $nextValue->format('H');
+
+        if ($firstHour <> $secondHour && (0 == $firstHour || 0 == $secondHour)) {
+            return true;
+        }
+
+        return ($input->getTimestamp() < $nextValue->getTimestamp());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     * @return \DateTime
      */
     public function getHigherValue($input)
     {
-        $date = new \DateTime($input);
+        $date = clone $input;
+        $date->modify('+1 minute');
 
-        if (preg_match('#\d{1,2}:\d{1,2}:\d{1,2}([+-]\d{1,2}([:.]?\d{1,2})?)?$#', $input)) {
-            $date->modify('+1 second');
-        }
-        else {
-            $date->modify('+1 minute');
-        }
-
-        return $date->format('H:i:s');
+        return $date;
     }
 }

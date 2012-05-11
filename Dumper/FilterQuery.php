@@ -30,6 +30,8 @@ class FilterQuery extends AbstractDumper
      * @param FormatterInterface $formatter
      * @param boolean            $fieldPerLine  Return each field on a new line
      * @return string
+     *
+     * @todo Use the formatted value instead of the dumped version, and use the correct label.
      */
     public function dumpFilters(FormatterInterface $formatter, $fieldPerLine = false)
     {
@@ -39,7 +41,7 @@ class FilterQuery extends AbstractDumper
             $filterQuery .= '( ';
 
             foreach ($fields as $label => $values) {
-                $filterQuery .= $label . '=' . implode(', ', self::filterStructToArray($values, true)) . '; ';
+                $filterQuery .= $label . '=' . implode(', ', self::filterStructToArray($formatter, $label, $values, true)) . '; ';
 
                 if ($fieldPerLine) {
                     $filterQuery = rtrim($filterQuery);

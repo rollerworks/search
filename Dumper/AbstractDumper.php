@@ -13,6 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Dumper;
 
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 
 /**
  * AbstractDumper
@@ -29,43 +30,64 @@ abstract class AbstractDumper implements DumperInterface
      * Ranges will always have both-side values quoted like "lower"-"higher".
      * Single values are only quoted depending on $quoteLooseValue
      *
-     * @param FilterValuesBag $filter
-     * @param boolean         $quoteLooseValue
+     * @param FormatterInterface $formatter
+     * @param string             $fieldName
+     * @param FilterValuesBag    $filter
+     * @param boolean            $quoteLooseValue
      * @return array
      */
-    protected static function filterStructToArray(FilterValuesBag $filter, $quoteLooseValue = false)
+    protected static function filterStructToArray(FormatterInterface $formatter, $fieldName, FilterValuesBag $filter, $quoteLooseValue = false)
     {
+        $type = $formatter->getFieldSet()->get($fieldName)->getType();
         $filters = array();
 
         foreach ($filter->getSingleValues() as $value) {
+            $value = self::dumpValue($type, $value->getValue());
+
             if ($quoteLooseValue) {
-                $value = self::quoteValue((string) $value);
+                $value = self::quoteValue($value);
             }
 
-            $filters[] = (string) $value;
+            $filters[] = $value;
         }
 
         foreach ($filter->getExcludes() as $value) {
+            $value = self::dumpValue($type, $value->getValue());
+
             if ($quoteLooseValue) {
-                $value = self::quoteValue((string) $value);
+                $value = self::quoteValue($value);
             }
 
-            $filters[] = '!' . (string) $value;
+            $filters[] = '!' . $value;
         }
 
         foreach ($filter->getRanges() as $range) {
-            $filters[] = self::quoteValue($range->getLower()) . '-' . self::quoteValue($range->getUpper());
+            $filters[] = self::quoteValue(self::dumpValue($type, $range->getLower())) . '-' . self::quoteValue(self::dumpValue($type, $range->getUpper()));
         }
 
         foreach ($filter->getExcludedRanges() as $range) {
-            $filters[] = '!' . self::quoteValue($range->getLower()) . '-' . self::quoteValue($range->getUpper());
+            $filters[] = '!' . self::quoteValue(self::dumpValue($type, $range->getLower())) . '-' . self::quoteValue(self::dumpValue($type, $range->getUpper()));
         }
 
         foreach ($filter->getCompares() as $value) {
-            $filters[] = (string) $value;
+            $filters[] = $value->getOperator() . self::dumpValue($type, $value->getValue());
         }
 
         return $filters;
+    }
+
+    /**
+     * @param FilterTypeInterface $type
+     * @param string              $value
+     * @return string
+     */
+    public static function dumpValue(FilterTypeInterface $type = null, $value)
+    {
+        if ($type) {
+            $value = $type->dumpValue($value);
+        }
+
+        return (string) $value;
     }
 
     /**

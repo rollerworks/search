@@ -11,8 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
@@ -24,56 +22,94 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
 {
     /**
+     * @var string
+     */
+    protected $lastResult;
+
+    /**
      * {@inheritdoc}
+     *
+     * @return \DateTime
      */
     public function sanitizeString($input)
     {
-        return DateTimeHelper::dateToISO($input);
+        if (is_object($input)) {
+            return $input;
+        }
+
+        if ($input !== $this->lastResult && !DateTimeHelper::validateLocalDateTime($input, DateTimeHelper::ONLY_DATE, $this->lastResult) ) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        }
+
+        $input = $this->lastResult;
+
+        return new \DateTime($input);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param \DateTime $value
      */
     public function formatOutput($value)
     {
+        if (!$value instanceof \DateTime) {
+            return $value;
+        }
 
-    }
-
-    /**
-     * Get timestamp of an value
-     *
-     * @param string $date
-     * @return integer
-     */
-    protected function getTimestamp($date)
-    {
-        $date = new \DateTime($date);
-
-        return $date->getTimestamp();
+        return \IntlDateFormatter::create(
+            \Locale::getDefault(),
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE,
+            date_default_timezone_get(),
+            \IntlDateFormatter::GREGORIAN
+        )->format($value);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     */
+    public function dumpValue($input)
+    {
+        return $input->format('Y-m-d');
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     * @param \DateTime $nextValue
      */
     public function isHigher($input, $nextValue)
     {
-        return ($this->getTimestamp($input) > $this->getTimestamp($nextValue));
+        $firstHour  = (integer)$input->format('H');
+        $secondHour = (integer)$nextValue->format('H');
+
+        return ($input->getTimestamp() > $nextValue->getTimestamp());
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     * @param \DateTime $nextValue
      */
     public function isLower($input, $nextValue)
     {
-        return ($this->getTimestamp($input) < $this->getTimestamp($nextValue));
+        return ($input->getTimestamp() < $nextValue->getTimestamp());
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     * @param \DateTime $nextValue
      */
     public function isEquals($input, $nextValue)
     {
-        return ($this->getTimestamp($input) === $this->getTimestamp($nextValue));
+        return ($input->getTimestamp() === $nextValue->getTimestamp());
     }
 
     /**
@@ -83,7 +119,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     {
         $message = 'This value is not a valid date';
 
-        return DateTimeHelper::isDate($input, false);
+        return DateTimeHelper::validateLocalDateTime($input, DateTimeHelper::ONLY_DATE, $this->lastResult);
     }
 
     /**
@@ -91,7 +127,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      */
     public function getMatcherRegex()
     {
-        return '(?:\d{4}[-/. ]\d{1,2}[-/. ]\d{1,2}|\d{1,2}[-/. ]\d{1,2}[-/. ]\d{4})';
+        return DateTimeHelper::getMatcherRegex(DateTimeHelper::ONLY_DATE);
     }
 
     /**
@@ -99,10 +135,10 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      */
     public function sortValuesList(SingleValue $first, SingleValue $second)
     {
-        $a = $this->getTimestamp($first->getValue());
-        $b = $this->getTimestamp($second->getValue());
+        $a = $first->getValue()->getTimestamp();
+        $b = $second->getValue()->getTimestamp();
 
-        if ($a == $b) {
+        if ($a === $b) {
             return 0;
         }
 
@@ -111,12 +147,15 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
 
     /**
      * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     * @return \DateTime
      */
     public function getHigherValue($input)
     {
-        $date = new \DateTime($input);
+        $date = clone $input;
         $date->modify('+1 day');
 
-        return $date->format('Y-m-d');
+        return $date;
     }
 }

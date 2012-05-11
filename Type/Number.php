@@ -36,7 +36,14 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function formatOutput($value)
     {
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function dumpValue($input)
+    {
+        return $input;
     }
 
     /**

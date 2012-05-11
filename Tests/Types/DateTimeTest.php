@@ -9,208 +9,135 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\RecordFilterBundle\Tests\Types;
 
 use Rollerworks\RecordFilterBundle\Type\DateTime;
 
-class DateTimeTest extends \PHPUnit_Framework_TestCase
+class DateTimeTest extends DateTimeTestCase
 {
-    function testSanitize()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testSanitize($locale, $input, $expected, $timeOptional, $expectFail = false)
     {
-        $type = new DateTime();
+        \Locale::setDefault($locale);
 
-        $this->assertEquals('2010-10-04 12:00:00', $type->sanitizeString('04.10.2010 12:00:00'));
-        $this->assertEquals('2010-10-04 12:00', $type->sanitizeString('04-10-2010 12:00'));
-        $this->assertEquals('2010-10-04 12:00', $type->sanitizeString('2010-10-04 12:00'));
+        $type = new DateTime($timeOptional);
 
-        $this->assertEquals('2010-10-04 12:00', $type->sanitizeString('04.10.2010 12.00'));
-        $this->assertEquals('2010-10-04 12:00', $type->sanitizeString('04-10-2010 12.00'));
-        $this->assertEquals('2010-10-04 12:00', $type->sanitizeString('2010-10-04 12.00'));
+        if ($expectFail) {
+            $this->setExpectedException('\UnexpectedValueException', sprintf('Input value "%s" is not properly validated.', $input));
+        }
 
-        $this->assertEquals('2010-10-04 12:00:00', $type->sanitizeString('04.10.2010 12:00:00'));
-        $this->assertEquals('2010-10-04 12:00:00', $type->sanitizeString('04-10-2010 12:00:00'));
-        $this->assertEquals('2010-10-04 12:00:00', $type->sanitizeString('2010-10-04 12:00:00'));
-
-        $this->assertEquals('2010-10-04 12:00:00', $type->sanitizeString('04.10.2010 12.00.00'));
-        $this->assertEquals('2010-10-04 12:00:00', $type->sanitizeString('04-10-2010 12.00.00'));
-        $this->assertEquals('2010-10-04 12:00:00', $type->sanitizeString('2010-10-04 12.00.00'));
-
-        $this->assertEquals('2010-10-04 11:17', $type->sanitizeString('2010-10-04 11.17AM'));
-        $this->assertEquals('2010-10-04 11:17', $type->sanitizeString('2010-10-04 11:17AM'));
-
-        $this->assertEquals('2010-10-04 23:17', $type->sanitizeString('2010-10-04 11.17PM'));
-        $this->assertEquals('2010-10-04 23:17', $type->sanitizeString('2010-10-04 11:17PM'));
-
-        $this->assertEquals('2010-10-04 23:17', $type->sanitizeString('2010-10-04 11.17pm'));
-        $this->assertEquals('2010-10-04 23:17', $type->sanitizeString('2010-10-04 11:17pm'));
-
-        $this->assertEquals('2010-10-04 11:17:00', $type->sanitizeString('2010-10-04 11.17:00AM'));
-        $this->assertEquals('2010-10-04 11:17:00', $type->sanitizeString('2010-10-04 11:17:00AM'));
-
-        $this->assertEquals('2010-10-04 23:17:00', $type->sanitizeString('2010-10-04 11.17:00PM'));
-        $this->assertEquals('2010-10-04 23:17:00', $type->sanitizeString('2010-10-04 11:17:00PM'));
-
-        $this->assertEquals('2010-10-04 23:17:00', $type->sanitizeString('2010-10-04 11.17:00pm'));
-        $this->assertEquals('2010-10-04 23:17:00', $type->sanitizeString('2010-10-04 11:17:00pm'));
+        $value = $type->sanitizeString($input);
+        $this->assertEquals($expected, $value->format('Y-m-d H:i'));
     }
 
-
-    function testValidation()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testValidation($locale, $input, $expected, $timeOptional, $expectFail = false)
     {
-        $type = new DateTime();
+        \Locale::setDefault($locale);
 
-        $this->assertTrue($type->validateValue('04.10.2010 12:15'));
-        $this->assertTrue($type->validateValue('04.10.2010 12.15'));
-        $this->assertTrue($type->validateValue('04.10.2010 12.15:00'));
-        $this->assertTrue($type->validateValue('04.10.2010 12.15.00'));
+        $type = new DateTime($timeOptional);
 
-        $this->assertTrue($type->validateValue('2010-10-04 12:15'));
-        $this->assertTrue($type->validateValue('2010-10-04 12.15'));
-        $this->assertTrue($type->validateValue('2010-10-04 12.15:00'));
-        $this->assertTrue($type->validateValue('2010-10-04 12.15.00'));
-
-        $this->assertTrue($type->validateValue('2010.10.04 12:15'));
-        $this->assertTrue($type->validateValue('2010.10.04 12.15'));
-        $this->assertTrue($type->validateValue('2010.10.04 12.15:00'));
-        $this->assertTrue($type->validateValue('2010.10.04 12.15.00'));
-
-        $this->assertFalse($type->validateValue('04.10.2010')); // Time is missing
-        $this->assertFalse($type->validateValue('04.13.2010 20:10'));
-        $this->assertFalse($type->validateValue('04.10.2010 23'));
-        $this->assertFalse($type->validateValue('04.10.2010 11:00J'));
-        $this->assertFalse($type->validateValue('04.10.2010 25:00'));
+        if ($expectFail) {
+            $this->assertFalse($type->validateValue($input));
+        }
+        else {
+            $this->assertTrue($type->validateValue($input));
+        }
     }
 
-    function testValidationOptionalTime()
+    /**
+     * @dataProvider getDataForCompare
+     */
+    function testCompares($locale, $first, $second, $comparison = null)
     {
-        $type = new DateTime(true);
+        \Locale::setDefault($locale);
 
-        $this->assertTrue($type->validateValue('04.10.2010 12:15'));
-        $this->assertTrue($type->validateValue('04.10.2010 12.15'));
-        $this->assertTrue($type->validateValue('04.10.2010 12.15:00'));
-        $this->assertTrue($type->validateValue('04.10.2010 12.15.00'));
-
-        $this->assertTrue($type->validateValue('2010-10-04 12:15'));
-        $this->assertTrue($type->validateValue('2010-10-04 12.15'));
-        $this->assertTrue($type->validateValue('2010-10-04 12.15:00'));
-        $this->assertTrue($type->validateValue('2010-10-04 12.15.00'));
-
-        $this->assertTrue($type->validateValue('2010.10.04 12:15'));
-        $this->assertTrue($type->validateValue('2010.10.04 12.15'));
-        $this->assertTrue($type->validateValue('2010.10.04 12.15:00'));
-        $this->assertTrue($type->validateValue('2010.10.04 12.15.00'));
-        $this->assertTrue($type->validateValue('04.10.2010'));
-
-        $this->assertFalse($type->validateValue('04.13.2010 20:10'));
-        $this->assertFalse($type->validateValue('04.10.2010 23'));
-        $this->assertFalse($type->validateValue('04.10.2010 11:00J'));
-        $this->assertFalse($type->validateValue('04.10.2010 25:00'));
-    }
-
-
-    function testHigher()
-    {
         $type = new DateTime();
 
-        $this->assertTrue($type->isHigher('2010-10-04 15:15', '2010-10-04 12:15'));
-        $this->assertTrue($type->isHigher('2010-10-05 12:15', '2010-10-04 12:15'));
-        $this->assertTrue($type->isHigher('2010-10-04 12:15:01', '2010-10-04 12:15'));
+        $first  = $type->sanitizeString($first);
+        $second = $type->sanitizeString($second);
 
-        $this->assertTrue($type->isHigher('2010-10-04 14:15:01+02:00', '2010-10-04 12:15:01+02:00'));
+        if ('==' === $comparison) {
+            $this->assertTrue($type->isEquals($first, $second));
+        }
+        elseif ('!=' === $comparison) {
+            $this->assertFalse($type->isEquals($first, $second));
+        }
+        else {
+            $this->assertTrue($type->isLower($second, $first));
+            $this->assertFalse($type->isLower($first, $second));
 
-        $this->assertTrue($type->isHigher('2010-10-04 03:00:01+02:00', '2010-10-04 03:00:01+03:00'));
-        $this->assertTrue($type->isHigher('2010-10-04 03:00:01+02:00', '2010-10-04 03:00:01+04:00'));
+            $this->assertFalse($type->isHigher($second, $first));
+            $this->assertTrue($type->isHigher($first, $second));
+        }
     }
 
-
-    function testNotHigher()
+    /**
+     * @dataProvider getDataForGetHigherValue
+     */
+    function testGetHigherValue($locale, $input, $expected, $timeOptional = false)
     {
-        $type = new DateTime();
+        \Locale::setDefault($locale);
 
-        $this->assertFalse($type->isHigher('2010-10-04 12:15', '2010-10-04 15:25'));
-        $this->assertFalse($type->isHigher('2010-10-04 12:15', '2010-10-05 12:25'));
-        $this->assertFalse($type->isHigher('2010-10-04 12:15', '2010-10-04 12:15:05'));
-
-        $this->assertFalse($type->isHigher('2010-10-04 12:15:01+02:00', '2010-10-04 14:15:01+02:00'));
-
-        $this->assertFalse($type->isHigher('2010-10-04 03:00:01+02:00', '2010-10-04 04:00:04+03:00'));
-        $this->assertFalse($type->isHigher('2010-10-04 04:00:01+04:00', '2010-10-04 03:00:03+02:00'));
+        $type = new DateTime($timeOptional);
+        $this->assertEquals($type->sanitizeString($expected)->format('Y-m-d H:i:s'), $type->getHigherValue($type->sanitizeString($input))->format('Y-m-d H:i:s'));
     }
 
-
-    function testLower()
+    public static function getDataForSanitation()
     {
-        $type = new DateTime();
+        return array(
+            // $locale, $input, $expected, $timeOptional, $expectFail
+            array('nl_NL', '04-10-2010 12:00', '2010-10-04 12:00', false),
+            array('nl_NL', '04-10-2010  12:00', '2010-10-04 12:00', false),
+            array('nl_NL', '04/10/2010 12:00', '2010-10-04 12:00', false),
+            array('nl_NL', '04-10-2010 15:00', '2010-10-04 15:00', false),
+            array('nl_NL', '04-10-2010 15:00', '2010-10-04 15:00', true),
+            array('nl_NL', '04-10-2010',       '2010-10-04 00:00', true),
+            array('nl_NL', '29-02-2012 15:00', '2012-02-29 15:00', false),
+            array('nl_NL', '04-10-2010',       '', false, true),
+            array('nl_NL', '29-02-2011 15:00', '', false, true),
 
-        $this->assertTrue($type->isLower('2010-10-04 12:15', '2010-10-04 15:25'));
-        $this->assertTrue($type->isLower('2010-10-04 12:15', '2010-10-05 12:25'));
-        $this->assertTrue($type->isLower('2010-10-04 12:15', '2010-10-04 12:15:01'));
-
-        $this->assertTrue($type->isLower('2010-10-04 12:15:01+02:00', '2010-10-04 14:15:01+02:00'));
-        $this->assertTrue($type->isLower('2010-10-04 11:15:01+00:00', '2010-10-04 13:15:01+01:00'));
-
-        $this->assertTrue($type->isLower('2010-10-04 03:00:01+02:00', '2010-10-04 04:00:04+03:00'));
-        $this->assertTrue($type->isLower('2010-10-04 03:00:01+04:00', '2010-10-04 03:00:01+02:00'));
+            array('en_US', '04/21/2010 12:00 AM', '2010-04-21 12:00', false),
+            array('en_US', '04-21-2010 12:00 AM', '2010-04-21 12:00', false),
+            array('en_US', '04/21/10 12:00 AM',   '2010-04-21 12:00', false),
+            array('en_US', '04/10/2010 03:00 AM', '2010-04-10 03:00', false),
+            array('en_US', '04/10/2010 12:00 PM', '2010-04-10 00:00', false),
+            array('en_US', '04/10/2010 03:00 PM', '2010-04-10 15:00', true),
+            array('en_US', '04/10/2010',          '2010-04-10 00:00', true),
+            array('en_US', '02/29/2012 03:00 PM', '2012-02-29 15:00', false),
+            array('en_US', '04/10/2010',          '', false, true),
+            array('en_US', '2010/10/04 15:00 PM', '', false, true),
+            array('en_US', '2010/10/04 15:00',    '', false, true),
+            array('en_US', '29/02/2011 03:00',    '', false, true),
+            array('en_US', '29-02-2011 03:00',    '', false, true),
+        );
     }
 
-
-    function testNotLower()
+    public static function getDataForCompare()
     {
-        $type = new DateTime();
+        return array(
+            // $locale, $first, $second, $comparison
+            array('nl_NL', '04-10-2010 15:15', '04-10-2010 15:15', '=='),
+            array('nl_NL', '04-10-2010 15:15', '04-10-2010 15:00', '!='),
+            array('nl_NL', '04-10-2010 15:15', '04-10-2011 15:15', '!='),
 
-        $this->assertFalse($type->isLower('2010-10-04 15:15', '2010-10-04 12:15'));
-        $this->assertFalse($type->isLower('2010-10-05 12:15', '2010-10-04 12:15'));
-        $this->assertFalse($type->isLower('2010-10-04 12:15:01', '2010-10-04 12:15'));
-
-        $this->assertFalse($type->isLower('2010-10-04 14:15:01+02:00', '2010-10-04 12:15:01+02:00'));
-        $this->assertFalse($type->isLower('2010-10-04 03:00:01+02:00', '2010-10-04 03:00:01+03:00'));
-        $this->assertFalse($type->isLower('2010-10-04 03:00:01+02:00', '2010-10-04 03:00:01+04:00'));
+            array('nl_NL', '04-10-2010 14:15', '04-10-2010 12:15'),
+            array('nl_NL', '05-10-2010 10:15', '04-10-2010 12:15'),
+            array('nl_NL', '04-10-2010 03:00', '04-10-2010 02:00'),
+        );
     }
 
-
-    function testEquals()
+    public static function getDataForGetHigherValue()
     {
-        $type = new DateTime();
-
-        $this->assertTrue($type->isEquals('2010-10-04 12:15', '2010-10-04 12:15'));
-        $this->assertTrue($type->isEquals('2010-10-04 12:15', '2010-10-04 12:15:00'));
-
-        $this->assertTrue($type->isEquals('2010-10-04 12:15:01+02:00', '2010-10-04 13:15:01+03:00'));
-
-        $this->assertTrue($type->isEquals('2010-10-04 02:00:01+02:00', '2010-10-04 03:00:01+03:00'));
-        $this->assertTrue($type->isEquals('2010-10-04 03:00:01+00:00', '2010-10-04 04:00:01+01:00'));
-    }
-
-
-    function testNotEquals()
-    {
-        $type = new DateTime();
-
-        $this->assertFalse($type->isEquals('2010-10-04 12:15', '2010-10-04 15:15'));
-        $this->assertFalse($type->isEquals('2010-10-04 12:15', '2010-10-05 12:15'));
-        $this->assertFalse($type->isEquals('2010-10-04 12:15:01', '2010-10-04 12:15'));
-
-        $this->assertFalse($type->isEquals('2010-10-04 12:15:01+02:00', '2010-10-04 14:15:01+02:00'));
-        $this->assertFalse($type->isEquals('2010-10-04 11:15:01+00:00', '2010-10-04 13:15:01+01:00'));
-
-        $this->assertFalse($type->isEquals('2010-10-04 03:00:01+02:00', '2010-10-04 03:00:01+03:00'));
-        $this->assertFalse($type->isEquals('2010-10-04 03:00:01+04:00', '2010-10-04 03:00:01+02:00'));
-    }
-
-    function testHigherValue()
-    {
-        $type = new DateTime();
-
-        $this->assertEquals('2010-10-04 15:16:00', $type->getHigherValue('2010-10-04 15:15'));
-        $this->assertEquals('2010-10-04 15:15:01', $type->getHigherValue('2010-10-04 15:15:00'));
-
-        $this->assertEquals('2010-10-05 00:00:00', $type->getHigherValue('2010-10-04 23:59'));
-        $this->assertEquals('2010-10-04 23:59:01', $type->getHigherValue('2010-10-04 23:59:00'));
-        $this->assertEquals('2010-10-05 00:00:00', $type->getHigherValue('2010-10-04 23:59:59'));
-
-        $this->assertEquals('2011-01-01 00:00:00', $type->getHigherValue('2010-12-31 23:59:59'));
-
-        $this->assertEquals('2012-02-29 00:00:00', $type->getHigherValue('2012-02-28 23:59'));
-        $this->assertEquals('2011-03-01 00:00:00', $type->getHigherValue('2011-02-28 23:59:59'));
+        return array(
+            // $locale, $input, $expected
+            array('nl_NL', '04-10-2010 15:15', '04-10-2010 15:16'),
+            array('nl_NL', '04-10-2010 23:59', '05-10-2010 00:00'),
+            array('nl_NL', '04-10-2010',       '05-10-2010', true),
+        );
     }
 }

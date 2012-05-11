@@ -133,7 +133,7 @@ class RangeNormalizer implements ModifierInterface
             }
 
             if (isset($ranges[$valIndex])) {
-                $rangesValues[$valIndex] = $ranges[$valIndex]->getLower() . '-' . $ranges[$valIndex]->getUpper();
+                $rangesValues[$valIndex] = $type->dumpValue($ranges[$valIndex]->getLower()) . '-' . $type->dumpValue($ranges[$valIndex]->getUpper());
             }
         }
 
@@ -186,7 +186,7 @@ class RangeNormalizer implements ModifierInterface
                 }
 
                 // Range already exists as normal range
-                if (false !== array_search($range->getLower() . '-' . $range->getUpper(), $rangesValues)) {
+                if (false !== array_search($type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper()), $rangesValues)) {
                     throw new ValidationException('range_same_as_excluded', '!' . self::getRangeQuoted($ranges[$valIndex]));
                 }
             }

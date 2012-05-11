@@ -9,93 +9,124 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\RecordFilterBundle\Tests\Types;
 
 use Rollerworks\RecordFilterBundle\Type\Date;
 
-class DaterTest extends \PHPUnit_Framework_TestCase
+class DateTest extends DateTimeTestCase
 {
-    function testSanitize()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testSanitize($locale, $input, $expected, $expectFail = false)
     {
+        \Locale::setDefault($locale);
+
         $type = new Date();
 
-        $this->assertEquals('2010-10-04', $type->sanitizeString('04.10.2010'));
-        $this->assertEquals('2010-10-04', $type->sanitizeString('04.10.2010'));
-        $this->assertEquals('2010-10-04', $type->sanitizeString('04-10-2010'));
+        if ($expectFail) {
+            $this->setExpectedException('\UnexpectedValueException', sprintf('Input value "%s" is not properly validated.', $input));
+        }
 
-        $this->assertEquals('2010-10-04', $type->sanitizeString('2010.10.04'));
-        $this->assertEquals('2010-10-04', $type->sanitizeString('2010-10-04'));
+        $value = $type->sanitizeString($input);
+        $this->assertEquals($expected, $value->format('Y-m-d'));
     }
 
-
-    function testValidation()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testValidation($locale, $input, $expected, $expectFail = false)
     {
+        \Locale::setDefault($locale);
+
         $type = new Date();
 
-        $this->assertTrue($type->validateValue('04.10.2010'));
-        $this->assertFalse($type->validateValue('04.13.2010'));
+        if ($expectFail) {
+            $this->assertFalse($type->validateValue($input));
+        }
+        else {
+            $this->assertTrue($type->validateValue($input));
+        }
     }
 
-
-    function testHigher()
+    /**
+     * @dataProvider getDataForCompare
+     */
+    function testCompares($locale, $first, $second, $comparison = null)
     {
+        \Locale::setDefault($locale);
+
         $type = new Date();
 
-        $this->assertTrue($type->isHigher('05.10.2010', '04.10.2010'));
+        $first  = $type->sanitizeString($first);
+        $second = $type->sanitizeString($second);
+
+        if ('==' === $comparison) {
+            $this->assertTrue($type->isEquals($first, $second));
+        }
+        elseif ('!=' === $comparison) {
+            $this->assertFalse($type->isEquals($first, $second));
+        }
+        else {
+            $this->assertTrue($type->isLower($second, $first));
+            $this->assertFalse($type->isLower($first, $second));
+
+            $this->assertFalse($type->isHigher($second, $first));
+            $this->assertTrue($type->isHigher($first, $second));
+        }
     }
 
-
-    function testNotHigher()
+    /**
+     * @dataProvider getDataForGetHigherValue
+     */
+    function testGetHigherValue($locale, $input, $expected)
     {
-        $type = new Date();
+        \Locale::setDefault($locale);
 
-        $this->assertFalse($type->isHigher('04.10.2010', '05.10.2010'));
+        $type = new Date();
+        $this->assertEquals($type->sanitizeString($expected)->format('Y-m-d'), $type->getHigherValue($type->sanitizeString($input))->format('Y-m-d'));
     }
 
-
-    function testLower()
+    public static function getDataForSanitation()
     {
-        $type = new Date();
+        return array(
+            // $locale, $input, $expected, $expectFail
+            array('nl_NL', '04-10-2010', '2010-10-04'),
+            array('nl_NL', '04-10-10',   '2010-10-04'),
+            array('nl_NL', '04/10/2010', '2010-10-04'),
+            array('nl_NL', '31-12-2010', '2010-12-31'),
+            array('nl_NL', '29-02-2012', '2012-02-29'),
+            array('nl_NL', '29-02-2011', '', true),
+            array('nl_NL', '04-10-2010 12:00', '', true),
 
-        $this->assertTrue($type->isLower('03.10.2010', '04.10.2010'));
+            array('en_US', '04/21/2010', '2010-04-21'),
+            array('en_US', '04-21-2010', '2010-04-21'),
+            array('en_US', '04/21/10',   '2010-04-21'),
+            array('en_US', '12/31/2010', '2010-12-31'),
+            array('en_US', '02/29/2012', '2012-02-29'),
+            array('en_US', '29/02/2011', '', true),
+        );
     }
 
-
-    function testNotLower()
+    public static function getDataForCompare()
     {
-        $type = new Date();
+        return array(
+            // $locale, $first (higher), $second (lower), $comparison
+            array('nl_NL', '04-10-2010', '04-10-2010', '=='),
+            array('nl_NL', '04-10-2010', '05-10-2010', '!='),
 
-        $this->assertFalse($type->isLower('05.10.2010', '04.10.2010'));
+            array('nl_NL', '04-11-2010', '04-10-2010'),
+            array('nl_NL', '05-10-2010', '04-10-2010'),
+        );
     }
 
-
-    function testEquals()
+    public static function getDataForGetHigherValue()
     {
-        $type = new Date();
-
-        $this->assertTrue($type->isEquals('05.10.2010', '05.10.2010'));
-        $this->assertTrue($type->isEquals('05.10.2010', '05-10-2010'));
-        $this->assertTrue($type->isEquals('05-10-2010', '05.10.2010'));
-    }
-
-
-    function testNotEquals()
-    {
-        $type = new Date();
-
-        $this->assertFalse($type->isEquals('03.10.2010', '04.10.2010'));
-        $this->assertFalse($type->isEquals('03.10.2010', '04-10-2010'));
-        $this->assertFalse($type->isEquals('03-10-2010', '04.10.2010'));
-    }
-
-    function testHigherValue()
-    {
-        $type = new Date();
-
-        $this->assertEquals('2010-10-05', $type->getHigherValue('2010-10-04'));
-        $this->assertEquals('2012-01-01', $type->getHigherValue('2011-12-31'));
-
-        $this->assertEquals('2012-02-29', $type->getHigherValue('2012-02-28'));
-        $this->assertEquals('2011-03-01', $type->getHigherValue('2011-02-28'));
+        return array(
+            // $locale, $input, $expected
+            array('nl_NL', '04-10-2010', '05-10-2010'),
+            array('nl_NL', '30-11-2010', '01-12-2010'),
+            array('nl_NL', '31-12-2010', '01-01-2011'),
+        );
     }
 }

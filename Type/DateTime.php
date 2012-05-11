@@ -14,11 +14,11 @@ namespace Rollerworks\RecordFilterBundle\Type;
 use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 
 /**
- * Time Formatter-validation type
+ * Time Formatter-validation type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DateTime extends Time implements ValueMatcherInterface
+class DateTime extends Date
 {
     /**
      * Is the time-part optional
@@ -26,6 +26,11 @@ class DateTime extends Time implements ValueMatcherInterface
      * @var boolean
      */
     protected $timeOptional = false;
+
+    /**
+     * @var boolean
+     */
+    protected $hasTime = false;
 
     /**
      * Constructor
@@ -42,7 +47,17 @@ class DateTime extends Time implements ValueMatcherInterface
      */
     public function sanitizeString($input)
     {
-        return DateTimeHelper::dateToISO($input);
+        if (is_object($input)) {
+            return $input;
+        }
+
+        if ($input !== $this->lastResult && !DateTimeHelper::validateLocalDateTime($input, ($this->timeOptional ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $this->hasTime) ) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        }
+
+        $input = $this->lastResult;
+
+        return new \DateTime($input);
     }
 
     /**
@@ -50,7 +65,27 @@ class DateTime extends Time implements ValueMatcherInterface
      */
     public function formatOutput($value)
     {
+        if (!$value instanceof \DateTime) {
+            return $value;
+        }
 
+        return \IntlDateFormatter::create(
+            \Locale::getDefault(),
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::SHORT,
+            date_default_timezone_get(),
+            \IntlDateFormatter::GREGORIAN
+        )->format($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     */
+    public function dumpValue($input)
+    {
+        return $input->format('Y-m-d\TH:i:s');
     }
 
     /**
@@ -60,7 +95,7 @@ class DateTime extends Time implements ValueMatcherInterface
     {
         $message = 'This value is not an valid date with ' . ($this->timeOptional ? 'optional ' : '') . 'time';
 
-        return DateTimeHelper::isDate($input, ($this->timeOptional ? 1 : true));
+        return DateTimeHelper::validateLocalDateTime($input, ($this->timeOptional ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $this->hasTime);
     }
 
     /**
@@ -68,23 +103,26 @@ class DateTime extends Time implements ValueMatcherInterface
      */
     public function getMatcherRegex()
     {
-        return '(?:\d{4}[-/. ]\d{1,2}[-/. ]\d{1,2}|\d{1,2}[-/. ]\d{1,2}[-/. ]\d{4}(?:(?:[T]|\s+)\d{1,2}[:.]\d{2}(?:[:.]\d{2})?(?:\s+[ap]m|(?:[+-]\d{1,2}(?:[:.]?\d{1,2})?))?)' . ($this->timeOptional ? '?' : '') .')';
+        return DateTimeHelper::getMatcherRegex(($this->timeOptional ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME));
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param \DateTime $input
+     * @return \DateTime
      */
     public function getHigherValue($input)
     {
-        $date = new \DateTime($input);
+        $date = clone $input;
 
-        if (preg_match('#\d{1,2}:\d{1,2}:\d{1,2}([+-]\d{1,2}([:.]?\d{1,2})?)?$#', $input)) {
-            $date->modify('+1 second');
+        if (!$this->hasTime) {
+            $date->modify('+1 day');
         }
         else {
             $date->modify('+1 minute');
         }
 
-        return $date->format('Y-m-d H:i:s');
+        return $date;
     }
 }

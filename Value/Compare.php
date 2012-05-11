@@ -55,12 +55,4 @@ class Compare extends SingleValue
     {
         return $this->operator;
     }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->operator . $this->value;
-    }
 }

@@ -38,15 +38,11 @@ class SingleValue
      */
     public function __construct($value, $original = null)
     {
-        if (!is_string($value) && !is_float($value) && !is_integer($value)) {
-            throw new \UnexpectedValueException('Value type is not accepted, only string, float and integer are accepted.');
-        }
-
         if (is_null($original)) {
             $original = $value;
         }
 
-        $this->value = $value;
+        $this->value         = $value;
         $this->originalValue = $original;
     }
 
@@ -61,10 +57,6 @@ class SingleValue
      */
     public function setValue($value)
     {
-        if (!is_string($value) && !is_float($value) && !is_integer($value)) {
-            throw new \UnexpectedValueException('Value type is not accepted, only string, float and integer are accepted.');
-        }
-
         $this->value = $value;
     }
 
@@ -90,15 +82,5 @@ class SingleValue
     public function getOriginalValue()
     {
         return $this->originalValue;
-    }
-
-    /**
-     * @return string
-     *
-     * @deprecated The type is mixed and thus not an value
-     */
-    public function __toString()
-    {
-        return $this->value;
     }
 }

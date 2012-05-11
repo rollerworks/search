@@ -49,27 +49,37 @@ class Validator implements ModifierInterface
         foreach ($filterStruct->getSingleValues() as $value) {
             $this->validateValue($type, $value->getValue());
 
-            $_value = $type->sanitizeString($value->getValue());
+            $sanitizedValue = $type->sanitizeString($value->getValue());
+            $_value         = $sanitizedValue;
+
+            if (!is_scalar($sanitizedValue)) {
+                $_value = $type->dumpValue($sanitizedValue);
+            }
 
             if (in_array($_value, $excludedValues)) {
                 throw new ValidationException('value_in_exclude',  $value->getOriginalValue());
             }
 
             $singleValues[] = $_value;
-            $value->setValue($_value);
+            $value->setValue($sanitizedValue);
         }
 
         foreach ($filterStruct->getExcludes() as $value) {
             $this->validateValue($type, $value->getValue(), '!' . $value->getValue());
 
-            $_value = $type->sanitizeString($value->getValue());
+            $sanitizedValue = $type->sanitizeString($value->getValue());
+            $_value         = $sanitizedValue;
+
+            if (!is_scalar($sanitizedValue)) {
+                $_value = $type->dumpValue($sanitizedValue);
+            }
 
             if (in_array($_value, $singleValues)) {
                 throw new ValidationException('value_in_include', '!' . $value->getOriginalValue());
             }
 
             $excludedValues[] = $_value;
-            $value->setValue($_value);
+            $value->setValue($sanitizedValue);
         }
 
         foreach ($filterStruct->getRanges() as $range) {
@@ -81,7 +91,7 @@ class Validator implements ModifierInterface
 
             $this->validateRange($type, $range);
 
-            $_value = $range->getLower() . '-' . $range->getUpper();
+            $_value = $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
 
             if (in_array($_value, $excludedRanges)) {
                 throw new ValidationException('value_in_exclude', $range->getOriginalLower() . '-' . $range->getOriginalUpper());
@@ -99,7 +109,7 @@ class Validator implements ModifierInterface
 
             $this->validateRange($type, $range);
 
-            $_value = $range->getLower() . '-' . $range->getUpper();
+            $_value = $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
 
             if (in_array($_value, $ranges)) {
                 throw new ValidationException('range_same_as_excluded', '!"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
@@ -135,14 +145,14 @@ class Validator implements ModifierInterface
      */
     protected function validateValue(FilterTypeInterface $type, $value, $originalValue = null)
     {
-        $sMessage = '';
+        $message = '';
 
         if (!strlen($originalValue)) {
             $originalValue = $value;
         }
 
-        if (!$type->validateValue($value, $sMessage)) {
-            throw new ValidationException('validation_warning', $originalValue, array('%msg%' => $sMessage));
+        if (!$type->validateValue($value, $message)) {
+            throw new ValidationException('validation_warning', $originalValue, array('%msg%' => $message));
         }
     }
 

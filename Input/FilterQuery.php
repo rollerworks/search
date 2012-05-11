@@ -278,7 +278,7 @@ class FilterQuery extends AbstractInput
         $valueMatcherRegex = '';
 
         if (!empty($valueMatcher)) {
-            $regex = $valueMatcher->getRegex();
+            $regex = $valueMatcher->getMatcherRegex();
             $valueMatcherRegex = '|' . $regex . '-' . $regex . '|(?:>=|<=|<>|[<>!])?' . $regex;
         }
 
@@ -307,7 +307,7 @@ class FilterQuery extends AbstractInput
         $valueMatcherRegex = '';
 
         if ($filterConfig->hasType() && ($filterConfig->getType() instanceof ValueMatcherInterface)) {
-            $valueMatcherRegex = '|' . $filterConfig->getType()->getRegex();
+            $valueMatcherRegex = '|' . $filterConfig->getType()->getMatcherRegex();
         }
 
         $valueIndex = -1;

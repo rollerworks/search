@@ -59,6 +59,14 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     /**
      * {@inheritdoc}
      */
+    public function dumpValue($input)
+    {
+        return $input;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isHigher($input, $nextValue)
     {
         return false;

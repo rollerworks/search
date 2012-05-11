@@ -32,6 +32,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected $translator = null;
 
+    private $currentLocale = false;
+
     protected function setUp()
     {
         $translator = new Translator('en', new MessageSelector());
@@ -41,6 +43,26 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $translator->addResource('xliff', __DIR__ . '../../Resources/translations/messages.en.xliff', 'en');
 
         $this->translator = $translator;
+        $this->setUpLocale();
+    }
+
+    protected function setUpLocale()
+    {
+        if (!$this->currentLocale) {
+            $this->currentLocale = \Locale::getDefault();
+        }
+    }
+
+    protected function restoreLocal()
+    {
+        if ($this->currentLocale) {
+            \Locale::setDefault($this->currentLocale);
+        }
+    }
+
+    protected function tearDown()
+    {
+        $this->restoreLocal();
     }
 
     /**

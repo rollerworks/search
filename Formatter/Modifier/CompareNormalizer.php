@@ -12,8 +12,10 @@
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\RecordFilterBundle\Value\Compare;
 
 /**
  * Normalizes comparisons.
@@ -50,11 +52,19 @@ class CompareNormalizer implements ModifierInterface
             return true;
         }
 
+        $type = $filterConfig->getType();
+
         $compares = $filterStruct->getCompares();
 
         foreach ($compares as $compare) {
             if ('=' === substr($compare->getOperator(), -1)) {
-                $comparisonIndex = array_search(substr($compare->getOperator(), 0, 1) . $compare->getValue(), $compares);
+
+                if (is_scalar($compare->getValue())) {
+                    $comparisonIndex = array_search(substr($compare->getOperator(), 0, 1) . $compare->getValue(), $compares);
+                }
+                else {
+                    $comparisonIndex = self::findArrayIndex($type, substr($compare->getOperator(), 0, 1), $compare, $compares);
+                }
 
                 if ($comparisonIndex !== false) {
                     $this->addMsg('redundant_comparison', array(
@@ -77,6 +87,32 @@ class CompareNormalizer implements ModifierInterface
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    /**
+     * Find the array index of an none-scalar value.
+     *
+     * @param FilterTypeInterface $type
+     * @param string              $operator
+     * @param Compare             $needle
+     * @param Compare[]           $haystack
+     * @return integer
+     */
+    protected static function findArrayIndex(FilterTypeInterface $type, $operator, Compare $needle, array $haystack)
+    {
+        $_needle = $type->dumpValue($needle->getValue());
+
+        foreach ($haystack as $index => $compare) {
+            if ($operator !== $compare->getOperator()) {
+                continue;
+            }
+
+            if ($_needle === $type->dumpValue($compare->getValue())) {
+                return $index;
+            }
+        }
+
+        return false;
     }
 
     /**

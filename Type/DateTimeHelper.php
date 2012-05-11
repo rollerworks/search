@@ -11,165 +11,243 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
+use NumberFormatter;
+use IntlDateFormatter;
+
 /**
- * DateTime validation-type helper class
+ * DateTime helper class
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- *
- * @todo Use DateTime extension
  */
 class DateTimeHelper
 {
     /**
-     * Look if the given input is an legal date (with time).
-     *
-     * Accepts both European format and US.
-     *
-     * @param string       $input
-     * @param bool|integer $withTime
-     * @return boolean
+     * Only date input is accepted
      */
-    public static function isDate($input, $withTime = false)
-    {
-        if (!is_string($input)) {
-            return false;
-        }
-
-        // http://www.w3.org/TR/NOTE-datetime
-        // Look if there is an time-format
-
-        // ISO-date:    (?:([0-9]{4})[-/ ](1[0-2]|[0]?[1-9])[-/ ](3[01]?|2[0-9]|[01]?[0-9]))
-        // Euro-date:   (?:(3[01]?|2[0-9]|[01]?[0-9])[-/ ](1[0-2]|[0]?[1-9])[-/ ]([0-9]{4}))
-        // Time:
-        //              (?:(?:[01]?\d|2[0-3])[:.][0-5]\d(?:[:.][0-5]\d)?(?:\.\d+(?:-\d+)?)?)
-        //              (?:(?:1[0-2]|0?[1-9])[:.][0-5]\d(?:[:.][0-5]\d)?\h*[aApP]\.?[mM]\.?)
-        // Timezone:    (?:[+-](?:0[0-9]|1[012])(?:[:.]?[03]\d)?)
-
-        if ($withTime && !preg_match('#^(?:(?:([0-9]{4})[-/. ](1[0-2]|[0]?[1-9])[-/. ](3[01]?|2[0-9]|[01]?[0-9]))|(?:(3[01]?|2[0-9]|[01]?[0-9])[-/. ](1[0-2]|[0]?[1-9])[-/. ]([0-9]{4})))(?:[ T](?:(?:(?:[01]?\d|2[0-3])[:.][0-5]\d(?:[:.][0-5]\d)?(?:[+-](?:0[0-9]|1[012])(?:[:.]?[03]\d)?)?(?:\.\d+(?:-\d+)?)?)|(?:(?:1[0-2]|0?[1-9]):[0-5]\d(?:[:.][0-5]\d)?\h*[aApP]\.?[mM]\.?)))'.($withTime === 1 ?  '?' : '').'$#s', $input, $dateMatch)) {
-            return false;
-        }
-        elseif (!$withTime && !preg_match('#^(?:(?:([0-9]{4})[-/. ](1[0-2]|[0]?[1-9])[-/. ](3[01]?|2[0-9]|[01]?[0-9]))|(?:(3[01]?|2[0-9]|[01]?[0-9])[-/. ](1[0-2]|[0]?[1-9])[-/. ]([0-9]{4})))$#s', $input, $dateMatch)) {
-            return false;
-        }
-
-        // MM-DD-YYYY
-        // 5/4/6 EU
-        // 2/3/1 US
-
-        if (! empty($dateMatch[4])) {
-            return \checkdate($dateMatch[5], $dateMatch[4], $dateMatch[6]);
-        }
-        else {
-            return \checkdate($dateMatch[2], $dateMatch[3], $dateMatch[1]);
-        }
-    }
+    const ONLY_DATE = 0;
 
     /**
-     * Format the input date to ISO date format.
-     *
-     * The output can be used directly in a database field.
-     * Returns the same input if it is already in ISO format.
-     *
-     * Throws an exception on illegal input.
-     *
-     * @param string $input
-     * @return string
-     *
-     * @throws \InvalidArgumentException
+     * Only date with time input is accepted
      */
-    public static function dateToISO($input)
-    {
-        if (!is_string($input)) {
-            throw (new \InvalidArgumentException('Illegal input-type for dateToISO'));
-        }
-
-        $input = trim($input);
-
-        // Already ISO format
-        if (preg_match('#^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} \d{1,2}:\d{2}(:\d{2})?$#', $input)) {
-            return $input;
-        }
-
-        // Already ISO format, but the separator is wrong
-        if (preg_match('#^([0-9]{4})[-/. ]([0-9]{1,2})[-/. ]([0-9]{1,2})((?:[T]?|\h+)\d{1,2}[:.]\d{2}.*)?#', $input, $dateReformat)) {
-            $return = $dateReformat[1] . '-' . sprintf('%02d', $dateReformat[2]) . '-' . sprintf('%02d', $dateReformat[3]);
-        }
-        elseif (preg_match('#^([0-9]{1,2})[-/. ]([0-9]{1,2})[-/. ]([0-9]{4})((?:[T]?|\h+)\d{1,2}[:.]\d{2}.*)?#', $input, $dateReformat)) {
-            $return = sprintf('%02d', $dateReformat[3]) . '-' . sprintf('%02d', $dateReformat[2]) . '-' . $dateReformat[1];
-        }
-        else {
-            throw (new \InvalidArgumentException('Unsupported format given for dateToISO()'));
-        }
-
-        if (! empty($dateReformat[4])) {
-            $return .= ' ' . self::timeToISO(ltrim($dateReformat[4], 'T'));
-        }
-
-        return $return;
-    }
+    const ONLY_DATE_TIME = 1;
 
     /**
-     * Convert an human readable time to ISO.
+     * Only date with optional time input is accepted.
+     */
+    const ONLY_DATE_OPTIONAL_TIME = 2;
+
+    /**
+     * Only time input is accepted
+     */
+    const ONLY_TIME = 3;
+
+    /**
+     * @var array
+     */
+    private static $regexData = array();
+
+    /**
+     * @var string
+     */
+    private static $currentLocale = '';
+
+    /**
+     * Get the Locale date(Time) format.
      *
-     * Converts am/pm to 24 hour, similar to dateToISO() but then only time.
+     * Known limitations:
+     * * Seconds are not accepted
+     * * Timezone is not configurable
      *
-     * The input must be already validated.
-     *
-     * @param string $input
+     * @param string          $inputValue
+     * @param boolean|integer $validationFlag
+     * @param string          $isoDateTime Output of dateTime as ISO
+     * @param boolean         $hashTime
+     * @param string|null     $locale
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @todo Accept input that is already ISO
      */
-    public static function timeToISO($input)
+    public static function validateLocalDateTime($inputValue, $validationFlag = self::ONLY_DATE, &$isoDateTime = null, &$hashTime = false, $locale = null)
     {
-        $input = trim($input);
+        $locale = $locale ?: \Locale::getDefault();
 
-        if (preg_match('#^(\d{1,2})[:.](\d{2})([:.]\d{2})?([+-](?:0[0-9]|1[012])(?:[:.]?[03]\d)?)?$#', $input, $matches)) {
-            $input = $matches[1] . ':' . $matches[2] . (isset($matches[3]) ? str_replace('.', ':', $matches[3]) : '');
-
-            // Re-add timezone
-            $input .= (! empty($matches[4]) ? $matches[4] : '');
+        if (self::$currentLocale !== $locale) {
+            self::loadRegexData($locale);
         }
-        elseif (preg_match('/^(?:(1[0-2]|0?[1-9])[:.]([0-5]\d)(?:[:.]([0-5]\d))?\h*([aApP])\.?[mM]\.?)$/', $input, $matches)) {
-            if (!empty($matches[4]) && strtolower($matches[4]) == 'p') {
-                $matches[1] = intval($matches[1]);
 
-                if ($matches[1] == 12) {
-                    $matches[1] = '00';
-                }
-                else {
-                    $matches[1] += 12;
+        $hasDate = ($validationFlag < self::ONLY_TIME);
+
+        if (self::ONLY_TIME === $validationFlag) {
+            $regex = self::$regexData['time']['validate'];
+        }
+        elseif (self::ONLY_DATE_OPTIONAL_TIME === $validationFlag || self::ONLY_DATE_TIME === $validationFlag) {
+            $regex = self::$regexData['dateTime']['validate'];
+        }
+        else {
+            $regex = self::$regexData['date']['validate'];
+        }
+
+        $isAmPm     = self::$regexData['am-pm'];
+        $inputValue = self::normaliseInput($locale, $inputValue, ($validationFlag >= self::ONLY_DATE_TIME));
+
+        if (!preg_match("#^$regex$#u", $inputValue, $matched)) {
+            // Time is optional and previous validation failed
+            if (self::ONLY_DATE_OPTIONAL_TIME === $validationFlag) {
+                $regex = self::$regexData['date']['validate'];
+
+                if (!preg_match("#^$regex$#u", $inputValue, $matched)) {
+                    return false;
                 }
             }
+            else {
+                return false;
+            }
+        }
 
-            $input = $matches[1] . ':' . $matches[2] . (!empty($matches[3]) ? ':' . $matches[3] : '');
+        if (isset($matched['hours']) && $isAmPm) {
+            if (intval($matched['hours']) > 12) {
+                return false;
+            }
+            elseif ($isAmPm && strtolower($matched['ampm']) === 'pm') {
+                $matched['hours'] = intval($matched['hours']);
+                $matched['hours'] = (12 == $matched['hours'] ? 0 : $matched['hours'] + 12);
+            }
+        }
+
+        $isoDateTime = null;
+
+        if ($hasDate) {
+            $matched['day']   = intval($matched['day']);
+            $matched['month'] = intval($matched['month']);
+            $matched['year']  = intval($matched['year']);
+
+            // Convert year to full notation
+            if ($matched['year'] >= 0 && $matched['year'] <= 69) {
+                $matched['year'] += 2000;
+            }
+            elseif ($matched['year'] >= 70 && $matched['year'] <= 99) {
+                $matched['year'] += 1900;
+            }
+
+            if (!checkdate($matched['month'], $matched['day'], $matched['year'])) {
+                return false;
+            }
+
+            $isoDateTime = sprintf('%d-%02d-%02d', $matched['year'], $matched['month'], $matched['day']);
+
+            if (isset($matched['hours'])) {
+                $isoDateTime .= ' ';
+            }
+        }
+
+        if (isset($matched['hours'])) {
+            $hashTime = true;
+            $isoDateTime .= sprintf('%02d:%02d:00', intval($matched['hours']), intval($matched['minutes']));
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns the regex for value matching.
+     *
+     * @param integer     $validationFlag
+     * @param string|null $locale
+     * @return string
+     */
+    public static function getMatcherRegex($validationFlag, $locale = null)
+    {
+        $locale = $locale ?: \Locale::getDefault();
+
+        if (self::$currentLocale !== $locale) {
+            self::loadRegexData($locale);
+        }
+
+        $regex = '(?:';
+
+        if (self::ONLY_TIME === $validationFlag) {
+            $regex .= self::$regexData['time']['match'];
+        }
+        elseif (self::ONLY_DATE_TIME === $validationFlag) {
+            $regex .= self::$regexData['dateTime']['match'];
+        }
+        elseif (self::ONLY_DATE_OPTIONAL_TIME === $validationFlag) {
+            $regex .= '(?:';
+            $regex .= self::$regexData['dateTime']['match'];
+            $regex .= '|';
+            $regex .= self::$regexData['date']['match'];
+            $regex .= ')';
         }
         else {
-            throw (new \InvalidArgumentException('Unsupported format given for timeToISO()'));
+            $regex .= self::$regexData['date']['match'];
+        }
+
+        $regex .= ')';
+
+        return $regex;
+    }
+
+    /**
+     * Loads the regex data and stores in static-object.
+     *
+     * @param string $locale
+     * @throws \InvalidArgumentException When the locale is not available
+     */
+    private static function loadRegexData($locale)
+    {
+        if (self::$currentLocale === $locale) {
+            return;
+        }
+
+        $dir = __DIR__ . '/../Resources/data/locales/';
+        $file = $dir . $locale . '.php';
+
+        if (!file_exists($file)) {
+            $file = $dir . substr($locale, 0, strpos($locale, '_')) . '.php';
+
+            if (!file_exists($file)) {
+                throw new \InvalidArgumentException(sprintf('No data available for locale "%s". Please run: update-locals.php and report this issue.', $locale));
+            }
+        }
+
+        self::$regexData = require $file;
+    }
+
+    /**
+     * Normalise the input.
+     *
+     * Converts numeric-characters to integers and locale-pm/am to am/pm
+     *
+     * @param string  $locale
+     * @param string  $input
+     * @param boolean $withTime
+     * @return string
+     */
+    private static function normaliseInput($locale, $input, $withTime)
+    {
+        $numberFormatter = new NumberFormatter($locale, NumberFormatter::PATTERN_DECIMAL);
+
+        $input = preg_replace_callback('/(\p{N})/u', function($match) use ($numberFormatter) {
+            if (ctype_digit($match[1])) {
+                return $match[1];
+            }
+
+            return $numberFormatter->parse($match[1], NumberFormatter::TYPE_INT32);
+        }, $input);
+
+        if ($withTime) {
+            $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, IntlDateFormatter::SHORT, 'UTC', IntlDateFormatter::GREGORIAN);
+
+            if (strpos($formatter->getPattern(), 'a') !== false) {
+                // 1970-01-01 11:13 and 1970-01-01 15:02
+                $am = 36780;
+                $pm = 50520;
+
+                $formatter->setPattern('a');
+                $input = preg_replace(array('/' . preg_quote($formatter->format($am), '/') . '/u', '/' . preg_quote($formatter->format($pm), '/') . '/u'), array('am', 'pm'), $input);
+            }
         }
 
         return $input;
-    }
-
-    /**
-     * Look if the given input is an legal time.
-     *
-     * Accepts pm/am (in all sorts of variations)
-     *
-     * @param string $input
-     * @return boolean
-     */
-    public static function isTime($input)
-    {
-        if (!is_string($input)) {
-            return false;
-        }
-
-        if (!preg_match('#^((?:(?:[01]?\d|2[0-3]):[0-5]\d(?:[:.][0-5]\d)?(?:[+-](?:0[0-9]|1[012])(?:[:.]?[03]\d)?)?(?:\.\d+(?:-\d+)?)?)|(?:(?:1[0-2]|0?[1-9]):[0-5]\d(?:[:.][0-5]\d)?\h*[aApP]\.?[mM]\.?))$#s', trim($input))) {
-            return false;
-        }
-        else {
-            return true;
-        }
     }
 }
