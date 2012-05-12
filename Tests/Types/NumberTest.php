@@ -15,69 +15,117 @@ use Rollerworks\RecordFilterBundle\Type\Number;
 
 class NumberTest extends \PHPUnit_Framework_TestCase
 {
-    function testSanitize()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testSanitize($locale, $input, $expected, $expectFail = false)
     {
+        if ($expectFail) {
+            return;
+        }
+
+        \Locale::setDefault($locale);
+
         $type = new Number();
 
-        $this->assertEquals('-1', $type->sanitizeString('-1'));
-        $this->assertEquals('1', $type->sanitizeString('+1'));
+        $this->assertEquals($expected, $type->sanitizeString($input));
     }
 
-    function testValidation()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testValidation($locale, $input, $expected, $expectFail = false)
     {
+        \Locale::setDefault($locale);
+
         $type = new Number();
 
-        $this->assertTrue($type->validateValue('1'));
-        $this->assertTrue($type->validateValue('+1'));
-        $this->assertTrue($type->validateValue('-1'));
-
-        $this->assertFalse($type->validateValue('*1'));
-        $this->assertFalse($type->validateValue('1/1'));
-        $this->assertFalse($type->validateValue('1.0'));
+        if ($expectFail) {
+            $this->assertFalse($type->validateValue($input));
+        }
+        else {
+            $this->assertTrue($type->validateValue($input));
+        }
     }
 
-    function testHigher()
+    /**
+     * @dataProvider getDataForCompare
+     */
+    function testCompares($first, $second, $comparison = null)
     {
         $type = new Number();
 
-        $this->assertTrue($type->isHigher('2', '1'));
+        if ('==' === $comparison) {
+            $this->assertTrue($type->isEquals($first, $second), sprintf('"%s" should equal "%s"', $first, $second));
+        }
+        elseif ('!=' === $comparison) {
+            $this->assertFalse($type->isEquals($first, $second), sprintf('"%s" should not equal "%s"', $first, $second));
+        }
+        else {
+            $this->assertTrue($type->isLower($second, $first), sprintf('"%s" should be lower then "%s"', $second, $first));
+            $this->assertFalse($type->isLower($first, $second), sprintf('"%s" should not be lower then "%s"', $first, $second));
+
+            $this->assertTrue($type->isHigher($first, $second), sprintf('"%s" should higher then "%s"', $first, $second));
+            $this->assertFalse($type->isHigher($second, $first), sprintf('"%s" should not be higher then "%s"', $second, $first));
+        }
     }
 
-    function testNotHigher()
+    /**
+     * @dataProvider getDataForGetHigherValue
+     */
+    function testGetHigherValue($input, $expected)
     {
         $type = new Number();
-
-        $this->assertFalse($type->isHigher('1', '2'));
+        $this->assertEquals($expected, $type->getHigherValue($input));
     }
 
-    function testLower()
+    public static function getDataForSanitation()
     {
-        $type = new Number();
+        return array(
+            // $locale, $input, $expected, $expectFail
+            array('nl_NL', '4446546', '4446546'),
+            array('nl_NL', '004446546', '004446546'),
+            array('nl_NL', '4446546000000000000000000000', '4446546000000000000000000000'),
+            array('en_US', '4446546', '4446546'),
+            array('uz_Arab', '۰۵', '05'),
+            array('en_US', '۰۵', '05'), // Not really valid, but the validation must past
 
-        $this->assertTrue($type->isLower('1', '2'));
+            array('en_US', '4446546.00', '', true),
+            array('en_US', 'D4446546.00', '', true),
+            array('en_US', 'A03', '', true),
+        );
     }
 
-    function testNotLower()
+    public static function getDataForCompare()
     {
-        $type = new Number();
+        return array(
+            // $first (higher), $second (lower), $comparison
+            array('4554444644665', '4554444644665',   '=='),
+            array('04554444644665', '04554444644665', '=='),
+            array('04554444644665', '04554444644665', '=='),
+            array('04554444644665', '455444464',      '!='),
 
-        $this->assertFalse($type->isLower('2', '1'));
+            array('700', '600'),
+            array('0700', '0600'),
+            array('700', '-800'),
+            array('0700', '-0800'),
+            array('700000000000000000000000000000', '600000000000000000000000000000'),
+            array('00700000000000000000000000000000', '00600000000000000000000000000000'),
+            array('800000000000000', '-800000000000000'),
+            array('44645464446544665', '446454644465'),
+        );
     }
 
-    function testEquals()
+    public static function getDataForGetHigherValue()
     {
-        $type = new Number();
-
-        $this->assertTrue($type->isEquals('1', '1'));
-        $this->assertTrue($type->isEquals('-1', '-1'));
-    }
-
-    function testNotEquals()
-    {
-        $type = new Number();
-
-        $this->assertFalse($type->isEquals('1', '3'));
-        $this->assertFalse($type->isEquals('-1', '1'));
-        $this->assertFalse($type->isEquals('-1', '-2'));
+        return array(
+            // $input, $expected
+            array('700', '701'),
+            array('0700', '0701'),
+            array('700000000000000000000000000', '700000000000000000000000001'),
+            array('-700000000000000000000000000', '-699999999999999999999999999'),
+            array('-700', '-699'),
+            array('-0700', '-0699'),
+        );
     }
 }

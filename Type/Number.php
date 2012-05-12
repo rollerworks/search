@@ -13,8 +13,9 @@ namespace Rollerworks\RecordFilterBundle\Type;
 
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
-
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+
+use NumberFormatter;
 
 /**
  * Integer Formatter-validation type
@@ -24,11 +25,23 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 class Number implements FilterTypeInterface, ValuesToRangeInterface
 {
     /**
+     * @var NumberFormatter|null
+     */
+    private static $numberFormatter = null;
+
+    /**
      * {@inheritdoc}
      */
     public function sanitizeString($input)
     {
-        return intval($input);
+        // Note we explicitly don't cast the value to an integer type
+        // 64bit integers are not properly handled on a 32bit OS
+
+        if (ctype_digit((string) ltrim($input, '-+'))) {
+            return ltrim($input, '+');
+        }
+
+        return self::getNumberFormatter(\Locale::getDefault())->parse(ltrim($input, '+'), NumberFormatter::TYPE_INT64);
     }
 
     /**
@@ -36,6 +49,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function formatOutput($value)
     {
+        return self::getNumberFormatter(\Locale::getDefault())->format($value);
     }
 
     /**
@@ -51,7 +65,13 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function isHigher($input, $nextValue)
     {
-        return ($input > $nextValue);
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($input, $nextValue) === 1;
+        }
+
+        return ((integer) $input > (integer) $nextValue);
     }
 
     /**
@@ -59,7 +79,13 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function isLower($input, $nextValue)
     {
-        return ($input < $nextValue);
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($input, $nextValue) === -1;
+        }
+
+        return ((integer) $input < (integer) $nextValue);
     }
 
     /**
@@ -67,7 +93,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function isEquals($input, $nextValue)
     {
-        return ($input === $nextValue);
+        return ((string) $input === (string) $nextValue);
     }
 
     /**
@@ -75,9 +101,9 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function validateValue($input, &$message = null)
     {
-        $message = 'This value is no valid integer';
+        $message = 'This value is no valid number';
 
-        if (!preg_match('#^[+-]?([1-9][0-9]*|0)$#s', (string) $input)) {
+        if (!preg_match('/^[+-]?(\p{N}+)$/us', (string) $input)) {
             return false;
         }
 
@@ -89,11 +115,17 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function sortValuesList(SingleValue $first, SingleValue $second)
     {
-        if ($first->getValue() == $second->getValue()) {
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($first->getValue()) > $phpMax || strlen($second->getValue()) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($first->getValue(), $second->getValue());
+        }
+
+        if ((integer) $first->getValue() === (integer) $second->getValue()) {
             return 0;
         }
 
-        return ($first->getValue() < $second->getValue()) ? -1 : 1;
+        return ((integer) $first->getValue() < (integer) $second->getValue() ? -1 : 1);
     }
 
     /**
@@ -101,6 +133,29 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      */
     public function getHigherValue($input)
     {
-        return $input + 1;
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if (strlen($input) > $phpMax && function_exists('bcadd')) {
+            return bcadd(ltrim($input, '+'), '1');
+        }
+
+        return (intval($input) + 1);
+    }
+
+    /**
+     * Returns a shared NumberFormatter object.
+     *
+     * @param null|string $locale
+     * @return null|NumberFormatter
+     */
+    protected static function getNumberFormatter($locale = null)
+    {
+        $locale = $locale ?: \Locale::getDefault();
+
+        if (null === self::$numberFormatter || self::$numberFormatter->getLocale() !== $locale) {
+            self::$numberFormatter = new NumberFormatter($locale, NumberFormatter::PATTERN_DECIMAL);
+        }
+
+        return self::$numberFormatter;
     }
 }
