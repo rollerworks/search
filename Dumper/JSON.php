@@ -96,7 +96,7 @@ class JSON extends AbstractDumper
      * @param FilterValuesBag $filter
      * @return array
      */
-    private static function createField(FilterValuesBag $filter)
+    static private function createField(FilterValuesBag $filter)
     {
         $field = array();
 

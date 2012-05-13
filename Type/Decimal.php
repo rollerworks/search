@@ -32,7 +32,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * @var NumberFormatter|null
      */
-    private static $numberFormatter = null;
+    static private $numberFormatter = null;
 
     /**
      * {@inheritdoc}
@@ -174,7 +174,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      * @param null|string $locale
      * @return null|NumberFormatter
      */
-    protected static function getNumberFormatter($locale = null)
+    static protected function getNumberFormatter($locale = null)
     {
         $locale = $locale ?: \Locale::getDefault();
 

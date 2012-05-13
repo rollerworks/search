@@ -91,7 +91,7 @@ class TimeTest extends DateTimeTestCase
         $this->assertEquals($type->sanitizeString($expected)->format('H:i:s'), $type->getHigherValue($type->sanitizeString($input))->format('H:i:s'));
     }
 
-    public static function getDataForSanitation()
+    static public function getDataForSanitation()
     {
         return array(
             // $locale, $input, $expected, $expectFail
@@ -115,7 +115,7 @@ class TimeTest extends DateTimeTestCase
         );
     }
 
-    public static function getDataForCompare()
+    static public function getDataForCompare()
     {
         return array(
             // $locale, $_first (higher), $_second (lower), $comparison
@@ -129,7 +129,7 @@ class TimeTest extends DateTimeTestCase
         );
     }
 
-    public static function getDataForGetHigherValue()
+    static public function getDataForGetHigherValue()
     {
         return array(
             // $locale, $input, $expected

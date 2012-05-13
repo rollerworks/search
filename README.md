@@ -1,7 +1,7 @@
 ﻿[RollerworksRecordFilterBundle](http://projects.rollerscapes.net/RollerFramework/)
 ==================================================
 
-This bundle provides the RollerworksRecordFilterBundle, 
+This bundle provides the RollerworksRecordFilterBundle,
 
 ## Installation
 
@@ -82,6 +82,6 @@ Finally, add the following to your config file:
 # app/config/config.yml
 
 rollerworks_recordfilter:
-    # Cache location of the class metadata (must be writeable)
-    #metadata_cache: %kernel.cache_dir%/recordfilter_metedata
+    # Cache location of the class metadata (must be writable)
+    #metadata_cache: %kernel.cache_dir%/recordfilter_metadata
 ```

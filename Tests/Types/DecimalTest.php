@@ -79,7 +79,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $type->getHigherValue($input));
     }
 
-    public static function getDataForSanitation()
+    static public function getDataForSanitation()
     {
         return array(
             // $locale, $input, $expected, $expectFail
@@ -91,7 +91,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public static function getDataForCompare()
+    static public function getDataForCompare()
     {
         return array(
             // $first (higher), $second (lower), $comparison
@@ -111,7 +111,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public static function getDataForGetHigherValue()
+    static public function getDataForGetHigherValue()
     {
         return array(
             // $input, $expected

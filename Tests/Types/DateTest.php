@@ -87,7 +87,7 @@ class DateTest extends DateTimeTestCase
         $this->assertEquals($type->sanitizeString($expected)->format('Y-m-d'), $type->getHigherValue($type->sanitizeString($input))->format('Y-m-d'));
     }
 
-    public static function getDataForSanitation()
+    static public function getDataForSanitation()
     {
         return array(
             // $locale, $input, $expected, $expectFail
@@ -108,7 +108,7 @@ class DateTest extends DateTimeTestCase
         );
     }
 
-    public static function getDataForCompare()
+    static public function getDataForCompare()
     {
         return array(
             // $locale, $first (higher), $second (lower), $comparison
@@ -120,7 +120,7 @@ class DateTest extends DateTimeTestCase
         );
     }
 
-    public static function getDataForGetHigherValue()
+    static public function getDataForGetHigherValue()
     {
         return array(
             // $locale, $input, $expected

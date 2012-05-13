@@ -11,8 +11,8 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
-use NumberFormatter;
-use IntlDateFormatter;
+use \NumberFormatter;
+use \IntlDateFormatter;
 
 /**
  * DateTime helper class
@@ -44,12 +44,12 @@ class DateTimeHelper
     /**
      * @var array
      */
-    private static $regexData = array();
+    static private $regexData = array();
 
     /**
      * @var string
      */
-    private static $currentLocale = '';
+    static private $currentLocale = '';
 
     /**
      * Get the Locale date(Time) format.
@@ -67,7 +67,7 @@ class DateTimeHelper
      *
      * @todo Accept input that is already ISO
      */
-    public static function validateLocalDateTime($inputValue, $validationFlag = self::ONLY_DATE, &$isoDateTime = null, &$hashTime = false, $locale = null)
+    static public function validateLocalDateTime($inputValue, $validationFlag = self::ONLY_DATE, &$isoDateTime = null, &$hashTime = false, $locale = null)
     {
         $locale = $locale ?: \Locale::getDefault();
 
@@ -155,7 +155,7 @@ class DateTimeHelper
      * @param string|null $locale
      * @return string
      */
-    public static function getMatcherRegex($validationFlag, $locale = null)
+    static public function getMatcherRegex($validationFlag, $locale = null)
     {
         $locale = $locale ?: \Locale::getDefault();
 
@@ -193,7 +193,7 @@ class DateTimeHelper
      * @param string $locale
      * @throws \InvalidArgumentException When the locale is not available
      */
-    private static function loadRegexData($locale)
+    static private function loadRegexData($locale)
     {
         if (self::$currentLocale === $locale) {
             return;
@@ -223,11 +223,12 @@ class DateTimeHelper
      * @param boolean $withTime
      * @return string
      */
-    private static function normaliseInput($locale, $input, $withTime)
+    static private function normaliseInput($locale, $input, $withTime)
     {
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::PATTERN_DECIMAL);
 
         $input = preg_replace_callback('/(\p{N})/u', function($match) use ($numberFormatter) {
+            /** @var NumberFormatter $numberFormatter */
             if (ctype_digit($match[1])) {
                 return $match[1];
             }
