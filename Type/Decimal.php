@@ -11,7 +11,9 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use NumberFormatter;
 
 /**
  * Decimal Formatter-validation type
@@ -20,14 +22,35 @@ use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
  *
  * @todo Filter extension instead of an Regex and detect proper decimal-sign
  */
-class Decimal implements FilterTypeInterface
+class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
 {
+    /**
+     * @var string
+     */
+    protected $lastResult;
+
+    /**
+     * @var NumberFormatter|null
+     */
+    private static $numberFormatter = null;
+
     /**
      * {@inheritdoc}
      */
     public function sanitizeString($input)
     {
-        return floatval(str_replace(',', '.', $input));
+        // Note we explicitly don't cast the value to an float type
+        // 64bit floats are not properly handled on a 32bit OS
+
+        if (!preg_match('/[^.0-9-]/', $input)) {
+            return ltrim($input, '+');
+        }
+
+        if ($input !== $this->lastResult && !$this->validateValue($input) ) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        }
+
+        return $this->lastResult;
     }
 
     /**
@@ -35,7 +58,7 @@ class Decimal implements FilterTypeInterface
      */
     public function formatOutput($value)
     {
-
+        return self::getNumberFormatter(\Locale::getDefault())->format($value);
     }
 
     /**
@@ -51,6 +74,12 @@ class Decimal implements FilterTypeInterface
      */
     public function isHigher($input, $nextValue)
     {
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($input, $nextValue) === 1;
+        }
+
         return ($input > $nextValue);
     }
 
@@ -59,6 +88,12 @@ class Decimal implements FilterTypeInterface
      */
     public function isLower($input, $nextValue)
     {
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($input, $nextValue) === -1;
+        }
+
         return ($input < $nextValue);
     }
 
@@ -67,7 +102,13 @@ class Decimal implements FilterTypeInterface
      */
     public function isEquals($input, $nextValue)
     {
-        return ($input === $nextValue);
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('gmp_cmp')) {
+            return bccomp($input, $nextValue) === 0;
+        }
+
+        return ((float) $input == (float) $nextValue);
     }
 
     /**
@@ -77,11 +118,70 @@ class Decimal implements FilterTypeInterface
     {
         $message = 'This value is not an valid decimal';
 
-        if (!preg_match('#^[+-]?(([0-9]*[\.][0-9]+)|([0-9]+[\.][0-9]*))$#s', str_replace(',', '.', $input))) {
+        $this->lastResult = self::getNumberFormatter(\Locale::getDefault())->parse($input);
+
+        if (!$this->lastResult) {
             return false;
         }
         else {
             return true;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function sortValuesList(SingleValue $first, SingleValue $second)
+    {
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($first->getValue()) > $phpMax || strlen($second->getValue()) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($first->getValue(), $second->getValue());
+        }
+
+        if ((float) $first->getValue() === (float) $second->getValue()) {
+            return 0;
+        }
+
+        return ((float) $first->getValue() < (float) $second->getValue()) ? -1 : 1;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHigherValue($input)
+    {
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if (strlen($input) > $phpMax && function_exists('bcadd')) {
+            return bcadd(ltrim($input, '+'), '0.01');
+        }
+
+        return ((float) $input) + 0.01;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMatcherRegex()
+    {
+        return '(?:\p{N}+,\p{N}+|\p{N}+.\p{N}+)';
+    }
+
+    /**
+     * Returns a shared NumberFormatter object.
+     *
+     * @param null|string $locale
+     * @return null|NumberFormatter
+     */
+    protected static function getNumberFormatter($locale = null)
+    {
+        $locale = $locale ?: \Locale::getDefault();
+
+        if (null === self::$numberFormatter || self::$numberFormatter->getLocale() !== $locale) {
+            self::$numberFormatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+        }
+
+        return self::$numberFormatter;
     }
 }

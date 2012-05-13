@@ -15,94 +15,110 @@ use Rollerworks\RecordFilterBundle\Type\Decimal;
 
 class DecimalTest extends \PHPUnit_Framework_TestCase
 {
-    function testSanitize()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testSanitize($locale, $input, $expected, $expectFail = false)
     {
+        if ($expectFail) {
+            return;
+        }
+
+        \Locale::setDefault($locale);
+
         $type = new Decimal();
 
-        $this->assertEquals('1.0', $type->sanitizeString('1,00'));
-        $this->assertEquals('1.5', $type->sanitizeString('1,50'));
-        $this->assertEquals('1.05', $type->sanitizeString('1,050'));
-        $this->assertEquals('1.051', $type->sanitizeString('1,051'));
-
-        $this->assertEquals('1.0', $type->sanitizeString('1.00'));
-        $this->assertEquals('1.5', $type->sanitizeString('1.50'));
-        $this->assertEquals('1.05', $type->sanitizeString('1.050'));
-        $this->assertEquals('1.051', $type->sanitizeString('1.051'));
+        $this->assertEquals($expected, $type->sanitizeString($input));
     }
 
-
-    function testValidation()
+    /**
+     * @dataProvider getDataForSanitation
+     */
+    function testValidation($locale, $input, $expected, $expectFail = false)
     {
+        \Locale::setDefault($locale);
+
         $type = new Decimal();
 
-        $this->assertTrue($type->validateValue('1,00'));
-        $this->assertTrue($type->validateValue('1,0'));
-        $this->assertTrue($type->validateValue('1,50'));
-        $this->assertTrue($type->validateValue('1,501'));
-
-        $this->assertTrue($type->validateValue('1.00'));
-        $this->assertTrue($type->validateValue('1.0'));
-        $this->assertTrue($type->validateValue('1.50'));
-        $this->assertTrue($type->validateValue('1.501'));
-
-        $this->assertFalse($type->validateValue('1..0'));
-        $this->assertFalse($type->validateValue('1,.0'));
-        $this->assertFalse($type->validateValue('1,,0'));
-        $this->assertFalse($type->validateValue('1.0.0'));
-        $this->assertFalse($type->validateValue('1,0,0'));
-        $this->assertFalse($type->validateValue('1,0.0'));
-        $this->assertFalse($type->validateValue('1.2e3')); // Legal? Yes, accepted? No
+        if ($expectFail) {
+            $this->assertFalse($type->validateValue($input));
+        }
+        else {
+            $this->assertTrue($type->validateValue($input));
+        }
     }
 
-
-    function testHigher()
+    /**
+     * @dataProvider getDataForCompare
+     */
+    function testCompares($first, $second, $comparison = null)
     {
         $type = new Decimal();
 
-        $this->assertTrue($type->isHigher(1.5, 1.0));
+        if ('==' === $comparison) {
+            $this->assertTrue($type->isEquals($first, $second));
+        }
+        elseif ('!=' === $comparison) {
+            $this->assertFalse($type->isEquals($first, $second));
+        }
+        else {
+            $this->assertTrue($type->isLower($second, $first));
+            $this->assertFalse($type->isLower($first, $second));
+
+            $this->assertFalse($type->isHigher($second, $first));
+            $this->assertTrue($type->isHigher($first, $second));
+        }
     }
 
-
-    function testNotHigher()
+    /**
+     * @dataProvider getDataForGetHigherValue
+     */
+    function testGetHigherValue($input, $expected)
     {
         $type = new Decimal();
-
-        $this->assertFalse($type->isHigher(1.0, 1.5));
+        $this->assertEquals($expected, $type->getHigherValue($input));
     }
 
-
-    function testLower()
+    public static function getDataForSanitation()
     {
-        $type = new Decimal();
+        return array(
+            // $locale, $input, $expected, $expectFail
+            array('nl_NL', '100,10', '100.10'),
+            array('nl_NL', '100,10', '100.10'),
 
-        $this->assertFalse($type->isLower(1.5, 1.0));
+            array('en_US', '100.00', '100.00'),
+            array('uz_Arab', '۵٫۵', '05.50'),
+        );
     }
 
-
-    function testNotLower()
+    public static function getDataForCompare()
     {
-        $type = new Decimal();
+        return array(
+            // $first (higher), $second (lower), $comparison
+            array('100.00', '100.00',  '=='),
+            array('100.10', '100.10',  '=='),
+            array('100.10', '100.1',   '=='),
+            array('100.00', '100.000', '=='),
+            array('3000000000000000000000.00', '3000000000000000000000.000', '=='),
+            array('200.00', '200.10',  '!='),
+            array('200.00', '300.00',  '!='),
+            array('3000000000000000000000.00', '2000000000000000000000.00',  '!='),
 
-        $this->assertFalse($type->isLower(1.5, 1.0));
+            array('300.00', '200.00'),
+            array('300.00', '200.00'),
+            array('200.1',  '200.01'),
+            array('3000000000000000000000.00', '2000000000000000000000.00'),
+        );
     }
 
-
-    function testEquals()
+    public static function getDataForGetHigherValue()
     {
-        $type = new Decimal();
-
-        $this->assertTrue($type->isEquals(1.5, 1.5));
-        $this->assertTrue($type->isEquals(1.5, 1.50));
-        $this->assertTrue($type->isEquals(1.566, 1.566));
-    }
-
-
-    function testNotEquals()
-    {
-        $type = new Decimal();
-
-        $this->assertFalse($type->isEquals(1.5, 1.51));
-        $this->assertFalse($type->isEquals(1.5, 1.4));
-        $this->assertFalse($type->isEquals(1.566, 1.567));
+        return array(
+            // $input, $expected
+            array('100.01', '100.02'),
+            array('100.01', '100.02'),
+            array('100.00', '100.01'),
+            array('1000000000000000000000000000.00', '1000000000000000000000000000.01'),
+        );
     }
 }
