@@ -16,13 +16,21 @@
             <directory>./Tests/</directory>
         </testsuite>
     </testsuites>
-    <!--
-            <logging>
-              <log type="coverage-clover" target="clover.xml"/>
-            </logging>
-    -->
+
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./Resources</directory>
+                <directory>./Tests/Fixtures</directory>
+                <directory>./Tests/record_filters_cache</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
     <php>
         <ini name="mbstring.internal_encoding" value="UTF-8"/>
+        <ini name="intl.default_locale" value="en"/>
     </php>
 
 </phpunit>
