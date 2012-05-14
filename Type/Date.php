@@ -57,13 +57,18 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
             return $value;
         }
 
-        return \IntlDateFormatter::create(
+        $formatter = \IntlDateFormatter::create(
             \Locale::getDefault(),
             \IntlDateFormatter::SHORT,
             \IntlDateFormatter::NONE,
             date_default_timezone_get(),
             \IntlDateFormatter::GREGORIAN
-        )->format($value);
+        );
+
+        // Make year always four digit
+        $formatter->setPattern(str_replace(array('yy', 'yyyyyyyy'), 'yyyy', $formatter->getPattern()));
+
+        return $formatter->format($value);
     }
 
     /**
@@ -84,9 +89,6 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      */
     public function isHigher($input, $nextValue)
     {
-        $firstHour  = (integer)$input->format('H');
-        $secondHour = (integer)$nextValue->format('H');
-
         return ($input->getTimestamp() > $nextValue->getTimestamp());
     }
 

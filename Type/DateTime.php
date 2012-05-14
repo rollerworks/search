@@ -69,13 +69,18 @@ class DateTime extends Date
             return $value;
         }
 
-        return \IntlDateFormatter::create(
+        $formatter = \IntlDateFormatter::create(
             \Locale::getDefault(),
             \IntlDateFormatter::SHORT,
             \IntlDateFormatter::SHORT,
             date_default_timezone_get(),
             \IntlDateFormatter::GREGORIAN
-        )->format($value);
+        );
+
+        // Make year always four digit
+        $formatter->setPattern(str_replace(array('yy', 'yyyyyyyy'), 'yyyy', $formatter->getPattern()));
+
+        return $formatter->format($value);
     }
 
     /**

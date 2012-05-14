@@ -12,6 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Types;
 
 use Rollerworks\RecordFilterBundle\Type\DateTime;
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 class DateTimeTest extends DateTimeTestCase
 {
@@ -35,6 +36,27 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
+    function testDump($locale, $input, $expected, $timeOptional, $expectFail = false)
+    {
+        \Locale::setDefault($locale);
+
+        $type = new DateTime($timeOptional);
+
+        if ($expectFail) {
+            return;
+        }
+
+        if ('29-02-2011 15:00' === $input) {
+            var_dump($expectFail);
+        }
+
+        $value = $type->sanitizeString($input);
+        $this->assertEquals($value->format('Y-m-d\TH:i:s'), $type->dumpValue($value));
+    }
+
+    /**
+     * @dataProvider getDataForSanitation
+     */
     function testValidation($locale, $input, $expected, $timeOptional, $expectFail = false)
     {
         \Locale::setDefault($locale);
@@ -47,6 +69,18 @@ class DateTimeTest extends DateTimeTestCase
         else {
             $this->assertTrue($type->validateValue($input));
         }
+    }
+
+    /**
+     * @dataProvider getDataForFormat
+     */
+    function testFormat($locale, $input, $expected)
+    {
+        \Locale::setDefault($locale);
+
+        $type = new DateTime(true);
+
+        $this->assertEquals($expected, $type->formatOutput(new \DateTime($input)));
     }
 
     /**
@@ -87,6 +121,28 @@ class DateTimeTest extends DateTimeTestCase
         $this->assertEquals($type->sanitizeString($expected)->format('Y-m-d H:i:s'), $type->getHigherValue($type->sanitizeString($input))->format('Y-m-d H:i:s'));
     }
 
+    /**
+     * @dataProvider getDataForSorting
+     */
+    function testSorting($locale, $input, $expected)
+    {
+        \Locale::setDefault($locale);
+
+        $type = new DateTime(true);
+
+        foreach ($input as $index => $value) {
+            $input[$index] = new SingleValue($type->sanitizeString($value), $value);
+        }
+
+        uasort($input, array(&$type, 'sortValuesList'));
+
+        foreach ($expected as $index => $value) {
+            $expected[$index] = new SingleValue($type->sanitizeString($value), $value);
+        }
+
+        $this->assertEquals($expected, $input);
+    }
+
     static public function getDataForSanitation()
     {
         return array(
@@ -117,6 +173,32 @@ class DateTimeTest extends DateTimeTestCase
         );
     }
 
+    static public function getDataForFormat()
+    {
+        return array(
+            // $locale, $input, $expected
+            array('nl_NL', '2010-10-04', '04-10-2010 00:00'),
+            array('nl_NL', '2010-05-04', '04-05-2010 00:00'),
+            array('nl_NL', '1990-05-04', '04-05-1990 00:00'),
+
+            array('nl_NL', '2010-10-04 15:00', '04-10-2010 15:00'),
+            array('nl_NL', '2010-05-04 23:15', '04-05-2010 23:15'),
+            array('nl_NL', '1990-05-04 00:30', '04-05-1990 00:30'),
+
+            array('en_US', '2010-04-21', '4/21/2010 12:00 AM'),
+            array('en_US', '2010-10-21', '10/21/2010 12:00 AM'),
+            array('en_US', '2010-04-21 15:00', '4/21/2010 3:00 PM'),
+            array('en_US', '2010-10-21 15:00', '10/21/2010 3:00 PM'),
+
+            array('uz_Arab', '2010-05-04', '۲۰۱۰-۰۵-۰۴ ۰۰:۰۰'),
+            array('uz_Arab', '2010-05-04 15:00', '۲۰۱۰-۰۵-۰۴ ۱۵:۰۰'),
+
+            // Right-to-left
+            array('ar_YE', '2010-05-04', '٤‏/٥‏/٢٠١٠ ١٢:٠٠ ص'),
+            array('ar_YE', '2010-05-04 15:00', '٤‏/٥‏/٢٠١٠ ٣:٠٠ م'),
+        );
+    }
+
     static public function getDataForCompare()
     {
         return array(
@@ -134,10 +216,25 @@ class DateTimeTest extends DateTimeTestCase
     static public function getDataForGetHigherValue()
     {
         return array(
-            // $locale, $input, $expected
+            // $locale, $input, $expected, $timeOptional
             array('nl_NL', '04-10-2010 15:15', '04-10-2010 15:16'),
             array('nl_NL', '04-10-2010 23:59', '05-10-2010 00:00'),
             array('nl_NL', '04-10-2010',       '05-10-2010', true),
+        );
+    }
+
+    static public function getDataForSorting()
+    {
+        return array(
+            // $locale, $values, $expected
+            array('nl_NL', array(0 => '15-04-2010', 4 => '05-03-2010', 6 => '14-05-2012', 7 => '15-04-2010 00:00'), array(4 => '05-03-2010', 0 => '15-04-2010', 7 => '15-04-2010 00:00', 6 => '14-05-2012')),
+            array('nl_NL', array(1 => '16-04-2010', 3 => '15-04-2010', 4 => '15-02-2011'), array(4 => '15-02-2011', 3 => '15-04-2010', 1 => '16-04-2010')),
+
+            array('nl_NL', array(0 => '15-04-2010 12:00', 4 => '15-04-2010 00:00', 6 => '15-04-2010 13:00'), array(4 => '15-04-2010 00:00', 0 => '15-04-2010 12:00', 6 => '15-04-2010 13:00')),
+            array('nl_NL', array(1 => '15-04-2010 12:00', 3 => '15-04-2010 00:00', 4 => '14-04-2010 23:59'), array(4 => '14-04-2010 23:59', 3 => '15-04-2010 00:00', 1 => '15-04-2010 12:00')),
+            array('nl_NL',
+                array(1 => '15-04-2010 12:00', 3 => '15-04-2010 00:00', 4 => '14-04-2010 23:59', 5 => '16-04-2010 00:00'),
+                array(4 => '14-04-2010 23:59', 3 => '15-04-2010 00:00', 1 => '15-04-2010 12:00', 5 => '16-04-2010 00:00')),
         );
     }
 }
