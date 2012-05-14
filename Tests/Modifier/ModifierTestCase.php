@@ -27,6 +27,8 @@ abstract class ModifierTestCase extends \Rollerworks\RecordFilterBundle\Tests\Te
      */
     protected function newFormatter($loadModifiers = true)
     {
+        \Locale::setDefault('nl');
+
         $formatter = new Formatter($this->translator);
 
         if ($loadModifiers) {
