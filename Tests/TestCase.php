@@ -17,9 +17,7 @@ use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
-
 use Rollerworks\RecordFilterBundle\Tests\TwigEngine;
-use Twig_Loader_Filesystem, Twig_Environment;
 
 /**
  * Abstract TestCase for Unit testing
@@ -86,9 +84,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function getTwigInstance()
     {
         $config = array('cache' => __DIR__ . '/_TwigCache', 'strict_variables' => true);
-        $loader = new Twig_Loader_Filesystem(array(__DIR__ . '/Fixtures/Views'));
+        $loader = new \Twig_Loader_Filesystem(array(__DIR__ . '/Fixtures/Views'));
 
-        $twig = new Twig_Environment($loader, $config);
+        $twig = new \Twig_Environment($loader, $config);
         $twig->addExtension(new \Twig_Extensions_Extension_Intl());
 
         $engine = new TwigEngine($twig);
