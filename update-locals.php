@@ -235,5 +235,5 @@ foreach (Symfony\Component\Locale\Stub\StubLocale::getLocales() as $locale) {
 
     $file = __DIR__ . '/Resources/data/locales/' . $locale . '.php';
 
-    file_put_contents($file, '<' . '?php return ' . var_export($regexArray, true) . ';');
+    file_put_contents($file, '<' . '?php return ' . var_export($regexArray, true) . ";\n");
 }
