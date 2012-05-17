@@ -13,15 +13,8 @@ namespace Rollerworks\RecordFilterBundle\Tests;
 
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\Validator;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValuesToRange;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\RangeNormalizer;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\CompareNormalizer;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
 use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Type\DateTime;
-use Rollerworks\RecordFilterBundle\Type\Decimal;
 use Rollerworks\RecordFilterBundle\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\Compare;

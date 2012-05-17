@@ -11,6 +11,9 @@
 
 namespace Rollerworks\RecordFilterBundle\Record\Sql;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type as DBALType;
+
 /**
  * SqlValueConversionInterface.
  *
@@ -34,11 +37,11 @@ interface SqlValueConversionInterface
      *
      * Input value is as-is and must be returned quoted when this required.
      *
-     * @param mixed                     $input
-     * @param \Doctrine\DBAL\Types\Type $type
-     * @param \Doctrine\DBAL\Connection $connection
-     * @param boolean                   $isDql Whether the query should be DQL
+     * @param mixed      $input
+     * @param DBALType   $type
+     * @param Connection $connection
+     * @param boolean    $isDql Whether the query should be DQL
      * @return mixed
      */
-    public function convertValue($input, \Doctrine\DBAL\Types\Type $type, \Doctrine\DBAL\Connection $connection, $isDql);
+    public function convertValue($input, DBALType $type, Connection $connection, $isDql);
 }

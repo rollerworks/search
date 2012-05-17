@@ -16,7 +16,6 @@ use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
 
 use Symfony\Component\Translation\TranslatorInterface;
-use Metadata\MetadataFactoryInterface;
 
 /**
  * Imports the configuration from Entities metadata to the fieldsSet instance.

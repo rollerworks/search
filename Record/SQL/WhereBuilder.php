@@ -109,7 +109,7 @@ class WhereBuilder
      * @param FieldSet           $fieldSet
      * @param FormatterInterface $formatter
      * @param array              $entityAliases Array with the Entity-class to 'in-query alias' mapping as alias => class
-     * @param boolean            $isDql         Is the WHERE case to be used inside DQL?
+     * @param boolean            $isDql
      * @return null|string
      */
     public function getWhereClause(FieldSet $fieldSet, FormatterInterface $formatter, array $entityAliases = array(), $isDql = false)

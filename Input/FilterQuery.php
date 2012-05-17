@@ -14,7 +14,6 @@ namespace Rollerworks\RecordFilterBundle\Input;
 use Rollerworks\RecordFilterBundle\Exception\ReqFilterException;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
@@ -22,8 +21,6 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use \InvalidArgumentException;
 
@@ -137,8 +134,8 @@ class FilterQuery extends AbstractInput
      *
      * Existing ones are overwritten.
      *
-     * @param string        $fieldName Original field-name
-     * @param string|array  $label
+     * @param string       $fieldName Original field-name
+     * @param string|array $label
      * @return FilterQuery
      */
     public function setLabelToField($fieldName, $label)

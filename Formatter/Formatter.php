@@ -14,11 +14,9 @@ namespace Rollerworks\RecordFilterBundle\Formatter;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use \Rollerworks\RecordFilterBundle\Input\InputInterface;
-use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use \InvalidArgumentException, \RuntimeException;

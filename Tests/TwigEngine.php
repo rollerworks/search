@@ -21,7 +21,7 @@ class TwigEngine implements EngineInterface
     /**
      * Constructor.
      *
-     * @param \Twig_Environment           $environment A \Twig_Environment instance
+     * @param \Twig_Environment $environment A \Twig_Environment instance
      */
     public function __construct(\Twig_Environment $environment)
     {

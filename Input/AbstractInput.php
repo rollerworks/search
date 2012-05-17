@@ -11,7 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
@@ -19,7 +18,6 @@ use Rollerworks\RecordFilterBundle\FieldSet;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use \Symfony\Component\Translation\TranslatorInterface;
-use \InvalidArgumentException;
 
 /**
  * AbstractInput.

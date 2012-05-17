@@ -60,12 +60,14 @@ abstract class AbstractFactory
     /**
      * Constructor
      *
-     * @param \Doctrine\Common\Annotations\Reader  $annotationReader
-     * @param string                               $classesDir          The directory to use for the Classes. It must exist.
-     * @param string                               $filtersNs           The namespace to use for the Classes.
-     * @param boolean                              $autoGenerate        Whether to automatically generate Classes.
+     * @param Reader  $annotationReader
+     * @param string  $classesDir   The directory to use for the Classes. It must exist.
+     * @param string  $filtersNs    The namespace to use for the Classes.
+     * @param boolean $autoGenerate Whether to automatically generate Classes.
      *
      * @api
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct(Reader $annotationReader, $classesDir, $filtersNs, $autoGenerate = false)
     {
@@ -101,8 +103,8 @@ abstract class AbstractFactory
     /**
      * Generates Classes for all given Entity's.
      *
-     * @param string[] $classes  The Entity Classes names
-     * @param string   $toDir    The target directory of the Formatter Classes. If not specified, the directory configured by this factory is used.
+     * @param string[] $classes The Entity Classes names
+     * @param string   $toDir   The target directory of the Formatter Classes. If not specified, the directory configured by this factory is used.
      *
      * @api
      */
@@ -161,11 +163,13 @@ abstract class AbstractFactory
      * Build the constructor parameters list.
      * Returns the parameters as string (for direct PHP usage)
      *
-     * @param \ReflectionMethod    $methodReflection Constructor reflection
-     * @param array                $params
-     * @param string               $type
-     * @param array                $noConvert
+     * @param \ReflectionMethod $methodReflection Constructor reflection
+     * @param array             $params
+     * @param string            $type
+     * @param array             $noConvert
      * @return string
+     *
+     * @throws \InvalidArgumentException
      */
     protected function compileConstructorParams(\ReflectionMethod $methodReflection, $params, $type, $noConvert = array())
     {

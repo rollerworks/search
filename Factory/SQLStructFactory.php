@@ -12,7 +12,6 @@
 namespace Rollerworks\RecordFilterBundle\Factory;
 
 use Rollerworks\RecordFilterBundle\Formatter\DomainAwareFormatterInterface;
-use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Record\SQL\WhereStruct;
 use Doctrine\DBAL\Connection;
 

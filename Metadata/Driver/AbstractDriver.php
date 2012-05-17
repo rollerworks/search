@@ -11,10 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Metadata\Driver;
 
-use Rollerworks\RecordFilterBundle\Metadata\PropertyMetadata;
 use Metadata\Driver\DriverInterface;
-use Metadata\MergeableClassMetadata;
-use Doctrine\Common\Annotations\Reader;
 
 /**
  * AbstractDriver
