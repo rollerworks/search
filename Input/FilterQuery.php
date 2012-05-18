@@ -20,9 +20,7 @@ use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
-
 use Symfony\Component\Translation\TranslatorInterface;
-use \InvalidArgumentException;
 
 /**
  * FilterQuery.
@@ -116,11 +114,11 @@ class FilterQuery extends AbstractInput
     public function setLabelToFieldByTranslator($pathPrefix, $domain = 'filter')
     {
         if (!is_string($pathPrefix) || empty($pathPrefix)) {
-            throw new InvalidArgumentException('Prefix must be an string and can not be empty');
+            throw new \InvalidArgumentException('Prefix must be an string and can not be empty.');
         }
 
         if (!is_string($domain) || empty($domain)) {
-            throw new InvalidArgumentException('Domain must be an string and can not be empty');
+            throw new \InvalidArgumentException('Domain must be an string and can not be empty.');
         }
 
         $this->aliasTranslatorPrefix = $pathPrefix;
