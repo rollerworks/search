@@ -1,0 +1,8 @@
+<?php
+
+return Symfony\Component\Finder\Finder::create()
+    ->name('*.php')
+    ->exclude('Tests/Fixtures/Views')
+    ->exclude('Resources/data/locales')
+    ->in(__DIR__)
+   ;
