@@ -32,7 +32,7 @@ use \InvalidArgumentException;
  * Every filter is an: name=values;
  *
  * The field name must follow this regex convention: [a-z][a-z_0-9]*.
- * Unicode characters are accepted.
+ * Unicode characters and numbers are accepted.
  *
  * If the value contains an ';' or '()', the whole value must be quoted (with double quotes).
  * If the value contains an special character, like the range symbol 'that' value-part must be quoted.
@@ -198,7 +198,7 @@ class FilterQuery extends AbstractInput
         // Various solutions have been tried, but did not work...
         // But its still better, then to 'always' need to escape the grouping parentheses to use them as literals.
         if ('(' === mb_substr($this->query, 0, 1)) {
-            if (preg_match_all('/\(((?:\s*(?:\p{L}[\p{L}\d]*)\s*=(?:(?:\s*(?:"(?:(?:[^"]+|"")+)"|[^;,]+)\s*,*)*);?\s*)*)\),?/us', $this->query, $groups)) {
+            if (preg_match_all('/\(((?:\s*(?:\p{L}[\p{L}\p{N}_]*)\s*=(?:(?:\s*(?:"(?:(?:[^"]+|"")+)"|[^;,]+)\s*,*)*);?\s*)*)\),?/us', $this->query, $groups)) {
                 $groupsCount = count($groups[0]);
 
                 for ($i = 0; $i < $groupsCount; $i++) {
@@ -225,7 +225,7 @@ class FilterQuery extends AbstractInput
     {
         $filterPairs = array();
 
-        if (preg_match_all('/(\p{L}[\p{L}\d]*)\s*=((?:\s*(?:"(?:(?:[^"]+|"")+)"|[^;,]+)\s*,*)*);?/us', $input, $filterPairMatches)) {
+        if (preg_match_all('/(\p{L}[\p{L}\p{N}_]*)\s*=((?:\s*(?:"(?:(?:[^"]+|"")+)"|[^;,]+)\s*,*)*);?/us', $input, $filterPairMatches)) {
             $filtersCount = count($filterPairMatches[0]);
 
             for ($i = 0; $i < $filtersCount; $i++) {

@@ -49,6 +49,17 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
+    function testQuerySingleFieldWithUnicodeNumber()
+    {
+        $input = new QueryInput();
+        $input->setField('foo', 'ß۲');
+        $input->setLabelToField('foo', 'ß۲');
+
+        $input->setInput('ß۲ = 2');
+
+        $this->assertEquals(array(array('foo' => new FilterValuesBag('ß۲', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
+    }
+
     function testQueryMultipleFields()
     {
         $input = new QueryInput();
