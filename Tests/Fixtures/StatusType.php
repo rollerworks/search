@@ -72,4 +72,30 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
         // Since there are no duplicates and only three values are legal.
         return (count($field->getSingleValues()) === 3 ? null : true);
     }
+
+    /**
+     * Formats the value for display and return it as a string.
+     *
+     * This function does the opposite of sanitizeString().
+     *
+     * @param mixed $value
+     * @return string
+     */
+    public function formatOutput($value)
+    {
+        return $input;
+    }
+
+    /**
+     * Returns the scalar representation of the value.
+     *
+     * This is used for duplicate detection and debugging.
+     *
+     * @param mixed $input
+     * @return string
+     */
+    public function dumpValue($input)
+    {
+        return $input;
+    }
 }
