@@ -88,7 +88,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      * Fill the FieldSet with the configuration of an Entity.
      *
      * @param FieldSet      $fieldsSet
-     * @param object|string $entity Entity object or full class-name
+     * @param object|string $entity    Entity object or full class-name
      * @return ConfigProcessor
      *
      * @throws \InvalidArgumentException When $entity is not an object or string

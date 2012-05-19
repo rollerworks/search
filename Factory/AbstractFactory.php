@@ -61,9 +61,9 @@ abstract class AbstractFactory
      * Constructor
      *
      * @param Reader  $annotationReader
-     * @param string  $classesDir   The directory to use for the Classes. It must exist.
-     * @param string  $filtersNs    The namespace to use for the Classes.
-     * @param boolean $autoGenerate Whether to automatically generate Classes.
+     * @param string  $classesDir       The directory to use for the Classes. It must exist.
+     * @param string  $filtersNs        The namespace to use for the Classes.
+     * @param boolean $autoGenerate     Whether to automatically generate Classes.
      *
      * @api
      *

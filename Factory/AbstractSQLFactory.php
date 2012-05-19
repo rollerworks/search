@@ -11,7 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Factory;
 
-use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 
 /**
  * This abstract SQL factory class provides the shared logic to create the RecordFilter::Record::SQL::* Classes at runtime.

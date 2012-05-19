@@ -28,7 +28,7 @@ class FilterQuery extends AbstractDumper
      * Single values and ranges are always quoted.
      *
      * @param FormatterInterface $formatter
-     * @param boolean            $fieldPerLine  Return each field on a new line
+     * @param boolean            $fieldPerLine Return each field on a new line
      * @return string
      *
      * @todo Use the formatted value instead of the dumped version, and use the correct label.

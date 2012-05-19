@@ -60,7 +60,7 @@ class DateTimeHelper
      *
      * @param string          $inputValue
      * @param boolean|integer $validationFlag
-     * @param string          $isoDateTime Output of dateTime as ISO
+     * @param string          $isoDateTime    Output of dateTime as ISO
      * @param boolean         $hashTime
      * @param string|null     $locale
      * @return string

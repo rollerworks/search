@@ -102,8 +102,8 @@ abstract class AbstractConfigProcessor
      *
      * The method will receive the $parameters as-is (not processed).
      *
-     * @param string  $input
-     * @param array   $parameters
+     * @param string $input
+     * @param array  $parameters
      * @return mixed
      *
      * @throws \RuntimeException

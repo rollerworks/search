@@ -56,8 +56,8 @@ class SQLStructFactory extends AbstractSQLFactory
      *
      * $formatter must be an reference to the 'domain specific' ValidationFormatter annotations.
      *
-     * @param DomainAwareFormatterInterface   $formatter
-     * @param Connection                      $DBConnection
+     * @param DomainAwareFormatterInterface $formatter
+     * @param Connection                    $DBConnection
      * @return WhereStruct
      *
      * @api

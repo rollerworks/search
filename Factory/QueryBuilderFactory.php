@@ -54,8 +54,8 @@ class QueryBuilderFactory extends AbstractSQLFactory
      *
      * $formatter must be an reference to the 'domain specific' Formatter annotations.
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface    $formatter
-     * @param \Doctrine\ORM\EntityManager                                     $entityManager
+     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface $formatter
+     * @param \Doctrine\ORM\EntityManager                                  $entityManager
      * @return \Rollerworks\RecordFilterBundle\Record\SQL\QueryBuilder
      *
      * @api

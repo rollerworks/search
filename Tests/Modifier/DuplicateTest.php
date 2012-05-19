@@ -12,7 +12,6 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
 
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Type\DateTime;
 use Rollerworks\RecordFilterBundle\Type\Number;

@@ -76,14 +76,14 @@ class FilterValuesBag
     /**
      * Constructor.
      *
-     * @param string          $label
-     * @param string          $originalInput
-     * @param SingleValue[]   $singleValues
-     * @param SingleValue[]   $excludes
-     * @param Range[]         $ranges
-     * @param Compare[]       $compares
-     * @param Range[]         $excludedRanges
-     * @param integer         $lastValIndex
+     * @param string        $label
+     * @param string        $originalInput
+     * @param SingleValue[] $singleValues
+     * @param SingleValue[] $excludes
+     * @param Range[]       $ranges
+     * @param Compare[]     $compares
+     * @param Range[]       $excludedRanges
+     * @param integer       $lastValIndex
      *
      * @api
      */

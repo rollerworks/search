@@ -26,9 +26,9 @@ class Compare extends SingleValue
     /**
      * Constructor
      *
-     * @param mixed   $value
-     * @param string  $operator
-     * @param mixed   $originalValue
+     * @param mixed  $value
+     * @param string $operator
+     * @param mixed  $originalValue
      *
      * @throws \InvalidArgumentException When the operator is invalid
      * @api

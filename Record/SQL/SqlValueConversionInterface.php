@@ -40,7 +40,7 @@ interface SqlValueConversionInterface
      * @param mixed      $input
      * @param DBALType   $type
      * @param Connection $connection
-     * @param boolean    $isDql Whether the query should be DQL
+     * @param boolean    $isDql      Whether the query should be DQL
      * @return mixed
      */
     public function convertValue($input, DBALType $type, Connection $connection, $isDql);
