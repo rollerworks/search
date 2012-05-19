@@ -28,7 +28,7 @@ use Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\EC
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice;
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceWithParams;
 
-class ConfigProcessorTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
+class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
     /**
      * @var ConfigProcessor

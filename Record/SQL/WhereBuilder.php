@@ -15,7 +15,9 @@ use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+
 use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\Types\Type as ORMType;
 
 /**
  * SQL RecordFilter Where Builder.
@@ -229,11 +231,11 @@ class WhereBuilder
                 }
 
                 foreach ($valuesBag->getRanges() as $range) {
-                    $query .= sprintf('%s BETWEEN %s AND %s AND ', $columnName, $this->getValStr($range->getLower(), $fieldName), $this->getValStr($range->getUpper(), $fieldName));
+                    $query .= sprintf('(%s BETWEEN %s AND %s) AND ', $columnName, $this->getValStr($range->getLower(), $fieldName), $this->getValStr($range->getUpper(), $fieldName));
                 }
 
                 foreach ($valuesBag->getExcludedRanges() as $range) {
-                    $query .= sprintf('%s NOT BETWEEN %s AND %s AND ', $columnName, $this->getValStr($range->getLower(), $fieldName), $this->getValStr($range->getUpper(), $fieldName));
+                    $query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', $columnName, $this->getValStr($range->getLower(), $fieldName), $this->getValStr($range->getUpper(), $fieldName));
                 }
 
                 foreach ($valuesBag->getCompares() as $comp) {
@@ -273,6 +275,12 @@ class WhereBuilder
 
         $databasePlatform = $this->entityManager->getConnection()->getDatabasePlatform();
         $type = $this->entityManager->getClassMetadata($field->getEntityClass())->getTypeOfField($field->getEntityField());
+
+        // Documentation claims its an object while in fact its an string
+        if (!is_object($type)) {
+            $type = ORMType::getType($type);
+
+        }
 
         if ((isset($this->sqlValueConversions[$fieldName]) && $this->sqlValueConversions[$fieldName]->requiresBaseConversion()) || !isset($this->sqlValueConversions[$fieldName])) {
             $value = $type->convertToDatabaseValue($value, $databasePlatform);

@@ -53,6 +53,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
      */
     public function formatOutput($value)
     {
+        return $value;
     }
 
     /**
@@ -103,13 +104,5 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     public function getMatcherRegex()
     {
         return '(?:F\d{4}-\d+)';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsJs()
-    {
-        return true;
     }
 }
