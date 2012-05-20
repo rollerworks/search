@@ -15,7 +15,6 @@ use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\Metadata\PropertyMetadata;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Metadata\MetadataFactoryInterface;
@@ -271,8 +270,8 @@ class WhereBuilder
     /**
      * Get an single value string.
      *
-     * @param string                $value
-     * @param string                $fieldName
+     * @param string $value
+     * @param string $fieldName
      * @return mixed
      *
      * @throws \UnderflowException

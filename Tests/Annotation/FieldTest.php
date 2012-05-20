@@ -74,28 +74,4 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('\BadMethodCallException', "Unknown property 'doctor' on annotation 'Rollerworks\\RecordFilterBundle\\Annotation\\Field'.");
         new FilterField(array('name' => 'User', 'doctor' => 'who' ));
     }
-
-    function testWidgetEmpty()
-    {
-        $field = new FilterField(array('name' => 'User'));
-
-        $widgetParams = $field->getWidget('js');
-        $this->assertEquals(array(), $widgetParams);
-    }
-
-    function testWidget()
-    {
-        $field = new FilterField(array('name'                  => 'User',
-                                        'widget_js_type'        => 'Number',
-                                        'widget_js_template'    => 'divs.html.twig',
-
-                                        'widget_flash_type'     => 'Float',
-                                        'widget_flash_template' => 'tables.html.twig'));
-
-        $widgetParams = $field->getWidget('js');
-        $this->assertEquals(array('type' => 'Number', 'template' => 'divs.html.twig'), $widgetParams);
-
-        $widgetParams = $field->getWidget('flash');
-        $this->assertEquals(array('type' => 'Float', 'template' => 'tables.html.twig'), $widgetParams);
-    }
 }

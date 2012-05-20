@@ -14,7 +14,6 @@ namespace Rollerworks\RecordFilterBundle\Tests\Record;
 use Rollerworks\RecordFilterBundle\Record\Sql\WhereBuilder;
 use Rollerworks\RecordFilterBundle\Metadata\Driver\AnnotationDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Metadata\Driver\DriverChain;
 use Metadata\MetadataFactory;
 
 /**

@@ -2,7 +2,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
 
-use Doctrine\ORM\Mapping as ORM;
 use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
