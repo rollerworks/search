@@ -8,15 +8,15 @@ use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
 /**
  * ECommerce-Invoice row
  *
- * @ORM\Entity
- * @ORM\Table(name="invoice_rows")
+ * @Entity
+ * @Table(name="invoice_rows")
  */
 class ECommerceInvoiceRow
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @Id
+     * @Column(type="integer")
+     * @GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -27,13 +27,13 @@ class ECommerceInvoiceRow
     private $invoice_id;
 
     /**
-     * @ORM\Column(type="string")
+     * @Column(type="string")
      * @RecordFilter\Field("invoice_label")
      */
     private $label;
 
     /**
-     * @ORM\Column(name="price" type="decimal", precision=0, scale=2)
+     * @Column(name="price" type="decimal", precision=0, scale=2)
      * @RecordFilter\Field("invoice_date", type="Decimal")
      */
     private $price;

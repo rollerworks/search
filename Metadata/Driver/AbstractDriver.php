@@ -25,9 +25,9 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @param string $type
      * @return null|string
-     * @throws \InvalidArgumentException When the type can cant be found is orr is not legal.
+     * @throws \InvalidArgumentException When the type can cant be found is or is not legal.
      */
-    protected function getRealType($type)
+    protected static function getRealType($type)
     {
         if (empty($type)) {
             return null;
@@ -47,14 +47,14 @@ abstract class AbstractDriver implements DriverInterface
         $r = new \ReflectionClass($type);
 
         if ($r->isAbstract()) {
-            throw new \InvalidArgumentException(sprintf('Filter-type "%s" can not be abstract.', $type));
+            throw new \InvalidArgumentException(sprintf('Filter-type "%s" can\'t be abstract.', $type));
         }
         elseif (!$r->implementsInterface('\\Rollerworks\\RecordFilterBundle\\Type\\FilterTypeInterface')) {
-            throw new \InvalidArgumentException(sprintf('Filter-type "%s" does seem to implement the Rollerworks\RecordFilterBundle\Type\FilterTypeInterface.', $type));
+            throw new \InvalidArgumentException(sprintf('Filter-type "%s" must implement Rollerworks\RecordFilterBundle\Type\FilterTypeInterface.', $type));
         }
 
         if ($r->hasMethod('__construct') && !$r->getMethod('__construct')->isPublic() ) {
-            throw new \InvalidArgumentException(sprintf('%s::__construct(): does not seem to be public.', $type));
+            throw new \InvalidArgumentException(sprintf('%s::__construct(): must be public.', $type));
         }
 
         return $type;

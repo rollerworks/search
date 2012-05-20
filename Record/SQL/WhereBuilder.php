@@ -15,7 +15,10 @@ use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
-
+use Rollerworks\RecordFilterBundle\Metadata\PropertyMetadata;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Metadata\MetadataFactoryInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\Types\Type as ORMType;
 
@@ -26,18 +29,26 @@ use Doctrine\DBAL\Types\Type as ORMType;
  *
  * Keep the following in mind when using conversions.
  * * When using the result in DQL, custom functions must be registered in the ORM Configuration.
- * * Conversion functions must be stateless, they get the type and connection for information and performing operations.
+ * * Conversion functions are per field and must be stateless, they get the type and connection information for performing operations.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class WhereBuilder
 {
     /**
-     * Doctrine EntityManager
-     *
      * @var EntityManager
      */
     protected $entityManager = null;
+
+    /**
+     * @var MetadataFactoryInterface
+     */
+    protected $metadataFactory;
+
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     /**
      * @var FieldSet
@@ -70,37 +81,36 @@ class WhereBuilder
     protected $isDql = false;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param EntityManager $entityManager
+     * @param EntityManager            $entityManager
+     * @param MetadataFactoryInterface $metadataFactory
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, MetadataFactoryInterface $metadataFactory)
     {
-        $this->entityManager = $entityManager;
+        $this->entityManager   = $entityManager;
+        $this->metadataFactory = $metadataFactory;
     }
 
     /**
-     * Set the SQL conversion configuration for an value.
+     * Set the DIC container for SQL value-conversions.
      *
-     * The configuration applies to all FieldSet's.
-     *
-     * @param string                      $fieldName
-     * @param SqlValueConversionInterface $conversionObj
+     * @param ContainerInterface $container
      */
-    public function setSqlConversionForValue($fieldName, SqlValueConversionInterface $conversionObj)
+    public function setContainer(ContainerInterface $container)
     {
-        $this->sqlValueConversions[$fieldName] = $conversionObj;
+        $this->container = $container;
     }
 
     /**
-     * Set the SQL conversion configuration for an SQL-field.
+     * Set the SQL conversion configuration for an field.
      *
-     * The configuration applies to all FieldSet's.
+     * Only converter per field, existing one is overwritten.
      *
      * @param string                      $fieldName
      * @param SqlFieldConversionInterface $conversionObj
      */
-    public function setSqlConversionForField($fieldName, SqlFieldConversionInterface $conversionObj)
+    public function setConversionForField($fieldName, SqlFieldConversionInterface $conversionObj)
     {
         $this->sqlFieldConversions[$fieldName] = $conversionObj;
     }
@@ -137,7 +147,7 @@ class WhereBuilder
     }
 
     /**
-     * Returns the correct column name.
+     * Returns the correct column (with SQLField conversions applied).
      *
      * @param string $fieldName
      * @return string
@@ -170,6 +180,22 @@ class WhereBuilder
         }
 
         $this->columnsMappingCache[$fieldName] = $columnPrefix . $metadata->getColumnName($field->getEntityField());
+
+        if (isset($this->sqlFieldConversions[$fieldName]) && null !== $field->getEntityClass()) {
+            $type = $this->entityManager->getClassMetadata($field->getEntityClass())->getTypeOfField($field->getEntityField());
+
+            // Documentation claims its an object while in fact its an string
+            if (!is_object($type)) {
+                $type = ORMType::getType($type);
+            }
+
+            $this->columnsMappingCache[$fieldName] = $this->sqlFieldConversions[$fieldName]->convertField(
+                $this->columnsMappingCache[$fieldName],
+                $type,
+                $this->entityManager->getConnection(),
+                $this->isDql
+            );
+        }
 
         return $this->columnsMappingCache[$fieldName];
     }
@@ -211,35 +237,26 @@ class WhereBuilder
                     continue;
                 }
 
-                $columnName = $this->getFieldColumn($fieldName);
-                $field = $this->fieldSet->get($fieldName);
-
-                if (isset($this->sqlFieldConversions[$fieldName]) && null !== $field->getEntityClass()) {
-                    $columnName = $this->sqlFieldConversions[$fieldName]->convertField(
-                        $columnName,
-                        $this->entityManager->getClassMetadata($field->getEntityClass())->getTypeOfField($field->getEntityField()),
-                        $this->entityManager->getConnection(),
-                        $this->isDql);
-                }
+                $column = $this->getFieldColumn($fieldName);
 
                 if($valuesBag->hasSingleValues()) {
-                    $query .= sprintf('%s IN(%s) AND ', $columnName, $this->createInList($valuesBag->getSingleValues(), $fieldName));
+                    $query .= sprintf('%s IN(%s) AND ', $column, $this->createInList($valuesBag->getSingleValues(), $fieldName));
                 }
 
                 if($valuesBag->hasExcludes()) {
-                    $query .= sprintf('%s NOT IN(%s) AND ', $columnName, $this->createInList($valuesBag->getExcludes(), $fieldName));
+                    $query .= sprintf('%s NOT IN(%s) AND ', $column, $this->createInList($valuesBag->getExcludes(), $fieldName));
                 }
 
                 foreach ($valuesBag->getRanges() as $range) {
-                    $query .= sprintf('(%s BETWEEN %s AND %s) AND ', $columnName, $this->getValStr($range->getLower(), $fieldName), $this->getValStr($range->getUpper(), $fieldName));
+                    $query .= sprintf('(%s BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName), $this->getValStr($range->getUpper(), $fieldName));
                 }
 
                 foreach ($valuesBag->getExcludedRanges() as $range) {
-                    $query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', $columnName, $this->getValStr($range->getLower(), $fieldName), $this->getValStr($range->getUpper(), $fieldName));
+                    $query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName), $this->getValStr($range->getUpper(), $fieldName));
                 }
 
                 foreach ($valuesBag->getCompares() as $comp) {
-                    $query .= sprintf('%s %s %s AND ', $columnName, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName));
+                    $query .= sprintf('%s %s %s AND ', $column, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName));
                 }
             }
 
@@ -254,8 +271,8 @@ class WhereBuilder
     /**
      * Get an single value string.
      *
-     * @param string $value
-     * @param string $fieldName
+     * @param string                $value
+     * @param string                $fieldName
      * @return mixed
      *
      * @throws \UnderflowException
@@ -279,23 +296,44 @@ class WhereBuilder
         // Documentation claims its an object while in fact its an string
         if (!is_object($type)) {
             $type = ORMType::getType($type);
-
         }
 
-        if ((isset($this->sqlValueConversions[$fieldName]) && $this->sqlValueConversions[$fieldName]->requiresBaseConversion()) || !isset($this->sqlValueConversions[$fieldName])) {
+        if (!isset($this->sqlValueConversions[$fieldName])) {
+            // Set to null be default so we can skip this check the next round
+            $this->sqlValueConversions[$fieldName] = null;
+
+            if (null !== $field->getEntityClass() && null !== $classMetadata = $this->metadataFactory->getMetadataForClass($field->getEntityClass())) {
+                $propertyName = $field->getEntityField();
+
+                if (isset($classMetadata->propertyMetadata[$propertyName]) && $classMetadata->propertyMetadata[$propertyName]->hasSqlConversion()) {
+                    $class = $classMetadata->propertyMetadata[$propertyName]->getSqlConversionClass();
+                    $this->sqlValueConversions[$fieldName] = new $class($classMetadata->propertyMetadata[$propertyName]->getSqlConversionParams());
+
+                    if ($this->sqlValueConversions[$fieldName] instanceof ContainerAwareInterface) {
+                        $this->sqlValueConversions[$fieldName]->setContainer($this->container);
+                    }
+                }
+            }
+        }
+
+        if (null === $this->sqlValueConversions[$fieldName]) {
             $value = $type->convertToDatabaseValue($value, $databasePlatform);
-        }
 
-        if (isset($this->sqlValueConversions[$fieldName])) {
-            $value = $this->sqlValueConversions[$fieldName]->convertValue($value, $type, $this->entityManager->getConnection(), $this->isDql);
+            // String values must be quoted.
+            if (\PDO::PARAM_STR === $type->getBindingType() || \PDO::PARAM_LOB === $type->getBindingType()) {
+                $value = $this->entityManager->getConnection()->quote($value);
+            }
         }
-        // String values must be quoted.
-        elseif (\PDO::PARAM_STR === $type->getBindingType() || \PDO::PARAM_LOB === $type->getBindingType()) {
-            $value = $this->entityManager->getConnection()->quote($value);
+        else {
+            if ($this->sqlValueConversions[$fieldName]->requiresBaseConversion()) {
+                $value = $type->convertToDatabaseValue($value, $databasePlatform);
+            }
+
+            $value = $this->sqlValueConversions[$fieldName]->convertValue($value, $type, $this->entityManager->getConnection(), $this->isDql);
         }
 
         if (!is_scalar($value)) {
-            throw new \UnexpectedValueException(sprintf('Final value-type "%s" is not scalar.', (is_object($value) ? '(Object)' .  get_class($value) : gettype($value))));
+            throw new \UnexpectedValueException(sprintf('Final value-type "%s" for field "%s" is not scalar.', (is_object($value) ? '(Object) ' .  get_class($value) : gettype($value)), $fieldName));
         }
 
         return $value;

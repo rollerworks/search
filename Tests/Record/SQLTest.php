@@ -12,6 +12,10 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Record;
 
 use Rollerworks\RecordFilterBundle\Record\Sql\WhereBuilder;
+use Rollerworks\RecordFilterBundle\Metadata\Driver\AnnotationDriver;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Metadata\Driver\DriverChain;
+use Metadata\MetadataFactory;
 
 /**
  * Test the Validation generator. Its work is generating on-the-fly subclasses of a given model.
@@ -30,9 +34,38 @@ class SQLTest extends OrmTestCase
         $input = $this->newInput($filterQuery);
         $this->assertTrue($this->formatter->formatInput($input));
 
-        $whereBuilder = new WhereBuilder($this->em);
-        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldsConfig(), $this->formatter));
+        $annotationReader = new AnnotationReader();
 
+        // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
+        $annotationReader->setIgnoreNotImportedAnnotations(true);
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
+        $whereBuilder    = new WhereBuilder($this->em, $metadataFactory);
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldsConfig(), $this->formatter));
+        $this->assertEquals($expectedSql, $whereCase);
+    }
+
+    /**
+     * @dataProvider provideSqlConvertTests
+     *
+     * @param $filterQuery
+     * @param $expectedSql
+     */
+    function testSqlConvert($filterQuery, $expectedSql)
+    {
+        $input = $this->newInput($filterQuery, 'customer');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $annotationReader = new AnnotationReader();
+
+        // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
+        $annotationReader->setIgnoreNotImportedAnnotations(true);
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
+        $whereBuilder    = new WhereBuilder($this->em, $metadataFactory);
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldsConfig(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
     }
 
@@ -54,6 +87,13 @@ class SQLTest extends OrmTestCase
 
             // Expects empty as there is no field with that name
             array('(user=2;),(user=2;)', ''),
+        );
+    }
+
+    static public function provideSqlConvertTests()
+    {
+        return array(
+            array('customer_id=2;', '(id IN(2))'),
         );
     }
 }

@@ -12,6 +12,9 @@
 namespace Rollerworks\RecordFilterBundle\Metadata\Driver;
 
 use Rollerworks\RecordFilterBundle\Metadata\PropertyMetadata;
+use Rollerworks\RecordFilterBundle\Annotation\Field as AnnotationField;
+use Rollerworks\RecordFilterBundle\Annotation\SqlConversion;
+
 use Metadata\MergeableClassMetadata;
 use Doctrine\Common\Annotations\Reader;
 
@@ -48,17 +51,23 @@ class AnnotationDriver extends AbstractDriver
         foreach ($class->getProperties() as $reflectionProperty) {
             $propertyMetadata = new PropertyMetadata($class->getName(), $reflectionProperty->getName());
 
-            $annotation = $this->reader->getPropertyAnnotation($reflectionProperty, 'Rollerworks\\RecordFilterBundle\\Annotation\\Field');
+            foreach ($this->reader->getPropertyAnnotations($reflectionProperty) as $annotation) {
 
-            /** @var \Rollerworks\RecordFilterBundle\Annotation\Field $annotation */
-            if (null !== $annotation) {
-                $propertyMetadata->filter_name    = $annotation->getName();
-                $propertyMetadata->required       = $annotation->isRequired();
-                $propertyMetadata->type           = $this->getRealType($annotation->getType());
-                $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
-                $propertyMetadata->acceptCompares = $annotation->acceptsCompares();
-                $propertyMetadata->params         = $annotation->getParams();
-                $propertyMetadata->widgetsConfig  = $annotation->getWidget();
+                /** @var \Rollerworks\RecordFilterBundle\Annotation\Field $annotation */
+                if ($annotation instanceof AnnotationField) {
+                    $propertyMetadata->filter_name = $annotation->getName();
+                    $propertyMetadata->required    = $annotation->isRequired();
+
+                    $propertyMetadata->type   = self::getRealType($annotation->getType());
+                    $propertyMetadata->params = $annotation->getParams();
+
+                    $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
+                    $propertyMetadata->acceptCompares = $annotation->acceptsCompares();
+                }
+                /** @var \Rollerworks\RecordFilterBundle\Annotation\SqlConversion $annotation */
+                elseif ($annotation instanceof SqlConversion) {
+                    $propertyMetadata->setSqlConversion($annotation->getClass(), $annotation->getParams());
+                }
             }
 
             $classMetadata->addPropertyMetadata($propertyMetadata);

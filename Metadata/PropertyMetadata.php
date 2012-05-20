@@ -12,6 +12,8 @@
 namespace Rollerworks\RecordFilterBundle\Metadata;
 
 use Metadata\PropertyMetadata as BasePropertyMetadata;
+use Rollerworks\RecordFilterBundle\Record\Sql\SqlFieldConversionInterface;
+use Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface;
 
 /**
  * PropertyMetadata
@@ -19,18 +21,72 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
 class PropertyMetadata extends BasePropertyMetadata
 {
     public $filter_name;
-
     public $required;
 
-    public $type;
-
     public $acceptRanges;
-
     public $acceptCompares;
 
+    public $type;
     public $params = array();
 
     public $widgetsConfig = array();
+
+    public $sqlConversion = array('class' => null, 'params' => array());
+
+    /**
+     * Set SQL conversion configuration
+     *
+     * @param string $class
+     * @param array  $params
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setSqlConversion($class, array $params = array())
+    {
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException(sprintf('Failed to find SqlConversion class "%s".', $class));
+        }
+
+        $r = new \ReflectionClass($class);
+
+        if ($r->isAbstract()) {
+            throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" can\'t be abstract.', $class));
+        }
+
+        if (!$r->implementsInterface('\\Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface')) {
+            throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" must implement Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface.', $class));
+        }
+
+        if ($r->hasMethod('__construct') && !$r->getMethod('__construct')->isPublic() ) {
+            throw new \InvalidArgumentException(sprintf('%s::__construct(): must be public.', $class));
+        }
+
+        $this->sqlConversion = array('class' => $class, 'params' => $params);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasSqlConversion()
+    {
+        return null !== $this->sqlConversion['class'];
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSqlConversionClass()
+    {
+        return $this->sqlConversion['class'];
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getSqlConversionParams()
+    {
+        return $this->sqlConversion['params'];
+    }
 
     /**
      * @return string
@@ -40,13 +96,18 @@ class PropertyMetadata extends BasePropertyMetadata
         return serialize(array(
             $this->class,
             $this->name,
+
             $this->filter_name,
-            $this->required,
+
             $this->type,
+            $this->params,
+
+            $this->required,
             $this->acceptRanges,
             $this->acceptCompares,
-            $this->params,
-            $this->widgetsConfig,
+
+            $this->sqlConversion,
+            $this->widgetsConfig
         ));
     }
 
@@ -55,7 +116,22 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public function unserialize($str)
     {
-        list($this->class, $this->name, $this->filter_name, $this->required, $this->type, $this->acceptRanges, $this->acceptCompares, $this->params, $this->widgetsConfig) = unserialize($str);
+        list(
+            $this->class,
+            $this->name,
+
+            $this->filter_name,
+
+            $this->type,
+            $this->params,
+
+            $this->required,
+            $this->acceptRanges,
+            $this->acceptCompares,
+
+            $this->sqlConversion,
+            $this->widgetsConfig
+        ) = unserialize($str);
 
         $this->reflection = new \ReflectionProperty($this->class, $this->name);
         $this->reflection->setAccessible(true);

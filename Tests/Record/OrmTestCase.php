@@ -24,6 +24,7 @@ use Rollerworks\RecordFilterBundle\Type\Decimal;
 
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType;
+use Rollerworks\RecordFilterBundle\Tests\Fixtures\CustomerType;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -103,6 +104,11 @@ class OrmTestCase extends OrmTestCaseBase
 
             $fieldSet->set('invoice_price', new FilterConfig('status', new Decimal(), false, true, true))
                 ->get('invoice_price')->setEntity('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow', 'price');
+        }
+        elseif ('customer' == $fieldSetId) {
+            $fieldSet = new FieldSet('customer');
+            $fieldSet->set('customer_id', new FilterConfig('id', new CustomerType(), false, true, true))
+                ->get('customer_id')->setEntity('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id');
         }
 
         return new FilterQuery($fieldSet, $filterQuery);
