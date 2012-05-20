@@ -32,19 +32,18 @@ class Field
 
     private $params = array();
 
-    private $widgets = array();
-
     /**
      * Constructor.
      *
      * @param array $data An array of key/value parameters.
+     *
      * @throws \BadMethodCallException
      * @throws \UnexpectedValueException
      */
     public function __construct(array $data)
     {
-        $this->name           = null;
-        $this->type           = null;
+        $this->name = null;
+        $this->type = null;
 
         $this->required       = false;
         $this->acceptRanges   = false;
@@ -63,14 +62,6 @@ class Field
         foreach ($data as $key => $value) {
             if ('_' === mb_substr($key, 0, 1)) {
                 $this->params[ mb_substr($key, 1) ] = $value;
-                continue;
-            }
-            // Widgets are configured per widget-type
-            elseif (preg_match('/^widget_([^_]+)_(.+)/i', $key, $widgetParams)) {
-                $widgetType = $widgetParams[1];
-                $widgetKey  = $widgetParams[2];
-
-                $this->widgets[$widgetType][$widgetKey] = $value;
                 continue;
             }
 
@@ -140,25 +131,11 @@ class Field
 
     function hasParams()
     {
-        return count($this->params);
+        return count($this->params) > 0;
     }
 
     function getParams()
     {
         return $this->params;
-    }
-
-    function getWidget($type = null)
-    {
-        if (null === $type) {
-            return $this->widgets;
-        }
-
-        if (isset($this->widgets[$type])) {
-            return $this->widgets[$type];
-        }
-        else {
-            return array();
-        }
     }
 }

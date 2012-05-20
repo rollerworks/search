@@ -83,7 +83,7 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
      */
     public function formatOutput($value)
     {
-        return $input;
+        return $value;
     }
 
     /**
