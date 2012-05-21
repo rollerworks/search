@@ -322,8 +322,7 @@ class WhereBuilder
             if (\PDO::PARAM_STR === $type->getBindingType() || \PDO::PARAM_LOB === $type->getBindingType()) {
                 $value = $this->entityManager->getConnection()->quote($value);
             }
-        }
-        else {
+        } else {
             if ($this->sqlValueConversions[$fieldName]->requiresBaseConversion()) {
                 $value = $type->convertToDatabaseValue($value, $databasePlatform);
             }

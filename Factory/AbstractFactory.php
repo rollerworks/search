@@ -77,8 +77,7 @@ abstract class AbstractFactory
 
         if (!$filtersNs) {
             throw new \InvalidArgumentException('You must configure a filters Formatter namespace. See docs for details');
-        }
-        elseif (!self::isNamespace($filtersNs)) {
+        } elseif (!self::isNamespace($filtersNs)) {
             throw new \InvalidArgumentException('You must configure a _valid_ filters Formatter namespace. See docs for details');
         }
 
@@ -184,15 +183,12 @@ abstract class AbstractFactory
             if (isset($params[ $parameter->name ])) {
                 if (in_array($parameter, $noConvert)) {
                     $paramsList .= $params[ $parameter->name ];
-                }
-                else {
+                } else {
                     $paramsList .= var_export($params[ $parameter->name ], true);
                 }
-            }
-            elseif (!$parameter->isOptional()) {
+            } elseif (!$parameter->isOptional()) {
                 throw new \InvalidArgumentException('Constructor parameter "' . $parameter->name . '" is not optional and should have value in annotations: ' . $type);
-            }
-            else {
+            } else {
                 $paramsList .= var_export($parameter->getDefaultValue(), true);
             }
 

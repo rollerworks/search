@@ -144,8 +144,7 @@ class ValuesToRange implements ModifierInterface
 
                     if ($exclude) {
                         $this->filterStruct->addExcludedRange($range);
-                    }
-                    else {
+                    } else {
                         $this->filterStruct->addRange($range);
                     }
 
@@ -174,8 +173,7 @@ class ValuesToRange implements ModifierInterface
     {
         if ($exclude) {
             $this->filterStruct->removeExclude($index);
-        }
-        else {
+        } else {
             $this->filterStruct->removeSingleValue($index);
         }
 

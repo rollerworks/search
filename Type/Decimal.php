@@ -122,8 +122,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
 
         if (!$this->lastResult) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }

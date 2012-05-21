@@ -66,8 +66,7 @@ class SQLStructFactory extends AbstractSQLFactory
     {
         if (empty($DBConnection) && empty($this->DBAL)) {
             throw new \RuntimeException('No DB Driver configured/given.');
-        }
-        elseif (empty($DBConnection)) {
+        } elseif (empty($DBConnection)) {
             $DBConnection = $this->DBAL;
         }
 

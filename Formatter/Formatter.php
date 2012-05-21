@@ -159,8 +159,7 @@ class Formatter implements FormatterInterface
             }
 
             $this->formatted = true;
-        }
-        catch (ValidationException $e) {
+        } catch (ValidationException $e) {
             $params = array_merge($e->getParams(), array(
                 '%label%'   => $this->currentFieldLabel,
                 '%group%'   => $groupIndex + 1));
@@ -240,8 +239,7 @@ class Formatter implements FormatterInterface
 
                         $message = $currentMessage['message'];
                         $messageParams = $currentMessage['params'];
-                    }
-                    else {
+                    } else {
                         $message = $currentMessage;
                         $messageParams = array();
                     }

@@ -61,8 +61,7 @@ class CompareNormalizer implements ModifierInterface
 
                 if (is_scalar($compare->getValue())) {
                     $comparisonIndex = array_search(substr($compare->getOperator(), 0, 1) . $compare->getValue(), $compares);
-                }
-                else {
+                } else {
                     $comparisonIndex = self::findArrayIndex($type, substr($compare->getOperator(), 0, 1), $compare, $compares);
                 }
 

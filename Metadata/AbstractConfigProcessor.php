@@ -71,19 +71,16 @@ abstract class AbstractConfigProcessor
         foreach ($reflectionParameters as $param) {
             if (array_key_exists($param->getName(), $parameters)) {
                 $argument = $parameters[$param->getName()];
-            }
-            elseif ($param->isDefaultValueAvailable()) {
+            } elseif ($param->isDefaultValueAvailable()) {
                 $argument = $param->getDefaultValue();
-            }
-            else {
+            } else {
                 throw new \RuntimeException(sprintf('Type "%s" requires that you provide a value for the "$%s" argument (because there is no default value or because there is a non optional argument after this one).', $className, $param->getName()));
             }
 
             if (is_scalar($argument)) {
                 if ('%' === $argument[0]) {
                     $argument = $this->callServiceMethod($argument, $parameters);
-                }
-                elseif ('\\' === $argument[0]) {
+                } elseif ('\\' === $argument[0]) {
                     $argument = substr($argument, 1);
                 }
             }
@@ -107,6 +104,8 @@ abstract class AbstractConfigProcessor
      * @return mixed
      *
      * @throws \RuntimeException
+     *
+     * FIXME Move to separate Component
      */
     private function callServiceMethod($input, array $parameters)
     {

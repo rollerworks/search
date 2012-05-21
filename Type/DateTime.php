@@ -123,8 +123,7 @@ class DateTime extends Date
 
         if (!$this->hasTime) {
             $date->modify('+1 day');
-        }
-        else {
+        } else {
             $date->modify('+1 minute');
         }
 

@@ -35,8 +35,7 @@ abstract class AbstractDriver implements DriverInterface
 
         if (false === strpos($type, '\\')) {
             $type = '\\Rollerworks\\RecordFilterBundle\\Type\\' . ucfirst($type);
-        }
-        else {
+        } else {
             $type = '\\'. ltrim($type, '\\');
         }
 
@@ -48,8 +47,7 @@ abstract class AbstractDriver implements DriverInterface
 
         if ($r->isAbstract()) {
             throw new \InvalidArgumentException(sprintf('Filter-type "%s" can\'t be abstract.', $type));
-        }
-        elseif (!$r->implementsInterface('\\Rollerworks\\RecordFilterBundle\\Type\\FilterTypeInterface')) {
+        } elseif (!$r->implementsInterface('\\Rollerworks\\RecordFilterBundle\\Type\\FilterTypeInterface')) {
             throw new \InvalidArgumentException(sprintf('Filter-type "%s" must implement Rollerworks\RecordFilterBundle\Type\FilterTypeInterface.', $type));
         }
 

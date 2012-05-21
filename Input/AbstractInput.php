@@ -113,8 +113,7 @@ abstract class AbstractInput implements InputInterface
 
         if (null === $label) {
             $label = $fieldName;
-        }
-        else {
+        } else {
             $label = mb_strtolower($label);
         }
 

@@ -26,7 +26,7 @@ class SQLTest extends OrmTestCase
      * @dataProvider provideBasicsTests
      *
      * @param $filterQuery
-     * @param $expectedSql
+     * @param string $expectedSql
      */
     function testBasics($filterQuery, $expectedSql)
     {
@@ -48,8 +48,8 @@ class SQLTest extends OrmTestCase
     /**
      * @dataProvider provideSqlConvertTests
      *
-     * @param $filterQuery
-     * @param $expectedSql
+     * @param string $filterQuery
+     * @param string $expectedSql
      */
     function testSqlConvert($filterQuery, $expectedSql)
     {

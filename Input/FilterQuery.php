@@ -142,8 +142,7 @@ class FilterQuery extends AbstractInput
             foreach ($label as $fieldLabel) {
                 $this->labelsResolve[$fieldLabel] = $fieldName;
             }
-        }
-        elseif (is_string($label)) {
+        } elseif (is_string($label)) {
             $this->labelsResolve[$label] = $fieldName;
         }
 
@@ -203,8 +202,7 @@ class FilterQuery extends AbstractInput
                     $this->groups[$i] = $this->parseFilterPairs($groups[1][$i]);
                 }
             }
-        }
-        else {
+        } else {
             $this->groups[0] = $this->parseFilterPairs($this->query);
         }
 
@@ -237,8 +235,7 @@ class FilterQuery extends AbstractInput
 
                 if (isset($filterPairs[$name])) {
                     $filterPairs[$name] .= ',' . $value;
-                }
-                else {
+                } else {
                     $filterPairs[$name] = $value;
                 }
             }
@@ -279,8 +276,7 @@ class FilterQuery extends AbstractInput
 
         if (preg_match_all('#\s*("(?:(?:[^"]+|"")+)"'.$valueMatcherRegex.'|[^,]+)\s*(,\s*|$)#ius', $values, $filterValues)) {
             return $filterValues[1];
-        }
-        else {
+        } else {
             return array();
         }
     }
@@ -362,8 +358,7 @@ class FilterQuery extends AbstractInput
 
                     if ($isExclude) {
                         $excludedRanges[$valueIndex] = $value;
-                    }
-                    else {
+                    } else {
                         $ranges[$valueIndex] = $value;
                     }
                 }
@@ -373,8 +368,7 @@ class FilterQuery extends AbstractInput
 
                     if ($isExclude) {
                         $excludesValues[$valueIndex] = $value;
-                    }
-                    else {
+                    } else {
                         $singleValues[$valueIndex] = $value;
                     }
                 }
@@ -402,8 +396,7 @@ class FilterQuery extends AbstractInput
 
         if (isset($this->labelsResolve[$label])) {
             $fieldName = $this->labelsResolve[$label];
-        }
-        elseif (null !== $this->aliasTranslatorPrefix) {
+        } elseif (null !== $this->aliasTranslatorPrefix) {
             $fieldName = $this->translator->trans($this->aliasTranslatorPrefix . $label, array(), $this->aliasTranslatorDomain);
 
             if ($this->aliasTranslatorPrefix . $label === $fieldName) {

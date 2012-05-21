@@ -69,8 +69,7 @@ class ArrayInput extends FilterQuery
 
                 $this->groups[$groupIndex] = $this->parseFilterArray($values);
             }
-        }
-        else {
+        } else {
             $this->groups[0] = $this->parseFilterArray($this->query);
         }
 
@@ -106,8 +105,7 @@ class ArrayInput extends FilterQuery
 
             if (isset($filterPairs[$name])) {
                 $filterPairs[$name] .= ',' . $value;
-            }
-            else {
+            } else {
                 $filterPairs[$name] = $value;
             }
         }

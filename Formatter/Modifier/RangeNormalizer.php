@@ -205,8 +205,7 @@ class RangeNormalizer implements ModifierInterface
     {
         if ($exclude) {
             $this->valuesBag->removeExclude($index);
-        }
-        else {
+        } else {
             $this->valuesBag->removeSingleValue($index);
         }
 
@@ -223,8 +222,7 @@ class RangeNormalizer implements ModifierInterface
     {
         if ($exclude) {
             $this->valuesBag->removeExcludedRange($index);
-        }
-        else {
+        } else {
             $this->valuesBag->removeRange($index);
         }
 
@@ -256,14 +254,11 @@ class RangeNormalizer implements ModifierInterface
      */
     protected function isValInRange(SingleValue $singeValue, Range $range)
     {
-        if ($this->type->isLower($singeValue->getValue(), $range->getUpper()) && $this->type->isHigher($singeValue->getValue(), $range->getLower()))
-        {
+        if ($this->type->isLower($singeValue->getValue(), $range->getUpper()) && $this->type->isHigher($singeValue->getValue(), $range->getLower())) {
             return true;
-        }
-        elseif ($this->type->isEquals($singeValue->getValue(), $range->getUpper()) && $this->type->isEquals($singeValue->getValue(), $range->getLower())) {
+        } elseif ($this->type->isEquals($singeValue->getValue(), $range->getUpper()) && $this->type->isEquals($singeValue->getValue(), $range->getLower())) {
             return true;
-        }
-        else {
+        }else {
             return false;
         }
     }

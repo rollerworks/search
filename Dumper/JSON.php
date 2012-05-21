@@ -78,8 +78,7 @@ class JSON extends AbstractDumper
                     $filters[$groupIndex][$field] = self::filterStructToArray($formatter, $field, $values);
                 }
             }
-        }
-        else {
+        } else {
             foreach ($formatter->getFilters() as $groupIndex => $fields) {
                 foreach ($fields as $field => $values) {
                     $filters[$groupIndex][$field] = self::createField($values);

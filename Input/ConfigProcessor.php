@@ -124,8 +124,7 @@ class ConfigProcessor extends AbstractConfigProcessor
                     if ($r->hasMethod('__construct')) {
                         $propertyMetadata->params['_label'] = $label;
                         $type = $r->newInstanceArgs($this->doGetArguments($propertyMetadata->params, $propertyMetadata->type, $r->getMethod('__construct')->getParameters()));
-                    }
-                    else {
+                    } else {
                         $type = $r->newInstance();
                     }
                 }

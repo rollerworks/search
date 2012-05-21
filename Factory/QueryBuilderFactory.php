@@ -64,8 +64,7 @@ class QueryBuilderFactory extends AbstractSQLFactory
     {
         if (empty($entityManager) && empty($this->entityManager)) {
             throw new \RuntimeException('No EntityManager configured/given.');
-        }
-        elseif (empty($entityManager)) {
+        } elseif (empty($entityManager)) {
             $entityManager = $this->entityManager;
         }
 
@@ -124,7 +123,7 @@ class QueryBuilderFactory extends AbstractSQLFactory
     }
 
     /** Class code template */
-    private static $_ClassTemplate =
+    static private $_ClassTemplate =
 '<?php
 
 namespace <namespace>;

@@ -65,8 +65,7 @@ class DateTimeTest extends DateTimeTestCase
 
         if ($expectFail) {
             $this->assertFalse($type->validateValue($input));
-        }
-        else {
+        } else {
             $this->assertTrue($type->validateValue($input));
         }
     }
@@ -97,11 +96,9 @@ class DateTimeTest extends DateTimeTestCase
 
         if ('==' === $comparison) {
             $this->assertTrue($type->isEquals($first, $second));
-        }
-        elseif ('!=' === $comparison) {
+        } elseif ('!=' === $comparison) {
             $this->assertFalse($type->isEquals($first, $second));
-        }
-        else {
+        } else {
             $this->assertTrue($type->isLower($second, $first));
             $this->assertFalse($type->isLower($first, $second));
 

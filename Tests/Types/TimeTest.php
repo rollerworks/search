@@ -61,8 +61,7 @@ class TimeTest extends DateTimeTestCase
 
         if ($expectFail) {
             $this->assertFalse($type->validateValue($input), sprintf('Assert "%s" not to be valid with locale "%s".', $input, $locale));
-        }
-        else {
+        } else {
             $this->assertTrue($type->validateValue($input), sprintf('Assert "%s" to be valid with locale "%s".', $input, $locale));
         }
     }
@@ -93,11 +92,9 @@ class TimeTest extends DateTimeTestCase
 
         if ('==' === $comparison) {
             $this->assertTrue($type->isEquals($_first, $_second), sprintf('"%s" should equal "%s"', $first, $second));
-        }
-        elseif ('!=' === $comparison) {
+        } elseif ('!=' === $comparison) {
             $this->assertFalse($type->isEquals($_first, $_second), sprintf('"%s" should not equal "%s"', $first, $second));
-        }
-        else {
+        } else {
             $this->assertTrue($type->isLower($_second, $_first), sprintf('"%s" should be lower then "%s"', $first, $second));
 
             // 00 is both higher and lower

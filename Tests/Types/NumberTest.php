@@ -42,8 +42,7 @@ class NumberTest extends \PHPUnit_Framework_TestCase
 
         if ($expectFail) {
             $this->assertFalse($type->validateValue($input));
-        }
-        else {
+        } else {
             $this->assertTrue($type->validateValue($input));
         }
     }
@@ -57,11 +56,9 @@ class NumberTest extends \PHPUnit_Framework_TestCase
 
         if ('==' === $comparison) {
             $this->assertTrue($type->isEquals($first, $second), sprintf('"%s" should equal "%s"', $first, $second));
-        }
-        elseif ('!=' === $comparison) {
+        } elseif ('!=' === $comparison) {
             $this->assertFalse($type->isEquals($first, $second), sprintf('"%s" should not equal "%s"', $first, $second));
-        }
-        else {
+        } else {
             $this->assertTrue($type->isLower($second, $first), sprintf('"%s" should be lower then "%s"', $second, $first));
             $this->assertFalse($type->isLower($first, $second), sprintf('"%s" should not be lower then "%s"', $first, $second));
 

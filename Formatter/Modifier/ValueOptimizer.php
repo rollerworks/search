@@ -47,8 +47,7 @@ class ValueOptimizer implements ModifierInterface
 
         if ($filterConfig->hasType() && $filterConfig->getType() instanceof OptimizableInterface) {
             return $filterConfig->getType()->optimizeField($filterStruct, $this->messages);
-        }
-        else {
+        } else {
             return true;
         }
     }
