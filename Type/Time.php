@@ -11,6 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
+use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 
 /**
  * Time Formatter value-type
@@ -28,7 +29,7 @@ class Time extends Date
             return $input;
         }
 
-        if ($input !== $this->lastResult && !DateTimeHelper::validateLocalDateTime($input, DateTimeHelper::ONLY_TIME, $this->lastResult) ) {
+        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, DateTimeHelper::ONLY_TIME, $this->lastResult) ) {
             throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
         }
 
@@ -72,7 +73,7 @@ class Time extends Date
     {
         $message = 'This value is not an valid time';
 
-        return DateTimeHelper::validateLocalDateTime($input, DateTimeHelper::ONLY_TIME, $this->lastResult);
+        return DateTimeHelper::validate($input, DateTimeHelper::ONLY_TIME, $this->lastResult);
     }
 
     /**

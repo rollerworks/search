@@ -11,6 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
+use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
@@ -37,7 +38,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
             return $input;
         }
 
-        if ($input !== $this->lastResult && !DateTimeHelper::validateLocalDateTime($input, DateTimeHelper::ONLY_DATE, $this->lastResult) ) {
+        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, DateTimeHelper::ONLY_DATE, $this->lastResult) ) {
             throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
         }
 
@@ -121,7 +122,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     {
         $message = 'This value is not a valid date';
 
-        return DateTimeHelper::validateLocalDateTime($input, DateTimeHelper::ONLY_DATE, $this->lastResult);
+        return DateTimeHelper::validate($input, DateTimeHelper::ONLY_DATE, $this->lastResult);
     }
 
     /**
