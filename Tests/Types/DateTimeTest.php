@@ -12,6 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Types;
 
 use Rollerworks\RecordFilterBundle\Type\DateTime;
+use Rollerworks\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 class DateTimeTest extends DateTimeTestCase
@@ -79,7 +80,7 @@ class DateTimeTest extends DateTimeTestCase
 
         $type = new DateTime(true);
 
-        $this->assertEquals($expected, $type->formatOutput(new \DateTime($input)));
+        $this->assertEquals($expected, $type->formatOutput(new DateTimeExtended($input)));
     }
 
     /**
@@ -216,6 +217,11 @@ class DateTimeTest extends DateTimeTestCase
             // $locale, $input, $expected, $timeOptional
             array('nl_NL', '04-10-2010 15:15', '04-10-2010 15:16'),
             array('nl_NL', '04-10-2010 23:59', '05-10-2010 00:00'),
+            array('nl_NL', '04-10-2010 23:59:59', '05-10-2010 00:00:00'),
+            array('nl_NL', '04-10-2010 23:20:59', '04-10-2010 23:21:00'),
+            array('nl_NL', '04-10-2010 23:20:10', '04-10-2010 23:20:11'),
+
+            array('nl_NL', '04-10-2010',       '05-10-2010', true),
             array('nl_NL', '04-10-2010',       '05-10-2010', true),
         );
     }

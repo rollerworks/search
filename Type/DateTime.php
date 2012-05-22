@@ -28,11 +28,6 @@ class DateTime extends Date
     protected $timeOptional = false;
 
     /**
-     * @var boolean
-     */
-    protected $hasTime = false;
-
-    /**
      * Constructor
      *
      * @param boolean $time_optional
@@ -51,34 +46,45 @@ class DateTime extends Date
             return $input;
         }
 
-        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, ($this->timeOptional ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $this->hasTime) ) {
+        $hasTime = false;
+
+        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, ($this->timeOptional ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $hasTime) ) {
             throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
         }
 
         $input = $this->lastResult;
 
-        return new \DateTime($input);
+        return new DateTimeExtended($input, $hasTime);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param DateTimeExtended $value
      */
     public function formatOutput($value)
     {
-        if (!$value instanceof \DateTime) {
+        if (!$value instanceof DateTimeExtended) {
             return $value;
         }
 
         $formatter = \IntlDateFormatter::create(
             \Locale::getDefault(),
             \IntlDateFormatter::SHORT,
-            \IntlDateFormatter::SHORT,
+            ($value->hasSeconds() ? \IntlDateFormatter::LONG : \IntlDateFormatter::SHORT),
             date_default_timezone_get(),
             \IntlDateFormatter::GREGORIAN
         );
 
         // Make year always four digit
-        $formatter->setPattern(str_replace(array('yy', 'yyyyyyyy'), 'yyyy', $formatter->getPattern()));
+        $pattern = str_replace(array('yy', 'yyyyyyyy'), 'yyyy', $formatter->getPattern());
+
+        // Remove timezone
+        if ($value->hasSeconds()) {
+            $pattern = preg_replace('/\s*(\(z\)|z)\s*/i', '', $pattern);
+        }
+
+        $formatter->setPattern($pattern);
 
         return $formatter->format($value);
     }
@@ -114,15 +120,17 @@ class DateTime extends Date
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
-     * @return \DateTime
+     * @param DateTimeExtended $input
+     * @return DateTimeExtended
      */
     public function getHigherValue($input)
     {
         $date = clone $input;
 
-        if (!$this->hasTime) {
+        if (!$input->hasTime()) {
             $date->modify('+1 day');
+        } elseif ($input->hasSeconds()) {
+            $date->modify('+1 second');
         } else {
             $date->modify('+1 minute');
         }

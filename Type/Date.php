@@ -44,7 +44,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
 
         $input = $this->lastResult;
 
-        return new \DateTime($input);
+        return new DateTimeExtended($input);
     }
 
     /**
@@ -160,5 +160,38 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
         $date->modify('+1 day');
 
         return $date;
+    }
+}
+
+/**
+ * DateTimeExtended class for holding the dateTime with attentional information.
+ *
+ * @internal
+ */
+class DateTimeExtended extends \DateTime
+{
+    private $hasTime = false;
+
+    private $hasSeconds = false;
+
+    public function  __construct($time, $hasTime = false)
+    {
+        $this->hasTime = $hasTime;
+
+        if ($hasTime && preg_match('#\d+:\d+:\d+$#', $time)) {
+            $this->hasSeconds = true;
+        }
+
+        parent::__construct($time);
+    }
+
+    public function hasTime()
+    {
+        return $this->hasTime;
+    }
+
+    public function hasSeconds()
+    {
+        return $this->hasSeconds;
     }
 }

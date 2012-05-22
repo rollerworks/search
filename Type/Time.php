@@ -35,25 +35,34 @@ class Time extends Date
 
         $input = $this->lastResult;
 
-        return new \DateTime($input);
+        return new DateTimeExtended($input, true);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param DateTimeExtended $value
      */
     public function formatOutput($value)
     {
-        if (!$value instanceof \DateTime) {
+        if (!$value instanceof DateTimeExtended) {
             return $value;
         }
 
-        return \IntlDateFormatter::create(
+        $formatter = \IntlDateFormatter::create(
             \Locale::getDefault(),
             \IntlDateFormatter::NONE,
-            \IntlDateFormatter::SHORT,
+            ($value->hasSeconds() ? \IntlDateFormatter::LONG : \IntlDateFormatter::SHORT),
             date_default_timezone_get(),
             \IntlDateFormatter::GREGORIAN
-        )->format($value);
+        );
+
+        // Remove timezone
+        if ($value->hasSeconds()) {
+            $formatter->setPattern(preg_replace('/\s*(\(z\)|z)\s*/i', '', $formatter->getPattern()));
+        }
+
+        return $formatter->format($value);
     }
 
     /**
@@ -115,13 +124,18 @@ class Time extends Date
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
-     * @return \DateTime
+     * @param DateTimeExtended $input
+     * @return DateTimeExtended
      */
     public function getHigherValue($input)
     {
         $date = clone $input;
-        $date->modify('+1 minute');
+
+        if ($input->hasSeconds()) {
+            $date->modify('+1 second');
+        } else {
+            $date->modify('+1 minute');
+        }
 
         return $date;
     }
