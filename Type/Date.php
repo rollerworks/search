@@ -16,7 +16,7 @@ use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 /**
- * Date Formatter-validation type
+ * Date filter type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -30,7 +30,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @return \DateTime
+     * @return DateTimeExtended
      */
     public function sanitizeString($input)
     {
@@ -50,7 +50,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $value
+     * @param DateTimeExtended $value
      */
     public function formatOutput($value)
     {
@@ -75,7 +75,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
+     * @param DateTimeExtended $input
      */
     public function dumpValue($input)
     {
@@ -85,8 +85,8 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
-     * @param \DateTime $nextValue
+     * @param DateTimeExtended $input
+     * @param DateTimeExtended $nextValue
      */
     public function isHigher($input, $nextValue)
     {
@@ -96,8 +96,8 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
-     * @param \DateTime $nextValue
+     * @param DateTimeExtended $input
+     * @param DateTimeExtended $nextValue
      */
     public function isLower($input, $nextValue)
     {
@@ -107,8 +107,8 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
-     * @param \DateTime $nextValue
+     * @param DateTimeExtended $input
+     * @param DateTimeExtended $nextValue
      */
     public function isEquals($input, $nextValue)
     {
@@ -151,8 +151,9 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
-     * @return \DateTime
+     * @param DateTimeExtended $input
+     *
+     * @return DateTimeExtended
      */
     public function getHigherValue($input)
     {
@@ -171,7 +172,6 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
 class DateTimeExtended extends \DateTime
 {
     private $hasTime = false;
-
     private $hasSeconds = false;
 
     public function  __construct($time, $hasTime = false)

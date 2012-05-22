@@ -234,6 +234,7 @@ class RangeNormalizer implements ModifierInterface
      *
      * @param Range $range
      * @param Range $range2
+     *
      * @return string
      */
     static protected function getRangeQuoted(Range $range, Range $range2 = null)
@@ -250,6 +251,7 @@ class RangeNormalizer implements ModifierInterface
      *
      * @param SingleValue $singeValue
      * @param Range       $range
+     *
      * @return boolean
      */
     protected function isValInRange(SingleValue $singeValue, Range $range)
@@ -258,7 +260,7 @@ class RangeNormalizer implements ModifierInterface
             return true;
         } elseif ($this->type->isEquals($singeValue->getValue(), $range->getUpper()) && $this->type->isEquals($singeValue->getValue(), $range->getLower())) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

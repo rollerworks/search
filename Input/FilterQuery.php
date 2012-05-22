@@ -107,6 +107,7 @@ class FilterQuery extends AbstractInput
      *
      * @param string $pathPrefix This prefix is added before every search, like filters.labels.
      * @param string $domain     Default is filter
+     *
      * @return FilterQuery
      *
      * @throws \InvalidArgumentException
@@ -134,6 +135,7 @@ class FilterQuery extends AbstractInput
      *
      * @param string       $fieldName Original field-name
      * @param string|array $label
+     *
      * @return FilterQuery
      */
     public function setLabelToField($fieldName, $label)
@@ -153,6 +155,7 @@ class FilterQuery extends AbstractInput
      * Set the filter input
      *
      * @param string $input
+     *
      * @return FilterQuery
      */
     public function setInput($input)
@@ -213,6 +216,7 @@ class FilterQuery extends AbstractInput
      * Parse the field=value pairs from the input.
      *
      * @param string $input
+     *
      * @return array
      *
      * @throws ReqFilterException
@@ -263,6 +267,7 @@ class FilterQuery extends AbstractInput
      *
      * @param string                     $values
      * @param ValueMatcherInterface|null $valueMatcher
+     *
      * @return array
      */
     protected function parseValuesList($values, ValueMatcherInterface $valueMatcher = null)
@@ -288,6 +293,7 @@ class FilterQuery extends AbstractInput
      * @param string       $originalInput
      * @param FilterConfig $filterConfig
      * @param array|string $values
+     *
      * @return FilterValuesBag
      *
      * @throws ValidationException
@@ -382,6 +388,7 @@ class FilterQuery extends AbstractInput
      * Get the corresponding fieldName by label
      *
      * @param string $label
+     *
      * @return string
      *
      * @throws \RuntimeException When no translator available
@@ -411,6 +418,7 @@ class FilterQuery extends AbstractInput
      * Remove and normalise quoted-values
      *
      * @param string $input
+     *
      * @return string
      */
     static protected function fixQuotes($input)

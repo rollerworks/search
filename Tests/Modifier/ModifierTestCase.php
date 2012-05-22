@@ -22,8 +22,11 @@ use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
 abstract class ModifierTestCase extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
     /**
+     * Returns an new Formatter object.
+     *
      * @param boolean $loadModifiers
-     * @return \Rollerworks\RecordFilterBundle\Formatter\Formatter
+     *
+     * @return Formatter
      */
     protected function newFormatter($loadModifiers = true)
     {

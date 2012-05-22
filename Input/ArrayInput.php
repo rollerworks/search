@@ -36,6 +36,7 @@ class ArrayInput extends FilterQuery
      * Set the filter input
      *
      * @param array $input
+     *
      * @return ArrayInput
      *
      * @throws \InvalidArgumentException
@@ -82,6 +83,7 @@ class ArrayInput extends FilterQuery
      * Parse the field=value array pairs from the input.
      *
      * @param array $input
+     *
      * @return array
      *
      * @throws \Rollerworks\RecordFilterBundle\Exception\ReqFilterException

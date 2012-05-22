@@ -16,7 +16,7 @@ use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 
 /**
- * AbstractDumper
+ * AbstractDumper.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -34,6 +34,7 @@ abstract class AbstractDumper implements DumperInterface
      * @param string             $fieldName
      * @param FilterValuesBag    $filter
      * @param boolean            $quoteLooseValue
+     *
      * @return array
      */
     static protected function filterStructToArray(FormatterInterface $formatter, $fieldName, FilterValuesBag $filter, $quoteLooseValue = false)
@@ -79,6 +80,7 @@ abstract class AbstractDumper implements DumperInterface
     /**
      * @param FilterTypeInterface $type
      * @param string              $value
+     *
      * @return string
      */
     static public function dumpValue(FilterTypeInterface $type = null, $value)
@@ -94,6 +96,7 @@ abstract class AbstractDumper implements DumperInterface
      * Quote an value and escape the quotes
      *
      * @param string $input
+     *
      * @return string
      */
     static protected function quoteValue($input)

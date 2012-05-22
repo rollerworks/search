@@ -32,6 +32,7 @@ interface SqlFieldConversionInterface
      * @param DBALType   $type
      * @param Connection $connection
      * @param boolean    $isDql      Whether the query should be DQL
+     *
      * @return string
      */
     public function convertField($fieldName, DBALType $type, Connection $connection, $isDql);

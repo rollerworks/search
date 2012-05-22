@@ -145,6 +145,7 @@ class DuplicateRemove implements ModifierInterface
     /**
      * @param FilterTypeInterface $type
      * @param Range               $range
+     *
      * @return string
      * @throws \RuntimeException
      */

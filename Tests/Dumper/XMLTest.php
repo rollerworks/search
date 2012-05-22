@@ -44,7 +44,8 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
     }
 
     /**
-     * @param \Rollerworks\RecordFilterBundle\Formatter\Formatter $formatter
+     * @param Formatter $formatter
+     *
      * @return string
      *
      * @throws \InvalidArgumentException

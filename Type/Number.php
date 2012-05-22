@@ -18,14 +18,14 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use NumberFormatter;
 
 /**
- * Integer Formatter-validation type
+ * Integer filter type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class Number implements FilterTypeInterface, ValuesToRangeInterface
 {
     /**
-     * @var NumberFormatter|null
+     * @var \NumberFormatter|null
      */
     static private $numberFormatter = null;
 
@@ -146,7 +146,8 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      * Returns a shared NumberFormatter object.
      *
      * @param null|string $locale
-     * @return null|NumberFormatter
+     *
+     * @return \NumberFormatter
      */
     static protected function getNumberFormatter($locale = null)
     {

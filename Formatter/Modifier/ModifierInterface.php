@@ -40,6 +40,7 @@ interface ModifierInterface
      * @param FilterConfig       $filterConfig
      * @param FilterValuesBag    $valuesBag
      * @param integer            $groupIndex   Group the filter is in
+     *
      * @return integer[]|null
      */
     public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $valuesBag, $groupIndex);

@@ -58,6 +58,7 @@ class SQLStructFactory extends AbstractSQLFactory
      *
      * @param DomainAwareFormatterInterface $formatter
      * @param Connection                    $DBConnection
+     *
      * @return WhereStruct
      *
      * @api

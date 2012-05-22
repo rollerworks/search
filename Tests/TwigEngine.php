@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This an direct copy of the Symfony\Bundle\TwigBundle\TwigEngine but without the dependency hell for testing
+ * This an direct copy of the Symfony\Bundle\TwigBundle\TwigEngine but without the dependency's for testing
  */
 
 namespace Rollerworks\RecordFilterBundle\Tests;
@@ -36,8 +36,8 @@ class TwigEngine implements EngineInterface
      *
      * @return string The evaluated template as a string
      *
-     * @throws \InvalidArgumentException if the template does not exist
-     * @throws \RuntimeException         if the template cannot be rendered
+     * @throws \InvalidArgumentException If the template does not exist
+     * @throws \RuntimeException         If the template cannot be rendered
      */
     public function render($name, array $parameters = array())
     {
@@ -49,7 +49,7 @@ class TwigEngine implements EngineInterface
      *
      * @param mixed $name A template name
      *
-     * @return Boolean true if the template exists, false otherwise
+     * @return boolean true if the template exists, false otherwise
      */
     public function exists($name)
     {
@@ -67,7 +67,7 @@ class TwigEngine implements EngineInterface
      *
      * @param string $name A template name
      *
-     * @return Boolean True if this class supports the given resource, false otherwise
+     * @return boolean True if this class supports the given resource, false otherwise
      */
     public function supports($name)
     {

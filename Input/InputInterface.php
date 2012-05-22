@@ -33,6 +33,7 @@ interface InputInterface
      * @param boolean                  $required
      * @param boolean                  $acceptRanges
      * @param boolean                  $acceptCompares
+     *
      * @return InputInterface
      *
      * @api

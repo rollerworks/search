@@ -29,6 +29,7 @@ interface ValuesToRangeInterface
      *
      * @param SingleValue $first
      * @param SingleValue $second
+     *
      * @return integer
      */
     public function sortValuesList(SingleValue $first, SingleValue $second);
@@ -47,6 +48,7 @@ interface ValuesToRangeInterface
      * * 2012-00425       + 1 = 2012-00426 (Invoice)
      *
      * @param mixed $input
+     *
      * @return mixed
      */
     public function getHigherValue($input);

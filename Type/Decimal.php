@@ -13,10 +13,9 @@ namespace Rollerworks\RecordFilterBundle\Type;
 
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use NumberFormatter;
 
 /**
- * Decimal Formatter-validation type
+ * Decimal filter type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -30,7 +29,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     protected $lastResult;
 
     /**
-     * @var NumberFormatter|null
+     * @var \NumberFormatter|null
      */
     static private $numberFormatter = null;
 
@@ -171,14 +170,15 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      * Returns a shared NumberFormatter object.
      *
      * @param null|string $locale
-     * @return null|NumberFormatter
+     *
+     * @return \NumberFormatter
      */
     static protected function getNumberFormatter($locale = null)
     {
         $locale = $locale ?: \Locale::getDefault();
 
         if (null === self::$numberFormatter || self::$numberFormatter->getLocale() !== $locale) {
-            self::$numberFormatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+            self::$numberFormatter = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
         }
 
         return self::$numberFormatter;

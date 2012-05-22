@@ -42,6 +42,7 @@ class AnnotationDriver extends AbstractDriver
 
     /**
      * @param \ReflectionClass $class
+     *
      * @return MergeableClassMetadata
      */
     public function loadMetadataForClass(\ReflectionClass $class)

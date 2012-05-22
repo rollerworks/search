@@ -56,6 +56,7 @@ class QueryBuilderFactory extends AbstractSQLFactory
      *
      * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface $formatter
      * @param \Doctrine\ORM\EntityManager                                  $entityManager
+     *
      * @return \Rollerworks\RecordFilterBundle\Record\SQL\QueryBuilder
      *
      * @api

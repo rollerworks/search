@@ -57,6 +57,7 @@ class FieldSet
      *
      * @param string       $name
      * @param FilterConfig $config
+     *
      * @return FieldSet
      */
     public function set($name, FilterConfig $config)
@@ -73,6 +74,7 @@ class FieldSet
      *
      * @param string       $name
      * @param FilterConfig $config
+     *
      * @return FieldSet
      *
      * @throws \RuntimeException when there is no field with the given name
@@ -92,6 +94,7 @@ class FieldSet
      * Remove the given field from the set.
      *
      * @param string $name
+     *
      * @return FieldSet
      */
     public function remove($name)
@@ -107,6 +110,7 @@ class FieldSet
      * Returns the configuration of the requested field.
      *
      * @param string $name
+     *
      * @return FilterConfig
      *
      * @throws \RuntimeException when there is no field with the given name
@@ -136,6 +140,7 @@ class FieldSet
      * Returns whether there is a field with the given name.
      *
      * @param string $name
+     *
      * @return boolean
      */
     public function has($name)

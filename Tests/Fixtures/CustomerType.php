@@ -58,12 +58,7 @@ class CustomerType implements FilterTypeInterface
     }
 
     /**
-     * Formats the value for display and return it as a string.
-     *
-     * This function does the opposite of sanitizeString().
-     *
-     * @param mixed $value
-     * @return string
+     * {@inheritdoc}
      */
     public function formatOutput($value)
     {
@@ -71,12 +66,7 @@ class CustomerType implements FilterTypeInterface
     }
 
     /**
-     * Returns the scalar representation of the value.
-     *
-     * This is used for duplicate detection and debugging.
-     *
-     * @param mixed $input
-     * @return string
+     * {@inheritdoc}
      */
     public function dumpValue($input)
     {

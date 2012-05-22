@@ -280,6 +280,7 @@ class FilterValuesBag
      * Removes a single-value from the filter
      *
      * @param integer $piIndex
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -297,6 +298,7 @@ class FilterValuesBag
      * Removes a Exclude from the filter
      *
      * @param integer $piIndex
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -314,6 +316,7 @@ class FilterValuesBag
      * Removes a Range from the filter
      *
      * @param integer $piIndex
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -331,6 +334,7 @@ class FilterValuesBag
      * Removes an Excluded Range from the filter
      *
      * @param integer $piIndex
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -348,6 +352,7 @@ class FilterValuesBag
      * Removes a Compare from the filter
      *
      * @param integer $piIndex
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -365,6 +370,7 @@ class FilterValuesBag
      * Add a single-value to the filter
      *
      * @param SingleValue $value
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -380,6 +386,7 @@ class FilterValuesBag
      * Add a Exclude to the filter
      *
      * @param SingleValue $value
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -395,6 +402,7 @@ class FilterValuesBag
      * Add a range to the filter
      *
      * @param Range $range
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -410,6 +418,7 @@ class FilterValuesBag
      * Add an Excluded Range to the filter
      *
      * @param Range $range
+     *
      * @return FilterValuesBag
      *
      * @api
@@ -425,6 +434,7 @@ class FilterValuesBag
      * Add a Compare to the filter
      *
      * @param Compare $compare
+     *
      * @return FilterValuesBag
      *
      * @api

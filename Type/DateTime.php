@@ -14,21 +14,21 @@ namespace Rollerworks\RecordFilterBundle\Type;
 use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 
 /**
- * Time Formatter-validation type.
+ * DateTime filter type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class DateTime extends Date
 {
     /**
-     * Is the time-part optional
+     * Is the time-part optional.
      *
      * @var boolean
      */
     protected $timeOptional = false;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param boolean $time_optional
      */
@@ -121,6 +121,7 @@ class DateTime extends Date
      * {@inheritdoc}
      *
      * @param DateTimeExtended $input
+     *
      * @return DateTimeExtended
      */
     public function getHigherValue($input)

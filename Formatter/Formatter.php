@@ -118,6 +118,7 @@ class Formatter implements FormatterInterface
      * Register modifier
      *
      * @param ModifierInterface $modifier
+     *
      * @return Formatter
      *
      * @api
@@ -136,6 +137,7 @@ class Formatter implements FormatterInterface
      *  this will throw an ValidationException containing the (user-friendly) error-message.
      *
      * @param InputInterface $input
+     *
      * @return boolean
      *
      * @api
@@ -213,6 +215,7 @@ class Formatter implements FormatterInterface
      * @param FieldSet $filtersConfig
      * @param array    $filters
      * @param integer  $groupIndex
+     *
      * @return boolean
      *
      * @throws \RuntimeException

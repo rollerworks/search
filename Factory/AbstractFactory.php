@@ -121,6 +121,7 @@ abstract class AbstractFactory
 
     /**
      * @param string $input
+     *
      * @return boolean
      */
     static protected function isNamespace($input)
@@ -133,6 +134,7 @@ abstract class AbstractFactory
      *
      * @param string $class
      * @param string $formatterClass
+     *
      * @return string
      * @throws \UnexpectedValueException When the formatter is not domain specific.
      */
@@ -166,6 +168,7 @@ abstract class AbstractFactory
      * @param array             $params
      * @param string            $type
      * @param array             $noConvert
+     *
      * @return string
      *
      * @throws \InvalidArgumentException

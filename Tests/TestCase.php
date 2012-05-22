@@ -29,7 +29,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected $translator = null;
 
-    private $currentLocale = false;
+    /**
+     * @var string
+     */
+    private $currentLocale = null;
 
     protected function setUp()
     {
@@ -63,7 +66,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Symfony\Component\DependencyInjection\ContainerBuilder
+     * @return ContainerBuilder
      */
     protected function createContainer()
     {
@@ -79,7 +82,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
+     * @return TwigEngine
      */
     protected function getTwigInstance()
     {

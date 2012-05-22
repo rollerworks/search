@@ -68,6 +68,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      *
      * @param string $pathPrefix This prefix is added before every search, like filters.labels.
      * @param string $domain     Default is filter
+     *
      * @throws \InvalidArgumentException
      */
     public function setFieldToLabelByTranslator($pathPrefix, $domain = 'filter')
@@ -89,6 +90,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      *
      * @param FieldSet      $fieldsSet
      * @param object|string $entity    Entity object or full class-name
+     *
      * @return ConfigProcessor
      *
      * @throws \InvalidArgumentException When $entity is not an object or string
@@ -140,6 +142,7 @@ class ConfigProcessor extends AbstractConfigProcessor
      * Get the label by fieldName
      *
      * @param string $field
+     *
      * @return string
      *
      * @throws \RuntimeException

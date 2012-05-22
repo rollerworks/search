@@ -25,6 +25,7 @@ interface FilterTypeInterface
      * Sanitize the input string to an normal useful value
      *
      * @param mixed $input
+     *
      * @return mixed
      */
     public function sanitizeString($input);
@@ -35,6 +36,7 @@ interface FilterTypeInterface
      * This function does the opposite of sanitizeString().
      *
      * @param mixed $value
+     *
      * @return string
      */
     public function formatOutput($value);
@@ -45,6 +47,7 @@ interface FilterTypeInterface
      * This is used for duplicate detection and debugging.
      *
      * @param mixed $input
+     *
      * @return string
      */
     public function dumpValue($input);
@@ -54,6 +57,7 @@ interface FilterTypeInterface
      *
      * @param mixed $input
      * @param mixed $nextValue
+     *
      * @return boolean
      */
     public function isHigher($input, $nextValue);
@@ -63,6 +67,7 @@ interface FilterTypeInterface
      *
      * @param mixed $input
      * @param mixed $nextValue
+     *
      * @return boolean
      */
     public function isLower($input, $nextValue);
@@ -72,6 +77,7 @@ interface FilterTypeInterface
      *
      * @param mixed $input
      * @param mixed $nextValue
+     *
      * @return boolean
      */
     public function isEquals($input, $nextValue);
@@ -81,6 +87,7 @@ interface FilterTypeInterface
      *
      * @param mixed $input
      * @param mixed $message
+     *
      * @return boolean
      */
     public function validateValue($input, &$message = null);

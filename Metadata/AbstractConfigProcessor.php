@@ -61,7 +61,9 @@ abstract class AbstractConfigProcessor
      * @param array                  $parameters
      * @param string                 $className
      * @param \ReflectionParameter[] $reflectionParameters
+     *
      * @return array
+     *
      * @throws \RuntimeException
      */
     protected function doGetArguments(array $parameters, $className, array $reflectionParameters)
@@ -101,6 +103,7 @@ abstract class AbstractConfigProcessor
      *
      * @param string $input
      * @param array  $parameters
+     *
      * @return mixed
      *
      * @throws \RuntimeException

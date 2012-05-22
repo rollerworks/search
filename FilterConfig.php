@@ -59,7 +59,7 @@ class FilterConfig
     protected $column;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string                                         $label
      * @param FilterTypeInterface|ValueMatcherInterface|null $type
@@ -130,7 +130,7 @@ class FilterConfig
     }
 
     /**
-     * Returns whether an filter-type is registered
+     * Returns whether an filter-type is registered.
      *
      * @return boolean
      */
@@ -140,7 +140,7 @@ class FilterConfig
     }
 
     /**
-     * Returns whether ranges are accepted
+     * Returns whether ranges are accepted.
      *
      * @return boolean
      */
@@ -150,7 +150,7 @@ class FilterConfig
     }
 
     /**
-     * Returns whether comparisons are accepted
+     * Returns whether comparisons are accepted.
      *
      * @return boolean
      */
@@ -160,7 +160,7 @@ class FilterConfig
     }
 
     /**
-     * Returns whether the field is required
+     * Returns whether the field is required.
      *
      * @return boolean
      */

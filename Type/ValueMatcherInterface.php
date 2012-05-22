@@ -15,9 +15,9 @@ namespace Rollerworks\RecordFilterBundle\Type;
  * ValueMatcherInterface.
  *
  * An filter type can implement this to provide an regex-based matcher for the value.
- * This way the user is not required to 'always' use quotes when the value contains an dash.
+ * This way the user is not required to 'always' use quotes when the value contains a dash.
  *
- * Remember this is intended for __matching__ not ***validating***, make the regex as simple as possible.
+ * Remember that this is intended for __matching__ not ***validating***, make the regex as simple as possible.
  * And __never__ match more then necessary!
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -30,8 +30,8 @@ interface ValueMatcherInterface
      * The regex is used for matching an value in the list and detecting end position when using an range.
      * So it should __always__ use none-capturing (?:), ***especially*** when using or '|', (?:regex1|regex2).
      *
-     * In an list the regex is used as: {match-quoted}|{regex}-{regex}|{comparison-regex}?{regex}|[^,]+
-     * You should never match an (optional) comma and the end, since this will cause unexpected result.
+     * In an list the regex is used as: {match-quoted}|{regex}-{regex}|{comparison-operator}?{regex}|[^,]+
+     * You SHOULD NOT match an (optional) comma and the end, since this will cause unexpected result.
      *
      * @return string
      */

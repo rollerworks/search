@@ -141,6 +141,7 @@ class Validator implements ModifierInterface
      * @param FilterTypeInterface $type
      * @param string              $value
      * @param string              $originalValue
+     *
      * @throws ValidationException In case of an validation error
      */
     protected function validateValue(FilterTypeInterface $type, $value, $originalValue = null)
@@ -161,6 +162,7 @@ class Validator implements ModifierInterface
      *
      * @param FilterTypeInterface $type
      * @param Range               $range
+     *
      * @throws ValidationException
      */
     protected function validateRange(FilterTypeInterface $type, Range $range)

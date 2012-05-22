@@ -12,25 +12,26 @@
 namespace Rollerworks\RecordFilterBundle\Value;
 
 /**
- * Compare value structure
+ * Compare value structure.
  */
 class Compare extends SingleValue
 {
     /**
-     * Comparison operator
+     * Comparison operator.
      *
      * @var string
      */
     protected $operator;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param mixed  $value
      * @param string $operator
      * @param mixed  $originalValue
      *
      * @throws \InvalidArgumentException When the operator is invalid
+     *
      * @api
      */
     public function __construct($value, $operator, $originalValue = null)
@@ -45,7 +46,7 @@ class Compare extends SingleValue
     }
 
     /**
-     * Get the comparison operator
+     * Gets the comparison operator.
      *
      * @return string
      *

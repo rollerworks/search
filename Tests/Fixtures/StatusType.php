@@ -79,6 +79,7 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
      * This function does the opposite of sanitizeString().
      *
      * @param mixed $value
+     *
      * @return string
      */
     public function formatOutput($value)
@@ -92,6 +93,7 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
      * This is used for duplicate detection and debugging.
      *
      * @param mixed $input
+     *
      * @return string
      */
     public function dumpValue($input)

@@ -64,7 +64,7 @@ class OrmTestCase extends OrmTestCaseBase
     }
 
     /**
-     * @return \Symfony\Component\DependencyInjection\ContainerBuilder
+     * @return ContainerBuilder
      */
     protected function createContainer()
     {
@@ -82,6 +82,7 @@ class OrmTestCase extends OrmTestCaseBase
     /**
      * @param string $filterQuery
      * @param string $fieldSetId
+     *
      * @return FilterQuery
      */
     protected function newInput($filterQuery, $fieldSetId = 'invoice')
@@ -113,6 +114,13 @@ class OrmTestCase extends OrmTestCaseBase
         return new FilterQuery($fieldSet, $filterQuery);
     }
 
+    /**
+     * Cleans whitespace from the input SQL for easy testing.
+     *
+     * @param string $input
+     *
+     * @return string
+     */
     protected function cleanSql($input)
     {
         return str_replace(array("(\n", ")\n"), array('(', ')'), $input);

@@ -14,7 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Type;
 use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 
 /**
- * Time Formatter value-type
+ * Time filter type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -125,6 +125,7 @@ class Time extends Date
      * {@inheritdoc}
      *
      * @param DateTimeExtended $input
+     *
      * @return DateTimeExtended
      */
     public function getHigherValue($input)

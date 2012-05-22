@@ -24,12 +24,14 @@ abstract class AbstractSQLFactory extends AbstractFactory
      * Get Query WHERE-statement from the Class Annotations
      *
      * @param array $annotations
+     *
      * @return string
      */
     protected function generateQuery(array $annotations)
     {
         $query = '
-    protected function buildWhere(){
+    protected function buildWhere()
+    {
         $FG = $this->formatter->getFilters();
         $query = "";
 
@@ -46,30 +48,30 @@ abstract class AbstractSQLFactory extends AbstractFactory
             $query .= '
             $origField = '.var_export($annotation->getName(), true).'; $Field = $this->getFieldRef($origField);
 
-            if(isset($filters[$origField])) {
+            if (isset($filters[$origField])) {
                 $field = $filters[$origField];
 
-                if($field->hasSingleValues()) {
+                if ($field->hasSingleValues()) {
                     $query .= $Field." IN(".$this->createInList($field->getSingleValues(), $origField).") AND ";
                 }
 
-                if($field->hasExcludes()) {
+                if ($field->hasExcludes()) {
                     $query .= $Field." NOT IN(".$this->createInList($field->getExcludes(), $origField).") AND ";
                 }
 
-                if($field->hasRanges()) {
+                if ($field->hasRanges()) {
                     foreach ($field->getRanges() as $range) {
                         $query .= "$Field BETWEEN ".$this->getValStr($range->getLower(), $origField)." AND ".$this->getValStr($range->getUpper(), $origField)." AND ";
                     }
                 }
 
-                if($field->hasExcludedRanges()) {
+                if ($field->hasExcludedRanges()) {
                     foreach ($field->getExcludedRanges() as $range) {
                         $query .= "$Field NOT BETWEEN ".$this->getValStr($range->getLower(), $origField)." AND ".$this->getValStr($range->getUpper(), $origField)." AND ";
                     }
                 }
 
-                if($field->hasCompares()) {
+                if ($field->hasCompares()) {
                     foreach ($field->getCompares() as $comp) {
                         $query .= "$Field ".$comp->getOperator()." ".$this->getValStr($comp->getValue(), $origField)." AND ";
                     }

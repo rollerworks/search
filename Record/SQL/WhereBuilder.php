@@ -121,6 +121,7 @@ class WhereBuilder
      * @param FormatterInterface $formatter
      * @param array              $entityAliases Array with the Entity-class to 'in-query alias' mapping as alias => class
      * @param boolean            $isDql
+     *
      * @return null|string
      */
     public function getWhereClause(FieldSet $fieldSet, FormatterInterface $formatter, array $entityAliases = array(), $isDql = false)
@@ -149,6 +150,7 @@ class WhereBuilder
      * Returns the correct column (with SQLField conversions applied).
      *
      * @param string $fieldName
+     *
      * @return string
      *
      * @throws \InvalidArgumentException When the field can not be found in the fieldSet
@@ -204,6 +206,7 @@ class WhereBuilder
      *
      * @param SingleValue[] $values
      * @param string        $fieldName
+     *
      * @return string
      */
     protected function createInList($values, $fieldName)
@@ -221,6 +224,7 @@ class WhereBuilder
      * Builds and returns the WHERE clause
      *
      * @param FormatterInterface $formatter
+     *
      * @return string
      */
     protected function buildWhere(FormatterInterface $formatter)
@@ -230,7 +234,7 @@ class WhereBuilder
         foreach ($formatter->getFilters() as $filters) {
             $query .= "(\n";
 
-            /** @var \Rollerworks\RecordFilterBundle\Value\FilterValuesBag $valuesBag */
+            /** @var FilterValuesBag $valuesBag */
             foreach ($filters as $fieldName => $valuesBag) {
                 if (!$this->fieldSet->has($fieldName)) {
                     continue;
@@ -238,11 +242,11 @@ class WhereBuilder
 
                 $column = $this->getFieldColumn($fieldName);
 
-                if($valuesBag->hasSingleValues()) {
+                if ($valuesBag->hasSingleValues()) {
                     $query .= sprintf('%s IN(%s) AND ', $column, $this->createInList($valuesBag->getSingleValues(), $fieldName));
                 }
 
-                if($valuesBag->hasExcludes()) {
+                if ($valuesBag->hasExcludes()) {
                     $query .= sprintf('%s NOT IN(%s) AND ', $column, $this->createInList($valuesBag->getExcludes(), $fieldName));
                 }
 
@@ -272,15 +276,16 @@ class WhereBuilder
      *
      * @param string $value
      * @param string $fieldName
-     * @return mixed
      *
-     * @throws \UnderflowException
+     * @return string|float|integer
+     *
+     * @throws \RuntimeException
      * @throws \UnexpectedValueException When the returned value is not scalar
      */
     protected function getValStr($value, $fieldName)
     {
         if (null === $this->fieldSet) {
-            throw new \UnderflowException('This method should be called after a fieldSet is set.');
+            throw new \RuntimeException('This method should be called after a fieldSet is set.');
         }
 
         $field = $this->fieldSet->get($fieldName);

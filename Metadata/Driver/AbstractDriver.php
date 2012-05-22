@@ -24,6 +24,7 @@ abstract class AbstractDriver implements DriverInterface
      * Get the real type-class name
      *
      * @param string $type
+     *
      * @return null|string
      * @throws \InvalidArgumentException When the type can cant be found is or is not legal.
      */

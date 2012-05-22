@@ -153,6 +153,7 @@ class XML extends AbstractDumper
      * @param null|FilterTypeInterface $type
      * @param Range                    $range
      * @param \DOMDocument             $dom
+     *
      * @return \DOMElement
      */
     static private function createRangeNode(FilterTypeInterface $type = null, Range $range, \DOMDocument $dom)

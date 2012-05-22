@@ -19,22 +19,11 @@ class Range
     protected $lower;
     protected $upper;
 
-    /**
-     * Original lower range value
-     *
-     * @var mixed
-     */
     protected $originalLower;
-
-    /**
-     * Original upper range value
-     *
-     * @var mixed
-     */
     protected $originalUpper;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param mixed $lower
      * @param mixed $upper
@@ -63,7 +52,7 @@ class Range
     }
 
     /**
-     * Get the lower value of the range
+     * Get the lower value of the range.
      *
      * @return mixed
      *
@@ -75,7 +64,7 @@ class Range
     }
 
     /**
-     * Get the upper value of the range
+     * Get the upper value of the range.
      *
      * @return mixed
      *
@@ -87,7 +76,7 @@ class Range
     }
 
     /**
-     * Get the original lower value of the range
+     * Get the original lower value of the range.
      *
      * @return mixed
      *
@@ -99,7 +88,7 @@ class Range
     }
 
     /**
-     * Get the original upper value of the range
+     * Get the original upper value of the range.
      *
      * @return mixed
      *
@@ -111,11 +100,9 @@ class Range
     }
 
     /**
-     * Set the lower value of the range
+     * Set the lower value of the range.
      *
      * @param mixed $value
-     *
-     * @throws \UnexpectedValueException
      *
      * @api
      */
@@ -125,11 +112,9 @@ class Range
     }
 
     /**
-     * Set the upper value of the range
+     * Set the upper value of the range.
      *
      * @param mixed $value
-     *
-     * @throws \UnexpectedValueException
      *
      * @api
      */

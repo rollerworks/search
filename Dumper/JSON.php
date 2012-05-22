@@ -66,6 +66,7 @@ class JSON extends AbstractDumper
      *
      * @param FormatterInterface $formatter
      * @param boolean            $flattenValues
+     *
      * @return string JSON array
      */
     public function dumpFilters(FormatterInterface $formatter, $flattenValues = false)
@@ -93,6 +94,7 @@ class JSON extends AbstractDumper
      * Create the field {Object}
      *
      * @param FilterValuesBag $filter
+     *
      * @return array
      */
     static private function createField(FilterValuesBag $filter)

@@ -95,6 +95,7 @@ class CompareNormalizer implements ModifierInterface
      * @param string              $operator
      * @param Compare             $needle
      * @param Compare[]           $haystack
+     *
      * @return integer
      */
     static protected function findArrayIndex(FilterTypeInterface $type, $operator, Compare $needle, array $haystack)
