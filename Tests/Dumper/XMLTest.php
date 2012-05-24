@@ -69,7 +69,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         return $output;
     }
 
-    function testOneGroupOneField()
+    public function testOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
 
@@ -93,7 +93,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         </filters>', $this->getXMLDumper($formatter));
     }
 
-    function testTwoGroupsOneField()
+    public function testTwoGroupsOneField()
     {
         $formatter = new Formatter($this->translator);
 
@@ -124,8 +124,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         </filters>', $this->getXMLDumper($formatter));
     }
 
-
-    function testOneGroupTwoFields()
+    public function testOneGroupTwoFields()
     {
         $formatter = new Formatter($this->translator);
 
@@ -155,7 +154,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         </filters>', $this->getXMLDumper($formatter));
     }
 
-    function testTwoGroupsTwoFields()
+    public function testTwoGroupsTwoFields()
     {
         $formatter = new Formatter($this->translator);
 
@@ -197,7 +196,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         </filters>', $this->getXMLDumper($formatter));
     }
 
-    function testRangeValue()
+    public function testRangeValue()
     {
         $formatter = new Formatter($this->translator);
 
@@ -242,7 +241,7 @@ class XMLTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         </filters>', $this->getXMLDumper($formatter));
     }
 
-    function testCompareValue()
+    public function testCompareValue()
     {
         $formatter = new Formatter($this->translator);
 

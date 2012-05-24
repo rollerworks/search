@@ -60,22 +60,22 @@ class SqlConversion
         }
     }
 
-    function setClass($class)
+    public function setClass($class)
     {
         $this->class = $class;
     }
 
-    function getClass()
+    public function getClass()
     {
         return $this->class;
     }
 
-    function hasParams()
+    public function hasParams()
     {
         return count($this->params) > 0;
     }
 
-    function getParams()
+    public function getParams()
     {
         return $this->params;
     }

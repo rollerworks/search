@@ -27,7 +27,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
     /**
      * @var \NumberFormatter|null
      */
-    static private $numberFormatter = null;
+    private static $numberFormatter = null;
 
     /**
      * {@inheritdoc}
@@ -149,7 +149,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
      *
      * @return \NumberFormatter
      */
-    static protected function getNumberFormatter($locale = null)
+    protected static function getNumberFormatter($locale = null)
     {
         $locale = $locale ?: \Locale::getDefault();
 

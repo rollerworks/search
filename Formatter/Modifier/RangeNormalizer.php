@@ -237,7 +237,7 @@ class RangeNormalizer implements ModifierInterface
      *
      * @return string
      */
-    static protected function getRangeQuoted(Range $range, Range $range2 = null)
+    protected static function getRangeQuoted(Range $range, Range $range2 = null)
     {
         if (null === $range2) {
             $range2 = $range;

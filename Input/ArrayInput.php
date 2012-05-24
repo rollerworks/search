@@ -64,7 +64,7 @@ class ArrayInput extends FilterQuery
 
         if (isset($this->query[0])) {
             foreach ($this->query as $groupIndex => $values) {
-                if (!ctype_digit((string)$groupIndex) || ! is_array($values)) {
+                if (!ctype_digit((string) $groupIndex) || ! is_array($values)) {
                     continue;
                 }
 

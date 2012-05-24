@@ -17,7 +17,7 @@ use Rollerworks\RecordFilterBundle\Value\Range;
 
 class ValidationTest extends ModifierTestCase
 {
-    function testValidationReq()
+    public function testValidationReq()
     {
         $input = new QueryInput();
         $input->setField('period', null, new Date(), true);
@@ -31,7 +31,7 @@ class ValidationTest extends ModifierTestCase
         $formatter->formatInput($input);
     }
 
-    function testValidationReqEmptyField()
+    public function testValidationReqEmptyField()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; date=29.10.2010; period=,;');
@@ -42,7 +42,7 @@ class ValidationTest extends ModifierTestCase
         $input->getGroups();
     }
 
-    function testValidationEmptyField()
+    public function testValidationEmptyField()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; date=29.10.2010; period=,;');
@@ -57,7 +57,7 @@ class ValidationTest extends ModifierTestCase
         }
     }
 
-    function testValidationFail()
+    public function testValidationFail()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=2910.2010');
@@ -76,7 +76,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Validation error(s) in field \'period\' at value \'2910.2010\' in group 1: This value is not a valid date.'), $messages['error']);
     }
 
-    function testValidationFailInGroup()
+    public function testValidationFailInGroup()
     {
         $input = new QueryInput();
         $input->setInput('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=2910.2010;)');
@@ -91,7 +91,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Validation error(s) in field \'period\' at value \'2910.2010\' in group 1: This value is not a valid date.'), $messages['error']);
     }
 
-    function testValidationFailInGroupNoResult()
+    public function testValidationFailInGroupNoResult()
     {
         $input = new QueryInput();
         $input->setInput('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=29.10.2010;)');
@@ -109,7 +109,7 @@ class ValidationTest extends ModifierTestCase
         $formatter->getFilters();
     }
 
-    function testValidationFaiInlRange()
+    public function testValidationFaiInlRange()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=25.10.2010-3110.2010');
@@ -124,7 +124,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Validation error(s) in field \'period\' at value \'25.10.2010-3110.2010\' in group 1: This value is not a valid date.'), $messages['error']);
     }
 
-    function testValidationFaiInlRange2()
+    public function testValidationFaiInlRange2()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=2510.2010-3110.2010');
@@ -141,7 +141,7 @@ class ValidationTest extends ModifierTestCase
 
     // Validation:Range
 
-    function testValidationRangeNotLower()
+    public function testValidationRangeNotLower()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=31.10.2010-25.10.2010');
@@ -156,7 +156,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Validation error in field \'period\': \'31.10.2010\' is not lower then \'25.10.2010\' in group 1.'), $messages['error']);
     }
 
-    function testValidationFaiInCompare()
+    public function testValidationFaiInCompare()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=<10.10.2010,>3110.2010');
@@ -171,7 +171,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Validation error(s) in field \'period\' at value \'>3110.2010\' in group 1: This value is not a valid date.'), $messages['error']);
     }
 
-    function testValidationFaiInExclude()
+    public function testValidationFaiInExclude()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=10.10.2010,!3110.2010');
@@ -186,7 +186,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Validation error(s) in field \'period\' at value \'!3110.2010\' in group 1: This value is not a valid date.'), $messages['error']);
     }
 
-    function testValidationExcludeInInclude()
+    public function testValidationExcludeInInclude()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=10.10.2010,!31.10.2010,31.10.2010');
@@ -201,7 +201,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Value \'!31.10.2010\' in field \'period\' is already marked as included and can\'t be excluded in group 1.'), $messages['error']);
     }
 
-    function testValidationIncludeInExclude()
+    public function testValidationIncludeInExclude()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=10.10.2010,31.10.2010,!31.10.2010');
@@ -216,7 +216,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Value \'!31.10.2010\' in field \'period\' is already marked as included and can\'t be excluded in group 1.'), $messages['error']);
     }
 
-    function testNoValidation()
+    public function testNoValidation()
     {
         $input = new QueryInput();
         $input->setInput('User=2; Status=Active; period=29.10.2010');
@@ -230,7 +230,7 @@ class ValidationTest extends ModifierTestCase
     }
 
     // Test to make sure there are no duplicate warning messages
-    function testValidationInlRangeNoValidation()
+    public function testValidationInlRangeNoValidation()
     {
         $input = new QueryInput();
         $input->setInput('User=2-5,8-10; Status=Active; period=25.10.2010-31.10.2010,25.10.2011-31.10.2011');

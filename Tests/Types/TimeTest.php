@@ -20,7 +20,7 @@ class TimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    function testSanitize($locale, $input, $expected, $expectFail = false)
+    public function testSanitize($locale, $input, $expected, $expectFail = false)
     {
         \Locale::setDefault($locale);
 
@@ -37,7 +37,7 @@ class TimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    function testDump($locale, $input, $expected, $expectFail = false)
+    public function testDump($locale, $input, $expected, $expectFail = false)
     {
         \Locale::setDefault($locale);
 
@@ -54,7 +54,7 @@ class TimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    function testValidation($locale, $input, $expected, $expectFail = false)
+    public function testValidation($locale, $input, $expected, $expectFail = false)
     {
         \Locale::setDefault($locale);
 
@@ -70,7 +70,7 @@ class TimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForFormat
      */
-    function testFormat($locale, $input, $expected)
+    public function testFormat($locale, $input, $expected)
     {
         \Locale::setDefault($locale);
 
@@ -82,7 +82,7 @@ class TimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForCompare
      */
-    function testCompares($locale, $first, $second, $comparison = null)
+    public function testCompares($locale, $first, $second, $comparison = null)
     {
         \Locale::setDefault($locale);
 
@@ -111,7 +111,7 @@ class TimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForGetHigherValue
      */
-    function testGetHigherValue($locale, $input, $expected)
+    public function testGetHigherValue($locale, $input, $expected)
     {
         \Locale::setDefault($locale);
 
@@ -122,7 +122,7 @@ class TimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSorting
      */
-    function testSorting($locale, $input, $expected)
+    public function testSorting($locale, $input, $expected)
     {
         \Locale::setDefault($locale);
 
@@ -141,7 +141,7 @@ class TimeTest extends DateTimeTestCase
         $this->assertEquals($expected, $input);
     }
 
-    static public function getDataForSanitation()
+    public static function getDataForSanitation()
     {
         return array(
             // $locale, $input, $expected, $expectFail
@@ -170,7 +170,7 @@ class TimeTest extends DateTimeTestCase
         );
     }
 
-    static public function getDataForFormat()
+    public static function getDataForFormat()
     {
         return array(
             // $locale, $input, $expected
@@ -187,7 +187,7 @@ class TimeTest extends DateTimeTestCase
         );
     }
 
-    static public function getDataForCompare()
+    public static function getDataForCompare()
     {
         return array(
             // $locale, $_first (higher), $_second (lower), $comparison
@@ -201,7 +201,7 @@ class TimeTest extends DateTimeTestCase
         );
     }
 
-    static public function getDataForGetHigherValue()
+    public static function getDataForGetHigherValue()
     {
         return array(
             // $locale, $input, $expected
@@ -213,7 +213,7 @@ class TimeTest extends DateTimeTestCase
         );
     }
 
-    static public function getDataForSorting()
+    public static function getDataForSorting()
     {
         return array(
             // $locale, $values, $expected

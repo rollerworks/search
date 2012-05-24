@@ -119,7 +119,7 @@ class SQLStructFactory extends AbstractSQLFactory
     }
 
     /** Class code template */
-    static protected $_ClassTemplate =
+    protected static $_ClassTemplate =
 '<?php
 
 namespace <namespace>;

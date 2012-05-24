@@ -17,7 +17,7 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 class FilterQueryTest extends \PHPUnit_Framework_TestCase
 {
-    function testQuerySingleField()
+    public function testQuerySingleField()
     {
         $input = new QueryInput();
         $input->setField('user');
@@ -28,7 +28,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
-    function testQuerySingleFieldWithSpaces()
+    public function testQuerySingleFieldWithSpaces()
     {
         $input = new QueryInput();
         $input->setField('user');
@@ -38,7 +38,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
-    function testQuerySingleFieldWithUnicode()
+    public function testQuerySingleFieldWithUnicode()
     {
         $input = new QueryInput();
         $input->setField('foo', 'ß');
@@ -49,7 +49,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
-    function testQuerySingleFieldWithUnicodeNumber()
+    public function testQuerySingleFieldWithUnicodeNumber()
     {
         $input = new QueryInput();
         $input->setField('foo', 'ß۲');
@@ -60,7 +60,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(array('foo' => new FilterValuesBag('ß۲', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
-    function testQueryMultipleFields()
+    public function testQueryMultipleFields()
     {
         $input = new QueryInput();
         $input->setField('user');
@@ -74,7 +74,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         )), $input->getGroups());
     }
 
-    function testQueryMultipleFieldsNoSpace()
+    public function testQueryMultipleFieldsNoSpace()
     {
         $input = new QueryInput();
         $input->setField('user');
@@ -89,7 +89,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
     }
 
     // Field-name appears more then once
-    function testQueryDoubleFields()
+    public function testQueryDoubleFields()
     {
         $input = new QueryInput();
         $input->setField('user');
@@ -104,7 +104,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
     }
 
     // Test the escaping of the filter-delimiter
-    function testEscapedFilter()
+    public function testEscapedFilter()
     {
         $input = new QueryInput();
         $input->setField('user');
@@ -120,7 +120,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         )), $input->getGroups());
     }
 
-    function testOrGroup()
+    public function testOrGroup()
     {
         $input = new QueryInput();
         $input->setField('user');
@@ -143,7 +143,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         ), $input->getGroups());
     }
 
-    function testOrGroupValueWithBars()
+    public function testOrGroupValueWithBars()
     {
         $input = new QueryInput();
         $input->setField('user');
@@ -166,7 +166,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         ), $input->getGroups());
     }
 
-    function testValidationNoRange()
+    public function testValidationNoRange()
     {
         $input = new QueryInput();
         $input->setField('User', null, null, true);
@@ -179,7 +179,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
         $input->getGroups();
     }
 
-    function testValidationNoCompare()
+    public function testValidationNoCompare()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010');

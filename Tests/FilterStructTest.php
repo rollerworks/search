@@ -18,21 +18,21 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
 class FilterStructTest extends \PHPUnit_Framework_TestCase
 {
-    function testLabel()
+    public function testLabel()
     {
         $struct = new FilterValuesBag('test', 'none');
 
         $this->assertEquals('test', $struct->getLabel());
     }
 
-    function testInput()
+    public function testInput()
     {
         $struct = new FilterValuesBag('test', 'none');
 
         $this->assertEquals('none', $struct->getOriginalInput());
     }
 
-    function testLooseValues()
+    public function testLooseValues()
     {
         $struct = new FilterValuesBag('test', 'none', array(new SingleValue('4')));
 
@@ -40,7 +40,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(new SingleValue('4')), $struct->getSingleValues());
     }
 
-    function testExcludes()
+    public function testExcludes()
     {
         $struct = new FilterValuesBag('test', 'none', array(), array(new SingleValue('4')));
 
@@ -48,7 +48,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(new SingleValue('4')), $struct->getExcludes());
     }
 
-    function testRanges()
+    public function testRanges()
     {
         $struct = new FilterValuesBag('test', 'none', array(), array(), array(new Range(10, 100)), array());
 
@@ -56,7 +56,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(new Range(10, 100)), $struct->getRanges());
     }
 
-    function testExcludedRanges()
+    public function testExcludedRanges()
     {
         $struct = new FilterValuesBag('test', 'none', array(), array(), array(new Range(10, 100)), array(), array(new Range(12, 20)));
 
@@ -67,7 +67,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(new Range(12, 20)), $struct->getExcludedRanges());
     }
 
-    function testCompares()
+    public function testCompares()
     {
         $struct = new FilterValuesBag('test', 'none', array(), array(), array(), array(new Compare(10, '>')));
 
@@ -75,8 +75,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(new Compare(10, '>')), $struct->getCompares());
     }
 
-
-    function testUnsetLooseSingleValue()
+    public function testUnsetLooseSingleValue()
     {
         $struct = new FilterValuesBag('test', 'none', array(0 => new SingleValue('4'), 4 => new SingleValue('4')), array(1 => new SingleValue('10'), 5 => new SingleValue('20')), array(2 => new Range(10, 100), 6 => new Range(110, 200)), array(3 => new Compare(10, '>'), 7 => new Compare(20, '<')));
 
@@ -91,7 +90,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(0 => new SingleValue('4')), $struct->getSingleValues());
     }
 
-    function testUnsetExclude()
+    public function testUnsetExclude()
     {
         $struct = new FilterValuesBag('test', 'none', array(0 => new SingleValue('4'), 4 => new SingleValue('4')), array(1 => new SingleValue('10'), 5 => new SingleValue('20')), array(2 => new Range(10, 100), 6 => new Range(110, 200)), array(3 => new Compare(10, '>'), 7 => new Compare(20, '<')));
 
@@ -106,7 +105,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(1 => new SingleValue('10')), $struct->getExcludes());
     }
 
-    function testUnsetRange()
+    public function testUnsetRange()
     {
         $struct = new FilterValuesBag('test', 'none', array(0 => new SingleValue('4'), 4 => new SingleValue('4')), array(1 => new SingleValue('10'), 5 => new SingleValue('20')), array(2 => new Range(10, 100), 6 => new Range(110, 200)), array(3 => new Compare(10, '>'), 7 => new Compare(20, '<')));
 
@@ -120,7 +119,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(2 => new Range(10, 100)), $struct->getRanges());
     }
 
-    function testUnsetExcludedRange()
+    public function testUnsetExcludedRange()
     {
         $struct = new FilterValuesBag('test', 'none', array(0 => new SingleValue('4'), 4 => new SingleValue('4')), array(1 => new SingleValue('10'), 5 => new SingleValue('20')), array(2 => new Range(10, 100), 6 => new Range(110, 200)), array(3 => new Compare(10, '>'), 7 => new Compare(20, '<')), array(8 => new Range(12, 15)));
 
@@ -139,7 +138,7 @@ class FilterStructTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $struct->getExcludedRanges());
     }
 
-    function testUnsetCompare()
+    public function testUnsetCompare()
     {
         $struct = new FilterValuesBag('test', 'none', array(0 => new SingleValue('4'), 4 => new SingleValue('4')), array(1 => new SingleValue('10'), 5 => new SingleValue('20')), array(2 => new Range(10, 100), 6 => new Range(110, 200)), array(3 => new Compare(10, '>'), 7 => new Compare(20, '<')));
 

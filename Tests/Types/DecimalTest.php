@@ -18,7 +18,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    function testSanitize($locale, $input, $expected, $expectFail = false)
+    public function testSanitize($locale, $input, $expected, $expectFail = false)
     {
         if ($expectFail) {
             return;
@@ -34,7 +34,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    function testValidation($locale, $input, $expected, $expectFail = false)
+    public function testValidation($locale, $input, $expected, $expectFail = false)
     {
         \Locale::setDefault($locale);
 
@@ -50,7 +50,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getDataForCompare
      */
-    function testCompares($first, $second, $comparison = null)
+    public function testCompares($first, $second, $comparison = null)
     {
         $type = new Decimal();
 
@@ -70,13 +70,13 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getDataForGetHigherValue
      */
-    function testGetHigherValue($input, $expected)
+    public function testGetHigherValue($input, $expected)
     {
         $type = new Decimal();
         $this->assertEquals($expected, $type->getHigherValue($input));
     }
 
-    static public function getDataForSanitation()
+    public static function getDataForSanitation()
     {
         return array(
             // $locale, $input, $expected, $expectFail
@@ -88,7 +88,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    static public function getDataForCompare()
+    public static function getDataForCompare()
     {
         return array(
             // $first (higher), $second (lower), $comparison
@@ -108,7 +108,7 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    static public function getDataForGetHigherValue()
+    public static function getDataForGetHigherValue()
     {
         return array(
             // $input, $expected

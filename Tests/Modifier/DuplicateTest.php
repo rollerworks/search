@@ -24,7 +24,7 @@ class DuplicateTest extends ModifierTestCase
 {
     // Output formatter: Duplicates
 
-    function testDuplicates()
+    public function testDuplicates()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010; period=>20,10');
@@ -53,7 +53,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testDuplicatesMore()
+    public function testDuplicatesMore()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date="29.10.2010",29.10.2010; period=>20,10');
@@ -82,7 +82,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testDuplicatesWithType()
+    public function testDuplicatesWithType()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date="29.10.2010","29-10-2010",29.10.2010');
@@ -109,7 +109,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testDuplicatesWithTypeAndRange()
+    public function testDuplicatesWithTypeAndRange()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"');
@@ -141,7 +141,7 @@ class DuplicateTest extends ModifierTestCase
 
     // For clarity an connected range is like 10-20,20-30 -> 10-30
     // The upper-value is equal to an other lower-value
-    function testDuplicatesWithTypeAndConnectedRange()
+    public function testDuplicatesWithTypeAndConnectedRange()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011');
@@ -175,7 +175,7 @@ class DuplicateTest extends ModifierTestCase
     }
 
     // Make sure the connected ranges get merged, even when followed by duplicates
-    function testDuplicatesWithTypeAndConnectedRange2()
+    public function testDuplicatesWithTypeAndConnectedRange2()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"');
@@ -209,7 +209,7 @@ class DuplicateTest extends ModifierTestCase
     }
 
     // Make sure the connected ranges get merged, even when followed by overlapping ranges
-    function testDuplicatesWithTypeAndConnectedRange3()
+    public function testDuplicatesWithTypeAndConnectedRange3()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date="10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010", "30.10.2010"-"08.12.2010"');//"30-10-2010"-01.01.2011
@@ -239,7 +239,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testDuplicatesWithTypeAndCompare()
+    public function testDuplicatesWithTypeAndCompare()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
@@ -267,7 +267,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testDuplicatesWithTypeAndCompareGetValues()
+    public function testDuplicatesWithTypeAndCompareGetValues()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
@@ -292,7 +292,6 @@ class DuplicateTest extends ModifierTestCase
         $expectedValues[0]['date']   = new FilterValuesBag('date', '25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"', array(new SingleValue(new \DateTime('2010-05-25'), '25.05.2010')), array(), array(), array(1 => new Compare(new \DateTime('2010-05-25'), '>', '25.5.2010'), 3 => new Compare(new \DateTime('2010-05-25'), '<=', '25.05.2010')), array(), 4);
 
         $this->assertEquals($expectedValues, $groups);
-
 
         $input->setInput('
         (User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010";),
@@ -325,7 +324,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $groups);
     }
 
-    function testRedundantCompare()
+    public function testRedundantCompare()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=>25.05.2010,>=25.05.2010');
@@ -352,7 +351,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testDuplicatesWithTypeAndExclude()
+    public function testDuplicatesWithTypeAndExclude()
     {
         $input = new QueryInput();
         $input->setInput('User=2,4,10-20,!15,!"15"; Status=Active; date=25.05.2010');
@@ -380,7 +379,7 @@ class DuplicateTest extends ModifierTestCase
     }
 
     // Example: 5,1-10 will result in: 1-10
-    function testDuplicatesWithRange()
+    public function testDuplicatesWithRange()
     {
         $input = new QueryInput();
         $input->setInput('User=5,1-10; Status=Active; date=29.10.2010-29.12.2010,20.12.2010');
@@ -410,8 +409,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-
-    function testDuplicatesWithExcludedRange()
+    public function testDuplicatesWithExcludedRange()
     {
         $input = new QueryInput();
         $input->setInput('User=2,4,!28,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
@@ -440,7 +438,7 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testDuplicatesWithExcludedRangeSameAsNormalRange()
+    public function testDuplicatesWithExcludedRangeSameAsNormalRange()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,25-30,!25-30; Status=Active; date=29.10.2010; period=>20,10');
@@ -458,7 +456,7 @@ class DuplicateTest extends ModifierTestCase
     }
 
     // Example: 5,1-20,5-10 will result in: 1-20
-    function testDuplicatesWithRangeInRange()
+    public function testDuplicatesWithRangeInRange()
     {
         $input = new QueryInput();
         $input->setInput('User=5,1-20,5-10; Status=Active; date=29.10.2010-29.12.2010, 30.10.2010-20.12.2010');

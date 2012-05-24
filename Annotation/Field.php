@@ -79,62 +79,62 @@ class Field
         }
     }
 
-    function setName($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
 
-    function getName()
+    public function getName()
     {
         return $this->name;
     }
 
-    function setRequired($required)
+    public function setRequired($required)
     {
         $this->required = $required;
     }
 
-    function isRequired()
+    public function isRequired()
     {
         return $this->required;
     }
 
-    function setType($type)
+    public function setType($type)
     {
         $this->type = $type;
     }
 
-    function getType()
+    public function getType()
     {
         return $this->type;
     }
 
-    function setAcceptRanges($accept)
+    public function setAcceptRanges($accept)
     {
         $this->acceptRanges = $accept;
     }
 
-    function acceptsRanges()
+    public function acceptsRanges()
     {
         return $this->acceptRanges;
     }
 
-    function setAcceptCompares($accept)
+    public function setAcceptCompares($accept)
     {
         $this->acceptCompares = $accept;
     }
 
-    function acceptsCompares()
+    public function acceptsCompares()
     {
         return $this->acceptCompares;
     }
 
-    function hasParams()
+    public function hasParams()
     {
         return count($this->params) > 0;
     }
 
-    function getParams()
+    public function getParams()
     {
         return $this->params;
     }

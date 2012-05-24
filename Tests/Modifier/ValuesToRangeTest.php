@@ -17,10 +17,9 @@ use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
-
 class ValuesToRangeTest extends ModifierTestCase
 {
-    function testOptimizeValue()
+    public function testOptimizeValue()
     {
         $input = new QueryInput();
         $input->setInput('User=1,2,3,4,5,6,7');
@@ -40,7 +39,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testOptimizeValueUnordered()
+    public function testOptimizeValueUnordered()
     {
         $input = new QueryInput();
         $input->setInput('User=3,6,7,1,2,4,5');
@@ -60,7 +59,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testOptimizeValueMultipleRanges()
+    public function testOptimizeValueMultipleRanges()
     {
         $input = new QueryInput();
         $input->setInput('User=1,2,3,4,5,6,7,10,11,12,13,14,15,18');
@@ -80,8 +79,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-
-    function testOptimizeExcludes()
+    public function testOptimizeExcludes()
     {
         $input = new QueryInput();
         $input->setInput('User=!1,!2,!3,!4,!5,!6,!7');
@@ -101,7 +99,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testOptimizeExcludesUnordered()
+    public function testOptimizeExcludesUnordered()
     {
         $input = new QueryInput();
         $input->setInput('User=!3,!6,!7,!1,!2,!4,!5');
@@ -121,7 +119,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testOptimizeExcludesMultipleRanges()
+    public function testOptimizeExcludesMultipleRanges()
     {
         $input = new QueryInput();
         $input->setInput('User=!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18');

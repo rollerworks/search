@@ -87,7 +87,6 @@ class QueryBuilderFactory extends AbstractSQLFactory
         return new $FQN($formatter, $entityManager);
     }
 
-
     /**
      * Generates a annotations file.
      *
@@ -124,7 +123,7 @@ class QueryBuilderFactory extends AbstractSQLFactory
     }
 
     /** Class code template */
-    static private $_ClassTemplate =
+    private static $_ClassTemplate =
 '<?php
 
 namespace <namespace>;

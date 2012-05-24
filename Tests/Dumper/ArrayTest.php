@@ -17,7 +17,7 @@ use Rollerworks\RecordFilterBundle\Dumper\PHPArray;
 
 class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
-    function testOneGroupOneField()
+    public function testOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
 
@@ -31,7 +31,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals(array(array('user' => array('1'))), $dumper->dumpFilters($formatter));
     }
 
-    function testTwoGroupsOneField()
+    public function testTwoGroupsOneField()
     {
         $formatter = new Formatter($this->translator);
 
@@ -48,8 +48,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter));
     }
 
-
-    function testOneGroupTwoFields()
+    public function testOneGroupTwoFields()
     {
         $formatter = new Formatter($this->translator);
 
@@ -64,7 +63,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals(array(array('user' => array('1'), 'invoice' => array('F2012-800'))), $dumper->dumpFilters($formatter));
     }
 
-    function testTwoGroupsTwoFields()
+    public function testTwoGroupsTwoFields()
     {
         $formatter = new Formatter($this->translator);
 
@@ -82,7 +81,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter));
     }
 
-    function testRangeValue()
+    public function testRangeValue()
     {
         $formatter = new Formatter($this->translator);
 

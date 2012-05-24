@@ -84,7 +84,7 @@ class XML extends AbstractDumper
      * @param \DOMNode                 $fieldNode
      * @param \DOMDocument             $dom
      */
-    static private function createField(FilterTypeInterface $type = null, FilterValuesBag $filter, \DOMNode $fieldNode, \DOMDocument $dom)
+    private static function createField(FilterTypeInterface $type = null, FilterValuesBag $filter, \DOMNode $fieldNode, \DOMDocument $dom)
     {
         if ($filter->hasSingleValues()) {
             $singleValues = $dom->createElement('single-values');
@@ -156,7 +156,7 @@ class XML extends AbstractDumper
      *
      * @return \DOMElement
      */
-    static private function createRangeNode(FilterTypeInterface $type = null, Range $range, \DOMDocument $dom)
+    private static function createRangeNode(FilterTypeInterface $type = null, Range $range, \DOMDocument $dom)
     {
         $rangeNode = $dom->createElement('range');
 

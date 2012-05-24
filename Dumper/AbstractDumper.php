@@ -37,7 +37,7 @@ abstract class AbstractDumper implements DumperInterface
      *
      * @return array
      */
-    static protected function filterStructToArray(FormatterInterface $formatter, $fieldName, FilterValuesBag $filter, $quoteLooseValue = false)
+    protected static function filterStructToArray(FormatterInterface $formatter, $fieldName, FilterValuesBag $filter, $quoteLooseValue = false)
     {
         $type = $formatter->getFieldSet()->get($fieldName)->getType();
         $filters = array();
@@ -83,7 +83,7 @@ abstract class AbstractDumper implements DumperInterface
      *
      * @return string
      */
-    static public function dumpValue(FilterTypeInterface $type = null, $value)
+    public static function dumpValue(FilterTypeInterface $type = null, $value)
     {
         if ($type) {
             $value = $type->dumpValue($value);
@@ -99,7 +99,7 @@ abstract class AbstractDumper implements DumperInterface
      *
      * @return string
      */
-    static protected function quoteValue($input)
+    protected static function quoteValue($input)
     {
         return '"' . str_replace('"', '""', $input) . '"';
     }

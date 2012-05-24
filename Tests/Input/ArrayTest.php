@@ -15,10 +15,9 @@ use Rollerworks\RecordFilterBundle\Input\ArrayInput;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
-
 class ArrayTest extends \PHPUnit_Framework_TestCase
 {
-    function testSingleField()
+    public function testSingleField()
     {
         $input = new ArrayInput();
         $input->setField('user');
@@ -27,7 +26,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
-    function testSingleFieldWithUnicode()
+    public function testSingleFieldWithUnicode()
     {
         $input = new ArrayInput();
         $input->setField('foo', 'ß');
@@ -37,7 +36,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
     }
 
-    function testMultipleFields()
+    public function testMultipleFields()
     {
         $input = new ArrayInput();
         $input->setField('user');
@@ -51,7 +50,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     // Field-name appears more then once
-    function testDoubleFields()
+    public function testDoubleFields()
     {
         $input = new ArrayInput();
         $input->setField('user');
@@ -67,7 +66,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     // Test the escaping of the filter-delimiter
-    function testEscapedFilter()
+    public function testEscapedFilter()
     {
         $input = new ArrayInput();
         $input->setField('user');
@@ -83,7 +82,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         )), $input->getGroups());
     }
 
-    function testOrGroup()
+    public function testOrGroup()
     {
         $input = new ArrayInput();
         $input->setField('user');
@@ -109,7 +108,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         ), $input->getGroups());
     }
 
-    function testOrGroupValueWithBars()
+    public function testOrGroupValueWithBars()
     {
         $input = new ArrayInput();
         $input->setField('user');
@@ -135,7 +134,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         ), $input->getGroups());
     }
 
-    function testValidationNoRange()
+    public function testValidationNoRange()
     {
         $input = new ArrayInput();
         $input->setField('User', null, null, true);
@@ -150,7 +149,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $input->getGroups();
     }
 
-    function testValidationNoCompare()
+    public function testValidationNoCompare()
     {
         $input = new ArrayInput();
         $input->setInput(array(

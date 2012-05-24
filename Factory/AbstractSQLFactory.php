@@ -11,7 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Factory;
 
-
 /**
  * This abstract SQL factory class provides the shared logic to create the RecordFilter::Record::SQL::* Classes at runtime.
  * The information is read from the Annotations of the Class.

@@ -17,7 +17,7 @@ use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 
 class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
-    function testSimple()
+    public function testSimple()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
@@ -38,7 +38,7 @@ class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals('( user="2", "3", "10"-"20";'.PHP_EOL.'status="Active";'.PHP_EOL.'date="29.10.2010";'.PHP_EOL.'period="10", >20; )', $dumper->dumpFilters($formatter, true));
     }
 
-    function testQuoted()
+    public function testQuoted()
     {
         $input = new QueryInput();
         $input->setInput('User="2""",3,"10"""-20; Status=Active; date=29.10.2010; period=>20,10');
@@ -59,7 +59,7 @@ class FilterQueryTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals('( user="2""", "3", "10"""-"20";'.PHP_EOL.'status="Active";'.PHP_EOL.'date="29.10.2010";'.PHP_EOL.'period="10", >20; )', $dumper->dumpFilters($formatter, true));
     }
 
-    function testWithGroups()
+    public function testWithGroups()
     {
         $input = new QueryInput();
         $input->setInput('(User=2,3,10-20,!30-50; Status=Active; date=29.10.2010; period=>20,10;), (User=5,9; Status="None-active"; date=29.10.2012;)');

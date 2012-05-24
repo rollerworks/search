@@ -124,7 +124,7 @@ abstract class AbstractFactory
      *
      * @return boolean
      */
-    static protected function isNamespace($input)
+    protected static function isNamespace($input)
     {
         return preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*$#s', $input) ? true : false;
     }
@@ -158,7 +158,7 @@ abstract class AbstractFactory
      * @param object $annotations
      * @param string $toDir
      */
-    protected abstract function generateClass($class, $entityCompactNS, $annotations, $toDir);
+    abstract protected function generateClass($class, $entityCompactNS, $annotations, $toDir);
 
     /**
      * Build the constructor parameters list.

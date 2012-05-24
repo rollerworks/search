@@ -20,7 +20,7 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    function testSanitize($locale, $input, $expected, $timeOptional, $expectFail = false)
+    public function testSanitize($locale, $input, $expected, $timeOptional, $expectFail = false)
     {
         \Locale::setDefault($locale);
 
@@ -37,7 +37,7 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    function testDump($locale, $input, $expected, $timeOptional, $expectFail = false)
+    public function testDump($locale, $input, $expected, $timeOptional, $expectFail = false)
     {
         \Locale::setDefault($locale);
 
@@ -58,7 +58,7 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    function testValidation($locale, $input, $expected, $timeOptional, $expectFail = false)
+    public function testValidation($locale, $input, $expected, $timeOptional, $expectFail = false)
     {
         \Locale::setDefault($locale);
 
@@ -74,7 +74,7 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForFormat
      */
-    function testFormat($locale, $input, $expected)
+    public function testFormat($locale, $input, $expected)
     {
         \Locale::setDefault($locale);
 
@@ -86,7 +86,7 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForCompare
      */
-    function testCompares($locale, $first, $second, $comparison = null)
+    public function testCompares($locale, $first, $second, $comparison = null)
     {
         \Locale::setDefault($locale);
 
@@ -111,7 +111,7 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForGetHigherValue
      */
-    function testGetHigherValue($locale, $input, $expected, $timeOptional = false)
+    public function testGetHigherValue($locale, $input, $expected, $timeOptional = false)
     {
         \Locale::setDefault($locale);
 
@@ -122,7 +122,7 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSorting
      */
-    function testSorting($locale, $input, $expected)
+    public function testSorting($locale, $input, $expected)
     {
         \Locale::setDefault($locale);
 
@@ -141,7 +141,7 @@ class DateTimeTest extends DateTimeTestCase
         $this->assertEquals($expected, $input);
     }
 
-    static public function getDataForSanitation()
+    public static function getDataForSanitation()
     {
         return array(
             // $locale, $input, $expected, $timeOptional, $expectFail
@@ -171,7 +171,7 @@ class DateTimeTest extends DateTimeTestCase
         );
     }
 
-    static public function getDataForFormat()
+    public static function getDataForFormat()
     {
         return array(
             // $locale, $input, $expected
@@ -197,7 +197,7 @@ class DateTimeTest extends DateTimeTestCase
         );
     }
 
-    static public function getDataForCompare()
+    public static function getDataForCompare()
     {
         return array(
             // $locale, $first, $second, $comparison
@@ -211,7 +211,7 @@ class DateTimeTest extends DateTimeTestCase
         );
     }
 
-    static public function getDataForGetHigherValue()
+    public static function getDataForGetHigherValue()
     {
         return array(
             // $locale, $input, $expected, $timeOptional
@@ -226,7 +226,7 @@ class DateTimeTest extends DateTimeTestCase
         );
     }
 
-    static public function getDataForSorting()
+    public static function getDataForSorting()
     {
         return array(
             // $locale, $values, $expected

@@ -285,7 +285,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function removeSingleValue($piIndex)
+    public function removeSingleValue($piIndex)
     {
         if (isset($this->singleValues[$piIndex])) {
             unset($this->singleValues[$piIndex]);
@@ -303,7 +303,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function removeExclude($piIndex)
+    public function removeExclude($piIndex)
     {
         if (isset($this->excludes[$piIndex])) {
             unset($this->excludes[$piIndex]);
@@ -321,7 +321,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function removeRange($piIndex)
+    public function removeRange($piIndex)
     {
         if (isset($this->ranges[$piIndex])) {
             unset($this->ranges[$piIndex]);
@@ -339,7 +339,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function removeExcludedRange($piIndex)
+    public function removeExcludedRange($piIndex)
     {
         if (isset($this->excludedRanges[$piIndex])) {
             unset($this->excludedRanges[$piIndex]);
@@ -357,7 +357,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function removeCompare($piIndex)
+    public function removeCompare($piIndex)
     {
         if (isset($this->compares[$piIndex])) {
             unset($this->compares[$piIndex]);
@@ -375,7 +375,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function addSingleValue(SingleValue $value)
+    public function addSingleValue(SingleValue $value)
     {
         $this->singleValues[++$this->lastValIndex] = $value;
 
@@ -391,7 +391,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function addExclude(SingleValue $value)
+    public function addExclude(SingleValue $value)
     {
         $this->excludes[++$this->lastValIndex] = $value;
 
@@ -407,7 +407,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function addRange(Range $range)
+    public function addRange(Range $range)
     {
         $this->ranges[++$this->lastValIndex] = $range;
 
@@ -423,7 +423,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function addExcludedRange(Range $range)
+    public function addExcludedRange(Range $range)
     {
         $this->excludedRanges[++$this->lastValIndex] = $range;
 
@@ -439,7 +439,7 @@ class FilterValuesBag
      *
      * @api
      */
-    function addCompare(Compare $compare)
+    public function addCompare(Compare $compare)
     {
         $this->compares[++$this->lastValIndex] = $compare;
 

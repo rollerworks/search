@@ -22,7 +22,7 @@ use Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType;
 
 class OptimizeTest extends ModifierTestCase
 {
-    function testOptimizeValue()
+    public function testOptimizeValue()
     {
         $input = new QueryInput();
         $input->setInput('User=2,4,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
@@ -47,7 +47,7 @@ class OptimizeTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testOptimizeValueNoOptimize()
+    public function testOptimizeValueNoOptimize()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');

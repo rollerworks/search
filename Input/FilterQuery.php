@@ -421,7 +421,7 @@ class FilterQuery extends AbstractInput
      *
      * @return string
      */
-    static protected function fixQuotes($input)
+    protected static function fixQuotes($input)
     {
         $input = trim($input);
 

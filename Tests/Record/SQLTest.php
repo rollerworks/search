@@ -28,7 +28,7 @@ class SQLTest extends OrmTestCase
      * @param $filterQuery
      * @param string $expectedSql
      */
-    function testBasics($filterQuery, $expectedSql)
+    public function testBasics($filterQuery, $expectedSql)
     {
         $input = $this->newInput($filterQuery);
         $this->assertTrue($this->formatter->formatInput($input));
@@ -51,7 +51,7 @@ class SQLTest extends OrmTestCase
      * @param string $filterQuery
      * @param string $expectedSql
      */
-    function testSqlConvert($filterQuery, $expectedSql)
+    public function testSqlConvert($filterQuery, $expectedSql)
     {
         $input = $this->newInput($filterQuery, 'customer');
         $this->assertTrue($this->formatter->formatInput($input));
@@ -68,7 +68,7 @@ class SQLTest extends OrmTestCase
         $this->assertEquals($expectedSql, $whereCase);
     }
 
-    static public function provideBasicsTests()
+    public static function provideBasicsTests()
     {
         return array(
             array('invoice_customer=2;', '(customer IN(2))'),
@@ -89,7 +89,7 @@ class SQLTest extends OrmTestCase
         );
     }
 
-    static public function provideSqlConvertTests()
+    public static function provideSqlConvertTests()
     {
         return array(
             array('customer_id=2;', '(id IN(2))'),

@@ -15,7 +15,7 @@ use Rollerworks\RecordFilterBundle\Annotation\Field as FilterField;
 
 class FieldTest extends \PHPUnit_Framework_TestCase
 {
-    function testName()
+    public function testName()
     {
         $field = new FilterField(array('name' => 'User'));
         $this->assertEquals('User', $field->getName());
@@ -24,13 +24,13 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('User', $field->getName());
     }
 
-    function testNameReq()
+    public function testNameReq()
     {
         $this->setExpectedException('\UnexpectedValueException', "Property 'name' on annotation 'Rollerworks\\RecordFilterBundle\\Annotation\\Field' is required.");
         new FilterField(array('type' => 'User'));
     }
 
-    function testRequired()
+    public function testRequired()
     {
         $field = new FilterField(array('name' => 'User', 'Required' => false));
         $this->assertFalse($field->isRequired());
@@ -39,13 +39,13 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($field->isRequired());
     }
 
-    function testType()
+    public function testType()
     {
         $field = new FilterField(array('name' => 'User', 'Type' => 'Number'));
         $this->assertEquals('Number', $field->getType());
     }
 
-    function testAcceptRanges()
+    public function testAcceptRanges()
     {
         $field = new FilterField(array('name' => 'User', 'AcceptRanges' => true));
         $this->assertTrue($field->acceptsRanges());
@@ -54,7 +54,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($field->acceptsRanges());
     }
 
-    function testAcceptCompares()
+    public function testAcceptCompares()
     {
         $field = new FilterField(array('name' => 'User', 'AcceptCompares' => false));
         $this->assertFalse($field->acceptsCompares());
@@ -63,13 +63,13 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($field->acceptsCompares());
     }
 
-    function testConstructParams()
+    public function testConstructParams()
     {
         $field = new FilterField(array('name' => 'User', '_lang' => 'en' ));
         $this->assertEquals(array('lang' => 'en'), $field->getParams());
     }
 
-    function testUnknownProp()
+    public function testUnknownProp()
     {
         $this->setExpectedException('\BadMethodCallException', "Unknown property 'doctor' on annotation 'Rollerworks\\RecordFilterBundle\\Annotation\\Field'.");
         new FilterField(array('name' => 'User', 'doctor' => 'who' ));

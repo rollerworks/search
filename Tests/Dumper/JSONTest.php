@@ -17,7 +17,7 @@ use Rollerworks\RecordFilterBundle\Dumper\JSON;
 
 class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
-    function testFlattenedOneGroupOneField()
+    public function testFlattenedOneGroupOneField()
     {
         $input = new FilterQuery(null, 'user=1;');
         $input->setField('user');
@@ -29,7 +29,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals(json_encode(array(array('user' => array('1')))), $dumper->dumpFilters($formatter, true));
     }
 
-    function testFlattenedTwoGroupsOneField()
+    public function testFlattenedTwoGroupsOneField()
     {
         $input = new FilterQuery(null, '(user=1;),(user=2;)');
         $input->setField('user');
@@ -44,7 +44,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter, true));
     }
 
-    function testFlattenedFlattenedOneGroupTwoFields()
+    public function testFlattenedFlattenedOneGroupTwoFields()
     {
         $input = new FilterQuery(null, 'user=1; invoice="F2012-800";');
         $input->setField('user');
@@ -57,7 +57,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals(json_encode(array(array('user' => array('1'), 'invoice' => array('F2012-800')))), $dumper->dumpFilters($formatter, true));
     }
 
-    function testFlattenedTwoGroupsTwoFields()
+    public function testFlattenedTwoGroupsTwoFields()
     {
         $input = new FilterQuery(null, '(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
         $input->setField('user');
@@ -73,7 +73,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter, true));
     }
 
-    function testFlattenedRangeValue()
+    public function testFlattenedRangeValue()
     {
         $input = new FilterQuery(null, '(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
         $input->setField('user');
@@ -89,7 +89,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter, true));
     }
 
-    function testFlattenedExcludedValue()
+    public function testFlattenedExcludedValue()
     {
         $input = new FilterQuery(null, '(user=!1; invoice=!"F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
         $input->setField('user');
@@ -105,7 +105,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter, true));
     }
 
-    function testFlattenedCompareValue()
+    public function testFlattenedCompareValue()
     {
         $input = new FilterQuery(null, '(user=>1,<>2,>=5,<8,<=9;)');
         $input->setField('user', null, null, false, true, true);
@@ -118,8 +118,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals(json_encode(array(array('user' => array('>1', '<>2', '>=5', '<8', '<=9')))), $dumper->dumpFilters($formatter, true));
     }
 
-
-    function testOneGroupOneField()
+    public function testOneGroupOneField()
     {
         $input = new FilterQuery(null, '(user=1;)');
         $input->setField('user');
@@ -131,7 +130,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals(json_encode(array(array('user' => array( 'single-values' => array('1'))))), $dumper->dumpFilters($formatter));
     }
 
-    function testTwoGroupsOneField()
+    public function testTwoGroupsOneField()
     {
         $input = new FilterQuery(null, '(user=1;),(user=2;)');
         $input->setField('user');
@@ -146,7 +145,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter));
     }
 
-    function testOneGroupTwoFields()
+    public function testOneGroupTwoFields()
     {
         $input = new FilterQuery(null, 'user=1; invoice="F2012-800"');
         $input->setField('user');
@@ -159,7 +158,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals(json_encode(array(array('user' => array('single-values' => array('1')), 'invoice' => array('single-values' => array('F2012-800'))))), $dumper->dumpFilters($formatter));
     }
 
-    function testTwoGroupsTwoFields()
+    public function testTwoGroupsTwoFields()
     {
         $input = new FilterQuery(null, '(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
         $input->setField('user');
@@ -168,7 +167,6 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
 
-
         $dumper = new JSON();
         $this->assertEquals(json_encode(array(
             array('user' => array('single-values' => array('1')), 'invoice' => array('single-values' => array('F2010-4242'))),
@@ -176,7 +174,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter));
     }
 
-    function testRangeValue()
+    public function testRangeValue()
     {
         $input = new FilterQuery(null, '(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
         $input->setField('user');
@@ -192,7 +190,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter));
     }
 
-    function testExcludedValue()
+    public function testExcludedValue()
     {
         $input = new FilterQuery(null, '(user=!1; invoice=!"F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
         $input->setField('user');
@@ -208,7 +206,7 @@ class JSONTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         ), $dumper->dumpFilters($formatter));
     }
 
-    function testCompareValue()
+    public function testCompareValue()
     {
         $input = new FilterQuery(null, '(user=>1,<>2,>=5,<8,<=9;)');
         $input->setField('user', null, null, false, false, true);

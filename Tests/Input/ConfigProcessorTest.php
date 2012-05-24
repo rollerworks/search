@@ -43,7 +43,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->configProcessor = new ConfigProcessor($factory);
     }
 
-    function testOneField()
+    public function testOneField()
     {
         $entity = new ECommerceProductSimple();
         $input = new FilterQuery();
@@ -56,7 +56,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testTwoFields()
+    public function testTwoFields()
     {
         $entity = new ECommerceProductTwo();
         $input = new FilterQuery();
@@ -70,7 +70,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testWithRequired()
+    public function testWithRequired()
     {
         $entity = new ECommerceProductReq();
         $input = new FilterQuery();
@@ -84,7 +84,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testWithType()
+    public function testWithType()
     {
         $entity = new ECommerceProductWithType();
         $input = new FilterQuery();
@@ -98,7 +98,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testTypeWithParameter()
+    public function testTypeWithParameter()
     {
         $entity = new ECommerceProductWithType2();
         $input = new FilterQuery();
@@ -112,7 +112,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testTypeWithDynamicParameter()
+    public function testTypeWithDynamicParameter()
     {
         $container = $this->createContainer();
         $container->set('temp_service', new SomeClass());
@@ -130,7 +130,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testTypeWithRange()
+    public function testTypeWithRange()
     {
         $entity = new ECommerceProductRange();
         $input = new FilterQuery();
@@ -144,7 +144,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testTypeWitCompares()
+    public function testTypeWitCompares()
     {
         $entity = new ECommerceProductCompares();
         $input = new FilterQuery();
@@ -158,7 +158,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testFromMultipleEntities()
+    public function testFromMultipleEntities()
     {
         $input = new FilterQuery();
 
@@ -178,7 +178,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
         $this->assertEquals($set, $input->getFieldsConfig());
     }
 
-    function testSetOnConstruct()
+    public function testSetOnConstruct()
     {
         $fields = new FieldSet();
 
@@ -200,7 +200,7 @@ class ConfigProcessorTest// extends \Rollerworks\RecordFilterBundle\Tests\TestCa
  */
 class SomeClass
 {
-    function getSomething($parameters)
+    public function getSomething($parameters)
     {
         return 'bar' . $parameters['foo'];
     }

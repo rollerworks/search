@@ -26,7 +26,7 @@ use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
 
 class FormatterTest extends ModifierTestCase
 {
-    function testFormatterNoModifiers()
+    public function testFormatterNoModifiers()
     {
         $input = new QueryInput();
         $input->setField('user', 'user', new Number(), true, true);
@@ -53,7 +53,7 @@ class FormatterTest extends ModifierTestCase
 
     // Output formatter
 
-    function testGetFilters()
+    public function testGetFilters()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
@@ -79,7 +79,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testGetFiltersNoPreviousErrors()
+    public function testGetFiltersNoPreviousErrors()
     {
         $input = new QueryInput();
         $input->setField('user', 'user', new Number(), false, true);
@@ -114,7 +114,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testGetFiltersWithExcludes()
+    public function testGetFiltersWithExcludes()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20,!15; Status=Active; date=29.10.2010; period=>20,10');
@@ -141,7 +141,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testGetFiltersWithExcludedRanges()
+    public function testGetFiltersWithExcludedRanges()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
@@ -168,7 +168,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testGetFiltersEmptyFieldAndSingleValue()
+    public function testGetFiltersEmptyFieldAndSingleValue()
     {
         $input = new QueryInput();
         $input->setInput('User=2,,3,10-20; Status=Active; date=29.10.2010');
@@ -194,7 +194,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testQuoted()
+    public function testQuoted()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date="29-10-2010"; period=>"20""","""20""",10');
@@ -223,7 +223,7 @@ class FormatterTest extends ModifierTestCase
 
     // Test Aliases
 
-    function testFieldAlias()
+    public function testFieldAlias()
     {
         $input = new QueryInput();
         $input->setInput('Gebruiker=2,3,10-20; Status=Active; datung=29.10.2010');
@@ -251,7 +251,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testFieldAliasByTranslator()
+    public function testFieldAliasByTranslator()
     {
         $input = new QueryInput();
         $input->setTranslator($this->translator);
@@ -286,7 +286,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testFieldAliasMerge()
+    public function testFieldAliasMerge()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010');
@@ -313,7 +313,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testFieldAliasMergeWithGroups()
+    public function testFieldAliasMergeWithGroups()
     {
         $input = new QueryInput();
         $input->setInput('(User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010;),(User=2,3; Status=Active; datung=29.10.2011; datum=30.10.2011;)');
@@ -343,7 +343,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters);
     }
 
-    function testFieldAliasMergeWithGroups2()
+    public function testFieldAliasMergeWithGroups2()
     {
         $input = new QueryInput();
         $input->setInput('(User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010;),(User=2,3; Status=Active; datung=29.10.2011;)');
@@ -375,7 +375,7 @@ class FormatterTest extends ModifierTestCase
 
     // Value matcher
 
-    function testValueMatcher()
+    public function testValueMatcher()
     {
         \Locale::setDefault('nl');
 
@@ -403,7 +403,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testValueMatcher2()
+    public function testValueMatcher2()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; invoice=F2010-48932,F2011-48932-F2012-48932; date=29-10/2010; period=>20,10');
@@ -429,7 +429,7 @@ class FormatterTest extends ModifierTestCase
         $this->assertEquals($expectedValues, $filters[0]);
     }
 
-    function testValueMatcherWithRange()
+    public function testValueMatcherWithRange()
     {
         $input = new QueryInput();
         $input->setInput('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
@@ -457,7 +457,7 @@ class FormatterTest extends ModifierTestCase
 
     // Test failures
 
-    function testFieldAliasByTranslatorInValidPrefix()
+    public function testFieldAliasByTranslatorInValidPrefix()
     {
         $input = new QueryInput();
 
@@ -465,7 +465,7 @@ class FormatterTest extends ModifierTestCase
         $input->setLabelToFieldByTranslator(false);
     }
 
-    function testFieldAliasByTranslatorInValidDomain()
+    public function testFieldAliasByTranslatorInValidDomain()
     {
         $input = new QueryInput();
 
@@ -473,7 +473,7 @@ class FormatterTest extends ModifierTestCase
         $input->setLabelToFieldByTranslator('t.', false);
     }
 
-    function testGetFilterNoValidationPerformed()
+    public function testGetFilterNoValidationPerformed()
     {
         $formatter = $this->newFormatter();
 
