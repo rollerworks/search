@@ -13,13 +13,12 @@ namespace Rollerworks\RecordFilterBundle\Formatter;
 
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
-use \Rollerworks\RecordFilterBundle\Input\InputInterface;
+use Rollerworks\RecordFilterBundle\Input\InputInterface;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use \InvalidArgumentException, \RuntimeException;
 
 /**
  * Format the filters by performing the registered modifiers.
@@ -34,14 +33,12 @@ class Formatter implements FormatterInterface
     protected $messages = array('info' => array(), 'error' => array());
 
     /**
-     * State of the formatter
-     *
      * @var boolean
      */
     protected $formatted = false;
 
     /**
-     * Registered values per field.
+     * Final filtering values.
      *
      * Each entry is an [group-id][field-name] => (FilterStruct object)
      *
@@ -55,13 +52,6 @@ class Formatter implements FormatterInterface
      * @var \Symfony\Component\Translation\TranslatorInterface
      */
     protected $translator;
-
-    /**
-     * DIC container instance
-     *
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    protected $container;
 
     /**
      * @var ModifierInterface[]
@@ -83,7 +73,7 @@ class Formatter implements FormatterInterface
     protected $currentFieldLabel = null;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param TranslatorInterface $translator
      *
@@ -100,7 +90,7 @@ class Formatter implements FormatterInterface
     public function getFilters()
     {
         if (false === $this->formatted) {
-            throw new RuntimeException('Formatter::getFilters(): formatInput() must be executed first.');
+            throw new \RuntimeException('Formatter::getFilters(): formatInput() must be executed first.');
         }
 
         return $this->finalFilters;
@@ -115,7 +105,7 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Register modifier
+     * Registers an modifier
      *
      * @param ModifierInterface $modifier
      *
@@ -131,10 +121,7 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Perform the formatting of the given input.
-     *
-     * In case of an validation error (by modifier)
-     *  this will throw an ValidationException containing the (user-friendly) error-message.
+     * Formats the input, by performing all the registered modifiers.
      *
      * @param InputInterface $input
      *
@@ -157,14 +144,16 @@ class Formatter implements FormatterInterface
 
         try {
             foreach ($groups as $groupIndex => $values) {
-                $this->filterFormatter($input->getFieldsConfig(), $values, $groupIndex);
+                $this->formatGroup($input->getFieldsConfig(), $values, $groupIndex);
             }
 
             $this->formatted = true;
+
+            return true;
         } catch (ValidationException $e) {
             $params = array_merge($e->getParams(), array(
-                '%label%'   => $this->currentFieldLabel,
-                '%group%'   => $groupIndex + 1));
+                '%label%' => $this->currentFieldLabel,
+                '%group%' => $groupIndex + 1));
 
             if ($e->getMessage() === 'validation_warning' && isset($params['%msg%'])) {
                 $params['%msg%'] = $this->translator->trans($params['%msg%'], $params);
@@ -174,14 +163,12 @@ class Formatter implements FormatterInterface
 
             return false;
         }
-
-        return true;
     }
 
     /**
-     * Get the validation messages.
+     * Get the formatter messages.
      *
-     * Returns an array containing, error, info and warning
+     * Returns an array containing:, error, info and warning
      *
      * @return array
      *
@@ -200,7 +187,7 @@ class Formatter implements FormatterInterface
      * @param integer $groupIndex
      * @param array   $params
      */
-    protected function addValidationMessage($transMessage, $label, $groupIndex, $params = array())
+    protected function addMessage($transMessage, $label, $groupIndex, $params = array())
     {
         $params = array_merge($params, array(
             '%label%' => $label,
@@ -220,7 +207,7 @@ class Formatter implements FormatterInterface
      *
      * @throws \RuntimeException
      */
-    protected function filterFormatter(FieldSet $filtersConfig, array $filters, $groupIndex)
+    protected function formatGroup(FieldSet $filtersConfig, array $filters, $groupIndex)
     {
         /** @var FilterValuesBag $filter */
         foreach ($filters as $fieldName => $filter) {
@@ -237,7 +224,7 @@ class Formatter implements FormatterInterface
                 foreach ($modifier->getMessages() as $currentMessage) {
                     if (is_array($currentMessage)) {
                         if (!isset($currentMessage['message'], $currentMessage['params'])) {
-                            throw new RuntimeException('Missing either index message or params.');
+                            throw new \RuntimeException('Missing either index message or params.');
                         }
 
                         $message = $currentMessage['message'];
