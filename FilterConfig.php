@@ -51,12 +51,12 @@ class FilterConfig
     /**
      * @var string
      */
-    protected $class;
+    protected $propertyClass;
 
     /**
      * @var string
      */
-    protected $column;
+    protected $propertyField;
 
     /**
      * Constructor.
@@ -78,15 +78,17 @@ class FilterConfig
     }
 
     /**
-     * Set the Entity class-name for reading mapping.
+     * Set the Property reference class-name and field.
+     *
+     * This can be either an ORM Entity class or ODM Document.
      *
      * @param string $class
-     * @param string $column
+     * @param string $field
      */
-    public function setEntity($class, $column)
+    public function setPropertyRef($class, $field)
     {
-        $this->class = $class;
-        $this->column = $column;
+        $this->propertyClass = $class;
+        $this->propertyField = $field;
     }
 
     /**
@@ -94,19 +96,19 @@ class FilterConfig
      *
      * @return string
      */
-    public function getEntityClass()
+    public function getPropertyRefClass()
     {
-        return $this->class;
+        return $this->propertyClass;
     }
 
     /**
-     * Get the Entity column for reading mapping.
+     * Get the Entity field for reading mapping.
      *
      * @return string
      */
-    public function getEntityField()
+    public function getPropertyRefField()
     {
-        return $this->column;
+        return $this->propertyField;
     }
 
     /**

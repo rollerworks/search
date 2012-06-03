@@ -167,23 +167,23 @@ class WhereBuilder
 
         $field = $this->fieldSet->get($fieldName);
 
-        if (null === $field->getEntityClass()) {
+        if (null === $field->getPropertyRefClass()) {
             $this->columnsMappingCache[$fieldName] = $fieldName;
 
             return $fieldName;
         }
 
         $columnPrefix = '';
-        $metadata = $this->entityManager->getClassMetadata($field->getEntityClass());
+        $metadata = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
 
         if (isset($this->entityAliases[$metadata->getTableName()])) {
             $columnPrefix = $this->entityAliases[$metadata->getTableName()] . '.';
         }
 
-        $this->columnsMappingCache[$fieldName] = $columnPrefix . $metadata->getColumnName($field->getEntityField());
+        $this->columnsMappingCache[$fieldName] = $columnPrefix . $metadata->getColumnName($field->getPropertyRefField());
 
-        if (isset($this->sqlFieldConversions[$fieldName]) && null !== $field->getEntityClass()) {
-            $type = $this->entityManager->getClassMetadata($field->getEntityClass())->getTypeOfField($field->getEntityField());
+        if (isset($this->sqlFieldConversions[$fieldName]) && null !== $field->getPropertyRefClass()) {
+            $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
 
             // Documentation claims its an object while in fact its an string
             if (!is_object($type)) {
@@ -290,12 +290,12 @@ class WhereBuilder
 
         $field = $this->fieldSet->get($fieldName);
 
-        if (null === $field->getEntityClass()) {
+        if (null === $field->getPropertyRefClass()) {
             return $this->entityManager->getConnection()->quote($value);
         }
 
         $databasePlatform = $this->entityManager->getConnection()->getDatabasePlatform();
-        $type = $this->entityManager->getClassMetadata($field->getEntityClass())->getTypeOfField($field->getEntityField());
+        $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
 
         // Documentation claims its an object while in fact its an string
         if (!is_object($type)) {
@@ -306,8 +306,8 @@ class WhereBuilder
             // Set to null be default so we can skip this check the next round
             $this->sqlValueConversions[$fieldName] = null;
 
-            if (null !== $field->getEntityClass() && null !== $classMetadata = $this->metadataFactory->getMetadataForClass($field->getEntityClass())) {
-                $propertyName = $field->getEntityField();
+            if (null !== $field->getPropertyRefClass() && null !== $classMetadata = $this->metadataFactory->getMetadataForClass($field->getPropertyRefClass())) {
+                $propertyName = $field->getPropertyRefField();
 
                 if (isset($classMetadata->propertyMetadata[$propertyName]) && $classMetadata->propertyMetadata[$propertyName]->hasSqlConversion()) {
                     $class = $classMetadata->propertyMetadata[$propertyName]->getSqlConversionClass();
