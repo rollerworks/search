@@ -12,12 +12,11 @@
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
-use Rollerworks\RecordFilterBundle\Exception\ValidationException;
+use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
 use Rollerworks\RecordFilterBundle\Input\InputInterface;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -28,9 +27,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 class Formatter implements FormatterInterface
 {
     /**
-     * @var array
+     * @var MessageBag
      */
-    protected $messages = array('info' => array(), 'error' => array());
+    protected $messageBag = null;
 
     /**
      * @var boolean
@@ -64,15 +63,6 @@ class Formatter implements FormatterInterface
     protected $fieldSet;
 
     /**
-     * Current field-label.
-     *
-     * Used for exception handling
-     *
-     * @var string
-     */
-    protected $currentFieldLabel = null;
-
-    /**
      * Constructor.
      *
      * @param TranslatorInterface $translator
@@ -90,7 +80,7 @@ class Formatter implements FormatterInterface
     public function getFilters()
     {
         if (false === $this->formatted) {
-            throw new \RuntimeException('Formatter::getFilters(): formatInput() must be executed first.');
+            throw new \RuntimeException('formatInput() must be executed before calling this function.');
         }
 
         return $this->finalFilters;
@@ -131,8 +121,9 @@ class Formatter implements FormatterInterface
      */
     public function formatInput(InputInterface $input)
     {
-        $this->formatted = false;
-        $this->fieldSet = $input->getFieldsConfig();
+        $this->formatted  = false;
+        $this->fieldSet   = $input->getFieldsConfig();
+        $this->messageBag = new MessageBag($this->translator);
 
         $groups = $input->getGroups();
 
@@ -140,60 +131,33 @@ class Formatter implements FormatterInterface
             return false;
         }
 
-        $this->messages = array('info' => array(), 'error' => array());
-
-        try {
-            foreach ($groups as $groupIndex => $values) {
-                $this->formatGroup($input->getFieldsConfig(), $values, $groupIndex);
-            }
-
-            $this->formatted = true;
-
-            return true;
-        } catch (ValidationException $e) {
-            $params = array_merge($e->getParams(), array(
-                '%label%' => $this->currentFieldLabel,
-                '%group%' => $groupIndex + 1));
-
-            if ($e->getMessage() === 'validation_warning' && isset($params['%msg%'])) {
-                $params['%msg%'] = $this->translator->trans($params['%msg%'], $params);
-            }
-
-            $this->messages['error'][] = $this->translator->trans($e->getMessage(), $params);
-
-            return false;
+        foreach ($groups as $groupIndex => $values) {
+            $this->formatGroup($input->getFieldsConfig(), $values, $groupIndex);
         }
+
+        $this->formatted = count($this->messageBag->get('error')) < 1;
+
+        return $this->formatted;
     }
 
     /**
      * Get the formatter messages.
      *
-     * Returns an array containing:, error, info and warning
+     * Returns an array containing: error and info
      *
      * @return array
+     *
+     * @throws \RuntimeException
      *
      * @api
      */
     public function getMessages()
     {
-        return $this->messages;
-    }
+        if (null === $this->messageBag) {
+            throw new \RuntimeException('formatInput() must be executed before calling this function.');
+        }
 
-    /**
-     * Add an new message to the list
-     *
-     * @param string  $transMessage
-     * @param string  $label
-     * @param integer $groupIndex
-     * @param array   $params
-     */
-    protected function addMessage($transMessage, $label, $groupIndex, $params = array())
-    {
-        $params = array_merge($params, array(
-            '%label%' => $label,
-            '%group%' => $groupIndex + 1));
-
-        $this->messages['info'][] = $this->translator->trans('record_filter.' . $transMessage, $params);
+        return $this->messageBag->all();
     }
 
     /**
@@ -204,38 +168,27 @@ class Formatter implements FormatterInterface
      * @param integer  $groupIndex
      *
      * @return boolean
-     *
-     * @throws \RuntimeException
      */
     protected function formatGroup(FieldSet $filtersConfig, array $filters, $groupIndex)
     {
         /** @var FilterValuesBag $filter */
         foreach ($filters as $fieldName => $filter) {
             $filterConfig = $filtersConfig->get($fieldName);
-            $this->currentFieldLabel = $filterConfig->getLabel();
+
+            $this->messageBag->setTranslatorParams(array(
+                '%label%' => $filterConfig->getLabel(),
+                '%group%' => $groupIndex + 1)
+            );
 
             foreach ($this->modifiers as $modifier) {
-                $removeIndexes = $modifier->modFilters($this, $filterConfig, $filter, $groupIndex);
+                $modifierResult = $modifier->modFilters($this, $this->messageBag, $filterConfig, $filter, $groupIndex);
 
-                if (null === $removeIndexes) {
-                    continue;
+                if (false === $modifierResult) {
+                    break;
                 }
 
-                foreach ($modifier->getMessages() as $currentMessage) {
-                    if (is_array($currentMessage)) {
-                        if (!isset($currentMessage['message'], $currentMessage['params'])) {
-                            throw new \RuntimeException('Missing either index message or params.');
-                        }
-
-                        $message = $currentMessage['message'];
-                        $messageParams = $currentMessage['params'];
-                    } else {
-                        $message = $currentMessage;
-                        $messageParams = array();
-                    }
-
-                    $messageParams = array_merge($messageParams, array('%label%' => $this->currentFieldLabel, '%group%' => $groupIndex + 1));
-                    $this->messages['info'][] = $this->translator->trans('record_filter.' . $message, $messageParams);
+                if (null === $modifierResult) {
+                    continue 1;
                 }
             }
 

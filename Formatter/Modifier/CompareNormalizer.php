@@ -12,6 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
@@ -27,13 +28,6 @@ use Rollerworks\RecordFilterBundle\Value\Compare;
 class CompareNormalizer implements ModifierInterface
 {
     /**
-     * Optimizer messages
-     *
-     * @var array
-     */
-    protected $messages = array();
-
-    /**
      * {@inheritdoc}
      */
     public function getModifierName()
@@ -44,16 +38,13 @@ class CompareNormalizer implements ModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
-        $this->messages = array();
-
         if (!$filterStruct->hasCompares()) {
             return true;
         }
 
         $type = $filterConfig->getType();
-
         $compares = $filterStruct->getCompares();
 
         foreach ($compares as $compare) {
@@ -66,10 +57,10 @@ class CompareNormalizer implements ModifierInterface
                 }
 
                 if ($comparisonIndex !== false) {
-                    $this->addMsg('redundant_comparison', array(
+                    $messageBag->addInfo('redundant_comparison', array(
                         '%value%'      => $compares[$comparisonIndex]->getOperator() . '"' . $compares[$comparisonIndex]->getOriginalValue() . '"',
-                        '%comparison%' => $compare->getOperator(),
-                    ));
+                        '%comparison%' => $compare->getOperator())
+                    );
 
                     unset($compares[$comparisonIndex]);
                     $filterStruct->removeCompare($comparisonIndex);
@@ -78,14 +69,6 @@ class CompareNormalizer implements ModifierInterface
         }
 
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMessages()
-    {
-        return $this->messages;
     }
 
     /**
@@ -113,16 +96,5 @@ class CompareNormalizer implements ModifierInterface
         }
 
         return false;
-    }
-
-    /**
-     * Add an new message to the list
-     *
-     * @param string $transMessage
-     * @param array  $params
-     */
-    protected function addMsg($transMessage, $params = array())
-    {
-        $this->messages[] = array('message' => $transMessage, 'params' => $params);
     }
 }

@@ -73,7 +73,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Validation error(s) in field \'period\' at value \'2910.2010\' in group 1: This value is not a valid date.'), $messages['error']);
+        $this->assertEquals(array('Validation error(s) in field \'period\' at value "2910.2010" in group 1: This value is not a valid date.'), $messages['error']);
     }
 
     public function testValidationFailInGroup()
@@ -88,7 +88,10 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Validation error(s) in field \'period\' at value \'2910.2010\' in group 1: This value is not a valid date.'), $messages['error']);
+        $this->assertEquals(array(
+            'Validation error(s) in field \'period\' at value "2910.2010" in group 1: This value is not a valid date.',
+            'Validation error(s) in field \'period\' at value "2910.2010" in group 2: This value is not a valid date.'
+        ), $messages['error']);
     }
 
     public function testValidationFailInGroupNoResult()
@@ -103,9 +106,9 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Validation error(s) in field \'period\' at value \'2910.2010\' in group 1: This value is not a valid date.'), $messages['error']);
+        $this->assertEquals(array('Validation error(s) in field \'period\' at value "2910.2010" in group 1: This value is not a valid date.'), $messages['error']);
 
-        $this->setExpectedException('\RuntimeException', 'Formatter::getFilters(): formatInput() must be executed first.');
+        $this->setExpectedException('\RuntimeException', 'formatInput() must be executed before calling this function.');
         $formatter->getFilters();
     }
 
@@ -121,7 +124,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Validation error(s) in field \'period\' at value \'25.10.2010-3110.2010\' in group 1: This value is not a valid date.'), $messages['error']);
+        $this->assertEquals(array('Validation error(s) in field \'period\' at value "25.10.2010"-"3110.2010" in group 1: This value is not a valid date.'), $messages['error']);
     }
 
     public function testValidationFaiInlRange2()
@@ -136,7 +139,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Validation error(s) in field \'period\' at value \'2510.2010-3110.2010\' in group 1: This value is not a valid date.'), $messages['error']);
+        $this->assertEquals(array('Validation error(s) in field \'period\' at value "2510.2010"-"3110.2010" in group 1: This value is not a valid date.'), $messages['error']);
     }
 
     // Validation:Range
@@ -168,7 +171,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Validation error(s) in field \'period\' at value \'>3110.2010\' in group 1: This value is not a valid date.'), $messages['error']);
+        $this->assertEquals(array('Validation error(s) in field \'period\' at value >"3110.2010" in group 1: This value is not a valid date.'), $messages['error']);
     }
 
     public function testValidationFaiInExclude()
@@ -183,7 +186,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Validation error(s) in field \'period\' at value \'!3110.2010\' in group 1: This value is not a valid date.'), $messages['error']);
+        $this->assertEquals(array('Validation error(s) in field \'period\' at value !"3110.2010" in group 1: This value is not a valid date.'), $messages['error']);
     }
 
     public function testValidationExcludeInInclude()
@@ -198,7 +201,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Value \'!31.10.2010\' in field \'period\' is already marked as included and can\'t be excluded in group 1.'), $messages['error']);
+        $this->assertEquals(array('Value !"31.10.2010" in field \'period\' is already marked as included and can\'t be excluded in group 1.'), $messages['error']);
     }
 
     public function testValidationIncludeInExclude()
@@ -213,7 +216,7 @@ class ValidationTest extends ModifierTestCase
         $this->assertFalse($formatter->formatInput($input));
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Value \'!31.10.2010\' in field \'period\' is already marked as included and can\'t be excluded in group 1.'), $messages['error']);
+        $this->assertEquals(array('Value !"31.10.2010" in field \'period\' is already marked as included and can\'t be excluded in group 1.'), $messages['error']);
     }
 
     public function testNoValidation()

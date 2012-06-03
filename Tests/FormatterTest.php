@@ -14,7 +14,6 @@ namespace Rollerworks\RecordFilterBundle\Tests;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Type\Date;
-use Rollerworks\RecordFilterBundle\Type\DateTime;
 use Rollerworks\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\RecordFilterBundle\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
@@ -478,7 +477,7 @@ class FormatterTest extends ModifierTestCase
     {
         $formatter = $this->newFormatter();
 
-        $this->setExpectedException('\RuntimeException', 'Formatter::getFilters(): formatInput() must be executed first.');
+        $this->setExpectedException('\RuntimeException', 'formatInput() must be executed before calling this function.');
         $formatter->getFilters();
     }
 }

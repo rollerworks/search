@@ -12,7 +12,9 @@
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
+use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\Range;
@@ -31,16 +33,6 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 class ValuesToRange implements ModifierInterface
 {
     /**
-     * {@inheritdoc}
-     */
-    protected $messages = array();
-
-    /**
-     * @var integer[]
-     */
-    protected $removeIndexes = array();
-
-    /**
      * @var FilterValuesBag
      */
     protected $filterStruct;
@@ -54,28 +46,14 @@ class ValuesToRange implements ModifierInterface
     }
 
     /**
-     * Add an new message to the list
-     *
-     * @param string $transMessage
-     * @param array  $params
-     */
-    protected function addMessage($transMessage, $params = array())
-    {
-        $this->messages[] = array($transMessage, $params);
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
-        $this->messages = array();
-
         if (!$filterConfig->hasType() || !$filterConfig->getType() instanceof ValuesToRangeInterface || (!$filterStruct->hasSingleValues() && !$filterStruct->hasExcludes())) {
             return true;
         }
 
-        $this->removeIndexes = array();
         $this->filterStruct = $filterStruct;
 
         /** @var ValuesToRangeInterface $type */
@@ -95,15 +73,15 @@ class ValuesToRange implements ModifierInterface
             $this->listToRanges($excludes, $type, true);
         }
 
-        return $this->removeIndexes;
+        return true;
     }
 
     /**
      * Converts a list of values to ranges.
      *
-     * @param SingleValue[]          $values
-     * @param ValuesToRangeInterface $type
-     * @param boolean                $exclude
+     * @param SingleValue[]                              $values
+     * @param ValuesToRangeInterface|FilterTypeInterface $type
+     * @param boolean                                    $exclude
      */
     protected function listToRanges($values, ValuesToRangeInterface $type, $exclude = false)
     {
@@ -176,15 +154,5 @@ class ValuesToRange implements ModifierInterface
         } else {
             $this->filterStruct->removeSingleValue($index);
         }
-
-        $this->removeIndexes[] = $index;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMessages()
-    {
-        return $this->messages;
     }
 }

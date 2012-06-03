@@ -12,6 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
@@ -25,20 +26,6 @@ use Rollerworks\RecordFilterBundle\Value\Range;
 class DuplicateRemove implements ModifierInterface
 {
     /**
-     * Optimizer messages
-     *
-     * @var array
-     */
-    protected $messages = array();
-
-    /**
-     * Index list of removed values
-     *
-     * @var integer[]
-     */
-    protected $removedIndexes = array();
-
-    /**
      * {@inheritdoc}
      */
     public function getModifierName()
@@ -49,18 +36,16 @@ class DuplicateRemove implements ModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         $ranges = $excludedRanges = $excludedValues = $compares = $singleValues = array();
-        $this->messages = $this->removedIndexes = array();
-
         $type = $filterConfig->getType();
 
         foreach ($filterStruct->getSingleValues() as $index => $value) {
             $_value = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
             if (in_array($_value, $singleValues)) {
-                $this->informDuplicate($index, '"' . $value->getOriginalValue() . '"');
+                $messageBag->addInfo('duplicate', array('%value%' => '"' . $value->getOriginalValue() . '"'));
                 $filterStruct->removeSingleValue($index);
 
                 continue;
@@ -73,7 +58,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
             if (in_array($_value, $excludedValues)) {
-                $this->informDuplicate($index, '!"' . $value->getOriginalValue() . '"');
+                $messageBag->addInfo('duplicate', array('%value%' => '!"' . $value->getOriginalValue() . '"'));
                 $filterStruct->removeExclude($index);
 
                 continue;
@@ -86,7 +71,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = $this->dumpRange($type, $range);
 
             if (in_array($_value, $ranges)) {
-                $this->informDuplicate($index, '"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
+                $messageBag->addInfo('duplicate', array('%value%' => self::getRangeQuoted($range)));
                 $filterStruct->removeRange($index);
 
                 continue;
@@ -99,7 +84,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = $this->dumpRange($type, $range);
 
             if (in_array($_value, $excludedRanges)) {
-                $this->informDuplicate($index, '!"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
+                $messageBag->addInfo('duplicate', array('%value%' => '!' . self::getRangeQuoted($range)));
                 $filterStruct->removeExcludedRange($index);
 
                 continue;
@@ -112,7 +97,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = $compare->getOperator() . ($type ? $type->dumpValue($compare->getValue()) : $compare->getValue());
 
             if (in_array($_value, $compares)) {
-                $this->informDuplicate($index, $compare->getOperator() . '"' . $compare->getOriginalValue() . '"');
+                $messageBag->addInfo('duplicate', array('%value%' => $compare->getOperator() . '"' . $compare->getOriginalValue() . '"'));
                 $filterStruct->removeCompare($index);
 
                 continue;
@@ -121,25 +106,24 @@ class DuplicateRemove implements ModifierInterface
             $compares[] = $_value;
         }
 
-        return $this->removedIndexes;
+        return true;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the 'original' range values between quotes.
+     *
+     * @param Range $range
+     * @param Range $range2
+     *
+     * @return string
      */
-    public function getMessages()
+    protected static function getRangeQuoted(Range $range, Range $range2 = null)
     {
-        return $this->messages;
-    }
+        if (null === $range2) {
+            $range2 = $range;
+        }
 
-    /**
-     * @param integer $index
-     * @param string  $value
-     */
-    protected function informDuplicate($index, $value)
-    {
-        $this->messages[]       = array('message' => 'duplicate', 'params' => array('%value%' => $value));
-        $this->removedIndexes[] = $index;
+        return '"' . $range->getOriginalLower() . '"-"' . $range2->getOriginalUpper() . '"';
     }
 
     /**
@@ -147,11 +131,10 @@ class DuplicateRemove implements ModifierInterface
      * @param Range               $range
      *
      * @return string
-     * @throws \RuntimeException
      */
     protected function dumpRange(FilterTypeInterface $type = null, Range $range)
     {
-        if ($type) {
+        if (null !== $type) {
             return $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
         }
 

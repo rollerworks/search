@@ -11,21 +11,23 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
+
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\RecordFilterBundle\Exception\ValidationException;
+use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\Range;
 
 /**
- * Validates the values and formats the value with the sanitized version
- * After this the values can be considered valid.
+ * Validates and formats values.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class Validator implements ModifierInterface
 {
+    protected $isError = false;
+
     /**
      * {@inheritdoc}
      */
@@ -37,17 +39,21 @@ class Validator implements ModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         if (!$filterConfig->hasType()) {
             return true;
         }
 
-        $ranges = $excludedRanges = $excludedValues = $singleValues = array();
+        $this->isError = false;
+
+        $ranges = $excludedValues = $singleValues = array();
         $type = $filterConfig->getType();
 
         foreach ($filterStruct->getSingleValues() as $value) {
-            $this->validateValue($type, $value->getValue());
+            if (!$this->validateValue($type, $value->getValue(), '"' . $value->getValue() . '"', $messageBag)) {
+                continue;
+            }
 
             $sanitizedValue = $type->sanitizeString($value->getValue());
             $_value         = $sanitizedValue;
@@ -57,7 +63,8 @@ class Validator implements ModifierInterface
             }
 
             if (in_array($_value, $excludedValues)) {
-                throw new ValidationException('value_in_exclude',  $value->getOriginalValue());
+                $messageBag->addError('value_in_exclude', array('%value%' => '"' . $value->getOriginalValue() . '"'));
+                $this->isError = true;
             }
 
             $singleValues[] = $_value;
@@ -65,7 +72,9 @@ class Validator implements ModifierInterface
         }
 
         foreach ($filterStruct->getExcludes() as $value) {
-            $this->validateValue($type, $value->getValue(), '!' . $value->getValue());
+            if (!$this->validateValue($type, $value->getValue(), '!"' . $value->getValue() . '"', $messageBag)) {
+                continue;
+            }
 
             $sanitizedValue = $type->sanitizeString($value->getValue());
             $_value         = $sanitizedValue;
@@ -75,7 +84,8 @@ class Validator implements ModifierInterface
             }
 
             if (in_array($_value, $singleValues)) {
-                throw new ValidationException('value_in_include', '!' . $value->getOriginalValue());
+                $messageBag->addError('value_in_include', array('%value%' => '!"' . $value->getOriginalValue() . '"'));
+                $this->isError = true;
             }
 
             $excludedValues[] = $_value;
@@ -83,94 +93,112 @@ class Validator implements ModifierInterface
         }
 
         foreach ($filterStruct->getRanges() as $range) {
-            $this->validateValue($type, $range->getLower(), $range->getLower() . '-' . $range->getUpper());
-            $this->validateValue($type, $range->getUpper(), $range->getLower() . '-' . $range->getUpper());
+            if (
+                !$this->validateValue($type, $range->getLower(), self::getRangeQuoted($range), $messageBag) ||
+                !$this->validateValue($type, $range->getUpper(), self::getRangeQuoted($range), $messageBag)
+            ) {
+                continue;
+            }
 
             $range->setLower($type->sanitizeString($range->getLower()));
             $range->setUpper($type->sanitizeString($range->getUpper()));
 
-            $this->validateRange($type, $range);
+            $this->validateRange($type, $range, $messageBag);
 
-            $_value = $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
-
-            if (in_array($_value, $excludedRanges)) {
-                throw new ValidationException('value_in_exclude', $range->getOriginalLower() . '-' . $range->getOriginalUpper());
-            }
-
-            $ranges[] = $_value;
+            $ranges[] = $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
         }
 
         foreach ($filterStruct->getExcludedRanges() as $range) {
-            $this->validateValue($type, $range->getLower(), '!' . $range->getLower() . '-' . $range->getUpper());
-            $this->validateValue($type, $range->getUpper(), '!' . $range->getLower() . '-' . $range->getUpper());
+            if (
+                !$this->validateValue($type, $range->getLower(), '!' . self::getRangeQuoted($range), $messageBag) ||
+                !$this->validateValue($type, $range->getUpper(), '!' . self::getRangeQuoted($range), $messageBag)
+            ) {
+                continue;
+            }
 
             $range->setLower($type->sanitizeString($range->getLower()));
             $range->setUpper($type->sanitizeString($range->getUpper()));
 
-            $this->validateRange($type, $range);
+            $this->validateRange($type, $range, $messageBag);
 
             $_value = $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
 
             if (in_array($_value, $ranges)) {
-                throw new ValidationException('range_same_as_excluded', '!"' . $range->getOriginalLower() . '"-"' . $range->getOriginalUpper() . '"');
+                $messageBag->addError('range_same_as_excluded', array('%value%' => self::getRangeQuoted($range)));
+                $this->isError = true;
             }
-
-            $excludedRanges[] = $_value;
         }
 
         foreach ($filterStruct->getCompares() as $compare) {
-            $this->validateValue($type, $compare->getValue(), $compare->getOperator() . $compare->getValue());
+            if (!$this->validateValue($type, $compare->getValue(), $compare->getOperator() . '"' . $compare->getValue() . '"', $messageBag)) {
+                continue;
+            }
 
             $compare->setValue($type->sanitizeString($compare->getValue()));
+        }
+
+        return !$this->isError;
+    }
+
+    /**
+     * Returns the 'original' range values between quotes.
+     *
+     * @param Range $range
+     * @param Range $range2
+     *
+     * @return string
+     */
+    protected static function getRangeQuoted(Range $range, Range $range2 = null)
+    {
+        if (null === $range2) {
+            $range2 = $range;
+        }
+
+        return '"' . $range->getOriginalLower() . '"-"' . $range2->getOriginalUpper() . '"';
+    }
+
+    /**
+     * Validates an 'single' value.
+     *
+     * @param FilterTypeInterface $type
+     * @param string              $value
+     * @param string              $originalValue
+     * @param MessageBag          $messageBag
+     *
+     * @return boolean
+     */
+    protected function validateValue(FilterTypeInterface $type, $value, $originalValue, MessageBag $messageBag)
+    {
+        if (!$type->validateValue($value, $message)) {
+            $messageBag->addError('validation_warning', array(
+                '%value%' => $originalValue,
+                '%msg%'   => $message
+            ));
+
+            $this->isError = true;
+
+            return false;
         }
 
         return true;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getMessages()
-    {
-        return array();
-    }
-
-    /**
-     * Validates an 'single' value and throws an ValidationException in case of failure.
-     *
-     * @param FilterTypeInterface $type
-     * @param string              $value
-     * @param string              $originalValue
-     *
-     * @throws ValidationException In case of an validation error
-     */
-    protected function validateValue(FilterTypeInterface $type, $value, $originalValue = null)
-    {
-        $message = '';
-
-        if (!strlen($originalValue)) {
-            $originalValue = $value;
-        }
-
-        if (!$type->validateValue($value, $message)) {
-            throw new ValidationException('validation_warning', $originalValue, array('%msg%' => $message));
-        }
-    }
-
-    /**
-     * Validates an range value and throws an ValidationException in case of failure.
+     * Validates an range value.
      *
      * @param FilterTypeInterface $type
      * @param Range               $range
-     *
-     * @throws ValidationException
+     * @param MessageBag          $messageBag
      */
-    protected function validateRange(FilterTypeInterface $type, Range $range)
+    protected function validateRange(FilterTypeInterface $type, Range $range, MessageBag $messageBag)
     {
         if (!$type->isLower($range->getLower(), $range->getUpper())) {
-            throw new ValidationException('not_lower', $range->getOriginalLower() . '-' . $range->getOriginalUpper(), array(
+            $messageBag->addError('range_not_lower', array(
                 '%value1%' => $range->getOriginalLower(),
-                '%value2%' => $range->getOriginalUpper()));
+                '%value2%' => $range->getOriginalUpper(),
+            ));
+
+            $this->isError = true;
         }
     }
 }

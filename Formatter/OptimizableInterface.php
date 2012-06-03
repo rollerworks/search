@@ -11,12 +11,13 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
+use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
  * Filter-value optimizable interface.
  *
- * Implement this interface if the filter values can be optimized.
+ * Implement this interface in the filter-type if the values can be optimized.
  * Optimizing includes removing redundant values and changing the filtering strategy.
  *
  * An example can be, where you have an 'Status' type which only accepts 'active', 'not-active' and 'remove'.
@@ -34,19 +35,17 @@ interface OptimizableInterface
      * To remove one value-object, cal remove[Range|ExcludedRange|SingeValue|Exclude|Compare]() with the value index.
      * To remove an range at value-index 1 call removeRange(1). If the index is none existent it's ignored.
      *
-     * When actually removing values this function ***should*** return an array with the removed value-indexes.
-     * This is for removing the values from the optimized values list.
+     * Return false to remove the field completely.
      *
-     * Return null to remove the field completely.
-     *
-     * $messages may contain an array of information messages.
-     * ***These will be run trough the translator later on.***
+     * Message handling is done using the MessageBag class.
+     * Adding an message will automatically translate it and add the required placeholders (%label% and %group%).
      *
      * @param FilterValuesBag $field
-     * @param array           $messages
-     * @param array|null
+     * @param MessageBag      $messageBag
+     *
+     * @param boolean|void
      *
      * @api
      */
-    public function optimizeField(FilterValuesBag $field, &$messages);
+    public function optimizeField(FilterValuesBag $field, MessageBag $messageBag);
 }

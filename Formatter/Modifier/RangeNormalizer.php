@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\RecordFilterBundle\Exception\ValidationException;
+use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
@@ -28,16 +28,6 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
  */
 class RangeNormalizer implements ModifierInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected $messages = array();
-
-    /**
-     * @var array
-     */
-    protected $removeIndexes = array();
-
     /**
      * @var FilterTypeInterface
      */
@@ -57,24 +47,10 @@ class RangeNormalizer implements ModifierInterface
     }
 
     /**
-     * Add an new message to the list
-     *
-     * @param string $transMessage
-     * @param array  $params
-     */
-    protected function addMessage($transMessage, $params = array())
-    {
-        $this->messages[] = array('message' => $transMessage, 'params' => $params);
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
-        $this->messages = array();
-        $this->removeIndexes = array();
-
         if (!$filterConfig->hasType() || (!$filterStruct->hasRanges() && !$filterStruct->hasExcludedRanges())) {
             return true;
         }
@@ -82,6 +58,8 @@ class RangeNormalizer implements ModifierInterface
         $this->valuesBag = $filterStruct;
         $this->type = $filterConfig->getType();
         $type = $filterConfig->getType();
+
+        $isError = false;
 
         $values = $filterStruct->getSingleValues();
         $ranges = $filterStruct->getRanges();
@@ -93,8 +71,8 @@ class RangeNormalizer implements ModifierInterface
             // Value is overlapping in range
             foreach ($values as $myIndex => $singeValue) {
                 if ($this->isValInRange($singeValue, $range)) {
-                    $this->addMessage('value_in_range', array(
-                        '%value%' => '"' . $values[$myIndex]->getOriginalValue() . '"',
+                    $messageBag->addInfo('value_in_range', array(
+                        '%value%' => '"' . $values[$myIndex]->getOriginalValue() . '"' ,
                         '%range%' => self::getRangeQuoted($ranges[$valIndex])));
 
                     $this->unsetVal($myIndex);
@@ -109,7 +87,7 @@ class RangeNormalizer implements ModifierInterface
                 }
 
                 if ($type->isEquals($range->getUpper(), $myRange->getLower())) {
-                    $this->addMessage('range_connected', array(
+                    $messageBag->addInfo('range_connected', array(
                         '%range1%' => self::getRangeQuoted($ranges[$valIndex]),
                         '%range2%' => self::getRangeQuoted($ranges[$myIndex]),
                         '%range3%' => self::getRangeQuoted($ranges[$valIndex], $ranges[$myIndex]),
@@ -122,7 +100,7 @@ class RangeNormalizer implements ModifierInterface
                 }
                 // Range overlaps in other range
                 elseif ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
-                    $this->addMessage('range_overlap', array(
+                    $messageBag->addInfo('range_overlap', array(
                         '%range1%' => self::getRangeQuoted($ranges[$myIndex]),
                         '%range2%' => self::getRangeQuoted($ranges[$valIndex]),
                     ));
@@ -145,9 +123,9 @@ class RangeNormalizer implements ModifierInterface
                 // Value is overlapping in range
                 foreach ($excludes as $myIndex => $singeValue) {
                     if ($this->isValInRange($singeValue, $range)) {
-                        $this->addMessage('value_in_range', array(
-                            '%value%' => '!"' . $excludes[$myIndex]->getOriginalValue() . '"',
-                            '%range%' => '!' . self::getRangeQuoted($rangesExcludes[$valIndex])));
+                        $messageBag->addInfo('value_in_range', array(
+                            '%value%' => '!"' . $singeValue->getOriginalValue() . '"',
+                            '%range%' => '!' . self::getRangeQuoted($range)));
 
                         $this->unsetVal($myIndex, true);
                         unset($excludes[$myIndex]);
@@ -161,10 +139,10 @@ class RangeNormalizer implements ModifierInterface
                     }
 
                     if ($type->isEquals($range->getUpper(), $myRange->getLower())) {
-                        $this->addMessage('range_connected', array(
-                            '%range1%' => '!' . self::getRangeQuoted($rangesExcludes[$valIndex]),
-                            '%range2%' => '!' . self::getRangeQuoted($rangesExcludes[$myIndex]),
-                            '%range3%' => '!' . self::getRangeQuoted($rangesExcludes[$valIndex], $rangesExcludes[$myIndex]),
+                        $messageBag->addInfo('range_connected', array(
+                            '%range1%' => '!' . self::getRangeQuoted($range),
+                            '%range2%' => '!' . self::getRangeQuoted($myRange),
+                            '%range3%' => '!' . self::getRangeQuoted($range, $myRange),
                         ));
 
                         $range->setUpper($myRange->getUpper());
@@ -175,9 +153,9 @@ class RangeNormalizer implements ModifierInterface
 
                     // Range overlaps in other range
                     if ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
-                        $this->addMessage('range_overlap', array(
-                            '%range1%' => '!' . self::getRangeQuoted($rangesExcludes[$myIndex]),
-                            '%range2%' => '!' . self::getRangeQuoted($rangesExcludes[$valIndex]),
+                        $messageBag->addInfo('range_overlap', array(
+                            '%range1%' => '!' . self::getRangeQuoted($myRange),
+                            '%range2%' => '!' . self::getRangeQuoted($range),
                         ));
 
                         $this->unsetRange($myIndex, true);
@@ -187,16 +165,18 @@ class RangeNormalizer implements ModifierInterface
 
                 // Range already exists as normal range
                 if (false !== array_search($type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper()), $rangesValues)) {
-                    throw new ValidationException('range_same_as_excluded', '!' . self::getRangeQuoted($ranges[$valIndex]));
+                    $messageBag->addError('range_same_as_excluded', array('%value%' => self::getRangeQuoted($range)));
+
+                    $isError = true;
                 }
             }
         }
 
-        return $this->removeIndexes;
+        return !$isError;
     }
 
     /**
-     * Remove an single-value
+     * Removes an single-value.
      *
      * @param integer $index
      * @param boolean $exclude
@@ -208,12 +188,10 @@ class RangeNormalizer implements ModifierInterface
         } else {
             $this->valuesBag->removeSingleValue($index);
         }
-
-        $this->removeIndexes[] = $index;
     }
 
     /**
-     * Remove an range-value
+     * Removes an range-value.
      *
      * @param integer $index
      * @param boolean $exclude
@@ -225,8 +203,6 @@ class RangeNormalizer implements ModifierInterface
         } else {
             $this->valuesBag->removeRange($index);
         }
-
-        $this->removeIndexes[] = $index;
     }
 
     /**
@@ -247,7 +223,7 @@ class RangeNormalizer implements ModifierInterface
     }
 
     /**
-     * Checks if the value is overlapping in the range
+     * Returns whether $singeValue is overlapping in $range.
      *
      * @param SingleValue $singeValue
      * @param Range       $range
@@ -263,13 +239,5 @@ class RangeNormalizer implements ModifierInterface
         } else {
             return false;
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMessages()
-    {
-        return $this->messages;
     }
 }

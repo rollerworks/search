@@ -4,27 +4,23 @@
         <body>
             <trans-unit id="1">
                 <source>record_filter.duplicate</source>
-                <target>Duplicate value '%value%' in field '%label%' in group %group% (removed).</target>
+                <target>Duplicate value %value% in field '%label%' in group %group% (removed).</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>record_filter.value_in_range</source>
-                <target>Value '%value%' in field '%label%' is also in range '%range%' in group %group%.</target>
-            </trans-unit>
-            <trans-unit id="3">
-                <source>record_filter.merged</source>
-                <target>Merged '%label%' to '%destination%' in group %group%.</target>
+                <target>Value %value% in field '%label%' is also in range %range% in group %group%.</target>
             </trans-unit>
             <trans-unit id="4">
                 <source>record_filter.no_range_support</source>
                 <target>Field '%label%' does not accept ranges in group %group%.</target>
             </trans-unit>
             <trans-unit id="5">
-                <source>record_filter.not_lower</source>
+                <source>record_filter.range_not_lower</source>
                 <target>Validation error in field '%label%': '%value1%' is not lower then '%value2%' in group %group%.</target>
             </trans-unit>
             <trans-unit id="7">
                 <source>record_filter.range_overlap</source>
-                <target>Range '%range1%' in field '%label%' is overlapping in range '%range2%' in group %group%.</target>
+                <target>Range %range1% in field '%label%' is overlapping in range %range2% in group %group%.</target>
             </trans-unit>
             <trans-unit id="8">
                 <source>record_filter.required</source>
@@ -32,15 +28,15 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>record_filter.validation_warning</source>
-                <target>Validation error(s) in field '%label%' at value '%value%' in group %group%: %msg%.</target>
+                <target>Validation error(s) in field '%label%' at value %value% in group %group%: %msg%.</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>record_filter.value_in_exclude</source>
-                <target>Value '%value%' in field '%label%' is already marked as excluded and can't be included in group %group%.</target>
+                <target>Value %value% in field '%label%' is already marked as excluded and can't be included in group %group%.</target>
             </trans-unit>
             <trans-unit id="12">
                 <source>record_filter.value_in_include</source>
-                <target>Value '%value%' in field '%label%' is already marked as included and can't be excluded in group %group%.</target>
+                <target>Value %value% in field '%label%' is already marked as included and can't be excluded in group %group%.</target>
             </trans-unit>
             <trans-unit id="13">
                 <source>record_filter.no_compare_support</source>
@@ -48,18 +44,19 @@
             </trans-unit>
             <trans-unit id="14">
                 <source>record_filter.range_connected</source>
-                <target>Range upper-value of '%range1%' equals lower-value of range '%range2%' in field '%label%' in group %group% (ranges merged to '%range3%').</target>
+                <target>Range upper-value of %range1% equals lower-value of range %range2% in field '%label%' in group %group% (ranges merged to %range3%).</target>
             </trans-unit>
             <trans-unit id="15">
                 <source>record_filter.range_same_as_excluded</source>
-                <target>Excluded range '%value%' also exists as normal range in field '%label%' in group %group%.</target>
+                <target>Excluded range %value% also exists as normal range in field '%label%' in group %group%.</target>
             </trans-unit>
             <trans-unit id="16">
                 <source>record_filter.redundant_comparison</source>
-                <target>Comparison '%value%' is already covered by '%comparison%' field '%label%' in group %group% (removed).</target>
+                <target>Comparison %value% is already covered by "%comparison%" field '%label%' in group %group% (removed).</target>
             </trans-unit>
 						
-						<!-- Widget messages -->
+            <!-- Widget messages -->
+            <!--
             <trans-unit id="17">
                 <source>record_filter.comp.eh</source>
                 <target>Higher or equal then</target>
@@ -132,6 +129,7 @@
                 <source>record_filter.error.no_accept_compare</source>
                 <target>This filter does not accept compares</target>
             </trans-unit>
+            -->
         </body>
     </file>
 </xliff>
