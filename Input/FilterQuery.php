@@ -225,7 +225,7 @@ class FilterQuery extends AbstractInput
     {
         $filterPairs = array();
 
-        if (preg_match_all('/(\p{L}[\p{L}\p{N}_]*)\s*=((?:\s*(?:"(?:(?:[^"]+|"")+)"|[^;,]+)\s*,*)*);?/us', $input, $filterPairMatches)) {
+        if (preg_match_all('/(\p{L}[\p{L}\p{N}_-]*)\s*=((?:\s*(?:"(?:(?:[^"]+|"")+)"|[^;,]+)\s*,*)*);?/us', $input, $filterPairMatches)) {
             $filtersCount = count($filterPairMatches[0]);
 
             for ($i = 0; $i < $filtersCount; $i++) {
