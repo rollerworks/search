@@ -58,7 +58,7 @@ class FieldSet
      * @param string       $name
      * @param FilterConfig $config
      *
-     * @return FieldSet
+     * @return self
      */
     public function set($name, FilterConfig $config)
     {

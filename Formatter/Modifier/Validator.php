@@ -11,7 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
-
 use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
