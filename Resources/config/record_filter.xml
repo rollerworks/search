@@ -6,12 +6,12 @@
 
     <parameters>
         <parameter key="rollerworks_record_filter.input.filter_query.class">Rollerworks\RecordFilterBundle\Input\FilterQuery</parameter>
-        <parameter key="rollerworks_record_filter.input.config_processor.class">Rollerworks\RecordFilterBundle\Input\ConfigProcessor</parameter>
+        <parameter key="rollerworks_record_filter.fieldset_factory.class">Rollerworks\RecordFilterBundle\Mapping\FieldSetFactory</parameter>
 
         <parameter key="rollerworks_record_filter.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="rollerworks_record_filter.metadata.driver_chain.class">Metadata\Driver\DriverChain</parameter>
 
-        <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\RecordFilterBundle\Metadata\Driver\AnnotationDriver</parameter>
+        <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\RecordFilterBundle\Mapping\Loader\AnnotationDriver</parameter>
         <parameter key="rollerworks_record_filter.metadata.cache.class">Metadata\Cache\FileCache</parameter>
 
         <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\RecordFilterBundle\Formatter\Formatter</parameter>
@@ -55,7 +55,7 @@
             </call>
         </service>
 
-        <service id="rollerworks_record_filter.input.config_processor" class="%rollerworks_record_filter.input.config_processor.class%">
+        <service id="rollerworks_record_filter.fieldset_factory" class="%rollerworks_record_filter.fieldset_factory.class%">
             <argument type="service" id="rollerworks_record_filter.metadata_factory"/>
             <call method="setTranslator">
                 <argument type="service" id="translator"/>

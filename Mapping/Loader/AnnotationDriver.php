@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Metadata\Driver;
+namespace Rollerworks\RecordFilterBundle\Mapping\Loader;
 
-use Rollerworks\RecordFilterBundle\Metadata\PropertyMetadata;
+use Rollerworks\RecordFilterBundle\Mapping\PropertyMetadata;
 use Rollerworks\RecordFilterBundle\Annotation\Field as AnnotationField;
 use Rollerworks\RecordFilterBundle\Annotation\SqlConversion;
 
@@ -31,7 +31,7 @@ class AnnotationDriver extends AbstractDriver
     private $reader;
 
     /**
-     * Construct
+     * Constructor.
      *
      * @param Reader $reader
      */
@@ -53,7 +53,6 @@ class AnnotationDriver extends AbstractDriver
             $propertyMetadata = new PropertyMetadata($class->getName(), $reflectionProperty->getName());
 
             foreach ($this->reader->getPropertyAnnotations($reflectionProperty) as $annotation) {
-
                 /** @var \Rollerworks\RecordFilterBundle\Annotation\Field $annotation */
                 if ($annotation instanceof AnnotationField) {
                     $propertyMetadata->filter_name = $annotation->getName();

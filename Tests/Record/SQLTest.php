@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Tests\Record;
 
 use Rollerworks\RecordFilterBundle\Record\Sql\WhereBuilder;
-use Rollerworks\RecordFilterBundle\Metadata\Driver\AnnotationDriver;
+use Rollerworks\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
 

@@ -9,24 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Metadata\Driver;
+namespace Rollerworks\RecordFilterBundle\Mapping\Loader;
 
 use Metadata\Driver\DriverInterface;
 
 /**
- * AbstractDriver
+ * AbstractDriver.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 abstract class AbstractDriver implements DriverInterface
 {
     /**
-     * Get the real type-class name
+     * Returns the real type-class name.
      *
      * @param string $type
      *
      * @return null|string
-     * @throws \InvalidArgumentException When the type can cant be found is or is not legal.
+     * @throws \InvalidArgumentException When the type can cant be found is or is not legal
      */
     protected static function getRealType($type)
     {

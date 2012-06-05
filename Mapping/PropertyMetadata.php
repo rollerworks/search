@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Metadata;
+namespace Rollerworks\RecordFilterBundle\Mapping;
 
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 use Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface;
