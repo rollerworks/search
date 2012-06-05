@@ -12,11 +12,10 @@
 namespace Rollerworks\RecordFilterBundle\Formatter;
 
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
-use Rollerworks\RecordFilterBundle\Formatter\MessageBag;
+use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Input\InputInterface;
 use Rollerworks\RecordFilterBundle\FieldSet;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**

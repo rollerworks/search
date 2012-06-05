@@ -75,7 +75,7 @@ class FieldSet
      * @param string       $name
      * @param FilterConfig $config
      *
-     * @return FieldSet
+     * @return self
      *
      * @throws \RuntimeException when there is no field with the given name
      */
@@ -95,7 +95,7 @@ class FieldSet
      *
      * @param string $name
      *
-     * @return FieldSet
+     * @return self
      */
     public function remove($name)
     {
@@ -127,9 +127,7 @@ class FieldSet
     /**
      * Returns all the registered fields.
      *
-     * Returns as: [field-name] => {\Rollerworks\RecordFilterBundle\FilterConfig object})
-     *
-     * @return array
+     * @return array [field-name] => {\Rollerworks\RecordFilterBundle\FilterConfig object})
      */
     public function all()
     {
