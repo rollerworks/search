@@ -14,8 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Type;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
-
-use NumberFormatter;
+use Rollerworks\RecordFilterBundle\MessageBag;
 
 /**
  * Integer filter type.
@@ -41,7 +40,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
             return ltrim($input, '+');
         }
 
-        return self::getNumberFormatter(\Locale::getDefault())->parse(ltrim($input, '+'), NumberFormatter::TYPE_INT64);
+        return self::getNumberFormatter(\Locale::getDefault())->parse(ltrim($input, '+'), \NumberFormatter::TYPE_INT64);
     }
 
     /**
@@ -154,7 +153,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
         $locale = $locale ?: \Locale::getDefault();
 
         if (null === self::$numberFormatter || self::$numberFormatter->getLocale() !== $locale) {
-            self::$numberFormatter = new NumberFormatter($locale, NumberFormatter::PATTERN_DECIMAL);
+            self::$numberFormatter = new \NumberFormatter($locale, \NumberFormatter::PATTERN_DECIMAL);
         }
 
         return self::$numberFormatter;
