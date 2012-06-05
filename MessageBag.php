@@ -54,7 +54,7 @@ class MessageBag
     }
 
     /**
-     * Set params for the translator, these will be merged with the message params.
+     * Sets the default params for the translator, these will be merged with the message params.
      *
      * @param array $params
      *
@@ -65,6 +65,16 @@ class MessageBag
         $this->params = $params;
 
         return $this;
+    }
+
+    /**
+     * Returns params for the translator.
+     *
+     * @return array
+     */
+    public function getTranslatorParams()
+    {
+        return $this->params;
     }
 
     /**
@@ -100,7 +110,7 @@ class MessageBag
      * @param array   $params
      * @param boolean $addTranslatorPrefix Add record_filter. prefix
      */
-    public function addError($transMessage, array $params, $addTranslatorPrefix = true)
+    public function addError($transMessage, array $params = array(), $addTranslatorPrefix = true)
     {
         $this->messages['error'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, array_merge($params, $this->params));
     }
