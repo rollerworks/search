@@ -78,17 +78,36 @@ class FilterConfig
     }
 
     /**
+     * Creates a new FilterConfig object.
+     *
+     * @param  string                                         $label
+     * @param  FilterTypeInterface|ValueMatcherInterface|null $type
+     * @param  boolean                                        $required
+     * @param  boolean                                        $acceptRanges
+     * @param  boolean                                        $acceptCompares
+     * @return FilterConfig
+     */
+    public static function create($label, $type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
+    {
+        return new self($label, $type, $required, $acceptRanges, $acceptCompares);
+    }
+
+    /**
      * Set the Property reference class-name and field.
      *
      * This can be either an ORM Entity class or ODM Document.
      *
      * @param string $class
      * @param string $field
+     *
+     * @return self
      */
     public function setPropertyRef($class, $field)
     {
         $this->propertyClass = $class;
         $this->propertyField = $field;
+
+        return $this;
     }
 
     /**
