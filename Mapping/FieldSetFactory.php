@@ -160,18 +160,14 @@ class FieldSetFactory
                 $r = new \ReflectionClass($propertyMetadata->type);
 
                 if ($r->implementsInterface('Rollerworks\\RecordFilterBundle\\Type\\ConfigurableInterface')) {
-                    $optionsResolver = new OptionsResolver();
-                    call_user_func(array($propertyMetadata->type, 'setOptions'), $optionsResolver);
-
                     if (isset($options[$propertyMetadata->filter_name])) {
-                        $paramOptions = $optionsResolver->resolve($propertyMetadata->params);
-
-                        // Set the old ones as new default, as they are already validated
-                        $optionsResolver->setDefaults($paramOptions);
+                        $optionsResolver = new OptionsResolver();
+                        call_user_func(array($propertyMetadata->type, 'setOptions'), $optionsResolver);
+                        $optionsResolver->setDefaults($propertyMetadata->params);
 
                         $type = $r->newInstanceArgs($optionsResolver->resolve($options[$propertyMetadata->filter_name]));
                     } else {
-                        $type = $r->newInstanceArgs($optionsResolver->resolve($propertyMetadata->params));
+                        $type = $r->newInstanceArgs($propertyMetadata->params);
                     }
                 } else {
                     $type = $r->newInstance();
