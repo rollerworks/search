@@ -168,7 +168,17 @@ class Validator implements ModifierInterface
      */
     protected function validateValue(FilterTypeInterface $type, $value, $originalValue, MessageBag $messageBag)
     {
-        if (!$type->validateValue($value, $message)) {
+        $validationMessageBag = clone $messageBag;
+
+        if (!$type->validateValue($value, $message, $validationMessageBag)) {
+            if (null === $message) {
+                $message = implode("\n", $validationMessageBag->all());
+            }
+
+            if (!is_scalar($message)) {
+                throw new \UnexpectedValueException('Message must be an scalar value.');
+            }
+
             $messageBag->addError('validation_warning', array(
                 '%value%' => $originalValue,
                 '%msg%'   => $message

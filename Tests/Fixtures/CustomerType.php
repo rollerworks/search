@@ -11,6 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
 
+use Rollerworks\RecordFilterBundle\MessageBag;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 
 class CustomerType implements FilterTypeInterface
@@ -50,7 +51,7 @@ class CustomerType implements FilterTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null)
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This is not an valid customer.';
 

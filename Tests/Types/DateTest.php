@@ -13,6 +13,7 @@ namespace Rollerworks\RecordFilterBundle\Tests\Types;
 
 use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\MessageBag;
 
 class DateTest extends DateTimeTestCase
 {
@@ -63,6 +64,23 @@ class DateTest extends DateTimeTestCase
             $this->assertFalse($type->validateValue($input));
         } else {
             $this->assertTrue($type->validateValue($input));
+        }
+    }
+
+    /**
+     * @dataProvider getDataForAdvancedValidation
+     */
+    public function testValidationAdvanced($input, $options = array(), $expectMessage = false)
+    {
+        $type = new Date($options);
+
+        if (is_array($expectMessage)) {
+            $messageBag = new MessageBag($this->translator);
+
+            $this->assertFalse($type->validateValue($input, $message, $messageBag), sprintf('Assert "%s" is invalid', $input));
+            $this->assertEquals($expectMessage, $messageBag->get('error'), sprintf('Assert "%s" is invalid and messages are equal.', $input));
+        } else {
+            $this->assertTrue($type->validateValue($input), sprintf('Assert "%s" is valid', $input));
         }
     }
 
@@ -154,6 +172,24 @@ class DateTest extends DateTimeTestCase
             array('en_US', '12/31/2010', '2010-12-31'),
             array('en_US', '02/29/2012', '2012-02-29'),
             array('en_US', '29/02/2011', '', true),
+        );
+    }
+
+    public static function getDataForAdvancedValidation()
+    {
+        return array(
+            // $input, $options, $expectMessage
+            array('2010-04-10', array('max' => '2010-05-10')),
+            array('2010-04-10', array('max' => '2010-04-10')),
+            array('2010-04-10', array('min' => '2010-03-10')),
+
+            array('2010-04-10', array('max' => '2010-05-10')),
+            array('2010-04-10', array('max' => '2010-04-10')),
+
+            array('2010-04-10', array('min' => '2010-06-10'), array('This value should be 6/10/2010 or more')),
+            array('2010-05-11', array('max' => '2010-05-10'), array('This value should be 5/10/2010 or less')),
+            array('2010-05-11', array('min' => '2010-04-01', 'max' => '2010-04-10'), array('This value should be 4/10/2010 or less')),
+            array('2010-03-9', array('min' => '2010-04-01', 'max' => '2010-04-10'), array('This value should be 4/1/2010 or more')),
         );
     }
 

@@ -98,7 +98,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null)
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is no valid number';
 

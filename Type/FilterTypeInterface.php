@@ -11,6 +11,8 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
+use Rollerworks\RecordFilterBundle\MessageBag;
+
 /**
  * FilterTypeInterface.
  *
@@ -83,12 +85,16 @@ interface FilterTypeInterface
     public function isEquals($input, $nextValue);
 
     /**
-     * Returns whether the input value is legally formatted
+     * Returns whether the input value is legally formatted.
      *
-     * @param mixed $input
-     * @param mixed $message
+     * Optionally the MessageBag can be used for adding multiple messages.
+     * Set $message to null in that case.
+     *
+     * @param mixed        $input
+     * @param string|array $message
+     * @param MessageBag   $messageBag
      *
      * @return boolean
      */
-    public function validateValue($input, &$message = null);
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null);
 }

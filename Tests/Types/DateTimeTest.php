@@ -14,17 +14,18 @@ namespace Rollerworks\RecordFilterBundle\Tests\Types;
 use Rollerworks\RecordFilterBundle\Type\DateTime;
 use Rollerworks\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use \Rollerworks\RecordFilterBundle\MessageBag;
 
 class DateTimeTest extends DateTimeTestCase
 {
     /**
      * @dataProvider getDataForSanitation
      */
-    public function testSanitize($locale, $input, $expected, $timeOptional, $expectFail = false)
+    public function testSanitize($locale, $input, $expected, $options = array(), $expectFail = false)
     {
         \Locale::setDefault($locale);
 
-        $type = new DateTime($timeOptional);
+        $type = new DateTime($options);
 
         if ($expectFail) {
             $this->setExpectedException('\UnexpectedValueException', sprintf('Input value "%s" is not properly validated.', $input));
@@ -37,11 +38,11 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    public function testDump($locale, $input, $expected, $timeOptional, $expectFail = false)
+    public function testDump($locale, $input, $expected, $options = array(), $expectFail = false)
     {
         \Locale::setDefault($locale);
 
-        $type = new DateTime($timeOptional);
+        $type = new DateTime($options);
 
         if ($expectFail) {
             return;
@@ -58,16 +59,33 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    public function testValidation($locale, $input, $expected, $timeOptional, $expectFail = false)
+    public function testValidation($locale, $input, $expected, $options = array(), $expectFail = false)
     {
         \Locale::setDefault($locale);
 
-        $type = new DateTime($timeOptional);
+        $type = new DateTime($options);
 
         if ($expectFail) {
             $this->assertFalse($type->validateValue($input));
         } else {
             $this->assertTrue($type->validateValue($input));
+        }
+    }
+
+    /**
+     * @dataProvider getDataForAdvancedValidation
+     */
+    public function testValidationAdvanced($input, $options = array(), $expectMessage = false)
+    {
+        $type = new DateTime($options);
+
+        if (is_array($expectMessage)) {
+            $messageBag = new MessageBag($this->translator);
+
+            $this->assertFalse($type->validateValue($input, $message, $messageBag), sprintf('Assert "%s" is invalid', $input));
+            $this->assertEquals($expectMessage, $messageBag->get('error'), sprintf('Assert "%s" is invalid and messages are equal.', $input));
+        } else {
+            $this->assertTrue($type->validateValue($input), sprintf('Assert "%s" is valid', $input));
         }
     }
 
@@ -78,9 +96,9 @@ class DateTimeTest extends DateTimeTestCase
     {
         \Locale::setDefault($locale);
 
-        $type = new DateTime(true);
+        $type = new DateTime(array('time_optional' => true));
 
-        $this->assertEquals($expected, $type->formatOutput(new DateTimeExtended($input)));
+        $this->assertEquals($expected, $type->formatOutput(new DateTimeExtended($input, false !== strpos($input, ':'))));
     }
 
     /**
@@ -111,11 +129,11 @@ class DateTimeTest extends DateTimeTestCase
     /**
      * @dataProvider getDataForGetHigherValue
      */
-    public function testGetHigherValue($locale, $input, $expected, $timeOptional = false)
+    public function testGetHigherValue($locale, $input, $expected, $options = array())
     {
         \Locale::setDefault($locale);
 
-        $type = new DateTime($timeOptional);
+        $type = new DateTime($options);
         $this->assertEquals($type->sanitizeString($expected)->format('Y-m-d H:i:s'), $type->getHigherValue($type->sanitizeString($input))->format('Y-m-d H:i:s'));
     }
 
@@ -126,7 +144,7 @@ class DateTimeTest extends DateTimeTestCase
     {
         \Locale::setDefault($locale);
 
-        $type = new DateTime(true);
+        $type = new DateTime(array('time_optional' => true));
 
         foreach ($input as $index => $value) {
             $input[$index] = new SingleValue($type->sanitizeString($value), $value);
@@ -144,30 +162,55 @@ class DateTimeTest extends DateTimeTestCase
     public static function getDataForSanitation()
     {
         return array(
-            // $locale, $input, $expected, $timeOptional, $expectFail
-            array('nl_NL', '04-10-2010 12:00', '2010-10-04 12:00', false),
-            array('nl_NL', '04-10-2010  12:00', '2010-10-04 12:00', false),
-            array('nl_NL', '04/10/2010 12:00', '2010-10-04 12:00', false),
-            array('nl_NL', '04-10-2010 15:00', '2010-10-04 15:00', false),
-            array('nl_NL', '04-10-2010 15:00', '2010-10-04 15:00', true),
-            array('nl_NL', '04-10-2010',       '2010-10-04 00:00', true),
-            array('nl_NL', '29-02-2012 15:00', '2012-02-29 15:00', false),
-            array('nl_NL', '04-10-2010',       '', false, true),
-            array('nl_NL', '29-02-2011 15:00', '', false, true),
+            // $locale, $input, $expected, $options, $expectFail
+            array('nl_NL', '04-10-2010 12:00', '2010-10-04 12:00'),
+            array('nl_NL', '04-10-2010  12:00', '2010-10-04 12:00'),
+            array('nl_NL', '04/10/2010 12:00', '2010-10-04 12:00'),
+            array('nl_NL', '04-10-2010 15:00', '2010-10-04 15:00'),
+            array('nl_NL', '04-10-2010 15:00', '2010-10-04 15:00', array('time_optional' => true)),
+            array('nl_NL', '04-10-2010',       '2010-10-04 00:00', array('time_optional' => true)),
+            array('nl_NL', '29-02-2012 15:00', '2012-02-29 15:00'),
+            array('nl_NL', '04-10-2010',       '', array('time_optional' => false), true),
+            array('nl_NL', '29-02-2011 15:00', '', array('time_optional' => false), true),
 
-            array('en_US', '04/21/2010 12:00 AM', '2010-04-21 12:00', false),
-            array('en_US', '04-21-2010 12:00 AM', '2010-04-21 12:00', false),
-            array('en_US', '04/21/10 12:00 AM',   '2010-04-21 12:00', false),
-            array('en_US', '04/10/2010 03:00 AM', '2010-04-10 03:00', false),
-            array('en_US', '04/10/2010 12:00 PM', '2010-04-10 00:00', false),
-            array('en_US', '04/10/2010 03:00 PM', '2010-04-10 15:00', true),
-            array('en_US', '04/10/2010',          '2010-04-10 00:00', true),
-            array('en_US', '02/29/2012 03:00 PM', '2012-02-29 15:00', false),
-            array('en_US', '04/10/2010',          '', false, true),
-            array('en_US', '2010/10/04 15:00 PM', '', false, true),
-            array('en_US', '2010/10/04 15:00',    '', false, true),
-            array('en_US', '29/02/2011 03:00',    '', false, true),
-            array('en_US', '29-02-2011 03:00',    '', false, true),
+            array('en_US', '04/21/2010 12:00 AM', '2010-04-21 12:00'),
+            array('en_US', '04-21-2010 12:00 AM', '2010-04-21 12:00'),
+            array('en_US', '04/21/10 12:00 AM',   '2010-04-21 12:00'),
+            array('en_US', '04/10/2010 03:00 AM', '2010-04-10 03:00'),
+            array('en_US', '04/10/2010 12:00 PM', '2010-04-10 00:00'),
+            array('en_US', '04/10/2010 03:00 PM', '2010-04-10 15:00', array('time_optional' => true)),
+            array('en_US', '04/10/2010',          '2010-04-10 00:00', array('time_optional' => true)),
+            array('en_US', '02/29/2012 03:00 PM', '2012-02-29 15:00'),
+
+            array('en_US', '04/10/2010',          '', array(), true),
+            array('en_US', '2010/10/04 15:00 PM', '', array(), true),
+            array('en_US', '2010/10/04 15:00',    '', array(), true),
+            array('en_US', '29/02/2011 03:00',    '', array(), true),
+            array('en_US', '29-02-2011 03:00',    '', array(), true),
+        );
+    }
+
+    public static function getDataForAdvancedValidation()
+    {
+        return array(
+            // $input, $options, $expectMessage
+            array('2010-04-10 15:00', array('max' => '2010-05-10 15:00')),
+            array('2010-04-10 15:00', array('max' => '2010-04-10 15:00')),
+            array('2010-04-10 15:00', array('min' => '2010-03-10 15:00')),
+
+            array('2010-04-10 15:00', array('max' => '2010-05-10 15:00')),
+            array('2010-04-10 15:00', array('max' => '2010-04-10 15:01')),
+
+            array('2010-04-10', array('max' => '2010-05-10', 'time_optional' => true)),
+            array('2010-04-10', array('max' => '2010-04-10', 'time_optional' => true)),
+            array('2010-05-10 15:01:00', array('max' => '2010-05-10 15:01')),
+
+            array('2010-04-10 15:00', array('min' => '2010-06-10 15:00'), array('This value should be 6/10/2010 3:00 PM or more')),
+            array('2010-05-10 15:02', array('max' => '2010-05-10 15:01'), array('This value should be 5/10/2010 3:01 PM or less')),
+            array('2010-05-10 15:01:02', array('max' => '2010-05-10 15:01:01'), array('This value should be 5/10/2010 3:01:01 PM or less')),
+
+            array('2010-05-10 15:01:01', array('max' => '2010-05-10 15:01'), array('This value should be 5/10/2010 3:01 PM or less')),
+            array('2010-05-10', array('max' => '2010-04-10', 'time_optional' => true), array('This value should be 4/10/2010 or less')),
         );
     }
 
@@ -175,24 +218,24 @@ class DateTimeTest extends DateTimeTestCase
     {
         return array(
             // $locale, $input, $expected
-            array('nl_NL', '2010-10-04', '04-10-2010 00:00'),
-            array('nl_NL', '2010-05-04', '04-05-2010 00:00'),
-            array('nl_NL', '1990-05-04', '04-05-1990 00:00'),
+            array('nl_NL', '2010-10-04', '04-10-2010'),
+            array('nl_NL', '2010-05-04', '04-05-2010'),
+            array('nl_NL', '1990-05-04', '04-05-1990'),
 
             array('nl_NL', '2010-10-04 15:00', '04-10-2010 15:00'),
             array('nl_NL', '2010-05-04 23:15', '04-05-2010 23:15'),
             array('nl_NL', '1990-05-04 00:30', '04-05-1990 00:30'),
 
-            array('en_US', '2010-04-21', '4/21/2010 12:00 AM'),
-            array('en_US', '2010-10-21', '10/21/2010 12:00 AM'),
+            array('en_US', '2010-04-21', '4/21/2010'),
+            array('en_US', '2010-10-21', '10/21/2010'),
             array('en_US', '2010-04-21 15:00', '4/21/2010 3:00 PM'),
             array('en_US', '2010-10-21 15:00', '10/21/2010 3:00 PM'),
 
-            array('uz_Arab', '2010-05-04', '۲۰۱۰-۰۵-۰۴ ۰۰:۰۰'),
+            array('uz_Arab', '2010-05-04', '۲۰۱۰-۰۵-۰۴'),
             array('uz_Arab', '2010-05-04 15:00', '۲۰۱۰-۰۵-۰۴ ۱۵:۰۰'),
 
             // Right-to-left
-            array('ar_YE', '2010-05-04', '٤‏/٥‏/٢٠١٠ ١٢:٠٠ ص'),
+            array('ar_YE', '2010-05-04', '٤‏/٥‏/٢٠١٠'),
             array('ar_YE', '2010-05-04 15:00', '٤‏/٥‏/٢٠١٠ ٣:٠٠ م'),
         );
     }
@@ -214,15 +257,15 @@ class DateTimeTest extends DateTimeTestCase
     public static function getDataForGetHigherValue()
     {
         return array(
-            // $locale, $input, $expected, $timeOptional
+            // $locale, $input, $expected, $options
             array('nl_NL', '04-10-2010 15:15', '04-10-2010 15:16'),
             array('nl_NL', '04-10-2010 23:59', '05-10-2010 00:00'),
             array('nl_NL', '04-10-2010 23:59:59', '05-10-2010 00:00:00'),
             array('nl_NL', '04-10-2010 23:20:59', '04-10-2010 23:21:00'),
             array('nl_NL', '04-10-2010 23:20:10', '04-10-2010 23:20:11'),
 
-            array('nl_NL', '04-10-2010',       '05-10-2010', true),
-            array('nl_NL', '04-10-2010',       '05-10-2010', true),
+            array('nl_NL', '04-10-2010',       '05-10-2010', array('time_optional' => true)),
+            array('nl_NL', '04-10-2010',       '05-10-2010', array('time_optional' => true)),
         );
     }
 

@@ -11,21 +11,54 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
-use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\Options;
 
 /**
  * Date filter type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
+class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableInterface
 {
     /**
      * @var string
      */
     protected $lastResult;
+
+    /**
+     * @var array
+     */
+    protected $options = array();
+
+    /**
+     * Constructor.
+     *
+     * @param array $options Array with min/max value (as unix timestamp or \DateTime object)
+     *
+     * @throws \UnexpectedValueException When min is higher then max
+     */
+    public function __construct(array $options = array())
+    {
+        $optionsResolver = new OptionsResolver();
+        static::setOptions($optionsResolver);
+
+        $this->options = $optionsResolver->resolve($options);
+
+        if (null !== $this->options['min'] && null !== $this->options['max'] && $this->options['min']->getTimestamp() >= $this->options['max']->getTimestamp()) {
+            throw new \UnexpectedValueException(sprintf(
+                    'Option min "%s" must not be lower or equal to option max "%s".',
+                    $this->options['min']->format('Y-m-d H:i:s'),
+                    $this->options['max']->format('Y-m-d H:i:s')
+                )
+            );
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -118,11 +151,48 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null)
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is not a valid date';
 
-        return DateTimeHelper::validate($input, DateTimeHelper::ONLY_DATE, $this->lastResult);
+        if (DateTimeHelper::validateIso($input, DateTimeHelper::ONLY_DATE)) {
+            $this->lastResult = $input;
+        } elseif (!DateTimeHelper::validate($input, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
+            return false;
+        }
+
+        if (!$this->validateHigherLower($this->lastResult, $messageBag)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates that the value is not lower then min/higher then max.
+     *
+     * @param string     $input
+     * @param MessageBag $messageBag
+     *
+     * @return boolean
+     */
+    protected function validateHigherLower($input, MessageBag $messageBag = null)
+    {
+        $input = new DateTimeExtended($input, isset($this->hasTime) ? $this->hasTime : false);
+
+        if (null !== $this->options['min'] && $this->isLower($input, $this->options['min'])) {
+            $messageBag->addError('This value should be {{ limit }} or more', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
+        }
+
+        if (null !== $this->options['max'] && $this->isHigher($input, $this->options['max'])) {
+            $messageBag->addError('This value should be {{ limit }} or less', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
+        }
+
+        if ($messageBag) {
+            return !$messageBag->has('error');
+        }
+
+        return true;
     }
 
     /**
@@ -161,6 +231,43 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
         $date->modify('+1 day');
 
         return $date;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function setOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'max' => null,
+            'min' => null,
+        ));
+
+        /*
+        $resolver->setAllowedTypes(array(
+            'max' => array('DateTimeExtended', 'string', 'null'),
+            'min' => array('DateTimeExtended', 'string', 'null')
+        ));
+        */
+
+        // Convert the input to an DateTimeExtended object for comparison
+        $valueFilter = function (Options $options, $value) {
+            if (null === $value) {
+                return $value;
+            }
+
+            // FIXME We need pre-validation (or something) for this
+            if (!is_string($value)) {
+                throw new \UnexpectedValueException(sprintf('Min/max value must be ISO formatted date(time) string, "%s" given instead.', gettype($value)));
+            }
+
+            return new DateTimeExtended($value, false !== strpos($value, ':'));
+        };
+
+        $resolver->setFilters(array(
+            'max' => $valueFilter,
+            'min' => $valueFilter
+        ));
     }
 }
 

@@ -90,7 +90,7 @@ class MessageBag
     /**
      * Gets all the messages by type.
      *
-     * @param string|null $type
+     * @param string $type
      *
      * @return array
      *
@@ -106,13 +106,31 @@ class MessageBag
     }
 
     /**
+     * Returns whether the bag contains messages of this type.
+     *
+     * @param string $type
+     *
+     * @return boolean
+     *
+     * @throws \UnexpectedValueException On invalid type
+     */
+    public function has($type)
+    {
+        if ('error' !== $type && 'info' !== $type) {
+            throw new \UnexpectedValueException('type must be error or info');
+        }
+
+        return isset($this->messages[$type]);
+    }
+
+    /**
      * @param string  $transMessage
      * @param array   $params
      * @param boolean $addTranslatorPrefix Add record_filter. prefix
      */
     public function addError($transMessage, array $params = array(), $addTranslatorPrefix = true)
     {
-        $this->messages['error'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, array_merge($params, $this->params));
+        $this->messages['error'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params);
     }
 
     /**
@@ -122,6 +140,14 @@ class MessageBag
      */
     public function addInfo($transMessage, array $params, $addTranslatorPrefix = true)
     {
-        $this->messages['info'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, array_merge($params, $this->params));
+        $this->messages['info'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params);
+    }
+
+    /**
+     * Clones the current Bag and resets the messages.
+     */
+    public function __clone()
+    {
+        $this->messages = array('info' => array(), 'error' => array());
     }
 }

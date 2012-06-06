@@ -11,7 +11,9 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
+use Rollerworks\RecordFilterBundle\MessageBag;
 use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * DateTime filter type.
@@ -21,21 +23,9 @@ use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 class DateTime extends Date
 {
     /**
-     * Is the time-part optional.
-     *
      * @var boolean
      */
-    protected $timeOptional = false;
-
-    /**
-     * Constructor.
-     *
-     * @param boolean $time_optional
-     */
-    public function __construct($time_optional = false)
-    {
-        $this->timeOptional = $time_optional;
-    }
+    protected $hasTime = false;
 
     /**
      * {@inheritdoc}
@@ -48,7 +38,7 @@ class DateTime extends Date
 
         $hasTime = false;
 
-        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, ($this->timeOptional ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $hasTime) ) {
+        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $hasTime) ) {
             throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
         }
 
@@ -71,18 +61,13 @@ class DateTime extends Date
         $formatter = \IntlDateFormatter::create(
             \Locale::getDefault(),
             \IntlDateFormatter::SHORT,
-            ($value->hasSeconds() ? \IntlDateFormatter::LONG : \IntlDateFormatter::SHORT),
+            ($value->hasSeconds() ? \IntlDateFormatter::MEDIUM : ($value->hasTime() ? \IntlDateFormatter::SHORT : \IntlDateFormatter::NONE)),
             date_default_timezone_get(),
             \IntlDateFormatter::GREGORIAN
         );
 
         // Make year always four digit
         $pattern = str_replace(array('yy', 'yyyyyyyy'), 'yyyy', $formatter->getPattern());
-
-        // Remove timezone
-        if ($value->hasSeconds()) {
-            $pattern = preg_replace('/\s*(\(z\)|z)\s*/i', '', $pattern);
-        }
 
         $formatter->setPattern($pattern);
 
@@ -102,11 +87,21 @@ class DateTime extends Date
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null)
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
     {
-        $message = 'This value is not an valid date with ' . ($this->timeOptional ? 'optional ' : '') . 'time';
+        $message = 'This value is not a valid date with ' . ($this->options['time_optional'] ? 'optional ' : '') . 'time';
 
-        return DateTimeHelper::validate($input, ($this->timeOptional ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $this->hasTime);
+        if (DateTimeHelper::validateIso($input, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->hasTime)) {
+            $this->lastResult = $input;
+        } elseif (!DateTimeHelper::validate($input, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $this->hasTime)) {
+            return false;
+        }
+
+        if (!$this->validateHigherLower($this->lastResult, $messageBag)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -114,7 +109,7 @@ class DateTime extends Date
      */
     public function getMatcherRegex()
     {
-        return DateTimeHelper::getMatcherRegex(($this->timeOptional ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME));
+        return DateTimeHelper::getMatcherRegex(($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME));
     }
 
     /**
@@ -137,5 +132,21 @@ class DateTime extends Date
         }
 
         return $date;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function setOptions(OptionsResolverInterface $resolver)
+    {
+        parent::setOptions($resolver);
+
+        $resolver->setDefaults(array(
+            'time_optional' => false,
+        ));
+
+        $resolver->setAllowedTypes(array(
+            'time_optional' => 'bool'
+        ));
     }
 }

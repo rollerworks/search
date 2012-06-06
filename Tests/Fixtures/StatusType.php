@@ -56,7 +56,7 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null)
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This is not an valid status';
 

@@ -11,6 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
+use Rollerworks\RecordFilterBundle\MessageBag;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 
@@ -113,7 +114,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message=null)
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is not an valid decimal';
 

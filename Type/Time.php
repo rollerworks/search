@@ -11,6 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Type;
 
+use Rollerworks\RecordFilterBundle\MessageBag;
 use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 
 /**
@@ -78,11 +79,21 @@ class Time extends Date
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null)
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is not an valid time';
 
-        return DateTimeHelper::validate($input, DateTimeHelper::ONLY_TIME, $this->lastResult);
+        if (DateTimeHelper::validateIso($input, DateTimeHelper::ONLY_TIME)) {
+            $this->lastResult = $input;
+        } elseif (!DateTimeHelper::validate($input, DateTimeHelper::ONLY_TIME, $this->lastResult)) {
+            return false;
+        }
+
+        if (!$this->validateHigherLower($this->lastResult, $messageBag)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

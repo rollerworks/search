@@ -14,6 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use Rollerworks\RecordFilterBundle\MessageBag;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 
@@ -91,7 +92,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null)
+    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This is not an valid invoice';
 

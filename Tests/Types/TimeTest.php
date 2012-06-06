@@ -14,6 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Tests\Types;
 use Rollerworks\RecordFilterBundle\Type\Time;
 use Rollerworks\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\MessageBag;
 
 class TimeTest extends DateTimeTestCase
 {
@@ -64,6 +65,23 @@ class TimeTest extends DateTimeTestCase
             $this->assertFalse($type->validateValue($input), sprintf('Assert "%s" not to be valid with locale "%s".', $input, $locale));
         } else {
             $this->assertTrue($type->validateValue($input), sprintf('Assert "%s" to be valid with locale "%s".', $input, $locale));
+        }
+    }
+
+    /**
+     * @dataProvider getDataForAdvancedValidation
+     */
+    public function testValidationAdvanced($input, $options = array(), $expectMessage = false)
+    {
+        $type = new Time($options);
+
+        if (is_array($expectMessage)) {
+            $messageBag = new MessageBag($this->translator);
+
+            $this->assertFalse($type->validateValue($input, $message, $messageBag), sprintf('Assert "%s" is invalid', $input));
+            $this->assertEquals($expectMessage, $messageBag->get('error'), sprintf('Assert "%s" is invalid and messages are equal.', $input));
+        } else {
+            $this->assertTrue($type->validateValue($input), sprintf('Assert "%s" is valid', $input));
         }
     }
 
@@ -159,14 +177,35 @@ class TimeTest extends DateTimeTestCase
 
             array('en_US', '04/10/2010', '', true),
             array('en_US', '15:00 PM',   '', true),
-            array('en_US', '15:00',      '', true),
-            array('en_US', '03:00',      '', true),
-            array('en_US', '03:00',      '', true),
+
+            // These are legal in ISO
+            //array('en_US', '15:00',      '', true),
+            //array('en_US', '03:00',      '', true),
+            //array('en_US', '03:00',      '', true),
 
             array('uz_Arab', '۱۳:۰۰', '13:00'),
 
             // Right-to-left
             array('ar_YE', '١:٠٠ م', '13:00'),
+        );
+    }
+
+    public static function getDataForAdvancedValidation()
+    {
+        return array(
+            // $input, $options, $expectMessage
+            array('15:00', array('max' => '15:00')),
+            array('15:00', array('max' => '15:00')),
+            array('15:00', array('min' => '15:00')),
+
+            array('15:00', array('max' => '15:00')),
+            array('15:00', array('max' => '15:01')),
+            array('15:01:00', array('max' => '15:01')),
+
+            array('15:00', array('min' => '15:05'), array('This value should be 3:05 PM or more')),
+            array('15:02', array('max' => '15:01'), array('This value should be 3:01 PM or less')),
+            array('15:01:02', array('max' => '15:01:01'), array('This value should be 3:01:01 PM or less')),
+            array('15:01:01', array('max' => '15:01'), array('This value should be 3:01 PM or less')),
         );
     }
 
