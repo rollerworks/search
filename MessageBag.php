@@ -120,7 +120,7 @@ class MessageBag
             throw new \UnexpectedValueException('type must be error or info');
         }
 
-        return isset($this->messages[$type]);
+        return count($this->messages[$type]) > 0;
     }
 
     /**

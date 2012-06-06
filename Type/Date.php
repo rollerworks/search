@@ -178,6 +178,10 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      */
     protected function validateHigherLower($input, MessageBag $messageBag = null)
     {
+        if (null === $this->options['min'] && null === $this->options['max']) {
+            return true;
+        }
+
         $input = new DateTimeExtended($input, isset($this->hasTime) ? $this->hasTime : false);
 
         if (null !== $this->options['min'] && $this->isLower($input, $this->options['min'])) {
