@@ -110,9 +110,9 @@ class TimeTest extends DateTimeTestCase
         $_second = $type->sanitizeString($second);
 
         if ('==' === $comparison) {
-            $this->assertTrue($type->isEquals($_first, $_second), sprintf('"%s" should equal "%s"', $first, $second));
+            $this->assertTrue($type->isEqual($_first, $_second), sprintf('"%s" should equal "%s"', $first, $second));
         } elseif ('!=' === $comparison) {
-            $this->assertFalse($type->isEquals($_first, $_second), sprintf('"%s" should not equal "%s"', $first, $second));
+            $this->assertFalse($type->isEqual($_first, $_second), sprintf('"%s" should not equal "%s"', $first, $second));
         } else {
             $this->assertTrue($type->isLower($_second, $_first), sprintf('"%s" should be lower then "%s"', $first, $second));
 

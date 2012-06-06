@@ -15,6 +15,9 @@ use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\MessageBag;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\Options;
 
 /**
  * Integer filter type.
@@ -90,7 +93,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface
     /**
      * {@inheritdoc}
      */
-    public function isEquals($input, $nextValue)
+    public function isEqual($input, $nextValue)
     {
         return ((string) $input === (string) $nextValue);
     }

@@ -48,7 +48,7 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
     /**
      * {@inheritdoc}
      */
-    public function isEquals($input, $nextValue)
+    public function isEqual($input, $nextValue)
     {
         return ($input === $nextValue);
     }

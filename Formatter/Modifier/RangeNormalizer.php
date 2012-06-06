@@ -86,7 +86,7 @@ class RangeNormalizer implements ModifierInterface
                     continue;
                 }
 
-                if ($type->isEquals($range->getUpper(), $myRange->getLower())) {
+                if ($type->isEqual($range->getUpper(), $myRange->getLower())) {
                     $messageBag->addInfo('range_connected', array(
                         '%range1%' => self::getRangeQuoted($ranges[$valIndex]),
                         '%range2%' => self::getRangeQuoted($ranges[$myIndex]),
@@ -138,7 +138,7 @@ class RangeNormalizer implements ModifierInterface
                         continue;
                     }
 
-                    if ($type->isEquals($range->getUpper(), $myRange->getLower())) {
+                    if ($type->isEqual($range->getUpper(), $myRange->getLower())) {
                         $messageBag->addInfo('range_connected', array(
                             '%range1%' => '!' . self::getRangeQuoted($range),
                             '%range2%' => '!' . self::getRangeQuoted($myRange),
@@ -234,7 +234,7 @@ class RangeNormalizer implements ModifierInterface
     {
         if ($this->type->isLower($singeValue->getValue(), $range->getUpper()) && $this->type->isHigher($singeValue->getValue(), $range->getLower())) {
             return true;
-        } elseif ($this->type->isEquals($singeValue->getValue(), $range->getUpper()) && $this->type->isEquals($singeValue->getValue(), $range->getLower())) {
+        } elseif ($this->type->isEqual($singeValue->getValue(), $range->getUpper()) && $this->type->isEqual($singeValue->getValue(), $range->getLower())) {
             return true;
         } else {
             return false;

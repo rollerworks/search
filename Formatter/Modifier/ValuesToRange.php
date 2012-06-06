@@ -106,7 +106,7 @@ class ValuesToRange implements ModifierInterface
 
             $increasedValue = $type->getHigherValue($prevValue->getValue());
 
-            if ($type->isEquals($value->getValue(), $increasedValue)) {
+            if ($type->isEqual($value->getValue(), $increasedValue)) {
                 if (null === $rangeLower) {
                     $rangeLower = $prevValue;
                 }
@@ -117,7 +117,7 @@ class ValuesToRange implements ModifierInterface
             if (null !== $rangeUpper) {
                 $this->unsetVal($prevIndex, $exclude);
 
-                if (!$type->isEquals($value->getValue(), $increasedValue) || $curCount == $valuesCount) {
+                if (!$type->isEqual($value->getValue(), $increasedValue) || $curCount == $valuesCount) {
                     $range = new Range($rangeLower->getValue(), $rangeUpper->getValue(), $rangeLower->getOriginalValue(), $rangeUpper->getOriginalValue());
 
                     if ($exclude) {
@@ -128,7 +128,7 @@ class ValuesToRange implements ModifierInterface
 
                     $this->unsetVal($prevIndex, $exclude);
 
-                    if ($type->isEquals($value->getValue(), $increasedValue) && $curCount == $valuesCount) {
+                    if ($type->isEqual($value->getValue(), $increasedValue) && $curCount == $valuesCount) {
                         $this->unsetVal($valIndex, $exclude);
                     }
 

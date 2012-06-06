@@ -55,9 +55,9 @@ class NumberTest extends \PHPUnit_Framework_TestCase
         $type = new Number();
 
         if ('==' === $comparison) {
-            $this->assertTrue($type->isEquals($first, $second), sprintf('"%s" should equal "%s"', $first, $second));
+            $this->assertTrue($type->isEqual($first, $second), sprintf('"%s" should equal "%s"', $first, $second));
         } elseif ('!=' === $comparison) {
-            $this->assertFalse($type->isEquals($first, $second), sprintf('"%s" should not equal "%s"', $first, $second));
+            $this->assertFalse($type->isEqual($first, $second), sprintf('"%s" should not equal "%s"', $first, $second));
         } else {
             $this->assertTrue($type->isLower($second, $first), sprintf('"%s" should be lower then "%s"', $second, $first));
             $this->assertFalse($type->isLower($first, $second), sprintf('"%s" should not be lower then "%s"', $first, $second));

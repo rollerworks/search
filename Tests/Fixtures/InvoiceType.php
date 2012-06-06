@@ -84,7 +84,7 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     /**
      * {@inheritdoc}
      */
-    public function isEquals($input, $nextValue)
+    public function isEqual($input, $nextValue)
     {
         return ($input === $nextValue);
     }

@@ -100,7 +100,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * {@inheritdoc}
      */
-    public function isEquals($input, $nextValue)
+    public function isEqual($input, $nextValue)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
 

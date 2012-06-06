@@ -43,7 +43,7 @@ class CustomerType implements FilterTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function isEquals($input, $nextValue)
+    public function isEqual($input, $nextValue)
     {
         return ($input->getCustomerId() === $nextValue->getCustomerId());
     }

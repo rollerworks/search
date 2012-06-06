@@ -109,9 +109,9 @@ class DateTest extends DateTimeTestCase
         $second = $type->sanitizeString($second);
 
         if ('==' === $comparison) {
-            $this->assertTrue($type->isEquals($first, $second));
+            $this->assertTrue($type->isEqual($first, $second));
         } elseif ('!=' === $comparison) {
-            $this->assertFalse($type->isEquals($first, $second));
+            $this->assertFalse($type->isEqual($first, $second));
         } else {
             $this->assertTrue($type->isLower($second, $first));
             $this->assertFalse($type->isLower($first, $second));

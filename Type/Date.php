@@ -143,7 +143,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      * @param DateTimeExtended $input
      * @param DateTimeExtended $nextValue
      */
-    public function isEquals($input, $nextValue)
+    public function isEqual($input, $nextValue)
     {
         return ($input->getTimestamp() === $nextValue->getTimestamp());
     }

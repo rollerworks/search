@@ -82,7 +82,7 @@ interface FilterTypeInterface
      *
      * @return boolean
      */
-    public function isEquals($input, $nextValue);
+    public function isEqual($input, $nextValue);
 
     /**
      * Returns whether the input value is legally formatted.
