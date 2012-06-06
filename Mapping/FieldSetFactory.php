@@ -15,7 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Rollerworks\RecordFilterBundle\Metadata\AbstractConfigProcessor;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Metadata\MetadataFactoryInterface;
