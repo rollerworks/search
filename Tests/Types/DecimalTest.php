@@ -154,6 +154,9 @@ class DecimalTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
             array('50000000000000000000.1000', array('min' => '60000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 60,000,000,000,000,000,000.1000 or more')),
             array('70000000000000000000.1000', array('max' => '60000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 60,000,000,000,000,000,000.1000 or less')),
 
+            array('-70000000000000000000.1000', array('min' => '-60000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be -60,000,000,000,000,000,000.1000 or more')),
+            array('70000000000000000000.1000', array('max' => '-60000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be -60,000,000,000,000,000,000.1000 or less')),
+
             array('90000000000000000000.1000', array('min' => '70000000000000000000.1000', 'max' => '80000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 80,000,000,000,000,000,000.1000 or less')),
             array('70000000000000000000.1000', array('min' => '80000000000000000000.1000', 'max' => '90000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 80,000,000,000,000,000,000.1000 or more')),
 
@@ -161,6 +164,9 @@ class DecimalTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 
             array('50000000000000000000٫1000', array('min' => '60000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'uz_Arab'), array('This value should be ۶۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٫۱۰۰۰ or more')),
             array('70000000000000000000٫1000', array('max' => '60000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'uz_Arab'), array('This value should be ۶۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٫۱۰۰۰ or less')),
+
+            array('-70000000000000000000٫1000', array('min' => '-60000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'ar_YE'), array('This value should be ٠٦٠٬٠٠٠٬٠٠٠٬٠٠٠٬٠٠٠٬٠٠٠٬٠٠٠٫١٠٠٠- or more')),
+            array('70000000000000000000٫1000', array('max' => '-60000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'ar_YE'), array('This value should be ٠٦٠٬٠٠٠٬٠٠٠٬٠٠٠٬٠٠٠٬٠٠٠٬٠٠٠٫١٠٠٠- or less')),
 
             array('90000000000000000000٫1000', array('min' => '70000000000000000000.1000', 'max' => '80000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'uz_Arab'), array('This value should be ۸۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٫۱۰۰۰ or less')),
             array('70000000000000000000٫1000', array('min' => '80000000000000000000.1000', 'max' => '90000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'uz_Arab'), array('This value should be ۸۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٫۱۰۰۰ or more')),

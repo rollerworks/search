@@ -124,8 +124,16 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
                 $fraction = str_pad($fraction, $this->options['min_fraction_digits'], $numberFormatter->format(0));
             }
 
-            if ( mb_strlen($fraction) > $this->options['max_fraction_digits']) {
+            if (mb_strlen($fraction) > $this->options['max_fraction_digits']) {
                 $fraction = mb_substr($fraction, 0, $this->options['max_fraction_digits']);
+            }
+
+            if ('-' === $value[0]) {
+                if ('-' === substr($numberFormatter->format('-123'), 0, 1)) {
+                    return '-' . mb_substr($digit, 1) . $decimalSign .  $fraction;
+                } else {
+                    return $digit . $decimalSign .  $fraction . '-';
+                }
             }
 
             return $digit . $decimalSign .  $fraction;
@@ -370,6 +378,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
 
         return preg_replace_callback('/(.)/', function($match) use ($numberFormatter) {
             /** @var \NumberFormatter $numberFormatter */
+
             return (string) $numberFormatter->format($match[1], \NumberFormatter::TYPE_INT32);
         }, $input);
     }
