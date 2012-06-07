@@ -287,8 +287,9 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function getMatcherRegex()
     {
-        // FIXME Wrong regex
-        return '(?:\p{N}+,\p{N}+|\p{N}+.\p{N}+)';
+        $decimalSign = preg_quote(self::getNumberFormatter()->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL), '#');
+
+        return '(?:(?:\p{N}+' . $decimalSign . '\p{N}+[-+]?|[-+]?\p{N}+' . $decimalSign . '\p{N}+))';
     }
 
     /**
