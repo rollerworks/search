@@ -14,15 +14,16 @@ namespace Rollerworks\RecordFilterBundle\Type;
 use Rollerworks\RecordFilterBundle\MessageBag;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\Options;
 
 /**
  * Decimal filter type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- *
- * @todo Filter extension instead of an Regex and detect proper decimal-sign
  */
-class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
+class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableInterface
 {
     /**
      * @var string
@@ -33,6 +34,41 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      * @var \NumberFormatter|null
      */
     private static $numberFormatter = null;
+
+    /**
+     * @var array
+     */
+    protected $options = array();
+
+    /**
+     * Constructor.
+     *
+     * $options is an array with:
+     *
+     * * (string|integer) min/max value
+     *
+     * * (integer) min_fraction_digits Minimum fraction digits.
+     * * (integer) max_fraction_digits Maximum fraction digits.
+     *
+     * @param array $options
+     *
+     * @throws \UnexpectedValueException When min is higher then max
+     */
+    public function __construct(array $options = array())
+    {
+        $optionsResolver = new OptionsResolver();
+        static::setOptions($optionsResolver);
+
+        $this->options = $optionsResolver->resolve($options);
+
+        if (null !== $this->options['min'] && null !== $this->options['max'] && ($this->isHigher($this->options['min'], $this->options['max']) || $this->isEqual($this->options['min'], $this->options['max']))) {
+            throw new \UnexpectedValueException(sprintf('Option min "%s" must not be lower or equal to option max "%s".', $this->options['min'], $this->options['max']));
+        }
+
+        if (null !== $this->options['min_fraction_digits'] && null !== $this->options['max_fraction_digits'] && $this->isHigher($this->options['min_fraction_digits'], $this->options['max_fraction_digits'])) {
+            throw new \UnexpectedValueException(sprintf('Option min_fraction_digits "%s" must not be lower then option max_fraction_digits "%s".', $this->options['min_fraction_digits'], $this->options['max_fraction_digits']));
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -55,10 +91,49 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
 
     /**
      * {@inheritdoc}
+     *
+     * @todo proper display of negative value
      */
-    public function formatOutput($value)
+    public function formatOutput($value, $formatGrouping = true)
     {
-        return self::getNumberFormatter(\Locale::getDefault())->format($value);
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        $numberFormatter = self::getNumberFormatter(\Locale::getDefault(), true);
+
+        if (is_string($value) && strlen($value) > $phpMax) {
+            list($digit, $fraction) = explode('.', $value);
+
+            $decimalSign = $numberFormatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+
+            $digit    = self::formatBigInt($digit);
+            $fraction = self::formatBigInt($fraction);
+
+            if (($formatGrouping && $this->options['format_grouping'] !== false) || true === $this->options['format_grouping']) {
+                $digit = preg_replace('/(\p{N})(?=(\p{N}\p{N}\p{N})+(?!\p{N}))/u', '$1' . $numberFormatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL), $digit);
+            }
+
+            if (null === $this->options['min_fraction_digits']) {
+                $this->options['min_fraction_digits'] = $numberFormatter->getAttribute(\NumberFormatter::MIN_FRACTION_DIGITS);
+            }
+
+            if (null === $this->options['max_fraction_digits']) {
+                $this->options['max_fraction_digits'] = $numberFormatter->getAttribute(\NumberFormatter::MAX_FRACTION_DIGITS);
+            }
+
+            if ($this->options['min_fraction_digits'] > mb_strlen($fraction)) {
+                $fraction = str_pad($fraction, $this->options['min_fraction_digits'], $numberFormatter->format(0));
+            }
+
+            if ( mb_strlen($fraction) > $this->options['max_fraction_digits']) {
+                $fraction = mb_substr($fraction, 0, $this->options['max_fraction_digits']);
+            }
+
+            return $digit . $decimalSign .  $fraction;
+        } else {
+            $this->setFractions($numberFormatter);
+
+            return $numberFormatter->format($value, \NumberFormatter::TYPE_DOUBLE | \NumberFormatter::GROUPING_USED);
+        }
     }
 
     /**
@@ -80,7 +155,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
             return bccomp($input, $nextValue) === 1;
         }
 
-        return ($input > $nextValue);
+        return ((float) $input > (float) $nextValue);
     }
 
     /**
@@ -94,7 +169,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
             return bccomp($input, $nextValue) === -1;
         }
 
-        return ($input < $nextValue);
+        return ((float) $input < (float) $nextValue);
     }
 
     /**
@@ -118,13 +193,53 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     {
         $message = 'This value is not an valid decimal';
 
-        $this->lastResult = self::getNumberFormatter(\Locale::getDefault())->parse($input);
+        $numberFormatter = self::getNumberFormatter(\Locale::getDefault());
+        $this->setFractions($numberFormatter);
+        $decimalSign = $numberFormatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 
-        if (!$this->lastResult) {
+        if (!preg_match('/^(?P<char_left>-)?(?P<left_digit>\p{N}+)' . preg_quote($decimalSign, '/') . '(?P<right_digit>\p{N}+)(?P<char_right>-)?$/u', $input, $matched)) {
             return false;
-        } else {
-            return true;
         }
+
+        if (!empty($matched['char_left']) && !empty($matched['char_right'])) {
+            return false;
+        }
+
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if (strlen($matched['left_digit']) > $phpMax || strlen($matched['right_digit']) > $phpMax) {
+            if (!($first = self::parseBigInt($matched['left_digit']))) {
+                return false;
+            }
+
+            if (!($second = self::parseBigInt($matched['right_digit']))) {
+                return false;
+            }
+
+            $this->lastResult = '';
+
+            if (!empty($matched['char_left']) || !empty($matched['char_right'])) {
+                $this->lastResult = '-';
+            }
+
+            $this->lastResult .= $first. '.' . $second;
+        } elseif (!($this->lastResult = self::getNumberFormatter(\Locale::getDefault())->parse($input, \NumberFormatter::TYPE_DOUBLE))) {
+            return false;
+        }
+
+        if (null !== $this->options['min'] && $this->isLower($this->lastResult, $this->options['min'])) {
+            $messageBag->addError('This value should be {{ limit }} or more', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
+        }
+
+        if (null !== $this->options['max'] && $this->isHigher($this->lastResult, $this->options['max'])) {
+            $messageBag->addError('This value should be {{ limit }} or less', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
+        }
+
+        if ($messageBag) {
+            return !$messageBag->has('error');
+        }
+
+        return true;
     }
 
     /**
@@ -164,19 +279,116 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function getMatcherRegex()
     {
+        // FIXME Wrong regex
         return '(?:\p{N}+,\p{N}+|\p{N}+.\p{N}+)';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function setOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'max' => null,
+            'min' => null,
+
+            'min_fraction_digits' => null,
+            'max_fraction_digits' => null,
+            'format_grouping'     => true,
+        ));
+
+        $resolver->setAllowedTypes(array(
+            'max' => array('string', 'int', 'null'),
+            'min' => array('string', 'int', 'null'),
+
+            'min_fraction_digits' => array('int', 'null'),
+            'max_fraction_digits' => array('int', 'null'),
+
+            'format_grouping' => array('bool'),
+        ));
+    }
+
+    /**
+     * @param \NumberFormatter $numberFormatter
+     */
+    protected function setFractions(\NumberFormatter $numberFormatter)
+    {
+        if (null !== $this->options['min_fraction_digits']) {
+            $numberFormatter->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $this->options['min_fraction_digits']);
+        }
+
+        if (null !== $this->options['max_fraction_digits']) {
+            $numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $this->options['max_fraction_digits']);
+        }
+    }
+
+    /**
+     * Parses BigInt.
+     *
+     * @param string      $input
+     * @param null|string $locale
+     *
+     * @return string|boolean
+     */
+    protected static function parseBigInt($input, $locale = null)
+    {
+        $numberFormatter = self::getNumberFormatter($locale, true);
+        $input = str_replace(array(',', '.', ' '), '', $input);
+
+        $result = preg_replace_callback('/(\p{N})/u', function($match) use ($numberFormatter) {
+            /** @var \NumberFormatter $numberFormatter */
+            if (ctype_digit($match[1])) {
+                return $match[1];
+            }
+
+            return (string) $numberFormatter->parse($match[1], \NumberFormatter::TYPE_INT32);
+        }, $input);
+
+        if (!ctype_digit($result)) {
+            return false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Formats a BigInt to localized number.
+     *
+     * @param string      $input
+     * @param null|string $locale
+     *
+     * @return string
+     */
+    protected function formatBigInt($input, $locale = null)
+    {
+        $numberFormatter = self::getNumberFormatter($locale, true);
+
+        // Output it not unicode so use as-is
+        if (ctype_digit($numberFormatter->format('123'))) {
+            return $input;
+        }
+
+        return preg_replace_callback('/(.)/', function($match) use ($numberFormatter) {
+            /** @var \NumberFormatter $numberFormatter */
+            return (string) $numberFormatter->format($match[1], \NumberFormatter::TYPE_INT32);
+        }, $input);
     }
 
     /**
      * Returns a shared NumberFormatter object.
      *
      * @param null|string $locale
+     * @param boolean     $forceNew Creates an new object (but leaves the current)
      *
      * @return \NumberFormatter
      */
-    protected static function getNumberFormatter($locale = null)
+    protected static function getNumberFormatter($locale = null, $forceNew = false)
     {
         $locale = $locale ?: \Locale::getDefault();
+
+        if ($forceNew) {
+            return new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
+        }
 
         if (null === self::$numberFormatter || self::$numberFormatter->getLocale() !== $locale) {
             self::$numberFormatter = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);

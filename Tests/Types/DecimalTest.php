@@ -12,8 +12,9 @@
 namespace Rollerworks\RecordFilterBundle\Tests;
 
 use Rollerworks\RecordFilterBundle\Type\Decimal;
+use Rollerworks\RecordFilterBundle\MessageBag;
 
-class DecimalTest extends \PHPUnit_Framework_TestCase
+class DecimalTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 {
     /**
      * @dataProvider getDataForSanitation
@@ -44,6 +45,32 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
             $this->assertFalse($type->validateValue($input));
         } else {
             $this->assertTrue($type->validateValue($input));
+        }
+    }
+
+    /**
+     * @dataProvider getDataForAdvancedValidation
+     */
+    public function testValidationAdvanced($input, $options = array(), $expectMessage = false)
+    {
+        if (!isset($options['locale']) && 'en' !== \Locale::getDefault() ) {
+            \Locale::setDefault('en');
+        }
+
+        if (isset($options['locale'])) {
+            \Locale::setDefault($options['locale']);
+            unset($options['locale']);
+        }
+
+        $type = new Decimal($options);
+
+        $messageBag = new MessageBag($this->translator);
+
+        if (is_array($expectMessage)) {
+            $this->assertFalse($type->validateValue($input, $message, $messageBag), sprintf('Assert "%s" is invalid', $input));
+            $this->assertEquals($expectMessage, $messageBag->get('error'), sprintf('Assert "%s" is invalid and messages are equal.', $input));
+        } else {
+            $this->assertTrue($type->validateValue($input, $message, $messageBag), sprintf('Assert "%s" is valid. %s ', $input, implode(', ', $messageBag->get('error'))));
         }
     }
 
@@ -85,6 +112,58 @@ class DecimalTest extends \PHPUnit_Framework_TestCase
 
             array('en_US', '100.00', '100.00'),
             array('uz_Arab', '۵٫۵', '05.50'),
+        );
+    }
+
+    public static function getDataForAdvancedValidation()
+    {
+        return array(
+            // $input, $options, $expectMessage
+            array('12000.1001', array('min' => '12000.1001', 'max_fraction_digits' => 4)),
+            array('12000.1001', array('min' => '11000.1001', 'max_fraction_digits' => 4)),
+
+            array('12000.1001', array('max' => '12000.10001', 'max_fraction_digits' => 5)),
+            array('12000.1001', array('max' => '12001.1001', 'max_fraction_digits' => 4)),
+
+            array('70000000000000000.1000', array('min' => '70000000000000000.1000', 'max_fraction_digits' => 4)),
+            array('70000000000000000.1000', array('max' => '70000000000000000.1000', 'max_fraction_digits' => 4)),
+            array('70000000000000000.1000', array('max' => '80000000000000000.1000', 'max_fraction_digits' => 4)),
+
+            array('12000.1001', array('min' => '13000.1001', 'max_fraction_digits' => 4), array('This value should be 13,000.1001 or more')),
+            array('15000.1001', array('max' => '12000.1001', 'max_fraction_digits' => 4), array('This value should be 12,000.1001 or less')),
+
+            array('12000000.1001', array('min' => '13000000.1001', 'max_fraction_digits' => 4), array('This value should be 13,000,000.1001 or more')),
+            array('15000000.1001', array('max' => '12000000.1001', 'max_fraction_digits' => 4), array('This value should be 12,000,000.1001 or less')),
+
+            // The following exceeds 32bit
+
+            array('90000000000.1000', array('min' => '900000000000.1001', 'max_fraction_digits' => 4), array('This value should be 900,000,000,000.1001 or more')),
+            array('90000000000.1000', array('max' => '6000000000.1001', 'max_fraction_digits' => 4), array('This value should be 6,000,000,000.1001 or less')),
+
+            array('900000000000000000.1000', array('min' => '700000000000000000.1000', 'max' => '800000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 800,000,000,000,000,000.1000 or less')),
+            array('7000000000000000.1000', array('min' => '800000000000000000.1000', 'max' => '900000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 800,000,000,000,000,000.1000 or more')),
+
+            array('900000000000000000.1000', array('min' => '700000000000000000.1000', 'max' => '800000000000000000.1000', 'max_fraction_digits' => 2, 'format_grouping' => false), array('This value should be 800000000000000000.10 or less')),
+            array('7000000000000000.1000', array('min' => '800000000000000000.1000', 'max' => '900000000000000000.1000', 'max_fraction_digits' => 2, 'format_grouping' => false), array('This value should be 800000000000000000.10 or more')),
+
+            array('900000000000000000.1000', array('min' => '700000000000000000.1000', 'max' => '800000000000000000.1000', 'min_fraction_digits' => 6, 'max_fraction_digits' => 10, 'format_grouping' => false), array('This value should be 800000000000000000.100000 or less')),
+            array('7000000000000000.1000', array('min' => '800000000000000000.1000', 'max' => '900000000000000000.1000', 'min_fraction_digits' => 6, 'max_fraction_digits' => 10, 'format_grouping' => false), array('This value should be 800000000000000000.100000 or more')),
+
+            // The following exceeds 64bit
+
+            array('50000000000000000000.1000', array('min' => '60000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 60,000,000,000,000,000,000.1000 or more')),
+            array('70000000000000000000.1000', array('max' => '60000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 60,000,000,000,000,000,000.1000 or less')),
+
+            array('90000000000000000000.1000', array('min' => '70000000000000000000.1000', 'max' => '80000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 80,000,000,000,000,000,000.1000 or less')),
+            array('70000000000000000000.1000', array('min' => '80000000000000000000.1000', 'max' => '90000000000000000000.1000', 'max_fraction_digits' => 4), array('This value should be 80,000,000,000,000,000,000.1000 or more')),
+
+            // Tests to make sure numbers are properly formatted in unicode
+
+            array('50000000000000000000٫1000', array('min' => '60000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'uz_Arab'), array('This value should be ۶۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٫۱۰۰۰ or more')),
+            array('70000000000000000000٫1000', array('max' => '60000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'uz_Arab'), array('This value should be ۶۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٫۱۰۰۰ or less')),
+
+            array('90000000000000000000٫1000', array('min' => '70000000000000000000.1000', 'max' => '80000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'uz_Arab'), array('This value should be ۸۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٫۱۰۰۰ or less')),
+            array('70000000000000000000٫1000', array('min' => '80000000000000000000.1000', 'max' => '90000000000000000000.1000', 'max_fraction_digits' => 4, 'locale' => 'uz_Arab'), array('This value should be ۸۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٬۰۰۰٫۱۰۰۰ or more')),
         );
     }
 
