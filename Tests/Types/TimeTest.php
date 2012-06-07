@@ -73,6 +73,10 @@ class TimeTest extends DateTimeTestCase
      */
     public function testValidationAdvanced($input, $options = array(), $expectMessage = false)
     {
+        if ('en' !== \Locale::getDefault()) {
+            \Locale::setDefault('en');
+        }
+
         $type = new Time($options);
 
         if (is_array($expectMessage)) {

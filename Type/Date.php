@@ -39,7 +39,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * Constructor.
      *
-     * @param array $options Array with min/max value (as unix timestamp or \DateTime object)
+     * @param array $options Array with min/max value as ISO formatted date(Time)
      *
      * @throws \UnexpectedValueException When min is higher then max
      */
