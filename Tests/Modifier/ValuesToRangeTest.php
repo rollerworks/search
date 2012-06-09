@@ -34,7 +34,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterValuesBag('user', '1,2,3,4,5,6,7', array(), array(), array(7 => new Range('1', '7')), array(), array(), 7);
+        $expectedValues['user'] = new FilterValuesBag('user', '1,2,3,4,5,6,7', array(), array(), array(new Range('1', '7')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -54,7 +54,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterValuesBag('user', '3,6,7,1,2,4,5', array(), array(), array(7 => new Range('1', '7')), array(), array(), 7);
+        $expectedValues['user'] = new FilterValuesBag('user', '3,6,7,1,2,4,5', array(), array(), array(new Range('1', '7')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -74,7 +74,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterValuesBag('user', '1,2,3,4,5,6,7,10,11,12,13,14,15,18', array(13 => new SingleValue('18')), array(), array(14 => new Range('1', '7'), 15 => new Range('10', '15')), array(), array(), 15);
+        $expectedValues['user'] = new FilterValuesBag('user', '1,2,3,4,5,6,7,10,11,12,13,14,15,18', array(13 => new SingleValue('18')), array(), array(new Range('1', '7'), new Range('10', '15')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -94,7 +94,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterValuesBag('user', '!1,!2,!3,!4,!5,!6,!7', array(), array(), array(), array(), array(7 => new Range('1', '7')), 7);
+        $expectedValues['user'] = new FilterValuesBag('user', '!1,!2,!3,!4,!5,!6,!7', array(), array(), array(), array(), array(new Range('1', '7')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -114,7 +114,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterValuesBag('user', '!3,!6,!7,!1,!2,!4,!5', array(), array(), array(), array(), array(7 => new Range('1', '7')), 7);
+        $expectedValues['user'] = new FilterValuesBag('user', '!3,!6,!7,!1,!2,!4,!5', array(), array(), array(), array(), array(new Range('1', '7')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -134,7 +134,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
-        $expectedValues['user'] = new FilterValuesBag('user', '!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18', array(), array(13 => new SingleValue('18')), array(), array(), array(14 => new Range('1', '7'), 15 => new Range('10', '15')), 15);
+        $expectedValues['user'] = new FilterValuesBag('user', '!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18', array(), array(13 => new SingleValue('18')), array(), array(), array(new Range('1', '7'), new Range('10', '15')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }

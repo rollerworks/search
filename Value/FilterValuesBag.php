@@ -60,13 +60,6 @@ class FilterValuesBag
     protected $label;
 
     /**
-     * The last-value index
-     *
-     * @var integer
-     */
-    protected $lastValIndex;
-
-    /**
      * 'Original' field input
      *
      * @var string
@@ -83,11 +76,10 @@ class FilterValuesBag
      * @param Range[]       $ranges
      * @param Compare[]     $compares
      * @param Range[]       $excludedRanges
-     * @param integer       $lastValIndex
      *
      * @api
      */
-    public function __construct($label, $originalInput = null, array $singleValues = array(), array $excludes = array(), array $ranges = array(), array $compares = array(), array $excludedRanges = array(), $lastValIndex = -1)
+    public function __construct($label, $originalInput = null, array $singleValues = array(), array $excludes = array(), array $ranges = array(), array $compares = array(), array $excludedRanges = array())
     {
         $this->singleValues   = $singleValues;
         $this->excludes       = $excludes;
@@ -97,7 +89,6 @@ class FilterValuesBag
 
         $this->label         = $label;
         $this->originalInput = $originalInput;
-        $this->lastValIndex  = $lastValIndex;
     }
 
     /**
@@ -110,38 +101,6 @@ class FilterValuesBag
     public function getLabel()
     {
         return $this->label;
-    }
-
-    /**
-     * Set the last value index.
-     *
-     * This value can not be lower then the current-value.
-     *
-     * @param integer $index
-     *
-     * @api
-     *
-     * @throws \InvalidArgumentException When $index is lower then the current value
-     */
-    public function setLastValueIndex($index)
-    {
-        if ($index < $this->lastValIndex) {
-            throw new \InvalidArgumentException(sprintf('New value "%s" index may not be lower then the current "%s".', $index, $this->lastValIndex));
-        }
-
-        $this->lastValIndex = $index;
-    }
-
-    /**
-     * Get the last value index
-     *
-     * @return string|null
-     *
-     * @api
-     */
-    public function getLastValueIndex()
-    {
-        return $this->lastValIndex;
     }
 
     /**
@@ -377,7 +336,7 @@ class FilterValuesBag
      */
     public function addSingleValue(SingleValue $value)
     {
-        $this->singleValues[++$this->lastValIndex] = $value;
+        $this->singleValues[] = $value;
 
         return $this;
     }
@@ -393,7 +352,7 @@ class FilterValuesBag
      */
     public function addExclude(SingleValue $value)
     {
-        $this->excludes[++$this->lastValIndex] = $value;
+        $this->excludes[] = $value;
 
         return $this;
     }
@@ -409,7 +368,7 @@ class FilterValuesBag
      */
     public function addRange(Range $range)
     {
-        $this->ranges[++$this->lastValIndex] = $range;
+        $this->ranges[] = $range;
 
         return $this;
     }
@@ -425,7 +384,7 @@ class FilterValuesBag
      */
     public function addExcludedRange(Range $range)
     {
-        $this->excludedRanges[++$this->lastValIndex] = $range;
+        $this->excludedRanges[] = $range;
 
         return $this;
     }
@@ -441,7 +400,7 @@ class FilterValuesBag
      */
     public function addCompare(Compare $compare)
     {
-        $this->compares[++$this->lastValIndex] = $compare;
+        $this->compares[] = $compare;
 
         return $this;
     }
