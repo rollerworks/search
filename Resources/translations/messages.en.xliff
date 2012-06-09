@@ -54,7 +54,7 @@
                 <source>record_filter.redundant_comparison</source>
                 <target>Comparison %value% is already covered by "%comparison%" field '%label%' in group %group% (removed).</target>
             </trans-unit>
-						
+
             <!-- Widget messages -->
             <!--
             <trans-unit id="17">

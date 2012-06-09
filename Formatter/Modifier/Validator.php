@@ -165,6 +165,8 @@ class Validator implements ModifierInterface
      * @param MessageBag          $messageBag
      *
      * @return boolean
+     *
+     * @throws \UnexpectedValueException when the message is not scalar
      */
     protected function validateValue(FilterTypeInterface $type, $value, $originalValue, MessageBag $messageBag)
     {

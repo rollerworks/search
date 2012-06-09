@@ -285,6 +285,10 @@ class DateTimeExtended extends \DateTime
     private $hasTime = false;
     private $hasSeconds = false;
 
+    /**
+     * @param string  $time
+     * @param boolean $hasTime
+     */
     public function  __construct($time, $hasTime = false)
     {
         $this->hasTime = $hasTime;
@@ -296,11 +300,17 @@ class DateTimeExtended extends \DateTime
         parent::__construct($time);
     }
 
+    /**
+     * @return boolean
+     */
     public function hasTime()
     {
         return $this->hasTime;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasSeconds()
     {
         return $this->hasSeconds;

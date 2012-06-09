@@ -129,7 +129,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
             }
 
             if ('-' === $value[0]) {
-                if ('-' === substr($numberFormatter->format('-123'), 0, 1)) {
+                if ('-' === substr($numberFormatter->format(-123), 0, 1)) {
                     return '-' . mb_substr($digit, 1) . $decimalSign .  $fraction;
                 } else {
                     return $digit . $decimalSign .  $fraction . '-';
