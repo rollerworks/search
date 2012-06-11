@@ -25,8 +25,6 @@ class ValidationTest extends ModifierTestCase
 
         $input->setInput('User=2; Status=Active; date=29.10.2010');
 
-        $formatter = $this->newFormatter();
-
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'period' is required in group 1."), $input->getMessages());
     }
