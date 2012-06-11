@@ -14,7 +14,6 @@ namespace Rollerworks\RecordFilterBundle\Value;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use \InvalidArgumentException;
 
 /**
  * ValuesBag.

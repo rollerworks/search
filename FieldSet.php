@@ -11,8 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle;
 
-use \Rollerworks\RecordFilterBundle\FilterConfig;
-
 /**
  * FieldSet.
  *

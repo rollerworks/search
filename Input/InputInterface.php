@@ -37,6 +37,8 @@ interface InputInterface
      * @return InputInterface
      *
      * @api
+     *
+     * FIXME Refactor to be compatible with FieldSet
      */
     public function setField($fieldName, $label = null, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false);
 
