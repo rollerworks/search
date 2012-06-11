@@ -11,7 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\Exception\ReqFilterException;
 use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
@@ -21,7 +20,6 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\MessageBag;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * FilterQuery.
@@ -115,7 +113,7 @@ class FilterQuery extends AbstractInput
      * @param string       $fieldName Original field-name
      * @param string|array $label
      *
-     * @return FilterQuery
+     * @return self
      */
     public function setLabelToField($fieldName, $label)
     {
@@ -135,7 +133,7 @@ class FilterQuery extends AbstractInput
      *
      * @param string $input
      *
-     * @return FilterQuery
+     * @return self
      */
     public function setInput($input)
     {
@@ -163,10 +161,26 @@ class FilterQuery extends AbstractInput
     public function getGroups()
     {
         if (false === $this->isParsed) {
-            $this->parseQuery();
+            try {
+                $this->parseQuery();
+            } catch (ValidationException $e) {
+                $this->messages->addError($e->getMessage(), $e->getParams());
+
+                return false;
+            }
         }
 
         return $this->groups;
+    }
+
+    /**
+     * Returns the error message(s) of the failure.
+     *
+     * @return array
+     */
+    public function getMessages()
+    {
+        return $this->messages->get(MessageBag::MSG_ERROR);
     }
 
     /**
@@ -183,11 +197,11 @@ class FilterQuery extends AbstractInput
                 $groupsCount = count($groups[0]);
 
                 for ($i = 0; $i < $groupsCount; $i++) {
-                    $this->groups[$i] = $this->parseFilterPairs($groups[1][$i]);
+                    $this->groups[$i] = $this->parseFilterPairs($groups[1][$i], $i);
                 }
             }
         } else {
-            $this->groups[0] = $this->parseFilterPairs($this->query);
+            $this->groups[0] = $this->parseFilterPairs($this->query, 0);
         }
 
         $this->isParsed = true;
@@ -196,13 +210,14 @@ class FilterQuery extends AbstractInput
     /**
      * Parse the field=value pairs from the input.
      *
-     * @param string $input
+     * @param string  $input
+     * @param integer $group
      *
      * @return array
      *
-     * @throws ReqFilterException
+     * @throws ValidationException
      */
-    protected function parseFilterPairs($input)
+    protected function parseFilterPairs($input, $group)
     {
         $filterPairs = array();
 
@@ -211,7 +226,7 @@ class FilterQuery extends AbstractInput
 
             for ($i = 0; $i < $filtersCount; $i++) {
                 $label = mb_strtolower($filterPairMatches[1][$i]);
-                $name = $this->getFieldNameByLabel($label);
+                $name  = $this->getFieldNameByLabel($label);
                 $value = trim($filterPairMatches[2][$i]);
 
                 if (!$this->fieldsSet->has($name) || strlen($value) < 1) {
@@ -231,13 +246,13 @@ class FilterQuery extends AbstractInput
 
             if (empty($filterPairs[$name])) {
                 if (true === $filterConfig->isRequired()) {
-                    throw new ReqFilterException($filterConfig->getLabel());
+                    throw new ValidationException('required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
                 }
 
                 continue;
             }
 
-            $filterPairs[$name] = $this->valuesToBag($filterConfig->getLabel(), $filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]));
+            $filterPairs[$name] = $this->valuesToBag($filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]), $group);
         }
 
         return $filterPairs;
@@ -260,7 +275,7 @@ class FilterQuery extends AbstractInput
             $valueMatcherRegex = '|' . $regex . '-' . $regex . '|(?:>=|<=|<>|[<>!])?' . $regex;
         }
 
-        if (preg_match_all('#\s*("(?:(?:[^"]+|"")+)"'.$valueMatcherRegex.'|[^,]+)\s*(,\s*|$)#ius', $values, $filterValues)) {
+        if (preg_match_all('#\s*("(?:(?:[^"]+|"")+)"' . $valueMatcherRegex . '|[^,]+)\s*(,\s*|$)#ius', $values, $filterValues)) {
             return $filterValues[1];
         } else {
             return array();
@@ -270,16 +285,13 @@ class FilterQuery extends AbstractInput
     /**
      * Perform the formatting of the given values (per group)
      *
-     * @param string       $label
      * @param string       $originalInput
      * @param FilterConfig $filterConfig
      * @param array|string $values
      *
      * @return FilterValuesBag
-     *
-     * @throws ValidationException
      */
-    protected function valuesToBag($label, $originalInput, FilterConfig $filterConfig, array $values)
+    protected function valuesToBag($originalInput, FilterConfig $filterConfig, array $values, $group)
     {
         $ranges = $excludedRanges = $excludesValues = $compares = $singleValues = array();
         $valueMatcherRegex = '';
@@ -296,7 +308,7 @@ class FilterQuery extends AbstractInput
             // Comparison
             if (preg_match('#^(>=|<=|<>|[<>])("(?:(?:[^"]+|"")+)"'.$valueMatcherRegex.'|[^\h]+)$#us', $currentValue, $comparisonValue)) {
                 if (!$filterConfig->acceptCompares()) {
-                    throw new ValidationException('no_compare_support', $label);
+                    throw new ValidationException('no_compare_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
                 }
 
                 $compares[ $valueIndex ] = new Compare(self::fixQuotes($comparisonValue[2]), $comparisonValue[1]);
@@ -340,7 +352,7 @@ class FilterQuery extends AbstractInput
 
                 if (null !== $value) {
                     if (!$filterConfig->acceptRanges()) {
-                        throw new ValidationException('no_range_support', $label);
+                        throw new ValidationException('no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
                     }
 
                     if ($isExclude) {
@@ -362,7 +374,7 @@ class FilterQuery extends AbstractInput
             }
         }
 
-        return new FilterValuesBag($label, $originalInput, $singleValues, $excludesValues, $ranges, $compares, $excludedRanges, $valueIndex);
+        return new FilterValuesBag($filterConfig->getLabel(), $originalInput, $singleValues, $excludesValues, $ranges, $compares, $excludedRanges, $valueIndex);
     }
 
     /**

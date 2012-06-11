@@ -11,8 +11,9 @@
 
 namespace Rollerworks\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\Exception\ReqFilterException;
+use Rollerworks\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\RecordFilterBundle\MessageBag;
 
 /**
  * ArrayInput.
@@ -24,7 +25,7 @@ use Rollerworks\RecordFilterBundle\FilterConfig;
  *
  * If the key is not numeric its an field-name.
  *
- * Values can not be as structured array per type.
+ * FIXME Values can not be as structured array per type.
  *
  * @see FilterQuery
  *
@@ -33,18 +34,16 @@ use Rollerworks\RecordFilterBundle\FilterConfig;
 class ArrayInput extends FilterQuery
 {
     /**
-     * Set the filter input
-     *
-     * @param array $input
-     *
-     * @return ArrayInput
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritdoc}
      */
     public function setInput($input)
     {
         if (!is_array($input)) {
             throw new \InvalidArgumentException('$input must be an array');
+        }
+
+        if (!isset($input[0])) {
+            $input = array($input);
         }
 
         $this->isParsed = false;
@@ -62,16 +61,20 @@ class ArrayInput extends FilterQuery
             return $this->groups;
         }
 
-        if (isset($this->query[0])) {
+        $this->messages = new MessageBag($this->translator);
+
+        try {
             foreach ($this->query as $groupIndex => $values) {
-                if (!ctype_digit((string) $groupIndex) || ! is_array($values)) {
+                if (!ctype_digit((string) $groupIndex) || !is_array($values)) {
                     continue;
                 }
 
-                $this->groups[$groupIndex] = $this->parseFilterArray($values);
+                $this->groups[$groupIndex] = $this->parseFilterArray($values, $groupIndex);
             }
-        } else {
-            $this->groups[0] = $this->parseFilterArray($this->query);
+        } catch (ValidationException $e) {
+            $this->messages->addError($e->getMessage(), $e->getParams());
+
+            return false;
         }
 
         $this->isParsed = true;
@@ -82,13 +85,14 @@ class ArrayInput extends FilterQuery
     /**
      * Parse the field=value array pairs from the input.
      *
-     * @param array $input
+     * @param array   $input
+     * @param integer $group
      *
      * @return array
      *
-     * @throws \Rollerworks\RecordFilterBundle\Exception\ReqFilterException
+     * @throws ValidationException
      */
-    protected function parseFilterArray(array $input)
+    protected function parseFilterArray(array $input, $group)
     {
         $filterPairs = array();
 
@@ -117,13 +121,13 @@ class ArrayInput extends FilterQuery
 
             if (empty($filterPairs[$name])) {
                 if (true === $filterConfig->isRequired()) {
-                    throw new ReqFilterException($filterConfig->getLabel());
+                    throw new ValidationException('required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
                 }
 
                 continue;
             }
 
-            $filterPairs[$name] = $this->valuesToBag($filterConfig->getLabel(), $filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]));
+            $filterPairs[$name] = $this->valuesToBag($filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]), $group);
         }
 
         return $filterPairs;

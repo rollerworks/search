@@ -50,7 +50,7 @@ interface InputInterface
      * Returns the fields per group, like:
      * [group-n] => array('field-name' => {\Rollerworks\RecordFilterBundle\Value\FilterValuesBag object})
      *
-     * @return array
+     * @return array|boolean Returns false in case of an error/failure
      *
      * @api
      */

@@ -27,8 +27,8 @@ class ValidationTest extends ModifierTestCase
 
         $formatter = $this->newFormatter();
 
-        $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ReqFilterException');
-        $formatter->formatInput($input);
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'period' is required in group 1."), $input->getMessages());
     }
 
     public function testValidationReqEmptyField()
@@ -38,8 +38,8 @@ class ValidationTest extends ModifierTestCase
         $input->setField('period', null, new Date(), true);
         $input->setField('User', null, null, true);
 
-        $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ReqFilterException');
-        $input->getGroups();
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'period' is required in group 1."), $input->getMessages());
     }
 
     public function testValidationEmptyField()

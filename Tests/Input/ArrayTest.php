@@ -146,8 +146,8 @@ class ArrayTest extends TestCase
             array('User' => '2-5', 'Status' => '"Active"', 'date' => '29.10.2010'),
         ));
 
-        $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ValidationException', 'record_filter.no_range_support');
-        $input->getGroups();
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'user' does not accept ranges in group 1."), $input->getMessages());
     }
 
     public function testValidationNoCompare()
@@ -161,7 +161,7 @@ class ArrayTest extends TestCase
         $input->setField('status', null, null, true, true);
         $input->setField('date', null, null, true, true);
 
-        $this->setExpectedException('Rollerworks\RecordFilterBundle\Exception\ValidationException', 'record_filter.no_compare_support');
-        $input->getGroups();
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());
     }
 }

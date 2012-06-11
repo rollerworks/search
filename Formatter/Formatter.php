@@ -126,7 +126,7 @@ class Formatter implements FormatterInterface
 
         $groups = $input->getGroups();
 
-        if (empty($groups)) {
+        if (false === $groups || empty($groups)) {
             return false;
         }
 

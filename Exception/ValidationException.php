@@ -12,29 +12,33 @@
 namespace Rollerworks\RecordFilterBundle\Exception;
 
 /**
- * Formatter validation exception.
+ * Validation exception.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class ValidationException extends Exception
 {
-    protected $value;
-
-    protected $validationMessage;
-
+    /**
+     * @var array
+     */
     protected $params = array();
 
-    public function __construct($errorCode, $value = null, array $transParams = array())
+    /**
+     * @param string $errorCode
+     * @param array  $transParams
+     */
+    public function __construct($errorCode, array $transParams = array())
     {
-        parent::__construct('record_filter.' . $errorCode);
+        parent::__construct($errorCode);
 
         $this->params = $transParams;
-
-        if (strlen($value)) {
-            $this->params['{{ value }}'] = $value;
-        }
     }
 
+    /**
+     * Get the parameters of the message.
+     *
+     * @return array
+     */
     public function getParams()
     {
         return $this->params;
