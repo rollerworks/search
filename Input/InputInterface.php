@@ -23,6 +23,15 @@ use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 interface InputInterface
 {
     /**
+     * Set the fieldSet.
+     *
+     * @param FieldSet $fields
+     *
+     * @api
+     */
+    public function setFieldSet(FieldSet $fields = null);
+
+    /**
      * Set the configuration of an filter field.
      *
      * Field-name is always converted to lowercase
