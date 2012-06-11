@@ -19,7 +19,7 @@ class ValidationTest extends ModifierTestCase
 {
     public function testValidationReq()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('period', null, new Date(), true);
         $input->setField('User', null, null, true);
 
@@ -33,7 +33,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationReqEmptyField()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; date=29.10.2010; period=,;');
         $input->setField('period', null, new Date(), true);
         $input->setField('User', null, null, true);
@@ -44,7 +44,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationEmptyField()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; date=29.10.2010; period=,;');
 
         $formatter = $this->newFormatter();
@@ -59,7 +59,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationFail()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=2910.2010');
 
         $formatter = $this->newFormatter();
@@ -78,7 +78,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationFailInGroup()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=2910.2010;)');
 
         $formatter = $this->newFormatter();
@@ -96,7 +96,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationFailInGroupNoResult()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=29.10.2010;)');
 
         $formatter = $this->newFormatter();
@@ -114,7 +114,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationFaiInlRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=25.10.2010-3110.2010');
 
         $formatter = $this->newFormatter();
@@ -129,7 +129,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationFaiInlRange2()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=2510.2010-3110.2010');
 
         $formatter = $this->newFormatter();
@@ -146,7 +146,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationRangeNotLower()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=31.10.2010-25.10.2010');
 
         $formatter = $this->newFormatter();
@@ -161,7 +161,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationFaiInCompare()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=<10.10.2010,>3110.2010');
 
         $formatter = $this->newFormatter();
@@ -176,7 +176,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationFaiInExclude()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=10.10.2010,!3110.2010');
 
         $formatter = $this->newFormatter();
@@ -191,7 +191,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationExcludeInInclude()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=10.10.2010,!31.10.2010,31.10.2010');
 
         $formatter = $this->newFormatter();
@@ -206,7 +206,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testValidationIncludeInExclude()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=10.10.2010,31.10.2010,!31.10.2010');
 
         $formatter = $this->newFormatter();
@@ -221,7 +221,7 @@ class ValidationTest extends ModifierTestCase
 
     public function testNoValidation()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; period=29.10.2010');
 
         $formatter = $this->newFormatter();
@@ -235,7 +235,7 @@ class ValidationTest extends ModifierTestCase
     // Test to make sure there are no duplicate warning messages
     public function testValidationInlRangeNoValidation()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2-5,8-10; Status=Active; period=25.10.2010-31.10.2010,25.10.2011-31.10.2011');
 
         $formatter = $this->newFormatter();

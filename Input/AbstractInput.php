@@ -14,10 +14,9 @@ namespace Rollerworks\RecordFilterBundle\Input;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
-
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use \Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * AbstractInput.
@@ -29,7 +28,7 @@ use \Symfony\Component\Translation\TranslatorInterface;
 abstract class AbstractInput implements InputInterface
 {
     /**
-     * Filtering groups and there values-bag
+     * Filtering groups and there ValuesBag
      *
      * @var array
      */
@@ -65,35 +64,39 @@ abstract class AbstractInput implements InputInterface
     protected $fieldsSet;
 
     /**
-     * Translator instance
-     *
      * @var TranslatorInterface
      */
     protected $translator;
 
     /**
-     * DIC container instance
-     *
      * @var ContainerInterface
      */
     protected $container;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param null|FieldSet $fields
+     * @param TranslatorInterface $translator
      */
-    public function __construct(FieldSet $fields = null)
+    public function __construct(TranslatorInterface $translator)
     {
-        if (null === $fields) {
-            $fields = new FieldSet();
-        }
-
-        $this->fieldsSet = $fields;
+        $this->translator = $translator;
     }
 
     /**
-     * Set the DIC container for types that need it
+     * {@inheritdoc}
+     *
+     * @return self
+     */
+    public function setFieldSet(FieldSet $fields = null)
+    {
+        $this->fieldsSet = $fields;
+
+        return $this;
+    }
+
+    /**
+     * Set the DIC container.
      *
      * @param ContainerInterface $container
      *
@@ -106,6 +109,8 @@ abstract class AbstractInput implements InputInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return self
      */
     public function setField($fieldName, $label = null, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
@@ -122,6 +127,10 @@ abstract class AbstractInput implements InputInterface
             $valueType->setContainer($this->container);
         }
 
+        if (null === $this->fieldsSet) {
+            $this->fieldsSet = new FieldSet();
+        }
+
         $this->fieldsSet->set($fieldName, new FilterConfig($label, $valueType, $required, $acceptRanges, $acceptCompares));
 
         return $this;
@@ -132,6 +141,10 @@ abstract class AbstractInput implements InputInterface
      */
     public function getFieldsConfig()
     {
+        if (null === $this->fieldsSet) {
+            $this->fieldsSet = new FieldSet();
+        }
+
         return $this->fieldsSet;
     }
 }

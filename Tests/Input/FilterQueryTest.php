@@ -14,12 +14,13 @@ namespace Rollerworks\RecordFilterBundle\Tests\Input;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\Tests\TestCase;
 
-class FilterQueryTest extends \PHPUnit_Framework_TestCase
+class FilterQueryTest extends TestCase
 {
     public function testQuerySingleField()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user');
 
         $input->setInput('User=2');
@@ -30,7 +31,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testQuerySingleFieldWithSpaces()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user');
 
         $input->setInput('User = 2');
@@ -40,7 +41,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testQuerySingleFieldWithUnicode()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('foo', 'ß');
         $input->setLabelToField('foo', 'ß');
 
@@ -51,7 +52,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testQuerySingleFieldWithUnicodeNumber()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('foo', 'ß۲');
         $input->setLabelToField('foo', 'ß۲');
 
@@ -62,7 +63,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryMultipleFields()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user');
         $input->setField('status');
 
@@ -76,7 +77,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryMultipleFieldsNoSpace()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user');
         $input->setField('status');
 
@@ -91,7 +92,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
     // Field-name appears more then once
     public function testQueryDoubleFields()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user');
         $input->setField('status');
 
@@ -106,7 +107,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
     // Test the escaping of the filter-delimiter
     public function testEscapedFilter()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user');
         $input->setField('status');
         $input->setField('date');
@@ -122,7 +123,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testOrGroup()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user');
         $input->setField('status');
         $input->setField('date');
@@ -145,7 +146,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testOrGroupValueWithBars()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user');
         $input->setField('status');
         $input->setField('date');
@@ -168,7 +169,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testValidationNoRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('User', null, null, true);
         $input->setField('status');
         $input->setField('date');
@@ -181,7 +182,7 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testValidationNoCompare()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010');
 
         $input->setField('user', null, null, true, true);

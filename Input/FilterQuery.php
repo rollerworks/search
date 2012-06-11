@@ -20,6 +20,7 @@ use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\MessageBag;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -72,31 +73,9 @@ class FilterQuery extends AbstractInput
     protected $sections = array();
 
     /**
-     * Constructor
-     *
-     * @param null|FieldSet $fields
-     * @param string        $query
+     * @var MessageBag
      */
-    public function __construct(FieldSet $fields = null, $query = null)
-    {
-        parent::__construct($fields);
-
-        if (null !== $query) {
-            $this->setInput($query);
-        }
-    }
-
-    /**
-     * Set the translator instance, for aliases by translator
-     *
-     * @param TranslatorInterface $translator
-     *
-     * @api
-     */
-    public function setTranslator(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
+    protected $messages;
 
     /**
      * Set the resolving of an field label to name, using the translator beginning with prefix.
@@ -162,6 +141,8 @@ class FilterQuery extends AbstractInput
     {
         $this->isParsed = false;
         $this->query = trim($input);
+
+        $this->messages = new MessageBag($this->translator);
 
         return $this;
     }

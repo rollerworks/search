@@ -46,20 +46,25 @@ class OrmTestCase extends OrmTestCaseBase
      */
     protected $formatter;
 
+    /**
+     * @var \Symfony\Component\Translation\TranslatorInterface
+     */
+    protected $translator;
+
     protected function setUp()
     {
         $this->em = $this->_getTestEntityManager();
 
-        $translator = $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface');
-        $translator->expects($this->any())
+        $this->translator = $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface');
+        $this->translator->expects($this->any())
              ->method('trans')
              ->will($this->returnCallback(function ($id) { return $id; } ));
 
-        $translator->expects($this->any())
+        $this->translator->expects($this->any())
              ->method('transChoice')
              ->will($this->returnCallback(function ($id) { return $id; } ));
 
-        $this->formatter = new Formatter($translator);
+        $this->formatter = new Formatter($this->translator);
         $this->formatter->registerModifier(new Validator());
     }
 
@@ -106,7 +111,11 @@ class OrmTestCase extends OrmTestCaseBase
             ;
         }
 
-        return new FilterQuery($fieldSet, $filterQuery);
+        $input = new FilterQuery($this->translator);
+        $input->setFieldSet($fieldSet);
+        $input->setInput($filterQuery);
+
+        return $input;
     }
 
     /**

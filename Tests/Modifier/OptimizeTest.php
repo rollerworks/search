@@ -24,7 +24,7 @@ class OptimizeTest extends ModifierTestCase
 {
     public function testOptimizeValue()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,4,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -49,7 +49,7 @@ class OptimizeTest extends ModifierTestCase
 
     public function testOptimizeValueNoOptimize()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();

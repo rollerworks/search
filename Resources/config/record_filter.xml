@@ -50,9 +50,7 @@
 
         <!-- Input classes -->
         <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" scope="prototype">
-            <call method="setTranslator">
-                <argument type="service" id="translator"/>
-            </call>
+            <argument type="service" id="translator"/>
         </service>
 
         <service id="rollerworks_record_filter.fieldset_factory" class="%rollerworks_record_filter.fieldset_factory.class%">

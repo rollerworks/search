@@ -21,7 +21,7 @@ class ValuesToRangeTest extends ModifierTestCase
 {
     public function testOptimizeValue()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=1,2,3,4,5,6,7');
 
         $formatter = $this->newFormatter();
@@ -41,7 +41,7 @@ class ValuesToRangeTest extends ModifierTestCase
 
     public function testOptimizeValueUnordered()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=3,6,7,1,2,4,5');
 
         $formatter = $this->newFormatter();
@@ -61,7 +61,7 @@ class ValuesToRangeTest extends ModifierTestCase
 
     public function testOptimizeValueMultipleRanges()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=1,2,3,4,5,6,7,10,11,12,13,14,15,18');
 
         $formatter = $this->newFormatter();
@@ -81,7 +81,7 @@ class ValuesToRangeTest extends ModifierTestCase
 
     public function testOptimizeExcludes()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=!1,!2,!3,!4,!5,!6,!7');
 
         $formatter = $this->newFormatter();
@@ -101,7 +101,7 @@ class ValuesToRangeTest extends ModifierTestCase
 
     public function testOptimizeExcludesUnordered()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=!3,!6,!7,!1,!2,!4,!5');
 
         $formatter = $this->newFormatter();
@@ -121,7 +121,7 @@ class ValuesToRangeTest extends ModifierTestCase
 
     public function testOptimizeExcludesMultipleRanges()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18');
 
         $formatter = $this->newFormatter();

@@ -26,7 +26,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicates()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -55,7 +55,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicatesMore()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date="29.10.2010",29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -84,7 +84,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicatesWithType()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date="29.10.2010","29-10-2010",29.10.2010');
 
         $formatter = $this->newFormatter();
@@ -111,7 +111,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicatesWithTypeAndRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"');
 
         $formatter = $this->newFormatter();
@@ -143,7 +143,7 @@ class DuplicateTest extends ModifierTestCase
     // The upper-value is equal to an other lower-value
     public function testDuplicatesWithTypeAndConnectedRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011');
 
         $formatter = $this->newFormatter();
@@ -177,7 +177,7 @@ class DuplicateTest extends ModifierTestCase
     // Make sure the connected ranges get merged, even when followed by duplicates
     public function testDuplicatesWithTypeAndConnectedRange2()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"');
 
         $formatter = $this->newFormatter();
@@ -211,7 +211,7 @@ class DuplicateTest extends ModifierTestCase
     // Make sure the connected ranges get merged, even when followed by overlapping ranges
     public function testDuplicatesWithTypeAndConnectedRange3()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date="10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010", "30.10.2010"-"08.12.2010"');//"30-10-2010"-01.01.2011
 
         $formatter = $this->newFormatter();
@@ -241,7 +241,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicatesWithTypeAndCompare()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
 
         $formatter = $this->newFormatter();
@@ -269,7 +269,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicatesWithTypeAndCompareGetValues()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010,>"25.05.2010",<="25.05.2010","25-05-2010"');
 
         $formatter = $this->newFormatter();
@@ -326,7 +326,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testRedundantCompare()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=>25.05.2010,>=25.05.2010');
 
         $formatter = $this->newFormatter();
@@ -353,7 +353,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicatesWithTypeAndExclude()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,4,10-20,!15,!"15"; Status=Active; date=25.05.2010');
 
         $formatter = $this->newFormatter();
@@ -381,7 +381,7 @@ class DuplicateTest extends ModifierTestCase
     // Example: 5,1-10 will result in: 1-10
     public function testDuplicatesWithRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=5,1-10; Status=Active; date=29.10.2010-29.12.2010,20.12.2010');
 
         $formatter = $this->newFormatter();
@@ -411,7 +411,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicatesWithExcludedRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,4,!28,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -440,7 +440,7 @@ class DuplicateTest extends ModifierTestCase
 
     public function testDuplicatesWithExcludedRangeSameAsNormalRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,25-30,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -458,7 +458,7 @@ class DuplicateTest extends ModifierTestCase
     // Example: 5,1-20,5-10 will result in: 1-20
     public function testDuplicatesWithRangeInRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=5,1-20,5-10; Status=Active; date=29.10.2010-29.12.2010, 30.10.2010-20.12.2010');
 
         $formatter = $this->newFormatter();

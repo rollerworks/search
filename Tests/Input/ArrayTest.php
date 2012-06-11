@@ -14,12 +14,13 @@ namespace Rollerworks\RecordFilterBundle\Tests\Input;
 use Rollerworks\RecordFilterBundle\Input\ArrayInput;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\Tests\TestCase;
 
-class ArrayTest extends \PHPUnit_Framework_TestCase
+class ArrayTest extends TestCase
 {
     public function testSingleField()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setField('user');
 
         $input->setInput(array('user' => '2'));
@@ -28,7 +29,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testSingleFieldWithUnicode()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setField('foo', 'ß');
         $input->setLabelToField('foo', 'ß');
 
@@ -38,7 +39,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testMultipleFields()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setField('user');
         $input->setField('status');
 
@@ -52,7 +53,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     // Field-name appears more then once
     public function testDoubleFields()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setField('user');
         $input->setField('status');
 
@@ -68,7 +69,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     // Test the escaping of the filter-delimiter
     public function testEscapedFilter()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setField('user');
         $input->setField('status');
         $input->setField('date');
@@ -84,7 +85,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testOrGroup()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setField('user');
         $input->setField('status');
         $input->setField('date');
@@ -110,7 +111,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testOrGroupValueWithBars()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setField('user');
         $input->setField('status');
         $input->setField('date');
@@ -136,7 +137,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testValidationNoRange()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setField('User', null, null, true);
         $input->setField('status');
         $input->setField('date');
@@ -151,7 +152,7 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     public function testValidationNoCompare()
     {
-        $input = new ArrayInput();
+        $input = new ArrayInput($this->translator);
         $input->setInput(array(
             array('User' => '2,3,10-20', 'Status' => '"Active"', 'date' => '25.05.2010,>25.5.2010'),
         ));

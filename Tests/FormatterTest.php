@@ -28,7 +28,7 @@ class FormatterTest extends ModifierTestCase
 {
     public function testFormatterNoModifiers()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user', 'user', new Number(), true, true);
         $input->setField('status', 'status', null, false, true);
         $input->setField('period', 'period', new Date(), false, true);
@@ -55,7 +55,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testGetFilters()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -81,7 +81,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testGetFiltersNoPreviousErrors()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setField('user', 'user', new Number(), false, true);
         $input->setField('status', 'status');
         $input->setField('date', 'date');
@@ -116,7 +116,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testGetFiltersWithExcludes()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20,!15; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -143,7 +143,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testGetFiltersWithExcludedRanges()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -170,7 +170,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testGetFiltersEmptyFieldAndSingleValue()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,,3,10-20; Status=Active; date=29.10.2010');
 
         $formatter = $this->newFormatter();
@@ -196,7 +196,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testQuoted()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date="29-10-2010"; period=>"20""","""20""",10');
 
         $formatter = $this->newFormatter();
@@ -225,7 +225,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testFieldAlias()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('Gebruiker=2,3,10-20; Status=Active; datung=29.10.2010');
 
         $formatter = $this->newFormatter();
@@ -253,8 +253,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testFieldAliasByTranslator()
     {
-        $input = new QueryInput();
-        $input->setTranslator($this->translator);
+        $input = new QueryInput($this->translator);
         $input->setInput('Gebruiker=2,3,10-20; Status=Active; datung=29.10.2010; periods=>20,10; cat=10');
 
         $this->translator->addResource('array', array('search' => array('gebruiker'    => 'user',
@@ -288,7 +287,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testFieldAliasMerge()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010');
 
         $formatter = $this->newFormatter();
@@ -315,7 +314,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testFieldAliasMergeWithGroups()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('(User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010;),(User=2,3; Status=Active; datung=29.10.2011; datum=30.10.2011;)');
 
         $formatter = $this->newFormatter();
@@ -345,7 +344,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testFieldAliasMergeWithGroups2()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('(User=2,3; Status=Active; datung=29.10.2010; datum=30.10.2010;),(User=2,3; Status=Active; datung=29.10.2011;)');
 
         $formatter = $this->newFormatter();
@@ -379,7 +378,7 @@ class FormatterTest extends ModifierTestCase
     {
         \Locale::setDefault('nl');
 
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -405,7 +404,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testValueMatcher2()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; invoice=F2010-48932,F2011-48932-F2012-48932; date=29-10/2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -431,7 +430,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testValueMatcherWithRange()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
         $formatter = $this->newFormatter();
@@ -459,7 +458,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testFieldAliasByTranslatorInValidPrefix()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
 
         $this->setExpectedException('\InvalidArgumentException', 'Prefix must be an string and can not be empty');
         $input->setLabelToFieldByTranslator(false);
@@ -467,7 +466,7 @@ class FormatterTest extends ModifierTestCase
 
     public function testFieldAliasByTranslatorInValidDomain()
     {
-        $input = new QueryInput();
+        $input = new QueryInput($this->translator);
 
         $this->setExpectedException('\InvalidArgumentException', 'Domain must be an string and can not be empty');
         $input->setLabelToFieldByTranslator('t.', false);

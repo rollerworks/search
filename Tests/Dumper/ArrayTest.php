@@ -14,14 +14,15 @@ namespace Rollerworks\RecordFilterBundle\Tests\Dumper;
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\Dumper\PHPArray;
+use Rollerworks\RecordFilterBundle\Tests\TestCase;
 
-class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
+class ArrayTest extends TestCase
 {
     public function testOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new FilterQuery();
+        $input = new FilterQuery($this->translator);
         $input->setField('user', 'user');
         $input->setInput('user=1;');
 
@@ -35,7 +36,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new FilterQuery();
+        $input = new FilterQuery($this->translator);
         $input->setField('user', 'user');
         $input->setInput('(user=1;),(user=2;)');
 
@@ -52,7 +53,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new FilterQuery();
+        $input = new FilterQuery($this->translator);
         $input->setField('user', 'user');
         $input->setField('invoice');
         $input->setInput('user=1; invoice="F2012-800";');
@@ -67,7 +68,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new FilterQuery();
+        $input = new FilterQuery($this->translator);
         $input->setField('user', 'user');
         $input->setField('invoice');
         $input->setInput('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
@@ -85,7 +86,7 @@ class ArrayTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
     {
         $formatter = new Formatter($this->translator);
 
-        $input = new FilterQuery();
+        $input = new FilterQuery($this->translator);
         $input->setField('user', 'user');
         $input->setField('invoice', null, null, false, true);
         $input->setInput('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
