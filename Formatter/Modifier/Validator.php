@@ -62,7 +62,7 @@ class Validator implements ModifierInterface
             }
 
             if (in_array($_value, $excludedValues)) {
-                $messageBag->addError('value_in_exclude', array('%value%' => '"' . $value->getOriginalValue() . '"'));
+                $messageBag->addError('value_in_exclude', array('{{ value }}' => '"' . $value->getOriginalValue() . '"'));
                 $this->isError = true;
             }
 
@@ -83,7 +83,7 @@ class Validator implements ModifierInterface
             }
 
             if (in_array($_value, $singleValues)) {
-                $messageBag->addError('value_in_include', array('%value%' => '!"' . $value->getOriginalValue() . '"'));
+                $messageBag->addError('value_in_include', array('{{ value }}' => '!"' . $value->getOriginalValue() . '"'));
                 $this->isError = true;
             }
 
@@ -123,7 +123,7 @@ class Validator implements ModifierInterface
             $_value = $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
 
             if (in_array($_value, $ranges)) {
-                $messageBag->addError('range_same_as_excluded', array('%value%' => self::getRangeQuoted($range)));
+                $messageBag->addError('range_same_as_excluded', array('{{ value }}' => self::getRangeQuoted($range)));
                 $this->isError = true;
             }
         }
@@ -182,8 +182,8 @@ class Validator implements ModifierInterface
             }
 
             $messageBag->addError('validation_warning', array(
-                '%value%' => $originalValue,
-                '%msg%'   => $message
+                '{{ value }}' => $originalValue,
+                '{{ msg }}'   => $message
             ));
 
             $this->isError = true;
@@ -205,8 +205,8 @@ class Validator implements ModifierInterface
     {
         if (!$type->isLower($range->getLower(), $range->getUpper())) {
             $messageBag->addError('range_not_lower', array(
-                '%value1%' => $range->getOriginalLower(),
-                '%value2%' => $range->getOriginalUpper(),
+                '{{ value1 }}' => $range->getOriginalLower(),
+                '{{ value2 }}' => $range->getOriginalUpper(),
             ));
 
             $this->isError = true;

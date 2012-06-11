@@ -58,8 +58,8 @@ class CompareNormalizer implements ModifierInterface
 
                 if ($comparisonIndex !== false) {
                     $messageBag->addInfo('redundant_comparison', array(
-                        '%value%'      => $compares[$comparisonIndex]->getOperator() . '"' . $compares[$comparisonIndex]->getOriginalValue() . '"',
-                        '%comparison%' => $compare->getOperator())
+                        '{{ value }}'      => $compares[$comparisonIndex]->getOperator() . '"' . $compares[$comparisonIndex]->getOriginalValue() . '"',
+                        '{{ comparison }}' => $compare->getOperator())
                     );
 
                     unset($compares[$comparisonIndex]);

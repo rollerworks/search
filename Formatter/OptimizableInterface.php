@@ -38,7 +38,7 @@ interface OptimizableInterface
      * Return false to remove the field completely.
      *
      * Message handling is done using the MessageBag class.
-     * Adding an message will automatically translate it and add the required placeholders (%label% and %group%).
+     * Adding an message will automatically translate it and add the required placeholders ({{ label }} and {{ group }}).
      *
      * @param FilterValuesBag $field
      * @param MessageBag      $messageBag

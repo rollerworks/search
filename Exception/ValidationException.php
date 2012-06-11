@@ -31,7 +31,7 @@ class ValidationException extends Exception
         $this->params = $transParams;
 
         if (strlen($value)) {
-            $this->params['%value%'] = $value;
+            $this->params['{{ value }}'] = $value;
         }
     }
 

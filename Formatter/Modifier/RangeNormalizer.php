@@ -72,8 +72,8 @@ class RangeNormalizer implements ModifierInterface
             foreach ($values as $myIndex => $singeValue) {
                 if ($this->isValInRange($singeValue, $range)) {
                     $messageBag->addInfo('value_in_range', array(
-                        '%value%' => '"' . $values[$myIndex]->getOriginalValue() . '"' ,
-                        '%range%' => self::getRangeQuoted($ranges[$valIndex])));
+                        '{{ value }}' => '"' . $values[$myIndex]->getOriginalValue() . '"' ,
+                        '{{ range }}' => self::getRangeQuoted($ranges[$valIndex])));
 
                     $this->unsetVal($myIndex);
                     unset($values[$myIndex]);
@@ -88,9 +88,9 @@ class RangeNormalizer implements ModifierInterface
 
                 if ($type->isEqual($range->getUpper(), $myRange->getLower())) {
                     $messageBag->addInfo('range_connected', array(
-                        '%range1%' => self::getRangeQuoted($ranges[$valIndex]),
-                        '%range2%' => self::getRangeQuoted($ranges[$myIndex]),
-                        '%range3%' => self::getRangeQuoted($ranges[$valIndex], $ranges[$myIndex]),
+                        '{{ range1 }}' => self::getRangeQuoted($ranges[$valIndex]),
+                        '{{ range2 }}' => self::getRangeQuoted($ranges[$myIndex]),
+                        '{{ range3 }}' => self::getRangeQuoted($ranges[$valIndex], $ranges[$myIndex]),
                     ));
 
                     $range->setUpper($myRange->getUpper());
@@ -101,8 +101,8 @@ class RangeNormalizer implements ModifierInterface
                 // Range overlaps in other range
                 elseif ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
                     $messageBag->addInfo('range_overlap', array(
-                        '%range1%' => self::getRangeQuoted($ranges[$myIndex]),
-                        '%range2%' => self::getRangeQuoted($ranges[$valIndex]),
+                        '{{ range1 }}' => self::getRangeQuoted($ranges[$myIndex]),
+                        '{{ range2 }}' => self::getRangeQuoted($ranges[$valIndex]),
                     ));
 
                     $this->unsetRange($myIndex);
@@ -124,8 +124,8 @@ class RangeNormalizer implements ModifierInterface
                 foreach ($excludes as $myIndex => $singeValue) {
                     if ($this->isValInRange($singeValue, $range)) {
                         $messageBag->addInfo('value_in_range', array(
-                            '%value%' => '!"' . $singeValue->getOriginalValue() . '"',
-                            '%range%' => '!' . self::getRangeQuoted($range)));
+                            '{{ value }}' => '!"' . $singeValue->getOriginalValue() . '"',
+                            '{{ range }}' => '!' . self::getRangeQuoted($range)));
 
                         $this->unsetVal($myIndex, true);
                         unset($excludes[$myIndex]);
@@ -140,9 +140,9 @@ class RangeNormalizer implements ModifierInterface
 
                     if ($type->isEqual($range->getUpper(), $myRange->getLower())) {
                         $messageBag->addInfo('range_connected', array(
-                            '%range1%' => '!' . self::getRangeQuoted($range),
-                            '%range2%' => '!' . self::getRangeQuoted($myRange),
-                            '%range3%' => '!' . self::getRangeQuoted($range, $myRange),
+                            '{{ range1 }}' => '!' . self::getRangeQuoted($range),
+                            '{{ range2 }}' => '!' . self::getRangeQuoted($myRange),
+                            '{{ range3 }}' => '!' . self::getRangeQuoted($range, $myRange),
                         ));
 
                         $range->setUpper($myRange->getUpper());
@@ -154,8 +154,8 @@ class RangeNormalizer implements ModifierInterface
                     // Range overlaps in other range
                     if ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
                         $messageBag->addInfo('range_overlap', array(
-                            '%range1%' => '!' . self::getRangeQuoted($myRange),
-                            '%range2%' => '!' . self::getRangeQuoted($range),
+                            '{{ range1 }}' => '!' . self::getRangeQuoted($myRange),
+                            '{{ range2 }}' => '!' . self::getRangeQuoted($range),
                         ));
 
                         $this->unsetRange($myIndex, true);
@@ -165,7 +165,7 @@ class RangeNormalizer implements ModifierInterface
 
                 // Range already exists as normal range
                 if (false !== array_search($type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper()), $rangesValues)) {
-                    $messageBag->addError('range_same_as_excluded', array('%value%' => self::getRangeQuoted($range)));
+                    $messageBag->addError('range_same_as_excluded', array('{{ value }}' => self::getRangeQuoted($range)));
 
                     $isError = true;
                 }

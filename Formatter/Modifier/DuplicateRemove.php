@@ -45,7 +45,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
             if (in_array($_value, $singleValues)) {
-                $messageBag->addInfo('duplicate', array('%value%' => '"' . $value->getOriginalValue() . '"'));
+                $messageBag->addInfo('duplicate', array('{{ value }}' => '"' . $value->getOriginalValue() . '"'));
                 $filterStruct->removeSingleValue($index);
 
                 continue;
@@ -58,7 +58,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
             if (in_array($_value, $excludedValues)) {
-                $messageBag->addInfo('duplicate', array('%value%' => '!"' . $value->getOriginalValue() . '"'));
+                $messageBag->addInfo('duplicate', array('{{ value }}' => '!"' . $value->getOriginalValue() . '"'));
                 $filterStruct->removeExclude($index);
 
                 continue;
@@ -71,7 +71,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = $this->dumpRange($type, $range);
 
             if (in_array($_value, $ranges)) {
-                $messageBag->addInfo('duplicate', array('%value%' => self::getRangeQuoted($range)));
+                $messageBag->addInfo('duplicate', array('{{ value }}' => self::getRangeQuoted($range)));
                 $filterStruct->removeRange($index);
 
                 continue;
@@ -84,7 +84,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = $this->dumpRange($type, $range);
 
             if (in_array($_value, $excludedRanges)) {
-                $messageBag->addInfo('duplicate', array('%value%' => '!' . self::getRangeQuoted($range)));
+                $messageBag->addInfo('duplicate', array('{{ value }}' => '!' . self::getRangeQuoted($range)));
                 $filterStruct->removeExcludedRange($index);
 
                 continue;
@@ -97,7 +97,7 @@ class DuplicateRemove implements ModifierInterface
             $_value = $compare->getOperator() . ($type ? $type->dumpValue($compare->getValue()) : $compare->getValue());
 
             if (in_array($_value, $compares)) {
-                $messageBag->addInfo('duplicate', array('%value%' => $compare->getOperator() . '"' . $compare->getOriginalValue() . '"'));
+                $messageBag->addInfo('duplicate', array('{{ value }}' => $compare->getOperator() . '"' . $compare->getOriginalValue() . '"'));
                 $filterStruct->removeCompare($index);
 
                 continue;

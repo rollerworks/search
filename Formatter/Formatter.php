@@ -175,8 +175,8 @@ class Formatter implements FormatterInterface
             $filterConfig = $filtersConfig->get($fieldName);
 
             $this->messageBag->setTranslatorParams(array(
-                '%label%' => $filterConfig->getLabel(),
-                '%group%' => $groupIndex + 1)
+                '{{ label }}' => $filterConfig->getLabel(),
+                '{{ group }}' => $groupIndex + 1)
             );
 
             foreach ($this->modifiers as $modifier) {

@@ -20,6 +20,6 @@ class ReqFilterException extends ValidationException
     {
         parent::__construct('required');
 
-        $this->params['%label%'] = $label;
+        $this->params['{{ label }}'] = $label;
     }
 }
