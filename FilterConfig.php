@@ -69,7 +69,7 @@ class FilterConfig
      */
     public function __construct($label, $type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
-        $this->label      = (string) $label;
+        $this->label      = mb_strtolower((string) $label);
         $this->filterType = $type;
 
         $this->acceptRanges   = (boolean) $acceptRanges;

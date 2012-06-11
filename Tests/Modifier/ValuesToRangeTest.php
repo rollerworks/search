@@ -16,6 +16,7 @@ use Rollerworks\RecordFilterBundle\Type\Number;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 
 class ValuesToRangeTest extends ModifierTestCase
 {
@@ -25,7 +26,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $input->setInput('User=1,2,3,4,5,6,7');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', new Number(), false, true);
+        $input->setField('user', FilterConfig::create('user', new Number(), false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -45,7 +46,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $input->setInput('User=3,6,7,1,2,4,5');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', new Number(), false, true);
+        $input->setField('user', FilterConfig::create('user', new Number(), false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -65,7 +66,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $input->setInput('User=1,2,3,4,5,6,7,10,11,12,13,14,15,18');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', new Number(), false, true);
+        $input->setField('user', FilterConfig::create('user', new Number(), false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -85,7 +86,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $input->setInput('User=!1,!2,!3,!4,!5,!6,!7');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', new Number(), false, true);
+        $input->setField('user', FilterConfig::create('user', new Number(), false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -105,7 +106,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $input->setInput('User=!3,!6,!7,!1,!2,!4,!5');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', new Number(), false, true);
+        $input->setField('user', FilterConfig::create('user', new Number(), false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -125,7 +126,7 @@ class ValuesToRangeTest extends ModifierTestCase
         $input->setInput('User=!1,!2,!3,!4,!5,!6,!7,!10,!11,!12,!13,!14,!15,!18');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', new Number(), false, true);
+        $input->setField('user', FilterConfig::create('user', new Number(), false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));

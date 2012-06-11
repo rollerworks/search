@@ -17,6 +17,7 @@ use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType;
 
@@ -28,10 +29,10 @@ class OptimizeTest extends ModifierTestCase
         $input->setInput('User=2,4,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', null,  new Number(), false, true);
-        //$input->setField('status', null, new StatusType());
-        $input->setField('date');
-        $input->setField('period', null, null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        //$input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('period', FilterConfig::create('period', null, false, true, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -53,10 +54,10 @@ class OptimizeTest extends ModifierTestCase
         $input->setInput('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', null, null, false, true);
-        //$input->setField('status', null, new StatusType());
-        $input->setField('date');
-        $input->setField('period', null, null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        //$input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));

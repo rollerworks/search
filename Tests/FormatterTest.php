@@ -20,6 +20,7 @@ use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\Compare;
 use Rollerworks\RecordFilterBundle\Value\Range;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 
 use Rollerworks\RecordFilterBundle\Tests\Modifier\ModifierTestCase;
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
@@ -29,9 +30,9 @@ class FormatterTest extends ModifierTestCase
     public function testFormatterNoModifiers()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', 'user', new Number(), true, true);
-        $input->setField('status', 'status', null, false, true);
-        $input->setField('period', 'period', new Date(), false, true);
+        $input->setField('user', FilterConfig::create('user', new Number(), true, true));
+        $input->setField('status', FilterConfig::create('status', null, false, true));
+        $input->setField('period', FilterConfig::create('period', new Date(), false, true));
 
         $input->setInput('User=2,3,10-"20"; Status=Active; period=29.10.2010');
 
@@ -59,10 +60,10 @@ class FormatterTest extends ModifierTestCase
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', null, false, true);
-        $input->setField('status', 'status');
-        $input->setField('date', 'date');
-        $input->setField('period', 'period', null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -82,10 +83,10 @@ class FormatterTest extends ModifierTestCase
     public function testGetFiltersNoPreviousErrors()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', 'user', new Number(), false, true);
-        $input->setField('status', 'status');
-        $input->setField('date', 'date');
-        $input->setField('period', 'period', null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', new Number(), false, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         $input->setInput('User=2,5,20-10; Status=Active; date=29.10.2010; period=>20,10');
         $formatter = $this->newFormatter();
@@ -120,10 +121,10 @@ class FormatterTest extends ModifierTestCase
         $input->setInput('User=2,3,10-20,!15; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', null, false, true);
-        $input->setField('status', 'status');
-        $input->setField('date', 'date');
-        $input->setField('period', 'period', null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -147,10 +148,10 @@ class FormatterTest extends ModifierTestCase
         $input->setInput('User=2,3,20-50,!25-30; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', null, false, true);
-        $input->setField('status', 'status');
-        $input->setField('date', 'date');
-        $input->setField('period', 'period', null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -174,10 +175,10 @@ class FormatterTest extends ModifierTestCase
         $input->setInput('User=2,,3,10-20; Status=Active; date=29.10.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', null, false, true);
-        $input->setField('status', 'status');
-        $input->setField('date', 'date');
-        $input->setField('period', 'period');
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('period', FilterConfig::create('period'));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -200,10 +201,10 @@ class FormatterTest extends ModifierTestCase
         $input->setInput('User=2,3,10-20; Status=Active; date="29-10-2010"; period=>"20""","""20""",10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', null, false, true);
-        $input->setField('status', 'status');
-        $input->setField('date', 'date');
-        $input->setField('period', 'period', null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -232,9 +233,9 @@ class FormatterTest extends ModifierTestCase
         $input->setLabelToField('user', 'gebruiker');
         $input->setLabelToField('date', array('datum', 'datung'));
 
-        $input->setField('user', 'gebruiker', null, true, true);
-        $input->setField('status', 'status', null, true, true);
-        $input->setField('date', 'datum', null, true, true);
+        $input->setField('user', FilterConfig::create('gebruiker', null, true, true));
+        $input->setField('status', FilterConfig::create('status', null, true, true));
+        $input->setField('date', FilterConfig::create('datum', null, true, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -264,10 +265,10 @@ class FormatterTest extends ModifierTestCase
         $input->setLabelToFieldByTranslator('search.', 'filter');
         $input->setLabelToField('period', array('periods'));
 
-        $input->setField('user', 'gebruiker', null, true, true);
-        $input->setField('status', 'status', null, true, true);
-        $input->setField('date', 'datung', null, true, true);
-        $input->setField('period', 'periods', null, false, false, true);
+        $input->setField('user', FilterConfig::create('gebruiker', null, true, true));
+        $input->setField('status', FilterConfig::create('status', null, true, true));
+        $input->setField('date', FilterConfig::create('datung', null, true, true));
+        $input->setField('period', FilterConfig::create('periods', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -293,9 +294,9 @@ class FormatterTest extends ModifierTestCase
         $formatter = $this->newFormatter();
         $input->setLabelToField('date', array('datum', 'datung'));
 
-        $input->setField('user', 'user', null, true, true);
-        $input->setField('status', 'status', null, true, true);
-        $input->setField('date', 'datung', null, true, true);
+        $input->setField('user', FilterConfig::create('user', null, true, true));
+        $input->setField('status', FilterConfig::create('status', null, true, true));
+        $input->setField('date', FilterConfig::create('datung', null, true, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -320,9 +321,9 @@ class FormatterTest extends ModifierTestCase
         $formatter = $this->newFormatter();
         $input->setLabelToField('date', array('datum', 'datung'));
 
-        $input->setField('user', 'user', null, true, true);
-        $input->setField('status', 'status', null, true, true);
-        $input->setField('date', 'datung', null, true, true);
+        $input->setField('user', FilterConfig::create('user', null, true, true));
+        $input->setField('status', FilterConfig::create('status', null, true, true));
+        $input->setField('date', FilterConfig::create('datung', null, true, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -350,9 +351,9 @@ class FormatterTest extends ModifierTestCase
         $formatter = $this->newFormatter();
         $input->setLabelToField('date', array('datum', 'datung'));
 
-        $input->setField('user', 'user', null, true, true);
-        $input->setField('status', 'status', null, true, true);
-        $input->setField('date', 'datung', null, true, true);
+        $input->setField('user', FilterConfig::create('user', null, true, true));
+        $input->setField('status', FilterConfig::create('status', null, true, true));
+        $input->setField('date', FilterConfig::create('datung', null, true, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -382,10 +383,10 @@ class FormatterTest extends ModifierTestCase
         $input->setInput('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', null, false, true);
-        $input->setField('status', 'status');
-        $input->setField('date', 'date', new Date());
-        $input->setField('period', 'period', null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date', new Date()));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -408,10 +409,10 @@ class FormatterTest extends ModifierTestCase
         $input->setInput('User=2,3,10-20; invoice=F2010-48932,F2011-48932-F2012-48932; date=29-10/2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', null, false, true);
-        $input->setField('invoice', 'invoice', new InvoiceType(), false, true);
-        $input->setField('date', 'date', new Date());
-        $input->setField('period', 'period', null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        $input->setField('invoice', FilterConfig::create('invoice', new InvoiceType(), false, true));
+        $input->setField('date', FilterConfig::create('date', new Date()));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -434,10 +435,10 @@ class FormatterTest extends ModifierTestCase
         $input->setInput('User=2,3,10-20; Status=Active; date=29-10-2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', 'user', null, false, true);
-        $input->setField('status', 'status');
-        $input->setField('date', 'date', new Date());
-        $input->setField('period', 'period', null, false, false, true);
+        $input->setField('user', FilterConfig::create('user', null, false, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date', new Date()));
+        $input->setField('period', FilterConfig::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));

@@ -112,26 +112,19 @@ abstract class AbstractInput implements InputInterface
      *
      * @return self
      */
-    public function setField($fieldName, $label = null, FilterTypeInterface $valueType = null, $required = false, $acceptRanges = false, $acceptCompares = false)
+    public function setField($fieldName, FilterConfig $config)
     {
         $fieldName = mb_strtolower($fieldName);
 
-        if (null === $label) {
-            $label = $fieldName;
-        } else {
-            $label = mb_strtolower($label);
-        }
-
-        if (null !== $valueType && $valueType instanceof ContainerAwareInterface) {
-            /** @var ContainerAwareInterface $valueType */
-            $valueType->setContainer($this->container);
+        if ($config->hasType() && $config->getType() instanceof ContainerAwareInterface) {
+            $config->getType()->setContainer($this->container);
         }
 
         if (null === $this->fieldsSet) {
             $this->fieldsSet = new FieldSet();
         }
 
-        $this->fieldsSet->set($fieldName, new FilterConfig($label, $valueType, $required, $acceptRanges, $acceptCompares));
+        $this->fieldsSet->set($fieldName, $config);
 
         return $this;
     }

@@ -15,6 +15,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\Dumper\PHPArray;
 use Rollerworks\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 
 class ArrayTest extends TestCase
 {
@@ -23,7 +24,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
+        $input->setField('user', FilterConfig::create('user'));
         $input->setInput('user=1;');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -37,7 +38,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
+        $input->setField('user', FilterConfig::create('user'));
         $input->setInput('(user=1;),(user=2;)');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -54,8 +55,8 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
-        $input->setField('invoice');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('invoice', FilterConfig::create('invoice'));
         $input->setInput('user=1; invoice="F2012-800";');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -69,8 +70,8 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
-        $input->setField('invoice');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('invoice', FilterConfig::create('invoice'));
         $input->setInput('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -87,8 +88,8 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
-        $input->setField('invoice', null, null, false, true);
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('invoice', FilterConfig::create(null, null, false, true));
         $input->setInput('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
 
         $this->assertTrue($formatter->formatInput($input));

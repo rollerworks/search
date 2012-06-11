@@ -15,13 +15,14 @@ use Rollerworks\RecordFilterBundle\Input\ArrayInput;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 
 class ArrayTest extends TestCase
 {
     public function testSingleField()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('user');
+        $input->setField('user', FilterConfig::create('user'));
 
         $input->setInput(array('user' => '2'));
         $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
@@ -30,7 +31,7 @@ class ArrayTest extends TestCase
     public function testSingleFieldWithUnicode()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('foo', 'ß');
+        $input->setField('foo', FilterConfig::create('ß'));
         $input->setLabelToField('foo', 'ß');
 
         $input->setInput(array('ß' => '2'));
@@ -40,8 +41,8 @@ class ArrayTest extends TestCase
     public function testMultipleFields()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('user');
-        $input->setField('status');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('status', FilterConfig::create('status'));
 
         $input->setInput(array('User' => '2', 'Status' => 'Active'));
         $this->assertEquals(array(array(
@@ -54,8 +55,8 @@ class ArrayTest extends TestCase
     public function testDoubleFields()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('user');
-        $input->setField('status');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('status', FilterConfig::create('status'));
 
         $input->setLabelToField('status', 'status2');
 
@@ -70,9 +71,9 @@ class ArrayTest extends TestCase
     public function testEscapedFilter()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('user');
-        $input->setField('status');
-        $input->setField('date');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
 
         $input->setInput(array('User' => '2', 'Status' => '"Active;None"', 'date' => '"29-10-2010"'));
 
@@ -86,9 +87,9 @@ class ArrayTest extends TestCase
     public function testOrGroup()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('user');
-        $input->setField('status');
-        $input->setField('date');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
 
         $input->setInput(array(
             array('User' => '2', 'Status' => '"Active;None"', 'date' => '"29-10-2010"'),
@@ -112,9 +113,9 @@ class ArrayTest extends TestCase
     public function testOrGroupValueWithBars()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('user');
-        $input->setField('status');
-        $input->setField('date');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
 
         $input->setInput(array(
             array('User' => '2', 'Status' => '"(Active;None)"', 'date' => '"29-10-2010"'),
@@ -138,9 +139,9 @@ class ArrayTest extends TestCase
     public function testValidationNoRange()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('User', null, null, true);
-        $input->setField('status');
-        $input->setField('date');
+        $input->setField('User', FilterConfig::create('User', null, true));
+        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('date', FilterConfig::create('date'));
 
         $input->setInput(array(
             array('User' => '2-5', 'Status' => '"Active"', 'date' => '29.10.2010'),
@@ -157,9 +158,9 @@ class ArrayTest extends TestCase
             array('User' => '2,3,10-20', 'Status' => '"Active"', 'date' => '25.05.2010,>25.5.2010'),
         ));
 
-        $input->setField('user', null, null, true, true);
-        $input->setField('status', null, null, true, true);
-        $input->setField('date', null, null, true, true);
+        $input->setField('user', FilterConfig::create('user', null, true, true));
+        $input->setField('status', FilterConfig::create('status', null, true, true));
+        $input->setField('date', FilterConfig::create('date', null, true, true));
 
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());

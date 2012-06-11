@@ -14,14 +14,15 @@ namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
 use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 
 class ValidationTest extends ModifierTestCase
 {
     public function testValidationReq()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('period', null, new Date(), true);
-        $input->setField('User', null, null, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true));
+        $input->setField('User', FilterConfig::create('User', null, true));
 
         $input->setInput('User=2; Status=Active; date=29.10.2010');
 
@@ -33,8 +34,8 @@ class ValidationTest extends ModifierTestCase
     {
         $input = new QueryInput($this->translator);
         $input->setInput('User=2; Status=Active; date=29.10.2010; period=,;');
-        $input->setField('period', null, new Date(), true);
-        $input->setField('User', null, null, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true));
+        $input->setField('User', FilterConfig::create('User', null, true));
 
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'period' is required in group 1."), $input->getMessages());
@@ -47,8 +48,8 @@ class ValidationTest extends ModifierTestCase
 
         $formatter = $this->newFormatter();
 
-        $input->setField('period');
-        $input->setField('User');
+        $input->setField('period', FilterConfig::create('period'));
+        $input->setField('User', FilterConfig::create('User'));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -62,11 +63,11 @@ class ValidationTest extends ModifierTestCase
 
         $formatter = $this->newFormatter();
 
-        $input->setField('period', null, new Date(), true);
-        $input->setField('User', null, null, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true));
+        $input->setField('User', FilterConfig::create('User', null, true));
 
-        $input->setField('period', null, new Date(), false, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), false, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -80,8 +81,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=2910.2010;)');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), false, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), false, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -98,8 +99,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('(User=2; Status=Active; period=2910.2010;),(User=2; Status=Active; period=29.10.2010;)');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), false, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), false, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -116,8 +117,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2; Status=Active; period=25.10.2010-3110.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), true, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -131,8 +132,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2; Status=Active; period=2510.2010-3110.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), true, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -148,8 +149,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2; Status=Active; period=31.10.2010-25.10.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), true, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -163,8 +164,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2; Status=Active; period=<10.10.2010,>3110.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), true, true, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true, true, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -178,8 +179,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2; Status=Active; period=10.10.2010,!3110.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), true, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -193,8 +194,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2; Status=Active; period=10.10.2010,!31.10.2010,31.10.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), true, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -208,8 +209,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2; Status=Active; period=10.10.2010,31.10.2010,!31.10.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), true, true);
-        $input->setField('User', null, null, false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), true, true));
+        $input->setField('User', FilterConfig::create('User', null, false, true));
 
         $this->assertFalse($formatter->formatInput($input));
 
@@ -223,7 +224,7 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2; Status=Active; period=29.10.2010');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, new Date(), false, true);
+        $input->setField('period', FilterConfig::create('period', new Date(), false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -237,8 +238,8 @@ class ValidationTest extends ModifierTestCase
         $input->setInput('User=2-5,8-10; Status=Active; period=25.10.2010-31.10.2010,25.10.2011-31.10.2011');
 
         $formatter = $this->newFormatter();
-        $input->setField('period', null, null, true, true);
-        $input->setField('User', null, null, true, true);
+        $input->setField('period', FilterConfig::create('period', null, true, true));
+        $input->setField('User', FilterConfig::create('User', null, true, true));
 
         $this->assertTrue($formatter->formatInput($input));
     }

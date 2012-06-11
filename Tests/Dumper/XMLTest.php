@@ -15,6 +15,7 @@ use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\RecordFilterBundle\Dumper\XML as XMLDumper;
 use Rollerworks\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\RecordFilterBundle\FilterConfig;
 
 class XMLTest extends TestCase
 {
@@ -75,7 +76,7 @@ class XMLTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
+        $input->setField('user', FilterConfig::create('user'));
         $input->setInput('user=1;');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -99,7 +100,7 @@ class XMLTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
+        $input->setField('user', FilterConfig::create('user'));
         $input->setInput('(user=1;),(user=2;)');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -130,8 +131,8 @@ class XMLTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
-        $input->setField('invoice');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('invoice', FilterConfig::create('invoice'));
         $input->setInput('user=1; invoice="F2012-800";');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -160,8 +161,8 @@ class XMLTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
-        $input->setField('invoice');
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('invoice', FilterConfig::create('invoice'));
         $input->setInput('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -202,8 +203,8 @@ class XMLTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user');
-        $input->setField('invoice', 'invoice', null, false, true);
+        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('invoice', FilterConfig::create('invoice', null, false, true));
         $input->setInput('(user=1; invoice="F2010-4242"-"F2012-4245";),(user=2; invoice="F2012-4248";)');
 
         $this->assertTrue($formatter->formatInput($input));
@@ -247,8 +248,8 @@ class XMLTest extends TestCase
         $formatter = new Formatter($this->translator);
 
         $input = new FilterQuery($this->translator);
-        $input->setField('user', 'user', null, false, true, true);
-        $input->setField('invoice');
+        $input->setField('user', FilterConfig::create('user', null, false, true, true));
+        $input->setField('invoice', FilterConfig::create('invoice'));
         $input->setInput('(user=>1,<>2,>=5,<8,<=9;)');
 
         $this->assertTrue($formatter->formatInput($input));
