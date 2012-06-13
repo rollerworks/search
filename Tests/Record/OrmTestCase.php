@@ -14,18 +14,14 @@ namespace Rollerworks\RecordFilterBundle\Tests\Record;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
-
 use Rollerworks\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\RecordFilterBundle\Formatter\Modifier\Validator;
-
 use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Type\Number;
 use Rollerworks\RecordFilterBundle\Type\Decimal;
-
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType;
 use Rollerworks\RecordFilterBundle\Tests\Fixtures\CustomerType;
-
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Doctrine\Tests\OrmTestCase as OrmTestCaseBase;
@@ -85,20 +81,18 @@ class OrmTestCase extends OrmTestCaseBase
     }
 
     /**
-     * @param string $filterQuery
-     * @param string $fieldSetId
-     *
-     * @return FilterQuery
+     * @param null|string $fieldSetId
+     * @return FieldSet
      */
-    protected function newInput($filterQuery, $fieldSetId = 'invoice')
+    function getFieldSet($fieldSetId = null)
     {
         $fieldSet = new FieldSet('test');
 
         if ('invoice' == $fieldSetId) {
             $fieldSet = new FieldSet('invoice');
             $fieldSet
-                ->set('invoice_label',    FilterConfig::create('invoice', new InvoiceType(), false, true, true)->setPropertyRef('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'label'))
-                ->set('invoice_date',     FilterConfig::create('date', new Date(), false, true, true)->setPropertyRef('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'pubdate'))
+                ->set('invoice_label',    FilterConfig::create('invoice', new InvoiceType(), false)->setPropertyRef('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'label'))
+                ->set('invoice_date',     FilterConfig::create('date', new Date(), false, true, true)->setPropertyRef('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'date'))
                 ->set('invoice_customer', FilterConfig::create('customer', new Number(), false, true, true)->setPropertyRef('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'customer'))
                 ->set('invoice_status',   FilterConfig::create('status', new StatusType())->setPropertyRef('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'status'))
                 ->set('invoice_price',    FilterConfig::create('status', new Decimal(), false, true, true)->setPropertyRef('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow', 'price'))
@@ -109,6 +103,21 @@ class OrmTestCase extends OrmTestCaseBase
             $fieldSet
                 ->set('customer_id', FilterConfig::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id'))
             ;
+        }
+
+        return $fieldSet;
+    }
+
+    /**
+     * @param string $filterQuery
+     * @param string $fieldSet
+     *
+     * @return FilterQuery
+     */
+    protected function newInput($filterQuery, $fieldSet = 'invoice')
+    {
+        if (!$fieldSet instanceof FieldSet) {
+            $fieldSet = $this->getFieldSet($fieldSet);
         }
 
         $input = new FilterQuery($this->translator);
