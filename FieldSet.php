@@ -28,15 +28,21 @@ class FieldSet
     /**
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * Constructor.
      *
-     * @param string $name Optional fieldSet name.
+     * @param string|null $name Optional fieldSet name (must be legal class-name).
+     *
+     * @throws \InvalidArgumentException When the name is invalid
      */
     public function __construct($name = null)
     {
+        if (null !== $name && !preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
+            throw new \InvalidArgumentException(sprintf('Invalid fieldSet name "%s" (must be legal class-name).', $name));
+        }
+
         $this->name = $name;
     }
 
@@ -125,7 +131,7 @@ class FieldSet
     /**
      * Returns all the registered fields.
      *
-     * @return array [field-name] => {\Rollerworks\RecordFilterBundle\FilterConfig object})
+     * @return FilterConfig[] [field-name] => {\Rollerworks\RecordFilterBundle\FilterConfig object})
      */
     public function all()
     {
