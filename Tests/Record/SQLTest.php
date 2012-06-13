@@ -83,7 +83,6 @@ class SQLTest extends OrmTestCase
             array('(invoice_customer=2;),(invoice_customer=3;)', '(customer IN(2)) OR (customer IN(3))'),
             array('(invoice_customer=2,3;),(invoice_customer=3,5;)', '(customer IN(2, 3)) OR (customer IN(3, 5))'),
             array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', '(customer IN(2, 3) AND status IN(1)) OR (customer IN(3, 5))'),
-
             array('invoice_date=06/13/2012;', '(pubdate IN(\'2012-06-13\'))'),
 
             // Expects empty as there is no field with that name

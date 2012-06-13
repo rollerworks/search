@@ -252,7 +252,13 @@ class FilterQuery extends AbstractInput
                 continue;
             }
 
-            $filterPairs[$name] = $this->valuesToBag($filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name]), $group);
+            $type = null;
+
+            if ($filterConfig->getType() instanceof ValueMatcherInterface) {
+                $type = $filterConfig->getType();
+            }
+
+            $filterPairs[$name] = $this->valuesToBag($filterPairs[$name], $filterConfig, $this->parseValuesList($filterPairs[$name], $type), $group);
         }
 
         return $filterPairs;
@@ -270,7 +276,7 @@ class FilterQuery extends AbstractInput
     {
         $valueMatcherRegex = '';
 
-        if (!empty($valueMatcher)) {
+        if (null !== $valueMatcher) {
             $regex = $valueMatcher->getMatcherRegex();
             $valueMatcherRegex = '|' . $regex . '-' . $regex . '|(?:>=|<=|<>|[<>!])?' . $regex;
         }

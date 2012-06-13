@@ -14,6 +14,7 @@ namespace Rollerworks\RecordFilterBundle\Tests\Input;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\RecordFilterBundle\Type\Date;
 use Rollerworks\RecordFilterBundle\Tests\TestCase;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 
@@ -103,6 +104,16 @@ class FilterQueryTest extends TestCase
             'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1),
             'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0),
         )), $input->getGroups());
+    }
+
+    public function testQueryWithMatcher()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('date', FilterConfig::create('date', new Date()));
+
+        $input->setInput('date=6-13-2012;');
+
+        $this->assertEquals(array(array('date' => new FilterValuesBag('date', '6-13-2012', array(new SingleValue('6-13-2012', '6-13-2012'))))), $input->getGroups());
     }
 
     // Test the escaping of the filter-delimiter
