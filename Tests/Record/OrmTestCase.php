@@ -82,9 +82,10 @@ class OrmTestCase extends OrmTestCaseBase
 
     /**
      * @param null|string $fieldSetId
+     *
      * @return FieldSet
      */
-    function getFieldSet($fieldSetId = null)
+    public function getFieldSet($fieldSetId = null)
     {
         $fieldSet = new FieldSet('test');
 

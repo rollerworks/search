@@ -11,7 +11,6 @@
 
 namespace Rollerworks\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;

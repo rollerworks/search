@@ -12,7 +12,6 @@
 namespace Rollerworks\RecordFilterBundle\Factory;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Doctrine\Common\Annotations\Reader;
 
 /**
  * This abstract factory provides the basics to create the RecordFilter::* Classes at runtime.
@@ -50,9 +49,9 @@ abstract class AbstractFactory
     /**
      * Constructor.
      *
-     * @param string  $classesDir       The directory to use for the Classes. It must exist.
-     * @param string  $filtersNs        The namespace to use for the Classes.
-     * @param boolean $autoGenerate     Whether to automatically generate Classes.
+     * @param string  $classesDir   The directory to use for the Classes. It must exist.
+     * @param string  $filtersNs    The namespace to use for the Classes.
+     * @param boolean $autoGenerate Whether to automatically generate Classes.
      *
      * @api
      *

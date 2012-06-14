@@ -11,15 +11,8 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests\Factory;
 
-use Rollerworks\RecordFilterBundle\FilterConfig;
 use Rollerworks\RecordFilterBundle\FieldSet;
 use Rollerworks\RecordFilterBundle\Input\FilterQuery;
-use Rollerworks\RecordFilterBundle\Type\Date;
-use Rollerworks\RecordFilterBundle\Type\Number;
-use Rollerworks\RecordFilterBundle\Type\Decimal;
-use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
-use Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType;
-use Rollerworks\RecordFilterBundle\Tests\Fixtures\CustomerType;
 use Rollerworks\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
 use Rollerworks\RecordFilterBundle\Factory\SqlWhereBuilderFactory;
 use Rollerworks\RecordFilterBundle\Tests\Record\OrmTestCase;

@@ -246,6 +246,7 @@ QY;
         return $query;
     }
 QY;
+
         return trim($query);
     }
 
