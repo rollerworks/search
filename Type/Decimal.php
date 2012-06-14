@@ -289,6 +289,11 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     {
         $decimalSign = preg_quote(self::getNumberFormatter()->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL), '#');
 
+        // Allow dot as replacement for comma
+        if ($decimalSign === ',') {
+            $decimalSign = '[,.]';
+        }
+
         return '(?:(?:\p{N}+' . $decimalSign . '\p{N}+[-+]?|[-+]?\p{N}+' . $decimalSign . '\p{N}+))';
     }
 

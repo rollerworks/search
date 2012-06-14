@@ -11,6 +11,7 @@
 
 namespace Rollerworks\RecordFilterBundle\Tests;
 
+use Rollerworks\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\RecordFilterBundle\Type\Decimal;
 use Rollerworks\RecordFilterBundle\MessageBag;
 
@@ -30,6 +31,30 @@ class DecimalTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $type = new Decimal();
 
         $this->assertEquals($expected, $type->sanitizeString($input));
+    }
+
+    /**
+     * @dataProvider getDataForMatcher
+     */
+    public function testMatcher($locale, $input, $expectFail = false)
+    {
+        \Locale::setDefault($locale);
+
+        $type = new Decimal();
+
+        if (!preg_match('#^(' . $type->getMatcherRegex() . ')$#uis', $input, $match)) {
+            if ($expectFail) {
+                return true;
+            }
+
+            $this->fail(sprintf('Input "%s" does not match in regex "%s"', $input, $type->getMatcherRegex()));
+        }
+
+        if ($expectFail) {
+            $this->fail(sprintf('Input "%s" should not match in regex "%s"', $input, $type->getMatcherRegex()));
+        }
+
+        $this->assertEquals($input, $match[1]);
     }
 
     /**
@@ -103,6 +128,24 @@ class DecimalTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
         $this->assertEquals($expected, $type->getHigherValue($input));
     }
 
+    /**
+     * @dataProvider getDataForSorting
+     */
+    public function testSorting($input, $expected)
+    {
+        $mapping = function ($input) {
+            return new SingleValue($input);
+        };
+
+        $input = array_map($mapping, $input);
+        $expected = array_map($mapping, $expected);
+
+        $type = new Decimal();
+
+        usort($input, array(&$type, 'sortValuesList'));
+        $this->assertEquals($expected, $input);
+    }
+
     public static function getDataForSanitation()
     {
         return array(
@@ -112,6 +155,38 @@ class DecimalTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
 
             array('en_US', '100.00', '100.00'),
             array('uz_Arab', '۵٫۵', '05.50'),
+        );
+    }
+
+    public static function getDataForMatcher()
+    {
+        return array(
+            // $locale, $input, $expectFail
+            array('nl_NL', '100,10'),
+            array('nl_NL', '100,104224244'),
+            array('nl_NL', '100.10'),
+            array('nl_NL', '100.104224244'),
+
+            array('nl_NL', '-100,10'),
+            array('nl_NL', '-100,104224244'),
+            array('nl_NL', '-100.10'),
+            array('nl_NL', '-100.104224244'),
+
+            array('nl_NL', '100-10', true),
+            array('nl_NL', '100*104224244', true),
+            array('nl_NL', '10010', true),
+            array('nl_NL', '100/104224244', true),
+
+            array('en_US', '100.00'),
+            array('en_US', '-100.00'),
+
+            array('en_US', '-100,00', true),
+            array('en_US', '-100,00', true),
+
+            array('uz_Arab', '۵٫۵'),
+            array('uz_Arab', '۵٫۵'),
+            array('uz_Arab', '-۵٫۵'),
+            array('uz_Arab', '-۵٫۵'),
         );
     }
 
@@ -201,6 +276,22 @@ class DecimalTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
             array('100.01', '100.02'),
             array('100.00', '100.01'),
             array('1000000000000000000000000000.00', '1000000000000000000000000000.01'),
+        );
+    }
+
+    public function getDataForSorting()
+    {
+        return array(
+            array(array(10.00, 20.00, 30.00, 50), array(10.00, 20.00, 30.00, 50.00)),
+            array(array(-10.00, 20.00, 30.00, 50.00), array(-10.00, 20.00, 30.00, 50.00)),
+            array(array(10.00, -20.00, 30.00, 50.00), array(-20.00, 10.00, 30.00, 50.00)),
+
+            array(array('10.00', '10.00', '-20.00', '30.00', '50.00'), array('-20.00', '10.00', '10.00', '30.00', '50.00')),
+
+            array(array('100000000000000000000.00', '-200000000000000000000.00', '300000000000000000000.00', '500000000000000000000.00'), array('-200000000000000000000.00', '100000000000000000000.00', '300000000000000000000.00', '500000000000000000000.00')),
+            array(array('1000000000000000000000000000000000000000.05', '1000000000000000000000000000000000000000.04', '-2000000000000000000000000000000000000000.00', '3000000000000000000000000000000000000000.00', '5000000000000000000000000000000000000000.00'), array('-2000000000000000000000000000000000000000.00', '1000000000000000000000000000000000000000.04', '1000000000000000000000000000000000000000.05', '3000000000000000000000000000000000000000.00', '5000000000000000000000000000000000000000.00')),
+
+            array(array('3000000000000000000000000000000000000000.00', '3000000000000000000000000000000000000000.00', '-2000000000000000000000000000000000000000.00', '5000000000000000000000000000000000000000.00', '1000000000000000000000000000000000000000.00'), array('-2000000000000000000000000000000000000000.00', '1000000000000000000000000000000000000000.00', '3000000000000000000000000000000000000000.00', '3000000000000000000000000000000000000000.00', '5000000000000000000000000000000000000000.00')),
         );
     }
 }
