@@ -112,6 +112,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
     /**
      * @param string $str
+     *
      * @return mixed
      */
     public function unserialize($str)
