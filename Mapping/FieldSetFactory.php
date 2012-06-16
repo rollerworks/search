@@ -55,8 +55,9 @@ class FieldSetFactory
      * Constructor.
      *
      * @param MetadataFactoryInterface $metadataFactory
+     * @param TranslatorInterface      $translator
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory)
+    public function __construct(MetadataFactoryInterface $metadataFactory, TranslatorInterface $translator)
     {
         $this->metadataFactory = $metadataFactory;
     }
@@ -69,16 +70,6 @@ class FieldSetFactory
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
-    }
-
-    /**
-     * Set the translator instance, for aliases by translator
-     *
-     * @param TranslatorInterface $translator
-     */
-    public function setTranslator(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
     }
 
     /**
@@ -199,10 +190,6 @@ class FieldSetFactory
      */
     protected function getFieldLabel($field)
     {
-        if (null !== $this->translatorPrefix && null === $this->translator) {
-            throw new \RuntimeException('No translator registered.');
-        }
-
         $label = $field;
 
         if (null !== $this->translatorPrefix) {

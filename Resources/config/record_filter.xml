@@ -54,9 +54,7 @@
 
         <service id="rollerworks_record_filter.fieldset_factory" class="%rollerworks_record_filter.fieldset_factory.class%">
             <argument type="service" id="rollerworks_record_filter.metadata_factory"/>
-            <call method="setTranslator">
-                <argument type="service" id="translator"/>
-            </call>
+            <argument type="service" id="translator"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
