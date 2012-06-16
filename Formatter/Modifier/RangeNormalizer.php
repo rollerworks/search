@@ -29,11 +29,6 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
 class RangeNormalizer implements ModifierInterface
 {
     /**
-     * @var FilterTypeInterface
-     */
-    protected $type;
-
-    /**
      * @var FilterValuesBag
      */
     protected $valuesBag;
@@ -56,7 +51,6 @@ class RangeNormalizer implements ModifierInterface
         }
 
         $this->valuesBag = $filterStruct;
-        $this->type = $filterConfig->getType();
         $type = $filterConfig->getType();
 
         $isError = false;
@@ -70,7 +64,7 @@ class RangeNormalizer implements ModifierInterface
         foreach ($ranges as $valIndex => $range) {
             // Value is overlapping in range
             foreach ($values as $myIndex => $singeValue) {
-                if ($this->isValInRange($singeValue, $range)) {
+                if ($this->isValInRange($type, $singeValue, $range)) {
                     $messageBag->addInfo('value_in_range', array(
                         '{{ value }}' => '"' . $values[$myIndex]->getOriginalValue() . '"' ,
                         '{{ range }}' => self::getRangeQuoted($ranges[$valIndex])));
@@ -122,7 +116,7 @@ class RangeNormalizer implements ModifierInterface
             foreach ($rangesExcludes as $valIndex => $range) {
                 // Value is overlapping in range
                 foreach ($excludes as $myIndex => $singeValue) {
-                    if ($this->isValInRange($singeValue, $range)) {
+                    if ($this->isValInRange($type, $singeValue, $range)) {
                         $messageBag->addInfo('value_in_range', array(
                             '{{ value }}' => '!"' . $singeValue->getOriginalValue() . '"',
                             '{{ range }}' => '!' . self::getRangeQuoted($range)));
@@ -225,16 +219,17 @@ class RangeNormalizer implements ModifierInterface
     /**
      * Returns whether $singeValue is overlapping in $range.
      *
-     * @param SingleValue $singeValue
-     * @param Range       $range
+     * @param FilterTypeInterface $type
+     * @param SingleValue         $singeValue
+     * @param Range               $range
      *
      * @return boolean
      */
-    protected function isValInRange(SingleValue $singeValue, Range $range)
+    protected function isValInRange($type, SingleValue $singeValue, Range $range)
     {
-        if ($this->type->isLower($singeValue->getValue(), $range->getUpper()) && $this->type->isHigher($singeValue->getValue(), $range->getLower())) {
+        if ($type->isLower($singeValue->getValue(), $range->getUpper()) && $type->isHigher($singeValue->getValue(), $range->getLower())) {
             return true;
-        } elseif ($this->type->isEqual($singeValue->getValue(), $range->getUpper()) && $this->type->isEqual($singeValue->getValue(), $range->getLower())) {
+        } elseif ($type->isEqual($singeValue->getValue(), $range->getUpper()) && $type->isEqual($singeValue->getValue(), $range->getLower())) {
             return true;
         } else {
             return false;
