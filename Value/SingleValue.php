@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Value;
 
 /**
- * Single value
+ * Single value.
  */
 class SingleValue
 {

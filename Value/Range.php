@@ -12,7 +12,7 @@
 namespace Rollerworks\RecordFilterBundle\Value;
 
 /**
- * Range value
+ * Range value.
  */
 class Range
 {

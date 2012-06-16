@@ -39,7 +39,7 @@ class Compare extends SingleValue
         parent::__construct($value, $originalValue);
 
         if (!in_array($operator, array('>=', '<=', '<>', '<', '>'))) {
-            throw new \InvalidArgumentException('Unknown operator: ' . $operator);
+            throw new \InvalidArgumentException(sprintf('Unknown operator "%s".', $operator));
         }
 
         $this->operator = $operator;
