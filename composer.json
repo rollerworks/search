@@ -1,0 +1,23 @@
+{
+    "name": "rollerworks/recordfilter-bundle",
+    "description": "Record search-filtering bundle for Symfony",
+    "keywords": ["filter","search","symfony","bundle"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony": "2.*,<2.0.x-dev",
+        "jms/metadata": ">=1.1.1",
+        "rollerworks/locale": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "" }
+    },
+    "target-dir": "Rollerworks/Bundle/RecordFilterBundle"
+}

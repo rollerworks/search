@@ -23,7 +23,6 @@
             <exclude>
                 <directory>./Resources</directory>
                 <directory>./Tests/Fixtures</directory>
-                <directory>./Tests/record_filters_cache</directory>
             </exclude>
         </whitelist>
     </filter>

@@ -1,6 +1,5 @@
 # Numerous always-ignore extensions
 *.diff
-*.bak
 *.err
 *.orig
 *.log
@@ -30,4 +29,3 @@ composer.lock
 composer.phar
 autoload.php
 /vendor/
-
