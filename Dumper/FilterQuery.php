@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
 
-use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**
  * Dump the filtering preferences as RecordFilter FilterQuery string.
  *
- * @see \Rollerworks\RecordFilterBundle\Input
+ * @see \Rollerworks\Bundle\RecordFilterBundle\Input
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

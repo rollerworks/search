@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Exception;
+namespace Rollerworks\Bundle\RecordFilterBundle\Exception;
 
 class Exception extends \Exception
 {

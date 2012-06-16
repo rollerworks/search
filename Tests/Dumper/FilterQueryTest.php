@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Dumper;
 
-use Rollerworks\RecordFilterBundle\Dumper\FilterQuery;
-use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
-use Rollerworks\RecordFilterBundle\Tests\TestCase;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Dumper\FilterQuery;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
+use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
 
 class FilterQueryTest extends TestCase
 {

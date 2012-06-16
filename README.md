@@ -69,7 +69,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new Rollerworks\RecordFilterBundle\RollerworksRecordFilterBundle(),
+        new Rollerworks\Bundle\RecordFilterBundle\RollerworksRecordFilterBundle(),
     );
 }
 ```

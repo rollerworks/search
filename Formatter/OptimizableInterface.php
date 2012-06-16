@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Formatter;
+namespace Rollerworks\Bundle\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\MessageBag;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
  * Filter optimizable interface.

@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Type\Number;
-use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Type\Number;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
-class NumberTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
+class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
 {
     /**
      * @dataProvider getDataForSanitation

@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Formatter;
+namespace Rollerworks\Bundle\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 
 /**
  * Filter type supporting connected-list of values to ranges should implement this interface.

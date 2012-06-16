@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier;
 
-use Rollerworks\RecordFilterBundle\Type\Date;
-use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
-use Rollerworks\RecordFilterBundle\Value\Range;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
+use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
 
 class ValidationTest extends ModifierTestCase
 {

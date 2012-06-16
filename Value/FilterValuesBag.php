@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Value;
+namespace Rollerworks\Bundle\RecordFilterBundle\Value;
 
-use Rollerworks\RecordFilterBundle\Value\Compare;
-use Rollerworks\RecordFilterBundle\Value\Range;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 
 /**
  * ValuesBag.

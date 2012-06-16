@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Input;
+namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\Exception\ValidationException;
-use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Exception\ValidationException;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
  * ArrayInput.

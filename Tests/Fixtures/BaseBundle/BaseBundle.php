@@ -1,6 +1,6 @@
 <?php
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

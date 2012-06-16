@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
 
-use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**
  * Dump the filtering preferences as 'flat' PHP Array.

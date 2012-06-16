@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Input;
+namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FieldSet;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;

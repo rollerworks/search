@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Mapping;
+namespace Rollerworks\Bundle\RecordFilterBundle\Mapping;
 
 use Metadata\PropertyMetadata as BasePropertyMetadata;
-use Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlValueConversionInterface;
 
 /**
  * PropertyMetadata.
@@ -52,8 +52,8 @@ class PropertyMetadata extends BasePropertyMetadata
             throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" can\'t be abstract.', $class));
         }
 
-        if (!$r->implementsInterface('\\Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface')) {
-            throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" must implement Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface.', $class));
+        if (!$r->implementsInterface('\\Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlValueConversionInterface')) {
+            throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" must implement Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlValueConversionInterface.', $class));
         }
 
         if ($r->hasMethod('__construct') && !$r->getMethod('__construct')->isPublic() ) {

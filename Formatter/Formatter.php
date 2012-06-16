@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Formatter;
+namespace Rollerworks\Bundle\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
-use Rollerworks\RecordFilterBundle\MessageBag;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Input\InputInterface;
-use Rollerworks\RecordFilterBundle\FieldSet;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Input\InputInterface;
+use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -55,7 +55,7 @@ class Formatter implements FormatterInterface
     protected $modifiers = array();
 
     /**
-     * @var \Rollerworks\RecordFilterBundle\FieldSet|null
+     * @var \Rollerworks\Bundle\RecordFilterBundle\FieldSet|null
      */
     protected $fieldSet;
 

@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier;
 
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
-use Rollerworks\RecordFilterBundle\Value\Compare;
-use Rollerworks\RecordFilterBundle\Value\Range;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
 
 class OptimizeTest extends ModifierTestCase
 {

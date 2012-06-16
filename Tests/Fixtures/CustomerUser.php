@@ -1,6 +1,6 @@
 <?php
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures;
 
 class CustomerUser
 {

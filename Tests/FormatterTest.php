@@ -9,21 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Type\Date;
-use Rollerworks\RecordFilterBundle\Type\DateTimeExtended;
-use Rollerworks\RecordFilterBundle\Type\Number;
-use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
-use Rollerworks\RecordFilterBundle\Value\Compare;
-use Rollerworks\RecordFilterBundle\Value\Range;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
+use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
+use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
+use Rollerworks\Bundle\RecordFilterBundle\Type\Number;
+use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
 
-use Rollerworks\RecordFilterBundle\Tests\Modifier\ModifierTestCase;
-use Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier\ModifierTestCase;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\InvoiceType;
 
 class FormatterTest extends ModifierTestCase
 {

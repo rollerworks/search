@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Record\Sql;
+namespace Rollerworks\Bundle\RecordFilterBundle\Record\Sql;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;

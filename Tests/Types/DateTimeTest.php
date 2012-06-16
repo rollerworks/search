@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Types;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Types;
 
-use Rollerworks\RecordFilterBundle\Type\DateTime;
-use Rollerworks\RecordFilterBundle\Type\DateTimeExtended;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use \Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Type\DateTime;
+use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use \Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 class DateTimeTest extends DateTimeTestCase
 {

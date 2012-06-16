@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Mapping\Loader;
+namespace Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader;
 
 use Metadata\Driver\DriverInterface;
 
@@ -35,7 +35,7 @@ abstract class AbstractDriver implements DriverInterface
         }
 
         if (false === strpos($type, '\\')) {
-            $type = '\\Rollerworks\\RecordFilterBundle\\Type\\' . ucfirst($type);
+            $type = '\\Rollerworks\\Bundle\\RecordFilterBundle\\Type\\' . ucfirst($type);
         } else {
             $type = '\\'. ltrim($type, '\\');
         }
@@ -48,8 +48,8 @@ abstract class AbstractDriver implements DriverInterface
 
         if ($r->isAbstract()) {
             throw new \InvalidArgumentException(sprintf('Filter-type "%s" can\'t be abstract.', $type));
-        } elseif (!$r->implementsInterface('\\Rollerworks\\RecordFilterBundle\\Type\\FilterTypeInterface')) {
-            throw new \InvalidArgumentException(sprintf('Filter-type "%s" must implement Rollerworks\RecordFilterBundle\Type\FilterTypeInterface.', $type));
+        } elseif (!$r->implementsInterface('\\Rollerworks\\Bundle\\RecordFilterBundle\\Type\\FilterTypeInterface')) {
+            throw new \InvalidArgumentException(sprintf('Filter-type "%s" must implement Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface.', $type));
         }
 
         if ($r->hasMethod('__construct') && !$r->getMethod('__construct')->isPublic() ) {

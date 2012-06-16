@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Formatter;
+namespace Rollerworks\Bundle\RecordFilterBundle\Formatter;
 
-use Rollerworks\RecordFilterBundle\FieldSet;
+use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 
 /**
  * RecordFiltering formatting interface.
@@ -29,7 +29,7 @@ interface FormatterInterface
      *
      * Like:
      * [group-n] => array(
-     *   'field-name' => {\Rollerworks\RecordFilterBundle\Value\FilterValuesBag object}
+     *   'field-name' => {\Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag object}
      * )
      *
      * @return array

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle;
+namespace Rollerworks\Bundle\RecordFilterBundle;
 
 use Symfony\Component\Translation\TranslatorInterface;
 

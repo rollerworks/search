@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Annotation;
+namespace Rollerworks\Bundle\RecordFilterBundle\Annotation;
 
 /**
  * Annotation class for Filtering fields.

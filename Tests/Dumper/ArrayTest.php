@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Dumper;
 
-use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Input\FilterQuery;
-use Rollerworks\RecordFilterBundle\Dumper\PHPArray;
-use Rollerworks\RecordFilterBundle\Tests\TestCase;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
+use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
+use Rollerworks\Bundle\RecordFilterBundle\Dumper\PHPArray;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
 
 class ArrayTest extends TestCase
 {

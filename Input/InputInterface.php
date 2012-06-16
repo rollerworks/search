@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Input;
+namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\FieldSet;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
 
 /**
  * Interface for supplying input-values
@@ -47,7 +47,7 @@ interface InputInterface
      * Values are not formatted nor validated.
      *
      * Returns the fields per group, like:
-     * [group-n] => array('field-name' => {\Rollerworks\RecordFilterBundle\Value\FilterValuesBag object})
+     * [group-n] => array('field-name' => {\Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag object})
      *
      * @return array|boolean Returns false in case of an error/failure
      *

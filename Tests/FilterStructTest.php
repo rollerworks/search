@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Value\Compare;
-use Rollerworks\RecordFilterBundle\Value\Range;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 
 class FilterStructTest extends \PHPUnit_Framework_TestCase
 {

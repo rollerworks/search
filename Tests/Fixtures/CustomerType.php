@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures;
 
-use Rollerworks\RecordFilterBundle\MessageBag;
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 
 class CustomerType implements FilterTypeInterface
 {

@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures;
 
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Formatter\OptimizableInterface;
-use Rollerworks\RecordFilterBundle\MessageBag;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\OptimizableInterface;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 
 class StatusType implements FilterTypeInterface, OptimizableInterface
 {

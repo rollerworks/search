@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Input;
+namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
-use Rollerworks\RecordFilterBundle\Exception\ValidationException;
-use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
-use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\Value\Compare;
-use Rollerworks\RecordFilterBundle\Value\Range;
-use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Exception\ValidationException;
+use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
  * FilterQuery.

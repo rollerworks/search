@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Type;
+namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;

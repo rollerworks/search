@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Types;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Types;
 
-use Rollerworks\RecordFilterBundle\Type\DateTime;
+use Rollerworks\Bundle\RecordFilterBundle\Type\DateTime;
 
-abstract class DateTimeTestCase extends \Rollerworks\RecordFilterBundle\Tests\TestCase
+abstract class DateTimeTestCase extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
 {
     protected function assertDateTimeEqual($expected, $input, $withTime = false)
     {

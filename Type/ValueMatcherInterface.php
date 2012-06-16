@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Type;
+namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
 /**
  * ValueMatcherInterface.

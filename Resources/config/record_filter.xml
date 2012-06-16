@@ -5,23 +5,23 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="rollerworks_record_filter.input.filter_query.class">Rollerworks\RecordFilterBundle\Input\FilterQuery</parameter>
-        <parameter key="rollerworks_record_filter.fieldset_factory.class">Rollerworks\RecordFilterBundle\Mapping\FieldSetFactory</parameter>
+        <parameter key="rollerworks_record_filter.input.filter_query.class">Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery</parameter>
+        <parameter key="rollerworks_record_filter.fieldset_factory.class">Rollerworks\Bundle\RecordFilterBundle\Mapping\FieldSetFactory</parameter>
 
         <parameter key="rollerworks_record_filter.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="rollerworks_record_filter.metadata.driver_chain.class">Metadata\Driver\DriverChain</parameter>
-        <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\RecordFilterBundle\Mapping\Loader\AnnotationDriver</parameter>
+        <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver</parameter>
         <parameter key="rollerworks_record_filter.metadata.cache.class">Metadata\Cache\FileCache</parameter>
 
-        <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\RecordFilterBundle\Formatter\Formatter</parameter>
+        <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter</parameter>
 
         <!-- Formatter modifiers classes -->
-        <parameter key="rollerworks_record_filter.formatter.modifiers.validator.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\Validator</parameter>
-        <parameter key="rollerworks_record_filter.formatter.modifiers.duplicate_remove.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove</parameter>
-        <parameter key="rollerworks_record_filter.formatter.modifiers.range_normalizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\RangeNormalizer</parameter>
-        <parameter key="rollerworks_record_filter.formatter.modifiers.values_to_range.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\ValuesToRange</parameter>
-        <parameter key="rollerworks_record_filter.formatter.modifiers.compare_normalizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\CompareNormalizer</parameter>
-        <parameter key="rollerworks_record_filter.formatter.modifiers.value_optimizer.class">Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.validator.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\Validator</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.duplicate_remove.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\DuplicateRemove</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.range_normalizer.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\RangeNormalizer</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.values_to_range.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ValuesToRange</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.compare_normalizer.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\CompareNormalizer</parameter>
+        <parameter key="rollerworks_record_filter.formatter.modifiers.value_optimizer.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ValueOptimizer</parameter>
     </parameters>
 
     <services>

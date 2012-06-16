@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Type;
+namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
-use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 

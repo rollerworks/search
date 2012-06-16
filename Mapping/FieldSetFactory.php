@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Mapping;
+namespace Rollerworks\Bundle\RecordFilterBundle\Mapping;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Rollerworks\RecordFilterBundle\FilterConfig;
-use Rollerworks\RecordFilterBundle\FieldSet;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -157,7 +157,7 @@ class FieldSetFactory
             if (null !== $propertyMetadata->type) {
                 $r = new \ReflectionClass($propertyMetadata->type);
 
-                if ($r->implementsInterface('Rollerworks\\RecordFilterBundle\\Type\\ConfigurableInterface')) {
+                if ($r->implementsInterface('Rollerworks\\Bundle\\RecordFilterBundle\\Type\\ConfigurableInterface')) {
                     if (isset($options[$propertyMetadata->filter_name])) {
                         $optionsResolver = new OptionsResolver();
                         call_user_func(array($propertyMetadata->type, 'setOptions'), $optionsResolver);

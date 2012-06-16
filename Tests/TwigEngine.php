@@ -4,7 +4,7 @@
  * This an direct copy of the Symfony\Bundle\TwigBundle\TwigEngine but without the dependency's for testing
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;

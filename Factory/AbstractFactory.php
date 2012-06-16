@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Factory;
+namespace Rollerworks\Bundle\RecordFilterBundle\Factory;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

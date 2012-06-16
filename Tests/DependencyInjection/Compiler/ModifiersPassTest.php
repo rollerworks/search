@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\DependencyInjection\Compiler;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-use Rollerworks\RecordFilterBundle\DependencyInjection\Compiler\FormatterModifiersPass;
-use Rollerworks\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\Bundle\RecordFilterBundle\DependencyInjection\Compiler\FormatterModifiersPass;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 
 class ModifiersPassTest extends TestCase
 {
@@ -27,7 +27,7 @@ class ModifiersPassTest extends TestCase
         $valueOptimizerModifier = new Definition('ValueOptimizerClass');
         $valueOptimizerModifier->addTag('rollerworks_record_filter.formatter_modifier');
 
-        $formatter = new Definition('Rollerworks\RecordFilterBundle\Formatter\Formatter');
+        $formatter = new Definition('Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter');
 
         $container = $this->createContainer();
         $container->setDefinition('rollerworks_record_filter.formatter', $formatter);
@@ -57,7 +57,7 @@ class ModifiersPassTest extends TestCase
         $valueOptimizerModifier = new Definition('ValueOptimizerClass');
         $valueOptimizerModifier->addTag('rollerworks_record_filter.formatter_modifier', array('priority' => 0));
 
-        $formatter = new Definition('Rollerworks\RecordFilterBundle\Formatter\Formatter');
+        $formatter = new Definition('Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter');
 
         $container = $this->createContainer();
         $container->setDefinition('rollerworks_record_filter.formatter', $formatter);

@@ -1,8 +1,8 @@
 <?php
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
 
-use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
+use Rollerworks\Bundle\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
  * ECommerce-Customer
@@ -16,8 +16,8 @@ class ECommerceCustomer
      * @Id
      * @Column(type="integer")
      * @GeneratedValue(strategy="AUTO")
-     * @RecordFilter\Field("customer_id", type="Rollerworks\RecordFilterBundle\Tests\Fixtures\CustomerType")
-     * @RecordFilter\SqlConversion("Rollerworks\RecordFilterBundle\Tests\Fixtures\CustomerConversion")
+     * @RecordFilter\Field("customer_id", type="Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerType")
+     * @RecordFilter\SqlConversion("Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion")
      */
     private $id;
 }

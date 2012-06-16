@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
 
-use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 
 /**
  * Dump the filtering preferences as formatted XML (Extensible Markup Language).

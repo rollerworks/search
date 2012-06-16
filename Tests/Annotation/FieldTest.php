@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\TestAnnotation;
+namespace Rollerworks\Bundle\RecordFilterBundle\TestAnnotation;
 
-use Rollerworks\RecordFilterBundle\Annotation\Field as FilterField;
+use Rollerworks\Bundle\RecordFilterBundle\Annotation\Field as FilterField;
 
 class FieldTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,7 +26,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
     public function testNameReq()
     {
-        $this->setExpectedException('\UnexpectedValueException', "Property 'name' on annotation 'Rollerworks\\RecordFilterBundle\\Annotation\\Field' is required.");
+        $this->setExpectedException('\UnexpectedValueException', "Property 'name' on annotation 'Rollerworks\\Bundle\\RecordFilterBundle\\Annotation\\Field' is required.");
         new FilterField(array('type' => 'User'));
     }
 
@@ -71,7 +71,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
     public function testUnknownProp()
     {
-        $this->setExpectedException('\BadMethodCallException', "Unknown property 'doctor' on annotation 'Rollerworks\\RecordFilterBundle\\Annotation\\Field'.");
+        $this->setExpectedException('\BadMethodCallException', "Unknown property 'doctor' on annotation 'Rollerworks\\Bundle\\RecordFilterBundle\\Annotation\\Field'.");
         new FilterField(array('name' => 'User', 'doctor' => 'who' ));
     }
 }

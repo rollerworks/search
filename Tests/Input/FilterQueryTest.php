@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Input;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Input;
 
-use Rollerworks\RecordFilterBundle\Input\FilterQuery as QueryInput;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\Type\Date;
-use Rollerworks\RecordFilterBundle\Tests\TestCase;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
 
 class FilterQueryTest extends TestCase
 {

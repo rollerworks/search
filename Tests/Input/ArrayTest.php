@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Input;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Input;
 
-use Rollerworks\RecordFilterBundle\Input\ArrayInput;
-use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\Tests\TestCase;
-use Rollerworks\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Input\ArrayInput;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
 
 class ArrayTest extends TestCase
 {

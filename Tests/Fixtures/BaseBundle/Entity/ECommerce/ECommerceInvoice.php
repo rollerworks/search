@@ -1,8 +1,8 @@
 <?php
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
 
-use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
+use Rollerworks\Bundle\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
  * ECommerce-Invoice
@@ -22,7 +22,7 @@ class ECommerceInvoice
 
     /**
      * @Column(type="string", unique=true)
-     * @RecordFilter\Field("invoice_label", type="Rollerworks\RecordFilterBundle\Tests\Fixtures\InvoiceType")
+     * @RecordFilter\Field("invoice_label", type="Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\InvoiceType")
      */
     private $label;
 
@@ -42,7 +42,7 @@ class ECommerceInvoice
 
     /**
      * @Column(type="integer")
-     * @RecordFilter\Field("invoice_status", type="Rollerworks\RecordFilterBundle\Tests\Fixtures\StatusType")
+     * @RecordFilter\Field("invoice_status", type="Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\StatusType")
      */
     private $status;
 

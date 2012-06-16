@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
 
-class CustomerConversion implements \Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface
+class CustomerConversion implements \Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlValueConversionInterface
 {
     /**
      * {@inheritdoc}

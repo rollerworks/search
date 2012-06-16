@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle;
+namespace Rollerworks\Bundle\RecordFilterBundle;
 
 /**
  * FieldSet.
@@ -131,7 +131,7 @@ class FieldSet
     /**
      * Returns all the registered fields.
      *
-     * @return FilterConfig[] [field-name] => {\Rollerworks\RecordFilterBundle\FilterConfig object})
+     * @return FilterConfig[] [field-name] => {\Rollerworks\Bundle\RecordFilterBundle\FilterConfig object})
      */
     public function all()
     {

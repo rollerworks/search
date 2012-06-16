@@ -1,8 +1,8 @@
 <?php
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce;
 
-use Rollerworks\RecordFilterBundle\Annotation as RecordFilter;
+use Rollerworks\Bundle\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
  * ECommerce-Invoice row

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Value;
+namespace Rollerworks\Bundle\RecordFilterBundle\Value;
 
 /**
  * Compare value structure.

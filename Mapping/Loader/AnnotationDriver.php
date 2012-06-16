@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Mapping\Loader;
+namespace Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader;
 
-use Rollerworks\RecordFilterBundle\Mapping\PropertyMetadata;
-use Rollerworks\RecordFilterBundle\Annotation\Field as AnnotationField;
-use Rollerworks\RecordFilterBundle\Annotation\SqlConversion;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\PropertyMetadata;
+use Rollerworks\Bundle\RecordFilterBundle\Annotation\Field as AnnotationField;
+use Rollerworks\Bundle\RecordFilterBundle\Annotation\SqlConversion;
 
 use Metadata\MergeableClassMetadata;
 use Doctrine\Common\Annotations\Reader;
@@ -54,7 +54,7 @@ class AnnotationDriver extends AbstractDriver
 
             foreach ($this->reader->getPropertyAnnotations($reflectionProperty) as $annotation) {
                 if ($annotation instanceof AnnotationField) {
-                    /** @var \Rollerworks\RecordFilterBundle\Annotation\Field $annotation */
+                    /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\Field $annotation */
                     $propertyMetadata->filter_name = $annotation->getName();
                     $propertyMetadata->required    = $annotation->isRequired();
 
@@ -64,7 +64,7 @@ class AnnotationDriver extends AbstractDriver
                     $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
                     $propertyMetadata->acceptCompares = $annotation->acceptsCompares();
                 } elseif ($annotation instanceof SqlConversion) {
-                    /** @var \Rollerworks\RecordFilterBundle\Annotation\SqlConversion $annotation */
+                    /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\SqlConversion $annotation */
                     $propertyMetadata->setSqlConversion($annotation->getClass(), $annotation->getParams());
                 }
             }

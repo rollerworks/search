@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Fixtures;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Rollerworks\RecordFilterBundle\MessageBag;
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
 
 /**
  * InvoiceType

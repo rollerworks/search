@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle;
+namespace Rollerworks\Bundle\RecordFilterBundle;
 
-use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
-use Rollerworks\RecordFilterBundle\Type\ValueMatcherInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
 
 /**
  * FilterConfig.

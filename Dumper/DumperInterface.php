@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
 
-use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**
  * DumperInterface for dumping the filtering preference.
@@ -23,7 +23,7 @@ interface DumperInterface
     /**
      * Dump the filters in a 'serialized' format.
      *
-     * @param \Rollerworks\RecordFilterBundle\Formatter\FormatterInterface $formatter
+     * @param \Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface $formatter
      */
     public function dumpFilters(FormatterInterface $formatter);
 }

@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Modifier;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier;
 
-use Rollerworks\RecordFilterBundle\Formatter\Formatter;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\Validator;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\DuplicateRemove;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValuesToRange;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\RangeNormalizer;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\CompareNormalizer;
-use Rollerworks\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\Validator;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\DuplicateRemove;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ValuesToRange;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\RangeNormalizer;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\CompareNormalizer;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ValueOptimizer;
 
-abstract class ModifierTestCase extends \Rollerworks\RecordFilterBundle\Tests\TestCase
+abstract class ModifierTestCase extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
 {
     /**
      * Returns an new Formatter object.

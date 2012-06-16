@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests\Factory;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Factory;
 
-use Rollerworks\RecordFilterBundle\FieldSet;
-use Rollerworks\RecordFilterBundle\Input\FilterQuery;
-use Rollerworks\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
-use Rollerworks\RecordFilterBundle\Factory\SqlWhereBuilderFactory;
-use Rollerworks\RecordFilterBundle\Tests\Record\OrmTestCase;
+use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
+use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
+use Rollerworks\Bundle\RecordFilterBundle\Factory\SqlWhereBuilderFactory;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Record\OrmTestCase;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
 

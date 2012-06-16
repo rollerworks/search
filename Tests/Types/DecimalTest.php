@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\RecordFilterBundle\Tests;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests;
 
-use Rollerworks\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\RecordFilterBundle\Type\Decimal;
-use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Type\Decimal;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
-class DecimalTest extends \Rollerworks\RecordFilterBundle\Tests\TestCase
+class DecimalTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
 {
     /**
      * @dataProvider getDataForSanitation
