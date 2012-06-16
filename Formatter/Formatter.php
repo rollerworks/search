@@ -121,7 +121,7 @@ class Formatter implements FormatterInterface
     public function formatInput(InputInterface $input)
     {
         $this->formatted  = false;
-        $this->fieldSet   = $input->getFieldsConfig();
+        $this->fieldSet   = $input->getFieldSet();
         $this->messageBag = new MessageBag($this->translator);
 
         $groups = $input->getGroups();
@@ -131,7 +131,7 @@ class Formatter implements FormatterInterface
         }
 
         foreach ($groups as $groupIndex => $values) {
-            $this->formatGroup($input->getFieldsConfig(), $values, $groupIndex);
+            $this->formatGroup($input->getFieldSet(), $values, $groupIndex);
         }
 
         $this->formatted = count($this->messageBag->get('error')) < 1;

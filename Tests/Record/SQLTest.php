@@ -41,7 +41,7 @@ class SQLTest extends OrmTestCase
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
         $whereBuilder    = new WhereBuilder($this->em, $metadataFactory);
 
-        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldsConfig(), $this->formatter));
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
     }
 
@@ -64,7 +64,7 @@ class SQLTest extends OrmTestCase
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
         $whereBuilder    = new WhereBuilder($this->em, $metadataFactory);
 
-        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldsConfig(), $this->formatter));
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
     }
 

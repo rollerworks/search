@@ -131,7 +131,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * {@inheritdoc}
      */
-    public function getFieldsConfig()
+    public function getFieldSet()
     {
         if (null === $this->fieldsSet) {
             $this->fieldsSet = new FieldSet();

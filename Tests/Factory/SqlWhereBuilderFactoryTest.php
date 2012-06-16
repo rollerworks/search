@@ -61,7 +61,7 @@ class SqlWhereBuilderFactoryTest extends OrmTestCase
         $input = $this->newInput($filterQuery, $fieldSet);
         $this->assertTrue($this->formatter->formatInput($input));
 
-        $whereCase = $this->cleanSql($this->factory->getWhereBuilder($fieldSet)->getWhereClause($input->getFieldsConfig(), $this->formatter));
+        $whereCase = $this->cleanSql($this->factory->getWhereBuilder($fieldSet)->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
     }
 

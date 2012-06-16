@@ -44,7 +44,7 @@ interface InputInterface
     /**
      * Returns the groups and the containing filtering values.
      *
-     * The values are not formatted or validated.
+     * Values are not formatted nor validated.
      *
      * Returns the fields per group, like:
      * [group-n] => array('field-name' => {\Rollerworks\RecordFilterBundle\Value\FilterValuesBag object})
@@ -56,11 +56,11 @@ interface InputInterface
     public function getGroups();
 
     /**
-     * Returns all the configured fields and there configuration.
+     * Returns the used FieldSet.
      *
      * @return FieldSet
      *
      * @api
      */
-    public function getFieldsConfig();
+    public function getFieldSet();
 }
