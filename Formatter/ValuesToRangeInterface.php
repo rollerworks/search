@@ -17,27 +17,30 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
  * Filter type supporting connected-list of values to ranges should implement this interface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @api
  */
 interface ValuesToRangeInterface
 {
     /**
      * Sorts the values input list.
      *
-     * Must return an integer value depending on the comparison
-     *
-     * @link http://php.net/uasort
+     * Must return an integer value depending on the comparison.
+     * @link http://php.net/usort
      *
      * @param SingleValue $first
      * @param SingleValue $second
      *
      * @return integer
+     *
+     * @api
      */
     public function sortValuesList(SingleValue $first, SingleValue $second);
 
     /**
      * Returns the higher-by-one value of the input.
      *
-     * Input value is normalized, and should be returned normalized.
+     * Input value is sanitized, and the return value should be also be returned sanitized.
      * The value should be increased by 'one', where one is considered the 'next' value of the input.
      *
      * Examples:

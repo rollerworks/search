@@ -121,7 +121,7 @@ class FieldSetFactory
      *
      * @return self
      *
-     * @see Symfony\Component\OptionsResolver\OptionsResolver
+     * @see \Symfony\Component\OptionsResolver\OptionsResolver
      *
      * @throws \InvalidArgumentException When $class is not an object or string
      * @throws \RuntimeException
@@ -142,7 +142,6 @@ class FieldSetFactory
          * @var \Metadata\ClassMetadata $metadata
          * @var PropertyMetadata $propertyMetadata
          */
-
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             if (!$propertyMetadata instanceof PropertyMetadata) {
                 continue;
@@ -190,7 +189,7 @@ class FieldSetFactory
     }
 
     /**
-     * Get the label by fieldName
+     * Get the label by fieldName.
      *
      * @param string $field
      *

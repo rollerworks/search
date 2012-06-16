@@ -227,12 +227,14 @@ class RangeNormalizer implements ModifierInterface
      */
     protected function isValInRange($type, SingleValue $singeValue, Range $range)
     {
-        if ($type->isLower($singeValue->getValue(), $range->getUpper()) && $type->isHigher($singeValue->getValue(), $range->getLower())) {
+        if (
+            ($type->isLower($singeValue->getValue(), $range->getUpper()) && $type->isHigher($singeValue->getValue(), $range->getLower()))
+        ||
+            ($type->isEqual($singeValue->getValue(), $range->getUpper()) && $type->isEqual($singeValue->getValue(), $range->getLower()))
+        ) {
             return true;
-        } elseif ($type->isEqual($singeValue->getValue(), $range->getUpper()) && $type->isEqual($singeValue->getValue(), $range->getLower())) {
-            return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

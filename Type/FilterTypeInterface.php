@@ -20,15 +20,19 @@ use Rollerworks\RecordFilterBundle\MessageBag;
  * The input for comparing values is always sanitized.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @api
  */
 interface FilterTypeInterface
 {
     /**
-     * Sanitize the input string to an normal useful value
+     * Sanitize the input string to an normal useful value.
      *
      * @param mixed $input
      *
      * @return mixed
+     *
+     * @api
      */
     public function sanitizeString($input);
 
@@ -40,6 +44,8 @@ interface FilterTypeInterface
      * @param mixed $value
      *
      * @return string
+     *
+     * @api
      */
     public function formatOutput($value);
 
@@ -51,36 +57,44 @@ interface FilterTypeInterface
      * @param mixed $input
      *
      * @return string
+     *
+     * @api
      */
     public function dumpValue($input);
 
     /**
-     * Returns whether the first value is higher then the second
+     * Returns whether the first value is higher then the second.
      *
      * @param mixed $input
      * @param mixed $nextValue
      *
      * @return boolean
+     *
+     * @api
      */
     public function isHigher($input, $nextValue);
 
     /**
-     * Returns whether the first value is lower then the second
+     * Returns whether the first value is lower then the second.
      *
      * @param mixed $input
      * @param mixed $nextValue
      *
      * @return boolean
+     *
+     * @api
      */
     public function isLower($input, $nextValue);
 
     /**
-     * Returns whether the first value equals then the second
+     * Returns whether the first value equals then the second.
      *
      * @param mixed $input
      * @param mixed $nextValue
      *
      * @return boolean
+     *
+     * @api
      */
     public function isEqual($input, $nextValue);
 
@@ -95,6 +109,8 @@ interface FilterTypeInterface
      * @param MessageBag   $messageBag
      *
      * @return boolean
+     *
+     * @api
      */
     public function validateValue($input, &$message = null, MessageBag $messageBag = null);
 }

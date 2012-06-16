@@ -69,7 +69,7 @@ class Time extends Date
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
+     * @param DateTimeExtended $input
      */
     public function dumpValue($input)
     {
@@ -99,8 +99,8 @@ class Time extends Date
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
-     * @param \DateTime $nextValue
+     * @param DateTimeExtended $input
+     * @param DateTimeExtended $nextValue
      */
     public function isHigher($input, $nextValue)
     {
@@ -117,8 +117,8 @@ class Time extends Date
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
-     * @param \DateTime $nextValue
+     * @param DateTimeExtended $input
+     * @param DateTimeExtended $nextValue
      */
     public function isLower($input, $nextValue)
     {

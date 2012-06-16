@@ -20,22 +20,40 @@ namespace Rollerworks\RecordFilterBundle\Annotation;
  */
 class Field
 {
+    /**
+     * @var string
+     */
     private $name;
 
+    /**
+     * @var boolean
+     */
     private $required;
 
+    /**
+     * @var null|string
+     */
     private $type;
 
+    /**
+     * @var boolean
+     */
     private $acceptRanges;
 
+    /**
+     * @var boolean
+     */
     private $acceptCompares;
 
+    /**
+     * @var array
+     */
     private $params = array();
 
     /**
      * Constructor.
      *
-     * @param array $data An array of key/value parameters.
+     * @param array $data An array of key/value parameters
      *
      * @throws \BadMethodCallException
      * @throws \UnexpectedValueException
@@ -79,61 +97,97 @@ class Field
         }
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @param boolean $required
+     */
     public function setRequired($required)
     {
         $this->required = $required;
     }
 
+    /**
+     * @return boolean
+     */
     public function isRequired()
     {
         return $this->required;
     }
 
+    /**
+     * @param string|null $type
+     */
     public function setType($type)
     {
         $this->type = $type;
     }
 
+    /**
+     * @return null|string
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @param boolean $accept
+     */
     public function setAcceptRanges($accept)
     {
         $this->acceptRanges = $accept;
     }
 
+    /**
+     * @return boolean
+     */
     public function acceptsRanges()
     {
         return $this->acceptRanges;
     }
 
+    /**
+     * @param boolean $accept
+     */
     public function setAcceptCompares($accept)
     {
         $this->acceptCompares = $accept;
     }
 
+    /**
+     * @return boolean
+     */
     public function acceptsCompares()
     {
         return $this->acceptCompares;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasParams()
     {
         return count($this->params) > 0;
     }
 
+    /**
+     * @return array
+     */
     public function getParams()
     {
         return $this->params;

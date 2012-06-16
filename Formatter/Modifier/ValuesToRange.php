@@ -11,8 +11,8 @@
 
 namespace Rollerworks\RecordFilterBundle\Formatter\Modifier;
 
-use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\MessageBag;
+use Rollerworks\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\RecordFilterBundle\FilterConfig;
@@ -26,7 +26,7 @@ use Rollerworks\RecordFilterBundle\Value\SingleValue;
  * 1,2,3,4,5 is converted to 1-5.
  * 1,2,3,4,5,7,9,11,12,13 is converted to 1-5,7,9,11-13.
  *
- * For this to work properly the filter-type must implement the ValuesToRangeInterface
+ * For this to work properly the filter-type must implement the ValuesToRangeInterface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -142,7 +142,7 @@ class ValuesToRange implements ModifierInterface
     }
 
     /**
-     * Remove an single-value
+     * Remove an single-value.
      *
      * @param integer $index
      * @param boolean $exclude

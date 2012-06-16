@@ -53,8 +53,8 @@ class AnnotationDriver extends AbstractDriver
             $propertyMetadata = new PropertyMetadata($class->getName(), $reflectionProperty->getName());
 
             foreach ($this->reader->getPropertyAnnotations($reflectionProperty) as $annotation) {
-                /** @var \Rollerworks\RecordFilterBundle\Annotation\Field $annotation */
                 if ($annotation instanceof AnnotationField) {
+                    /** @var \Rollerworks\RecordFilterBundle\Annotation\Field $annotation */
                     $propertyMetadata->filter_name = $annotation->getName();
                     $propertyMetadata->required    = $annotation->isRequired();
 
@@ -63,9 +63,8 @@ class AnnotationDriver extends AbstractDriver
 
                     $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
                     $propertyMetadata->acceptCompares = $annotation->acceptsCompares();
-                }
-                /** @var \Rollerworks\RecordFilterBundle\Annotation\SqlConversion $annotation */
-                elseif ($annotation instanceof SqlConversion) {
+                } elseif ($annotation instanceof SqlConversion) {
+                    /** @var \Rollerworks\RecordFilterBundle\Annotation\SqlConversion $annotation */
                     $propertyMetadata->setSqlConversion($annotation->getClass(), $annotation->getParams());
                 }
             }

@@ -15,7 +15,7 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
 use Rollerworks\RecordFilterBundle\Record\Sql\SqlValueConversionInterface;
 
 /**
- * PropertyMetadata
+ * PropertyMetadata.
  */
 class PropertyMetadata extends BasePropertyMetadata
 {
@@ -33,7 +33,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $sqlConversion = array('class' => null, 'params' => array());
 
     /**
-     * Set SQL conversion configuration
+     * Set SQL conversion configuration.
      *
      * @param string $class
      * @param array  $params
@@ -112,6 +112,7 @@ class PropertyMetadata extends BasePropertyMetadata
 
     /**
      * @param string $str
+     * @return mixed
      */
     public function unserialize($str)
     {

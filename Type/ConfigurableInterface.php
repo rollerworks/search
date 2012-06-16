@@ -20,6 +20,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * This uses the Symfony OptionsResolver component.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @api
  */
 interface ConfigurableInterface
 {
@@ -27,6 +29,8 @@ interface ConfigurableInterface
      * Sets the options configuration for the resolver.
      *
      * @param OptionsResolverInterface $resolver
+     *
+     * @api
      */
     public static function setOptions(OptionsResolverInterface $resolver);
 }

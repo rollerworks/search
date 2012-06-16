@@ -18,15 +18,13 @@ use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\RecordFilterBundle\FilterConfig;
 
 /**
- * Optimizes the value by there own implementation.
+ * Optimizes value by filter-type implementation.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class ValueOptimizer implements ModifierInterface
 {
     /**
-     * Optimizer messages
-     *
      * @var array
      */
     protected $messages = array();
@@ -46,8 +44,8 @@ class ValueOptimizer implements ModifierInterface
     {
         if ($filterConfig->hasType() && $filterConfig->getType() instanceof OptimizableInterface) {
             return $filterConfig->getType()->optimizeField($filterStruct, $messageBag);
-        } else {
-            return true;
         }
+
+        return true;
     }
 }

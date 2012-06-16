@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Adds services tagged as formatter_modifier to the formatter service.
+ * Adds services tagged as 'formatter_modifier' to the formatter service.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

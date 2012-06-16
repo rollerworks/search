@@ -27,8 +27,8 @@ use Doctrine\DBAL\Types\Type as ORMType;
  * This class provides the functionality for creating an SQL WHERE-clause based on the RecordFilter fieldSet.
  *
  * Keep the following in mind when using conversions.
- * * When using the result in DQL, custom functions must be registered in the ORM Configuration.
- * * Conversion functions are per field and must be stateless, they get the type and connection information for performing operations.
+ *  * When using the result in DQL, custom functions must be registered in the ORM Configuration.
+ *  * Conversion functions are per field and must be stateless, they get the type and connection information for performing operations.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -221,7 +221,7 @@ class WhereBuilder
     }
 
     /**
-     * Builds and returns the WHERE clause
+     * Builds and returns the WHERE clause.
      *
      * @param FormatterInterface $formatter
      *

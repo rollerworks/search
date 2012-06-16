@@ -19,7 +19,7 @@ use Rollerworks\RecordFilterBundle\FieldSet;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Format the filters by performing the registered modifiers.
+ * Formats the filters by performing the registered modifiers.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -45,8 +45,6 @@ class Formatter implements FormatterInterface
     protected $finalFilters = array();
 
     /**
-     * Translator instance
-     *
      * @var \Symfony\Component\Translation\TranslatorInterface
      */
     protected $translator;
@@ -94,7 +92,7 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Registers an modifier
+     * Registers an modifier.
      *
      * @param ModifierInterface $modifier
      *
@@ -160,7 +158,7 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * Perform the formatting of the given values (per group)
+     * Perform the formatting of the given values (per group).
      *
      * @param FieldSet $filtersConfig
      * @param array    $filters

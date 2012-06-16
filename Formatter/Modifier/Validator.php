@@ -25,6 +25,9 @@ use Rollerworks\RecordFilterBundle\Value\Range;
  */
 class Validator implements ModifierInterface
 {
+    /**
+     * @var boolean
+     */
     protected $isError = false;
 
     /**
@@ -93,7 +96,8 @@ class Validator implements ModifierInterface
 
         foreach ($filterStruct->getRanges() as $range) {
             if (
-                !$this->validateValue($type, $range->getLower(), self::getRangeQuoted($range), $messageBag) ||
+                !$this->validateValue($type, $range->getLower(), self::getRangeQuoted($range), $messageBag)
+            ||
                 !$this->validateValue($type, $range->getUpper(), self::getRangeQuoted($range), $messageBag)
             ) {
                 continue;
@@ -109,7 +113,8 @@ class Validator implements ModifierInterface
 
         foreach ($filterStruct->getExcludedRanges() as $range) {
             if (
-                !$this->validateValue($type, $range->getLower(), '!' . self::getRangeQuoted($range), $messageBag) ||
+                !$this->validateValue($type, $range->getLower(), '!' . self::getRangeQuoted($range), $messageBag)
+            ||
                 !$this->validateValue($type, $range->getUpper(), '!' . self::getRangeQuoted($range), $messageBag)
             ) {
                 continue;

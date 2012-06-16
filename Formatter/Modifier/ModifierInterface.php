@@ -23,9 +23,10 @@ use Rollerworks\RecordFilterBundle\Value\FilterValuesBag;
  *  * An modifier is performed multiple times.
  *  * An modifier is performed per FilterValuesBag per group.
  *  * An modifier can change the values in the FilterValuesBag.
- *  * An message should mention the group the value was in.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @api
  */
 interface ModifierInterface
 {
@@ -35,6 +36,8 @@ interface ModifierInterface
      * This would normally be the class-name in lowercase and underscored.
      *
      * @return string
+     *
+     * @api
      */
     public function getModifierName();
 
@@ -51,6 +54,8 @@ interface ModifierInterface
      * @param integer            $groupIndex   Group the filter is in
      *
      * @return null|boolean
+     *
+     * @api
      */
     public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $valuesBag, $groupIndex);
 }

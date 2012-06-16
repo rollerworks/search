@@ -17,11 +17,13 @@ use Rollerworks\RecordFilterBundle\FieldSet;
  * RecordFiltering formatting interface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @api
  */
 interface FormatterInterface
 {
     /**
-     * Returns the filters to apply on a Record-Formatter.
+     * Returns the formatted filters.
      *
      * This will return an array contain all the groups and there fields (per group).
      *
@@ -37,9 +39,11 @@ interface FormatterInterface
     public function getFilters();
 
     /**
-     * Get the fieldSet of the last performed input formatting.
+     * Get the fieldSet of the last performed formatting.
      *
-     * @return null|FieldSet
+     * @return FieldSet
+     *
+     * @api
      */
     public function getFieldSet();
 }

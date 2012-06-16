@@ -20,13 +20,20 @@ namespace Rollerworks\RecordFilterBundle\Annotation;
  */
 class SqlConversion
 {
+    /**
+     * @var string
+     */
     protected $class;
+
+    /**
+     * @var array
+     */
     protected $params = array();
 
     /**
      * Constructor.
      *
-     * @param array $data An array of key/value parameters.
+     * @param array $data An array of key/value parameters
      *
      * @throws \BadMethodCallException
      * @throws \UnexpectedValueException
@@ -60,21 +67,39 @@ class SqlConversion
         }
     }
 
+    /**
+     * @param string $class
+     *
+     * @throws \UnexpectedValueException
+     */
     public function setClass($class)
     {
+        if (empty($class)) {
+            throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'class', get_class($this)));
+        }
+
         $this->class = $class;
     }
 
+    /**
+     * @return string
+     */
     public function getClass()
     {
         return $this->class;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasParams()
     {
         return count($this->params) > 0;
     }
 
+    /**
+     * @return array
+     */
     public function getParams()
     {
         return $this->params;
