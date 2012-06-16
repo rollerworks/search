@@ -44,11 +44,9 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      * Constructor.
      *
      * $options is an array with:
-     *
-     * * (string|integer) min/max value
-     *
-     * * (integer) min_fraction_digits Minimum fraction digits.
-     * * (integer) max_fraction_digits Maximum fraction digits.
+     *  * (string|integer) min/max value.
+     *  * (integer) min_fraction_digits Minimum fraction digits.
+     *  * (integer) max_fraction_digits Maximum fraction digits.
      *
      * @param array $options
      *
@@ -91,8 +89,6 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
 
     /**
      * {@inheritdoc}
-     *
-     * @todo proper display of negative value
      */
     public function formatOutput($value, $formatGrouping = true)
     {
@@ -140,7 +136,11 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
         } else {
             $this->setFractions($numberFormatter);
 
-            return $numberFormatter->format($value, \NumberFormatter::TYPE_DOUBLE | \NumberFormatter::GROUPING_USED);
+            if (($formatGrouping && $this->options['format_grouping'] !== false) || true === $this->options['format_grouping']) {
+                return $numberFormatter->format($value, \NumberFormatter::TYPE_DOUBLE | \NumberFormatter::GROUPING_USED);
+            } else {
+                return $numberFormatter->format($value, \NumberFormatter::TYPE_DOUBLE);
+            }
         }
     }
 
