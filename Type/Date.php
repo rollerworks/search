@@ -71,7 +71,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
             return $input;
         }
 
-        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, DateTimeHelper::ONLY_DATE, $this->lastResult) ) {
+        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
             throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
         }
 
