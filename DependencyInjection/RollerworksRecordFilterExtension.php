@@ -44,4 +44,3 @@ class RollerworksRecordFilterExtension extends Extension
         $container->getDefinition('rollerworks_record_filter.metadata.cache')->replaceArgument(0, $cacheDirectory);
     }
 }
-
