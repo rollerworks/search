@@ -24,7 +24,7 @@ use Metadata\MetadataFactoryInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldSetFactory
+class FieldSetBuilder
 {
     /**
      * @var MetadataFactoryInterface
