@@ -13,8 +13,8 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Record\Sql;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Metadata\MetadataFactoryInterface;
@@ -225,7 +225,7 @@ class WhereBuilder
      *
      * @param FormatterInterface $formatter
      *
-     * @return string
+     * @return string|null
      */
     protected function buildWhere(FormatterInterface $formatter)
     {
@@ -268,7 +268,7 @@ class WhereBuilder
 
         $query = trim($query, " OR ");
 
-        return $query;
+        return '' === $query ? null : $query;
     }
 
     /**
@@ -285,12 +285,16 @@ class WhereBuilder
     protected function getValStr($value, $fieldName)
     {
         if (null === $this->fieldSet) {
-            throw new \RuntimeException('This method should be called after a fieldSet is set.');
+            throw new \RuntimeException('This method must be called after a fieldSet is set.');
         }
 
         $field = $this->fieldSet->get($fieldName);
 
         if (null === $field->getPropertyRefClass()) {
+            if (!is_scalar($value)) {
+                throw new \UnexpectedValueException(sprintf('Value-type "%s" for field "%s" is not scalar.', (is_object($value) ? '(Object) ' .  get_class($value) : gettype($value)), $fieldName));
+            }
+
             return $this->entityManager->getConnection()->quote($value);
         }
 

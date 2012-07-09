@@ -16,10 +16,6 @@ use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
 
-/**
- * Test the Validation generator. Its work is generating on-the-fly subclasses of a given model.
- * As you may have guessed, this is based on the Doctrine\ORM\Proxy module.
- */
 class SQLTest extends OrmTestCase
 {
     /**
@@ -43,6 +39,23 @@ class SQLTest extends OrmTestCase
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
+    }
+
+    public function testEmptyResult()
+    {
+        $input = $this->newInput('no_field=2;');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $annotationReader = new AnnotationReader();
+
+        // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
+        $annotationReader->setIgnoreNotImportedAnnotations(true);
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
+        $whereBuilder    = new WhereBuilder($this->em, $metadataFactory);
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
+        $this->assertNull($whereCase);
     }
 
     /**

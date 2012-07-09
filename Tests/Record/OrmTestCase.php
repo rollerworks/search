@@ -131,12 +131,16 @@ class OrmTestCase extends OrmTestCaseBase
     /**
      * Cleans whitespace from the input SQL for easy testing.
      *
-     * @param string $input
+     * @param string|null $input
      *
-     * @return string
+     * @return string|null
      */
     protected function cleanSql($input)
     {
+        if (null === $input) {
+            return null;
+        }
+
         return str_replace(array("(\n", ")\n"), array('(', ')'), $input);
     }
 }
