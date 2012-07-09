@@ -26,10 +26,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Doctrine\Tests\OrmTestCase as OrmTestCaseBase;
 
-/**
- * Test the Validation generator. Its work is generating on-the-fly subclasses of a given model.
- * As you may have guessed, this is based on the Doctrine\ORM\Proxy module.
- */
 class OrmTestCase extends OrmTestCaseBase
 {
     /**
