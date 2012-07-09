@@ -131,7 +131,7 @@ class WhereBuilder
 
         // Convert namespace aliases to the correct className
         if (!empty($entityAliases)) {
-            foreach ($entityAliases as $alias => $entity ) {
+            foreach ($entityAliases as $alias => $entity) {
                 if (false !== strpos($entity, ':')) {
                     $entityAliases[$alias] = $this->entityManager->getClassMetadata($entity)->name;
                 }
