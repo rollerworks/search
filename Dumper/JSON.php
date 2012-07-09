@@ -91,8 +91,6 @@ class JSON extends AbstractDumper
     }
 
     /**
-     * Create the field {Object}
-     *
      * @param FilterValuesBag $filter
      *
      * @return array

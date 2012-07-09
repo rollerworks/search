@@ -5,7 +5,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity
 use Rollerworks\Bundle\RecordFilterBundle\Annotation as RecordFilter;
 
 /**
- * ECommerce-Invoice row
+ * ECommerce-Invoice row.
  *
  * @Entity
  * @Table(name="invoice_rows")

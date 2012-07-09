@@ -16,7 +16,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 /**
- * Interface for supplying input-values
+ * Interface for supplying input-values.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

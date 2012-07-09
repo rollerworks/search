@@ -19,7 +19,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
 
 /**
- * InvoiceType
+ * InvoiceType.
  */
 class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, ContainerAwareInterface
 {

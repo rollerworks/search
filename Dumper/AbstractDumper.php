@@ -93,7 +93,7 @@ abstract class AbstractDumper implements DumperInterface
     }
 
     /**
-     * Quote an value and escape the quotes
+     * Quote an value and escape the quotes.
      *
      * @param string $input
      *

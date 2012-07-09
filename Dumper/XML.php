@@ -77,8 +77,6 @@ class XML extends AbstractDumper
     }
 
     /**
-     * Populates the field-node
-     *
      * @param null|FilterTypeInterface $type
      * @param FilterValuesBag          $filter
      * @param \DOMNode                 $fieldNode
@@ -148,8 +146,6 @@ class XML extends AbstractDumper
     }
 
     /**
-     * Creates an range node and returns it
-     *
      * @param null|FilterTypeInterface $type
      * @param Range                    $range
      * @param \DOMDocument             $dom

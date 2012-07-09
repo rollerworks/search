@@ -27,7 +27,7 @@ class SingleValue
     protected $originalValue;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param mixed $value
      * @param mixed $original
@@ -47,7 +47,7 @@ class SingleValue
     }
 
     /**
-     * Set/overwrite the singe value
+     * Set/overwrite the singe value.
      *
      * @param mixed $value
      *
@@ -61,7 +61,7 @@ class SingleValue
     }
 
     /**
-     * Get the single value
+     * Get the single value.
      *
      * @return mixed
      *
@@ -73,7 +73,7 @@ class SingleValue
     }
 
     /**
-     * Get the original loose value
+     * Get the original loose value.
      *
      * @return mixed
      *

@@ -27,7 +27,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 abstract class AbstractInput implements InputInterface
 {
     /**
-     * Filtering groups and there ValuesBag
+     * Filtering groups and there ValuesBag.
      *
      * @var array
      */
@@ -35,6 +35,7 @@ abstract class AbstractInput implements InputInterface
 
     /**
      * Field aliases.
+     *
      * An alias is kept as: alias => destination
      *
      * @var array
@@ -43,6 +44,7 @@ abstract class AbstractInput implements InputInterface
 
     /**
      * Optional field alias using the translator.
+     *
      * Beginning with this prefix.
      *
      * @var string
@@ -51,6 +53,7 @@ abstract class AbstractInput implements InputInterface
 
     /**
      * Optional field alias using the translator.
+     *
      * Domain to search in.
      *
      * @var string

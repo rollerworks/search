@@ -49,14 +49,14 @@ use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 class FilterQuery extends AbstractInput
 {
     /**
-     * State of the parser
+     * State of the parser.
      *
      * @var boolean
      */
     protected $isParsed = false;
 
     /**
-     * Filter-input (as-is)
+     * Filter-input (as-is).
      *
      * @var string
      */
@@ -128,7 +128,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Set the filter input
+     * Set the filter input.
      *
      * @param string $input
      *
@@ -145,7 +145,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Get the filter-input
+     * Get the filter-input.
      *
      * @return string
      */
@@ -183,7 +183,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Parse the input-filter that is set
+     * Parse the input-filter that is set.
      */
     protected function parseQuery()
     {
@@ -264,7 +264,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Parses the values list and returns them as an array
+     * Parses the values list and returns them as an array.
      *
      * @param string                     $values
      * @param ValueMatcherInterface|null $valueMatcher
@@ -288,13 +288,16 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Perform the formatting of the given values (per group)
+     * Perform the formatting of the given values (per group).
      *
      * @param string       $originalInput
      * @param FilterField  $filterConfig
      * @param array|string $values
+     * @param              $group
      *
      * @return FilterValuesBag
+     *
+     * @throws \Rollerworks\Bundle\RecordFilterBundle\Exception\ValidationException
      */
     protected function valuesToBag($originalInput, FilterField $filterConfig, array $values, $group)
     {
@@ -383,7 +386,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Get the corresponding fieldName by label
+     * Get the corresponding fieldName by label.
      *
      * @param string $label
      *
@@ -413,7 +416,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Remove and normalise quoted-values
+     * Remove and normalise quoted-values.
      *
      * @param string $input
      *

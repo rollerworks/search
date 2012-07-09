@@ -19,12 +19,12 @@ use Symfony\Component\Translation\TranslatorInterface;
 class MessageBag
 {
     /**
-     * Information message-type
+     * Information message-type.
      */
     const MSG_INFO = 'info';
 
     /**
-     * Error message-type
+     * Error message-type.
      */
     const MSG_ERROR = 'error';
 

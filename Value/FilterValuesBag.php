@@ -52,15 +52,11 @@ class FilterValuesBag
     protected $compares = array();
 
     /**
-     * 'Original' field label
-     *
      * @var string
      */
     protected $label;
 
     /**
-     * 'Original' field input
-     *
      * @var string
      */
     protected $originalInput;
@@ -91,7 +87,7 @@ class FilterValuesBag
     }
 
     /**
-     * Get the 'original' field label.
+     * Returns the 'original' field label.
      *
      * @return string|null
      *
@@ -103,7 +99,7 @@ class FilterValuesBag
     }
 
     /**
-     * Get the 'original' field input.
+     * Returns the 'original' field input.
      *
      * @return string|null
      *
@@ -115,7 +111,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the filter has Ranges.
+     * Returns whether the bag has Ranges.
      *
      * @return boolean
      *
@@ -127,7 +123,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns the Ranges of the filter.
+     * Returns the Ranges of the bag.
      *
      * @return Range[]
      *
@@ -139,7 +135,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the filter has Excluded Ranges.
+     * Returns whether the bag has Excluded Ranges.
      *
      * @return boolean
      *
@@ -151,7 +147,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns the Excluded Ranges of the filter.
+     * Returns the Excluded Ranges of the bag.
      *
      * @return Range[]
      *
@@ -163,7 +159,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the filter has Excludes.
+     * Returns whether the bag has Excludes.
      *
      * @return boolean
      *
@@ -175,7 +171,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns the Excludes of the filter.
+     * Returns the Excludes of the bag.
      *
      * @return SingleValue[]
      *
@@ -187,7 +183,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the filter has Compares.
+     * Returns whether the bag has Compares.
      *
      * @return boolean
      *
@@ -199,7 +195,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns the Compares of the filter.
+     * Returns the Compares of the bag.
      *
      * @return Compare[]
      *
@@ -211,7 +207,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the filter has Values.
+     * Returns whether the bag has SingleValues.
      *
      * @return boolean
      *
@@ -223,7 +219,7 @@ class FilterValuesBag
     }
 
     /**
-     * Removes the Values of the filter.
+     * Removes the Values of the bag.
      *
      * @return SingleValue[]
      *
@@ -235,7 +231,7 @@ class FilterValuesBag
     }
 
     /**
-     * Removes a single-value from the filter.
+     * Removes a single-value from the bag.
      *
      * @param integer $piIndex
      *
@@ -253,7 +249,7 @@ class FilterValuesBag
     }
 
     /**
-     * Removes a Exclude from the filter.
+     * Removes a Exclude from the bag.
      *
      * @param integer $piIndex
      *
@@ -271,7 +267,7 @@ class FilterValuesBag
     }
 
     /**
-     * Removes a Range from the filter.
+     * Removes a Range from the bag.
      *
      * @param integer $piIndex
      *
@@ -289,7 +285,7 @@ class FilterValuesBag
     }
 
     /**
-     * Removes an Excluded Range from the filter.
+     * Removes an Excluded Range from the bag.
      *
      * @param integer $piIndex
      *
@@ -307,7 +303,7 @@ class FilterValuesBag
     }
 
     /**
-     * Removes a Compare from the filter.
+     * Removes a Compare from the bag.
      *
      * @param integer $piIndex
      *
@@ -325,7 +321,7 @@ class FilterValuesBag
     }
 
     /**
-     * Add a single-value to the filter.
+     * Adds a single-value to the bag.
      *
      * @param SingleValue $value
      *
@@ -341,7 +337,7 @@ class FilterValuesBag
     }
 
     /**
-     * Add a Exclude to the filter.
+     * Add a Exclude to the bag.
      *
      * @param SingleValue $value
      *
@@ -357,7 +353,7 @@ class FilterValuesBag
     }
 
     /**
-     * Add a range to the filter.
+     * Add a range to the bag.
      *
      * @param Range $range
      *
@@ -373,7 +369,7 @@ class FilterValuesBag
     }
 
     /**
-     * Add an Excluded Range to the filter.
+     * Adds an Excluded Range to the bag.
      *
      * @param Range $range
      *
@@ -389,7 +385,7 @@ class FilterValuesBag
     }
 
     /**
-     * Add a Compare to the filter.
+     * Adds a Compare to the bag.
      *
      * @param Compare $compare
      *
