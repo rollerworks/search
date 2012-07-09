@@ -21,7 +21,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle;
 class FieldSet
 {
     /**
-     * @var FilterConfig[]
+     * @var FilterField[]
      */
     protected $fields = array();
 
@@ -71,12 +71,12 @@ class FieldSet
     /**
      * Set an filtering field.
      *
-     * @param string       $name
-     * @param FilterConfig $config
+     * @param string      $name
+     * @param FilterField $config
      *
      * @return self
      */
-    public function set($name, FilterConfig $config)
+    public function set($name, FilterField $config)
     {
         $this->fields[$name] = $config;
 
@@ -88,14 +88,14 @@ class FieldSet
      *
      * Same as {@see set()}, but throws an exception when there no field with the name.
      *
-     * @param string       $name
-     * @param FilterConfig $config
+     * @param string      $name
+     * @param FilterField $config
      *
      * @return self
      *
      * @throws \RuntimeException when there is no field with the given name
      */
-    public function replace($name, FilterConfig $config)
+    public function replace($name, FilterField $config)
     {
         if (!isset($this->fields[$name])) {
             throw new \RuntimeException(sprintf('Unable to replace none existent field: %s', $name));
@@ -127,7 +127,7 @@ class FieldSet
      *
      * @param string $name
      *
-     * @return FilterConfig
+     * @return FilterField
      *
      * @throws \RuntimeException when there is no field with the given name
      */
@@ -143,7 +143,7 @@ class FieldSet
     /**
      * Returns all the registered fields.
      *
-     * @return FilterConfig[] [field-name] => {\Rollerworks\Bundle\RecordFilterBundle\FilterConfig object})
+     * @return FilterField[] [field-name] => {\Rollerworks\Bundle\RecordFilterBundle\FilterField object})
      */
     public function all()
     {

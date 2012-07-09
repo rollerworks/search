@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Record;
 
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
@@ -92,17 +92,17 @@ class OrmTestCase extends OrmTestCaseBase
         if ('invoice' == $fieldSetId) {
             $fieldSet = new FieldSet('invoice');
             $fieldSet
-                ->set('invoice_label',    FilterConfig::create('invoice', new InvoiceType(), false)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'label'))
-                ->set('invoice_date',     FilterConfig::create('date', new Date(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'date'))
-                ->set('invoice_customer', FilterConfig::create('customer', new Number(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'customer'))
-                ->set('invoice_status',   FilterConfig::create('status', new StatusType())->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'status'))
-                ->set('invoice_price',    FilterConfig::create('status', new Decimal(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow', 'price'))
+                ->set('invoice_label',    FilterField::create('invoice', new InvoiceType(), false)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'label'))
+                ->set('invoice_date',     FilterField::create('date', new Date(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'date'))
+                ->set('invoice_customer', FilterField::create('customer', new Number(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'customer'))
+                ->set('invoice_status',   FilterField::create('status', new StatusType())->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'status'))
+                ->set('invoice_price',    FilterField::create('status', new Decimal(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow', 'price'))
             ;
 
         } elseif ('customer' == $fieldSetId) {
             $fieldSet = new FieldSet('customer');
             $fieldSet
-                ->set('customer_id', FilterConfig::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id'))
+                ->set('customer_id', FilterField::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id'))
             ;
         }
 

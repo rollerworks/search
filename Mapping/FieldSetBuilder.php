@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Metadata\MetadataFactoryInterface;
 
@@ -169,7 +169,7 @@ class FieldSetBuilder
                 }
             }
 
-            $config = new FilterConfig($label, $type, $propertyMetadata->required, $propertyMetadata->acceptRanges, $propertyMetadata->acceptCompares);
+            $config = new FilterField($label, $type, $propertyMetadata->required, $propertyMetadata->acceptRanges, $propertyMetadata->acceptCompares);
             $config->setPropertyRef($class, $propertyMetadata->name);
             $fieldsSet->set($propertyMetadata->filter_name, $config);
         }

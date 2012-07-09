@@ -14,7 +14,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 
@@ -36,7 +36,7 @@ class DuplicateRemove implements ModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterField $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         $ranges = $excludedRanges = $excludedValues = $compares = $singleValues = array();
         $type = $filterConfig->getType();

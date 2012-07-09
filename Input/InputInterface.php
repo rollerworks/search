@@ -13,7 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 /**
  * Interface for supplying input-values
@@ -34,12 +34,12 @@ interface InputInterface
     /**
      * Set the configuration of an filter field.
      *
-     * @param string       $name
-     * @param FilterConfig $config
+     * @param string      $name
+     * @param FilterField $config
      *
      * @api
      */
-    public function setField($name, FilterConfig $config);
+    public function setField($name, FilterField $config);
 
     /**
      * Returns the groups and the containing filtering values.

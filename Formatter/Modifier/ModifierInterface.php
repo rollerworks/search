@@ -13,7 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
@@ -49,7 +49,7 @@ interface ModifierInterface
      *
      * @param FormatterInterface $formatter
      * @param MessageBag         $messageBag
-     * @param FilterConfig       $filterConfig
+     * @param FilterField        $filterConfig
      * @param FilterValuesBag    $valuesBag
      * @param integer            $groupIndex   Group the filter is in
      *
@@ -57,5 +57,5 @@ interface ModifierInterface
      *
      * @api
      */
-    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $valuesBag, $groupIndex);
+    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterField $filterConfig, FilterValuesBag $valuesBag, $groupIndex);
 }

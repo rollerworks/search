@@ -15,7 +15,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\OptimizableInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 /**
  * Optimizes value by filter-type implementation.
@@ -40,7 +40,7 @@ class ValueOptimizer implements ModifierInterface
     /**
      * {@inheritdoc}
      */
-    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterConfig $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
+    public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterField $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         if ($filterConfig->hasType() && $filterConfig->getType() instanceof OptimizableInterface) {
             return $filterConfig->getType()->optimizeField($filterStruct, $messageBag);

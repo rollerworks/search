@@ -12,7 +12,7 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
 use Rollerworks\Bundle\RecordFilterBundle\Exception\ValidationException;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
@@ -117,7 +117,7 @@ class ArrayInput extends FilterQuery
         }
 
         foreach ($this->fieldsSet->all() as $name => $filterConfig) {
-            /** @var FilterConfig $filterConfig */
+            /** @var FilterField $filterConfig */
 
             if (empty($filterPairs[$name])) {
                 if (true === $filterConfig->isRequired()) {

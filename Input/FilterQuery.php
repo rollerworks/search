@@ -13,7 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
 use Rollerworks\Bundle\RecordFilterBundle\Exception\ValidationException;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
@@ -241,7 +241,7 @@ class FilterQuery extends AbstractInput
         }
 
         foreach ($this->fieldsSet->all() as $name => $filterConfig) {
-            /** @var FilterConfig $filterConfig */
+            /** @var FilterField $filterConfig */
 
             if (empty($filterPairs[$name])) {
                 if (true === $filterConfig->isRequired()) {
@@ -291,12 +291,12 @@ class FilterQuery extends AbstractInput
      * Perform the formatting of the given values (per group)
      *
      * @param string       $originalInput
-     * @param FilterConfig $filterConfig
+     * @param FilterField  $filterConfig
      * @param array|string $values
      *
      * @return FilterValuesBag
      */
-    protected function valuesToBag($originalInput, FilterConfig $filterConfig, array $values, $group)
+    protected function valuesToBag($originalInput, FilterField $filterConfig, array $values, $group)
     {
         $ranges = $excludedRanges = $excludesValues = $compares = $singleValues = array();
         $valueMatcherRegex = '';

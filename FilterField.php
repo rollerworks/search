@@ -15,13 +15,11 @@ use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
 
 /**
- * FilterConfig.
- *
- * Holds the configuration options of an field.
+ * FilterField.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FilterConfig
+class FilterField
 {
     /**
      * @var null|FilterTypeInterface|ValueMatcherInterface
@@ -78,18 +76,28 @@ class FilterConfig
     }
 
     /**
-     * Creates a new FilterConfig object.
+     * Creates a new FilterField object.
      *
      * @param  string                                         $label
      * @param  FilterTypeInterface|ValueMatcherInterface|null $type
      * @param  boolean                                        $required
      * @param  boolean                                        $acceptRanges
      * @param  boolean                                        $acceptCompares
-     * @return FilterConfig
+     * @return FilterField
      */
     public static function create($label, $type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
         return new self($label, $type, $required, $acceptRanges, $acceptCompares);
+    }
+
+    /**
+     * Set the label of the field.
+     *
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = mb_strtolower((string) $label);
     }
 
     /**
@@ -100,7 +108,7 @@ class FilterConfig
      * @param string $class
      * @param string $field
      *
-     * @return self
+     * @return FilterField
      */
     public function setPropertyRef($class, $field)
     {

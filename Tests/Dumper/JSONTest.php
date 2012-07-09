@@ -15,7 +15,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\Bundle\RecordFilterBundle\Dumper\JSON;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 class JSONTest extends TestCase
 {
@@ -23,7 +23,7 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('user=1;');
-        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('user', FilterField::create('user'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -36,7 +36,7 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=1;),(user=2;)');
-        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('user', FilterField::create('user'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -52,8 +52,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('user=1; invoice="F2012-800";');
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('invoice', FilterConfig::create('invoice'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('invoice', FilterField::create('invoice'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -66,8 +66,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('invoice', FilterConfig::create('invoice'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('invoice', FilterField::create('invoice'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -83,8 +83,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('invoice', FilterConfig::create(null, null, false, true));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('invoice', FilterField::create(null, null, false, true));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -100,8 +100,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=!1; invoice=!"F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('invoice', FilterConfig::create(null, null, false, true));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('invoice', FilterField::create(null, null, false, true));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -117,8 +117,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=>1,<>2,>=5,<8,<=9;)');
-        $input->setField('user', FilterConfig::create(null, null, false, true, true));
-        $input->setField('invoice', FilterConfig::create('invoice'));
+        $input->setField('user', FilterField::create(null, null, false, true, true));
+        $input->setField('invoice', FilterField::create('invoice'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -131,7 +131,7 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=1;)');
-        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('user', FilterField::create('user'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -144,7 +144,7 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=1;),(user=2;)');
-        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('user', FilterField::create('user'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -160,8 +160,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('user=1; invoice="F2012-800"');
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('invoice', FilterConfig::create('invoice'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('invoice', FilterField::create('invoice'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -174,8 +174,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=1; invoice="F2010-4242";),(user=2; invoice="F2012-4242";)');
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('invoice', FilterConfig::create('invoice'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('invoice', FilterField::create('invoice'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -191,8 +191,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=1; invoice="F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('invoice', FilterConfig::create(null, null, false, true));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('invoice', FilterField::create(null, null, false, true));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -208,8 +208,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=!1; invoice=!"F2010-4242"-"F2012-4242";),(user=2; invoice="F2012-4242";)');
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('invoice', FilterConfig::create(null, null, false, true));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('invoice', FilterField::create(null, null, false, true));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
@@ -225,8 +225,8 @@ class JSONTest extends TestCase
     {
         $input = new FilterQuery($this->translator);
         $input->setInput('(user=>1,<>2,>=5,<8,<=9;)');
-        $input->setField('user', FilterConfig::create(null, null, false, false, true));
-        $input->setField('invoice', FilterConfig::create('invoice'));
+        $input->setField('user', FilterField::create(null, null, false, false, true));
+        $input->setField('invoice', FilterField::create('invoice'));
 
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));

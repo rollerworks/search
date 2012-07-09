@@ -16,14 +16,14 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 class FilterQueryTest extends TestCase
 {
     public function testQuerySingleField()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('user', FilterField::create('user'));
 
         $input->setInput('User=2');
 
@@ -34,7 +34,7 @@ class FilterQueryTest extends TestCase
     public function testQuerySingleFieldWithSpaces()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', FilterConfig::create('user'));
+        $input->setField('user', FilterField::create('user'));
 
         $input->setInput('User = 2');
 
@@ -44,7 +44,7 @@ class FilterQueryTest extends TestCase
     public function testQuerySingleFieldWithUnicode()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('foo', FilterConfig::create('ß'));
+        $input->setField('foo', FilterField::create('ß'));
         $input->setLabelToField('foo', 'ß');
 
         $input->setInput('ß = 2');
@@ -55,7 +55,7 @@ class FilterQueryTest extends TestCase
     public function testQuerySingleFieldWithUnicodeNumber()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('foo', FilterConfig::create('ß۲'));
+        $input->setField('foo', FilterField::create('ß۲'));
         $input->setLabelToField('foo', 'ß۲');
 
         $input->setInput('ß۲ = 2');
@@ -66,8 +66,8 @@ class FilterQueryTest extends TestCase
     public function testQueryMultipleFields()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
 
         $input->setInput('User=2; Status=Active');
 
@@ -80,8 +80,8 @@ class FilterQueryTest extends TestCase
     public function testQueryMultipleFieldsNoSpace()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
 
         $input->setInput('User=2;Status=Active');
 
@@ -95,8 +95,8 @@ class FilterQueryTest extends TestCase
     public function testQueryDoubleFields()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('status', FilterConfig::create('status'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
 
         $input->setInput('User=2; Status=Active; User=3;');
 
@@ -109,7 +109,7 @@ class FilterQueryTest extends TestCase
     public function testQueryWithMatcher()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('date', FilterConfig::create('date', new Date()));
+        $input->setField('date', FilterField::create('date', new Date()));
 
         $input->setInput('date=6-13-2012;');
 
@@ -120,9 +120,9 @@ class FilterQueryTest extends TestCase
     public function testEscapedFilter()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
 
         $input->setInput('User=2; Status="Active;None"; date="29-10-2010"');
 
@@ -136,9 +136,9 @@ class FilterQueryTest extends TestCase
     public function testOrGroup()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
 
         $input->setInput('(User=2; Status="Active;None"; date="29-10-2010";),(User=3; Status=Concept; date="30-10-2010";)');
 
@@ -159,9 +159,9 @@ class FilterQueryTest extends TestCase
     public function testOrGroupValueWithBars()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('user', FilterConfig::create('user'));
-        $input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
 
         $input->setInput('(User=2; Status="(Active;None)"; date="29-10-2010";),(User=3; Status=Concept; date="30-10-2010";)');
 
@@ -182,9 +182,9 @@ class FilterQueryTest extends TestCase
     public function testValidationNoRange()
     {
         $input = new QueryInput($this->translator);
-        $input->setField('User', FilterConfig::create('User', null, true));
-        $input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
+        $input->setField('User', FilterField::create('User', null, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
 
         $input->setInput('User=2-5; Status=Active; date=29.10.2010');
 
@@ -197,9 +197,9 @@ class FilterQueryTest extends TestCase
         $input = new QueryInput($this->translator);
         $input->setInput('User=2,3,10-20; Status=Active; date=25.05.2010,>25.5.2010');
 
-        $input->setField('user', FilterConfig::create('user', null, true, true));
-        $input->setField('status', FilterConfig::create('status', null, true, true));
-        $input->setField('date', FilterConfig::create('date', null, true, true));
+        $input->setField('user', FilterField::create('user', null, true, true));
+        $input->setField('status', FilterField::create('status', null, true, true));
+        $input->setField('date', FilterField::create('date', null, true, true));
 
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());

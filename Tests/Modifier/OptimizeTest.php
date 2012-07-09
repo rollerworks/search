@@ -16,7 +16,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 class OptimizeTest extends ModifierTestCase
 {
@@ -26,10 +26,10 @@ class OptimizeTest extends ModifierTestCase
         $input->setInput('User=2,4,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', FilterConfig::create('user', null, false, true));
-        //$input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
-        $input->setField('period', FilterConfig::create('period', null, false, true, true));
+        $input->setField('user', FilterField::create('user', null, false, true));
+        //$input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
+        $input->setField('period', FilterField::create('period', null, false, true, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -51,10 +51,10 @@ class OptimizeTest extends ModifierTestCase
         $input->setInput('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
-        $input->setField('user', FilterConfig::create('user', null, false, true));
-        //$input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
-        $input->setField('period', FilterConfig::create('period', null, false, false, true));
+        $input->setField('user', FilterField::create('user', null, false, true));
+        //$input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
+        $input->setField('period', FilterField::create('period', null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));

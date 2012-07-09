@@ -15,7 +15,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Dumper\FilterQuery;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 class FilterQueryTest extends TestCase
 {
@@ -25,10 +25,10 @@ class FilterQueryTest extends TestCase
         $input->setInput('User=2,3,10-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = new Formatter($this->translator);
-        $input->setField('user', FilterConfig::create(null, null, false, true));
-        $input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
-        $input->setField('period', FilterConfig::create(null, null, false, false, true));
+        $input->setField('user', FilterField::create(null, null, false, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
+        $input->setField('period', FilterField::create(null, null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -46,10 +46,10 @@ class FilterQueryTest extends TestCase
         $input->setInput('User="2""",3,"10"""-20; Status=Active; date=29.10.2010; period=>20,10');
 
         $formatter = new Formatter($this->translator);
-        $input->setField('user', FilterConfig::create(null, null, false, true));
-        $input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
-        $input->setField('period', FilterConfig::create(null, null, false, false, true));
+        $input->setField('user', FilterField::create(null, null, false, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
+        $input->setField('period', FilterField::create(null, null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));
@@ -67,10 +67,10 @@ class FilterQueryTest extends TestCase
         $input->setInput('(User=2,3,10-20,!30-50; Status=Active; date=29.10.2010; period=>20,10;), (User=5,9; Status="None-active"; date=29.10.2012;)');
 
         $formatter = new Formatter($this->translator);
-        $input->setField('user', FilterConfig::create(null, null, false, true));
-        $input->setField('status', FilterConfig::create('status'));
-        $input->setField('date', FilterConfig::create('date'));
-        $input->setField('period', FilterConfig::create(null, null, false, false, true));
+        $input->setField('user', FilterField::create(null, null, false, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
+        $input->setField('period', FilterField::create(null, null, false, false, true));
 
         if (!$formatter->formatInput($input)) {
             $this->fail(print_r($formatter->getMessages(), true));

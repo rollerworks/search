@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
-use Rollerworks\Bundle\RecordFilterBundle\FilterConfig;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -111,7 +111,7 @@ abstract class AbstractInput implements InputInterface
      *
      * @return self
      */
-    public function setField($fieldName, FilterConfig $config)
+    public function setField($fieldName, FilterField $config)
     {
         $fieldName = mb_strtolower($fieldName);
 
