@@ -52,11 +52,11 @@ class PropertyMetadata extends BasePropertyMetadata
             throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" can\'t be abstract.', $class));
         }
 
-        if (!$r->implementsInterface('\\Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlValueConversionInterface')) {
-            throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" must implement Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlValueConversionInterface.', $class));
+        if (!$r->implementsInterface('\\Rollerworks\\Bundle\\RecordFilterBundle\\Record\\Sql\\SqlValueConversionInterface')) {
+            throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" must implement Rollerworks\\Bundle\\RecordFilterBundle\\Record\\Sql\\SqlValueConversionInterface.', $class));
         }
 
-        if ($r->hasMethod('__construct') && !$r->getMethod('__construct')->isPublic() ) {
+        if ($r->hasMethod('__construct') && !$r->getMethod('__construct')->isPublic()) {
             throw new \InvalidArgumentException(sprintf('%s::__construct(): must be public.', $class));
         }
 

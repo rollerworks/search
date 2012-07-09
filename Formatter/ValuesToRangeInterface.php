@@ -40,7 +40,7 @@ interface ValuesToRangeInterface
     /**
      * Returns the higher-by-one value of the input.
      *
-     * Input value is sanitized, and the return value should be also be returned sanitized.
+     * Input value is sanitized, and the return value should be returned sanitized as well.
      * The value should be increased by 'one', where one is considered the 'next' value of the input.
      *
      * Examples:

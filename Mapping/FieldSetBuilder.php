@@ -63,7 +63,7 @@ class FieldSetBuilder
     }
 
     /**
-     * Set the DIC container for types that need it
+     * Set the DIC container for types that need it.
      *
      * @param ContainerInterface $container
      */
@@ -76,8 +76,6 @@ class FieldSetBuilder
      * Set the resolving of an field name to label, using the translator beginning with prefix.
      *
      * Example: product.fields.[field]
-     *
-     * For this to work properly a Translator must be registered with setTranslator()
      *
      * @param string $pathPrefix This prefix is added before every search, like filters.labels.
      * @param string $domain     Default is filter

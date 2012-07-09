@@ -21,7 +21,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle;
 class FieldSet
 {
     /**
-     * @var array
+     * @var FilterConfig[]
      */
     protected $fields = array();
 
@@ -44,6 +44,18 @@ class FieldSet
         }
 
         $this->name = $name;
+    }
+
+    /**
+     * Returns an new FieldSet instance.
+     *
+     * @param string|null $name
+     *
+     * @return FieldSet
+     */
+    public function create($name = null)
+    {
+        return new self($name);
     }
 
     /**
@@ -72,7 +84,7 @@ class FieldSet
     }
 
     /**
-     * Replace the given filtering field.
+     * Replaces the field.
      *
      * Same as {@see set()}, but throws an exception when there no field with the name.
      *
@@ -95,7 +107,7 @@ class FieldSet
     }
 
     /**
-     * Remove the given field from the set.
+     * Removes the field from the set.
      *
      * @param string $name
      *

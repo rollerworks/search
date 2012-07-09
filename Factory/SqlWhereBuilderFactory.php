@@ -18,7 +18,8 @@ use Metadata\MetadataFactoryInterface;
 use Doctrine\ORM\EntityManager;
 
 /**
- * This factory is used to create 'Domain specific' RecordFilter QueryBuilder Classes at runtime.
+ * This factory is used to create 'Domain specific' RecordFilter SqlWhereBuilder Classes at runtime.
+ *
  * The information is read from a FieldSet object.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
