@@ -53,7 +53,7 @@ class FieldSet
      *
      * @return FieldSet
      */
-    public function create($name = null)
+    public static function create($name = null)
     {
         return new self($name);
     }

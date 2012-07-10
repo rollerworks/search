@@ -147,7 +147,7 @@ class SqlWhereBuilderFactory extends AbstractFactory
         $placeholders = array('<namespace>', '<whereBuilder>');
         $replacements = array($this->namespace . $ns, $whereBuilder);
 
-        $file = str_replace($placeholders, $replacements, self::$_ClassTemplate);
+        $file = str_replace($placeholders, $replacements, self::$classTemplate);
         $dir  = $toDir . DIRECTORY_SEPARATOR . $ns;
 
         if (!is_dir($dir) && !mkdir($dir)) {
@@ -252,7 +252,7 @@ QY;
     }
 
     /** Class code template */
-    private static $_ClassTemplate =
+    private static $classTemplate =
 '<?php
 
 namespace <namespace>;
