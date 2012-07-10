@@ -59,6 +59,7 @@ class FieldSetBuilder
      */
     public function __construct(MetadataFactoryInterface $metadataFactory, TranslatorInterface $translator)
     {
+        $this->translator = $translator;
         $this->metadataFactory = $metadataFactory;
     }
 
