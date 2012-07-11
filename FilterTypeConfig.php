@@ -48,4 +48,12 @@ class FilterTypeConfig
     {
         return $this->params;
     }
+
+    /**
+     * @return boolean
+     */
+    public function hasParams()
+    {
+        return count($this->params) > 0;
+    }
 }

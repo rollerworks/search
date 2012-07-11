@@ -12,7 +12,6 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Factory;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface;
 
@@ -44,7 +43,7 @@ class FilterTypeFactory
      * @param string $type
      * @param array  $options Options to pass for the type (only when accepted)
      *
-     * @return Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface
+     * @return FilterTypeInterface
      *
      * @throws \InvalidArgumentException on unknown filter-type
      */
