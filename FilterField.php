@@ -141,7 +141,7 @@ class FilterField
     /**
      * Get the type of the filter.
      *
-     * @return FilterTypeInterface|ValueMatcherInterface|object|null
+     * @return FilterTypeInterface|ValueMatcherInterface|mixed|null
      */
     public function getType()
     {

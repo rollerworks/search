@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\Options;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableInterface
+class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableTypeInterface
 {
     /**
      * @var string
@@ -43,19 +43,29 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * Constructor.
      *
+     * @param array $options
+     *
+     * @see setOptions()
+     */
+    public function __construct(array $options = array())
+    {
+        $this->setOptions($options);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
      * $options is an array with:
      *  * (string|integer) min/max value.
      *  * (integer) min_fraction_digits Minimum fraction digits.
      *  * (integer) max_fraction_digits Maximum fraction digits.
      *
-     * @param array $options
-     *
      * @throws \UnexpectedValueException When min is higher then max
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options)
     {
         $optionsResolver = new OptionsResolver();
-        static::setOptions($optionsResolver);
+        static::setDefaultOptions($optionsResolver);
 
         $this->options = $optionsResolver->resolve($options);
 
@@ -300,7 +310,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * {@inheritdoc}
      */
-    public static function setOptions(OptionsResolverInterface $resolver)
+    public static function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
             'max' => null,
@@ -320,6 +330,14 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
 
             'format_grouping' => array('bool'),
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     /**

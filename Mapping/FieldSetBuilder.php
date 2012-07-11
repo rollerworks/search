@@ -147,7 +147,7 @@ class FieldSetBuilder
             if (null !== $propertyMetadata->type) {
                 $r = new \ReflectionClass($propertyMetadata->type);
 
-                if ($r->implementsInterface('Rollerworks\\Bundle\\RecordFilterBundle\\Type\\ConfigurableInterface')) {
+                if ($r->implementsInterface('Rollerworks\\Bundle\\RecordFilterBundle\\Type\\ConfigurableTypeInterface')) {
                     if (isset($options[$propertyMetadata->filter_name])) {
                         $optionsResolver = new OptionsResolver();
                         call_user_func(array($propertyMetadata->type, 'setOptions'), $optionsResolver);

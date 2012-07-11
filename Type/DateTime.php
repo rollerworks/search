@@ -137,9 +137,9 @@ class DateTime extends Date
     /**
      * {@inheritdoc}
      */
-    public static function setOptions(OptionsResolverInterface $resolver)
+    public static function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        parent::setOptions($resolver);
+        parent::setDefaultOptions($resolver);
 
         $resolver->setDefaults(array(
             'time_optional' => false,

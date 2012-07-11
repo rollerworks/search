@@ -14,7 +14,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * ConfigurableInterface.
+ * ConfigurableTypeInterface.
  *
  * An filter-type can implement this to provide configuring the type.
  * This uses the Symfony OptionsResolver component.
@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  *
  * @api
  */
-interface ConfigurableInterface
+interface ConfigurableTypeInterface
 {
     /**
      * Sets the options configuration for the resolver.
@@ -32,5 +32,25 @@ interface ConfigurableInterface
      *
      * @api
      */
-    public static function setOptions(OptionsResolverInterface $resolver);
+    public static function setDefaultOptions(OptionsResolverInterface $resolver);
+
+    /**
+     * Sets the options for the type.
+     *
+     * @param array $options
+     *
+     * @api
+     */
+    public function setOptions(array $options);
+
+    /**
+     * Returns current options of the type.
+     *
+     * The values must be exportable, resources will throw an error.
+     *
+     * @return array
+     *
+     * @api
+     */
+    public function getOptions();
 }

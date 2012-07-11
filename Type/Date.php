@@ -24,7 +24,7 @@ use Symfony\Component\OptionsResolver\Options;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableInterface
+class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableTypeInterface
 {
     /**
      * @var string
@@ -41,12 +41,24 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      *
      * @param array $options Array with min/max value as ISO formatted date(Time)
      *
-     * @throws \UnexpectedValueException When min is higher then max
+     * @see setOptions()
      */
     public function __construct(array $options = array())
     {
+        $this->setOptions($options);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param array $options Array with min/max value as ISO formatted date(Time)
+     *
+     * @throws \UnexpectedValueException When min is higher then max
+     */
+    public function setOptions(array $options)
+    {
         $optionsResolver = new OptionsResolver();
-        static::setOptions($optionsResolver);
+        static::setDefaultOptions($optionsResolver);
 
         $this->options = $optionsResolver->resolve($options);
 
@@ -240,7 +252,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      */
-    public static function setOptions(OptionsResolverInterface $resolver)
+    public static function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
             'max' => null,
@@ -272,6 +284,14 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
             'max' => $valueFilter,
             'min' => $valueFilter
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }
 

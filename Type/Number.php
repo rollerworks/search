@@ -24,7 +24,7 @@ use Symfony\Component\OptionsResolver\Options;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Number implements FilterTypeInterface, ValuesToRangeInterface, ConfigurableInterface
+class Number implements FilterTypeInterface, ValuesToRangeInterface, ConfigurableTypeInterface
 {
     /**
      * @var string
@@ -45,13 +45,21 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
      * Constructor.
      *
      * @param array $options Array with min/max value as integer or string
-     *
-     * @throws \UnexpectedValueException When min is higher then max
      */
     public function __construct(array $options = array())
     {
+        $this->setOptions($options);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \UnexpectedValueException When min is higher then max
+     */
+    public function setOptions(array $options)
+    {
         $optionsResolver = new OptionsResolver();
-        static::setOptions($optionsResolver);
+        static::setDefaultOptions($optionsResolver);
 
         $this->options = $optionsResolver->resolve($options);
 
@@ -198,7 +206,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     /**
      * {@inheritdoc}
      */
-    public static function setOptions(OptionsResolverInterface $resolver)
+    public static function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
             'max' => null,
@@ -209,6 +217,14 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
             'max' => array('string', 'int', 'null'),
             'min' => array('string', 'int', 'null')
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     /**
