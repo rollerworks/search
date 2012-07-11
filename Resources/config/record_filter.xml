@@ -8,12 +8,14 @@
         <parameter key="rollerworks_record_filter.input.filter_query.class">Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery</parameter>
         <parameter key="rollerworks_record_filter.fieldset_builder.class">Rollerworks\Bundle\RecordFilterBundle\Mapping\FieldSetBuilder</parameter>
 
+        <parameter key="rollerworks_record_filter.types_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory</parameter>
         <parameter key="rollerworks_record_filter.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="rollerworks_record_filter.metadata.driver_chain.class">Metadata\Driver\DriverChain</parameter>
         <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver</parameter>
         <parameter key="rollerworks_record_filter.metadata.cache.class">Metadata\Cache\FileCache</parameter>
 
         <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter</parameter>
+        <parameter key="rollerworks_record_filter.record.sql.where_builder.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter</parameter>
 
         <!-- Formatter modifiers classes -->
         <parameter key="rollerworks_record_filter.formatter.modifiers.validator.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\Validator</parameter>
@@ -22,6 +24,13 @@
         <parameter key="rollerworks_record_filter.formatter.modifiers.values_to_range.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ValuesToRange</parameter>
         <parameter key="rollerworks_record_filter.formatter.modifiers.compare_normalizer.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\CompareNormalizer</parameter>
         <parameter key="rollerworks_record_filter.formatter.modifiers.value_optimizer.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ValueOptimizer</parameter>
+
+        <!-- Filter-types classes -->
+        <parameter key="rollerworks_record_filter.filter_type.date.class">Rollerworks\Bundle\RecordFilterBundle\Type\Date</parameter>
+        <parameter key="rollerworks_record_filter.filter_type.time.class">Rollerworks\Bundle\RecordFilterBundle\Type\Time</parameter>
+        <parameter key="rollerworks_record_filter.filter_type.datetime.class">Rollerworks\Bundle\RecordFilterBundle\Type\DateTime</parameter>
+        <parameter key="rollerworks_record_filter.filter_type.number.class">Rollerworks\Bundle\RecordFilterBundle\Type\Number</parameter>
+        <parameter key="rollerworks_record_filter.filter_type.decimal.class">Rollerworks\Bundle\RecordFilterBundle\Type\Decimal</parameter>
     </parameters>
 
     <services>
@@ -47,6 +56,30 @@
             </call>
         </service>
 
+        <service id="rollerworks_record_filter.types_factory" class="%rollerworks_record_filter.types_factory.class%">
+            <argument type="service" id="service_container" />
+            <argument type="collection" />
+        </service>
+
+        <service id="rollerworks_record_filter.fieldset_factory" class="%rollerworks_record_filter.fieldset_factory.class%">
+            <argument>%rollerworks_record_filter.filters_directory%</argument>
+            <argument>%rollerworks_record_filter.filters_namespace%</argument>
+            <argument>%rollerworks_record_filter.fieldset_auto_generate%</argument>
+
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
+            </call>
+
+            <call method="setTypesFactory">
+                <argument type="service" id="rollerworks_record_filter.types_factory" />
+            </call>
+
+            <call method="setFieldToLabelByTranslator">
+                <argument>%rollerworks_record_filter.field_label_translator.prefix%</argument>
+                <argument>%rollerworks_record_filter.field_label_translator.domain%</argument>
+            </call>
+        </service>
+
         <!-- Input classes -->
         <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" scope="prototype">
             <argument type="service" id="translator"/>
@@ -62,6 +95,36 @@
 
         <service id="rollerworks_record_filter.formatter" class="%rollerworks_record_filter.formatter.class%">
             <argument type="service" id="translator"/>
+        </service>
+
+        <service id="rollerworks_record_filter.record.sql_where_builder" class="%rollerworks_record_filter.record.sql.where_builder.class%">
+            <argument/> <!-- the default_entity_manager (to be set later) -->
+            <!--<argument type="service" id="doctrine.orm.default_entity_manager"/>-->
+            <argument type="service" id="rollerworks_record_filter.metadata_factory"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <!-- Filter-types -->
+        <service id="rollerworks_record_filter.filter_type.date" class="%rollerworks_record_filter.filter_type.date.class%" scope="prototype">
+            <tag name="rollerworks_record_filter.filter_type" alias="date" />
+        </service>
+
+         <service id="rollerworks_record_filter.filter_type.time" class="%rollerworks_record_filter.filter_type.time.class%" scope="prototype">
+            <tag name="rollerworks_record_filter.filter_type" alias="time" />
+        </service>
+
+         <service id="rollerworks_record_filter.filter_type.datetime" class="%rollerworks_record_filter.filter_type.datetime.class%" scope="prototype">
+            <tag name="rollerworks_record_filter.filter_type" alias="datetime" />
+        </service>
+
+         <service id="rollerworks_record_filter.filter_type.number" class="%rollerworks_record_filter.filter_type.number.class%" scope="prototype">
+            <tag name="rollerworks_record_filter.filter_type" alias="number" />
+        </service>
+
+         <service id="rollerworks_record_filter.filter_type.decimal" class="%rollerworks_record_filter.filter_type.decimal.class%" scope="prototype">
+            <tag name="rollerworks_record_filter.filter_type" alias="decimal" />
         </service>
 
         <!-- Formatter modifiers services -->
