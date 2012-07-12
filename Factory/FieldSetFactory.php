@@ -13,7 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Factory;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Rollerworks\Bundle\RecordFilterBundle\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 

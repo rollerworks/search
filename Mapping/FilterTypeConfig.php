@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle;
+namespace Rollerworks\Bundle\RecordFilterBundle\Mapping;
 
 /**
  * FilterTypeConfig.

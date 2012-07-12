@@ -15,7 +15,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;
-use Rollerworks\Bundle\RecordFilterBundle\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Metadata\MetadataFactoryInterface;
