@@ -36,9 +36,9 @@ class AddFilterTypesPass implements CompilerPassInterface
             if (isset($attributes[0]['alias'])) {
                 $types[$attributes[0]['alias']] = $id;
 
-                // Set the service as abstract to make sure an unique one is always returned.
-                if (!$container->getDefinition($id)->isAbstract()) {
-                    $container->getDefinition($id)->setAbstract(true);
+                // Set the scope to prototype to make sure an unique one is always returned.
+                if ('prototype' !== $container->getDefinition($id)->getScope()) {
+                    $container->getDefinition($id)->setScope('prototype');
                 }
             }
         }
