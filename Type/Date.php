@@ -12,7 +12,6 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

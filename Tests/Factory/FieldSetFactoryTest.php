@@ -77,8 +77,7 @@ class FieldSetFactoryTest extends TestCase
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($cacheDir), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
             if ($path->isDir()) {
                 rmdir($path->__toString());
-            }
-            else {
+            } else {
                 unlink($path->__toString());
             }
         }

@@ -12,7 +12,6 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
 
 use Rollerworks\Bundle\RecordFilterBundle\DependencyInjection\Compiler\AddFilterTypesPass;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;

@@ -28,8 +28,8 @@ class FilterTypeFactory
     /**
      * Constructor.
      *
-     * @param ContainerInterface $container  The service container
-     * @param array              $types      An array of filter-types
+     * @param ContainerInterface $container The service container
+     * @param array              $types     An array of filter-types
      */
     public function __construct(ContainerInterface $container, array $types = array())
     {

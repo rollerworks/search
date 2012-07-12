@@ -13,7 +13,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Adds services tagged as 'rollerworks_record_filter.filter_type' to the types_factory service.

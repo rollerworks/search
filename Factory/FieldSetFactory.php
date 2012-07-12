@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Factory;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
@@ -244,7 +243,6 @@ namespace <namespace>;
 
 use Symfony\Component\Translation\TranslatorInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
-use Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet as BaseFieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;
 

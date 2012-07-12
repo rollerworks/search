@@ -13,7 +13,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
