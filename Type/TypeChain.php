@@ -12,7 +12,6 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
@@ -70,6 +69,7 @@ class TypeChain implements FilterTypeInterface, ValueMatcherInterface, ValuesToR
      * Returns the type by name.
      *
      * @param string|integer $name
+     *
      * @return ChainableTypeInterface
      *
      * @throws \InvalidArgumentException
@@ -147,7 +147,7 @@ class TypeChain implements FilterTypeInterface, ValueMatcherInterface, ValuesToR
      */
     public function isHigher($input, $nextValue)
     {
-        if (!$input instanceof DecoratedValue || !$nextValue instanceof DecoratedValue ) {
+        if (!$input instanceof DecoratedValue || !$nextValue instanceof DecoratedValue) {
             throw new \InvalidArgumentException('Value must be an DecoratedValue object.');
         }
 
@@ -166,7 +166,7 @@ class TypeChain implements FilterTypeInterface, ValueMatcherInterface, ValuesToR
      */
     public function isLower($input, $nextValue)
     {
-        if (!$input instanceof DecoratedValue || !$nextValue instanceof DecoratedValue ) {
+        if (!$input instanceof DecoratedValue || !$nextValue instanceof DecoratedValue) {
             throw new \InvalidArgumentException('Value must be an DecoratedValue object.');
         }
 
@@ -185,7 +185,7 @@ class TypeChain implements FilterTypeInterface, ValueMatcherInterface, ValuesToR
      */
     public function isEqual($input, $nextValue)
     {
-        if (!$input instanceof DecoratedValue || !$nextValue instanceof DecoratedValue ) {
+        if (!$input instanceof DecoratedValue || !$nextValue instanceof DecoratedValue) {
             throw new \InvalidArgumentException('Value must be an DecoratedValue object.');
         }
 
@@ -210,6 +210,8 @@ class TypeChain implements FilterTypeInterface, ValueMatcherInterface, ValuesToR
                 return $type->validateValue($input, $message, $messageBag);
             }
         }
+
+        return false;
     }
 
     /**
@@ -217,7 +219,25 @@ class TypeChain implements FilterTypeInterface, ValueMatcherInterface, ValuesToR
      */
     public function getMatcherRegex()
     {
-        // TODO
+        $matcher = '(?:';
+
+        foreach ($this->types as $type) {
+            if (!$type instanceof ValueMatcherInterface) {
+                continue;
+            }
+
+            $matcher .= $type->getMatcherRegex() . '|' ;
+        }
+
+        $matcher = rtrim($matcher, '|');
+
+        if ('(?:' === $matcher) {
+            return null;
+        }
+
+        $matcher .= ')';
+
+        return $matcher;
     }
 
     /**

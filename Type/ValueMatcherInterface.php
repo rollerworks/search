@@ -35,7 +35,7 @@ interface ValueMatcherInterface
      * In an list the regex is used as: {match-quoted}|{regex}-{regex}|{comparison-operator}?{regex}|[^,]+
      * You SHOULD NOT match an (optional) comma and the end, since this will cause unexpected results.
      *
-     * @return string
+     * @return string|null
      *
      * @api
      */
