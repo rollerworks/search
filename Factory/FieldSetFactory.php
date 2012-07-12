@@ -13,7 +13,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Factory;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-
 use Rollerworks\Bundle\RecordFilterBundle\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
@@ -71,14 +70,14 @@ class FieldSetFactory extends AbstractFactory
      *
      * @throws \InvalidArgumentException
      */
-    public function setFieldToLabelByTranslator($pathPrefix, $domain = 'filter')
+    public function setLabelResolver($pathPrefix, $domain = 'filter')
     {
-        if (!is_string($pathPrefix) || empty($pathPrefix)) {
-            throw new \InvalidArgumentException('Prefix must be an string and can not be empty');
+        if (!is_string($pathPrefix) && null !== $pathPrefix) {
+            throw new \InvalidArgumentException('Prefix must be an string or null.');
         }
 
         if (!is_string($domain) || empty($domain)) {
-            throw new \InvalidArgumentException('Domain must be an string and can not be empty');
+            throw new \InvalidArgumentException('Domain must be an string and can not be empty.');
         }
 
         $this->translatorPrefix = $pathPrefix;
@@ -114,7 +113,7 @@ class FieldSetFactory extends AbstractFactory
             require $fileName;
         }
 
-        return new $fqn($this->typeFactory);
+        return new $fqn($this->typeFactory, $this->translator, $this->translatorPrefix, $this->translatorDomain);
     }
 
     /**
@@ -143,28 +142,6 @@ class FieldSetFactory extends AbstractFactory
     }
 
     /**
-     * Get the label by fieldName.
-     *
-     * @param string $field
-     *
-     * @return string
-     */
-    protected function getFieldLabel($field)
-    {
-        $label = $field;
-
-        if (null !== $this->translatorPrefix) {
-            $label = $this->translator->trans($this->translatorPrefix . $field, array(), $this->translatorDomain);
-
-            if ($this->translatorPrefix . $field === $label) {
-                $label = $field;
-            }
-        }
-
-        return $label;
-    }
-
-    /**
      * @param FieldSet $fieldSet
      *
      * @return string
@@ -173,7 +150,7 @@ class FieldSetFactory extends AbstractFactory
     {
         $fields = '';
 
-        $fieldTemplate = '  $this->fields[%s] = FilterField::create(%s, %s, %s, %s);'."\n";
+        $fieldTemplate = '        $this->fields[%s] = FilterField::create(%s, %s, %s, %s, %s)';
 
         foreach ($fieldSet->all() as $fieldName => $field) {
             $fieldNameSafe = var_export($fieldName, true);
@@ -181,6 +158,7 @@ class FieldSetFactory extends AbstractFactory
             $fields .= sprintf(
                 $fieldTemplate,
                 $fieldNameSafe,
+                '$translator->trans($transPrefix . ' . $fieldNameSafe . ', array(), $transDomain)',
                 $this->generateType($field->getType()),
                 var_export($field->isRequired(), true),
                 var_export($field->acceptRanges(), true),
@@ -194,7 +172,7 @@ class FieldSetFactory extends AbstractFactory
             $fields .= ";\n";
         }
 
-        return $fields;
+        return rtrim($fields);
     }
 
     /**
@@ -225,6 +203,7 @@ class FieldSetFactory extends AbstractFactory
 
     /**
      * @param FilterTypeConfig[]|FilterTypeConfig $type
+     *
      * @return string
      *
      * @throws \InvalidArgumentException on invalid type
@@ -255,64 +234,15 @@ class FieldSetFactory extends AbstractFactory
         return sprintf('$typeFactory->newInstance(%s, %s)', var_export($type->getName(), true), ($type->hasParams() ? var_export($type->getParams(), true) : 'array()'));
     }
 
-    /*
-    private function generateType($type)
-    {
-        if (null === $type) {
-            return 'null';
-        }
-
-        if (is_array($type)) {
-            $typeString = 'new TypeChain(';
-
-            foreach ($type as $chainType) {
-                if (!$chainType instanceof FilterTypeConfig) {
-                    throw new \InvalidArgumentException('Type must be an array of FilterTypeConfig object or an single FilterTypeConfig object.');
-                }
-
-                $typeString .= '$typeFactory->newInstance();';
-            }
-
-            $typeString = rtrim($typeString, ',');
-            $typeString .= ')';
-
-            return $typeString;
-        }
-
-        if (!$type instanceof FilterTypeConfig) {
-            throw new \InvalidArgumentException('Type must be an array of FilterTypeConfig object or an single FilterTypeConfig object.');
-        }
-
-
-
-        return 'newInstance()';
-
-        /*
-
-        $return = $type = '$types[' . var_export($field, true) . ']';
-        $return .= ' = new ' . get_class($field) . '(';
-
-        if ($field->getType() instanceof ConfigurableTypeInterface) {
-            $return .= var_export($field->getType()->getOptions());
-        }
-
-        $return .= ');' . "\n";
-
-        if ($field instanceof ContainerAwareInterface) {
-            $return .= $type . '->setContainer($this->container);' . "\n";
-        }
-        * /
-
-        //return $return;
-    }
-    */
-
-    /** Class code template */
+    /**
+     * Class code template
+     */
     private static $classTemplate =
 '<?php
 
 namespace <namespace>;
 
+use Symfony\Component\Translation\TranslatorInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet as BaseFieldSet;
@@ -323,11 +253,11 @@ use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;
  */
 class FieldSet extends BaseFieldSet
 {
-    public function __construct(FilterTypeFactory $typeFactory)
+    public function __construct(FilterTypeFactory $typeFactory, TranslatorInterface $translator, $transPrefix, $transDomain)
     {
         parent::__construct(\'<set_name>\');
 
-        <fields>
+<fields>
     }
 
     public function set($name, FilterField $config)
