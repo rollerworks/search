@@ -174,7 +174,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     /**
      * {@inheritdoc}
      */
-    public function sortValuesList(SingleValue $first, SingleValue $second)
+    public function sortValuesList($first, $second)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
 

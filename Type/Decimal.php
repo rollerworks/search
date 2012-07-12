@@ -263,7 +263,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * {@inheritdoc}
      */
-    public function sortValuesList(SingleValue $first, SingleValue $second)
+    public function sortValuesList($first, $second)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
 

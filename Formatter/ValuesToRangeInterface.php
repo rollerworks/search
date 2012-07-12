@@ -35,7 +35,7 @@ interface ValuesToRangeInterface
      *
      * @api
      */
-    public function sortValuesList(SingleValue $first, SingleValue $second);
+    public function sortValuesList($first, $second);
 
     /**
      * Returns the higher-by-one value of the input.

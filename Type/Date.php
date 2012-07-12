@@ -222,7 +222,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      */
-    public function sortValuesList(SingleValue $first, SingleValue $second)
+    public function sortValuesList($first, $second)
     {
         $a = $first->getValue()->getTimestamp();
         $b = $second->getValue()->getTimestamp();
