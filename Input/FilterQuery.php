@@ -275,8 +275,7 @@ class FilterQuery extends AbstractInput
     {
         $valueMatcherRegex = '';
 
-        if (null !== $valueMatcher) {
-            $regex = $valueMatcher->getMatcherRegex();
+        if (null !== $valueMatcher && null !== $regex = $valueMatcher->getMatcherRegex()) {
             $valueMatcherRegex = '|' . $regex . '-' . $regex . '|(?:>=|<=|<>|[<>!])?' . $regex;
         }
 
@@ -304,7 +303,7 @@ class FilterQuery extends AbstractInput
         $ranges = $excludedRanges = $excludesValues = $compares = $singleValues = array();
         $valueMatcherRegex = '';
 
-        if ($filterConfig->hasType() && ($filterConfig->getType() instanceof ValueMatcherInterface)) {
+        if ($filterConfig->hasType() && ($filterConfig->getType() instanceof ValueMatcherInterface) && null !== $regex = $filterConfig->getType()->getMatcherRegex()) {
             $valueMatcherRegex = '|' . $filterConfig->getType()->getMatcherRegex();
         }
 
