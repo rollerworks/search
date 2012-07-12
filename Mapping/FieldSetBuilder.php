@@ -11,10 +11,11 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Mapping;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;
+use Rollerworks\Bundle\RecordFilterBundle\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Metadata\MetadataFactoryInterface;
@@ -32,9 +33,9 @@ class FieldSetBuilder
     protected $metadataFactory;
 
     /**
-     * @var ContainerInterface
+     * @var FilterTypeFactory
      */
-    protected $container;
+    protected $typeFactory;
 
     /**
      * @var TranslatorInterface
@@ -56,21 +57,13 @@ class FieldSetBuilder
      *
      * @param MetadataFactoryInterface $metadataFactory
      * @param TranslatorInterface      $translator
+     * @param FilterTypeFactory        $typeFactory
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory, TranslatorInterface $translator)
+    public function __construct(MetadataFactoryInterface $metadataFactory, TranslatorInterface $translator, FilterTypeFactory $typeFactory)
     {
         $this->translator = $translator;
         $this->metadataFactory = $metadataFactory;
-    }
-
-    /**
-     * Set the DIC container for types that need it.
-     *
-     * @param ContainerInterface $container
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
+        $this->typeFactory = $typeFactory;
     }
 
     /**
@@ -107,19 +100,16 @@ class FieldSetBuilder
      * @param FieldSet      $fieldsSet
      * @param object|string $class       Entity object or full class-name
      * @param array         $limitFields Only imports these fields (per filter-name)
-     * @param array         $options     Array with options per filter-name
      *
      * @return self
-     *
-     * @see \Symfony\Component\OptionsResolver\OptionsResolver
      *
      * @throws \InvalidArgumentException When $class is not an object or string
      * @throws \RuntimeException
      */
-    public function importConfigFromClass(FieldSet $fieldsSet, $class, array $limitFields = array(), array $options = array())
+    public function importConfigFromClass(FieldSet $fieldsSet, $class, array $limitFields = array())
     {
         if (!is_object($class) && !is_string($class)) {
-            throw new \InvalidArgumentException('No legal class provided');
+            throw new \InvalidArgumentException('No legal class provided.');
         }
 
         if (is_object($class)) {
@@ -145,29 +135,7 @@ class FieldSetBuilder
             $label = $this->getFieldLabel($propertyMetadata->filter_name);
 
             if (null !== $propertyMetadata->type) {
-                $r = new \ReflectionClass($propertyMetadata->type);
-
-                if ($r->implementsInterface('Rollerworks\\Bundle\\RecordFilterBundle\\Type\\ConfigurableTypeInterface')) {
-                    if (isset($options[$propertyMetadata->filter_name])) {
-                        $optionsResolver = new OptionsResolver();
-                        call_user_func(array($propertyMetadata->type, 'setOptions'), $optionsResolver);
-                        $optionsResolver->setDefaults($propertyMetadata->params);
-
-                        $type = $r->newInstanceArgs($optionsResolver->resolve($options[$propertyMetadata->filter_name]));
-                    } else {
-                        $type = $r->newInstanceArgs($propertyMetadata->params);
-                    }
-                } else {
-                    $type = $r->newInstance();
-                }
-
-                if ($r->implementsInterface('Symfony\Component\DependencyInjection\ContainerAwareInterface')) {
-                    if (null === $this->container) {
-                        throw new \RuntimeException('Filter-type "%s" requires a DI container. But none is set.');
-                    }
-
-                    $type->setContainer($this->container);
-                }
+                $type = $this->createNewType($propertyMetadata->type);
             }
 
             $config = new FilterField($label, $type, $propertyMetadata->required, $propertyMetadata->acceptRanges, $propertyMetadata->acceptCompares);
@@ -176,6 +144,33 @@ class FieldSetBuilder
         }
 
         return $this;
+    }
+
+    /**
+     * @param FilterTypeConfig|FilterTypeConfig[] $type
+     *
+     * @return FilterTypeInterface
+     *
+     * @throws \InvalidArgumentException on invalid type
+     */
+    protected function createNewType($type)
+    {
+        // TODO TypeChain object
+        if (is_array($type)) {
+            return null;
+        }
+
+        if (!$type instanceof FilterTypeConfig) {
+            throw new \InvalidArgumentException('Type must be an array of FilterTypeConfig objects or an single FilterTypeConfig object.');
+        }
+
+        $typeInstance = $this->typeFactory->newInstance($type->getName());
+
+        if ($type->hasParams() && $typeInstance instanceof ConfigurableTypeInterface) {
+            $typeInstance->setOptions($type->getParams());
+        }
+
+        return $typeInstance;
     }
 
     /**
