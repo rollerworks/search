@@ -214,14 +214,15 @@ class FieldSetFactory extends AbstractFactory
         }
 
         if (is_array($type)) {
-            $typeString = 'new TypeChain(';
+            $typeTemplate = "            %s => %s,\n";
+            $typeString = "new TypeChain(array(\n";
 
-            foreach ($type as $chainType) {
-                $typeString .= $this->generateType($chainType);
+            foreach ($type as $name => $chainType) {
+                $typeString .= sprintf($typeTemplate, var_export($name, true), $this->generateType($chainType));
             }
 
             $typeString = rtrim($typeString, ',');
-            $typeString .= ')';
+            $typeString .= '        ))';
 
             return $typeString;
         }
@@ -244,6 +245,7 @@ namespace <namespace>;
 use Symfony\Component\Translation\TranslatorInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet as BaseFieldSet;
+use Rollerworks\Bundle\RecordFilterBundle\Type\TypeChain;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;
 
 /**

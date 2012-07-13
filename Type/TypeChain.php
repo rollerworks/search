@@ -66,6 +66,18 @@ class TypeChain implements FilterTypeInterface, ValueMatcherInterface, ValuesToR
     }
 
     /**
+     * Returns if this chain contains the given type.
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function has($name)
+    {
+        return isset($this->types[$name]);
+    }
+
+    /**
      * Returns the type by name.
      *
      * @param string|integer $name

@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\Options;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableTypeInterface
+class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableTypeInterface, ChainableTypeInterface
 {
     /**
      * @var string
@@ -177,6 +177,14 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
         }
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function acceptInput($input)
+    {
+        return preg_match('#^' . $this->getMatcherRegex() . '$#uis', $input) > 0;
     }
 
     /**

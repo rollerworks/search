@@ -43,14 +43,17 @@ class FieldSetFactoryTest extends TestCase
 
         $container = $this->createContainer();
         $container->register('rollerworks_record_filter.filter_type.date','Rollerworks\Bundle\RecordFilterBundle\Type\Date');
+        $container->register('rollerworks_record_filter.filter_type.time','Rollerworks\Bundle\RecordFilterBundle\Type\Time');
         $container->register('rollerworks_record_filter.filter_type.number', 'Rollerworks\Bundle\RecordFilterBundle\Type\Number');
 
         $container->getDefinition('rollerworks_record_filter.filter_type.date')->setScope('prototype');
+        $container->getDefinition('rollerworks_record_filter.filter_type.time')->setScope('prototype');
         $container->getDefinition('rollerworks_record_filter.filter_type.number')->setScope('prototype');
         $container->compile();
 
         $this->filterTypeFactory = new FilterTypeFactory($container, array(
             'date'    => 'rollerworks_record_filter.filter_type.date',
+            'time'    => 'rollerworks_record_filter.filter_type.time',
             'number'  => 'rollerworks_record_filter.filter_type.number',
             'invoice' => 'rollerworks_record_filter.filter_type.number',
         ));
@@ -111,6 +114,10 @@ class FieldSetFactoryTest extends TestCase
                         ->set('invoice_price', FilterField::create('invoice_price', new FilterTypeConfig('number'))),
                     FieldSet::create('customer')
                         ->set('customer_id', FilterField::create('customer_id', new FilterTypeConfig('number', array('max' => null, 'min' => '0'))))
+                        ->set('customer_regdate', FilterField::create('customer_regdate', array(
+                            'date' => new FilterTypeConfig('date'),
+                            'time' => new FilterTypeConfig('time')
+                        )))
                 ),
             )
         );
@@ -124,13 +131,17 @@ class FieldSetFactoryTest extends TestCase
             $this->assertTrue($actual->has($fieldName), sprintf('FieldSet "%s" has field "%s"', $expected->getSetName(), $fieldName));
             $this->assertEquals($field->getLabel(), $actual->get($fieldName)->getLabel());
 
-            /*
-            if (is_array($field->getType()) && !$actual->get($fieldName)->getType() instanceof FilterType\FilterChain) {
-                $this->fail(sprintf('Failed asserting that type of fieldName "%s" in FieldSet, is an FilterChain.', $fieldName, $expected->getSetName()));
-            } else
-            */
+            if (is_array($field->getType())) {
 
-            if (!is_array($field->getType())) {
+                if (!$actual->get($fieldName)->getType() instanceof FilterType\TypeChain) {
+                    $this->fail(sprintf('Failed asserting that type of fieldName "%s" in FieldSet, is an FilterChain.', $fieldName, $expected->getSetName()));
+                }
+
+                foreach ($field->getType() as $chainName => $chainType) {
+                    $this->assertTrue($actual->get($fieldName)->getType()->has($chainName));
+                    $this->assertFilterTypeEquals($chainType, $actual->get($fieldName)->getType()->get($chainName));
+                }
+            } elseif (!is_array($field->getType())) {
                 $this->assertFilterTypeEquals($field->getType(), $actual->get($fieldName)->getType());
             }
         }
