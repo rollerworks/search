@@ -23,7 +23,7 @@ use Doctrine\Common\Annotations\Reader;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class AnnotationDriver extends AbstractDriver
+class AnnotationDriver implements DriverInterface
 {
     /**
      * @var Reader
@@ -58,7 +58,7 @@ class AnnotationDriver extends AbstractDriver
                     $propertyMetadata->filter_name = $annotation->getName();
                     $propertyMetadata->required    = $annotation->isRequired();
 
-                    $propertyMetadata->type   = self::getRealType($annotation->getType());
+                    $propertyMetadata->type   = $annotation->getType();
                     $propertyMetadata->params = $annotation->getParams();
 
                     $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
