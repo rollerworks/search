@@ -1,0 +1,114 @@
+// === Description
+// The Type chain performs registered ChainAble-types till one mathes and uses that one.
+// The value is then delegated to the matched type sanitize() and handle any failures from the method call
+
+// If the value is valid:
+//      and an object of a unique class its returned
+//      If the value is scalar or not unique its wrapped inside a ScalarTypeValue object with the FieldType name of the type
+
+// When calling a comparision method its type is determined by the value-class or the type of the ScalarTypeValue object
+// And the call is delegated to the parent-type method.
+
+// === API Updates
+// Record\Sql\WhereBuilder must be updated to handle ScalarTypeValue objects
+
+
+interface ChainableTypeInterface
+{
+    // Checks if the type accepts this input, if it returns true the chain-loop is ended.
+    bool accept(mixed $input);
+    
+    // Returns the class/field-type that sanitize() returns
+    // If this an string the type is wrapped in an ScalarTypeValue object
+    string getValueType();
+}
+
+class ScalarTypeValue
+{
+    __construct(mixed $value, string $type);
+    mixed getValue();
+    string getValueType();
+}
+
+class TypeChain implement FieldTypeInterface
+{
+    private $types = array();
+
+    __construct(ChainableTypeInterface[] $types)
+    {
+        foreach ($types as $type) {
+            $this->addType($type);
+        }
+    }
+    
+    self addType(ChainableTypeInterface $type)
+    {
+        $this->types[$type->getValueType()] = $type;
+    }
+    
+    ChainableTypeInterface[] getTypes();
+    
+    mixed sanitize($value)
+    {
+        foreach ($this->types as $name => $type) {
+            if (!$type->accept($value)) {
+                continue;
+            }
+            
+            if (false === ($value = $type->sanitize($value))) {
+                handle-Failure;
+                return;
+            }
+            
+            // An class MUST begin with an \\, else it's an field-type name 
+            if ('\\' !== substr($name, 0, 1)) {
+                $value = new ScalarTypeValue($value, $name);
+            }
+            
+            return $value;
+        }
+        
+        // add message (or something like this): "This value does not match any accepted type."
+        
+        return false;
+    }
+    
+    bool isEqual(mixed $value, mixed $value2)
+    {       
+        return $this->callParentMethod('isEqual', $value, $value2);
+    }
+    
+    protected mixed callParentMethod(string $method, mixed $value, mixed $value2)
+    {
+        if (get_class($value) !== get_class($value2)) {
+            return false;
+        }
+        
+        if ($value instanceof ScalarTypeValue) {
+            if ($value->getValueType() !== $value2->getValueType()) {
+                return false;
+            }
+            
+            return call_user_func(array($this->getValtype($value->getValueType()), $method), $value->getValue(), $value2->getValue());
+        } else {
+            return call_user_func(array($this->getValtype($value), $method), $value, $value2);
+        }
+    }
+    
+    protected object|thrown-exception getValType(object $value)
+    {
+        if (!$value instanceof ScalarTypeValue) {
+            if (!isset($this->types[get_class($value)])) {
+                throw new \InvalidArgumentException('Unable to resolve type {$value->getValueType()}');
+            }
+
+            return $this->types[get_class($value)];
+        }
+        
+        if (!isset($this->types[$value->getValueType()]) {
+            throw new \InvalidArgumentException('Unable to resolve ScalarType {$value->getValueType()}');
+        }
+        
+        return $this->types[$value->getValueType()];
+    }
+}

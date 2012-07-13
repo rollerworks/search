@@ -1,0 +1,84 @@
+// === Description
+// The Type chain performs registered ChainAble-types till one mathes and uses that one.
+// The value is then delegated to the matched type sanitize() and handles any failures from the method call
+
+// If the value is valid it's wrapped in an WrappedValue object with the correct FieldType
+// When calling a (comparision) method its type is retrieved by the WrappedValue object, and the call is delegated to the parent-type method.
+
+// === API Changes
+// Record\Sql\WhereBuilder must be updated to handle WrappedValue objects
+
+// === Metadata Changes
+// Property Metadata only supports one type at the moment, add new configuration for TypeChain:
+
+// With chain
+// @RecordFilter\Field("customer_id", type = {
+//      @RecordFilter\Type("CustomerType", param1="value", param2="value")
+//      @RecordFilter\Type("ClientType", param1="value", param2="value")
+// }[, opts...])
+
+// Without chain
+// @RecordFilter\Field("customer_id", type = @RecordFilter\Type("CustomerType", param1="value", param2="value")[, opts...])
+
+<?php
+interface ChainableTypeInterface
+{
+    // Checks if the type accepts this input, if it returns true the chain-loop is ended.
+    bool accept(mixed $input);
+}
+
+class WrappedValue
+{
+    __construct(mixed $value, FilterTypeInterface $type);
+    mixed getValue();
+    FilterTypeInterface getType();
+}
+
+class TypeChain implement FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
+{
+    private $types = array();
+
+    __construct(ChainableTypeInterface[] $types)
+    {
+        foreach ($types as $type) {
+            $this->addType($type);
+        }
+    }
+    
+    self addType(ChainableTypeInterface $type)
+    {
+        $this->types[] = $type;
+    }
+    
+    // Returns all the registered types
+    ChainableTypeInterface[] all();
+    
+    mixed sanitize($value)
+    {
+        foreach ($this->types as $type) {
+            if (!$type->accept($value)) {
+                continue;
+            }
+            
+            if (false === ($value = $type->sanitize($value))) {
+                handle-Failure;
+                return;
+            }
+            
+            return new WrappedValue($value, $type);
+        }
+        
+        // add message (or something like this): "This value does not match any accepted type."
+        
+        return false;
+    }
+    
+    bool isEqual(mixed $value, mixed $value2)
+    {       
+        if ($value->getType() !== $value2->getType()) {
+            return false;
+        }
+        
+        return $value->getValtype()->isEqual($value->getValue(), $value2->getValue());
+    }
+}

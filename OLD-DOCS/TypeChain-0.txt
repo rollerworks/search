@@ -1,0 +1,121 @@
+// The Type chain performs registered ChainAble-types till one mathes and uses that one.
+
+interface ChainableTypeInterface
+{
+    // Checks if the type accepts this input, if it returns true the chain-loop is ended.
+    accept(mixed $input);
+    
+    // Returns the class/field-type that sanitize() returns
+    // If this an string the type is wrapped in an ScalarTypeValue object
+    getValueType();
+}
+
+class ScalarTypeValue
+{
+    __construct(mixed $value, string $type);
+    getValue();
+    getValueType();
+}
+
+
+class TypeChain implement FieldTypeInterface
+{
+    __construct(ChainableTypeInterface[] $types)
+    {
+        foreach ($types as $type) {
+            $this->addType($type);
+        }
+    }
+    
+    addType(ChainableTypeInterface $type)
+    {
+        $this->types[$type->getValueType()] = $type;       
+    }
+    
+    sanitize($value)
+    {
+        foreach ($this->types as $type) {
+            if (!$type->accept($value)) {
+                continue;
+            }
+            
+            if (false === ($value = $type->sanitize($value))) {
+                handle-Failure;
+                return;
+            }
+            
+            // An class MUST begin with an \\, else it's an field-type name 
+            if ('\\' !== substr($type->getValueType(), 0, 1)) {
+                $value = new ScalarTypeValue($value, $type->getValueType());
+            }
+            
+            return $value;         
+        }
+        
+        // add message (or something like this): "No legal input provided for {{ field }}"
+        
+        return false;
+    } 
+    
+    // FIXME Use internal callbacks to delegate the call and ceep duplication low
+    // call_user_func('parent::{method}', $value, $value2);
+    isEqual(mixed $value, mixed $value2)
+    {
+        /*
+        if (get_class($value) !== get_class($value2)) {
+            return false;
+        }
+        
+        if ($value instanceof ScalarTypeValue) {
+            if ($value->getValueType() !== $value2->getValueType()) {
+                return false;
+            }
+        
+            $_value = $value->getValue();
+            $_value2 = $value2->getValue();
+            
+            return $this->getValtype($value->getValueType())->isEqual($_value, $_value2);
+        } else {
+            return $this->getValtype($value)->isEqual($value, $value2);
+        }
+        */
+        
+        $this->callParentMethod(___FUNCTION__, $value, $value2);
+    }
+    
+    protected callParentMethod(string $method, mixed $value, mixed $value2)
+    {
+        if (get_class($value) !== get_class($value2)) {
+            return false;
+        }
+        
+        if ($value instanceof ScalarTypeValue) {
+            if ($value->getValueType() !== $value2->getValueType()) {
+                return false;
+            }
+        
+            $_value = $value->getValue();
+            $_value2 = $value2->getValue();
+            
+            return $this->getValtype($value->getValueType())->isEqual($_value, $_value2);
+        } else {
+            return $this->getValtype($value)->isEqual($value, $value2);
+        }
+    
+        call_user_func('parent::' . $method, $value, $value2);
+    }
+    
+    protected getValType(object $value)
+    {
+        if (!$value instanceof ScalarTypeValue) {
+            // TODO Validate existance
+            return $this->types[get_class($value)];
+        }
+        
+        if (!isset($this->types[$value->getValueType()]) {
+            throw new \InvalidArgumentException('Unable to resolve ScalarType {$value->getValueType()}');
+        }
+        
+        return $this->types[$value->getValueType()];
+    }
+}
