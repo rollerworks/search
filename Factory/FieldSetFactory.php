@@ -118,7 +118,7 @@ class FieldSetFactory extends AbstractFactory
     /**
      * Generates all the FieldSet Classes.
      *
-     * The FilterType of an FilterField must be either an FilterTypeConfig object or an array of FilterTypeConfig objects.
+     * The FilterType of an FilterField must be an FilterTypeConfig object.
      *
      * @param FieldSet[] $classes
      * @param string     $toDir   The target directory of the Classes. If not specified, the directory configured by this factory is used.
@@ -201,34 +201,16 @@ class FieldSetFactory extends AbstractFactory
     }
 
     /**
-     * @param FilterTypeConfig[]|FilterTypeConfig $type
+     * @param FilterTypeConfig $type
      *
      * @return string
      *
      * @throws \InvalidArgumentException on invalid type
      */
-    private function generateType($type)
+    private function generateType(FilterTypeConfig $type = null)
     {
         if (null === $type) {
             return 'null';
-        }
-
-        if (is_array($type)) {
-            $typeTemplate = "            %s => %s,\n";
-            $typeString = "new TypeChain(array(\n";
-
-            foreach ($type as $name => $chainType) {
-                $typeString .= sprintf($typeTemplate, var_export($name, true), $this->generateType($chainType));
-            }
-
-            $typeString = rtrim($typeString, ',');
-            $typeString .= '        ))';
-
-            return $typeString;
-        }
-
-        if (!$type instanceof FilterTypeConfig) {
-            throw new \InvalidArgumentException('Type must be an array of FilterTypeConfig objects or an single FilterTypeConfig object.');
         }
 
         return sprintf('$typeFactory->newInstance(%s, %s)', var_export($type->getName(), true), ($type->hasParams() ? var_export($type->getParams(), true) : 'array()'));
@@ -245,7 +227,6 @@ namespace <namespace>;
 use Symfony\Component\Translation\TranslatorInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet as BaseFieldSet;
-use Rollerworks\Bundle\RecordFilterBundle\Type\TypeChain;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;
 
 /**

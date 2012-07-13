@@ -114,10 +114,6 @@ class FieldSetFactoryTest extends TestCase
                         ->set('invoice_price', FilterField::create('invoice_price', new FilterTypeConfig('number'))),
                     FieldSet::create('customer')
                         ->set('customer_id', FilterField::create('customer_id', new FilterTypeConfig('number', array('max' => null, 'min' => '0'))))
-                        ->set('customer_regdate', FilterField::create('customer_regdate', array(
-                            'date' => new FilterTypeConfig('date'),
-                            'time' => new FilterTypeConfig('time')
-                        )))
                 ),
             )
         );
@@ -130,20 +126,7 @@ class FieldSetFactoryTest extends TestCase
         foreach ($expected->all() as $fieldName => $field) {
             $this->assertTrue($actual->has($fieldName), sprintf('FieldSet "%s" has field "%s"', $expected->getSetName(), $fieldName));
             $this->assertEquals($field->getLabel(), $actual->get($fieldName)->getLabel());
-
-            if (is_array($field->getType())) {
-
-                if (!$actual->get($fieldName)->getType() instanceof FilterType\TypeChain) {
-                    $this->fail(sprintf('Failed asserting that type of fieldName "%s" in FieldSet, is an FilterChain.', $fieldName, $expected->getSetName()));
-                }
-
-                foreach ($field->getType() as $chainName => $chainType) {
-                    $this->assertTrue($actual->get($fieldName)->getType()->has($chainName));
-                    $this->assertFilterTypeEquals($chainType, $actual->get($fieldName)->getType()->get($chainName));
-                }
-            } elseif (!is_array($field->getType())) {
-                $this->assertFilterTypeEquals($field->getType(), $actual->get($fieldName)->getType());
-            }
+            $this->assertFilterTypeEquals($field->getType(), $actual->get($fieldName)->getType());
         }
     }
 
