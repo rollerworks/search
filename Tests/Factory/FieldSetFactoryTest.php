@@ -61,7 +61,7 @@ class FieldSetFactoryTest extends TestCase
         $this->translator->addResource('array', array(
             'invoice_id' => 'invoice label',
             'invoice_date' => 'invoice date'
-        ), 'en', 'filter');
+        ), 'en', 'filters');
 
         $this->factory = new FieldSetFactory(__DIR__ . '/../.cache/record_filter', 'RecordFilter', true);
         $this->factory->setTranslator($this->translator);
