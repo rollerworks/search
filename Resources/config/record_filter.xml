@@ -32,6 +32,7 @@
         <parameter key="rollerworks_record_filter.filter_type.datetime.class">Rollerworks\Bundle\RecordFilterBundle\Type\DateTime</parameter>
         <parameter key="rollerworks_record_filter.filter_type.number.class">Rollerworks\Bundle\RecordFilterBundle\Type\Number</parameter>
         <parameter key="rollerworks_record_filter.filter_type.decimal.class">Rollerworks\Bundle\RecordFilterBundle\Type\Decimal</parameter>
+        <parameter key="rollerworks_record_filter.filter_type.text.class">Rollerworks\Bundle\RecordFilterBundle\Type\Text</parameter>
     </parameters>
 
     <services>
@@ -129,6 +130,10 @@
 
          <service id="rollerworks_record_filter.filter_type.decimal" class="%rollerworks_record_filter.filter_type.decimal.class%" scope="prototype">
             <tag name="rollerworks_record_filter.filter_type" alias="decimal" />
+        </service>
+
+         <service id="rollerworks_record_filter.filter_type.text" class="%rollerworks_record_filter.filter_type.text.class%" scope="prototype">
+            <tag name="rollerworks_record_filter.filter_type" alias="text" />
         </service>
 
         <!-- Formatter modifiers services -->
