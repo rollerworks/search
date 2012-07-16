@@ -35,7 +35,7 @@ class SQLTest extends OrmTestCase
         $annotationReader->setIgnoreNotImportedAnnotations(true);
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
-        $whereBuilder    = new WhereBuilder($this->em, $metadataFactory);
+        $whereBuilder    = new WhereBuilder($metadataFactory, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
@@ -52,7 +52,7 @@ class SQLTest extends OrmTestCase
         $annotationReader->setIgnoreNotImportedAnnotations(true);
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
-        $whereBuilder    = new WhereBuilder($this->em, $metadataFactory);
+        $whereBuilder    = new WhereBuilder($metadataFactory, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertNull($whereCase);
@@ -75,7 +75,7 @@ class SQLTest extends OrmTestCase
         $annotationReader->setIgnoreNotImportedAnnotations(true);
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
-        $whereBuilder    = new WhereBuilder($this->em, $metadataFactory);
+        $whereBuilder    = new WhereBuilder($metadataFactory, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
