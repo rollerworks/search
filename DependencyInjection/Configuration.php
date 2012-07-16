@@ -11,9 +11,9 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 /**
  * This class contains the configuration information for the bundle.
  *
@@ -31,12 +31,111 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
 
-        $treeBuilder->root('rollerworks_record_filter')
+        $rootNode = $treeBuilder->root('rollerworks_record_filter');
+
+        $rootNode
             ->children()
-                ->scalarNode('metadata_cache')->defaultValue('%kernel.cache_dir%/recordfilter_metadata')->end()
+                ->scalarNode('metadata_cache')->defaultValue('%kernel.cache_dir%/record_filter_metadata')->end()
+
+                ->scalarNode('filters_directory')->defaultValue('%kernel.cache_dir%/record_filter')->end()
+                ->scalarNode('filters_namespace')->defaultValue('RecordFilter')->end()
+
+                ->arrayNode('record')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('sql')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('default_entity_manager')->defaultValue('%doctrine.default_entity_manager%')
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
 
+        $this->addFieldSetsSection($rootNode);
+        $this->addFactoriesSection($rootNode);
+
         return $treeBuilder;
+    }
+
+    private function addFactoriesSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->fixXmlConfig('factory')
+            ->children()
+                ->arrayNode('factories')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+
+                        ->arrayNode('fieldset')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('namespace')->defaultValue('%rollerworks_record_filter.filters_namespace%')->end()
+                                ->scalarNode('label_translator_prefix')->defaultValue('')->end()
+                                ->scalarNode('label_translator_domain')->defaultValue('filters')->end()
+                                ->booleanNode('auto_generate')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+
+                        ->arrayNode('sql_wherebuilder')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('namespace')->defaultValue('%rollerworks_record_filter.filters_namespace%')->end()
+                                ->scalarNode('default_entity_manager')->defaultValue('%doctrine.default_entity_manager%')->end()
+                                ->booleanNode('auto_generate')->defaultFalse()->end()
+                            ->end()
+                        ->end()
+
+                    ->end()
+                ->end()
+            ->end();
+    }
+
+    private function addFieldSetsSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->fixXmlConfig('fieldset')
+            ->children()
+                ->arrayNode('fieldsets')
+                    ->useAttributeAsKey('name')
+                    ->performNoDeepMerging()
+                    ->canBeUnset()
+                    ->prototype('array')
+                        ->children()
+                            ->arrayNode('import')
+                                ->prototype('array')
+                                    ->beforeNormalization()->ifString()->then(function($v) { return array('class' => $v); })->end()
+                                    ->children()
+                                        ->scalarNode('class')->cannotBeEmpty()->end()
+                                        ->arrayNode('include_fields')->prototype('scalar')->defaultValue(array())->end()->end()
+                                        ->arrayNode('exclude_fields')->prototype('scalar')->defaultValue(array())->end()->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                            ->arrayNode('fields')
+                                ->useAttributeAsKey('name')
+                                ->prototype('array')
+                                    ->canBeUnset()
+                                    ->children()
+                                        ->booleanNode('required')->defaultFalse()->end()
+                                        ->booleanNode('accept_ranges')->defaultFalse()->end()
+                                        ->booleanNode('accept_compares')->defaultFalse()->end()
+                                        ->arrayNode('type')
+                                            ->beforeNormalization()->ifString()->then(function($v) { return array('name' => $v); })->end()
+                                            ->children()
+                                                ->scalarNode('name')->cannotBeEmpty()->end()
+                                                ->arrayNode('params')->useAttributeAsKey('key')->prototype('variable')->defaultValue(array())->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ->end();
     }
 }

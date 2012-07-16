@@ -82,13 +82,19 @@ class WhereBuilder
     /**
      * Constructor.
      *
-     * @param EntityManager            $entityManager
      * @param MetadataFactoryInterface $metadataFactory
      */
-    public function __construct(EntityManager $entityManager, MetadataFactoryInterface $metadataFactory)
+    public function __construct(MetadataFactoryInterface $metadataFactory)
     {
-        $this->entityManager   = $entityManager;
         $this->metadataFactory = $metadataFactory;
+    }
+
+    /**
+     * @param EntityManager $entityManager
+     */
+    public function setEntityManager(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
     }
 
     /**
