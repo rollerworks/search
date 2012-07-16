@@ -49,7 +49,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         ), $config['factories'], 'The factories key is set');
     }
 
-
     /**
      * @dataProvider provideFieldSets
      *

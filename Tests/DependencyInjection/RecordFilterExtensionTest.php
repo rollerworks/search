@@ -13,7 +13,6 @@ namespace Rollerworks\RecordFilterBundle\Tests\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Config\Definition\Processor;
 use Rollerworks\Bundle\RecordFilterBundle\DependencyInjection\RollerworksRecordFilterExtension;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 

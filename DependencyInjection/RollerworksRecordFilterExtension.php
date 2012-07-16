@@ -12,15 +12,12 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Config\FileLocator;
 
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
-use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 /**
  * RecordFilter configuration.
