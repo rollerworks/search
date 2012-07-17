@@ -76,7 +76,7 @@
                 <argument type="service" id="rollerworks_record_filter.types_factory" />
             </call>
 
-            <call method="setFieldToLabelByTranslator">
+            <call method="setLabelResolver">
                 <argument>%rollerworks_record_filter.factories.fieldset.label_translator_prefix%</argument>
                 <argument>%rollerworks_record_filter.factories.fieldset.label_translator_domain%</argument>
             </call>
