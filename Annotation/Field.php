@@ -95,6 +95,10 @@ class Field
         if (empty($this->name)) {
             throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'name', get_class($this)));
         }
+
+        if (null === $this->type) {
+            $this->type = new Type(array('value' => null));
+        }
     }
 
     /**

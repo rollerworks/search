@@ -165,7 +165,7 @@ class FieldSetFactory extends AbstractFactory
             );
 
             if (null !== $field->getPropertyRefClass()) {
-               $fields .= sprintf('->setPropertyRef()', var_export($field->getPropertyRefClass(), true), var_export($field->getPropertyRefField(), true));
+               $fields .= sprintf('->setPropertyRef(%s, %s)', var_export($field->getPropertyRefClass(), true), var_export($field->getPropertyRefField(), true));
             }
 
             $fields .= ";\n";

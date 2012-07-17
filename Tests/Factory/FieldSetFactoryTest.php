@@ -113,11 +113,8 @@ class FieldSetFactoryTest extends TestCase
                         ->set('invoice_date', FilterField::create('invoice date', new FilterTypeConfig('date')))
                         ->set('invoice_price', FilterField::create('invoice_price', new FilterTypeConfig('number'))),
                     FieldSet::create('customer')
-                        ->set('customer_id', FilterField::create('customer_id', new FilterTypeConfig('number', array('max' => null, 'min' => '0'))))
-                        ->set('customer_regdate', FilterField::create('customer_regdate', array(
-                            'date' => new FilterTypeConfig('date'),
-                            'time' => new FilterTypeConfig('time')
-                        )))
+                        ->set('customer_id', FilterField::create('customer_id', new FilterTypeConfig('number', array('max' => null, 'min' => '0')))->setPropertyRef('ECommerceCustomer', 'id'))
+                        ->set('customer_regdate', FilterField::create('customer_regdate', new FilterTypeConfig('date')))
                 ),
             )
         );
@@ -131,18 +128,11 @@ class FieldSetFactoryTest extends TestCase
             $this->assertTrue($actual->has($fieldName), sprintf('FieldSet "%s" has field "%s"', $expected->getSetName(), $fieldName));
             $this->assertEquals($field->getLabel(), $actual->get($fieldName)->getLabel());
 
-            if (is_array($field->getType())) {
+            $this->assertFilterTypeEquals($field->getType(), $actual->get($fieldName)->getType());
 
-                if (!$actual->get($fieldName)->getType() instanceof FilterType\TypeChain) {
-                    $this->fail(sprintf('Failed asserting that type of fieldName "%s" in FieldSet, is an FilterChain.', $fieldName, $expected->getSetName()));
-                }
-
-                foreach ($field->getType() as $chainName => $chainType) {
-                    $this->assertTrue($actual->get($fieldName)->getType()->has($chainName));
-                    $this->assertFilterTypeEquals($chainType, $actual->get($fieldName)->getType()->get($chainName));
-                }
-            } elseif (!is_array($field->getType())) {
-                $this->assertFilterTypeEquals($field->getType(), $actual->get($fieldName)->getType());
+            if (null !== $field->getPropertyRefClass()) {
+                $this->assertEquals($field->getPropertyRefClass(), $actual->get($fieldName)->getPropertyRefClass());
+                $this->assertEquals($field->getPropertyRefField(), $actual->get($fieldName)->getPropertyRefField());
             }
         }
     }
