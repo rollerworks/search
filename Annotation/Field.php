@@ -31,7 +31,7 @@ class Field
     private $required;
 
     /**
-     * @var null|string
+     * @var Type
      */
     private $type;
 
@@ -130,15 +130,19 @@ class Field
     }
 
     /**
-     * @param string|null $type
+     * @param Type $type
      */
     public function setType($type)
     {
+        if (!$type instanceof Type) {
+            $type = new Type(array('value' => $type));
+        }
+
         $this->type = $type;
     }
 
     /**
-     * @return null|string
+     * @return Type
      */
     public function getType()
     {

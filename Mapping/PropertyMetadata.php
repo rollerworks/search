@@ -26,10 +26,8 @@ class PropertyMetadata extends BasePropertyMetadata
     public $acceptCompares;
 
     public $type;
-    public $params = array();
 
     public $widgetsConfig = array();
-
     public $sqlConversion = array('class' => null, 'params' => array());
 
     /**
@@ -95,11 +93,8 @@ class PropertyMetadata extends BasePropertyMetadata
         return serialize(array(
             $this->class,
             $this->name,
-
             $this->filter_name,
-
             $this->type,
-            $this->params,
 
             $this->required,
             $this->acceptRanges,
@@ -120,11 +115,8 @@ class PropertyMetadata extends BasePropertyMetadata
         list(
             $this->class,
             $this->name,
-
             $this->filter_name,
-
             $this->type,
-            $this->params,
 
             $this->required,
             $this->acceptRanges,

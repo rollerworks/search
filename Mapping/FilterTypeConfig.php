@@ -20,8 +20,8 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Mapping;
  */
 class FilterTypeConfig
 {
-    private $name;
-    private $params;
+    public $name;
+    public $params;
 
     /**
      * @param string $name
