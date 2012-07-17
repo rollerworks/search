@@ -13,6 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
 
 /**
  * FilterField.
@@ -22,7 +23,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
 class FilterField
 {
     /**
-     * @var null|FilterTypeInterface|ValueMatcherInterface
+     * @var FilterTypeInterface|ValueMatcherInterface|FilterTypeConfig|null
      */
     protected $filterType;
 
@@ -59,11 +60,11 @@ class FilterField
     /**
      * Constructor.
      *
-     * @param string                                         $label
-     * @param FilterTypeInterface|ValueMatcherInterface|null $type
-     * @param boolean                                        $required
-     * @param boolean                                        $acceptRanges
-     * @param boolean                                        $acceptCompares
+     * @param string                                                          $label
+     * @param FilterTypeInterface|ValueMatcherInterface|FilterTypeConfig|null $type
+     * @param boolean                                                         $required
+     * @param boolean                                                         $acceptRanges
+     * @param boolean                                                         $acceptCompares
      */
     public function __construct($label, $type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
     {
@@ -78,11 +79,12 @@ class FilterField
     /**
      * Creates a new FilterField object.
      *
-     * @param  string                                         $label
-     * @param  FilterTypeInterface|ValueMatcherInterface|null $type
-     * @param  boolean                                        $required
-     * @param  boolean                                        $acceptRanges
-     * @param  boolean                                        $acceptCompares
+     * @param string                                                          $label
+     * @param FilterTypeInterface|ValueMatcherInterface|FilterTypeConfig|null $type
+     * @param boolean                                                         $required
+     * @param boolean                                                         $acceptRanges
+     * @param boolean                                                         $acceptCompares
+     *
      * @return FilterField
      */
     public static function create($label, $type = null, $required = false, $acceptRanges = false, $acceptCompares = false)
@@ -141,7 +143,7 @@ class FilterField
     /**
      * Get the type of the filter.
      *
-     * @return FilterTypeInterface|ValueMatcherInterface|mixed|null
+     * @return FilterTypeInterface|ValueMatcherInterface|FilterTypeConfig|mixed|null
      */
     public function getType()
     {

@@ -25,6 +25,9 @@ class PropertyMetadata extends BasePropertyMetadata
     public $acceptRanges;
     public $acceptCompares;
 
+    /**
+     * @var FilterTypeConfig
+     */
     public $type;
 
     public $widgetsConfig = array();

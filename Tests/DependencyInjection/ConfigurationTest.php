@@ -162,6 +162,43 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ),
 
             array(
+                array('customer' => array(
+                    'fields' => array(
+                        'id' => array(
+                            'type' => 'number',
+                        ),
+                        'name' => array(
+                            'type' => array('name' => 'text', 'params' => array()),
+                            'required' => true,
+                            'accept_ranges' => true,
+                            'accept_compares' => true,
+                            'ref' => array('class' => 'customer', 'property' => 'name')
+                        )
+                    )
+                )),
+                array(
+                    'customer' => array(
+                        'fields' => array(
+                            'id' => array(
+                                'type' => array('name' => 'number', 'params' => array()),
+                                'required' => false,
+                                'accept_ranges' => false,
+                                'accept_compares' => false,
+                            ),
+                            'name' => array(
+                                'type' => array('name' => 'text', 'params' => array()),
+                                'required' => true,
+                                'accept_ranges' => true,
+                                'accept_compares' => true,
+                                'ref' => array('class' => 'customer', 'property' => 'name')
+                            )
+                        ),
+                        'import' => array(),
+                    )
+                )
+            ),
+
+            array(
                 array(
                     'customer' => array(
                         'fields' => array(

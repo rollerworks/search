@@ -27,7 +27,7 @@ use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 class RollerworksRecordFilterExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $config, ContainerBuilder $container)
     {
