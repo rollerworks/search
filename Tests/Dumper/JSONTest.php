@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Dumper;
 
-use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\Bundle\RecordFilterBundle\Dumper\JSON;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;

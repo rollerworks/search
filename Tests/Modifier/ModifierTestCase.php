@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier;
 
-use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\Validator;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\DuplicateRemove;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ValuesToRange;

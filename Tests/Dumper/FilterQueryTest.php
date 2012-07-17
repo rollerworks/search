@@ -12,7 +12,7 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Dumper;
 
 use Rollerworks\Bundle\RecordFilterBundle\Dumper\FilterQuery;
-use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;

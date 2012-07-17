@@ -23,7 +23,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Formatter implements FormatterInterface
+class ModifierFormatter implements FormatterInterface
 {
     /**
      * @var MessageBag
@@ -96,7 +96,7 @@ class Formatter implements FormatterInterface
      *
      * @param ModifierInterface $modifier
      *
-     * @return Formatter
+     * @return ModifierFormatter
      *
      * @api
      */

@@ -16,7 +16,7 @@
         <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver</parameter>
         <parameter key="rollerworks_record_filter.metadata.cache.class">Metadata\Cache\FileCache</parameter>
 
-        <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter</parameter>
+        <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter</parameter>
         <parameter key="rollerworks_record_filter.record.sql.where_builder.class">Rollerworks\Bundle\RecordFilterBundle\Record\Sql\WhereBuilder</parameter>
 
         <!-- Formatter modifiers classes -->

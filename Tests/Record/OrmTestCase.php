@@ -14,7 +14,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Record;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
-use Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\Validator;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Number;
