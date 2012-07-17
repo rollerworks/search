@@ -3,9 +3,9 @@
 
 [![Build Status](https://secure.travis-ci.org/rollerscapes/RollerworksRecordFilterBundle.png?branch=master)](http://travis-ci.org/rollerscapes/RollerworksRecordFilterBundle)
 
-This bundle provides the RollerworksRecordFilterBundle, record filter-based searching.
+This bundle provides the RollerworksRecordFilterBundle, filter-based record searching.
 
-*** This bundle is considered experimental. Documentation is missing. ***
+*** This bundle is considered EXPERIMENTAL. Documentation is missing. ***
 
 ## Installation
 
@@ -57,9 +57,15 @@ file of your Symfony Standard Distribution:
 
 ```ini
 [RollerworksRecordFilterBundle]
-    git=https://github.com/rollerscapes/RollerworksRecordFilterBundle.git
+    git=https://github.com/rollerworks/RollerworksRecordFilterBundle.git
     target=/bundles/Rollerworks/Bundle/RecordFilterBundle
+    
+[RollerworksLocaleComponent]
+    git=https://github.com/rollerworks/Locale.git
+    target=/Rollerworks/Component/Locale
 ```
+
+And make sure metadata is using at least version 1.1.1 (dont't forget debs.lock)
 
 **NOTE**: You can add `version` tag in the snippet above with the latest stable
 branch, for example ``version=origin/2.0``.
@@ -85,7 +91,7 @@ Make sure that you also register the namespace with the autoloader:
 // app/autoload.php
 $loader->registerNamespaces(array(
     // ...
-    'Rollerworks'              => __DIR__.'/../vendor/bundles',
+    'Rollerworks'      => array(__DIR__.'/../vendor/bundles', __DIR__.'/../vendor'),
     // ...
 ));
 ```
@@ -100,29 +106,31 @@ $ php bin/vendors install
 ### Step 1 (alternative): Using submodules (Symfony 2.0.x)
 
 If you're managing your vendor libraries with submodules, first create the
-`vendor/bundles/Rollerworks/Bundle` directory:
+`vendor/bundles/Rollerworks/Bundle` and `vendor/Rollerworks/Component/Locale` directorys:
 
-``` bash
+```bash
 $ mkdir -pv vendor/bundles/Rollerworks/Bundle
+$ mkdir -pv vendor/Rollerworks/Component/Locale
 ```
 
 Next, add the necessary submodule:
 
-``` bash
-$ git submodule add git://github.com/rollerscapes/RollerworksRecordFilterBundle.git vendor/bundles/Rollerworks/Bundle/RecordFilterBundle
+```bash
+$ git submodule add git://github.com/rollerworks/RollerworksRecordFilterBundle.git vendor/bundles/Rollerworks/Bundle/RecordFilterBundle
+$ git submodule add git://github.com/rollerworks/Locale.git vendor/Rollerworks/Component/Locale
 ```
 
 ### Step2: Configure the autoloader
 
 Add the following entry to your autoloader:
 
-``` php
+```php
 <?php
 // app/autoload.php
 
 $loader->registerNamespaces(array(
     // ...
-    'Rollerworks'              => __DIR__.'/../vendor/bundles',
+    'Rollerworks'      => array(__DIR__.'/../vendor/bundles', __DIR__.'/../vendor'),
     // ...
 ));
 ```
@@ -131,7 +139,7 @@ $loader->registerNamespaces(array(
 
 Finally, enable the bundle in the kernel:
 
-``` php
+```php
 <?php
 
 // in AppKernel::registerBundles()
@@ -143,9 +151,9 @@ $bundles = array(
 ```
 ### Step4: Configure the bundle
 
-Finally, add the following to your config file:
+Finally, add the following to your config file (this needs updating):
 
-``` yaml
+```yaml
 # app/config/config.yml
 
 rollerworks_recordfilter:
