@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="rollerworks_record_filter.input.filter_query.class">Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery</parameter>
         <parameter key="rollerworks_record_filter.fieldset_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\FieldSetFactory</parameter>
+        <parameter key="rollerworks_record_filter.factories_cache_warmer.class">Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCacheWarmer</parameter>
 
         <parameter key="rollerworks_record_filter.types_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory</parameter>
         <parameter key="rollerworks_record_filter.sql_wherebuilder_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\SqlWhereBuilderFactory</parameter>
@@ -109,6 +110,12 @@
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+        </service>
+
+        <service id="rollerworks_record_filter.factories_cache_warmer" class="%rollerworks_record_filter.factories_cache_warmer.class%" public="false">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="rollerworks_record_filter.metadata_factory" />
+            <tag name="kernel.cache_warmer"/>
         </service>
 
         <!-- Filter-types -->
