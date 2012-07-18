@@ -17,7 +17,7 @@ class ECommerceCustomer
      * @Column(type="integer")
      * @GeneratedValue(strategy="AUTO")
      * @RecordFilter\Field("customer_id", type="Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerType")
-     * @RecordFilter\SqlConversion("Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion")
+     * @RecordFilter\SqlConversion("customer_conversion")
      */
     private $id;
 }

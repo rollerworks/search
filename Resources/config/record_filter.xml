@@ -107,9 +107,7 @@
 
         <service id="rollerworks_record_filter.record.sql_where_builder" class="%rollerworks_record_filter.record.sql.where_builder.class%">
             <argument type="service" id="rollerworks_record_filter.metadata_factory"/>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
+            <argument type="service" id="service_container"/>
         </service>
 
         <service id="rollerworks_record_filter.factories_cache_warmer" class="%rollerworks_record_filter.factories_cache_warmer.class%" public="false">

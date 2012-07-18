@@ -43,9 +43,13 @@ class SqlWhereBuilderFactoryTest extends OrmTestCase
             throw new \RuntimeException('Was unable to create the sub-dir for the RecordFilter::Record::Sql::WhereBuilder.');
         }
 
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+
         $this->factory = new SqlWhereBuilderFactory(__DIR__ . '/../.cache/record_filter', 'RecordFilter', true);
         $this->factory->setEntityManager($this->em);
         $this->factory->setMetadataFactory($metadataFactory);
+        $this->factory->setContainer($container);
     }
 
     /**

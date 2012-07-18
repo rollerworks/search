@@ -64,7 +64,7 @@ class AnnotationDriver implements DriverInterface
                     $propertyMetadata->acceptCompares = $annotation->acceptsCompares();
                 } elseif ($annotation instanceof SqlConversion) {
                     /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\SqlConversion $annotation */
-                    $propertyMetadata->setSqlConversion($annotation->getClass(), $annotation->getParams());
+                    $propertyMetadata->setSqlConversion($annotation->getService(), $annotation->getParams());
                 }
             }
 

@@ -34,8 +34,10 @@ class SQLTest extends OrmTestCase
         // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
         $annotationReader->setIgnoreNotImportedAnnotations(true);
 
+        $container = $this->createContainer();
+
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
-        $whereBuilder    = new WhereBuilder($metadataFactory, $this->em);
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
@@ -51,8 +53,10 @@ class SQLTest extends OrmTestCase
         // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
         $annotationReader->setIgnoreNotImportedAnnotations(true);
 
+        $container = $this->createContainer();
+
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
-        $whereBuilder    = new WhereBuilder($metadataFactory, $this->em);
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertNull($whereCase);
@@ -74,8 +78,11 @@ class SQLTest extends OrmTestCase
         // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
         $annotationReader->setIgnoreNotImportedAnnotations(true);
 
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
-        $whereBuilder    = new WhereBuilder($metadataFactory, $this->em);
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($input->getFieldSet(), $this->formatter));
         $this->assertEquals($expectedSql, $whereCase);

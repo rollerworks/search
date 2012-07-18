@@ -23,7 +23,7 @@ class SqlConversion
     /**
      * @var string
      */
-    protected $class;
+    protected $service;
 
     /**
      * @var array
@@ -40,53 +40,40 @@ class SqlConversion
      */
     public function __construct(array $data)
     {
-        $this->class = null;
+        $this->service = null;
 
         if (isset($data['value'])) {
-            $data['class'] = $data['value'];
+            $this->service = $data['value'];
             unset($data['value']);
         }
 
-        foreach ($data as $key => $value) {
-            if ('_' === $key[0]) {
-                $this->params[substr($key, 1)] = $value;
-                continue;
-            }
+        $this->params = $data;
 
-            $method = 'set' . ucfirst($key);
-
-            if (!method_exists($this, $method)) {
-                throw new \BadMethodCallException(sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this)));
-            }
-
-            $this->$method($value);
-        }
-
-        if (empty($this->class)) {
-            throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'class', get_class($this)));
+        if (empty($this->service)) {
+            throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'service', get_class($this)));
         }
     }
 
     /**
-     * @param string $class
+     * @param string $service
      *
      * @throws \UnexpectedValueException
      */
-    public function setClass($class)
+    public function setService($service)
     {
-        if (empty($class)) {
-            throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'class', get_class($this)));
+        if (empty($service)) {
+            throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'service', get_class($this)));
         }
 
-        $this->class = $class;
+        $this->service = $service;
     }
 
     /**
      * @return string
      */
-    public function getClass()
+    public function getService()
     {
-        return $this->class;
+        return $this->service;
     }
 
     /**
