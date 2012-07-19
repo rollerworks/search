@@ -12,7 +12,6 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Mapping;
 
 use Metadata\PropertyMetadata as BasePropertyMetadata;
-use Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlValueConversionInterface;
 
 /**
  * PropertyMetadata.

@@ -14,7 +14,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\CacheWarmer;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Rollerworks\Bundle\RecordFilterBundle\DependencyInjection\RollerworksRecordFilterExtension;
 use Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCacheWarmer;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
@@ -179,8 +178,7 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($cacheDir), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
             if ($path->isDir()) {
                 rmdir($path->__toString());
-            }
-            else {
+            } else {
                 unlink($path->__toString());
             }
         }
