@@ -25,42 +25,23 @@ class PropertyMetadata extends BasePropertyMetadata
     public $acceptRanges;
     public $acceptCompares;
 
+    /**
+     * @var FilterTypeConfig
+     */
     public $type;
-    public $params = array();
 
     public $widgetsConfig = array();
-
-    public $sqlConversion = array('class' => null, 'params' => array());
+    public $sqlConversion = array('service' => null, 'params' => array());
 
     /**
      * Set SQL conversion configuration.
      *
-     * @param string $class
+     * @param string $service
      * @param array  $params
-     *
-     * @throws \InvalidArgumentException
      */
-    public function setSqlConversion($class, array $params = array())
+    public function setSqlConversion($service, array $params = array())
     {
-        if (!class_exists($class)) {
-            throw new \InvalidArgumentException(sprintf('Failed to find SqlConversion class "%s".', $class));
-        }
-
-        $r = new \ReflectionClass($class);
-
-        if ($r->isAbstract()) {
-            throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" can\'t be abstract.', $class));
-        }
-
-        if (!$r->implementsInterface('\\Rollerworks\\Bundle\\RecordFilterBundle\\Record\\Sql\\SqlValueConversionInterface')) {
-            throw new \InvalidArgumentException(sprintf('SqlConversion class "%s" must implement Rollerworks\\Bundle\\RecordFilterBundle\\Record\\Sql\\SqlValueConversionInterface.', $class));
-        }
-
-        if ($r->hasMethod('__construct') && !$r->getMethod('__construct')->isPublic()) {
-            throw new \InvalidArgumentException(sprintf('%s::__construct(): must be public.', $class));
-        }
-
-        $this->sqlConversion = array('class' => $class, 'params' => $params);
+        $this->sqlConversion = array('service' => $service, 'params' => $params);
     }
 
     /**
@@ -68,15 +49,15 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public function hasSqlConversion()
     {
-        return null !== $this->sqlConversion['class'];
+        return null !== $this->sqlConversion['service'];
     }
 
     /**
      * @return string|null
      */
-    public function getSqlConversionClass()
+    public function getSqlConversionService()
     {
-        return $this->sqlConversion['class'];
+        return $this->sqlConversion['service'];
     }
 
     /**
@@ -95,11 +76,8 @@ class PropertyMetadata extends BasePropertyMetadata
         return serialize(array(
             $this->class,
             $this->name,
-
             $this->filter_name,
-
             $this->type,
-            $this->params,
 
             $this->required,
             $this->acceptRanges,
@@ -120,11 +98,8 @@ class PropertyMetadata extends BasePropertyMetadata
         list(
             $this->class,
             $this->name,
-
             $this->filter_name,
-
             $this->type,
-            $this->params,
 
             $this->required,
             $this->acceptRanges,

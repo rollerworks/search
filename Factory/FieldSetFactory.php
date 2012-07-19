@@ -41,7 +41,7 @@ class FieldSetFactory extends AbstractFactory
     /**
      * @var string
      */
-    protected $translatorDomain = 'filter';
+    protected $translatorDomain = 'filters';
 
     /**
      * @param TranslatorInterface $translator
@@ -69,7 +69,7 @@ class FieldSetFactory extends AbstractFactory
      *
      * @throws \InvalidArgumentException
      */
-    public function setLabelResolver($pathPrefix, $domain = 'filter')
+    public function setLabelResolver($pathPrefix, $domain = 'filters')
     {
         if (!is_string($pathPrefix) && null !== $pathPrefix) {
             throw new \InvalidArgumentException('Prefix must be an string or null.');

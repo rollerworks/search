@@ -12,68 +12,57 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Annotation;
 
 /**
- * SqlConversion Annotation class.
- *
- * @Annotation
+ * Annotation class for filter-type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @Annotation
  */
-class SqlConversion
+class Type
 {
     /**
      * @var string
      */
-    protected $service;
+    private $name;
 
     /**
      * @var array
      */
-    protected $params = array();
+    private $params = array();
 
     /**
      * Constructor.
      *
      * @param array $data An array of key/value parameters
-     *
-     * @throws \BadMethodCallException
-     * @throws \UnexpectedValueException
      */
     public function __construct(array $data)
     {
-        $this->service = null;
+        $this->name = null;
 
         if (isset($data['value'])) {
-            $this->service = $data['value'];
+            $this->name = $data['value'];
             unset($data['value']);
         }
 
-        $this->params = $data;
-
-        if (empty($this->service)) {
-            throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'service', get_class($this)));
+        foreach ($data as $key => $value) {
+            $this->params[$key] = $value;
         }
     }
 
     /**
-     * @param string $service
-     *
-     * @throws \UnexpectedValueException
+     * @param string $type
      */
-    public function setService($service)
+    public function setName($type)
     {
-        if (empty($service)) {
-            throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'service', get_class($this)));
-        }
-
-        $this->service = $service;
+        $this->name = $type;
     }
 
     /**
      * @return string
      */
-    public function getService()
+    public function getName()
     {
-        return $this->service;
+        return $this->name;
     }
 
     /**

@@ -37,7 +37,7 @@ class WhereBuilder
     /**
      * @var EntityManager
      */
-    protected $entityManager = null;
+    protected $entityManager;
 
     /**
      * @var MetadataFactoryInterface
@@ -82,23 +82,23 @@ class WhereBuilder
     /**
      * Constructor.
      *
-     * @param EntityManager            $entityManager
      * @param MetadataFactoryInterface $metadataFactory
+     * @param ContainerInterface       $container
+     * @param EntityManager            $entityManager
      */
-    public function __construct(EntityManager $entityManager, MetadataFactoryInterface $metadataFactory)
+    public function __construct(MetadataFactoryInterface $metadataFactory, ContainerInterface $container, EntityManager $entityManager = null)
     {
-        $this->entityManager   = $entityManager;
         $this->metadataFactory = $metadataFactory;
+        $this->container = $container;
+        $this->entityManager = $entityManager;
     }
 
     /**
-     * Set the DIC container for SQL value-conversions.
-     *
-     * @param ContainerInterface $container
+     * @param EntityManager $entityManager
      */
-    public function setContainer(ContainerInterface $container)
+    public function setEntityManager(EntityManager $entityManager)
     {
-        $this->container = $container;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -314,12 +314,7 @@ class WhereBuilder
                 $propertyName = $field->getPropertyRefField();
 
                 if (isset($classMetadata->propertyMetadata[$propertyName]) && $classMetadata->propertyMetadata[$propertyName]->hasSqlConversion()) {
-                    $class = $classMetadata->propertyMetadata[$propertyName]->getSqlConversionClass();
-                    $this->sqlValueConversions[$fieldName] = new $class($classMetadata->propertyMetadata[$propertyName]->getSqlConversionParams());
-
-                    if ($this->sqlValueConversions[$fieldName] instanceof ContainerAwareInterface) {
-                        $this->sqlValueConversions[$fieldName]->setContainer($this->container);
-                    }
+                    $this->sqlValueConversions[$fieldName] = $this->container->get($classMetadata->propertyMetadata[$propertyName]->getSqlConversionService());
                 }
             }
         }

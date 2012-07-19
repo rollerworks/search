@@ -96,4 +96,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         return $engine;
     }
+
+    protected function compileContainer(ContainerBuilder $container)
+    {
+        $container->getCompilerPassConfig()->setOptimizationPasses(array());
+        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->compile();
+    }
 }

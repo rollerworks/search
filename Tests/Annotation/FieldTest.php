@@ -12,6 +12,7 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\TestAnnotation;
 
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\Field as FilterField;
+use Rollerworks\Bundle\RecordFilterBundle\Annotation\Type as FilterType;
 
 class FieldTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,7 +43,10 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     public function testType()
     {
         $field = new FilterField(array('name' => 'User', 'Type' => 'Number'));
-        $this->assertEquals('Number', $field->getType());
+        $this->assertEquals(new FilterType(array('value' => 'Number')), $field->getType());
+
+        $field = new FilterField(array('name' => 'User', 'Type' => new FilterType(array('value' => 'Number'))));
+        $this->assertEquals(new FilterType(array('value' => 'Number')), $field->getType());
     }
 
     public function testAcceptRanges()

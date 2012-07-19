@@ -31,7 +31,7 @@ class Field
     private $required;
 
     /**
-     * @var null|string
+     * @var Type
      */
     private $type;
 
@@ -95,6 +95,10 @@ class Field
         if (empty($this->name)) {
             throw new \UnexpectedValueException(sprintf("Property '%s' on annotation '%s' is required.", 'name', get_class($this)));
         }
+
+        if (null === $this->type) {
+            $this->type = new Type(array('value' => null));
+        }
     }
 
     /**
@@ -130,15 +134,19 @@ class Field
     }
 
     /**
-     * @param string|null $type
+     * @param Type $type
      */
     public function setType($type)
     {
+        if (!$type instanceof Type) {
+            $type = new Type(array('value' => $type));
+        }
+
         $this->type = $type;
     }
 
     /**
-     * @return null|string
+     * @return Type
      */
     public function getType()
     {

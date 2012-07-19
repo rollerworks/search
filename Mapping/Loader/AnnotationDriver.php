@@ -12,11 +12,12 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader;
 
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\PropertyMetadata;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\Field as AnnotationField;
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\SqlConversion;
-
-use Metadata\MergeableClassMetadata;
 use Doctrine\Common\Annotations\Reader;
+use Metadata\Driver\DriverInterface;
+use Metadata\MergeableClassMetadata;
 
 /**
  * AnnotationDriver.
@@ -51,21 +52,20 @@ class AnnotationDriver implements DriverInterface
 
         foreach ($class->getProperties() as $reflectionProperty) {
             $propertyMetadata = new PropertyMetadata($class->getName(), $reflectionProperty->getName());
+            $propertyMetadata = new PropertyMetadata($class->name, $reflectionProperty->name);
 
             foreach ($this->reader->getPropertyAnnotations($reflectionProperty) as $annotation) {
                 if ($annotation instanceof AnnotationField) {
                     /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\Field $annotation */
                     $propertyMetadata->filter_name = $annotation->getName();
                     $propertyMetadata->required    = $annotation->isRequired();
-
-                    $propertyMetadata->type   = $annotation->getType();
-                    $propertyMetadata->params = $annotation->getParams();
+                    $propertyMetadata->type        = new FilterTypeConfig($annotation->getType()->getName(), $annotation->getType()->getParams());
 
                     $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
                     $propertyMetadata->acceptCompares = $annotation->acceptsCompares();
                 } elseif ($annotation instanceof SqlConversion) {
                     /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\SqlConversion $annotation */
-                    $propertyMetadata->setSqlConversion($annotation->getClass(), $annotation->getParams());
+                    $propertyMetadata->setSqlConversion($annotation->getService(), $annotation->getParams());
                 }
             }
 

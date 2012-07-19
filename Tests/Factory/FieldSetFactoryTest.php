@@ -60,9 +60,8 @@ class FieldSetFactoryTest extends TestCase
 
         $this->translator->addResource('array', array(
             'invoice_id' => 'invoice label',
-            'invoice_date' => 'invoice date',
-            'order_id' => 'order number'
-        ), 'en', 'filter');
+            'invoice_date' => 'invoice date'
+        ), 'en', 'filters');
 
         $this->factory = new FieldSetFactory(__DIR__ . '/../.cache/record_filter', 'RecordFilter', true);
         $this->factory->setTranslator($this->translator);
@@ -103,12 +102,6 @@ class FieldSetFactoryTest extends TestCase
         }
     }
 
-    public function testGenerateFieldSetsInvalidName()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'FieldSet must have a unique-name.');
-        $this->factory->generateClasses(array(FieldSet::create(null)));
-    }
-
     public static function provideFieldSets()
     {
         return array(
@@ -118,19 +111,10 @@ class FieldSetFactoryTest extends TestCase
                     FieldSet::create('invoice')
                         ->set('invoice_id', FilterField::create('invoice label', new FilterTypeConfig('invoice')))
                         ->set('invoice_date', FilterField::create('invoice date', new FilterTypeConfig('date')))
-                        ->set('invoice_price', FilterField::create('invoice_price', new FilterTypeConfig('number')))
-                        ->set('invoice_customer', FilterField::create('invoice_customer')),
+                        ->set('invoice_price', FilterField::create('invoice_price', new FilterTypeConfig('number'))),
                     FieldSet::create('customer')
-                        ->set('customer_id', FilterField::create('customer_id', new FilterTypeConfig('number', array('max' => null, 'min' => '0'))))
-                ),
-            ),
-
-            array(
-                // List of FieldSet's
-                array(
-                    FieldSet::create('order')
-                        ->set('order_id', FilterField::create('order number', new FilterTypeConfig('number'))->setPropertyRef('ECommerce:Order', 'id'))
-                        ->set('order_customer', FilterField::create('order_customer')),
+                        ->set('customer_id', FilterField::create('customer_id', new FilterTypeConfig('number', array('max' => null, 'min' => '0')))->setPropertyRef('ECommerceCustomer', 'id'))
+                        ->set('customer_regdate', FilterField::create('customer_regdate', new FilterTypeConfig('date')))
                 ),
             )
         );
@@ -144,17 +128,11 @@ class FieldSetFactoryTest extends TestCase
             $this->assertTrue($actual->has($fieldName), sprintf('FieldSet "%s" has field "%s"', $expected->getSetName(), $fieldName));
             $this->assertEquals($field->getLabel(), $actual->get($fieldName)->getLabel());
 
-            $actualField = $actual->get($fieldName);
-
-            if (null === $field->getType()) {
-                $this->assertNull($actualField->getType());
-            } else {
-                $this->assertFilterTypeEquals($field->getType(), $actualField->getType());
-            }
+            $this->assertFilterTypeEquals($field->getType(), $actual->get($fieldName)->getType());
 
             if (null !== $field->getPropertyRefClass()) {
-                $this->assertEquals($field->getPropertyRefClass(), $actualField->getPropertyRefClass());
-                $this->assertEquals($field->getPropertyRefField(), $actualField->getPropertyRefField());
+                $this->assertEquals($field->getPropertyRefClass(), $actual->get($fieldName)->getPropertyRefClass());
+                $this->assertEquals($field->getPropertyRefField(), $actual->get($fieldName)->getPropertyRefField());
             }
         }
     }
