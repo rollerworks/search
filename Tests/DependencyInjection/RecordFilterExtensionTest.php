@@ -211,11 +211,4 @@ class RecordFilterExtensionTest extends TestCase
             ),
         );
     }
-
-    private function compileContainer(ContainerBuilder $container)
-    {
-        $container->getCompilerPassConfig()->setOptimizationPasses(array());
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-        $container->compile();
-    }
 }
