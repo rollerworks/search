@@ -51,7 +51,6 @@ class AnnotationDriver implements DriverInterface
         $classMetadata = new MergeableClassMetadata($class->getName());
 
         foreach ($class->getProperties() as $reflectionProperty) {
-            $propertyMetadata = new PropertyMetadata($class->getName(), $reflectionProperty->getName());
             $propertyMetadata = new PropertyMetadata($class->name, $reflectionProperty->name);
 
             foreach ($this->reader->getPropertyAnnotations($reflectionProperty) as $annotation) {
