@@ -38,7 +38,7 @@ class AnnotationMappingTest extends TestCase
         $property = new PropertyMetadata($reflection->name, 'id');
         $property->filter_name    = 'customer_id';
         $property->required       = false;
-        $property->type           = new FilterTypeConfig('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerType', array());
+        $property->type           = new FilterTypeConfig('customer_type', array());
         $property->acceptRanges   = false;
         $property->acceptCompares = false;
         $property->setSqlConversion('customer_conversion', array());

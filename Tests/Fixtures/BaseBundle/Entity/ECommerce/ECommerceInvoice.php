@@ -22,7 +22,7 @@ class ECommerceInvoice
 
     /**
      * @Column(type="string", unique=true)
-     * @RecordFilter\Field("invoice_label", type="Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\InvoiceType")
+     * @RecordFilter\Field("invoice_label", type="invoice_type")
      */
     private $label;
 
@@ -42,7 +42,7 @@ class ECommerceInvoice
 
     /**
      * @Column(type="integer")
-     * @RecordFilter\Field("invoice_status", type="Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\StatusType")
+     * @RecordFilter\Field("invoice_status", type="status_type")
      */
     private $status;
 
