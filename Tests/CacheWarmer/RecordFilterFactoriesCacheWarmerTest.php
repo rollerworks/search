@@ -118,12 +118,15 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         $this->compileContainer($this->container);
         $this->cacheWarmer->warmUp($this->cacheDir);
 
+        $result = $this->getFilesInCache();
+        sort($result);
+
         $this->assertEquals(array(
             'customer/FieldSet.php',
             'customer/SqlWhereBuilder.php',
             'invoice/FieldSet.php',
             'invoice/SqlWhereBuilder.php'
-        ), $this->getFilesInCache());
+        ), $result);
     }
 
     protected function setUp()
