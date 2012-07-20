@@ -30,10 +30,6 @@ class SQLTest extends OrmTestCase
         $this->assertTrue($this->formatter->formatInput($input));
 
         $annotationReader = new AnnotationReader();
-
-        // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
-        $annotationReader->setIgnoreNotImportedAnnotations(true);
-
         $container = $this->createContainer();
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
@@ -49,10 +45,6 @@ class SQLTest extends OrmTestCase
         $this->assertTrue($this->formatter->formatInput($input));
 
         $annotationReader = new AnnotationReader();
-
-        // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
-        $annotationReader->setIgnoreNotImportedAnnotations(true);
-
         $container = $this->createContainer();
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
@@ -74,10 +66,6 @@ class SQLTest extends OrmTestCase
         $this->assertTrue($this->formatter->formatInput($input));
 
         $annotationReader = new AnnotationReader();
-
-        // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
-        $annotationReader->setIgnoreNotImportedAnnotations(true);
-
         $container = $this->createContainer();
         $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
 

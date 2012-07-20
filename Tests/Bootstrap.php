@@ -1,12 +1,30 @@
 <?php
 
-require_once __DIR__ . '/../../../../../../app/bootstrap.php.cache';
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
-$loader->registerNamespaces(array(
-    'Rollerworks'      => array(__DIR__.'/../../../../..', __DIR__.'/../../../../../bundles'),
+call_user_func(function() {
+    if (!is_file($autoloadFile = __DIR__.'/../vendor/autoload.php')) {
+        throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --dev"?');
+    }
 
-    // When using Composer this will properly fail. Try to make it more robust
-    'Doctrine\Tests'   => __DIR__.'/../../../../../doctrine/tests'
-));
+    /** @var \Composer\Autoload\ClassLoader $loader */
+    $loader = require_once __DIR__.'/../vendor/autoload.php';
+    $loader->add('Doctrine\\Tests', str_replace('\\', '/', realpath(__DIR__.'/../vendor/doctrine/orm/tests')) . '/');
 
-//AnnotationRegistry::registerFile(__DIR__.'/../Filter/FilterAnnotations.php');
+    $bundleLoader = function($v) {
+        if (0 !== strpos($v, 'Rollerworks\\Bundle\\RecordFilterBundle')) {
+            return false;
+        }
+
+        if (!is_file($file = __DIR__.'/../'.str_replace('\\', '/', substr($v, 38)).'.php')) {
+            return false;
+        }
+
+        require_once $file;
+
+        return true;
+    };
+    spl_autoload_register($bundleLoader);
+
+    AnnotationRegistry::registerLoader($bundleLoader);
+});

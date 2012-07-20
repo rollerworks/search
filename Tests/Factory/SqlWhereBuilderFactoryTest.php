@@ -31,9 +31,11 @@ class SqlWhereBuilderFactoryTest extends OrmTestCase
         parent::setUp();
 
         $annotationReader = new AnnotationReader();
-
-        // The EntityManager is mocked and does not works as expected, so ignore them for our tests (It will work however).
-        $annotationReader->setIgnoreNotImportedAnnotations(true);
+        $annotationReader->addGlobalIgnoredName('Id');
+        $annotationReader->addGlobalIgnoredName('Column');
+        $annotationReader->addGlobalIgnoredName('GeneratedValue');
+        $annotationReader->addGlobalIgnoredName('OneToOne');
+        $annotationReader->addGlobalIgnoredName('OneToMany');
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
 

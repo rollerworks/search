@@ -159,7 +159,6 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         $this->container->setDefinition('doctrine.orm.default_entity_manager', $em);
 
         $annotationReader = new AnnotationReader();
-        $annotationReader->setIgnoreNotImportedAnnotations(true);
         $this->container->set('annotation_reader', $annotationReader);
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
