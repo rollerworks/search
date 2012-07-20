@@ -97,6 +97,27 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         return $engine;
     }
 
+    /**
+     * Copied from Symfony\Tests\Component\Config\Resource\DirectoryResourceTest
+     *
+     * @param $directory
+     */
+    protected function removeDirectory($directory)
+    {
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory), \RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($iterator as $path) {
+            if (preg_match('#/\.\.?$#', $path->__toString())) {
+                continue;
+            }
+            if ($path->isDir()) {
+               rmdir($path->__toString());
+            } else {
+               unlink($path->__toString());
+            }
+        }
+        rmdir($directory);
+    }
+
     protected function compileContainer(ContainerBuilder $container)
     {
         $container->getCompilerPassConfig()->setOptimizationPasses(array());

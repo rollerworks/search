@@ -174,13 +174,7 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
             return;
         }
 
-        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($cacheDir), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
-            if ($path->isDir()) {
-                rmdir(str_replace('\\', '/', $path->getRealPath()));
-            } elseif ($path->isFile()) {
-                unlink($path->__toString());
-            }
-        }
+        $this->removeDirectory($cacheDir);
     }
 
     /**
