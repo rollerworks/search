@@ -177,7 +177,7 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($cacheDir), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
             if ($path->isDir()) {
                 rmdir($path->__toString());
-            } else {
+            } elseif ($path->isFile()) {
                 unlink($path->__toString());
             }
         }
