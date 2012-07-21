@@ -70,17 +70,17 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     /**
      * {@inheritdoc}
      */
-    public function sanitizeString($input)
+    public function sanitizeString($value)
     {
         // Note we explicitly don't cast the value to an integer type
         // 64bit integers are not properly handled on a 32bit OS
 
-        if (ctype_digit((string) ltrim($input, '-+'))) {
-            return ltrim($input, '+');
+        if (ctype_digit((string) ltrim($value, '-+'))) {
+            return ltrim($value, '+');
         }
 
-        if ($input !== $this->lastResult && !$this->validateValue($input) ) {
-            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        if ($value !== $this->lastResult && !$this->validateValue($value) ) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
         return $this->lastResult;
@@ -97,69 +97,69 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     /**
      * {@inheritdoc}
      */
-    public function dumpValue($input)
+    public function dumpValue($value)
     {
-        return $input;
+        return $value;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isHigher($input, $nextValue)
-    {
-        $phpMax = strlen(PHP_INT_MAX) - 1;
-
-        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
-            return bccomp($input, $nextValue) === 1;
-        }
-
-        return ((integer) $input > (integer) $nextValue);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isLower($input, $nextValue)
+    public function isHigher($value, $nextValue)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
 
-        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
-            return bccomp($input, $nextValue) === -1;
+        if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($value, $nextValue) === 1;
         }
 
-        return ((integer) $input < (integer) $nextValue);
+        return ((integer) $value > (integer) $nextValue);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isEqual($input, $nextValue)
+    public function isLower($value, $nextValue)
     {
-        return ((string) $input === (string) $nextValue);
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($value, $nextValue) === -1;
+        }
+
+        return ((integer) $value < (integer) $nextValue);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function isEqual($value, $nextValue)
+    {
+        return ((string) $value === (string) $nextValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is no valid number';
 
-        if (!preg_match('/^(?:[+-]?(?:\p{N}+)|(?:\p{N}+[+-]?))$/us', (string) $input)) {
+        if (!preg_match('/^(?:[+-]?(?:\p{N}+)|(?:\p{N}+[+-]?))$/us', (string) $value)) {
             return false;
         }
 
-        if (ctype_digit((string) ltrim($input, '-+'))) {
-            $this->lastResult = ltrim($input, '+');
-        } elseif (!($this->lastResult = self::getNumberFormatter(\Locale::getDefault())->parse((string) trim($input, '+'), \NumberFormatter::TYPE_INT64))) {
+        if (ctype_digit((string) ltrim($value, '-+'))) {
+            $this->lastResult = ltrim($value, '+');
+        } elseif (!($this->lastResult = self::getNumberFormatter(\Locale::getDefault())->parse((string) trim($value, '+'), \NumberFormatter::TYPE_INT64))) {
             return false;
         }
 
-        if (null !== $this->options['min'] && $this->isLower($input, $this->options['min'])) {
+        if (null !== $this->options['min'] && $this->isLower($value, $this->options['min'])) {
             $messageBag->addError('This value should be {{ limit }} or more', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
         }
 
-        if (null !== $this->options['max'] && $this->isHigher($input, $this->options['max'])) {
+        if (null !== $this->options['max'] && $this->isHigher($value, $this->options['max'])) {
             $messageBag->addError('This value should be {{ limit }} or less', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
         }
 
@@ -191,15 +191,15 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     /**
      * {@inheritdoc}
      */
-    public function getHigherValue($input)
+    public function getHigherValue($value)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
 
-        if (strlen($input) > $phpMax && function_exists('bcadd')) {
-            return bcadd(ltrim($input, '+'), '1');
+        if (strlen($value) > $phpMax && function_exists('bcadd')) {
+            return bcadd(ltrim($value, '+'), '1');
         }
 
-        return (intval($input) + 1);
+        return (intval($value) + 1);
     }
 
     /**

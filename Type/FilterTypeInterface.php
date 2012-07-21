@@ -28,13 +28,13 @@ interface FilterTypeInterface
     /**
      * Sanitize the input string to an normal useful value.
      *
-     * @param mixed $input
+     * @param mixed $value
      *
      * @return mixed
      *
      * @api
      */
-    public function sanitizeString($input);
+    public function sanitizeString($value);
 
     /**
      * Formats the value for display and return it as a string.
@@ -54,49 +54,49 @@ interface FilterTypeInterface
      *
      * This is used for duplicate detection and debugging.
      *
-     * @param mixed $input
+     * @param mixed $value
      *
      * @return string
      *
      * @api
      */
-    public function dumpValue($input);
+    public function dumpValue($value);
 
     /**
      * Returns whether the first value is higher then the second.
      *
-     * @param mixed $input
+     * @param mixed $value
      * @param mixed $nextValue
      *
      * @return boolean
      *
      * @api
      */
-    public function isHigher($input, $nextValue);
+    public function isHigher($value, $nextValue);
 
     /**
      * Returns whether the first value is lower then the second.
      *
-     * @param mixed $input
+     * @param mixed $value
      * @param mixed $nextValue
      *
      * @return boolean
      *
      * @api
      */
-    public function isLower($input, $nextValue);
+    public function isLower($value, $nextValue);
 
     /**
      * Returns whether the first value equals then the second.
      *
-     * @param mixed $input
+     * @param mixed $value
      * @param mixed $nextValue
      *
      * @return boolean
      *
      * @api
      */
-    public function isEqual($input, $nextValue);
+    public function isEqual($value, $nextValue);
 
     /**
      * Returns whether the input value is legally formatted.
@@ -104,7 +104,7 @@ interface FilterTypeInterface
      * Optionally the MessageBag can be used for adding multiple messages.
      * Set $message to null in that case.
      *
-     * @param mixed        $input
+     * @param mixed        $value
      * @param string|array $message
      * @param MessageBag   $messageBag
      *
@@ -112,5 +112,5 @@ interface FilterTypeInterface
      *
      * @api
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null);
+    public function validateValue($value, &$message = null, MessageBag $messageBag = null);
 }

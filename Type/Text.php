@@ -25,9 +25,9 @@ class Text implements FilterTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function sanitizeString($input)
+    public function sanitizeString($value)
     {
-        return (string) $input;
+        return (string) $value;
     }
 
     /**
@@ -41,23 +41,15 @@ class Text implements FilterTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function dumpValue($input)
+    public function dumpValue($value)
     {
-        return $input;
+        return $value;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isHigher($input, $nextValue)
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isLower($input, $nextValue)
+    public function isHigher($value, $nextValue)
     {
         return false;
     }
@@ -65,15 +57,23 @@ class Text implements FilterTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function isEqual($input, $nextValue)
+    public function isLower($value, $nextValue)
     {
-        return ($input === $nextValue);
+        return false;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function isEqual($value, $nextValue)
+    {
+        return ($value === $nextValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
         return true;
     }

@@ -80,17 +80,17 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * {@inheritdoc}
      */
-    public function sanitizeString($input)
+    public function sanitizeString($value)
     {
         // Note we explicitly don't cast the value to an float type
         // 64bit floats are not properly handled on a 32bit OS
 
-        if (!preg_match('/[^.0-9-]/', $input)) {
-            return ltrim($input, '+');
+        if (!preg_match('/[^.0-9-]/', $value)) {
+            return ltrim($value, '+');
         }
 
-        if ($input !== $this->lastResult && !$this->validateValue($input) ) {
-            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        if ($value !== $this->lastResult && !$this->validateValue($value) ) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
         return $this->lastResult;
@@ -156,57 +156,57 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * {@inheritdoc}
      */
-    public function dumpValue($input)
+    public function dumpValue($value)
     {
-        return $input;
+        return $value;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isHigher($input, $nextValue)
-    {
-        $phpMax = strlen(PHP_INT_MAX) - 1;
-
-        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
-            return bccomp($input, $nextValue) === 1;
-        }
-
-        return ((float) $input > (float) $nextValue);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isLower($input, $nextValue)
+    public function isHigher($value, $nextValue)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
 
-        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
-            return bccomp($input, $nextValue) === -1;
+        if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($value, $nextValue) === 1;
         }
 
-        return ((float) $input < (float) $nextValue);
+        return ((float) $value > (float) $nextValue);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isEqual($input, $nextValue)
+    public function isLower($value, $nextValue)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
 
-        if ((strlen($input) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('gmp_cmp')) {
-            return bccomp($input, $nextValue) === 0;
+        if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
+            return bccomp($value, $nextValue) === -1;
         }
 
-        return ((float) $input == (float) $nextValue);
+        return ((float) $value < (float) $nextValue);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function isEqual($value, $nextValue)
+    {
+        $phpMax = strlen(PHP_INT_MAX) - 1;
+
+        if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('gmp_cmp')) {
+            return bccomp($value, $nextValue) === 0;
+        }
+
+        return ((float) $value == (float) $nextValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is not an valid decimal';
 
@@ -214,7 +214,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
         $this->setFractions($numberFormatter);
         $decimalSign = $numberFormatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 
-        if (!preg_match('/^(?P<char_left>-)?(?P<left_digit>\p{N}+)' . preg_quote($decimalSign, '/') . '(?P<right_digit>\p{N}+)(?P<char_right>-)?$/u', $input, $matched)) {
+        if (!preg_match('/^(?P<char_left>-)?(?P<left_digit>\p{N}+)' . preg_quote($decimalSign, '/') . '(?P<right_digit>\p{N}+)(?P<char_right>-)?$/u', $value, $matched)) {
             return false;
         }
 
@@ -240,7 +240,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
             }
 
             $this->lastResult .= $first. '.' . $second;
-        } elseif (!($this->lastResult = self::getNumberFormatter(\Locale::getDefault())->parse($input, \NumberFormatter::TYPE_DOUBLE))) {
+        } elseif (!($this->lastResult = self::getNumberFormatter(\Locale::getDefault())->parse($value, \NumberFormatter::TYPE_DOUBLE))) {
             return false;
         }
 
@@ -280,15 +280,15 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * {@inheritdoc}
      */
-    public function getHigherValue($input)
+    public function getHigherValue($value)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
 
-        if (strlen($input) > $phpMax && function_exists('bcadd')) {
-            return bcadd(ltrim($input, '+'), '0.01');
+        if (strlen($value) > $phpMax && function_exists('bcadd')) {
+            return bcadd(ltrim($value, '+'), '0.01');
         }
 
-        return ((float) $input) + 0.01;
+        return ((float) $value) + 0.01;
     }
 
     /**
@@ -356,15 +356,15 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * Parses BigInt.
      *
-     * @param string      $input
+     * @param string      $value
      * @param null|string $locale
      *
      * @return string|boolean
      */
-    protected static function parseBigInt($input, $locale = null)
+    protected static function parseBigInt($value, $locale = null)
     {
         $numberFormatter = self::getNumberFormatter($locale, true);
-        $input = str_replace(array(',', '.', ' '), '', $input);
+        $value = str_replace(array(',', '.', ' '), '', $value);
 
         $result = preg_replace_callback('/(\p{N})/u', function($match) use ($numberFormatter) {
             /** @var \NumberFormatter $numberFormatter */
@@ -373,7 +373,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
             }
 
             return (string) $numberFormatter->parse($match[1], \NumberFormatter::TYPE_INT32);
-        }, $input);
+        }, $value);
 
         if (!ctype_digit($result)) {
             return false;
@@ -385,25 +385,25 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * Formats a BigInt to localized number.
      *
-     * @param string      $input
+     * @param string      $value
      * @param null|string $locale
      *
      * @return string
      */
-    protected function formatBigInt($input, $locale = null)
+    protected function formatBigInt($value, $locale = null)
     {
         $numberFormatter = self::getNumberFormatter($locale, true);
 
         // Output it not unicode so use as-is
         if (ctype_digit($numberFormatter->format('123'))) {
-            return $input;
+            return $value;
         }
 
         return preg_replace_callback('/(.)/', function($match) use ($numberFormatter) {
             /** @var \NumberFormatter $numberFormatter */
 
             return (string) $numberFormatter->format($match[1], \NumberFormatter::TYPE_INT32);
-        }, $input);
+        }, $value);
     }
 
     /**

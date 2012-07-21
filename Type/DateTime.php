@@ -30,21 +30,21 @@ class DateTime extends Date
     /**
      * {@inheritdoc}
      */
-    public function sanitizeString($input)
+    public function sanitizeString($value)
     {
-        if (is_object($input)) {
-            return $input;
+        if (is_object($value)) {
+            return $value;
         }
 
         $hasTime = false;
 
-        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $hasTime) ) {
-            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        if ($value !== $this->lastResult && !DateTimeHelper::validate($value, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $hasTime) ) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
-        $input = $this->lastResult;
+        $value = $this->lastResult;
 
-        return new DateTimeExtended($input, $hasTime);
+        return new DateTimeExtended($value, $hasTime);
     }
 
     /**
@@ -77,23 +77,23 @@ class DateTime extends Date
     /**
      * {@inheritdoc}
      *
-     * @param \DateTime $input
+     * @param \DateTime $value
      */
-    public function dumpValue($input)
+    public function dumpValue($value)
     {
-        return $input->format('Y-m-d\TH:i:s');
+        return $value->format('Y-m-d\TH:i:s');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is not a valid date with ' . ($this->options['time_optional'] ? 'optional ' : '') . 'time';
 
-        if (DateTimeHelper::validateIso($input, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->hasTime)) {
-            $this->lastResult = $input;
-        } elseif (!DateTimeHelper::validate($input, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $this->hasTime)) {
+        if (DateTimeHelper::validateIso($value, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->hasTime)) {
+            $this->lastResult = $value;
+        } elseif (!DateTimeHelper::validate($value, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $this->hasTime)) {
             return false;
         }
 
@@ -115,17 +115,17 @@ class DateTime extends Date
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      *
      * @return DateTimeExtended
      */
-    public function getHigherValue($input)
+    public function getHigherValue($value)
     {
-        $date = clone $input;
+        $date = clone $value;
 
-        if (!$input->hasTime()) {
+        if (!$value->hasTime()) {
             $date->modify('+1 day');
-        } elseif ($input->hasSeconds()) {
+        } elseif ($value->hasSeconds()) {
             $date->modify('+1 second');
         } else {
             $date->modify('+1 minute');

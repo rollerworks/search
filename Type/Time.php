@@ -24,19 +24,19 @@ class Time extends Date
     /**
      * {@inheritdoc}
      */
-    public function sanitizeString($input)
+    public function sanitizeString($value)
     {
-        if (is_object($input)) {
-            return $input;
+        if (is_object($value)) {
+            return $value;
         }
 
-        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, DateTimeHelper::ONLY_TIME, $this->lastResult) ) {
-            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        if ($value !== $this->lastResult && !DateTimeHelper::validate($value, DateTimeHelper::ONLY_TIME, $this->lastResult) ) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
-        $input = $this->lastResult;
+        $value = $this->lastResult;
 
-        return new DateTimeExtended($input, true);
+        return new DateTimeExtended($value, true);
     }
 
     /**
@@ -69,23 +69,23 @@ class Time extends Date
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      */
-    public function dumpValue($input)
+    public function dumpValue($value)
     {
-        return $input->format('H:i:s');
+        return $value->format('H:i:s');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is not an valid time';
 
-        if (DateTimeHelper::validateIso($input, DateTimeHelper::ONLY_TIME)) {
-            $this->lastResult = $input;
-        } elseif (!DateTimeHelper::validate($input, DateTimeHelper::ONLY_TIME, $this->lastResult)) {
+        if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_TIME)) {
+            $this->lastResult = $value;
+        } elseif (!DateTimeHelper::validate($value, DateTimeHelper::ONLY_TIME, $this->lastResult)) {
             return false;
         }
 
@@ -99,51 +99,51 @@ class Time extends Date
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      * @param DateTimeExtended $nextValue
      */
-    public function isHigher($input, $nextValue)
+    public function isHigher($value, $nextValue)
     {
-        $firstHour  = (integer) $input->format('H');
+        $firstHour  = (integer) $value->format('H');
         $secondHour = (integer) $nextValue->format('H');
 
         if ($firstHour <> $secondHour && (0 == $firstHour || 0 == $secondHour)) {
             return true;
         }
 
-        return ($input->getTimestamp() > $nextValue->getTimestamp());
+        return ($value->getTimestamp() > $nextValue->getTimestamp());
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      * @param DateTimeExtended $nextValue
      */
-    public function isLower($input, $nextValue)
+    public function isLower($value, $nextValue)
     {
-        $firstHour  = (integer) $input->format('H');
+        $firstHour  = (integer) $value->format('H');
         $secondHour = (integer) $nextValue->format('H');
 
         if ($firstHour <> $secondHour && (0 == $firstHour || 0 == $secondHour)) {
             return true;
         }
 
-        return ($input->getTimestamp() < $nextValue->getTimestamp());
+        return ($value->getTimestamp() < $nextValue->getTimestamp());
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      *
      * @return DateTimeExtended
      */
-    public function getHigherValue($input)
+    public function getHigherValue($value)
     {
-        $date = clone $input;
+        $date = clone $value;
 
-        if ($input->hasSeconds()) {
+        if ($value->hasSeconds()) {
             $date->modify('+1 second');
         } else {
             $date->modify('+1 minute');

@@ -76,19 +76,19 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      *
      * @return DateTimeExtended
      */
-    public function sanitizeString($input)
+    public function sanitizeString($value)
     {
-        if (is_object($input)) {
-            return $input;
+        if (is_object($value)) {
+            return $value;
         }
 
-        if ($input !== $this->lastResult && !DateTimeHelper::validate($input, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
-            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $input));
+        if ($value !== $this->lastResult && !DateTimeHelper::validate($value, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
-        $input = $this->lastResult;
+        $value = $this->lastResult;
 
-        return new DateTimeExtended($input);
+        return new DateTimeExtended($value);
     }
 
     /**
@@ -119,56 +119,56 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      */
-    public function dumpValue($input)
+    public function dumpValue($value)
     {
-        return $input->format('Y-m-d');
+        return $value->format('Y-m-d');
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      * @param DateTimeExtended $nextValue
      */
-    public function isHigher($input, $nextValue)
+    public function isHigher($value, $nextValue)
     {
-        return ($input->getTimestamp() > $nextValue->getTimestamp());
+        return ($value->getTimestamp() > $nextValue->getTimestamp());
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      * @param DateTimeExtended $nextValue
      */
-    public function isLower($input, $nextValue)
+    public function isLower($value, $nextValue)
     {
-        return ($input->getTimestamp() < $nextValue->getTimestamp());
+        return ($value->getTimestamp() < $nextValue->getTimestamp());
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      * @param DateTimeExtended $nextValue
      */
-    public function isEqual($input, $nextValue)
+    public function isEqual($value, $nextValue)
     {
-        return ($input->getTimestamp() === $nextValue->getTimestamp());
+        return ($value->getTimestamp() === $nextValue->getTimestamp());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
         $message = 'This value is not a valid date';
 
-        if (DateTimeHelper::validateIso($input, DateTimeHelper::ONLY_DATE)) {
-            $this->lastResult = $input;
-        } elseif (!DateTimeHelper::validate($input, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
+        if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_DATE)) {
+            $this->lastResult = $value;
+        } elseif (!DateTimeHelper::validate($value, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
             return false;
         }
 
@@ -182,24 +182,24 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * Validates that the value is not lower then min/higher then max.
      *
-     * @param string     $input
+     * @param string     $value
      * @param MessageBag $messageBag
      *
      * @return boolean
      */
-    protected function validateHigherLower($input, MessageBag $messageBag = null)
+    protected function validateHigherLower($value, MessageBag $messageBag = null)
     {
         if (null === $this->options['min'] && null === $this->options['max']) {
             return true;
         }
 
-        $input = new DateTimeExtended($input, isset($this->hasTime) ? $this->hasTime : false);
+        $value = new DateTimeExtended($value, isset($this->hasTime) ? $this->hasTime : false);
 
-        if (null !== $this->options['min'] && $this->isLower($input, $this->options['min'])) {
+        if (null !== $this->options['min'] && $this->isLower($value, $this->options['min'])) {
             $messageBag->addError('This value should be {{ limit }} or more', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
         }
 
-        if (null !== $this->options['max'] && $this->isHigher($input, $this->options['max'])) {
+        if (null !== $this->options['max'] && $this->isHigher($value, $this->options['max'])) {
             $messageBag->addError('This value should be {{ limit }} or less', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
         }
 
@@ -236,13 +236,13 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     /**
      * {@inheritdoc}
      *
-     * @param DateTimeExtended $input
+     * @param DateTimeExtended $value
      *
      * @return DateTimeExtended
      */
-    public function getHigherValue($input)
+    public function getHigherValue($value)
     {
-        $date = clone $input;
+        $date = clone $value;
         $date->modify('+1 day');
 
         return $date;
