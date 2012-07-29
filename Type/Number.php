@@ -143,7 +143,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
      */
     public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
-        $message = 'This value is no valid number';
+        $message = 'This value is no valid number.';
 
         if (!preg_match('/^(?:[+-]?(?:\p{N}+)|(?:\p{N}+[+-]?))$/us', (string) $value)) {
             return false;
@@ -156,11 +156,11 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
         }
 
         if (null !== $this->options['min'] && $this->isLower($value, $this->options['min'])) {
-            $messageBag->addError('This value should be {{ limit }} or more', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
+            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
         }
 
         if (null !== $this->options['max'] && $this->isHigher($value, $this->options['max'])) {
-            $messageBag->addError('This value should be {{ limit }} or less', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
+            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
         }
 
         if ($messageBag) {

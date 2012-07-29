@@ -132,17 +132,17 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
             array('70000000000000000', array('min' => '70000000000000000')),
             array('70000000000000000', array('min' => '60000000000000001')),
 
-            array('12000', array('min' => '13000'), array('This value should be 13,000 or more')),
-            array('15000', array('max' => '12000'), array('This value should be 12,000 or less')),
+            array('12000', array('min' => '13000'), array('This value should be 13,000 or more.')),
+            array('15000', array('max' => '12000'), array('This value should be 12,000 or less.')),
 
-            array('12000000', array('min' => '13000000'), array('This value should be 13,000,000 or more')),
-            array('15000000', array('max' => '12000000'), array('This value should be 12,000,000 or less')),
+            array('12000000', array('min' => '13000000'), array('This value should be 13,000,000 or more.')),
+            array('15000000', array('max' => '12000000'), array('This value should be 12,000,000 or less.')),
 
-            array('50000000000000000', array('min' => '60000000000000000'), array('This value should be 60,000,000,000,000,000 or more')),
-            array('70000000000000000', array('max' => '60000000000000000'), array('This value should be 60,000,000,000,000,000 or less')),
+            array('50000000000000000', array('min' => '60000000000000000'), array('This value should be 60,000,000,000,000,000 or more.')),
+            array('70000000000000000', array('max' => '60000000000000000'), array('This value should be 60,000,000,000,000,000 or less.')),
 
-            array('90000000000000000', array('min' => '70000000000000000', 'max' => '80000000000000000'), array('This value should be 80,000,000,000,000,000 or less')),
-            array('70000000000000000', array('min' => '80000000000000000', 'max' => '90000000000000000'), array('This value should be 80,000,000,000,000,000 or more')),
+            array('90000000000000000', array('min' => '70000000000000000', 'max' => '80000000000000000'), array('This value should be 80,000,000,000,000,000 or less.')),
+            array('70000000000000000', array('min' => '80000000000000000', 'max' => '90000000000000000'), array('This value should be 80,000,000,000,000,000 or more.')),
         );
     }
 

@@ -206,10 +206,10 @@ class TimeTest extends DateTimeTestCase
             array('15:00', array('max' => '15:01')),
             array('15:01:00', array('max' => '15:01')),
 
-            array('15:00', array('min' => '15:05'), array('This value should be 3:05 PM or more')),
-            array('15:02', array('max' => '15:01'), array('This value should be 3:01 PM or less')),
-            array('15:01:02', array('max' => '15:01:01'), array('This value should be 3:01:01 PM or less')),
-            array('15:01:01', array('max' => '15:01'), array('This value should be 3:01 PM or less')),
+            array('15:00', array('min' => '15:05'), array('This value should be 3:05 PM or more.')),
+            array('15:02', array('max' => '15:01'), array('This value should be 3:01 PM or less.')),
+            array('15:01:02', array('max' => '15:01:01'), array('This value should be 3:01:01 PM or less.')),
+            array('15:01:01', array('max' => '15:01'), array('This value should be 3:01 PM or less.')),
         );
     }
 

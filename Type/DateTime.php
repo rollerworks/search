@@ -89,7 +89,7 @@ class DateTime extends Date
      */
     public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
-        $message = 'This value is not a valid date with ' . ($this->options['time_optional'] ? 'optional ' : '') . 'time';
+        $message = 'This value is not a valid date with ' . ($this->options['time_optional'] ? 'optional ' : '') . 'time.';
 
         if (DateTimeHelper::validateIso($value, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->hasTime)) {
             $this->lastResult = $value;

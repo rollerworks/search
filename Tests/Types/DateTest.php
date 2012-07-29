@@ -186,10 +186,10 @@ class DateTest extends DateTimeTestCase
             array('2010-04-10', array('max' => '2010-05-10')),
             array('2010-04-10', array('max' => '2010-04-10')),
 
-            array('2010-04-10', array('min' => '2010-06-10'), array('This value should be 6/10/2010 or more')),
-            array('2010-05-11', array('max' => '2010-05-10'), array('This value should be 5/10/2010 or less')),
-            array('2010-05-11', array('min' => '2010-04-01', 'max' => '2010-04-10'), array('This value should be 4/10/2010 or less')),
-            array('2010-03-9', array('min' => '2010-04-01', 'max' => '2010-04-10'), array('This value should be 4/1/2010 or more')),
+            array('2010-04-10', array('min' => '2010-06-10'), array('This value should be 6/10/2010 or more.')),
+            array('2010-05-11', array('max' => '2010-05-10'), array('This value should be 5/10/2010 or less.')),
+            array('2010-05-11', array('min' => '2010-04-01', 'max' => '2010-04-10'), array('This value should be 4/10/2010 or less.')),
+            array('2010-03-9', array('min' => '2010-04-01', 'max' => '2010-04-10'), array('This value should be 4/1/2010 or more.')),
         );
     }
 

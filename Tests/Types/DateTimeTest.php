@@ -205,12 +205,12 @@ class DateTimeTest extends DateTimeTestCase
             array('2010-04-10', array('max' => '2010-04-10', 'time_optional' => true)),
             array('2010-05-10 15:01:00', array('max' => '2010-05-10 15:01')),
 
-            array('2010-04-10 15:00', array('min' => '2010-06-10 15:00'), array('This value should be 6/10/2010 3:00 PM or more')),
-            array('2010-05-10 15:02', array('max' => '2010-05-10 15:01'), array('This value should be 5/10/2010 3:01 PM or less')),
-            array('2010-05-10 15:01:02', array('max' => '2010-05-10 15:01:01'), array('This value should be 5/10/2010 3:01:01 PM or less')),
+            array('2010-04-10 15:00', array('min' => '2010-06-10 15:00'), array('This value should be 6/10/2010 3:00 PM or more.')),
+            array('2010-05-10 15:02', array('max' => '2010-05-10 15:01'), array('This value should be 5/10/2010 3:01 PM or less.')),
+            array('2010-05-10 15:01:02', array('max' => '2010-05-10 15:01:01'), array('This value should be 5/10/2010 3:01:01 PM or less.')),
 
-            array('2010-05-10 15:01:01', array('max' => '2010-05-10 15:01'), array('This value should be 5/10/2010 3:01 PM or less')),
-            array('2010-05-10', array('max' => '2010-04-10', 'time_optional' => true), array('This value should be 4/10/2010 or less')),
+            array('2010-05-10 15:01:01', array('max' => '2010-05-10 15:01'), array('This value should be 5/10/2010 3:01 PM or less.')),
+            array('2010-05-10', array('max' => '2010-04-10', 'time_optional' => true), array('This value should be 4/10/2010 or less.')),
         );
     }
 

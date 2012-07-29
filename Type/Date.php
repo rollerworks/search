@@ -164,7 +164,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      */
     public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
-        $message = 'This value is not a valid date';
+        $message = 'This value is not a valid date.';
 
         if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_DATE)) {
             $this->lastResult = $value;
@@ -196,11 +196,11 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
         $value = new DateTimeExtended($value, isset($this->hasTime) ? $this->hasTime : false);
 
         if (null !== $this->options['min'] && $this->isLower($value, $this->options['min'])) {
-            $messageBag->addError('This value should be {{ limit }} or more', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
+            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
         }
 
         if (null !== $this->options['max'] && $this->isHigher($value, $this->options['max'])) {
-            $messageBag->addError('This value should be {{ limit }} or less', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
+            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
         }
 
         if ($messageBag) {

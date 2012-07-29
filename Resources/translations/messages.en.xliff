@@ -19,7 +19,7 @@
             <!-- Validation errors -->
             <trans-unit id="4">
                 <source>record_filter.validation_warning</source>
-                <target>Validation error(s) in field '{{ label }}' at value {{ value }} in group {{ group }}: {{ msg }}.</target>
+                <target>Validation error(s) in field '{{ label }}' at value {{ value }} in group {{ group }}: {{ msg }}</target>
             </trans-unit>
             <trans-unit id="5">
                 <source>record_filter.range_not_lower</source>

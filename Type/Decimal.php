@@ -208,7 +208,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
-        $message = 'This value is not an valid decimal';
+        $message = 'This value is not an valid decimal.';
 
         $numberFormatter = self::getNumberFormatter(\Locale::getDefault());
         $this->setFractions($numberFormatter);
@@ -245,11 +245,11 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
         }
 
         if (null !== $this->options['min'] && $this->isLower($this->lastResult, $this->options['min'])) {
-            $messageBag->addError('This value should be {{ limit }} or more', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
+            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
         }
 
         if (null !== $this->options['max'] && $this->isHigher($this->lastResult, $this->options['max'])) {
-            $messageBag->addError('This value should be {{ limit }} or less', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
+            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
         }
 
         if ($messageBag) {
