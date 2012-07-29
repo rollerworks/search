@@ -18,7 +18,10 @@
     },
     "require-dev": {
         "doctrine/orm": ">=2.2,<2.4-dev"
-    },   
+    },  
+    "suggest": {
+        "doctrine/orm": "If you want to use the SQL part of the bundle."
+    },    
     "autoload": {
         "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "" }
     },
