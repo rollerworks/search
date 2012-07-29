@@ -84,7 +84,7 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
             $this->assertTrue($type->isLower($second, $first), sprintf('"%s" should be lower then "%s"', $second, $first));
             $this->assertFalse($type->isLower($first, $second), sprintf('"%s" should not be lower then "%s"', $first, $second));
 
-            $this->assertTrue($type->isHigher($first, $second), sprintf('"%s" should higher then "%s"', $first, $second));
+            $this->assertTrue($type->isHigher($first, $second), sprintf('"%s" should be higher then "%s"', $first, $second));
             $this->assertFalse($type->isHigher($second, $first), sprintf('"%s" should not be higher then "%s"', $second, $first));
         }
     }
