@@ -126,7 +126,7 @@ class TimeTest extends DateTimeTestCase
                  $this->assertFalse($type->isHigher($_second, $_first), sprintf('"%s" should be higher then "%s"', $first, $second));
             }
 
-            $this->assertTrue($type->isHigher($_first, $_second), sprintf('"%s" should not higher then "%s"', $first, $second));
+            $this->assertTrue($type->isHigher($_first, $_second), sprintf('"%s" should not be higher then "%s"', $first, $second));
         }
     }
 
