@@ -50,59 +50,6 @@ $bundles = array(
 );
 ```
 
-### Step 1 (alternative): Using ``deps`` file (Symfony 2.0.x)
-
-First, checkout a copy of the code. Just add the following to the ``deps``
-file of your Symfony Standard Distribution:
-
-```ini
-[RollerworksRecordFilterBundle]
-    git=https://github.com/rollerworks/RollerworksRecordFilterBundle.git
-    target=/bundles/Rollerworks/Bundle/RecordFilterBundle
-    
-[RollerworksLocaleComponent]
-    git=https://github.com/rollerworks/Locale.git
-    target=/Rollerworks/Component/Locale
-```
-
-And make sure metadata is using at least version 1.1.1 (dont't forget debs.lock)
-
-**NOTE**: You can add `version` tag in the snippet above with the latest stable
-branch, for example ``version=origin/2.0``.
-
-Then register the bundle with your kernel:
-
-```php
-<?php
-
-// in AppKernel::registerBundles()
-$bundles = array(
-    // ...
-    new Rollerworks\Bundle\RecordFilterBundle\RollerworksRecordFilterBundle(),
-    // ...
-);
-```
-
-Make sure that you also register the namespace with the autoloader:
-
-```php
-<?php
-
-// app/autoload.php
-$loader->registerNamespaces(array(
-    // ...
-    'Rollerworks'      => array(__DIR__.'/../vendor/bundles', __DIR__.'/../vendor'),
-    // ...
-));
-```
-
-Now use the ``vendors`` script to clone the newly added repositories
-into your project:
-
-```bash
-$ php bin/vendors install
-```
-
 ### Step 1 (alternative): Using submodules (Symfony 2.0.x)
 
 If you're managing your vendor libraries with submodules, first create the
