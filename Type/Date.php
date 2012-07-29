@@ -279,7 +279,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
             return new DateTimeExtended($value, false !== strpos($value, ':'));
         };
 
-        $resolver->setFilters(array(
+        $resolver->setNormalizers(array(
             'max' => $valueFilter,
             'min' => $valueFilter
         ));
