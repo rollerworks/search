@@ -6,6 +6,7 @@ RecordFilterBundle
 
     introduction
     overview
+    installing
     configuration
     type
     input
