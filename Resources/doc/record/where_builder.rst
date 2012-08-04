@@ -2,20 +2,22 @@ WhereBuilder
 ============
 
 WhereBuilder searches in an SQL relational database like PostgreSQL, MySQL, SQLite and Oracle
-using an SQL WHERE case. Of course you also use DQL.
+using an SQL WHERE case. Of course you can also use DQL.
+
+For this component to work `Doctrine ORM <http://symfony.com/doc/current/book/doctrine.html>`_ must be installed en properly configured.
+
+.. note ::
 
     The returned result does not include the actual ``WHERE`` starting part.
 
-For this component to work Doctrine ORM must be installed en properly configured.
-
 Using the WhereBuilder is pretty simple.
 
-.. code-block:: html+php
+.. code-block:: php
 
     /* ... */
 
     $formatter = $container->get('rollerworks_record_filter.formatter');
-    if (!$formatter->formatInput()) {
+    if (!$formatter->formatInput($input)) {
         /* ... */
     }
 
@@ -26,7 +28,7 @@ Using the WhereBuilder is pretty simple.
 
 When selecting from multiple tables you must specify the alias to class relation.
 
-.. code-block:: html+php
+.. code-block:: php
 
     /* ... */
 
@@ -39,10 +41,12 @@ When selecting from multiple tables you must specify the alias to class relation
 
     $sql .= $whereBuilder->getWhereClause($fieldSet, $formatter, $entityAliases);
 
-*When using the SqlWhereBuilder factory,
-the getWhereClause() does not need the FieldSet parameter.*
+.. tip ::
 
-.. code-block:: html+php
+    When using the SqlWhereBuilder factory,
+    the getWhereClause() does not need the FieldSet parameter.
+
+.. code-block:: php
 
     $whereBuilder = $container->get('rollerworks_record_filter.sql_wherebuilder_factory')->getWhereBuilder($fieldSet);
     $sqlWhereCase = $whereBuilder->getWhereClause($formatter);
@@ -54,8 +58,9 @@ In most times you can just use the Record\Sql component without any special conf
 But there can be cases when you need to do some special things,
 like *converting* the input or field value. In this chapter we will get to that.
 
-*When using DQL*:
+.. caution ::
 
+    **When using DQL**:
     As most conversions use database functions that are not common amongst vendors
     these must be registered as custom functions in Doctrine.
     http://symfony.com/doc/current/cookbook/doctrine/custom_dql_functions.html
@@ -63,9 +68,11 @@ like *converting* the input or field value. In this chapter we will get to that.
     If you don't want go trough this kind of 'trouble' its better get the SQL
     of the DQL query and append the filtering-SQL to the query, when possible.
 
-Its only possible to register one converter per field per type,
-so you can both have one a field and value converter.
-But not two value or field converters.
+.. note ::
+
+    Its only possible to register one converter per field per type,
+    so you can both have one a field and value converter.
+    But not two value or field converters.
 
 Field Conversion
 ~~~~~~~~~~~~~~~~
@@ -82,14 +89,18 @@ PostgreSQL supports getting the age of an date by using the age() database funct
 unless we (also) need to use a database that does not support this directly,
 this is very simple.
 
+.. note ::
+
     For calculating the age by date (other then PostgreSQL or MySQL)
     please resort to the documentation of your Database vendor.
 
 First we must make a Converter class for handling this.
 
+.. note ::
+
     This example does not work for DQL, as age() must be registered as custom function.
 
-.. code-block:: html+php
+.. code-block:: php
 
     namespace Acme\RecordFilter\Converter\Field;
 
@@ -115,7 +126,7 @@ First we must make a Converter class for handling this.
 
 Then we configure our converter at WhereBuilder.
 
-.. code-block:: html+php
+.. code-block:: php
 
     $whereBuilder = /* ... */;
     $whereBuilder->setConversionForField('user_age', new AgeConverter());
@@ -127,17 +138,19 @@ The value conversion is similar to Field conversion
 but works on the user-input instead of the database value
 and must also be registered in the service container.
 
-*Warning*:
+.. caution ::
 
     When the value is none-scalar, converting the value is required.
     The system will throw an exception if the final value is not scalar.
 
 In this example we will convert an DateTime object to an scalar value.
 
-**Note: Doctrine can already handle an DateTime object,
-so normally you don't have to convert them.**
+.. note::
 
-.. code-block:: html+php
+    Doctrine can already handle an DateTime object,
+    so normally you don't have to convert this.
+
+.. code-block:: php
 
     namespace Acme\RecordFilter\Converter\Value;
 

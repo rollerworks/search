@@ -5,20 +5,22 @@ Filtering types for working with values,
 each type implements its own way of handling a value including
 validation/sanitizing and possible optimizing.
 
-Out of the box the basic types like Date/Time and numbers supported,
+Basic types like Date/Time and numbers are built-in,
 but building your own types is also possible and very simple.
 
-All *built-in* types are local aware and require either
-the International extension or Symfony Intl Stubs
-(The Symfony stub may not support all locales).
+.. note::
 
-Secondly, all *built-in* types support comparison
-and optimizing when possible.
+    All built-in types are local aware and require either
+    the International extension or Symfony Intl Stubs
+    (The Symfony stub may not support all locales).
 
-All the build-in type are registered in the Service container,
-see Resources/config/record_filter.xml for there name.
+Secondly, all built-in types support comparison
+optimizing when possible.
 
-Its possible but not recommended to overwrite the build-in types by using the same alias.
+Its possible but not recommended to overwrite the build-in types by using
+the same alias.
+
+see ``Resources/config/record_filter.xml`` for there corresponding names.
 
 Configuration
 -------------
@@ -28,7 +30,7 @@ can be configured with extra options using the setOptions() method of the type.
 
 When building the FieldSet.
 
-.. code-block:: html+php
+.. code-block:: php
 
     /* ... */
 
@@ -36,9 +38,9 @@ When building the FieldSet.
 
     $fieldSet->set(new FilterField('name', new Date(array('max' => '2015-10-14'))));
 
-Changing an existing FieldSet.
+Changing an existing Field.
 
-.. code-block:: html+php
+.. code-block:: php
 
     /* ... */
 
@@ -117,7 +119,7 @@ For example: you want to be able to handle client numbers that are prefixed like
 
 Using the Number type and overwriting the validateValue() and sanitizeString() is enough.
 
-.. code-block:: html+php
+.. code-block:: php
 
     use Rollerworks\Bundle\RecordFilterBundle\Type\Number;
     use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
@@ -139,23 +141,23 @@ Using the Number type and overwriting the validateValue() and sanitizeString() i
         }
     }
 
-*Please remember that not all types may use strings,
-DateTime types use an extended \DateTime class for passing information between methods.*
+.. note::
+
+    Not all types may use strings,
+    DateTime types use an extended \DateTime class for passing information
+    between methods.
+
+
 
 From Scratch
 ~~~~~~~~~~~~
-
-Creating your own type takes 2 simple steps.
-
-1. Creating the Class
-2. Registering it in the Container
 
 For this little tutorial we are going to create an type that can handle an status flag.
 
     The status can be localized and converted back to an label,
     and as a little bonus the Value can matched for usage with FilterQuery input.
 
-.. code-block:: html+php
+.. code-block:: php
 
     namespace Acme\Invoice\RecordFilter\Type;
 
@@ -254,7 +256,14 @@ For this little tutorial we are going to create an type that can handle an statu
         }
     }
 
-Now we need to register our type in the service container.
+Registering Type as Service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you want to use your type in either Class metadata or
+FieldSet configuration of the application the type must be
+registered in the service container.
+
+Continuing from your InvoiceStatusType.
 
 .. configuration-block::
 
@@ -312,7 +321,9 @@ ConfigurableTypeInterface
 Implement the ``Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface``
 when the type support dynamic configuration for an example an maximum value or such.
 
-    Note: The constructor should accept setting options, for ease of use.
+.. note::
+
+    The constructor should accept setting options, for ease of use.
 
 This uses the Symfony OptionsResolver component.
 

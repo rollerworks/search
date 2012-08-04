@@ -41,9 +41,9 @@ Code examples are used through the book to clarify what is written in text.
 They will sometimes be usable as-is, but they should always be taken as
 outline/pseudo code only.
 
-A code sample will look like this::
+A code sample will look like this:
 
-.. code-block:: html+php
+.. code-block:: php
 
     class AClass
     {

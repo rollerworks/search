@@ -9,6 +9,6 @@ RecordFilterBundle
     installing
     configuration
     type
-    input
-    record
+    input/index
+    record/index
     internals

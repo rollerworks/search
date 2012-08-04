@@ -16,12 +16,16 @@ FieldSets
 
 FieldSets can be dumped during cache warming for better performance.
 
+To do this, configure the FieldSets in your application config.
+
+.. caution ::
+
     The FieldSet is marked as frozen and can't be changed,
     except for type options.
 
-To do this, configure the FieldSets in your application config.
+.. caution ::
 
-    Remember the FieldSet name must be unique trough out the application.
+    The FieldSet name must be unique trough out the application.
     Its best to prefix the FieldSet name with an vendor and domain
     like you would do with ORM Entity classes.
 
@@ -70,8 +74,9 @@ To do this, configure the FieldSets in your application config.
                     import:
                         -
                             class: Full\Class\Name
-                                # You can either specify fields that must be imported or fields that must be excluded.
-                                # You can only use include_fields or exclude_fields, not both. include prevails over exclude
+
+                            # You can either specify fields that must be imported or fields that must be excluded.
+                            # You can only use include_fields or exclude_fields, not both. include prevails over exclude
 
                                 # Only import these fields (by fieldname not property-name)
                                 include_fields: [ id, name ]
@@ -113,6 +118,7 @@ To enable this factory place the following in your application config.
 
         rollerworks_record_filter:
             factories.sql_wherebuilder:
+
                 # Enable auto generating of classes
                 # Note: factories.fieldset.auto_generate must be enabled for this to work.
                 auto_generate: true
@@ -126,6 +132,8 @@ SqlWhereBuilder
 
 The SqlWhereBuilder uses Doctrine ORM for creating SQL WHERE cases
 "on the fly" based on the given fieldset.
+
+.. tip ::
 
     When the FieldSet is defined in the application configuration
     its better to enable the SqlWhereBuilder factory as creating

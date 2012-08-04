@@ -78,7 +78,7 @@ The FieldSet class holds the filtering configuration of one or multiple FilterFi
 
 An FieldSet can be created on the fly or created when warming up the cache.
 
-See the :doc:configuration section for more information.
+See the :doc:`configuration` section for more information.
 
 Input
 ~~~~~
@@ -88,7 +88,7 @@ only fields present in the FieldSet will be used.
 
 Filtering can be provided using an PHP Array or the special *FilterQuery language*.
 
-For more information the FilterQuery language see :doc:/input/filter_query
+For more information the FilterQuery language see :doc:`/input/filter_query`
 
 Formatter
 ~~~~~~~~~
@@ -131,7 +131,7 @@ Searches trough the database using the final filtering-preference.
 For SQL to work, Doctrine ORM must be installed.
 Both SQL and DQL are supported.
 
-For more information on using the Record component see :doc:/record/where_builder
+For more information on using the Record component see :doc:`/record/where_builder`
 
 Type
 ~~~~
@@ -140,7 +140,7 @@ Filtering types for working with values,
 each type implements its own way of handling a value including validation/sanitizing
 and possible optimizing.
 
-For more information on using the Record component see :doc:/type
+For more information on using the Record component see :doc:`type`
 
 Factory
 ~~~~~~~

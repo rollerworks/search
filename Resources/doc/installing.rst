@@ -7,18 +7,18 @@ Installing
 To install RollerworksRecordFilterBundle with Composer just add the following to your
 `composer.json` file:
 
-```js
-// composer.json
-{
-    // ...
-    require: {
-        // ...
-        "rollerworks/recordfilter-bundle": "master-dev"
-    }
-}
-```
+.. code-block:: js
 
-.. note ::
+    // composer.json
+    {
+        // ...
+        require: {
+            // ...
+            "rollerworks/recordfilter-bundle": "master-dev"
+        }
+    }
+
+.. note::
 
     Please replace `master-dev` in the snippet above with the latest stable
     branch, for example ``2.0.*``.
@@ -26,7 +26,7 @@ To install RollerworksRecordFilterBundle with Composer just add the following to
 Then, you can install the new dependencies by running Composer's ``update``
 command from the directory where your ``composer.json`` file is located:
 
-.. code-block :: bash
+.. code-block:: bash
 
     php composer.phar update
 
@@ -34,9 +34,7 @@ Now, Composer will automatically download all required files, and install them
 for you. All that is left to do is to update your ``AppKernel.php`` file, and
 register the new bundle:
 
-.. code-block :: php
-
-    <?php
+.. code-block:: php
 
     // in AppKernel::registerBundles()
     $bundles = array(
@@ -48,7 +46,7 @@ register the new bundle:
 2. Using the ``deps`` file (Symfony 2.0.x)
 ------------------------------------------
 
-.. code-block :: ini
+.. code-block:: ini
 
     [RollerworksRecordFilterBundle]
         git=https://github.com/rollerworks/RollerworksRecordFilterBundle.git
@@ -66,9 +64,7 @@ register the new bundle:
 
 Then register the bundle with your kernel:
 
-.. code-block :: php
-
-    <?php
+.. code-block:: php
 
     // in AppKernel::registerBundles()
     $bundles = array(
@@ -79,9 +75,7 @@ Then register the bundle with your kernel:
 
 Make sure that you also register the namespaces with the autoloader:
 
-.. code-block :: php
-
-    <?php
+.. code-block:: php
 
     // app/autoload.php
     $loader->registerNamespaces(array(
@@ -93,6 +87,6 @@ Make sure that you also register the namespaces with the autoloader:
 Now use the ``vendors`` script to clone the newly added repositories
 into your project:
 
-.. code-block :: bash
+.. code-block:: bash
 
     php bin/vendors install
