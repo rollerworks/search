@@ -57,7 +57,7 @@ class AnnotationMappingTest extends TestCase
         $property = new PropertyMetadata($reflection->name, 'id');
         $property->filter_name    = 'invoice_id';
         $property->required       = false;
-        $property->type           = new FilterTypeConfig('Number', array());
+        $property->type           = new FilterTypeConfig('number', array());
         $property->acceptRanges   = true;
         $property->acceptCompares = false;
 
@@ -66,7 +66,7 @@ class AnnotationMappingTest extends TestCase
         $property = new PropertyMetadata($reflection->name, 'date');
         $property->filter_name    = 'invoice_date';
         $property->required       = false;
-        $property->type           = new FilterTypeConfig('Date', array());
+        $property->type           = new FilterTypeConfig('date', array());
         $property->acceptRanges   = false;
         $property->acceptCompares = true;
 

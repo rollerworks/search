@@ -17,7 +17,15 @@ use Symfony\Component\DependencyInjection\Reference;
 use Rollerworks\Bundle\RecordFilterBundle\DependencyInjection\RollerworksRecordFilterExtension;
 use Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCacheWarmer;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;
+use Rollerworks\Bundle\RecordFilterBundle\Factory\FieldSetFactory;
+use Rollerworks\Bundle\RecordFilterBundle\Type as FilterType;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
+use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerType;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\StatusType;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
 
@@ -55,9 +63,11 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
 
     public function testWarmUpGenerateFieldSets()
     {
+        $fieldName = self::getUniqueFieldName('customer');
+
         $this->container->loadFromExtension('rollerworks_record_filter', array(
             'fieldsets' => array(
-                'customer' => array(
+                $fieldName => array(
                     'fields' => array(
                         'id' => array(
                             'type' => array('name' => 'number', 'params' => array()),
@@ -75,10 +85,138 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
             )
         ));
 
+        $this->createTypes();
         $this->compileContainer($this->container);
         $this->cacheWarmer->warmUp($this->cacheDir);
 
-        $this->assertEquals(array('customer/FieldSet.php'), $this->getFilesInCache());
+        $this->assertEquals(array($fieldName . '/FieldSet.php'), $this->getFilesInCache());
+
+        $this->assertFieldSetEquals($fieldName, array(
+            'id' => array(
+                'type' => new FilterTypeConfig('number'),
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false
+            ),
+        ));
+    }
+
+    public function testWarmUpGenerateFieldSetsWithImport()
+    {
+        $fieldName = self::getUniqueFieldName('customer');
+
+        $this->container->loadFromExtension('rollerworks_record_filter', array(
+            'fieldsets' => array(
+                $fieldName => array(
+                    'fields' => array(
+                        'id' => array(
+                            'type' => array('name' => 'number', 'params' => array()),
+                            'required' => false,
+                            'accept_ranges' => false,
+                            'accept_compares' => false,
+                        ),
+                    ),
+                    'import' => array(
+                          array('class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer')
+                    ),
+                )
+            ),
+
+            'factories' => array(
+                'fieldset' => array('auto_generate' => true),
+            )
+        ));
+
+        $this->createTypes();
+        $this->container->set('customer_type', new CustomerType());
+
+        $this->compileContainer($this->container);
+        $this->cacheWarmer->warmUp($this->cacheDir);
+
+        $this->assertEquals(array($fieldName . '/FieldSet.php'), $this->getFilesInCache());
+
+        $this->assertFieldSetEquals($fieldName, array(
+            'id' => array(
+                'type' => new FilterTypeConfig('number'),
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false
+            ),
+            'customer_id' => array(
+                'type' => new FilterTypeConfig('customer_type'),
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false,
+
+                'class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer',
+                'property' => 'id',
+            ),
+        ));
+    }
+
+    public function testWarmUpGenerateFieldSetsWithImport2()
+    {
+        $fieldName = self::getUniqueFieldName('invoice');
+
+        $this->container->loadFromExtension('rollerworks_record_filter', array(
+            'fieldsets' => array(
+                $fieldName => array(
+                    'fields' => array(
+                        'id' => array(
+                            'type' => array('name' => 'number', 'params' => array()),
+                            'required' => false,
+                            'accept_ranges' => false,
+                            'accept_compares' => false,
+                        ),
+                    ),
+                    'import' => array(
+                          array('class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow')
+                    ),
+                )
+            ),
+
+            'factories' => array(
+                'fieldset' => array('auto_generate' => true),
+            )
+        ));
+
+        $this->createTypes();
+
+        $this->container->setAlias('invoice_type', 'rollerworks_record_filter.filter_type.number');
+        $this->container->set('status_type', new StatusType());
+
+        $this->compileContainer($this->container);
+        $this->cacheWarmer->warmUp($this->cacheDir);
+
+        $this->assertEquals(array($fieldName . '/FieldSet.php'), $this->getFilesInCache());
+
+        $this->assertFieldSetEquals($fieldName, array(
+            'id' => array(
+                'type' => new FilterTypeConfig('number'),
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false
+            ),
+
+            'invoice_label' => array(
+                'type' => null,
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false,
+
+                'class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow',
+                'property' => 'label',
+            ),
+            'invoice_price' => array(
+                'type' => new FilterTypeConfig('decimal'),
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false,
+
+                'class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow',
+                'property' => 'price',
+            ),
+        ));
     }
 
     public function testWarmUpGenerateSqlWhereBuilder()
@@ -129,6 +267,50 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         ), $result);
     }
 
+    protected function assertFieldSetEquals($fieldName, array $fields)
+    {
+        require $this->container->getParameter('kernel.cache_dir') . '/record_filter/' . $fieldName . '/FieldSet.php';
+
+        $class = 'RecordFilter\\' . $fieldName . '\\FieldSet';
+
+        /** @var FieldSet $actual */
+        $actual = new $class($this->container->get('filter_type_factory'), $this->container->get('translator'), 'label.', 'filters');
+        $this->assertEquals($fieldName, $actual->getSetName());
+
+        foreach ($fields as $fieldName => $data) {
+            $this->assertTrue($actual->has($fieldName), sprintf('FieldSet "%s" has field "%s"', $fieldName, $fieldName));
+
+            $field = $actual->get($fieldName);
+            $this->assertEquals('label.' . $fieldName, $field->getLabel());
+            $this->assertEquals($data['required'], $field->isRequired());
+            $this->assertEquals($data['accept_ranges'], $field->acceptRanges());
+            $this->assertEquals($data['accept_compares'], $field->acceptCompares());
+
+            if (isset($data['class'])) {
+                $this->assertEquals($data['class'], $field->getPropertyRefClass());
+                $this->assertEquals($data['property'], $field->getPropertyRefField());
+            }
+            else {
+                $this->assertNull($field->getPropertyRefClass());
+                $this->assertNull($field->getPropertyRefField());
+            }
+
+            if (null !== $data['type']) {
+                $this->assertFilterTypeEquals($data['type'], $field->getType());
+            }
+        }
+    }
+
+    protected function assertFilterTypeEquals(FilterTypeConfig $expected, FilterType\FilterTypeInterface $actual)
+    {
+        $this->assertInstanceOf(get_class($this->container->get('filter_type_factory')->newInstance($expected->getName())), $actual);
+
+        if ($expected->hasParams()) {
+            $this->assertInstanceOf('Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface', $actual);
+            $this->assertEquals($expected->getParams(), $actual->getOptions());
+        }
+    }
+
     protected function setUp()
     {
         parent::setUp();
@@ -162,6 +344,11 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         $this->container->setDefinition('doctrine.orm.default_entity_manager', $em);
 
         $annotationReader = new AnnotationReader();
+        $annotationReader->addGlobalIgnoredName('Id');
+        $annotationReader->addGlobalIgnoredName('Column');
+        $annotationReader->addGlobalIgnoredName('GeneratedValue');
+        $annotationReader->addGlobalIgnoredName('OneToOne');
+        $annotationReader->addGlobalIgnoredName('OneToMany');
         $this->container->set('annotation_reader', $annotationReader);
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
@@ -178,6 +365,33 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         }
 
         $this->removeDirectory($cacheDir);
+    }
+
+    private function createTypes()
+    {
+        $this->container->register('rollerworks_record_filter.filter_type.date','Rollerworks\Bundle\RecordFilterBundle\Type\Date');
+        $this->container->register('rollerworks_record_filter.filter_type.time','Rollerworks\Bundle\RecordFilterBundle\Type\Time');
+        $this->container->register('rollerworks_record_filter.filter_type.number', 'Rollerworks\Bundle\RecordFilterBundle\Type\Number');
+        $this->container->register('rollerworks_record_filter.filter_type.decimal', 'Rollerworks\Bundle\RecordFilterBundle\Type\Decimal');
+
+        $this->container->getDefinition('rollerworks_record_filter.filter_type.date')->setScope('prototype');
+        $this->container->getDefinition('rollerworks_record_filter.filter_type.time')->setScope('prototype');
+        $this->container->getDefinition('rollerworks_record_filter.filter_type.number')->setScope('prototype');
+        $this->container->getDefinition('rollerworks_record_filter.filter_type.decimal')->setScope('prototype');
+
+        $filterTypeFactory = new FilterTypeFactory($this->container, array(
+            'date'    => 'rollerworks_record_filter.filter_type.date',
+            'time'    => 'rollerworks_record_filter.filter_type.time',
+            'number'  => 'rollerworks_record_filter.filter_type.number',
+            'decimal' => 'rollerworks_record_filter.filter_type.decimal',
+        ));
+
+        $this->container->set('filter_type_factory', $filterTypeFactory);
+    }
+
+    private static function getUniqueFieldName($name)
+    {
+        return $name . str_replace('.', '', microtime(true));
     }
 
     /**

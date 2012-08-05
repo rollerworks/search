@@ -16,7 +16,7 @@ class ECommerceInvoice
      * @Id
      * @Column(type="integer")
      * @GeneratedValue(strategy="AUTO")
-     * @RecordFilter\Field("invoice_id", type="Number", AcceptRanges=true)
+     * @RecordFilter\Field("invoice_id", type="number", AcceptRanges=true)
      */
     private $id;
 
@@ -28,7 +28,7 @@ class ECommerceInvoice
 
     /**
      * @Column(name="pubdate", type="date")
-     * @RecordFilter\Field("invoice_date", type="Date", AcceptCompares=true)
+     * @RecordFilter\Field("invoice_date", type="date", AcceptCompares=true)
      */
     private $date;
 
@@ -36,7 +36,7 @@ class ECommerceInvoice
      * @Column(type="integer")
      * @OneToOne(targetEntity="ECommerceInvoice", inversedBy="ECommerceInvoiceRow")
      *
-     * @RecordFilter\Field("invoice_customer", type="Number")
+     * @RecordFilter\Field("invoice_customer", type="number")
      */
     private $customer;
 

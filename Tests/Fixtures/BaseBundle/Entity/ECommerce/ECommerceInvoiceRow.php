@@ -33,7 +33,7 @@ class ECommerceInvoiceRow
 
     /**
      * @Column(name="price" type="decimal", precision=0, scale=2)
-     * @RecordFilter\Field("invoice_date", type="Decimal")
+     * @RecordFilter\Field("invoice_price", type="decimal")
      */
     private $price;
 }
