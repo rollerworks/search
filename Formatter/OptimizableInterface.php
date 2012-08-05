@@ -45,7 +45,7 @@ interface OptimizableInterface
      * @param FilterValuesBag $field
      * @param MessageBag      $messageBag
      *
-     * @return boolean|void
+     * @return boolean|null
      *
      * @api
      */

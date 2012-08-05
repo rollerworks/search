@@ -17,6 +17,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\StatusType;
 
 class OptimizeTest extends ModifierTestCase
 {
@@ -27,7 +28,7 @@ class OptimizeTest extends ModifierTestCase
 
         $formatter = $this->newFormatter();
         $input->setField('user', FilterField::create('user', null, false, true));
-        //$input->setField('status', FilterField::create('status'));
+        $input->setField('status', FilterField::create('status', new StatusType()));
         $input->setField('date', FilterField::create('date'));
         $input->setField('period', FilterField::create('period', null, false, true, true));
 

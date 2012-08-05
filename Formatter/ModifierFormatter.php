@@ -185,11 +185,14 @@ class ModifierFormatter implements FormatterInterface
                 }
 
                 if (null === $modifierResult) {
-                    continue 1;
+                    $filter = null;
+                    break;
                 }
             }
 
-            $this->finalFilters[$groupIndex][$fieldName] = $filter;
+            if (null !== $filter) {
+                $this->finalFilters[$groupIndex][$fieldName] = $filter;
+            }
         }
     }
 }
