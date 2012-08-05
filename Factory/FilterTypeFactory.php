@@ -49,7 +49,7 @@ class FilterTypeFactory
      */
     public function newInstance($type, array $options = array())
     {
-        if (!isset($this->types[$type]) && $this->container->has($type)) {
+        if (!isset($this->types[$type]) && !$this->container->has($type)) {
             throw new \InvalidArgumentException(sprintf('No such type registered "%s".', $type));
         }
 
