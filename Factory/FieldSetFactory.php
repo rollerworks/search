@@ -209,7 +209,7 @@ class FieldSetFactory extends AbstractFactory
      */
     private function generateType(FilterTypeConfig $type = null)
     {
-        if (null === $type) {
+        if (null === $type || null === $type->getName()) {
             return 'null';
         }
 
