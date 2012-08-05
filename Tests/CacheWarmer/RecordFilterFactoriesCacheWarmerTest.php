@@ -19,9 +19,7 @@ use Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCache
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;
-use Rollerworks\Bundle\RecordFilterBundle\Factory\FieldSetFactory;
 use Rollerworks\Bundle\RecordFilterBundle\Type as FilterType;
-use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerType;
@@ -361,8 +359,7 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
             if (isset($data['class'])) {
                 $this->assertEquals($data['class'], $field->getPropertyRefClass());
                 $this->assertEquals($data['property'], $field->getPropertyRefField());
-            }
-            else {
+            } else {
                 $this->assertNull($field->getPropertyRefClass());
                 $this->assertNull($field->getPropertyRefField());
             }
