@@ -55,7 +55,7 @@ class FieldSet
      */
     public static function create($name = null)
     {
-        return new self($name);
+        return new static($name);
     }
 
     /**
@@ -75,9 +75,15 @@ class FieldSet
      * @param FilterField $config
      *
      * @return self
+     *
+     * @throws \InvalidArgumentException on empty name
      */
     public function set($name, FilterField $config)
     {
+        if (empty($name)) {
+            throw new \InvalidArgumentException('FieldName can not be empty.');
+        }
+
         $this->fields[$name] = $config;
 
         return $this;
