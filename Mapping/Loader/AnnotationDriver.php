@@ -51,10 +51,12 @@ class AnnotationDriver implements DriverInterface
         $classMetadata = new MergeableClassMetadata($class->getName());
 
         foreach ($class->getProperties() as $reflectionProperty) {
-            $propertyMetadata = new PropertyMetadata($class->name, $reflectionProperty->name);
+            $propertyMetadata = null;
 
             foreach ($this->reader->getPropertyAnnotations($reflectionProperty) as $annotation) {
                 if ($annotation instanceof AnnotationField) {
+                    $propertyMetadata = new PropertyMetadata($class->name, $reflectionProperty->name);
+
                     /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\Field $annotation */
                     $propertyMetadata->filter_name = $annotation->getName();
                     $propertyMetadata->required    = $annotation->isRequired();
@@ -62,13 +64,15 @@ class AnnotationDriver implements DriverInterface
 
                     $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
                     $propertyMetadata->acceptCompares = $annotation->acceptsCompares();
-                } elseif ($annotation instanceof SqlConversion) {
+                } elseif ($propertyMetadata && $annotation instanceof SqlConversion) {
                     /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\SqlConversion $annotation */
                     $propertyMetadata->setSqlConversion($annotation->getService(), $annotation->getParams());
                 }
             }
 
-            $classMetadata->addPropertyMetadata($propertyMetadata);
+            if ($propertyMetadata) {
+                $classMetadata->addPropertyMetadata($propertyMetadata);
+            }
         }
 
         return $classMetadata;

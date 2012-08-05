@@ -30,6 +30,7 @@ use Metadata\MetadataFactoryInterface;
 class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
 {
     private $container;
+
     private $metadataFactory;
 
     /**
@@ -49,8 +50,8 @@ class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
      *
      * @param string $cacheDir The cache directory
      *
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws \RuntimeException         when the directory can not be created
+     * @throws \InvalidArgumentException on invalid directory
      */
     public function warmUp($cacheDir)
     {
@@ -138,11 +139,8 @@ class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
 
         $classMetadata = $this->metadataFactory->getMetadataForClass($class);
 
-        /**
-         * @var \Metadata\ClassMetadata $metadata
-         */
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
-            if (!$propertyMetadata instanceof PropertyMetadata) {
+            if (!$propertyMetadata instanceof PropertyMetadata || null === $propertyMetadata->filter_name) {
                 continue;
             }
 

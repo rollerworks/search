@@ -219,6 +219,78 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         ));
     }
 
+    public function testWarmUpGenerateFieldSetsWithImport3()
+    {
+        $fieldName = self::getUniqueFieldName('invoice');
+
+        $this->container->loadFromExtension('rollerworks_record_filter', array(
+            'fieldsets' => array(
+                $fieldName => array(
+                    'fields' => array(
+                        'id' => array(
+                            'type' => array('name' => 'number', 'params' => array()),
+                            'required' => false,
+                            'accept_ranges' => false,
+                            'accept_compares' => false,
+                            'ref' => array(
+                                'class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice',
+                                'property' => 'id'
+                            )
+                        ),
+                    ),
+                    'import' => array(
+                          array('class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow')
+                    ),
+                )
+            ),
+
+            'factories' => array(
+                'fieldset' => array('auto_generate' => true),
+            )
+        ));
+
+        $this->createTypes();
+
+        $this->container->setAlias('invoice_type', 'rollerworks_record_filter.filter_type.number');
+        $this->container->set('status_type', new StatusType());
+
+        $this->compileContainer($this->container);
+        $this->cacheWarmer->warmUp($this->cacheDir);
+
+        $this->assertEquals(array($fieldName . '/FieldSet.php'), $this->getFilesInCache());
+
+        $this->assertFieldSetEquals($fieldName, array(
+            'id' => array(
+                'type' => new FilterTypeConfig('number'),
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false,
+
+                'class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice',
+                'property' => 'id',
+            ),
+
+            'invoice_label' => array(
+                'type' => null,
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false,
+
+                'class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow',
+                'property' => 'label',
+            ),
+            'invoice_price' => array(
+                'type' => new FilterTypeConfig('decimal'),
+                'required' => false,
+                'accept_ranges' => false,
+                'accept_compares' => false,
+
+                'class' => 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow',
+                'property' => 'price',
+            ),
+        ));
+    }
+
     public function testWarmUpGenerateSqlWhereBuilder()
     {
         $this->container->loadFromExtension('rollerworks_record_filter', array(
