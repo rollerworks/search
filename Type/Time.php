@@ -81,11 +81,11 @@ class Time extends Date
      */
     public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
-        $message = 'This value is not an valid time.';
-
         if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_TIME)) {
             $this->lastResult = $value;
         } elseif (!DateTimeHelper::validate($value, DateTimeHelper::ONLY_TIME, $this->lastResult)) {
+            $message = 'This value is not an valid time.';
+
             return false;
         }
 

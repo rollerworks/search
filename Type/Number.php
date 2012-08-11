@@ -155,6 +155,8 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
             return false;
         }
 
+        $message = null;
+
         if (null !== $this->options['min'] && $this->isLower($value, $this->options['min'])) {
             $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
         }

@@ -164,11 +164,11 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
      */
     public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
-        $message = 'This value is not a valid date.';
-
         if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_DATE)) {
             $this->lastResult = $value;
         } elseif (!DateTimeHelper::validate($value, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
+            $message = 'This value is not a valid date.';
+
             return false;
         }
 

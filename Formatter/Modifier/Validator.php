@@ -179,7 +179,7 @@ class Validator implements ModifierInterface
 
         if (!$type->validateValue($value, $message, $validationMessageBag)) {
             if (null === $message) {
-                $message = implode("\n", $validationMessageBag->all());
+                $message = implode("\n", $validationMessageBag->get('error'));
             }
 
             if (!is_scalar($message)) {

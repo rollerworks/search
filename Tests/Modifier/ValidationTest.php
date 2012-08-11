@@ -75,6 +75,38 @@ class ValidationTest extends ModifierTestCase
         $this->assertEquals(array('Validation error(s) in field \'period\' at value "2910.2010" in group 1: This value is not a valid date.'), $messages['error']);
     }
 
+    public function testValidationFailWithOptions()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setInput('User=2; Status=Active; period=2910.2010');
+
+        $formatter = $this->newFormatter();
+
+        $input->setField('period', FilterField::create('period', new Date(array('max' => '2010-10-28')), true));
+        $input->setField('User', FilterField::create('User', null, true));
+
+        $this->assertFalse($formatter->formatInput($input));
+
+        $messages = $formatter->getMessages();
+        $this->assertEquals(array('Validation error(s) in field \'period\' at value "2910.2010" in group 1: This value is not a valid date.'), $messages['error']);
+    }
+
+    public function testValidationFailWithOptions2()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setInput('User=2; Status=Active; period=29.10.2010');
+
+        $formatter = $this->newFormatter();
+
+        $input->setField('period', FilterField::create('period', new Date(array('max' => '2010-10-28')), true));
+        $input->setField('User', FilterField::create('User', null, true));
+
+        $this->assertFalse($formatter->formatInput($input));
+
+        $messages = $formatter->getMessages();
+        $this->assertEquals(array('Validation error(s) in field \'period\' at value "29.10.2010" in group 1: This value should be 28-10-2010 or less.'), $messages['error']);
+    }
+
     public function testValidationFailInGroup()
     {
         $input = new QueryInput($this->translator);
