@@ -69,7 +69,7 @@ class RangeNormalizer implements ModifierInterface
                         '{{ value }}' => '"' . $values[$myIndex]->getOriginalValue() . '"' ,
                         '{{ range }}' => self::getRangeQuoted($ranges[$valIndex])));
 
-                    $this->unsetVal($myIndex);
+                    $this->valuesBag->removeSingleValue($myIndex);
                     unset($values[$myIndex]);
                 }
             }
@@ -89,7 +89,7 @@ class RangeNormalizer implements ModifierInterface
 
                     $range->setUpper($myRange->getUpper());
 
-                    $this->unsetRange($myIndex);
+                    $this->valuesBag->removeRange($myIndex);
                     unset($ranges[$myIndex]);
                 }
                 // Range overlaps in other range
@@ -99,7 +99,7 @@ class RangeNormalizer implements ModifierInterface
                         '{{ range2 }}' => self::getRangeQuoted($ranges[$valIndex]),
                     ));
 
-                    $this->unsetRange($myIndex);
+                    $this->valuesBag->removeRange($myIndex);
                     unset($ranges[$myIndex]);
                 }
             }
@@ -121,7 +121,7 @@ class RangeNormalizer implements ModifierInterface
                             '{{ value }}' => '!"' . $singeValue->getOriginalValue() . '"',
                             '{{ range }}' => '!' . self::getRangeQuoted($range)));
 
-                        $this->unsetVal($myIndex, true);
+                        $this->valuesBag->removeExclude($myIndex);
                         unset($excludes[$myIndex]);
                     }
                 }
@@ -141,7 +141,7 @@ class RangeNormalizer implements ModifierInterface
 
                         $range->setUpper($myRange->getUpper());
 
-                        $this->unsetRange($myIndex, true);
+                        $this->valuesBag->removeExcludedRange($myIndex);
                         unset($rangesExcludes[$myIndex]);
                     }
 
@@ -152,7 +152,7 @@ class RangeNormalizer implements ModifierInterface
                             '{{ range2 }}' => '!' . self::getRangeQuoted($range),
                         ));
 
-                        $this->unsetRange($myIndex, true);
+                        $this->valuesBag->removeExcludedRange($myIndex);
                         unset($rangesExcludes[$myIndex]);
                     }
                 }
@@ -167,36 +167,6 @@ class RangeNormalizer implements ModifierInterface
         }
 
         return !$isError;
-    }
-
-    /**
-     * Removes an single-value.
-     *
-     * @param integer $index
-     * @param boolean $exclude
-     */
-    protected function unsetVal($index, $exclude = false)
-    {
-        if ($exclude) {
-            $this->valuesBag->removeExclude($index);
-        } else {
-            $this->valuesBag->removeSingleValue($index);
-        }
-    }
-
-    /**
-     * Removes an range-value.
-     *
-     * @param integer $index
-     * @param boolean $exclude
-     */
-    protected function unsetRange($index, $exclude = false)
-    {
-        if ($exclude) {
-            $this->valuesBag->removeExcludedRange($index);
-        } else {
-            $this->valuesBag->removeRange($index);
-        }
     }
 
     /**
