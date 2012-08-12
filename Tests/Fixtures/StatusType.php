@@ -23,8 +23,8 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
      */
     public function sanitizeString($input)
     {
-        $replacement      = array('active', 'not-active', 'removed');
-        $replacementValue = array(1, 0, -1);
+        $replacement      = array('not-active', 'active', 'removed');
+        $replacementValue = array(0, 1, -1);
 
         return str_replace($replacement, $replacementValue, mb_strtolower($input));
     }
