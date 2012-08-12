@@ -11,14 +11,14 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier;
 
-use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
 use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Number;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
+use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
-use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 class DuplicateTest extends ModifierTestCase
