@@ -180,37 +180,6 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     }
 
     /**
-     * Validates that the value is not lower then min/higher then max.
-     *
-     * @param string     $value
-     * @param MessageBag $messageBag
-     *
-     * @return boolean
-     */
-    protected function validateHigherLower($value, MessageBag $messageBag = null)
-    {
-        if (null === $this->options['min'] && null === $this->options['max']) {
-            return true;
-        }
-
-        $value = new DateTimeExtended($value, isset($this->hasTime) ? $this->hasTime : false);
-
-        if (null !== $this->options['min'] && $this->isLower($value, $this->options['min'])) {
-            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
-        }
-
-        if (null !== $this->options['max'] && $this->isHigher($value, $this->options['max'])) {
-            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
-        }
-
-        if ($messageBag) {
-            return !$messageBag->has('error');
-        }
-
-        return true;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getMatcherRegex()
@@ -291,6 +260,37 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Validates that the value is not lower then min/higher then max.
+     *
+     * @param string     $value
+     * @param MessageBag $messageBag
+     *
+     * @return boolean
+     */
+    protected function validateHigherLower($value, MessageBag $messageBag = null)
+    {
+        if (null === $this->options['min'] && null === $this->options['max']) {
+            return true;
+        }
+
+        $value = new DateTimeExtended($value, isset($this->hasTime) ? $this->hasTime : false);
+
+        if (null !== $this->options['min'] && $this->isLower($value, $this->options['min'])) {
+            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
+        }
+
+        if (null !== $this->options['max'] && $this->isHigher($value, $this->options['max'])) {
+            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
+        }
+
+        if ($messageBag) {
+            return !$messageBag->has('error');
+        }
+
+        return true;
     }
 }
 
