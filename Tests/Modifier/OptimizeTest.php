@@ -49,11 +49,11 @@ class OptimizeTest extends ModifierTestCase
     public function testOptimizeValueNoOptimize()
     {
         $input = new QueryInput($this->translator);
-        $input->setInput('User=2,3,10-20; Status=Active,"Not-active",Removed; date=29.10.2010; period=>20,10');
+        $input->setInput('User=2,3,10-20; Status=Active,"Not-active"; date=29.10.2010; period=>20,10');
 
         $formatter = $this->newFormatter();
         $input->setField('user', FilterField::create('user', null, false, true));
-        //$input->setField('status', FilterField::create('status'));
+        $input->setField('status', FilterField::create('status', new StatusType()));
         $input->setField('date', FilterField::create('date'));
         $input->setField('period', FilterField::create('period', null, false, false, true));
 
@@ -65,6 +65,7 @@ class OptimizeTest extends ModifierTestCase
 
         $expectedValues = array();
         $expectedValues['user']   = new FilterValuesBag('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')), array(), array(), 2);
+        $expectedValues['status'] = new FilterValuesBag('status', 'Active,"Not-active"', array(new SingleValue('1', 'Active'), new SingleValue('0', 'Not-active')));
         $expectedValues['date']   = new FilterValuesBag('date', '29.10.2010', array(new SingleValue('29.10.2010')), array(), array(), array(), array(), 0);
         $expectedValues['period'] = new FilterValuesBag('period', '>20,10', array(1 => new SingleValue('10')), array(), array(), array(0 => new Compare('20', '>')), array(), 1);
 
