@@ -2,49 +2,58 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" datatype="plaintext" original="messages.xliff" target-language="nl">
         <body>
+            <!-- Fatal errors -->
             <trans-unit id="1">
-                <source>record_filter.duplicate</source>
-                <target state="needs-translation">{0} Dubbele waarde '%value%' in '%field%' (verwijderd).|Dubbele waarde '%value%' in '%field%' in groep %group% (verwijderd).</target>
+                <source>record_filter.required</source>
+                <target>Veld '{{ label }}' mag niet leeg zijn in groep {{ group }}.</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>record_filter.in_range</source>
-                <target>{0} Waarde '%value%' in '%field%' bestaat ook in bereik van '%range%'.|Waarde '%value%' in '%field%' bestaat ook in bereik van '%range%'in groep %group%.</target>
+                <source>record_filter.no_range_support</source>
+                <target>Veld'{{ label }}' accepteert geen bereikwaardes in groep {{ group }}.</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>record_filter.merged</source>
-                <target>{0} '%field%' samengevoegd met '%destination%'.|'%field%' samengevoegd met '%destination%' in groep %group%.</target>
+                <source>record_filter.no_compare_support</source>
+                <target>Veld '{{ label }}' accepteert geen vergelijkingswaardes in groep {{ group }}.</target>
             </trans-unit>
+
+            <!-- Validation errors -->
             <trans-unit id="4">
-                <source>record_filter.no_range_support</source>
-                <target>{0} '%field%' accepteert geen bereikwaardes.|'%field%' accepteert geen bereikwaardes groep %group%.</target>
+                <source>record_filter.validation_warning</source>
+                <target>Validatie fout in veld '{{ label }}' in de buurt van {{ value }} in groep {{ group }}: {{ msg }}</target>
             </trans-unit>
             <trans-unit id="5">
-                <source>record_filter.not_lower</source>
-                <target>{0} Validatie fout in '%field%': '%value1%' is niet lager dan '%value2%'|Validatie fout in '%field%': '%value1%' is niet lager dan '%value2%' in groep %group%</target>
-            </trans-unit>
-            <trans-unit id="6">
-                <source>record_filter.parse_error</source>
-                <target>{0} Het is niet gelukt om de waarde van '%field%' te verwerken, mogelijke syntax fout.|Het is niet gelukt om de waarde van '%field%' te verwerken, mogelijke syntax fout in groep %group%.</target>
+                <source>record_filter.range_not_lower</source>
+                <target>Validatie fout in veld '{{ label }}': '{{ value1 }}' is niet lager dan '{{ value2 }}' in groep {{ group }}.</target>
             </trans-unit>
             <trans-unit id="7">
-                <source>record_filter.range_overlap</source>
-                <target>{0} Bereik '%range1%' in '%field%' overlapt in bereik '%range2%'.|Bereik '%range1%' in '%field%' overlapt in bereik '%range2%' in groep %group%.</target>
+                <source>record_filter.value_in_include</source>
+                <target>Waarde {{ value }} in veld '{{ label }}' bestaat al als losse waarde en kan niet worden uitgesloten in groep {{ group }}.</target>
             </trans-unit>
             <trans-unit id="8">
-                <source>record_filter.required</source>
-                <target>{0} '%field%' mag niet leeg zijn.|'%field%' mag niet leeg zijn in groep %group%.</target>
+                <source>record_filter.range_same_as_excluded</source>
+                <target>Uitgesloten bereikwaarde {{ value }} bestaat al als normale bereikwaarde in veld '{{ label }}' in groep {{ group }}.</target>
             </trans-unit>
+
+            <!-- Optimisations -->
             <trans-unit id="9">
-                <source>record_filter.skip_rangecheck</source>
-                <target>{0} Geen type ingesteld voor '%field%', bereikcontroles worden overgeslagen.|Geen type ingesteld voor '%field%', bereikcontroles worden overgeslagen in groep %group%.</target>
+                <source>record_filter.duplicate</source>
+                <target>Waarde {{ value }} bestaat al in de filterlijst in veld '{{ label }}' in groep {{ group }} (verwijderd).</target>
             </trans-unit>
             <trans-unit id="10">
-                <source>record_filter.validation_warning</source>
-                <target>{0} Validatie fout(en) in '%field%' in de buurt van waarde '%value%': %msg%|Validatie fout(en) in '%field%' in de buurt van waarde '%value%' in groep %group%: %msg%</target>
+                <source>record_filter.value_in_range</source>
+                <target>Waarde {{ value }} in veld '{{ label }}' overlapt in bereikwaarde {{ range }} in groep {{ group }} (verwijderd).</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>record_filter.range_overlap</source>
+                <target>Bereikwaarde {{ range1 }} in veld '{{ label }}' is overlapt  in bereikwaarde {{ range2 }} in groep {{ group }} (verwijderd).</target>
             </trans-unit>
             <trans-unit id="12">
-                <source>record_filter.value_in_include</source>
-                <target>{0} Waarde '%value%' in '%field%' bestaat al als losse waarde en kan niet worden uitgesloten.|Waarde '%value%' in '%field%' bestaat al als losse waarde en kan niet worden uitgesloten in groep %group%.</target>
+                <source>record_filter.range_connected</source>
+                <target>Het eindbereik {{ range1 }} is gelijk aan de begingwaarde {{ range2 }} in veld '{{ label }}' in groep {{ group }} (samengebracht naar {{ range3 }}).</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>record_filter.redundant_comparison</source>
+                <target>Vergelijkingswaarde {{ value }} word al verwerkt door "{{ comparison }}" vergelijk, in veld '{{ label }}' in groep {{ group }} (verwijderd).</target>
             </trans-unit>
         </body>
     </file>
