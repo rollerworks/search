@@ -41,11 +41,11 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>record_filter.value_in_range</source>
-                <target>Value {{ value }} in field '{{ label }}' is also in range {{ range }} in group {{ group }}.</target>
+                <target>Value {{ value }} in field '{{ label }}' is overlapping in range {{ range }} in group {{ group }} (removed).</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>record_filter.range_overlap</source>
-                <target>Range {{ range1 }} in field '{{ label }}' is overlapping in range {{ range2 }} in group {{ group }}.</target>
+                <target>Range {{ range1 }} in field '{{ label }}' is overlapping in range {{ range2 }} in group {{ group }} (removed).</target>
             </trans-unit>
             <trans-unit id="12">
                 <source>record_filter.range_connected</source>
@@ -53,7 +53,7 @@
             </trans-unit>
             <trans-unit id="13">
                 <source>record_filter.redundant_comparison</source>
-                <target>Comparison {{ value }} is already covered by "{{ comparison }}" field '{{ label }}' in group {{ group }} (removed).</target>
+                <target>Comparison {{ value }} is already covered by "{{ comparison }}" in field '{{ label }}' in group {{ group }} (removed).</target>
             </trans-unit>
         </body>
     </file>

@@ -227,7 +227,7 @@ class DuplicateTest extends ModifierTestCase
         $messages = $formatter->getMessages();
         $this->assertEquals(array(
             'Range upper-value of "29.10.2010"-"10.12.2010" equals lower-value of range "10-12-2010"-"10.01.2011" in field \'date\' in group 1 (ranges merged to "29.10.2010"-"10.01.2011").',
-            'Range "30.10.2010"-"08.12.2010" in field \'date\' is overlapping in range "29.10.2010"-"10.12.2010" in group 1.'
+            'Range "30.10.2010"-"08.12.2010" in field \'date\' is overlapping in range "29.10.2010"-"10.12.2010" in group 1 (removed).'
         ), $messages['info']);
 
         $filters = $formatter->getFilters();
@@ -340,7 +340,7 @@ class DuplicateTest extends ModifierTestCase
         }
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Comparison >"25.05.2010" is already covered by ">=" field \'date\' in group 1 (removed).'), $messages['info']);
+        $this->assertEquals(array('Comparison >"25.05.2010" is already covered by ">=" in field \'date\' in group 1 (removed).'), $messages['info']);
 
         $filters = $formatter->getFilters();
 
@@ -396,8 +396,8 @@ class DuplicateTest extends ModifierTestCase
 
         $messages = $formatter->getMessages();
         $this->assertEquals(array(
-            'Value "5" in field \'user\' is also in range "1"-"10" in group 1.',
-            'Value "20.12.2010" in field \'date\' is also in range "29.10.2010"-"29.12.2010" in group 1.'
+            'Value "5" in field \'user\' is overlapping in range "1"-"10" in group 1 (removed).',
+            'Value "20.12.2010" in field \'date\' is overlapping in range "29.10.2010"-"29.12.2010" in group 1 (removed).'
         ), $messages['info']);
 
         $filters = $formatter->getFilters();
@@ -426,7 +426,7 @@ class DuplicateTest extends ModifierTestCase
         }
 
         $messages = $formatter->getMessages();
-        $this->assertEquals(array('Value !"28" in field \'user\' is also in range !"25"-"30" in group 1.'), $messages['info']);
+        $this->assertEquals(array('Value !"28" in field \'user\' is overlapping in range !"25"-"30" in group 1 (removed).'), $messages['info']);
 
         $filters = $formatter->getFilters();
 
@@ -473,9 +473,9 @@ class DuplicateTest extends ModifierTestCase
 
         $messages = $formatter->getMessages();
         $this->assertEquals(array(
-            'Value "5" in field \'user\' is also in range "1"-"20" in group 1.',
-            'Range "5"-"10" in field \'user\' is overlapping in range "1"-"20" in group 1.',
-            'Range "30.10.2010"-"20.12.2010" in field \'date\' is overlapping in range "29.10.2010"-"29.12.2010" in group 1.'
+            'Value "5" in field \'user\' is overlapping in range "1"-"20" in group 1 (removed).',
+            'Range "5"-"10" in field \'user\' is overlapping in range "1"-"20" in group 1 (removed).',
+            'Range "30.10.2010"-"20.12.2010" in field \'date\' is overlapping in range "29.10.2010"-"29.12.2010" in group 1 (removed).'
         ), $messages['info']);
 
         $filters = $formatter->getFilters();
