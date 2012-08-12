@@ -25,10 +25,6 @@
                 <source>record_filter.range_not_lower</source>
                 <target>Validation error in field '{{ label }}': '{{ value1 }}' is not lower then '{{ value2 }}' in group {{ group }}.</target>
             </trans-unit>
-            <trans-unit id="6">
-                <source>record_filter.value_in_exclude</source>
-                <target>Value {{ value }} in field '{{ label }}' is already marked as excluded and can't be included in group {{ group }}.</target>
-            </trans-unit>
             <trans-unit id="7">
                 <source>record_filter.value_in_include</source>
                 <target>Value {{ value }} in field '{{ label }}' is already marked as included and can't be excluded in group {{ group }}.</target>

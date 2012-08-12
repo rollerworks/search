@@ -64,11 +64,6 @@ class Validator implements ModifierInterface
                 $_value = $type->dumpValue($sanitizedValue);
             }
 
-            if (in_array($_value, $excludedValues)) {
-                $messageBag->addError('value_in_exclude', array('{{ value }}' => '"' . $value->getOriginalValue() . '"'));
-                $this->isError = true;
-            }
-
             $singleValues[] = $_value;
             $value->setValue($sanitizedValue);
         }
