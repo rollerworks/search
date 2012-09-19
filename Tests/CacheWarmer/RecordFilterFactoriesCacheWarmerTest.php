@@ -319,7 +319,11 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
 
             'factories' => array(
                 'fieldset' => array('auto_generate' => true),
-                'sql_wherebuilder' => array('auto_generate' => true),
+                'doctrine' => array(
+                    'sql' => array(
+                        'wherebuilder' => array('auto_generate' => true)
+                    ),
+                ),
             )
         ));
 

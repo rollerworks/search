@@ -72,8 +72,8 @@ class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
 
             $this->container->get('rollerworks_record_filter.fieldset_factory')->generateClasses($fieldSets);
 
-            if ($this->container->getParameter('rollerworks_record_filter.factories.sql_wherebuilder.auto_generate')) {
-                $this->container->get('rollerworks_record_filter.sql_wherebuilder_factory')->generateClasses($fieldSets);
+            if ($this->container->getParameter('rollerworks_record_filter.factories.doctrine.sql.wherebuilder.auto_generate')) {
+                $this->container->get('rollerworks_record_filter.doctrine.sql.wherebuilder_factory')->generateClasses($fieldSets);
             }
         }
     }

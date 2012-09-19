@@ -22,7 +22,7 @@ Using the WhereBuilder is pretty simple.
         /* ... */
     }
 
-    $whereBuilder = $container->get('rollerworks_record_filter.doctrine.sql_where_builder');
+    $whereBuilder = $container->get('rollerworks_record_filter.doctrine.sql.where_builder');
     $sqlWhereCase = $whereBuilder->getWhereClause($fieldSet, $formatter);
 
     // Then use the $sqlWhereCase value in your query.
@@ -49,7 +49,7 @@ When selecting from multiple tables you must specify the alias to class relation
 
 .. code-block:: php
 
-    $whereBuilder = $container->get('rollerworks_record_filter.sql_wherebuilder_factory')->getWhereBuilder($fieldSet);
+    $whereBuilder = $container->get('rollerworks_record_filter.doctrine.sql.wherebuilder_factory')->getWhereBuilder($fieldSet);
     $sqlWhereCase = $whereBuilder->getWhereClause($formatter);
 
 Conversion

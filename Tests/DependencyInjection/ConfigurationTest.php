@@ -41,10 +41,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'auto_generate' => false,
             ),
 
-            'sql_wherebuilder' => array(
-                'namespace' => '%rollerworks_record_filter.filters_namespace%',
-                'default_entity_manager' => '%doctrine.default_entity_manager%',
-                'auto_generate' => false,
+            'doctrine' => array(
+                'sql' => array(
+                    'wherebuilder' => array(
+                        'namespace' => '%rollerworks_record_filter.filters_namespace%',
+                        'default_entity_manager' => '%doctrine.default_entity_manager%',
+                        'auto_generate' => false
+                    )
+                )
             ),
         ), $config['factories'], 'The factories key is set');
     }

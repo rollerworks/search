@@ -49,20 +49,20 @@ class RollerworksRecordFilterExtension extends Extension
         $container->setParameter('rollerworks_record_filter.filters_directory', $config['filters_directory']);
         $container->setParameter('rollerworks_record_filter.filters_namespace', $config['filters_namespace']);
 
-        $container->getDefinition('rollerworks_record_filter.doctrine.sql_where_builder')
-            ->addMethodCall('setEntityManager', array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $container->getParameterBag()->resolveValue($config['record']['sql']['default_entity_manager'])))));
+        $container->getDefinition('rollerworks_record_filter.doctrine.sql.where_builder')
+            ->addMethodCall('setEntityManager', array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $container->getParameterBag()->resolveValue($config['doctrine']['sql']['default_entity_manager'])))));
 
         $container->setParameter('rollerworks_record_filter.factories.fieldset.auto_generate', $config['factories']['fieldset']['auto_generate']);
         $container->setParameter('rollerworks_record_filter.factories.fieldset.namespace', $config['factories']['fieldset']['namespace']);
         $container->setParameter('rollerworks_record_filter.factories.fieldset.label_translator_prefix', $config['factories']['fieldset']['label_translator_prefix']);
         $container->setParameter('rollerworks_record_filter.factories.fieldset.label_translator_domain', $config['factories']['fieldset']['label_translator_domain']);
 
-        $container->setParameter('rollerworks_record_filter.factories.sql_wherebuilder.auto_generate', $config['factories']['sql_wherebuilder']['auto_generate']);
-        $container->setParameter('rollerworks_record_filter.factories.sql_wherebuilder.namespace', $config['factories']['sql_wherebuilder']['namespace']);
+        $container->setParameter('rollerworks_record_filter.factories.doctrine.sql.wherebuilder.auto_generate', $config['factories']['doctrine']['sql']['wherebuilder']['auto_generate']);
+        $container->setParameter('rollerworks_record_filter.factories.doctrine.sql.wherebuilder.namespace', $config['factories']['doctrine']['sql']['wherebuilder']['namespace']);
 
         $container->setParameter('rollerworks_record_filter.fieldsets', serialize($config['fieldsets']));
 
-        $container->getDefinition('rollerworks_record_filter.sql_wherebuilder_factory')
-            ->addMethodCall('setEntityManager', array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $container->getParameterBag()->resolveValue($config['factories']['sql_wherebuilder']['default_entity_manager'])))));
+        $container->getDefinition('rollerworks_record_filter.doctrine.sql.wherebuilder_factory')
+            ->addMethodCall('setEntityManager', array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $container->getParameterBag()->resolveValue($config['factories']['doctrine']['sql']['wherebuilder']['default_entity_manager'])))));
     }
 }

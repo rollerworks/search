@@ -40,7 +40,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('filters_directory')->cannotBeEmpty()->defaultValue('%kernel.cache_dir%/record_filter')->end()
                 ->scalarNode('filters_namespace')->cannotBeEmpty()->defaultValue('RecordFilter')->end()
 
-                ->arrayNode('record')
+                ->arrayNode('doctrine')
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('sql')
@@ -79,12 +79,24 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
 
-                        ->arrayNode('sql_wherebuilder')
+                        ->arrayNode('doctrine')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('namespace')->cannotBeEmpty()->defaultValue('%rollerworks_record_filter.filters_namespace%')->end()
-                                ->scalarNode('default_entity_manager')->cannotBeEmpty()->defaultValue('%doctrine.default_entity_manager%')->end()
-                                ->booleanNode('auto_generate')->defaultFalse()->end()
+
+                                ->arrayNode('sql')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->arrayNode('wherebuilder')
+                                            ->addDefaultsIfNotSet()
+                                            ->children()
+                                                ->scalarNode('namespace')->cannotBeEmpty()->defaultValue('%rollerworks_record_filter.filters_namespace%')->end()
+                                                ->scalarNode('default_entity_manager')->cannotBeEmpty()->defaultValue('%doctrine.default_entity_manager%')->end()
+                                                ->booleanNode('auto_generate')->defaultFalse()->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+
                             ->end()
                         ->end()
 
