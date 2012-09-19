@@ -14,8 +14,8 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
 
-use \Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlValueConversionInterface;
-use \Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlFieldConversionInterface;
+use \Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlValueConversionInterface;
+use \Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlFieldConversionInterface;
 
 class CustomerConversion implements SqlValueConversionInterface, SqlFieldConversionInterface
 {

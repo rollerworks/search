@@ -4,7 +4,8 @@ WhereBuilder
 WhereBuilder searches in an SQL relational database like PostgreSQL, MySQL, SQLite and Oracle
 using an SQL WHERE case. Of course you can also use DQL.
 
-For this component to work `Doctrine ORM <http://symfony.com/doc/current/book/doctrine.html>`_ must be installed en properly configured.
+For this component to work `Doctrine ORM <http://symfony.com/doc/current/book/doctrine.html>`_
+must be installed en properly configured.
 
 .. note ::
 
@@ -21,7 +22,7 @@ Using the WhereBuilder is pretty simple.
         /* ... */
     }
 
-    $whereBuilder = $container->get('rollerworks_record_filter.record.sql_where_builder');
+    $whereBuilder = $container->get('rollerworks_record_filter.doctrine.sql_where_builder');
     $sqlWhereCase = $whereBuilder->getWhereClause($fieldSet, $formatter);
 
     // Then use the $sqlWhereCase value in your query.
@@ -106,7 +107,7 @@ First we must make a Converter class for handling this.
 
     use Doctrine\DBAL\Connection;
     use Doctrine\DBAL\Types\Type as DBALType;
-    use Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlFieldConversionInterface;
+    use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlFieldConversionInterface;
 
     class AgeConverter implements SqlFieldConversionInterface
     {
@@ -156,7 +157,7 @@ In this example we will convert an DateTime object to an scalar value.
 
     use Doctrine\DBAL\Connection;
     use Doctrine\DBAL\Types\Type as DBALType;
-    use Rollerworks\Bundle\RecordFilterBundle\Record\Sql\SqlFieldConversionInterface;
+    use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlFieldConversionInterface;
 
     class DateTimeConvertor implements SqlValueConversionInterface
     {

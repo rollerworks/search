@@ -10,5 +10,5 @@ RecordFilterBundle
     configuration
     type
     input/index
-    record/index
+    doctrine/index
     internals

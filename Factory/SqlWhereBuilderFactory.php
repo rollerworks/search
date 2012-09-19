@@ -13,7 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Factory;
 
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Record\Sql\WhereBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\WhereBuilder;
 use Metadata\MetadataFactoryInterface;
 use Doctrine\ORM\EntityManager;
 
@@ -257,7 +257,7 @@ QY;
 
 namespace <namespace>;
 
-use Rollerworks\Bundle\RecordFilterBundle\Record\Sql\WhereBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**

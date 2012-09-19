@@ -49,7 +49,7 @@ class RollerworksRecordFilterExtension extends Extension
         $container->setParameter('rollerworks_record_filter.filters_directory', $config['filters_directory']);
         $container->setParameter('rollerworks_record_filter.filters_namespace', $config['filters_namespace']);
 
-        $container->getDefinition('rollerworks_record_filter.record.sql_where_builder')
+        $container->getDefinition('rollerworks_record_filter.doctrine.sql_where_builder')
             ->addMethodCall('setEntityManager', array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $container->getParameterBag()->resolveValue($config['record']['sql']['default_entity_manager'])))));
 
         $container->setParameter('rollerworks_record_filter.factories.fieldset.auto_generate', $config['factories']['fieldset']['auto_generate']);

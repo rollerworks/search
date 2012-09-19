@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Record;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine;
 
-use Rollerworks\Bundle\RecordFilterBundle\Record\Sql\WhereBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
