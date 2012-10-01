@@ -21,13 +21,16 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\Types\Type as ORMType;
 
 /**
- * SQL RecordFilter Where Builder.
+ * RecordFilter Doctrine ORM Where Builder.
  *
- * This class provides the functionality for creating an SQL WHERE-clause based on the RecordFilter fieldSet.
+ * This class provides the functionality for creating an SQL WHERE-clause
+ * based on the RecordFilter fieldSet.
  *
  * Keep the following in mind when using conversions.
+ *
  *  * When using the result in DQL, custom functions must be registered in the ORM Configuration.
- *  * Conversion functions are per field and must be stateless, they get the type and connection information for performing operations.
+ *  * Conversion functions are per field and must be stateless, they get the type and connection
+ *    information for performing operations.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -88,8 +91,8 @@ class WhereBuilder
     public function __construct(MetadataFactoryInterface $metadataFactory, ContainerInterface $container, EntityManager $entityManager = null)
     {
         $this->metadataFactory = $metadataFactory;
-        $this->container = $container;
         $this->entityManager = $entityManager;
+        $this->container = $container;
     }
 
     /**
@@ -278,13 +281,13 @@ class WhereBuilder
      *
      * @return string|float|integer
      *
-     * @throws \RuntimeException
+     * @throws \LogicException when called before a fieldSet is set
      * @throws \UnexpectedValueException When the returned value is not scalar
      */
     protected function getValStr($value, $fieldName)
     {
         if (null === $this->fieldSet) {
-            throw new \RuntimeException('This method must be called after a fieldSet is set.');
+            throw new \LogicException('This method must be called after a fieldSet is set.');
         }
 
         $field = $this->fieldSet->get($fieldName);
