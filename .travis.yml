@@ -1,9 +1,9 @@
 language: php
 
 before_script:
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install --dev
+  - COMPOSER_ROOT_VERSION=dev-master composer --dev install
 
 php:
+  - 5.3.3
   - 5.3
   - 5.4
