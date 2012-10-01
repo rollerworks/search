@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Factory;
+namespace Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine;
 
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\WhereBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Factory\AbstractFactory;
+
 use Metadata\MetadataFactoryInterface;
 use Doctrine\ORM\EntityManager;
 
