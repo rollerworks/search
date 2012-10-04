@@ -168,7 +168,7 @@ class EnumType implements FilterTypeInterface, ValueMatcherInterface, Optimizabl
     {
         // All possible values are used so remove it
         if (count($field->getSingleValues()) === count($this->valueToLabel)) {
-            $messageBag->addInfo('record_filter.enum_value_redundant');
+            $messageBag->addInfo('enum_value_redundant');
 
             return false;
         }
