@@ -33,7 +33,7 @@ When selecting from multiple tables you must specify the alias to class relation
 
     /* ... */
 
-    $sql = 'SELECT u.username, u.id, u.email, g. FROM users as u, user_groups as g WHERE g.id = u.group AND ';
+    $sql = 'SELECT u.username username, u.id uid, u.email email, g.id group_id FROM users as u, user_groups as g WHERE g.id = u.group AND ';
 
     $entityAliases = array(
         'u' => 'MyProject\Model\User'
@@ -55,7 +55,7 @@ When selecting from multiple tables you must specify the alias to class relation
 Conversion
 ----------
 
-In most times you can just use the Record\Sql component without any special configuration.
+In most times you can just use the Doctrine\Sql component without any special configuration.
 But there can be cases when you need to do some special things,
 like *converting* the input or field value. In this chapter we will get to that.
 
@@ -79,9 +79,9 @@ Field Conversion
 ~~~~~~~~~~~~~~~~
 
 When the value in the database is not in the desired format
-we can be converted to something that does work.
+it can be converted to something that does work.
 
-For example: we want get the 'age' in years of some person.
+For example: we want to get the 'age' in years of some person.
 
 Normally we don't really store the age but the date of birth,
 so we need to convert the date to an actual age.
@@ -95,21 +95,20 @@ this is very simple.
     For calculating the age by date (other then PostgreSQL or MySQL)
     please resort to the documentation of your Database vendor.
 
+    The example below will not work for DQL,
+    as age() must be registered as a custom function.
+
 First we must make a Converter class for handling this.
-
-.. note ::
-
-    This example does not work for DQL, as age() must be registered as custom function.
 
 .. code-block:: php
 
-    namespace Acme\RecordFilter\Converter\Field;
+    namespace Acme\RecordFilter\SqlConverter;
 
     use Doctrine\DBAL\Connection;
     use Doctrine\DBAL\Types\Type as DBALType;
     use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlFieldConversionInterface;
 
-    class AgeConverter implements SqlFieldConversionInterface
+    class AgeFieldConverter implements SqlFieldConversionInterface
     {
         public function convertField($fieldName, DBALType $type, Connection $connection, $isDql)
         {
@@ -125,7 +124,7 @@ First we must make a Converter class for handling this.
         }
     }
 
-Then we configure our converter at WhereBuilder.
+Then we configure our converter at the WhereBuilder.
 
 .. code-block:: php
 
@@ -153,13 +152,13 @@ In this example we will convert an DateTime object to an scalar value.
 
 .. code-block:: php
 
-    namespace Acme\RecordFilter\Converter\Value;
+    namespace Acme\RecordFilter\SqlConverter;
 
     use Doctrine\DBAL\Connection;
     use Doctrine\DBAL\Types\Type as DBALType;
     use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlFieldConversionInterface;
 
-    class DateTimeConvertor implements SqlValueConversionInterface
+    class DateTimeValueConvertor implements SqlValueConversionInterface
     {
         public function requiresBaseConversion()
         {
@@ -181,18 +180,18 @@ Now we need to register our converter in the service container.
 
         services:
             acme_invoice.record_filter.datetime_value_converter:
-                class: Acme\RecordFilter\Converter\Value\DateTimeConvertor
+                class: Acme\RecordFilter\Converter\DateTimeValueConvertor
 
     .. code-block:: xml
 
         <service id="acme_invoice.record_filter.datetime_value_converter"
-            class="Acme\RecordFilter\Converter\Value\DateTimeConvertor" />
+            class="Acme\RecordFilter\Converter\DateTimeValueConvertor" />
 
     .. code-block:: php
 
         $container->setDefinition(
             'acme_invoice.record_filter.datetime_value_converter',
-            new Definition('Acme\RecordFilter\Converter\Value\DateTimeConvertor')
+            new Definition('Acme\RecordFilter\Converter\DateTimeValueConvertor')
         );
 
 Then when we want to use the converter for our filtering field
@@ -205,5 +204,17 @@ we refer to it by using the RecordFilter\SqlConversion annotation and service na
      *
      * @RecordFilter\Field("invoice_date", type="date")
      * @RecordFilter\SqlConversion("acme_invoice.record_filter.datetime_value_converter")
+     */
+    public $pubdate;
+
+Or when passing parameters to the converter.
+
+.. code-block:: php-annotations
+
+    /**
+     * @ORM\Column(type="datetime")
+     *
+     * @RecordFilter\Field("invoice_date", type="date")
+     * @RecordFilter\SqlConversion("acme_invoice.record_filter.datetime_value_converter", param1="value")
      */
     public $pubdate;

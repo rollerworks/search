@@ -6,7 +6,7 @@ Introduction
 
 Configuration of the RecordFilter is very simple and basic.
 
-Out of the box you don't need to configure anything start working.
+Out of the box you don't need to configure anything to start working.
 
 The only thing you properly want to set is the FieldSets
 and auto generating of classes.
@@ -38,22 +38,25 @@ To do this, configure the FieldSets in your application config.
     .. code-block:: yaml
 
         rollerworks_record_filter:
-            # Set auto generation to true, or else the cache warming is not performed
-            factories.fieldset.auto_generate: true
+            factories:
+                fieldset:
+                    # Set auto generation to true, or else the cache warming is not performed
+                    auto_generate: true
 
-            # Namespace the created FieldSets are stored under
-            # Default this uses %rollerworks_record_filter.filters_namespace%
-            factories.fieldset.namespace: RecordFilter
+                    # Namespace the created FieldSets are stored under
+                    # Default this uses %rollerworks_record_filter.filters_namespace%
+                    namespace: RecordFilter
 
             fieldsets:
+                # The set_name must be unique
                 set_name:
                     fields:
                         # The fieldname must be unique per fieldset
                         field_name:
                             # Every field is optional and defaults to false and null respectively
-                            required: false
-                            accept_ranges: false
-                            accept_compares: false
+                            required:         false
+                            accept_ranges:    false
+                            accept_compares:  false
 
                             # The type must be either
 
@@ -63,10 +66,10 @@ To do this, configure the FieldSets in your application config.
                             # or an array when using parameters
                             type: { name: type, params: { param1: value } }
 
-                            # Class property reference, this is needed when Record\WhereBuilder is used
+                            # Class property reference, this is needed when Doctrine is used
                             # Class must be fully qualified and not an alias
                             ref:
-                                class: Full\Class\Name
+                                class:    Full\Class\Name
                                 property: property-name
 
                     # And/or you can import the class metadata.
@@ -94,18 +97,43 @@ When no label can be found, the fieldname is used as label.
     .. code-block:: yaml
 
         rollerworks_record_filter:
-            # prefix the translator key with this.
-            # Fieldname "id" will then look something like labels.id
-            label_translator_prefix: ""
+            factories:
+                fieldset:
+                    # prefix the translator key with this.
+                    # Fieldname "id" will then look something like labels.id
+                    label_translator_prefix: ""
 
-            # Translator domain the labels are stored in
-            label_translator_domain: filters
+                    # Translator domain the labels are stored in
+                    label_translator_domain: filters
+
+DoctrineSqlWhereBuilder
+-----------------------
+
+The Doctrine\Sql\WhereBuilder uses Doctrine ORM for creating SQL WHERE cases
+"on the fly" based on the given fieldset.
+
+.. tip ::
+
+    When the FieldSet is defined in the application configuration
+    its better to enable the Doctrine SqlWhereBuilder factory as creating
+    an SQL structure on the fly is rather expensive.
+
+.. configuration-block::
+
+    .. code-block:: yaml
+
+        rollerworks_record_filter:
+            doctrine:
+                sql:
+                    # Default Doctrine ORM entity manager, this the entity manager "name"
+                    # not the entity manager service reference.
+                    default_entity_manager: %doctrine.default_entity_manager%
 
 Factories
 ---------
 
-SqlWhereBuilder
-~~~~~~~~~~~~~~~
+DoctrineSqlWhereBuilder
+~~~~~~~~~~~~~~~~~~~~~~~
 
 The SqlWhereBuilder factory uses Doctrine ORM for creating SQL WHERE cases
 based in the fieldsets defined in the application configuration.
@@ -117,34 +145,13 @@ To enable this factory place the following in your application config.
     .. code-block:: yaml
 
         rollerworks_record_filter:
-            factories.sql_wherebuilder:
+            factories:
+                doctrine:
+                    sql:
+                        # Enable auto generating of classes
+                        # Note: factories.fieldset.auto_generate must be enabled for this to work.
+                        auto_generate: true
 
-                # Enable auto generating of classes
-                # Note: factories.fieldset.auto_generate must be enabled for this to work.
-                auto_generate: true
-
-                # Default Doctrine ORM entity manager, this the entity manager "name"
-                # not the entity manager service reference.
-                default_entity_manager: %doctrine.default_entity_manager%
-
-SqlWhereBuilder
----------------
-
-The SqlWhereBuilder uses Doctrine ORM for creating SQL WHERE cases
-"on the fly" based on the given fieldset.
-
-.. tip ::
-
-    When the FieldSet is defined in the application configuration
-    its better to enable the SqlWhereBuilder factory as creating
-    an SQL structure on the fly is expensive.
-
-.. configuration-block::
-
-    .. code-block:: yaml
-
-        rollerworks_record_filter:
-            record.sql:
-                # Default Doctrine ORM entity manager, this the entity manager "name"
-                # not the entity manager service reference.
-                default_entity_manager: %doctrine.default_entity_manager%
+                        # Default Doctrine ORM entity manager, this the entity manager "name"
+                        # not the entity manager service reference.
+                        default_entity_manager: %doctrine.default_entity_manager%
