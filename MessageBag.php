@@ -138,7 +138,7 @@ class MessageBag
      * @param array   $params
      * @param boolean $addTranslatorPrefix Add record_filter. prefix
      */
-    public function addInfo($transMessage, array $params, $addTranslatorPrefix = true)
+    public function addInfo($transMessage, array $params = array(), $addTranslatorPrefix = true)
     {
         $this->messages['info'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params);
     }

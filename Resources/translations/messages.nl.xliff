@@ -33,6 +33,10 @@
                 <source>record_filter.range_same_as_excluded</source>
                 <target>Uitgesloten bereikwaarde {{ value }} bestaat al als normale bereikwaarde in veld '{{ label }}' in groep {{ group }}.</target>
             </trans-unit>
+            <trans-unit id="14">
+                <source>record_filter.enum_value_unknown</source>
+                <target>"{{ value }}" is niet geaccepteerd, alleen de volgende waardes zijn mogelijk: {{ values }}</target>
+            </trans-unit>
 
             <!-- Optimisations -->
             <trans-unit id="9">
@@ -54,6 +58,10 @@
             <trans-unit id="13">
                 <source>record_filter.redundant_comparison</source>
                 <target>Vergelijkingswaarde {{ value }} word al verwerkt door "{{ comparison }}" vergelijk, in veld '{{ label }}' in groep {{ group }} (verwijderd).</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>record_filter.enum_value_redundant</source>
+                <target>Overbodige waardes gevonden in veld '{{ label }}' in groep {{ group }} (verwijderd).</target>
             </trans-unit>
         </body>
     </file>
