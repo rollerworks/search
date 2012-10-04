@@ -43,7 +43,7 @@ class ValueOptimizer implements ModifierInterface
     public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterField $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
         if ($filterConfig->hasType() && $filterConfig->getType() instanceof OptimizableInterface) {
-            return $filterConfig->getType()->optimizeField($filterStruct, $messageBag);
+            return $filterConfig->getType()->optimizeField($filterStruct, $messageBag) === false ? null : true;
         }
 
         return true;

@@ -71,7 +71,7 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
     public function optimizeField(FilterValuesBag $field, MessageBag $messageBag)
     {
         // Since there are no duplicates and only three values are legal.
-        return (count($field->getSingleValues()) === 3 ? null : true);
+        return (count($field->getSingleValues()) === 3 ? false : true);
     }
 
     /**
