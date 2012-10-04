@@ -34,6 +34,7 @@
         <parameter key="rollerworks_record_filter.filter_type.number.class">Rollerworks\Bundle\RecordFilterBundle\Type\Number</parameter>
         <parameter key="rollerworks_record_filter.filter_type.decimal.class">Rollerworks\Bundle\RecordFilterBundle\Type\Decimal</parameter>
         <parameter key="rollerworks_record_filter.filter_type.text.class">Rollerworks\Bundle\RecordFilterBundle\Type\Text</parameter>
+        <parameter key="rollerworks_record_filter.filter_type.enum.class">Rollerworks\Bundle\RecordFilterBundle\Type\EnumType</parameter>
     </parameters>
 
     <services>
