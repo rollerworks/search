@@ -16,7 +16,6 @@ use Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\Options;
 
 /**
  * Integer filter type.

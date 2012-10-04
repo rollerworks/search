@@ -281,7 +281,7 @@ class WhereBuilder
      *
      * @return string|float|integer
      *
-     * @throws \LogicException when called before a fieldSet is set
+     * @throws \LogicException           when called before a fieldSet is set
      * @throws \UnexpectedValueException When the returned value is not scalar
      */
     protected function getValStr($value, $fieldName)
