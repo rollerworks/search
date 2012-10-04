@@ -166,7 +166,7 @@ In this example we will convert an DateTime object to an scalar value.
             return false;
         }
 
-        public function convertValue($input, DBALType $type, Connection $connection, $isDql)
+        public function convertValue($input, DBALType $type, Connection $connection, $isDql, array $parameters = array())
         {
             return $connection->quote($input->format('Y-m-d H:i:s'));
         }

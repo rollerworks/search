@@ -41,8 +41,9 @@ interface SqlValueConversionInterface
      * @param DBALType   $type
      * @param Connection $connection
      * @param boolean    $isDql      Whether the query should be DQL
+     * @param array      $parameters
      *
      * @return mixed
      */
-    public function convertValue($input, DBALType $type, Connection $connection, $isDql);
+    public function convertValue($input, DBALType $type, Connection $connection, $isDql, array $parameters = array());
 }

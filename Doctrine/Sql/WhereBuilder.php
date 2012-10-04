@@ -333,7 +333,7 @@ class WhereBuilder
                 $value = $type->convertToDatabaseValue($value, $databasePlatform);
             }
 
-            $value = $this->sqlValueConversions[$fieldName]->convertValue($value, $type, $this->entityManager->getConnection(), $this->isDql);
+            $value = $this->sqlValueConversions[$fieldName]->convertValue($value, $type, $this->entityManager->getConnection(), $this->isDql, $classMetadata->propertyMetadata[$propertyName]->getSqlConversionParams());
         }
 
         if (!is_scalar($value)) {
