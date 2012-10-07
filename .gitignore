@@ -19,6 +19,8 @@ nbproject
 *.sublime-workspace
 
 # Folders to ignore
+Resources/doc/_themes
+Resources/doc/_exts
 /Tests/.cache
 .idea
 
