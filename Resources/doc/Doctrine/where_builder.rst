@@ -156,9 +156,9 @@ In this example we will convert an DateTime object to an scalar value.
 
     use Doctrine\DBAL\Connection;
     use Doctrine\DBAL\Types\Type as DBALType;
-    use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlFieldConversionInterface;
+    use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlValueConversionInterface;
 
-    class DateTimeValueConvertor implements SqlValueConversionInterface
+    class DateTimeValueConverter implements SqlValueConversionInterface
     {
         public function requiresBaseConversion()
         {
@@ -179,19 +179,19 @@ Now we need to register our converter in the service container.
     .. code-block:: yaml
 
         services:
-            acme_invoice.record_filter.datetime_value_converter:
-                class: Acme\RecordFilter\Converter\DateTimeValueConvertor
+            acme_invoice.record_filter.sql.datetime_value_converter:
+                class: Acme\RecordFilter\SqlConverter\DateTimeValueConvertor
 
     .. code-block:: xml
 
-        <service id="acme_invoice.record_filter.datetime_value_converter"
-            class="Acme\RecordFilter\Converter\DateTimeValueConvertor" />
+        <service id="acme_invoice.record_filter.sql.datetime_value_converter"
+            class="Acme\RecordFilter\SqlConverter\DateTimeValueConvertor" />
 
     .. code-block:: php
 
         $container->setDefinition(
-            'acme_invoice.record_filter.datetime_value_converter',
-            new Definition('Acme\RecordFilter\Converter\DateTimeValueConvertor')
+            'acme_invoice.record_filter.sql.datetime_value_converter',
+            new Definition('Acme\RecordFilter\SqlConverter\DateTimeValueConvertor')
         );
 
 Then when we want to use the converter for our filtering field
@@ -203,7 +203,7 @@ we refer to it by using the RecordFilter\SqlConversion annotation and service na
      * @ORM\Column(type="datetime")
      *
      * @RecordFilter\Field("invoice_date", type="date")
-     * @RecordFilter\SqlConversion("acme_invoice.record_filter.datetime_value_converter")
+     * @RecordFilter\SqlConversion("acme_invoice.record_filter.sql.datetime_value_converter")
      */
     public $pubdate;
 
