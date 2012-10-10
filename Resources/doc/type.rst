@@ -104,6 +104,15 @@ The following options can be set.
 | max               | Maximum value. must be higher then min (default is NULL)                                               | string,float,NULL    |
 +-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
 
+EnumType
+-------
+
+EnumType is similar to ENUM of SQL, it only allows an fixed set of possible values (labels) to be used.
+The label are then converted back to the internal value.
+
+For this to work
+
+
 Making your own
 ---------------
 
@@ -156,6 +165,10 @@ For this little tutorial we are going to create an type that can handle an statu
 
     The status can be localized and converted back to an label,
     and as a little bonus the Value can matched for usage with FilterQuery input.
+
+.. tip::
+
+    This is an old example, it better to use the EnumType instead.
 
 .. code-block:: php
 
