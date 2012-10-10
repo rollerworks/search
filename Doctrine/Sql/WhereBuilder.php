@@ -104,18 +104,6 @@ class WhereBuilder
     }
 
     /**
-     * @internal
-     */
-    public function setFieldSet(FieldSet $fieldSet)
-    {
-        if (null !== $this->fieldSet) {
-            throw new \LogicException('FieldSet can not be overwritten.');
-        }
-
-        $this->fieldSet = $fieldSet;
-    }
-
-    /**
      * Set the SQL conversion configuration for an field.
      *
      * Only converter per field, existing one is overwritten.
@@ -153,10 +141,7 @@ class WhereBuilder
             }
         }
 
-        if (null === $this->fieldSet) {
-            throw new \LogicException('No FieldSet is set.');
-        }
-
+        $this->fieldSet            = $formatter->getFieldSet();
         $this->columnsMappingCache = array();
         $this->entityAliases       = $entityAliases;
         $this->isDql               = $isDql;

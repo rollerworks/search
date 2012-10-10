@@ -34,7 +34,6 @@ class SQLTest extends OrmTestCase
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $whereBuilder->setFieldSet($input->getFieldSet());
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
@@ -50,7 +49,6 @@ class SQLTest extends OrmTestCase
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $whereBuilder->setFieldSet($input->getFieldSet());
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
         $this->assertNull($whereCase);
@@ -73,7 +71,6 @@ class SQLTest extends OrmTestCase
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $whereBuilder->setFieldSet($input->getFieldSet());
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
@@ -103,7 +100,6 @@ class SQLTest extends OrmTestCase
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
         $whereBuilder->setConversionForField('invoice_customer', $container->get('customer_conversion'));
-        $whereBuilder->setFieldSet($input->getFieldSet());
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
         $this->assertEquals($expectedSql, $whereCase);

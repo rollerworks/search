@@ -71,6 +71,18 @@ class SqlWhereBuilderFactoryTest extends OrmTestCase
         $this->assertEquals($expectedSql, $whereCase);
     }
 
+    public function testWrongFieldSet()
+    {
+        $fieldSet = $this->getFieldSet('invoice');
+        $fieldSet2 = $this->getFieldSet('customer');
+
+        $input = $this->newInput('invoice_customer=2;', $fieldSet);
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $this->setExpectedException('LogicException', 'Expected FieldSet "customer" but got "invoice" instead.');
+        $this->cleanSql($this->factory->getWhereBuilder($fieldSet2)->getWhereClause($this->formatter));
+    }
+
     public static function provideBasicsTests()
     {
         return array(

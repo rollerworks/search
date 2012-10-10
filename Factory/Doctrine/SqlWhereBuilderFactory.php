@@ -108,7 +108,6 @@ class SqlWhereBuilderFactory extends AbstractFactory
         }
 
         $whereBuilder = new $fqn($metadataFactory, $this->container, $entityManager);
-        $whereBuilder->setFieldSet($fieldSet);
 
         return $whereBuilder;
     }
@@ -174,6 +173,16 @@ class SqlWhereBuilderFactory extends AbstractFactory
         $query = <<<'QY'
     protected function buildWhere(FormatterInterface $formatter)
     {
+QY;
+
+        $query .= <<<QY
+        if ('{$fieldSet->getSetName()}' !== \$formatter->getFieldSet()->getSetName()) {
+            throw new \LogicException(sprintf('Expected FieldSet "{$fieldSet->getSetName()}" but got "%s" instead.', \$formatter->getFieldSet()->getSetName()));
+        }
+QY;
+
+        $query .= <<<'QY'
+
         $query = '';
 
         foreach ($formatter->getFilters() as $filters) {
