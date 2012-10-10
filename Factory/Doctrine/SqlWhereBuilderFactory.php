@@ -107,7 +107,10 @@ class SqlWhereBuilderFactory extends AbstractFactory
             require $fileName;
         }
 
-        return new $fqn($metadataFactory, $this->container, $entityManager);
+        $whereBuilder = new $fqn($metadataFactory, $this->container, $entityManager);
+        $whereBuilder->setFieldSet($fieldSet);
+
+        return $whereBuilder;
     }
 
     /**

@@ -104,6 +104,18 @@ class WhereBuilder
     }
 
     /**
+     * @internal
+     */
+    public function setFieldSet(FieldSet $fieldSet)
+    {
+        if (null !== $this->fieldSet) {
+            throw new \LogicException('FieldSet can not be overwritten.');
+        }
+
+        $this->fieldSet = $fieldSet;
+    }
+
+    /**
      * Set the SQL conversion configuration for an field.
      *
      * Only converter per field, existing one is overwritten.
@@ -119,14 +131,15 @@ class WhereBuilder
     /**
      * Returns the WHERE clause for the query.
      *
-     * @param FieldSet           $fieldSet
      * @param FormatterInterface $formatter
      * @param array              $entityAliases Array with the Entity-class to 'in-query alias' mapping as alias => class
      * @param boolean            $isDql
      *
      * @return null|string
+     *
+     * @throws \LogicException when no FieldSet is set
      */
-    public function getWhereClause(FieldSet $fieldSet, FormatterInterface $formatter, array $entityAliases = array(), $isDql = false)
+    public function getWhereClause(FormatterInterface $formatter, array $entityAliases = array(), $isDql = false)
     {
         // Use alias => class mapping instead of class => alias, because an class can be used by more then one alias.
         // More specific when using an INNER JOIN
@@ -140,9 +153,12 @@ class WhereBuilder
             }
         }
 
+        if (null === $this->fieldSet) {
+            throw new \LogicException('No FieldSet is set.');
+        }
+
         $this->columnsMappingCache = array();
         $this->entityAliases       = $entityAliases;
-        $this->fieldSet            = $fieldSet;
         $this->isDql               = $isDql;
 
         return $this->buildWhere($formatter);
@@ -286,10 +302,6 @@ class WhereBuilder
      */
     protected function getValStr($value, $fieldName)
     {
-        if (null === $this->fieldSet) {
-            throw new \LogicException('This method must be called after a fieldSet is set.');
-        }
-
         $field = $this->fieldSet->get($fieldName);
 
         if (null === $field->getPropertyRefClass()) {

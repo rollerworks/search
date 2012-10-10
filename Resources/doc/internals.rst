@@ -30,8 +30,8 @@ An FilterConfig object consists of:
 FieldSets and Field object are created on-the fly,
 an FilterConfig object can be used by multiple FieldSets.
 
-Record/Sql
-----------
+Doctrine/Sql
+------------
 
 Creates an SQL/DQL WHERE-case Query based on the given FieldSet and
 values provided by the Formatter.

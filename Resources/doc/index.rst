@@ -9,6 +9,6 @@ RecordFilterBundle
     installing
     configuration
     type
-    input/index
-    doctrine/index
+    input/index.rst
+    Doctrine/index.rst
     internals

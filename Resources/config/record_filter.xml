@@ -106,7 +106,7 @@
             <argument type="service" id="translator"/>
         </service>
 
-        <service id="rollerworks_record_filter.doctrine.sql.where_builder" class="%rollerworks_record_filter.doctrine.sql.where_builder.class%">
+        <service id="rollerworks_record_filter.doctrine.sql.where_builder" class="%rollerworks_record_filter.doctrine.sql.where_builder.class%" scope="prototype">
             <argument type="service" id="rollerworks_record_filter.metadata_factory"/>
             <argument type="service" id="service_container"/>
         </service>
