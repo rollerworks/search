@@ -26,5 +26,14 @@
         "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "" }
     },
     "target-dir": "Rollerworks/Bundle/RecordFilterBundle",
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    
+    "scripts": {
+        "post-install-cmd": [
+            "Rollerworks\\Component\\Locale\\Composer\\ScriptHandler::updateLocaleData"
+        ],
+        "post-update-cmd": [
+            "Rollerworks\\Component\\Locale\\Composer\\ScriptHandler::updateLocaleData"
+        ]
+    }
 }
