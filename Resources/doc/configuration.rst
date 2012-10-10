@@ -30,7 +30,7 @@ To do this, configure the FieldSets in your application config.
     like you would do with ORM Entity classes.
 
     To ensure uniqueness of the fieldname when importing.
-    Its an best practise to prefix an fieldname with an vendor and domain,
+    Its an best practise to prefix an fieldname with an (optional) vendor, and domain,
     "id" in vendor "acme" and domain "invoice" would become "acme_invoice_id".
 
 .. configuration-block::
@@ -81,10 +81,10 @@ To do this, configure the FieldSets in your application config.
                             # You can either specify fields that must be imported or fields that must be excluded.
                             # You can only use include_fields or exclude_fields, not both. include prevails over exclude
 
-                                # Only import these fields (by fieldname not property-name)
+                                # Only import only these fields (by fieldname not property-name)
                                 include_fields: [ id, name ]
 
-                                # Only import field not present in this list
+                                # Only import only fields not present in this list
                                 exclude_fields: [ id, name ]
 
 As the field label can be localized
@@ -110,7 +110,7 @@ DoctrineSqlWhereBuilder
 -----------------------
 
 The Doctrine\Sql\WhereBuilder uses Doctrine ORM for creating SQL WHERE cases
-"on the fly" based on the given fieldset.
+"on the fly" based on the given FieldSet.
 
 .. tip ::
 

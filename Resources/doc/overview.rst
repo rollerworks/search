@@ -37,7 +37,7 @@ Depending on your needs you may need the following.
 
 * Bcmath or GMP for handling big numbers.
 
-* Database support when using Record\Sql.
+* Database support when using Doctrine\Sql (or related).
   This also requires Doctrine ORM to be installed.
 
 Component Breakdown
@@ -123,15 +123,13 @@ List provided of modifiers.
 | ValueOptimizer    | Optimizes value by OptimizableInterface filter-type implementation.                                    | -128      |
 +-------------------+--------------------------------------------------------------------------------------------------------+-----------+
 
-Record
-~~~~~~
+Doctrine
+~~~~~~~~
 
 Searches trough the database using the final filtering-preference.
-
-For SQL to work, Doctrine ORM must be installed.
 Both SQL and DQL are supported.
 
-For more information on using the Record component see :doc:`/record/where_builder`
+For more information on using the Doctrine component see :doc:`/Doctrine/where_builder`
 
 Type
 ~~~~

@@ -15,7 +15,7 @@ Basic processing
 Configuration
 -------------
 
-Filtering is defined as an set of FilterConfig objects (known as Fields),
+Filtering is defined as a set of FilterConfig objects (known as Fields),
 known as an FieldSet object.
 
 An FilterConfig object consists of:
@@ -33,21 +33,20 @@ an FilterConfig object can be used by multiple FieldSets.
 Doctrine/Sql
 ------------
 
-Creates an SQL/DQL WHERE-case Query based on the given FieldSet and
+Creates an SQL WHERE-case Query based on the given FieldSet and
 values provided by the Formatter.
 
 The SQL field-names are resolved using the information
 of the class/property reference.
 
-Conversions are either done by reading the Metadata
-of the class (value) and set explicit (field), as this uses Doctrine
-there is no problem in hard-requirement.
+Conversions are either done by reading the Metadata of the class (value)
+and set explicit (field), as this uses Doctrine there is no problem with hard-requirements.
 
 Metadata Mapping
 ----------------
 
 Metadata Mapping or Mapping for short, is used for populating an FieldSet
-with configuration based on the metadata of an class.
+with configuration based on the metadata of one or more classes.
 The metadata is read using the JMS/Metadata Component.
 
 Metadata can be stored as property annotations inside

@@ -24,7 +24,6 @@ Using the WhereBuilder is pretty simple.
 
     // The "rollerworks_record_filter.doctrine.sql.where_builder" service always returns an new instance.
     $whereBuilder = $container->get('rollerworks_record_filter.doctrine.sql.where_builder');
-    $whereBuilder->setFieldSet($fieldSet);
     $sqlWhereCase = $whereBuilder->getWhereClause($formatter);
 
     // Then use the $sqlWhereCase value in your query.
@@ -44,14 +43,9 @@ When selecting from multiple tables you must specify the alias to class relation
 
     $sql .= $whereBuilder->getWhereClause($formatter, $entityAliases);
 
-.. tip ::
-
-    When using the SqlWhereBuilder factory,
-    the getWhereClause() does not need the FieldSet parameter.
-
 .. code-block:: php
 
-    $whereBuilder = $container->get('rollerworks_record_filter.doctrine.sql.wherebuilder_factory')->getWhereBuilder($fieldSet);
+    $whereBuilder = $container->get('rollerworks_record_filter.doctrine.sql.wherebuilder_factory')->getWhereBuilder($formatter->getFieldSet());
     $sqlWhereCase = $whereBuilder->getWhereClause($formatter);
 
 Conversion

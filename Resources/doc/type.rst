@@ -14,8 +14,7 @@ but building your own types is also possible and very simple.
     the International extension or Symfony Intl Stubs
     (The Symfony stub may not support all locales).
 
-Secondly, all built-in types support comparison
-optimizing when possible.
+Secondly, all built-in types support comparison optimizing when possible.
 
 Its possible but not recommended to overwrite the build-in types by using
 the same alias.
@@ -58,15 +57,15 @@ DateTime related types can be used for working with either date/time or a combin
 
 The following options can be set.
 
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
-| Option            | Description                                                                                            | Accepted values      |
-+===================+========================================================================================================+======================+
-| min               | Minimum value. must be lower then max (default is NULL)                                                | DateTime object,NULL |
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
-| max               | Maximum value. must be higher then min (default is NULL)                                               | DateTime object,NULL |
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
-| time_optional     | If the time is optional (DateTime type only)                                                           | Boolean              |
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
++-------------------+----------------------------------------------------------------+----------------------+
+| Option            | Description                                                    | Accepted values      |
++===================+================================================================+======================+
+| min               | Minimum value. must be lower then max (default is NULL)        | DateTime object,NULL |
++-------------------+----------------------------------------------------------------+----------------------+
+| max               | Maximum value. must be higher then min (default is NULL)       | DateTime object,NULL |
++-------------------+----------------------------------------------------------------+----------------------+
+| time_optional     | If the time is optional (DateTime type only)                   | Boolean              |
++-------------------+----------------------------------------------------------------+----------------------+
 
 Number
 ------
@@ -78,13 +77,13 @@ either bcmath or GMP must be installed and the configuration **must** use an str
 
 The following options can be set.
 
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
-| Option            | Description                                                                                            | Accepted values      |
-+===================+========================================================================================================+======================+
-| min               | Minimum value. must be lower then max (default is NULL)                                                | string,integer,NULL  |
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
-| max               | Maximum value. must be higher then min (default is NULL)                                               | string,integer,NULL  |
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
++-------------------+-----------------------------------------------------------------+----------------------+
+| Option            | Description                                                     | Accepted values      |
++===================+=================================================================+======================+
+| min               | Minimum value. must be lower then max (default is NULL)         | string,integer,NULL  |
++-------------------+-----------------------------------------------------------------+----------------------+
+| max               | Maximum value. must be higher then min (default is NULL)        | string,integer,NULL  |
++-------------------+-----------------------------------------------------------------+----------------------+
 
 Decimal
 -------
@@ -96,13 +95,13 @@ either bcmath or GMP must be installed and the configuration **must** use an str
 
 The following options can be set.
 
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
-| Option            | Description                                                                                            | Accepted values      |
-+===================+========================================================================================================+======================+
-| min               | Minimum value. must be lower then max (default is NULL)                                                | string,float,NULL    |
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
-| max               | Maximum value. must be higher then min (default is NULL)                                               | string,float,NULL    |
-+-------------------+--------------------------------------------------------------------------------------------------------+----------------------+
++-------------------+------------------------------------------------------------------+----------------------+
+| Option            | Description                                                      | Accepted values      |
++===================+==================================================================+======================+
+| min               | Minimum value. must be lower then max (default is NULL)          | string,float,NULL    |
++-------------------+------------------------------------------------------------------+----------------------+
+| max               | Maximum value. must be higher then min (default is NULL)         | string,float,NULL    |
++-------------------+------------------------------------------------------------------+----------------------+
 
 EnumType
 -------
@@ -332,7 +331,7 @@ ConfigurableTypeInterface
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Implement the ``Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface``
-when the type support dynamic configuration for an example an maximum value or such.
+when the type supports dynamic configuration for an example an maximum value or such.
 
 .. note::
 
@@ -345,6 +344,7 @@ OptimizableInterface
 
 Implement the ``Rollerworks\Bundle\RecordFilterBundle\Formatter\OptimizableInterface``
 if the values can be further optimized.
+
 Optimizing includes removing redundant values and changing the filtering strategy.
 
 An example can be, where you have an 'Status' type which only accepts 'active', 'not-active' and 'remove'.
