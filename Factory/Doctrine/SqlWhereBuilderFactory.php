@@ -176,6 +176,7 @@ class SqlWhereBuilderFactory extends AbstractFactory
 QY;
 
         $query .= <<<QY
+
         if ('{$fieldSet->getSetName()}' !== \$formatter->getFieldSet()->getSetName()) {
             throw new \LogicException(sprintf('Expected FieldSet "{$fieldSet->getSetName()}" but got "%s" instead.', \$formatter->getFieldSet()->getSetName()));
         }
