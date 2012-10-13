@@ -242,7 +242,6 @@ class FilterQuery extends AbstractInput
 
         foreach ($this->fieldsSet->all() as $name => $filterConfig) {
             /** @var FilterField $filterConfig */
-
             if (empty($filterPairs[$name])) {
                 if (true === $filterConfig->isRequired()) {
                     throw new ValidationException('required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
@@ -296,7 +295,7 @@ class FilterQuery extends AbstractInput
      *
      * @return FilterValuesBag
      *
-     * @throws \Rollerworks\Bundle\RecordFilterBundle\Exception\ValidationException
+     * @throws ValidationException
      */
     protected function valuesToBag($originalInput, FilterField $filterConfig, array $values, $group)
     {

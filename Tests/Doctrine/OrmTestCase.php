@@ -24,6 +24,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\StatusType;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerType;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Tests\OrmTestCase as OrmTestCaseBase;
 
 class OrmTestCase extends OrmTestCaseBase
@@ -138,5 +139,13 @@ class OrmTestCase extends OrmTestCaseBase
         }
 
         return str_replace(array("(\n", ")\n"), array('(', ')'), $input);
+    }
+
+    /**
+     * @return AnnotationReader
+     */
+    protected function newAnnotationsReader()
+    {
+        return $this->createAnnotationDriver()->getReader();
     }
 }

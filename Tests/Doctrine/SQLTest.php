@@ -29,10 +29,8 @@ class SQLTest extends OrmTestCase
         $input = $this->newInput($filterQuery);
         $this->assertTrue($this->formatter->formatInput($input));
 
-        $annotationReader = new AnnotationReader();
         $container = $this->createContainer();
-
-        $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
@@ -44,10 +42,8 @@ class SQLTest extends OrmTestCase
         $input = $this->newInput('no_field=2;');
         $this->assertTrue($this->formatter->formatInput($input));
 
-        $annotationReader = new AnnotationReader();
         $container = $this->createContainer();
-
-        $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
@@ -65,11 +61,10 @@ class SQLTest extends OrmTestCase
         $input = $this->newInput($filterQuery, 'customer');
         $this->assertTrue($this->formatter->formatInput($input));
 
-        $annotationReader = new AnnotationReader();
         $container = $this->createContainer();
         $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
 
-        $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
@@ -87,17 +82,10 @@ class SQLTest extends OrmTestCase
         $input = $this->newInput($filterQuery, 'invoice');
         $this->assertTrue($this->formatter->formatInput($input));
 
-        $annotationReader = new AnnotationReader();
-        $annotationReader->addGlobalIgnoredName('Id');
-        $annotationReader->addGlobalIgnoredName('Column');
-        $annotationReader->addGlobalIgnoredName('GeneratedValue');
-        $annotationReader->addGlobalIgnoredName('OneToOne');
-        $annotationReader->addGlobalIgnoredName('OneToMany');
-
         $container = $this->createContainer();
         $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
 
-        $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
         $whereBuilder->setConversionForField('invoice_customer', $container->get('customer_conversion'));
 
