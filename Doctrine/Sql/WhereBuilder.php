@@ -18,8 +18,6 @@ use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Metadata\MetadataFactoryInterface;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query as OrmQuery;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\DBAL\Types\Type as ORMType;
 
 /**
@@ -121,34 +119,32 @@ class WhereBuilder
     /**
      * Returns the WHERE clause for the query.
      *
-     * @param FormatterInterface  $formatter
-     * @param array|OrmQuery|null $entityMapping is array with the Entity-class to 'in-query alias' mapping as alias => class or DQL Query object
+     * @param FormatterInterface $formatter
+     * @param array              $entityAliases Array with the Entity-class to 'in-query alias' mapping as alias => class
+     * @param boolean            $isDql
      *
      * @return null|string
      *
      * @throws \LogicException when no FieldSet is set
      */
-    public function getWhereClause(FormatterInterface $formatter, $entityMapping = null)
+    public function getWhereClause(FormatterInterface $formatter, array $entityAliases = array(), $isDql = false)
     {
         // Use alias => class mapping instead of class => alias, because an class can be used by more then one alias.
         // More specific when using an INNER JOIN
 
         // Convert namespace aliases to the correct className
-        if (is_array($entityMapping)) {
-            foreach ($entityMapping as $alias => $entity) {
+        if (!empty($entityAliases)) {
+            foreach ($entityAliases as $alias => $entity) {
                 if (false !== strpos($entity, ':')) {
-                    $entityMapping[$alias] = $this->entityManager->getClassMetadata($entity)->name;
+                    $entityAliases[$alias] = $this->entityManager->getClassMetadata($entity)->name;
                 }
             }
-
-            $this->isDql = false;
-            $this->entityAliases = $entityMapping;
-        } elseif ($entityMapping instanceof OrmQuery) {
-            $this->isDql = true;
         }
 
         $this->fieldSet            = $formatter->getFieldSet();
         $this->columnsMappingCache = array();
+        $this->entityAliases       = $entityAliases;
+        $this->isDql               = $isDql;
 
         return $this->buildWhere($formatter);
     }
