@@ -18,6 +18,7 @@ use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Metadata\MetadataFactoryInterface;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query as OrmQuery;
 use Doctrine\DBAL\Types\Type as ORMType;
 
 /**
@@ -60,6 +61,11 @@ class WhereBuilder
      * @var array
      */
     protected $entityAliases = array();
+
+    /**
+     * @var array
+     */
+    protected $fieldsMappingCache = array();
 
     /**
      * @var array
@@ -120,107 +126,64 @@ class WhereBuilder
      * Returns the WHERE clause for the query.
      *
      * @param FormatterInterface $formatter
-     * @param array              $entityAliases Array with the Entity-class to 'in-query alias' mapping as alias => class
-     * @param boolean            $isDql
+     * @param array              $entityAliasMapping is array with the Entity-class to 'in-query alias' mapping as alias => class
+     * @param OrmQuery|null      $query              DQL query object (ony when using DQL)
      *
      * @return null|string
-     *
-     * @throws \LogicException when no FieldSet is set
      */
-    public function getWhereClause(FormatterInterface $formatter, array $entityAliases = array(), $isDql = false)
+    public function getWhereClause(FormatterInterface $formatter, array $entityAliasMapping = array(), OrmQuery $query = null)
     {
         // Use alias => class mapping instead of class => alias, because an class can be used by more then one alias.
         // More specific when using an INNER JOIN
 
         // Convert namespace aliases to the correct className
-        if (!empty($entityAliases)) {
-            foreach ($entityAliases as $alias => $entity) {
+        if (!empty($entityAliasMapping)) {
+            foreach ($entityAliasMapping as $alias => $entity) {
                 if (false !== strpos($entity, ':')) {
-                    $entityAliases[$alias] = $this->entityManager->getClassMetadata($entity)->name;
+                    $entityAliasMapping[$alias] = $this->entityManager->getClassMetadata($entity)->name;
                 }
             }
         }
 
+        if ($query) {
+            $query->setHint('where_builder_conversions', $this);
+            $this->isDql = true;
+        } else {
+            $this->isDql = false;
+        }
+
+        $this->entityAliases       = $entityAliasMapping;
         $this->fieldSet            = $formatter->getFieldSet();
-        $this->columnsMappingCache = array();
-        $this->entityAliases       = $entityAliases;
-        $this->isDql               = $isDql;
+        $this->fieldsMappingCache = array();
 
         return $this->buildWhere($formatter);
     }
 
+    // TODO ADD CALLBACKS FOR SQL TreeWalker
+
     /**
-     * Returns the correct column (with SQLField conversions applied).
+     * @internal
      *
      * @param string $fieldName
      *
      * @return string
-     *
-     * @throws \InvalidArgumentException When the field can not be found in the fieldSet
      */
-    protected function getFieldColumn($fieldName)
+    public function getFieldConversionSql($fieldName)
     {
-        if (isset($this->columnsMappingCache[$fieldName])) {
-            return $this->columnsMappingCache[$fieldName];
-        }
-
-        if (!$this->fieldSet->has($fieldName)) {
-            throw new \InvalidArgumentException(sprintf('Unable to get column. Field "%s" is not in fieldSet "%s".', $fieldName, $this->fieldSet->getSetName()));
-        }
-
         $field = $this->fieldSet->get($fieldName);
+        $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
 
-        if (null === $field->getPropertyRefClass()) {
-            $this->columnsMappingCache[$fieldName] = $fieldName;
-
-            return $fieldName;
+        // Documentation claims its an object while in fact its an string
+        if (!is_object($type)) {
+            $type = ORMType::getType($type);
         }
 
-        $columnPrefix = '';
-        $metadata = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
-
-        if (isset($this->entityAliases[$metadata->getTableName()])) {
-            $columnPrefix = $this->entityAliases[$metadata->getTableName()] . '.';
-        }
-
-        $this->columnsMappingCache[$fieldName] = $columnPrefix . $metadata->getColumnName($field->getPropertyRefField());
-
-        if (isset($this->sqlFieldConversions[$fieldName]) && null !== $field->getPropertyRefClass()) {
-            $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
-
-            // Documentation claims its an object while in fact its an string
-            if (!is_object($type)) {
-                $type = ORMType::getType($type);
-            }
-
-            $this->columnsMappingCache[$fieldName] = $this->sqlFieldConversions[$fieldName]->convertField(
-                $this->columnsMappingCache[$fieldName],
-                $type,
-                $this->entityManager->getConnection(),
-                $this->isDql
-            );
-        }
-
-        return $this->columnsMappingCache[$fieldName];
-    }
-
-    /**
-     * Returns an comma-separated list of values.
-     *
-     * @param SingleValue[] $values
-     * @param string        $fieldName
-     *
-     * @return string
-     */
-    protected function createInList($values, $fieldName)
-    {
-        $inList = '';
-
-        foreach ($values as $value) {
-            $inList .= $this->getValStr($value->getValue(), $fieldName) . ', ';
-        }
-
-        return trim($inList, ', ');
+        //$this->fieldsMappingCache[$fieldName]
+        return $this->sqlFieldConversions[$fieldName]->convertField(
+            $this->fieldsMappingCache[$fieldName],
+            $type,
+            $this->entityManager->getConnection()
+        );
     }
 
     /**
@@ -275,6 +238,79 @@ class WhereBuilder
     }
 
     /**
+     * Returns an comma-separated list of values.
+     *
+     * @param SingleValue[] $values
+     * @param string        $fieldName
+     *
+     * @return string
+     */
+    protected function createInList($values, $fieldName)
+    {
+        $inList = '';
+
+        foreach ($values as $value) {
+            $inList .= $this->getValStr($value->getValue(), $fieldName) . ', ';
+        }
+
+        return trim($inList, ', ');
+    }
+
+    /**
+     * Returns the correct column (with SQLField conversions applied).
+     *
+     * @param string $fieldName
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException When the field can not be found in the fieldSet
+     * @throws \LogicException           When there is no Property Reference and DQL is used
+     */
+    protected function getFieldColumn($fieldName)
+    {
+        if (isset($this->fieldsMappingCache[$fieldName])) {
+            return $this->fieldsMappingCache[$fieldName];
+        }
+
+        if (!$this->fieldSet->has($fieldName)) {
+            throw new \InvalidArgumentException(sprintf('Unable to get column. Field "%s" is not in fieldSet "%s".', $fieldName, $this->fieldSet->getSetName()));
+        }
+        $field = $this->fieldSet->get($fieldName);
+
+        if (null === $field->getPropertyRefClass()) {
+            if ($this->isDql) {
+               throw new \LogicException(sprintf('Missing Property Reference for field "%s" in FieldSet "%s", this is required when using DQL.', $fieldName, $this->fieldSet->getSetName()));
+            }
+            $this->fieldsMappingCache[$fieldName] = $fieldName;
+
+            return $fieldName;
+        }
+
+        $columnPrefix = '';
+        $metadata = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
+
+        if (isset($this->entityAliases[$metadata->getTableName()])) {
+            $columnPrefix = $this->entityAliases[$metadata->getTableName()] . '.';
+        }
+
+        if ($this->isDql) {
+            $this->fieldsMappingCache[$fieldName] = $columnPrefix . $field->getPropertyRefField();
+        } else {
+            $this->fieldsMappingCache[$fieldName] = $columnPrefix . $metadata->getColumnName($field->getPropertyRefField());
+        }
+
+        if (isset($this->sqlFieldConversions[$fieldName]) && null !== $field->getPropertyRefClass()) {
+            if ($this->isDql) {
+                $this->fieldsMappingCache[$fieldName] = 'FILTER_VALUE_CONVERSION(' . var_export($fieldName) . ')';
+            } else {
+                $this->fieldsMappingCache[$fieldName] = $this->getFieldConversionSql($fieldName);
+            }
+        }
+
+        return $this->fieldsMappingCache[$fieldName];
+    }
+
+    /**
      * Get an single value string.
      *
      * @param string $value
@@ -282,8 +318,9 @@ class WhereBuilder
      *
      * @return string|float|integer
      *
-     * @throws \LogicException           when called before a fieldSet is set
      * @throws \UnexpectedValueException When the returned value is not scalar
+     *
+     * FIXME PROVIDE FIELD OBJECT DIRECTLY TO LOWER CALL USAGE
      */
     protected function getValStr($value, $fieldName)
     {
