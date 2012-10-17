@@ -30,24 +30,15 @@ class CustomerConversion implements SqlValueConversionInterface, SqlFieldConvers
     /**
      * {@inheritdoc}
      */
-    public function convertValue($input, DBALType $type, Connection $connection, $isDql, array $params = array())
+    public function convertValue($input, DBALType $type, Connection $connection, array $params = array())
     {
-        return $input->getCustomerId();
+        return intval($input->getCustomerId());
     }
 
     /**
-     * Convert the input field name to an SQL statement.
-     *
-     * This should return the field wrapped inside an statement like: MY_FUNCTION(fieldName)
-     *
-     * @param string     $fieldName
-     * @param DBALType   $type
-     * @param Connection $connection
-     * @param boolean    $isDql      Whether the query should be DQL
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function convertField($fieldName, DBALType $type, Connection $connection, $isDql)
+    public function getConvertFieldSql($fieldName, DBALType $type, Connection $connection)
     {
         return "CAST($fieldName AS customer_type)";
     }

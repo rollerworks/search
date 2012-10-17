@@ -87,7 +87,7 @@ class SQLTest extends OrmTestCase
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $whereBuilder->setConversionForField('invoice_customer', $container->get('customer_conversion'));
+        $whereBuilder->setFieldConversion('invoice_customer', $container->get('customer_conversion'));
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
         $this->assertEquals($expectedSql, $whereCase);

@@ -16,6 +16,7 @@ class ECommerceCustomer
      * @Id
      * @Column(type="integer")
      * @GeneratedValue(strategy="AUTO")
+     *
      * @RecordFilter\Field("customer_id", type="customer_type")
      * @RecordFilter\SqlConversion("customer_conversion")
      */

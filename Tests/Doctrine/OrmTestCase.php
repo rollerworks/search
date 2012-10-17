@@ -48,6 +48,9 @@ class OrmTestCase extends OrmTestCaseBase
     {
         $this->em = $this->_getTestEntityManager();
 
+        $this->em->getConfiguration()->addCustomStringFunction('RECORD_FILTER_FIELD_CONVERSION', 'Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\Functions\FilterFieldConversion');
+        $this->em->getConfiguration()->addCustomStringFunction('RECORD_FILTER_VALUE_CONVERSION', 'Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\Functions\FilterValueConversion');
+
         $this->translator = $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface');
         $this->translator->expects($this->any())
              ->method('trans')
@@ -146,6 +149,13 @@ class OrmTestCase extends OrmTestCaseBase
      */
     protected function newAnnotationsReader()
     {
-        return $this->createAnnotationDriver()->getReader();
+        $annotationReader = new AnnotationReader();
+        $annotationReader->addGlobalIgnoredName('Id');
+        $annotationReader->addGlobalIgnoredName('Column');
+        $annotationReader->addGlobalIgnoredName('GeneratedValue');
+        $annotationReader->addGlobalIgnoredName('OneToOne');
+        $annotationReader->addGlobalIgnoredName('OneToMany');
+
+        return $annotationReader;
     }
 }

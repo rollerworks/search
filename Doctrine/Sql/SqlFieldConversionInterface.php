@@ -34,5 +34,5 @@ interface SqlFieldConversionInterface
      *
      * @return string
      */
-    public function convertField($fieldName, DBALType $type, Connection $connection);
+    public function getConvertFieldSql($fieldName, DBALType $type, Connection $connection);
 }

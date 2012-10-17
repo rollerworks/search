@@ -33,17 +33,17 @@ interface SqlValueConversionInterface
     public function requiresBaseConversion();
 
     /**
-     * Convert the input to save SQL statement.
+     * Convert the value for usage.
      *
-     * Input value is as-is and must be returned quoted when this required.
+     * The value will be either used as parameter value or as-is.
+     * An string value will ALWAYS be quoted.
      *
-     * @param mixed      $input
+     * @param mixed      $value
      * @param DBALType   $type
      * @param Connection $connection
-     * @param boolean    $isDql      Whether the query should be DQL
      * @param array      $parameters
      *
-     * @return mixed
+     * @return string|float|integer scalar value
      */
-    public function convertValue($input, DBALType $type, Connection $connection, $isDql, array $parameters = array());
+    public function convertValue($value, DBALType $type, Connection $connection, array $parameters = array());
 }
