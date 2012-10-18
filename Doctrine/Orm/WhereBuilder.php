@@ -399,10 +399,10 @@ class WhereBuilder
             $classMetadata = $this->metadataFactory->getMetadataForClass($field->getPropertyRefClass());
             $propertyName = $field->getPropertyRefField();
 
-            if (isset($classMetadata->propertyMetadata[$propertyName]) && $classMetadata->propertyMetadata[$propertyName]->hasSqlConversion()) {
+            if (isset($classMetadata->propertyMetadata[$propertyName]) && $classMetadata->propertyMetadata[$propertyName]->hasSqlValueConversion()) {
                 $this->sqlValueConversions[$fieldName] = array(
-                    $this->container->get($classMetadata->propertyMetadata[$propertyName]->getSqlConversionService()),
-                    $classMetadata->propertyMetadata[$propertyName]->getSqlConversionParams()
+                    $this->container->get($classMetadata->propertyMetadata[$propertyName]->getSqlValueConversionService()),
+                    $classMetadata->propertyMetadata[$propertyName]->getSqlValueConversionParams()
                 );
             }
         }

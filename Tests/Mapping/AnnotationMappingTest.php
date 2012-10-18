@@ -41,7 +41,7 @@ class AnnotationMappingTest extends TestCase
         $property->type           = new FilterTypeConfig('customer_type', array());
         $property->acceptRanges   = false;
         $property->acceptCompares = false;
-        $property->setSqlConversion('customer_conversion', array());
+        $property->setSqlValueConversion('customer_conversion', array());
 
         $this->assertEquals($property, $class->propertyMetadata['id']);
     }

@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Annotation;
+namespace Rollerworks\Bundle\RecordFilterBundle\Annotation\Doctrine;
 
 /**
- * SqlConversion Annotation class.
+ * SqlValueConversion Annotation class.
  *
  * @Annotation
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SqlConversion
+class SqlValueConversion
 {
     /**
      * @var string

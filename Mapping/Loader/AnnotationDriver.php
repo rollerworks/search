@@ -14,7 +14,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\PropertyMetadata;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\Field as AnnotationField;
-use Rollerworks\Bundle\RecordFilterBundle\Annotation\SqlConversion;
+use Rollerworks\Bundle\RecordFilterBundle\Annotation\Doctrine\SqlValueConversion;
 use Doctrine\Common\Annotations\Reader;
 use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
@@ -64,9 +64,9 @@ class AnnotationDriver implements DriverInterface
 
                     $propertyMetadata->acceptRanges   = $annotation->acceptsRanges();
                     $propertyMetadata->acceptCompares = $annotation->acceptsCompares();
-                } elseif ($propertyMetadata && $annotation instanceof SqlConversion) {
-                    /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\SqlConversion $annotation */
-                    $propertyMetadata->setSqlConversion($annotation->getService(), $annotation->getParams());
+                } elseif ($propertyMetadata && $annotation instanceof SqlValueConversion) {
+                    /** @var SqlValueConversion $annotation */
+                    $propertyMetadata->setSqlValueConversion($annotation->getService(), $annotation->getParams());
                 }
             }
 

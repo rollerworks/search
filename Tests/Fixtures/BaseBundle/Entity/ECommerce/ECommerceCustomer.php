@@ -18,7 +18,7 @@ class ECommerceCustomer
      * @GeneratedValue(strategy="AUTO")
      *
      * @RecordFilter\Field("customer_id", type="customer_type")
-     * @RecordFilter\SqlConversion("customer_conversion")
+     * @RecordFilter\Doctrine\SqlValueConversion("customer_conversion")
      */
     private $id;
 }

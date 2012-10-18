@@ -30,7 +30,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $type;
 
     public $widgetsConfig = array();
-    public $sqlConversion = array('service' => null, 'params' => array());
+    public $sqlValueConversion = array('service' => null, 'params' => array());
 
     /**
      * Set SQL conversion configuration.
@@ -38,33 +38,33 @@ class PropertyMetadata extends BasePropertyMetadata
      * @param string $service
      * @param array  $params
      */
-    public function setSqlConversion($service, array $params = array())
+    public function setSqlValueConversion($service, array $params = array())
     {
-        $this->sqlConversion = array('service' => $service, 'params' => $params);
+        $this->sqlValueConversion = array('service' => $service, 'params' => $params);
     }
 
     /**
      * @return boolean
      */
-    public function hasSqlConversion()
+    public function hasSqlValueConversion()
     {
-        return null !== $this->sqlConversion['service'];
+        return null !== $this->sqlValueConversion['service'];
     }
 
     /**
      * @return string|null
      */
-    public function getSqlConversionService()
+    public function getSqlValueConversionService()
     {
-        return $this->sqlConversion['service'];
+        return $this->sqlValueConversion['service'];
     }
 
     /**
-     * @return array|null
+     * @return array
      */
-    public function getSqlConversionParams()
+    public function getSqlValueConversionParams()
     {
-        return $this->sqlConversion['params'];
+        return $this->sqlValueConversion['params'];
     }
 
     /**
@@ -82,7 +82,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->acceptRanges,
             $this->acceptCompares,
 
-            $this->sqlConversion,
+            $this->sqlValueConversion,
             $this->widgetsConfig
         ));
     }
@@ -104,7 +104,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->acceptRanges,
             $this->acceptCompares,
 
-            $this->sqlConversion,
+            $this->sqlValueConversion,
             $this->widgetsConfig
         ) = unserialize($str);
 
