@@ -43,7 +43,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('doctrine')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->arrayNode('sql')
+                        ->arrayNode('orm')
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('default_entity_manager')->cannotBeEmpty()->defaultValue('%doctrine.default_entity_manager%')
@@ -83,7 +83,7 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
 
-                                ->arrayNode('sql')
+                                ->arrayNode('orm')
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->arrayNode('wherebuilder')

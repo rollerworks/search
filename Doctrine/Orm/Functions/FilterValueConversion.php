@@ -9,20 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\Functions;
+namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\Functions;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
 use Doctrine\ORM\Query\Lexer;
 
-use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\WhereBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 
 /**
- * "FILTER_FIELD_CONVERSION(FieldMame, column)"
+ * "FILTER_VALUE_CONVERSION(FieldMame, column)"
  *
  * FilterFieldConversion ::=
- *     "RECORD_FILTER_FIELD_CONVERSION" "(" StringPrimary, StateFieldPathExpression ")"
+ *     "RECORD_FILTER_VALUE_CONVERSION" "(" StringPrimary, StateFieldPathExpression ")"
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -38,7 +38,7 @@ class FilterFieldConversion extends FunctionNode
             throw new \LogicException('Missing "where_builder_conversions" hint for FilterFieldConversion.');
         }
 
-        return $whereBuilder->getFieldConversionSql(trim($this->fieldName->dispatch($sqlWalker), "'"), $this->columnExpression->dispatch($sqlWalker));
+        return $whereBuilder->getValueConversionSql(trim($this->fieldName->dispatch($sqlWalker), "'"), $this->columnExpression->dispatch($sqlWalker));
     }
 
     public function parse(Parser $parser)

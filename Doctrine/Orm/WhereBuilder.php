@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql;
+namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
@@ -38,6 +38,10 @@ use Doctrine\ORM\EntityManager;
  *  * String values will always be quoted in the SQL result.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @todo Allow setting an field conversion by metadata
+ * @todo Value strategy, to use multiple "value-types" , each one uses an new IN(), null is default, -1 will be used as-is
+ * @todo Cache value conversion registration in the Factory
  */
 class WhereBuilder
 {

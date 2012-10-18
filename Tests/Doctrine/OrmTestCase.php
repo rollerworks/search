@@ -48,8 +48,8 @@ class OrmTestCase extends OrmTestCaseBase
     {
         $this->em = $this->_getTestEntityManager();
 
-        $this->em->getConfiguration()->addCustomStringFunction('RECORD_FILTER_FIELD_CONVERSION', 'Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\Functions\FilterFieldConversion');
-        $this->em->getConfiguration()->addCustomStringFunction('RECORD_FILTER_VALUE_CONVERSION', 'Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\Functions\FilterValueConversion');
+        $this->em->getConfiguration()->addCustomStringFunction('RECORD_FILTER_FIELD_CONVERSION', 'Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\Functions\FilterFieldConversion');
+        $this->em->getConfiguration()->addCustomStringFunction('RECORD_FILTER_VALUE_CONVERSION', 'Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\Functions\FilterValueConversion');
 
         $this->translator = $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface');
         $this->translator->expects($this->any())

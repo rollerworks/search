@@ -34,21 +34,21 @@ class RecordFilterExtensionTest extends TestCase
         $this->assertEquals('', $container->getParameter('rollerworks_record_filter.factories.fieldset.label_translator_prefix'));
         $this->assertEquals('filters', $container->getParameter('rollerworks_record_filter.factories.fieldset.label_translator_domain'));
 
-        $this->assertFalse($container->getParameter('rollerworks_record_filter.factories.doctrine.sql.wherebuilder.auto_generate'));
-        $this->assertEquals('RecordFilter', $container->getParameter('rollerworks_record_filter.factories.doctrine.sql.wherebuilder.namespace'));
+        $this->assertFalse($container->getParameter('rollerworks_record_filter.factories.doctrine.orm.wherebuilder.auto_generate'));
+        $this->assertEquals('RecordFilter', $container->getParameter('rollerworks_record_filter.factories.doctrine.orm.wherebuilder.namespace'));
     }
 
-    public function testLoadConfigurationSql()
+    public function testLoadConfigurationDoctrineOrm()
     {
         $container = $this->createContainer();
         $container->setParameter('doctrine.default_entity_manager', 'default');
         $container->setParameter('doctrine.second_entity_manager', 'default');
 
         $container->registerExtension(new RollerworksRecordFilterExtension());
-        $container->loadFromExtension('rollerworks_record_filter', array('doctrine' => array('sql' => array('default_entity_manager' => 'second'))));
+        $container->loadFromExtension('rollerworks_record_filter', array('doctrine' => array('orm' => array('default_entity_manager' => 'second'))));
         $this->compileContainer($container);
 
-        $factoryDef = $container->getDefinition('rollerworks_record_filter.doctrine.sql.wherebuilder_factory');
+        $factoryDef = $container->getDefinition('rollerworks_record_filter.doctrine.orm.wherebuilder_factory');
         $calls = $factoryDef->getMethodCalls();
 
         $found = false;
@@ -85,14 +85,14 @@ class RecordFilterExtensionTest extends TestCase
             $this->assertEquals($value, $container->getParameter('rollerworks_record_filter.factories.' . $name));
         }
 
-        if (isset($config['doctrine']['sql']['wherebuilder']['default_entity_manager'])) {
-            $factoryDef = $container->getDefinition('rollerworks_record_filter.doctrine.sql.wherebuilder_factory');
+        if (isset($config['doctrine']['orm']['wherebuilder']['default_entity_manager'])) {
+            $factoryDef = $container->getDefinition('rollerworks_record_filter.doctrine.orm.wherebuilder_factory');
             $calls = $factoryDef->getMethodCalls();
 
             $found = false;
             foreach ($calls as $call) {
                 if ('setEntityManager' === $call[0]) {
-                    $this->assertEquals($call[1], array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $config['doctrine']['sql']['wherebuilder']['default_entity_manager']))));
+                    $this->assertEquals($call[1], array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $config['doctrine']['orm']['wherebuilder']['default_entity_manager']))));
 
                     $found = true;
                 }
@@ -125,7 +125,7 @@ class RecordFilterExtensionTest extends TestCase
 
             array(
                 array('doctrine' => array(
-                    'sql' => array(
+                    'orm' => array(
                         'wherebuilder' => array(
                             'namespace' => 'MyApp\\RecordFilter',
                             'default_entity_manager' => 'second',
@@ -135,14 +135,14 @@ class RecordFilterExtensionTest extends TestCase
                 )),
 
                 array(
-                    'doctrine.sql.wherebuilder.namespace' => 'MyApp\\RecordFilter',
-                    'doctrine.sql.wherebuilder.auto_generate' => true
+                    'doctrine.orm.wherebuilder.namespace' => 'MyApp\\RecordFilter',
+                    'doctrine.orm.wherebuilder.auto_generate' => true
                 )
             ),
 
             array(
                 array('doctrine' => array(
-                    'sql' => array(
+                    'orm' => array(
                         'wherebuilder' => array(
                             'namespace' => 'MyApp\\RecordFilter',
                             'default_entity_manager' => 'second',
@@ -158,8 +158,8 @@ class RecordFilterExtensionTest extends TestCase
                 )),
 
                 array(
-                    'doctrine.sql.wherebuilder.namespace' => 'MyApp\\RecordFilter',
-                    'doctrine.sql.wherebuilder.auto_generate' => true,
+                    'doctrine.orm.wherebuilder.namespace' => 'MyApp\\RecordFilter',
+                    'doctrine.orm.wherebuilder.auto_generate' => true,
 
                     'fieldset.namespace' => 'MyApp\\RecordFilter',
                     'fieldset.label_translator_prefix' => 'my_app',
