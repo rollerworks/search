@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm;
 
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine\OrmConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
@@ -396,14 +397,8 @@ class WhereBuilder
             // Don't use null as isset() returns false then
             $this->sqlValueConversions[$fieldName] = false;
 
-            $classMetadata = $this->metadataFactory->getMetadataForClass($field->getPropertyRefClass());
-            $propertyName = $field->getPropertyRefField();
-
-            if (isset($classMetadata->propertyMetadata[$propertyName]) && $classMetadata->propertyMetadata[$propertyName]->hasSqlValueConversion()) {
-                $this->sqlValueConversions[$fieldName] = array(
-                    $this->container->get($classMetadata->propertyMetadata[$propertyName]->getSqlValueConversionService()),
-                    $classMetadata->propertyMetadata[$propertyName]->getSqlValueConversionParams()
-                );
+            if (($propertyConfig = $this->getPropertyConfig($field)) && $propertyConfig->hasValueConversion()) {
+                $this->sqlValueConversions[$fieldName] = array($this->container->get($propertyConfig->getValueConversionService()), $propertyConfig->getValueConversionParams());
             }
         }
 
@@ -454,6 +449,25 @@ class WhereBuilder
         }
 
         return $value;
+    }
+
+    /**
+     * Returns the ORM configuration of the property or null when no existent.
+     *
+     * @param FilterField $field
+     *
+     * @return OrmConfig|null
+     */
+    protected function getPropertyConfig(FilterField $field)
+    {
+        $classMetadata = $this->metadataFactory->getMetadataForClass($field->getPropertyRefClass());
+        $propertyName = $field->getPropertyRefField();
+
+        if (!isset($classMetadata->propertyMetadata[$propertyName])) {
+            return null;
+        }
+
+        return $classMetadata->propertyMetadata[$propertyName]->getDoctrineConfig('orm');
     }
 
     /**
