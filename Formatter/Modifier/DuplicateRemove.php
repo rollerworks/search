@@ -42,68 +42,68 @@ class DuplicateRemove implements ModifierInterface
         $type = $filterConfig->getType();
 
         foreach ($filterStruct->getSingleValues() as $index => $value) {
-            $_value = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
+            $dumpValue = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
-            if (in_array($_value, $singleValues)) {
+            if (in_array($dumpValue, $singleValues)) {
                 $messageBag->addInfo('duplicate', array('{{ value }}' => '"' . $value->getOriginalValue() . '"'));
                 $filterStruct->removeSingleValue($index);
 
                 continue;
             }
 
-            $singleValues[] = $_value;
+            $singleValues[] = $dumpValue;
         }
 
         foreach ($filterStruct->getExcludes() as $index => $value) {
-            $_value = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
+            $dumpValue = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
-            if (in_array($_value, $excludedValues)) {
+            if (in_array($dumpValue, $excludedValues)) {
                 $messageBag->addInfo('duplicate', array('{{ value }}' => '!"' . $value->getOriginalValue() . '"'));
                 $filterStruct->removeExclude($index);
 
                 continue;
             }
 
-            $excludedValues[] = $_value;
+            $excludedValues[] = $dumpValue;
         }
 
         foreach ($filterStruct->getRanges() as $index => $range) {
-            $_value = $this->dumpRange($type, $range);
+            $dumpValue = $this->dumpRange($type, $range);
 
-            if (in_array($_value, $ranges)) {
+            if (in_array($dumpValue, $ranges)) {
                 $messageBag->addInfo('duplicate', array('{{ value }}' => self::getRangeQuoted($range)));
                 $filterStruct->removeRange($index);
 
                 continue;
             }
 
-            $ranges[] = $_value;
+            $ranges[] = $dumpValue;
         }
 
         foreach ($filterStruct->getExcludedRanges() as $index => $range) {
-            $_value = $this->dumpRange($type, $range);
+            $dumpValue = $this->dumpRange($type, $range);
 
-            if (in_array($_value, $excludedRanges)) {
+            if (in_array($dumpValue, $excludedRanges)) {
                 $messageBag->addInfo('duplicate', array('{{ value }}' => '!' . self::getRangeQuoted($range)));
                 $filterStruct->removeExcludedRange($index);
 
                 continue;
             }
 
-            $excludedRanges[] = $_value;
+            $excludedRanges[] = $dumpValue;
         }
 
         foreach ($filterStruct->getCompares() as $index => $compare) {
-            $_value = $compare->getOperator() . ($type ? $type->dumpValue($compare->getValue()) : $compare->getValue());
+            $dumpValue = $compare->getOperator() . ($type ? $type->dumpValue($compare->getValue()) : $compare->getValue());
 
-            if (in_array($_value, $compares)) {
+            if (in_array($dumpValue, $compares)) {
                 $messageBag->addInfo('duplicate', array('{{ value }}' => $compare->getOperator() . '"' . $compare->getOriginalValue() . '"'));
                 $filterStruct->removeCompare($index);
 
                 continue;
             }
 
-            $compares[] = $_value;
+            $compares[] = $dumpValue;
         }
 
         return true;
@@ -112,8 +112,8 @@ class DuplicateRemove implements ModifierInterface
     /**
      * Returns the 'original' range values between quotes.
      *
-     * @param Range $range
-     * @param Range $range2
+     * @param Range      $range
+     * @param Range|null $range2
      *
      * @return string
      */
@@ -128,7 +128,7 @@ class DuplicateRemove implements ModifierInterface
 
     /**
      * @param FilterTypeInterface $type
-     * @param Range               $range
+     * @param Range|null          $range
      *
      * @return string
      */

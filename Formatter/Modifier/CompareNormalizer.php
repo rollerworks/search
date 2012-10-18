@@ -79,18 +79,18 @@ class CompareNormalizer implements ModifierInterface
      * @param Compare             $needle
      * @param Compare[]           $haystack
      *
-     * @return integer
+     * @return integer|boolean
      */
     protected static function findArrayIndex(FilterTypeInterface $type, $operator, Compare $needle, array $haystack)
     {
-        $_needle = $type->dumpValue($needle->getValue());
+        $value = $type->dumpValue($needle->getValue());
 
         foreach ($haystack as $index => $compare) {
             if ($operator !== $compare->getOperator()) {
                 continue;
             }
 
-            if ($_needle === $type->dumpValue($compare->getValue())) {
+            if ($value === $type->dumpValue($compare->getValue())) {
                 return $index;
             }
         }

@@ -79,9 +79,9 @@ class ValuesToRange implements ModifierInterface
     /**
      * Converts a list of values to ranges.
      *
-     * @param SingleValue[]                              $values
-     * @param ValuesToRangeInterface|FilterTypeInterface $type
-     * @param boolean                                    $exclude
+     * @param SingleValue[]          $values
+     * @param ValuesToRangeInterface $type
+     * @param boolean                $exclude
      */
     protected function listToRanges($values, ValuesToRangeInterface $type, $exclude = false)
     {
@@ -117,7 +117,7 @@ class ValuesToRange implements ModifierInterface
             if (null !== $rangeUpper) {
                 $this->unsetVal($prevIndex, $exclude);
 
-                if (!$type->isEqual($value->getValue(), $increasedValue) || $curCount == $valuesCount) {
+                if (!$type->isEqual($value->getValue(), $increasedValue) || $curCount === $valuesCount) {
                     $range = new Range($rangeLower->getValue(), $rangeUpper->getValue(), $rangeLower->getOriginalValue(), $rangeUpper->getOriginalValue());
 
                     if ($exclude) {
@@ -128,7 +128,7 @@ class ValuesToRange implements ModifierInterface
 
                     $this->unsetVal($prevIndex, $exclude);
 
-                    if ($type->isEqual($value->getValue(), $increasedValue) && $curCount == $valuesCount) {
+                    if ($type->isEqual($value->getValue(), $increasedValue) && $curCount === $valuesCount) {
                         $this->unsetVal($valIndex, $exclude);
                     }
 
