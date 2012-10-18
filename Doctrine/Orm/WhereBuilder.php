@@ -71,29 +71,11 @@ class WhereBuilder
      */
     protected $entityAliases = array();
 
-    /**
-     * Maps field to column (with alias) without conversion.
-     *
-     * @var array
-     */
+    protected $fieldConversions = array();
+    protected $valueConversions = array();
+
     protected $fieldsMappingCache = array();
-
-    /**
-     * Conversion result for fields.
-     *
-     * @var array
-     */
     protected $fieldConversionCache = array();
-
-    /**
-     * @var SqlFieldConversionInterface[]
-     */
-    protected $sqlFieldConversions = array();
-
-    /**
-     * @var SqlValueConversionInterface[]|SqlValueAdvancedConversionInterface[]|array
-     */
-    protected $sqlValueConversions = array();
 
     /**
      * @var OrmQuery|null
@@ -128,10 +110,14 @@ class WhereBuilder
      * Overwrite the default Entity manager.
      *
      * @param EntityManager $entityManager
+     *
+     * @return self
      */
     public function setEntityManager(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+
+        return $this;
     }
 
     /**
@@ -141,10 +127,33 @@ class WhereBuilder
      *
      * @param string                      $fieldName
      * @param SqlFieldConversionInterface $conversionObj
+     * @param array                       $params
+     *
+     * @return self
      */
-    public function setFieldConversion($fieldName, SqlFieldConversionInterface $conversionObj)
+    public function setFieldConversion($fieldName, SqlFieldConversionInterface $conversionObj, array $params = array())
     {
-        $this->sqlFieldConversions[$fieldName] = $conversionObj;
+        $this->fieldConversions[$fieldName] = array($conversionObj, $params);
+
+        return $this;
+    }
+
+    /**
+     * Set the SQL conversion configuration for an field.
+     *
+     * Only one converter per field, existing one is overwritten.
+     *
+     * @param string                      $fieldName
+     * @param SqlFieldConversionInterface $conversionObj
+     * @param array                       $params
+     *
+     * @return self
+     */
+    public function setValueConversion($fieldName, SqlFieldConversionInterface $conversionObj, array $params = array())
+    {
+        $this->fieldConversions[$fieldName] = array($conversionObj, $params);
+
+        return $this;
     }
 
     /**
@@ -218,10 +227,11 @@ class WhereBuilder
             $type = ORMType::getType($type);
         }
 
-        $this->fieldConversionCache[$fieldName] = $this->sqlFieldConversions[$fieldName]->getConvertFieldSql(
+        $this->fieldConversionCache[$fieldName] = $this->fieldConversions[$fieldName][0]->getConvertFieldSql(
             $column,
             $type,
-            $this->entityManager->getConnection()
+            $this->entityManager->getConnection(),
+            $this->fieldConversions[$fieldName][1]
         );
 
         return $this->fieldConversionCache[$fieldName];
@@ -252,11 +262,11 @@ class WhereBuilder
             }
         }
 
-        return $this->sqlValueConversions[$fieldName][0]->getConvertValuedSql(
+        return $this->valueConversions[$fieldName][0]->getConvertValuedSql(
             $value,
             $type,
             $this->entityManager->getConnection(),
-            $this->sqlValueConversions[$fieldName][1]
+            $this->valueConversions[$fieldName][1]
         );
     }
 
@@ -348,6 +358,16 @@ class WhereBuilder
             return $this->fieldsMappingCache[$fieldName];
         }
 
+        if (!isset($this->fieldConversions[$fieldName])) {
+            // Set to false by default so we can skip this check the next round
+            // Don't use null as isset() returns false then
+            $this->fieldConversions[$fieldName] = false;
+
+            if (($propertyConfig = $this->getPropertyConfig($field)) && $propertyConfig->hasFieldConversion()) {
+                $this->fieldConversions[$fieldName] = array($this->container->get($propertyConfig->getFieldConversionService()), $propertyConfig->getFieldConversionParams());
+            }
+        }
+
         if (isset($this->entityAliases[$field->getPropertyRefClass()])) {
             $columnPrefix = $this->entityAliases[$field->getPropertyRefClass()] . '.';
         } else {
@@ -361,7 +381,7 @@ class WhereBuilder
             $this->fieldsMappingCache[$fieldName] = $column = $columnPrefix . $metadata->getColumnName($field->getPropertyRefField());
         }
 
-        if (isset($this->sqlFieldConversions[$fieldName])) {
+        if ($this->fieldConversions[$fieldName]) {
             if ($this->query) {
                 $this->fieldsMappingCache[$fieldName] = "RECORD_FILTER_FIELD_CONVERSION('$fieldName', $column)";
             } else {
@@ -392,13 +412,13 @@ class WhereBuilder
      */
     protected function getValStr($value, $fieldName, FilterField $field)
     {
-        if (!isset($this->sqlValueConversions[$fieldName])) {
+        if (!isset($this->valueConversions[$fieldName])) {
             // Set to false by default so we can skip this check the next round
             // Don't use null as isset() returns false then
-            $this->sqlValueConversions[$fieldName] = false;
+            $this->valueConversions[$fieldName] = false;
 
             if (($propertyConfig = $this->getPropertyConfig($field)) && $propertyConfig->hasValueConversion()) {
-                $this->sqlValueConversions[$fieldName] = array($this->container->get($propertyConfig->getValueConversionService()), $propertyConfig->getValueConversionParams());
+                $this->valueConversions[$fieldName] = array($this->container->get($propertyConfig->getValueConversionService()), $propertyConfig->getValueConversionParams());
             }
         }
 
@@ -409,15 +429,15 @@ class WhereBuilder
 
         $paramName = null;
 
-        if ($this->sqlValueConversions[$fieldName]) {
-            if ($this->sqlValueConversions[$fieldName][0]->requiresBaseConversion()) {
+        if ($this->valueConversions[$fieldName]) {
+            if ($this->valueConversions[$fieldName][0]->requiresBaseConversion()) {
                 $value = $type->convertToDatabaseValue($value, $this->databasePlatform);
             }
 
-            $value = $this->sqlValueConversions[$fieldName][0]->convertValue(
+            $value = $this->valueConversions[$fieldName][0]->convertValue(
                 $value,
                 $type,
-                $this->entityManager->getConnection(), $this->sqlValueConversions[$fieldName][1]
+                $this->entityManager->getConnection(), $this->valueConversions[$fieldName][1]
             );
 
             if ($this->query) {
@@ -428,7 +448,7 @@ class WhereBuilder
                 $value = $this->entityManager->getConnection()->quote($value, 'string');
             }
 
-            if ($this->sqlValueConversions[$fieldName][0] instanceof SqlValueAdvancedConversionInterface) {
+            if ($this->valueConversions[$fieldName][0] instanceof SqlValueAdvancedConversionInterface) {
                 if ($this->query instanceof DqlQuery) {
                     $value = "RECORD_FILTER_VALUE_CONVERSION('$fieldName', $value)";
                 } else {

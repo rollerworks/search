@@ -38,7 +38,7 @@ class CustomerConversion implements SqlValueConversionInterface, SqlFieldConvers
     /**
      * {@inheritdoc}
      */
-    public function getConvertFieldSql($fieldName, DBALType $type, Connection $connection)
+    public function getConvertFieldSql($fieldName, DBALType $type, Connection $connection, array $params = array())
     {
         return "CAST($fieldName AS customer_type)";
     }

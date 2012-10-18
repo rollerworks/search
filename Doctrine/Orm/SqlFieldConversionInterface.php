@@ -31,8 +31,9 @@ interface SqlFieldConversionInterface
      * @param string     $fieldName
      * @param DBALType   $type
      * @param Connection $connection
+     * @param array      $parameters
      *
      * @return string
      */
-    public function getConvertFieldSql($fieldName, DBALType $type, Connection $connection);
+    public function getConvertFieldSql($fieldName, DBALType $type, Connection $connection, array $parameters = array());
 }
