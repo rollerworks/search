@@ -10,7 +10,7 @@
         <parameter key="rollerworks_record_filter.factories_cache_warmer.class">Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCacheWarmer</parameter>
 
         <parameter key="rollerworks_record_filter.types_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory</parameter>
-        <parameter key="rollerworks_record_filter.doctrine.orm.wherebuilder_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\SqlWhereBuilderFactory</parameter>
+        <parameter key="rollerworks_record_filter.doctrine.orm.wherebuilder_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\OrmWhereBuilderFactory</parameter>
         <parameter key="rollerworks_record_filter.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="rollerworks_record_filter.metadata.driver_chain.class">Metadata\Driver\DriverChain</parameter>
         <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver</parameter>

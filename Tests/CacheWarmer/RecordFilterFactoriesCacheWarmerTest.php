@@ -334,10 +334,10 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         sort($result);
 
         $this->assertEquals(array(
+            'customer/DoctrineOrmWhereBuilder.php',
             'customer/FieldSet.php',
-            'customer/SqlWhereBuilder.php',
+            'invoice/DoctrineOrmWhereBuilder.php',
             'invoice/FieldSet.php',
-            'invoice/SqlWhereBuilder.php'
         ), $result);
     }
 
