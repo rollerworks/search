@@ -8,6 +8,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->exclude('.temp') // this directory is only used local.
     ->exclude('Tests/Fixtures/Views')
     ->exclude('Tests/.cache')
+    ->exclude('.idea')
     ->in(__DIR__)
 ;
 

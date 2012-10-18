@@ -12,22 +12,25 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/symfony": "2.1.*",
-        "jms/metadata": ">=1.1.1",
-        "rollerworks/locale": "dev-master"
+        "symfony/framework-bundle": "2.1.*",
+        "symfony/options-resolver": "2.1.*",
+        "symfony/yaml":             "2.1.*",
+        "symfony/validator":        "2.1.*",
+        "jms/metadata":             ">=1.1.1",
+        "rollerworks/locale":       "dev-master"
     },
     "require-dev": {
         "doctrine/orm": ">=2.2,<2.4-dev"
     },
     "suggest": {
-        "doctrine/orm": "If you want to use the SQL part of the bundle."
+        "doctrine/orm": "If you want to use the Doctrine ORM."
     },
     "autoload": {
         "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "" }
     },
     "target-dir": "Rollerworks/Bundle/RecordFilterBundle",
     "minimum-stability": "dev",
-    
+
     "scripts": {
         "post-install-cmd": [
             "Rollerworks\\Component\\Locale\\Composer\\ScriptHandler::updateLocaleData"
