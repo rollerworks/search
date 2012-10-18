@@ -13,7 +13,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine;
 
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
 
 class SQLTest extends OrmTestCase

@@ -86,7 +86,8 @@ class AnnotationDriver implements DriverInterface
      * @param PropertyMetadata                      $propertyMetadata
      * @param SqlValueConversion|SqlFieldConversion $annotation
      */
-    private function setDoctrineOrm(PropertyMetadata $propertyMetadata, $annotation) {
+    private function setDoctrineOrm(PropertyMetadata $propertyMetadata, $annotation)
+    {
         if (!$propertyMetadata->getDoctrineConfig('orm')) {
             $propertyMetadata->setDoctrineConfig('orm', new OrmConfig());
         }

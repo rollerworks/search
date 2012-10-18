@@ -26,7 +26,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FilterFieldConversion extends FunctionNode
+class FilterValueConversion extends FunctionNode
 {
     public $fieldName;
     public $columnExpression;

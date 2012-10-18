@@ -171,7 +171,7 @@ class WhereBuilder
     public function getWhereClause(FormatterInterface $formatter, array $entityAliasMapping = array(), OrmQuery $query = null)
     {
         // Convert namespace aliases to the correct className
-        foreach ($entityAliasMapping as $entity => $alias ) {
+        foreach ($entityAliasMapping as $entity => $alias) {
             if (false !== strpos($entity, ':')) {
                 $entityAliasMapping[$this->entityManager->getClassMetadata($entity)->name] = $alias;
             }
