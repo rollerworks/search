@@ -195,7 +195,6 @@ class DQLTest extends OrmTestCase
             }
         } else {
             foreach ($expected as $name => $value) {
-                $paramVal = $query->getParameter($name);
                 $this->assertEquals($query->getParameter($name), (is_object($value) ? $value : (string) $value));
             }
         }
