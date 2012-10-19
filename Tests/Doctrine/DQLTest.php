@@ -65,7 +65,7 @@ class DQLTest extends OrmTestCase
     }
 
     /**
-     * @dataProvider provideSqlConvertTests
+     * @dataProvider provideValueConversionTests
      *
      * @param string $filterQuery
      * @param string $expectedDql
@@ -153,6 +153,7 @@ class DQLTest extends OrmTestCase
     {
         $tests = array(
             array('invoice_customer=2;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0))", array('invoice_customer_0' => 2)),
+            array('invoice_customer=2;invoice_label=F2012-4242;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0) AND I.label IN(:invoice_label_0))", array('invoice_label_0' => 'F2012-4242', 'invoice_customer_0' => '2')),
             array('invoice_label=F2012-4242;', "(I.label IN(:invoice_label_0))", array('invoice_label_0' => 'F2012-4242')),
             array('invoice_customer=2, 5;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0, :invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
             array('invoice_customer=2-5;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) BETWEEN :invoice_customer_0 AND :invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
@@ -177,29 +178,17 @@ class DQLTest extends OrmTestCase
         return $tests;
     }
 
-    public static function provideSqlConvertTests()
+    public static function provideValueConversionTests()
     {
         return array(
             array('customer_id=2;', '(C.id IN(:customer_id_0))', array('customer_id_0' => 2)),
         );
     }
 
-    protected function assertQueryParamsEquals($expected, Query $query)
-    {
-        // Parameter handling changed in Doctrine ORM 2.3
-        if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
-            foreach ($expected as $name => $value) {
-                $paramVal = $query->getParameter($name);
-                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
-            }
-        } else {
-            foreach ($expected as $name => $value) {
-                $this->assertEquals($query->getParameter($name), (is_object($value) ? $value : (string) $value));
-            }
-        }
-    }
-
+    /**
+     * @param Query  $query
+     * @param string $whereCase
+     */
     protected function assertDqlSuccessCompile(Query $query, $whereCase)
     {
         if (null !== $whereCase) {

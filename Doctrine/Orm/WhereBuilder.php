@@ -380,7 +380,7 @@ class WhereBuilder
         }
 
         if ($this->fieldConversions[$fieldName]) {
-            if ($this->query) {
+            if ($this->query instanceof DqlQuery) {
                 $this->fieldsMappingCache[$fieldName] = "RECORD_FILTER_FIELD_CONVERSION('$fieldName', $column)";
             } else {
                 $this->fieldsMappingCache[$fieldName] = $this->getFieldConversionSql($fieldName, $column, $field);

@@ -25,6 +25,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerType;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\AbstractQuery as OrmQuery;
 use Doctrine\Tests\OrmTestCase as OrmTestCaseBase;
 
 class OrmTestCase extends OrmTestCaseBase
@@ -142,6 +143,26 @@ class OrmTestCase extends OrmTestCaseBase
         }
 
         return str_replace(array("(\n", ")\n"), array('(', ')'), $input);
+    }
+
+    /**
+     * @param array    $expected
+     * @param OrmQuery $query
+     */
+    protected function assertQueryParamsEquals(array $expected, OrmQuery $query)
+    {
+        // Parameter handling changed in Doctrine ORM 2.3
+        if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
+            foreach ($expected as $name => $value) {
+                $paramVal = $query->getParameter($name);
+                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
+                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
+            }
+        } else {
+            foreach ($expected as $name => $value) {
+                $this->assertEquals($query->getParameter($name), (is_object($value) ? $value : (string) $value));
+            }
+        }
     }
 
     /**
