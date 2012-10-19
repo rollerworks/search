@@ -38,7 +38,9 @@ class FilterValueConversion extends FunctionNode
             throw new \LogicException('Missing "where_builder_conversions" hint for FilterFieldConversion.');
         }
 
-        return $whereBuilder->getValueConversionSql(trim($this->fieldName->dispatch($sqlWalker), "'"), $this->columnExpression->dispatch($sqlWalker));
+        $fieldName = is_object($this->fieldName) ? trim($this->fieldName->dispatch($sqlWalker), "'") : $this->fieldName;
+
+        return $whereBuilder->getValueConversionSql($fieldName, $this->columnExpression->dispatch($sqlWalker));
     }
 
     public function parse(Parser $parser)
