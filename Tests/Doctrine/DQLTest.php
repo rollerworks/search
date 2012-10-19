@@ -15,6 +15,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
 use Metadata\MetadataFactory;
+use Doctrine\ORM\Query;
 
 class DQLTest extends OrmTestCase
 {
@@ -43,29 +44,8 @@ class DQLTest extends OrmTestCase
         ));
 
         $this->assertEquals($expectedDql, $whereCase);
-
-        // Parameter handling changed in Doctrine ORM 2.3
-        if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
-            foreach ($params as $name => $value) {
-                $paramVal = $query->getParameter($name);
-                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
-            }
-        } else {
-            // XXX THIS ACTUALLY NEEDS TESTING
-            foreach ($params as $name => $value) {
-                $paramVal = $query->getParameter($name);
-                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
-            }
-        }
-
-        if ('' !== $expectedDql) {
-            $query->useQueryCache(false);
-            $dql = $query->getDQL() . $whereCase;
-            $query->setDQL($dql);
-            $query->getSQL();
-        }
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
     }
 
     public function testEmptyResult()
@@ -77,8 +57,11 @@ class DQLTest extends OrmTestCase
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
         $this->assertNull($whereCase);
+        $this->assertCount(0, $query->getParameters());
     }
 
     /**
@@ -108,29 +91,8 @@ class DQLTest extends OrmTestCase
         ));
 
         $this->assertEquals($expectedDql, $whereCase);
-
-        // Parameter handling changed in Doctrine ORM 2.3
-        if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
-            foreach ($params as $name => $value) {
-                $paramVal = $query->getParameter($name);
-                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
-            }
-        } else {
-            // XXX THIS ACTUALLY NEEDS TESTING
-            foreach ($params as $name => $value) {
-                $paramVal = $query->getParameter($name);
-                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
-            }
-        }
-
-        if ('' !== $expectedDql) {
-            $query->useQueryCache(false);
-            $dql = $query->getDQL() . $whereCase;
-            $query->setDQL($dql);
-            $query->getSQL();
-        }
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
     }
 
     /**
@@ -161,29 +123,8 @@ class DQLTest extends OrmTestCase
         ));
 
         $this->assertEquals($expectedDql, $whereCase);
-
-        // Parameter handling changed in Doctrine ORM 2.3
-        if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
-            foreach ($params as $name => $value) {
-                $paramVal = $query->getParameter($name);
-                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
-            }
-        } else {
-            // XXX THIS ACTUALLY NEEDS TESTING
-            foreach ($params as $name => $value) {
-                $paramVal = $query->getParameter($name);
-                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
-            }
-        }
-
-        if ('' !== $expectedDql) {
-            $query->useQueryCache(false);
-            $dql = $query->getDQL() . $whereCase;
-            $query->setDQL($dql);
-            $query->getSQL();
-        }
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
     }
 
     public static function provideBasicsTests()
@@ -235,5 +176,34 @@ class DQLTest extends OrmTestCase
         return array(
             array('customer_id=2;', '(C.id IN(:customer_id_0))', array('customer_id_0' => 2)),
         );
+    }
+
+    protected function assertQueryParamsEquals($expected, Query $query)
+    {
+        // Parameter handling changed in Doctrine ORM 2.3
+        if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
+            foreach ($expected as $name => $value) {
+                $paramVal = $query->getParameter($name);
+                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
+                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
+            }
+        } else {
+            // XXX THIS ACTUALLY NEEDS TESTING
+            foreach ($expected as $name => $value) {
+                $paramVal = $query->getParameter($name);
+                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
+                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
+            }
+        }
+    }
+
+    protected function assertDqlSuccessCompile(Query $query, $whereCase)
+    {
+        if (null !== $whereCase) {
+            $query->useQueryCache(false);
+            $dql = $query->getDQL() . $whereCase;
+            $query->setDQL($dql);
+            $query->getSQL();
+        }
     }
 }
