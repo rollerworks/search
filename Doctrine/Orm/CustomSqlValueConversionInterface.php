@@ -17,12 +17,12 @@ use Doctrine\DBAL\Types\Type as DBALType;
 /**
  * CustomSqlValueConversionInterface.
  *
- * An SQL value conversion class may implement this class as replace for SqlValueConversionInterface.
+ * An SQL value conversion class may implement this class as replace for ValueConversionInterface.
  * This interface allows wrapping the value inside an SQL function for further conversion.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface CustomSqlValueConversionInterface extends SqlValueConversionInterface
+interface CustomSqlValueConversionInterface extends ValueConversionInterface
 {
     /**
      * Returns the $input wrapped inside an SQL function like my_func($input).

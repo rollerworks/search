@@ -15,13 +15,13 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
 
 /**
- * SqlValueConversionInterface.
+ * ValueConversionInterface.
  *
  * An SQL value conversion class must implement this interface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface SqlValueConversionInterface
+interface ValueConversionInterface
 {
     /**
      * Returns whether the base-conversion of the field-type is requires.

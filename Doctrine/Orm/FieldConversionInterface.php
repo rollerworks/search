@@ -15,13 +15,13 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
 
 /**
- * SqlFieldConversionInterface.
+ * FieldConversionInterface.
  *
  * An SQL field conversion class must implement this interface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface SqlFieldConversionInterface
+interface FieldConversionInterface
 {
     /**
      * Convert the input field name to an SQL statement.

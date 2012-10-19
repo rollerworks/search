@@ -123,13 +123,13 @@ class WhereBuilder
      *
      * Only one converter per field, existing one is overwritten.
      *
-     * @param string                      $fieldName
-     * @param SqlFieldConversionInterface $conversionObj
-     * @param array                       $params
+     * @param string                   $fieldName
+     * @param FieldConversionInterface $conversionObj
+     * @param array                    $params
      *
      * @return self
      */
-    public function setFieldConversion($fieldName, SqlFieldConversionInterface $conversionObj, array $params = array())
+    public function setFieldConversion($fieldName, FieldConversionInterface $conversionObj, array $params = array())
     {
         $this->fieldConversions[$fieldName] = array($conversionObj, $params);
 
@@ -141,13 +141,13 @@ class WhereBuilder
      *
      * Only one converter per field, existing one is overwritten.
      *
-     * @param string                      $fieldName
-     * @param SqlFieldConversionInterface $conversionObj
-     * @param array                       $params
+     * @param string                   $fieldName
+     * @param FieldConversionInterface $conversionObj
+     * @param array                    $params
      *
      * @return self
      */
-    public function setValueConversion($fieldName, SqlFieldConversionInterface $conversionObj, array $params = array())
+    public function setValueConversion($fieldName, FieldConversionInterface $conversionObj, array $params = array())
     {
         $this->fieldConversions[$fieldName] = array($conversionObj, $params);
 

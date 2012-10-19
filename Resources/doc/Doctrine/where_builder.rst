@@ -102,9 +102,9 @@ First we must make a Converter class for handling this.
 
     use Doctrine\DBAL\Connection;
     use Doctrine\DBAL\Types\Type as DBALType;
-    use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlFieldConversionInterface;
+    use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\FieldConversionInterface;
 
-    class AgeFieldConverter implements SqlFieldConversionInterface
+    class AgeFieldConverter implements FieldConversionInterface
     {
         public function convertField($fieldName, DBALType $type, Connection $connection, $isDql)
         {
@@ -152,9 +152,9 @@ In this example we will convert an DateTime object to an scalar value.
 
     use Doctrine\DBAL\Connection;
     use Doctrine\DBAL\Types\Type as DBALType;
-    use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\SqlValueConversionInterface;
+    use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\ValueConversionInterface;
 
-    class DateTimeValueConverter implements SqlValueConversionInterface
+    class DateTimeValueConverter implements ValueConversionInterface
     {
         public function requiresBaseConversion()
         {
