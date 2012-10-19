@@ -446,7 +446,7 @@ class WhereBuilder
                 $value = $this->entityManager->getConnection()->quote($value, 'string');
             }
 
-            if ($this->valueConversions[$fieldName][0] instanceof SqlValueAdvancedConversionInterface) {
+            if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
                 if ($this->query instanceof DqlQuery) {
                     $value = "RECORD_FILTER_VALUE_CONVERSION('$fieldName', $value)";
                 } else {

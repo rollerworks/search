@@ -15,19 +15,20 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
 
 /**
- * SqlValueAdvancedConversionInterface.
+ * CustomSqlValueConversionInterface.
  *
- * An SQL value conversion class must may implement this class as replace for SqlValueConversionInterface.
+ * An SQL value conversion class may implement this class as replace for SqlValueConversionInterface.
  * This interface allows wrapping the value inside an SQL function for further conversion.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface SqlValueAdvancedConversionInterface extends SqlValueConversionInterface
+interface CustomSqlValueConversionInterface extends SqlValueConversionInterface
 {
     /**
      * Returns the $input wrapped inside an SQL function like my_func($input).
      *
      * The input is either an named parameter or loose value.
+     * An loose value is already quoted and should be used as-is.
      *
      * @param string     $input
      * @param DBALType   $type
