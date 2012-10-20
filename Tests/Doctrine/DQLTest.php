@@ -18,6 +18,7 @@ use Metadata\MetadataFactory;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\QueryException;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
 
 class DQLTest extends OrmTestCase
 {
@@ -79,7 +80,7 @@ class DQLTest extends OrmTestCase
         $this->assertTrue($this->formatter->formatInput($input));
 
         $container = $this->createContainer();
-        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+        $container->set('customer_conversion', new CustomerConversion());
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
@@ -110,7 +111,7 @@ class DQLTest extends OrmTestCase
         $this->assertTrue($this->formatter->formatInput($input));
 
         $container = $this->createContainer();
-        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+        $container->set('customer_conversion', new CustomerConversion());
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
@@ -144,7 +145,7 @@ class DQLTest extends OrmTestCase
         $this->assertTrue($this->formatter->formatInput($input));
 
         $container = $this->createContainer();
-        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+        $container->set('customer_conversion', new CustomerConversion());
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
@@ -231,6 +232,7 @@ class DQLTest extends OrmTestCase
     {
         return array(
             array('customer_id=2;', "(C.id = RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
+            array('customer_id=!2;', "(C.id <> RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
             array('customer_id=>2;', "(C.id > RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
             array('customer_id=<2;', "(C.id < RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
             array('customer_id=<=2;', "(C.id <= RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
