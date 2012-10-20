@@ -84,6 +84,10 @@ class FieldSet
             throw new \InvalidArgumentException('FieldName can not be empty.');
         }
 
+        if (false !== strpos($name, "'") || false !== strpos($name, '"')) {
+            throw new \InvalidArgumentException('FieldName can not contain quotes.');
+        }
+
         $this->fields[$name] = $config;
 
         return $this;
