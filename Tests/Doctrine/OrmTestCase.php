@@ -105,6 +105,17 @@ class OrmTestCase extends OrmTestCaseBase
             $fieldSet
                 ->set('customer_id', FilterField::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id'))
             ;
+        } elseif ('invoice_with_customer' == $fieldSetId) {
+            $fieldSet = new FieldSet('invoice');
+            $fieldSet
+                ->set('invoice_label',    FilterField::create('invoice', new InvoiceType(), false)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'label'))
+                ->set('invoice_date',     FilterField::create('date', new Date(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'date'))
+                ->set('invoice_customer', FilterField::create('customer', new Number(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'customer'))
+                ->set('invoice_status',   FilterField::create('status', new StatusType())->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'status'))
+                ->set('invoice_price',    FilterField::create('status', new Decimal(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow', 'price'))
+
+                ->set('customer_id', FilterField::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id'))
+            ;
         }
 
         return $fieldSet;

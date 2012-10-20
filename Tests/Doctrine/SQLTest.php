@@ -15,6 +15,9 @@ use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
 use Metadata\MetadataFactory;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
 
 class SQLTest extends OrmTestCase
 {
@@ -57,6 +60,31 @@ class SQLTest extends OrmTestCase
     }
 
     /**
+     * @dataProvider provideBasicsWithMultiAliasTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedSql
+     */
+    public function testBasicsWithMultiAlias($filterQuery, $expectedSql)
+    {
+        $input = $this->newInput($filterQuery, 'invoice_with_customer');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new CustomerConversion());
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter, array(
+            'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice'  => 'I',
+            'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'
+        )));
+
+        $this->assertEquals($expectedSql, $whereCase);
+    }
+
+    /**
      * @dataProvider provideWithQueryObjTests
      *
      * @param string $filterQuery
@@ -72,7 +100,7 @@ class SQLTest extends OrmTestCase
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
-        $rsm = new \Doctrine\ORM\Query\ResultSetMappingBuilder($this->em);
+        $rsm = new ResultSetMappingBuilder($this->em);
         $rsm->addRootEntityFromClassMetadata('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'I');
 
         $query = $this->em->createNativeQuery("SELECT I.* FROM invoices AS I", $rsm);
@@ -107,7 +135,7 @@ class SQLTest extends OrmTestCase
         $this->assertTrue($this->formatter->formatInput($input));
 
         $container = $this->createContainer();
-        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+        $container->set('customer_conversion', new CustomerConversion());
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
@@ -128,7 +156,7 @@ class SQLTest extends OrmTestCase
         $this->assertTrue($this->formatter->formatInput($input));
 
         $container = $this->createContainer();
-        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+        $container->set('customer_conversion', new CustomerConversion());
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
@@ -142,22 +170,22 @@ class SQLTest extends OrmTestCase
      * @dataProvider provideFieldConversionWithQueryObjTests
      *
      * @param string $filterQuery
-     * @param string $expectedDql
+     * @param string $expectedSql
      * @param array  $params
      */
-    public function testFieldConversionWithQueryObj($filterQuery, $expectedDql, $params)
+    public function testFieldConversionWithQueryObj($filterQuery, $expectedSql, $params)
     {
         $input = $this->newInput($filterQuery, 'invoice');
         $this->assertTrue($this->formatter->formatInput($input));
 
         $container = $this->createContainer();
-        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+        $container->set('customer_conversion', new CustomerConversion());
 
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
         $whereBuilder->setFieldConversion('invoice_customer', $container->get('customer_conversion'));
 
-        $rsm = new \Doctrine\ORM\Query\ResultSetMappingBuilder($this->em);
+        $rsm = new ResultSetMappingBuilder($this->em);
         $rsm->addRootEntityFromClassMetadata('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'I');
 
         $query = $this->em->createNativeQuery("SELECT I.* FROM invoices AS I", $rsm);
@@ -168,8 +196,69 @@ class SQLTest extends OrmTestCase
             $query
         ));
 
-        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertEquals($expectedSql, $whereCase);
         $this->assertQueryParamsEquals($params, $query);
+    }
+
+    /**
+     * @dataProvider provideCustomSqlValueConversionTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedSql
+     * @param array  $conversionParams
+     */
+    public function testCustomSqlValueConversion($filterQuery, $expectedSql, $conversionParams = array())
+    {
+        $input = $this->newInput($filterQuery, 'customer');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new CustomerConversion());
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $whereBuilder->setValueConversion('customer_id', new CustomerCustomSqlConversion(), $conversionParams);
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
+            $this->formatter,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C')
+        ));
+
+        $this->assertEquals($expectedSql, $whereCase);
+    }
+
+    /**
+     * @dataProvider provideCustomSqlValueConversionWithQueryObjTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedSql
+     * @param array  $queryParams
+     * @param array  $conversionParams
+     */
+    public function testCustomSqlValueConversionWithQueryObj($filterQuery, $expectedSql, array $queryParams, $conversionParams = array())
+    {
+        $input = $this->newInput($filterQuery, 'customer');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new CustomerConversion());
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $whereBuilder->setValueConversion('customer_id', new CustomerCustomSqlConversion(), $conversionParams);
+
+        $rsm = new ResultSetMappingBuilder($this->em);
+        $rsm->addRootEntityFromClassMetadata('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'C');
+        $query = $this->em->createNativeQuery("SELECT I.* FROM customers AS C", $rsm);
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
+            $this->formatter,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
+            $query
+        ));
+
+        $this->assertEquals($expectedSql, $whereCase);
+        $this->assertQueryParamsEquals($queryParams, $query);
     }
 
     public static function provideBasicsTests()
@@ -210,6 +299,31 @@ class SQLTest extends OrmTestCase
             array('(invoice_customer=2,3;),(invoice_customer=3,5;)', '(I.customer IN(2, 3)) OR (I.customer IN(3, 5))'),
             array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', '(I.customer IN(2, 3) AND I.status IN(1)) OR (I.customer IN(3, 5))'),
             array('invoice_date=06/13/2012;', '(I.pubdate IN(\'2012-06-13\'))'),
+
+            // Expects empty as there is no field with that name
+            array('(user=2;),(user=2;)', ''),
+        );
+    }
+
+    public static function provideBasicsWithMultiAliasTests()
+    {
+        return array(
+            array('invoice_customer=2;', '(I.customer IN(2))'),
+            array('invoice_label=F2012-4242;', '(I.label IN(\'F2012-4242\'))'),
+            array('invoice_customer=2, 5;', '(I.customer IN(2, 5))'),
+            array('invoice_customer=2-5;', '((I.customer BETWEEN 2 AND 5))'),
+            array('invoice_customer=2-5, 8;', '(I.customer IN(8) AND (I.customer BETWEEN 2 AND 5))'),
+            array('invoice_customer=2-5,!8-10;', '((I.customer BETWEEN 2 AND 5) AND (I.customer NOT BETWEEN 8 AND 10))'),
+            array('invoice_customer=2-5, !8;', '(I.customer NOT IN(8) AND (I.customer BETWEEN 2 AND 5))'),
+            array('invoice_customer=2-5, >8;', '((I.customer BETWEEN 2 AND 5) AND I.customer > 8)'),
+
+            array('(invoice_customer=2;),(invoice_customer=3;)', '(I.customer IN(2)) OR (I.customer IN(3))'),
+            array('(invoice_customer=2,3;),(invoice_customer=3,5;)', '(I.customer IN(2, 3)) OR (I.customer IN(3, 5))'),
+            array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', '(I.customer IN(2, 3) AND I.status IN(1)) OR (I.customer IN(3, 5))'),
+            array('invoice_date=06/13/2012;', '(I.pubdate IN(\'2012-06-13\'))'),
+
+            array('customer_id=2;', "(C.id IN(2))"),
+            array('customer_id=2;invoice_label=F2012-4242;', "(C.id IN(2) AND I.label IN('F2012-4242'))"),
 
             // Expects empty as there is no field with that name
             array('(user=2;),(user=2;)', ''),
@@ -288,6 +402,38 @@ class SQLTest extends OrmTestCase
     {
         return array(
             array('customer_id=2;', '(id IN(2))'),
+        );
+    }
+
+    public static function provideCustomSqlValueConversionTests()
+    {
+        return array(
+            array('customer_id=2;', "(C.id IN(get_customer_type(2)))"),
+            array('customer_id=!2;', "(C.id NOT IN(get_customer_type(2)))"),
+            array('customer_id=>2;', "(C.id > get_customer_type(2))"),
+            array('customer_id=<2;', "(C.id < get_customer_type(2))"),
+            array('customer_id=<=2;', "(C.id <= get_customer_type(2))"),
+            array('customer_id=>=2;', "(C.id >= get_customer_type(2))"),
+            array('customer_id=>=2;', "(C.id >= get_customer_type(2))"),
+
+            array('customer_id=2-5;', "((C.id BETWEEN get_customer_type(2) AND get_customer_type(5)))"),
+            array('customer_id=!2-5;', "((C.id NOT BETWEEN get_customer_type(2) AND get_customer_type(5)))"),
+        );
+    }
+
+    public static function provideCustomSqlValueConversionWithQueryObjTests()
+    {
+        return array(
+            array('customer_id=2;', "(C.id IN(get_customer_type(:customer_id_0)))", array('customer_id_0' => 2)),
+            array('customer_id=!2;', "(C.id NOT IN(get_customer_type(:customer_id_0)))", array('customer_id_0' => 2)),
+            array('customer_id=>2;', "(C.id > get_customer_type(:customer_id_0))", array('customer_id_0' => 2)),
+            array('customer_id=<2;', "(C.id < get_customer_type(:customer_id_0))", array('customer_id_0' => 2)),
+            array('customer_id=<=2;', "(C.id <= get_customer_type(:customer_id_0))", array('customer_id_0' => 2)),
+            array('customer_id=>=2;', "(C.id >= get_customer_type(:customer_id_0))", array('customer_id_0' => 2)),
+            array('customer_id=>=2;', "(C.id >= get_customer_type(:customer_id_0))", array('customer_id_0' => 2)),
+
+            array('customer_id=2-5;', "((C.id BETWEEN get_customer_type(:customer_id_0) AND get_customer_type(:customer_id_1)))", array('customer_id_0' => 2, 'customer_id_1' => 5)),
+            array('customer_id=!2-5;', "((C.id NOT BETWEEN get_customer_type(:customer_id_0) AND get_customer_type(:customer_id_1)))", array('customer_id_0' => 2, 'customer_id_1' => 5)),
         );
     }
 }
