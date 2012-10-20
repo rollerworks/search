@@ -16,6 +16,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Mapping\PropertyMetadata;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine\OrmConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 
 require_once 'Tests/Fixtures/BaseBundle/Entity/ECommerce/ECommerceCustomer.php';
@@ -41,9 +42,14 @@ class AnnotationMappingTest extends TestCase
         $property->type           = new FilterTypeConfig('customer_type', array());
         $property->acceptRanges   = false;
         $property->acceptCompares = false;
-        $property->setSqlConversion('customer_conversion', array());
+
+        // XXX THIS MUST BE MOVED AS ITS OPTIONAL
+        $ormConfig = new OrmConfig();
+        $ormConfig->setValueConversion('customer_conversion', array());
+        $property->setDoctrineConfig('orm', $ormConfig);
 
         $this->assertEquals($property, $class->propertyMetadata['id']);
+        $this->assertEquals($property, unserialize(serialize($property)));
     }
 
     public function testAccepts()

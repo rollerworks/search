@@ -42,7 +42,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ),
 
             'doctrine' => array(
-                'sql' => array(
+                'orm' => array(
                     'wherebuilder' => array(
                         'namespace' => '%rollerworks_record_filter.filters_namespace%',
                         'default_entity_manager' => '%doctrine.default_entity_manager%',

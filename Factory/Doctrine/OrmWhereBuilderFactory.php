@@ -12,8 +12,7 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine;
 
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
-use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\WhereBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\AbstractFactory;
 
 use Metadata\MetadataFactoryInterface;
@@ -26,7 +25,7 @@ use Doctrine\ORM\EntityManager;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SqlWhereBuilderFactory extends AbstractFactory
+class OrmWhereBuilderFactory extends AbstractFactory
 {
     /**
      * @var EntityManager
@@ -95,10 +94,10 @@ class SqlWhereBuilderFactory extends AbstractFactory
             throw new \InvalidArgumentException('No MetadataFactory set.');
         }
 
-        $fqn = $this->namespace . $fieldSet->getSetName() . '\SqlWhereBuilder';
+        $fqn = $this->namespace . $fieldSet->getSetName() . '\DoctrineOrmWhereBuilder';
 
         if (!class_exists($fqn, false)) {
-            $fileName = $this->classesDir . DIRECTORY_SEPARATOR . $fieldSet->getSetName() . DIRECTORY_SEPARATOR . 'SqlWhereBuilder.php';
+            $fileName = $this->classesDir . DIRECTORY_SEPARATOR . $fieldSet->getSetName() . DIRECTORY_SEPARATOR . 'DoctrineOrmWhereBuilder.php';
 
             if ($this->autoGenerate) {
                 $this->generateClass($fieldSet->getSetName(), $fieldSet, $this->classesDir);
@@ -155,10 +154,10 @@ class SqlWhereBuilderFactory extends AbstractFactory
         $dir  = $toDir . DIRECTORY_SEPARATOR . $ns;
 
         if (!is_dir($dir) && !mkdir($dir)) {
-            throw new \RuntimeException('Was unable to create the sub-dir for the RecordFilter::Record::Sql::WhereBuilder.');
+            throw new \RuntimeException('Was unable to create the sub-dir for the RecordFilter::Doctrine::Orm::WhereBuilder.');
         }
 
-        file_put_contents($dir . DIRECTORY_SEPARATOR . 'SqlWhereBuilder.php', $file, LOCK_EX);
+        file_put_contents($dir . DIRECTORY_SEPARATOR . 'DoctrineOrmWhereBuilder.php', $file, LOCK_EX);
     }
 
     /**
@@ -206,14 +205,16 @@ QY;
             if (isset(\$filters[$_fieldName])) {
                 \$hasFields = true;
                 \$valuesBag = \$filters[$_fieldName];
-                \$column = \$this->getFieldColumn($_fieldName);
+                \$field = \$this->fieldSet->get($_fieldName);
+                \$column = \$this->getFieldColumn($_fieldName, \$field);
+                \$this->initValueConversion($_fieldName, \$field);
 
                 if (\$valuesBag->hasSingleValues()) {
-                    \$query .= sprintf('%s IN(%s) AND ', \$column, \$this->createInList(\$valuesBag->getSingleValues(), $_fieldName));
+                    \$query .= \$this->valueToList(\$valuesBag->getSingleValues(), \$column, $_fieldName, \$field);
                 }
 
                 if (\$valuesBag->hasExcludes()) {
-                    \$query .= sprintf('%s NOT IN(%s) AND ', \$column, \$this->createInList(\$valuesBag->getExcludes(), $_fieldName));
+                    \$query .= \$this->valueToList(\$valuesBag->getExcludes(), \$column, $_fieldName, \$field, true);
                 }
 
 QY;
@@ -222,11 +223,11 @@ QY;
                     $query .= <<<QY
 
                 foreach (\$valuesBag->getRanges() as \$range) {
-                    \$query .= sprintf('(%s BETWEEN %s AND %s) AND ', \$column, \$this->getValStr(\$range->getLower(), $_fieldName), \$this->getValStr(\$range->getUpper(), $_fieldName));
+                    \$query .= sprintf('(%s BETWEEN %s AND %s) AND ', \$column, \$this->getValStr(\$range->getLower(), $_fieldName, \$field), \$this->getValStr(\$range->getUpper(), $_fieldName, \$field));
                 }
 
                 foreach (\$valuesBag->getExcludedRanges() as \$range) {
-                    \$query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', \$column, \$this->getValStr(\$range->getLower(), $_fieldName), \$this->getValStr(\$range->getUpper(), $_fieldName));
+                    \$query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', \$column, \$this->getValStr(\$range->getLower(), $_fieldName, \$field), \$this->getValStr(\$range->getUpper(), $_fieldName, \$field));
                 }
 
 QY;
@@ -236,7 +237,7 @@ QY;
                     $query .= <<<QY
 
                 foreach (\$valuesBag->getCompares() as \$comp) {
-                    \$query .= sprintf('%s %s %s AND ', \$column, \$comp->getOperator(), \$this->getValStr(\$comp->getValue(), $_fieldName));
+                    \$query .= sprintf('%s %s %s AND ', \$column, \$comp->getOperator(), \$this->getValStr(\$comp->getValue(), $_fieldName, \$field));
                 }
 
 QY;
@@ -272,13 +273,13 @@ QY;
 
 namespace <namespace>;
 
-use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql\WhereBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**
  * THIS CLASS WAS GENERATED BY Rollerworks/RecordFilterBundle. DO NOT EDIT THIS FILE.
  */
-class SqlWhereBuilder extends WhereBuilder
+class DoctrineOrmWhereBuilder extends WhereBuilder
 {
     <whereBuilder>
 }

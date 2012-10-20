@@ -9,19 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Sql;
+namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
 
 /**
- * SqlFieldConversionInterface.
+ * FieldConversionInterface.
  *
  * An SQL field conversion class must implement this interface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface SqlFieldConversionInterface
+interface FieldConversionInterface
 {
     /**
      * Convert the input field name to an SQL statement.
@@ -31,9 +31,9 @@ interface SqlFieldConversionInterface
      * @param string     $fieldName
      * @param DBALType   $type
      * @param Connection $connection
-     * @param boolean    $isDql      Whether the query should be DQL
+     * @param array      $parameters
      *
      * @return string
      */
-    public function convertField($fieldName, DBALType $type, Connection $connection, $isDql);
+    public function getConvertFieldSql($fieldName, DBALType $type, Connection $connection, array $parameters = array());
 }

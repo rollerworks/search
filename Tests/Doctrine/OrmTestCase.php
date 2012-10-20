@@ -25,6 +25,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerType;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\AbstractQuery as OrmQuery;
 use Doctrine\Tests\OrmTestCase as OrmTestCaseBase;
 
 class OrmTestCase extends OrmTestCaseBase
@@ -47,6 +48,9 @@ class OrmTestCase extends OrmTestCaseBase
     protected function setUp()
     {
         $this->em = $this->_getTestEntityManager();
+
+        $this->em->getConfiguration()->addCustomStringFunction('RECORD_FILTER_FIELD_CONVERSION', 'Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\Functions\FilterFieldConversion');
+        $this->em->getConfiguration()->addCustomStringFunction('RECORD_FILTER_VALUE_CONVERSION', 'Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\Functions\FilterValueConversion');
 
         $this->translator = $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface');
         $this->translator->expects($this->any())
@@ -101,6 +105,17 @@ class OrmTestCase extends OrmTestCaseBase
             $fieldSet
                 ->set('customer_id', FilterField::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id'))
             ;
+        } elseif ('invoice_with_customer' == $fieldSetId) {
+            $fieldSet = new FieldSet('invoice');
+            $fieldSet
+                ->set('invoice_label',    FilterField::create('invoice', new InvoiceType(), false)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'label'))
+                ->set('invoice_date',     FilterField::create('date', new Date(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'date'))
+                ->set('invoice_customer', FilterField::create('customer', new Number(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'customer'))
+                ->set('invoice_status',   FilterField::create('status', new StatusType())->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice', 'status'))
+                ->set('invoice_price',    FilterField::create('status', new Decimal(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoiceRow', 'price'))
+
+                ->set('customer_id', FilterField::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id'))
+            ;
         }
 
         return $fieldSet;
@@ -142,10 +157,37 @@ class OrmTestCase extends OrmTestCaseBase
     }
 
     /**
+     * @param array    $expected
+     * @param OrmQuery $query
+     */
+    protected function assertQueryParamsEquals(array $expected, OrmQuery $query)
+    {
+        // Parameter handling changed in Doctrine ORM 2.3
+        if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
+            foreach ($expected as $name => $value) {
+                $paramVal = $query->getParameter($name);
+                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
+                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
+            }
+        } else {
+            foreach ($expected as $name => $value) {
+                $this->assertEquals($query->getParameter($name), (is_object($value) ? $value : (string) $value));
+            }
+        }
+    }
+
+    /**
      * @return AnnotationReader
      */
     protected function newAnnotationsReader()
     {
-        return $this->createAnnotationDriver()->getReader();
+        $annotationReader = new AnnotationReader();
+        $annotationReader->addGlobalIgnoredName('Id');
+        $annotationReader->addGlobalIgnoredName('Column');
+        $annotationReader->addGlobalIgnoredName('GeneratedValue');
+        $annotationReader->addGlobalIgnoredName('OneToOne');
+        $annotationReader->addGlobalIgnoredName('OneToMany');
+
+        return $annotationReader;
     }
 }

@@ -10,7 +10,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Annotation as RecordFilter;
  * @Entity
  * @Table(name="customers")
  */
-class ECommerceCustomer
+class ECommerceCustomer2
 {
     /**
      * @Id
@@ -18,7 +18,6 @@ class ECommerceCustomer
      * @GeneratedValue(strategy="AUTO")
      *
      * @RecordFilter\Field("customer_id", type="customer_type")
-     * @RecordFilter\Doctrine\SqlValueConversion("customer_conversion")
      */
     private $id;
 }

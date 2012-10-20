@@ -14,7 +14,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Factory;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
-use Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\SqlWhereBuilderFactory;
+use Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\OrmWhereBuilderFactory;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine\OrmTestCase;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
@@ -22,7 +22,7 @@ use Metadata\MetadataFactory;
 class SqlWhereBuilderFactoryTest extends OrmTestCase
 {
     /**
-     * @var SqlWhereBuilderFactory
+     * @var OrmWhereBuilderFactory
      */
     protected $factory;
 
@@ -48,7 +48,7 @@ class SqlWhereBuilderFactoryTest extends OrmTestCase
         $container = $this->createContainer();
         $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
 
-        $this->factory = new SqlWhereBuilderFactory(__DIR__ . '/../.cache/record_filter', 'RecordFilter', true);
+        $this->factory = new OrmWhereBuilderFactory(__DIR__ . '/../.cache/record_filter', 'RecordFilter', true);
         $this->factory->setEntityManager($this->em);
         $this->factory->setMetadataFactory($metadataFactory);
         $this->factory->setContainer($container);

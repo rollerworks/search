@@ -12,6 +12,7 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Mapping;
 
 use Metadata\PropertyMetadata as BasePropertyMetadata;
+use Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine\OrmConfig;
 
 /**
  * PropertyMetadata.
@@ -29,42 +30,32 @@ class PropertyMetadata extends BasePropertyMetadata
      */
     public $type;
 
-    public $widgetsConfig = array();
-    public $sqlConversion = array('service' => null, 'params' => array());
+    /**
+     * @var array[]
+     */
+    public $doctrineConfig = array();
 
     /**
-     * Set SQL conversion configuration.
+     * @param string $type
      *
-     * @param string $service
-     * @param array  $params
+     * @return OrmConfig|null
      */
-    public function setSqlConversion($service, array $params = array())
+    public function getDoctrineConfig($type)
     {
-        $this->sqlConversion = array('service' => $service, 'params' => $params);
+        if (!isset($this->doctrineConfig[$type])) {
+            return null;
+        }
+
+        return $this->doctrineConfig[$type];
     }
 
     /**
-     * @return boolean
+     * @param string               $type
+     * @param BasePropertyMetadata $value
      */
-    public function hasSqlConversion()
+    public function setDoctrineConfig($type, $value)
     {
-        return null !== $this->sqlConversion['service'];
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getSqlConversionService()
-    {
-        return $this->sqlConversion['service'];
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getSqlConversionParams()
-    {
-        return $this->sqlConversion['params'];
+        $this->doctrineConfig[$type] = $value;
     }
 
     /**
@@ -73,8 +64,6 @@ class PropertyMetadata extends BasePropertyMetadata
     public function serialize()
     {
         return serialize(array(
-            $this->class,
-            $this->name,
             $this->filter_name,
             $this->type,
 
@@ -82,8 +71,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->acceptRanges,
             $this->acceptCompares,
 
-            $this->sqlConversion,
-            $this->widgetsConfig
+            $this->doctrineConfig,
+            parent::serialize(),
         ));
     }
 
@@ -95,8 +84,6 @@ class PropertyMetadata extends BasePropertyMetadata
     public function unserialize($str)
     {
         list(
-            $this->class,
-            $this->name,
             $this->filter_name,
             $this->type,
 
@@ -104,11 +91,10 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->acceptRanges,
             $this->acceptCompares,
 
-            $this->sqlConversion,
-            $this->widgetsConfig
+            $this->doctrineConfig,
+            $parentStr
         ) = unserialize($str);
 
-        $this->reflection = new \ReflectionProperty($this->class, $this->name);
-        $this->reflection->setAccessible(true);
+        parent::unserialize($parentStr);
     }
 }

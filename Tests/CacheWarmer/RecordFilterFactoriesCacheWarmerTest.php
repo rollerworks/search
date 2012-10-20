@@ -320,7 +320,7 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
             'factories' => array(
                 'fieldset' => array('auto_generate' => true),
                 'doctrine' => array(
-                    'sql' => array(
+                    'orm' => array(
                         'wherebuilder' => array('auto_generate' => true)
                     ),
                 ),
@@ -334,10 +334,10 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
         sort($result);
 
         $this->assertEquals(array(
+            'customer/DoctrineOrmWhereBuilder.php',
             'customer/FieldSet.php',
-            'customer/SqlWhereBuilder.php',
+            'invoice/DoctrineOrmWhereBuilder.php',
             'invoice/FieldSet.php',
-            'invoice/SqlWhereBuilder.php'
         ), $result);
     }
 

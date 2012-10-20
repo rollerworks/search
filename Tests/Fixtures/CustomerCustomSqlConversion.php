@@ -13,10 +13,10 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
-use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\ValueConversionInterface;
+use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\CustomSqlValueConversionInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\FieldConversionInterface;
 
-class CustomerConversion implements ValueConversionInterface, FieldConversionInterface
+class CustomerCustomSqlConversion implements CustomSqlValueConversionInterface, FieldConversionInterface
 {
     /**
      * {@inheritdoc}
@@ -39,6 +39,28 @@ class CustomerConversion implements ValueConversionInterface, FieldConversionInt
      */
     public function getConvertFieldSql($fieldName, DBALType $type, Connection $connection, array $params = array())
     {
-        return "CAST($fieldName AS customer_type)";
+        return $fieldName;
+    }
+
+    /**
+     * Returns the $input wrapped inside an SQL function like my_func($input).
+     *
+     * The input is either an named parameter or loose value.
+     * An loose value is already quoted and should be used as-is.
+     *
+     * @param string     $input
+     * @param DBALType   $type
+     * @param Connection $connection
+     * @param array      $parameters
+     *
+     * @return string
+     */
+    public function getConvertValuedSql($input, DBALType $type, Connection $connection, array $parameters = array())
+    {
+        if ($parameters) {
+            return "get_customer_type($input, '" . json_encode($parameters) . "')";
+        }
+
+        return "get_customer_type($input)";
     }
 }

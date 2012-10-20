@@ -13,7 +13,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
