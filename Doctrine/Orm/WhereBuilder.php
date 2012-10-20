@@ -123,13 +123,13 @@ class WhereBuilder
      *
      * Only one converter per field, existing one is overwritten.
      *
-     * @param string                   $fieldName
-     * @param FieldConversionInterface $conversionObj
-     * @param array                    $params
+     * @param string                        $fieldName
+     * @param FieldConversionInterface|null $conversionObj
+     * @param array                         $params
      *
      * @return self
      */
-    public function setFieldConversion($fieldName, FieldConversionInterface $conversionObj, array $params = array())
+    public function setFieldConversion($fieldName, FieldConversionInterface $conversionObj = null, array $params = array())
     {
         $this->fieldConversions[$fieldName] = array($conversionObj, $params);
 
@@ -141,15 +141,15 @@ class WhereBuilder
      *
      * Only one converter per field, existing one is overwritten.
      *
-     * @param string                   $fieldName
-     * @param FieldConversionInterface $conversionObj
-     * @param array                    $params
+     * @param string                        $fieldName
+     * @param ValueConversionInterface|null $conversionObj
+     * @param array                         $params
      *
      * @return self
      */
-    public function setValueConversion($fieldName, FieldConversionInterface $conversionObj, array $params = array())
+    public function setValueConversion($fieldName, ValueConversionInterface $conversionObj = null, array $params = array())
     {
-        $this->fieldConversions[$fieldName] = array($conversionObj, $params);
+        $this->valueConversions[$fieldName] = array($conversionObj, $params);
 
         return $this;
     }
@@ -293,13 +293,14 @@ class WhereBuilder
                 }
 
                 $column = $this->getFieldColumn($fieldName, $field);
+                $this->initValueConversion($fieldName, $field);
 
                 if ($valuesBag->hasSingleValues()) {
-                    $query .= sprintf('%s IN(%s) AND ', $column, $this->createInList($valuesBag->getSingleValues(), $fieldName, $field));
+                    $query .= $this->valueToList($valuesBag->getSingleValues(), $column, $fieldName, $field);
                 }
 
                 if ($valuesBag->hasExcludes()) {
-                    $query .= sprintf('%s NOT IN(%s) AND ', $column, $this->createInList($valuesBag->getExcludes(), $fieldName, $field));
+                    $query .= $this->valueToList($valuesBag->getExcludes(), $column, $fieldName, $field, true);
                 }
 
                 foreach ($valuesBag->getRanges() as $range) {
@@ -324,22 +325,35 @@ class WhereBuilder
     }
 
     /**
-     * Returns an comma-separated list of values.
+     * Returns either comma-separated list of values or field = value condition list.
      *
      * @param SingleValue[] $values
+     * @param string        $column
      * @param string        $fieldName
      * @param FilterField   $field
+     * @param boolean       $exclude
      *
      * @return string
      */
-    protected function createInList($values, $fieldName, FilterField $field)
+    protected function valueToList($values, $column, $fieldName, FilterField $field, $exclude = false)
     {
         $inList = '';
-        foreach ($values as $value) {
-            $inList .= $this->getValStr($value->getValue(), $fieldName, $field) . ', ';
-        }
 
-        return trim($inList, ', ');
+        if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
+            // TODO Implement an value conversion strategy pattern
+
+            if ($this->query instanceof DqlQuery) {
+                foreach ($values as $value) {
+                    $inList .= sprintf('%s %s %s AND ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field));
+                }
+
+                return $inList;
+            } else {
+                return $this->createInList($values, $column, $fieldName, $field, $exclude);
+            }
+        } else {
+            return $this->createInList($values, $column, $fieldName, $field, $exclude);
+        }
     }
 
     /**
@@ -410,16 +424,6 @@ class WhereBuilder
      */
     protected function getValStr($value, $fieldName, FilterField $field)
     {
-        if (!isset($this->valueConversions[$fieldName])) {
-            // Set to false by default so we can skip this check the next round
-            // Don't use null as isset() returns false then
-            $this->valueConversions[$fieldName] = false;
-
-            if (($propertyConfig = $this->getPropertyConfig($field)) && $propertyConfig->hasValueConversion()) {
-                $this->valueConversions[$fieldName] = array($this->container->get($propertyConfig->getValueConversionService()), $propertyConfig->getValueConversionParams());
-            }
-        }
-
         $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
         if (!is_object($type)) {
             $type = ORMType::getType($type);
@@ -427,7 +431,7 @@ class WhereBuilder
 
         $paramName = null;
 
-        if ($this->valueConversions[$fieldName]) {
+        if ($this->valueConversions[$fieldName][0]) {
             if ($this->valueConversions[$fieldName][0]->requiresBaseConversion()) {
                 $value = $type->convertToDatabaseValue($value, $this->databasePlatform);
             }
@@ -470,13 +474,60 @@ class WhereBuilder
     }
 
     /**
+     * Initialize value conversion cache for the given field.
+     *
+     * @param string      $fieldName
+     * @param FilterField $field
+     */
+    protected function initValueConversion($fieldName, FilterField  $field)
+    {
+        if (!isset($this->valueConversions[$fieldName])) {
+            if (($propertyConfig = $this->getPropertyConfig($field)) && $propertyConfig->hasValueConversion()) {
+                $this->valueConversions[$fieldName] = array($this->container->get($propertyConfig->getValueConversionService()), $propertyConfig->getValueConversionParams());
+            } else {
+                // Set to empty by default so we can skip this check the next round
+                $this->valueConversions[$fieldName] = array(null, array());
+            }
+        }
+    }
+
+    /**
+     * @param SingleValue[] $values
+     * @param string        $column
+     * @param string        $fieldName
+     * @param FilterField   $field
+     * @param boolean       $exclude
+     *
+     * @return string
+     */
+    private function createInList($values, $column, $fieldName, FilterField $field, $exclude = false)
+    {
+        $inList = '';
+        $total  = count($values);
+        $cur    = 1;
+
+        foreach ($values as $value) {
+            $inList .= $this->getValStr($value->getValue(), $fieldName, $field) . ($total > $cur ? ', ' : '');
+            $cur++;
+        }
+
+        if ($exclude) {
+            $inList = sprintf('%s NOT IN(%s) AND ', $column, $inList);
+        } else {
+            $inList = sprintf('%s IN(%s) AND ', $column, $inList);
+        }
+
+        return $inList;
+    }
+
+    /**
      * Returns the ORM configuration of the property or null when no existent.
      *
      * @param FilterField $field
      *
      * @return OrmConfig|null
      */
-    protected function getPropertyConfig(FilterField $field)
+    private function getPropertyConfig(FilterField $field)
     {
         $classMetadata = $this->metadataFactory->getMetadataForClass($field->getPropertyRefClass());
         $propertyName = $field->getPropertyRefField();
@@ -493,7 +544,7 @@ class WhereBuilder
      *
      * @return integer
      */
-    protected function getUniqueParameterName($fieldName)
+    private function getUniqueParameterName($fieldName)
     {
         if (!isset($this->paramPosition[$fieldName])) {
             $this->paramPosition[$fieldName] = -1;

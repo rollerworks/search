@@ -38,6 +38,25 @@ class SQLTest extends OrmTestCase
     }
 
     /**
+     * @dataProvider provideBasicsWithAliasTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedSql
+     */
+    public function testBasicsWithAlias($filterQuery, $expectedSql)
+    {
+        $input = $this->newInput($filterQuery);
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter, array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I')));
+        $this->assertEquals($expectedSql, $whereCase);
+    }
+
+    /**
      * @dataProvider provideWithQueryObjTests
      *
      * @param string $filterQuery
@@ -169,6 +188,28 @@ class SQLTest extends OrmTestCase
             array('(invoice_customer=2,3;),(invoice_customer=3,5;)', '(customer IN(2, 3)) OR (customer IN(3, 5))'),
             array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', '(customer IN(2, 3) AND status IN(1)) OR (customer IN(3, 5))'),
             array('invoice_date=06/13/2012;', '(pubdate IN(\'2012-06-13\'))'),
+
+            // Expects empty as there is no field with that name
+            array('(user=2;),(user=2;)', ''),
+        );
+    }
+
+    public static function provideBasicsWithAliasTests()
+    {
+        return array(
+            array('invoice_customer=2;', '(I.customer IN(2))'),
+            array('invoice_label=F2012-4242;', '(I.label IN(\'F2012-4242\'))'),
+            array('invoice_customer=2, 5;', '(I.customer IN(2, 5))'),
+            array('invoice_customer=2-5;', '((I.customer BETWEEN 2 AND 5))'),
+            array('invoice_customer=2-5, 8;', '(I.customer IN(8) AND (I.customer BETWEEN 2 AND 5))'),
+            array('invoice_customer=2-5,!8-10;', '((I.customer BETWEEN 2 AND 5) AND (I.customer NOT BETWEEN 8 AND 10))'),
+            array('invoice_customer=2-5, !8;', '(I.customer NOT IN(8) AND (I.customer BETWEEN 2 AND 5))'),
+            array('invoice_customer=2-5, >8;', '((I.customer BETWEEN 2 AND 5) AND I.customer > 8)'),
+
+            array('(invoice_customer=2;),(invoice_customer=3;)', '(I.customer IN(2)) OR (I.customer IN(3))'),
+            array('(invoice_customer=2,3;),(invoice_customer=3,5;)', '(I.customer IN(2, 3)) OR (I.customer IN(3, 5))'),
+            array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', '(I.customer IN(2, 3) AND I.status IN(1)) OR (I.customer IN(3, 5))'),
+            array('invoice_date=06/13/2012;', '(I.pubdate IN(\'2012-06-13\'))'),
 
             // Expects empty as there is no field with that name
             array('(user=2;),(user=2;)', ''),

@@ -16,6 +16,8 @@ use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
 use Metadata\MetadataFactory;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\QueryException;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
 
 class DQLTest extends OrmTestCase
 {
@@ -71,7 +73,7 @@ class DQLTest extends OrmTestCase
      * @param string $expectedDql
      * @param array  $params
      */
-    public function testValueConvert($filterQuery, $expectedDql, $params)
+    public function testValueConversion($filterQuery, $expectedDql, $params)
     {
         $input = $this->newInput($filterQuery, 'customer');
         $this->assertTrue($this->formatter->formatInput($input));
@@ -102,7 +104,7 @@ class DQLTest extends OrmTestCase
      * @param string $expectedDql
      * @param array  $params
      */
-    public function testFieldConvert($filterQuery, $expectedDql, $params)
+    public function testFieldConversion($filterQuery, $expectedDql, $params)
     {
         $input = $this->newInput($filterQuery, 'invoice');
         $this->assertTrue($this->formatter->formatInput($input));
@@ -127,10 +129,50 @@ class DQLTest extends OrmTestCase
         $this->assertDqlSuccessCompile($query, $whereCase);
     }
 
+    /**
+     * @dataProvider provideCustomSqlValueConversionTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedDql
+     * @param array  $queryParams
+     * @param string $expectSql
+     * @param array  $conversionParams
+     */
+    public function testCustomSqlValueConversion($filterQuery, $expectedDql, array $queryParams, $expectSql, $conversionParams = array())
+    {
+        $input = $this->newInput($filterQuery, 'customer');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new \Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion());
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $whereBuilder->setValueConversion('customer_id', new CustomerCustomSqlConversion(), $conversionParams);
+
+        $query = $this->em->createQuery("SELECT C FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer C WHERE ");
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
+            $this->formatter,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
+            $query
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($queryParams, $query);
+        $this->assertEquals($this->assertDqlSuccessCompile($query, $whereCase), $expectSql);
+    }
+
     public static function provideBasicsTests()
     {
         return array(
             array('invoice_customer=2;', '(I.customer IN(:invoice_customer_0))', array('invoice_customer_0' => 2)),
+            array('invoice_customer=>2;', '(I.customer > :invoice_customer_0)', array('invoice_customer_0' => 2)),
+            array('invoice_customer=<2;', '(I.customer < :invoice_customer_0)', array('invoice_customer_0' => 2)),
+            array('invoice_customer=!2;', '(I.customer NOT IN(:invoice_customer_0))', array('invoice_customer_0' => 2)),
+            array('invoice_customer=>=2;', '(I.customer >= :invoice_customer_0)', array('invoice_customer_0' => 2)),
+            array('invoice_customer=<=2;', '(I.customer <= :invoice_customer_0)', array('invoice_customer_0' => 2)),
+
             array('invoice_label=F2012-4242;', '(I.label IN(:invoice_label_0))', array('invoice_label_0' => 'F2012-4242')),
             array('invoice_customer=2, 5;', '(I.customer IN(:invoice_customer_0, :invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
             array('invoice_customer=2-5;', '((I.customer BETWEEN :invoice_customer_0 AND :invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
@@ -185,17 +227,46 @@ class DQLTest extends OrmTestCase
         );
     }
 
+    public static function provideCustomSqlValueConversionTests()
+    {
+        return array(
+            array('customer_id=2;', "(C.id = RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
+            array('customer_id=>2;', "(C.id > RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
+            array('customer_id=<2;', "(C.id < RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
+            array('customer_id=<=2;', "(C.id <= RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
+            array('customer_id=>=2;', "(C.id >= RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
+            array('customer_id=>=2;', "(C.id >= RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0))", array('customer_id_0' => 2), ''),
+
+            array('customer_id=2-5;', "((C.id BETWEEN RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0) AND RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_1)))", array('customer_id_0' => 2, 'customer_id_1' => 5), ''),
+            array('customer_id=!2-5;', "((C.id NOT BETWEEN RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_0) AND RECORD_FILTER_VALUE_CONVERSION('customer_id', :customer_id_1)))", array('customer_id_0' => 2, 'customer_id_1' => 5), ''),
+        );
+    }
+
     /**
-     * @param Query  $query
-     * @param string $whereCase
+     * @param Query   $query
+     * @param string  $whereCase
+     * @param boolean $return
+     *
+     * @return string
      */
-    protected function assertDqlSuccessCompile(Query $query, $whereCase)
+    protected function assertDqlSuccessCompile(Query $query, $whereCase, $return = false)
     {
         if (null !== $whereCase) {
             $query->useQueryCache(false);
             $dql = $query->getDQL() . $whereCase;
             $query->setDQL($dql);
-            $query->getSQL();
+
+            try {
+                if ($return) {
+                    return $query->getSQL();
+                }
+
+                $query->getSQL();
+            } catch (QueryException $e) {
+                $this->fail('compile error:' . $e->getMessage() . ' with Query: ' . $query->getDQL());
+            }
         }
+
+        return '';
     }
 }

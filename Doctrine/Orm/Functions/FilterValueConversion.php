@@ -19,10 +19,10 @@ use Doctrine\ORM\Query\Lexer;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 
 /**
- * "FILTER_VALUE_CONVERSION(FieldMame, column)"
+ * "FILTER_VALUE_CONVERSION(FieldMame, :parameter)"
  *
  * FilterFieldConversion ::=
- *     "RECORD_FILTER_VALUE_CONVERSION" "(" StringPrimary, StateFieldPathExpression ")"
+ *     "RECORD_FILTER_VALUE_CONVERSION" "(" StringPrimary, InParameter ")"
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -52,7 +52,7 @@ class FilterValueConversion extends FunctionNode
 
         $parser->match(Lexer::T_COMMA);
 
-        $this->columnExpression = $parser->StateFieldPathExpression();
+        $this->columnExpression = $parser->InParameter();
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }

@@ -207,13 +207,14 @@ QY;
                 \$valuesBag = \$filters[$_fieldName];
                 \$field = \$this->fieldSet->get($_fieldName);
                 \$column = \$this->getFieldColumn($_fieldName, \$field);
+                \$this->initValueConversion($_fieldName, \$field);
 
                 if (\$valuesBag->hasSingleValues()) {
-                    \$query .= sprintf('%s IN(%s) AND ', \$column, \$this->createInList(\$valuesBag->getSingleValues(), $_fieldName, \$field));
+                    \$query .= \$this->valueToList(\$valuesBag->getSingleValues(), \$column, $_fieldName, \$field);
                 }
 
                 if (\$valuesBag->hasExcludes()) {
-                    \$query .= sprintf('%s NOT IN(%s) AND ', \$column, \$this->createInList(\$valuesBag->getExcludes(), $_fieldName, \$field));
+                    \$query .= \$this->valueToList(\$valuesBag->getExcludes(), \$column, $_fieldName, \$field, true);
                 }
 
 QY;
