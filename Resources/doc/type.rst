@@ -19,7 +19,7 @@ Secondly, all built-in types support comparison optimizing when possible.
 Its possible but not recommended to overwrite the build-in types by using
 the same alias.
 
-see ``Resources/config/record_filter.xml`` for there corresponding names.
+see ``Resources/config/services.xml`` for there corresponding names.
 
 Configuration
 -------------
@@ -109,8 +109,7 @@ EnumType
 EnumType is similar to ENUM of SQL, it only allows an fixed set of possible values (labels) to be used.
 The label are then converted back to the internal value.
 
-For this to work
-
+For this to work, TODO.
 
 Making your own
 ---------------

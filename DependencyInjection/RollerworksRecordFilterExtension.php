@@ -35,7 +35,7 @@ class RollerworksRecordFilterExtension extends Extension
         $config        = $this->processConfiguration($configuration, $config);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('record_filter.xml');
+        $loader->load('services.xml');
 
         $cacheDirectory = $container->getParameterBag()->resolveValue($config['metadata_cache']);
 
