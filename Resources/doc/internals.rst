@@ -30,23 +30,22 @@ An FilterConfig object consists of:
 FieldSets and Field object are created on-the fly,
 an FilterConfig object can be used by multiple FieldSets.
 
-Doctrine/Sql
+Doctrine/Orm
 ------------
 
-Creates an SQL WHERE-case Query based on the given FieldSet and
+Creates an WHERE case Query based on the given FieldSet and
 values provided by the Formatter.
 
-The SQL field-names are resolved using the information
+The field-names are resolved using the information
 of the class/property reference.
 
-Conversions are either done by reading the Metadata of the class (value)
-and set explicit (field), as this uses Doctrine there is no problem with hard-requirements.
+Conversions are done by reading the Metadata of the class.
 
-Metadata Mapping
-----------------
+Metadata
+--------
 
-Metadata Mapping or Mapping for short, is used for populating an FieldSet
-with configuration based on the metadata of one or more classes.
+Metadata, is used for populating an FieldSet with configuration based
+on the metadata of one or more classes.
 The metadata is read using the JMS/Metadata Component.
 
 Metadata can be stored as property annotations inside
@@ -69,17 +68,18 @@ Factories are used for creating class files at runtime or cache-warming.
 
 When referring to 'classes' these are meant as *class files*.
 
-SqlWhereBuilderFactory
-~~~~~~~~~~~~~~~~~~~~~~
-
-This factory is used to create SqlWhereBuilder classes based on the FieldSet configuration.
-
-* Only fields present in the FieldSet are used
-* Only when an field supports ranges/compares the code for this is generated.
-
 FieldSetFactory
 ~~~~~~~~~~~~~~~
 
 This is factory is used for creating FieldSet classes for faster loading.
 
 The FieldSet is created as the state is, including name and present fields.
+
+OrmWhereBuilderFactory
+~~~~~~~~~~~~~~~~~~~~~~
+
+This factory is used to create OrmWhereBuilder classes based on the FieldSet configuration.
+
+* Only fields present in the FieldSet are used.
+* Only fields having an valid Property reference are used.
+* Only when an field supports ranges/compares, the code for this is generated.

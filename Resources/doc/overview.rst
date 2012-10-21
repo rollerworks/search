@@ -37,8 +37,8 @@ Depending on your needs you may need the following.
 
 * Bcmath or GMP for handling big numbers.
 
-* Database support when using Doctrine\Sql (or related).
-  This also requires Doctrine ORM to be installed.
+* Database support when using Doctrine\Orm (or related).
+  This requires Doctrine ORM to be installed.
 
 Component Breakdown
 -------------------
