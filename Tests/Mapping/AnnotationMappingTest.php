@@ -52,6 +52,22 @@ class AnnotationMappingTest extends TestCase
         $this->assertEquals($property, unserialize(serialize($property)));
     }
 
+    public function testBasics2()
+    {
+        $reflection = new \ReflectionClass('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceAddress');
+        $class = $this->mappingDriver->loadMetadataForClass($reflection);
+
+        $this->assertTrue(isset($class->propertyMetadata['name']));
+
+        $property = new PropertyMetadata($reflection->name, 'name');
+        $property->filter_name    = 'address_label';
+        $property->label          = 'address_name';
+        $property->required       = false;
+        $property->type           = new FilterTypeConfig('text', array());
+        $property->acceptRanges   = false;
+        $property->acceptCompares = false;
+    }
+
     public function testAccepts()
     {
         $reflection = new \ReflectionClass('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice');

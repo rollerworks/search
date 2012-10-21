@@ -60,8 +60,8 @@ class AnnotationDriver implements DriverInterface
                 if ($annotation instanceof AnnotationField) {
                     $propertyMetadata = new PropertyMetadata($class->name, $reflectionProperty->name);
 
-                    /** @var \Rollerworks\Bundle\RecordFilterBundle\Annotation\Field $annotation */
                     $propertyMetadata->filter_name = $annotation->getName();
+                    $propertyMetadata->label       = $annotation->getLabel();
                     $propertyMetadata->required    = $annotation->isRequired();
                     $propertyMetadata->type        = new FilterTypeConfig($annotation->getType()->getName(), $annotation->getType()->getParams());
 

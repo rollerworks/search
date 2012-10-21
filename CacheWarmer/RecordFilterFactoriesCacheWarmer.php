@@ -104,12 +104,13 @@ class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
 
             foreach ($setData['fields'] as $fieldName => $field) {
                 $type = null;
+                $label = null === $field['label'] ? $fieldName : $field['label'];
 
                 if (!empty($field['type'])) {
                     $type = new FilterTypeConfig($field['type']['name'], $field['type']['params']);
                 }
 
-                $filterField = new FilterField($fieldName, $type, $field['required'], $field['accept_ranges'], $field['accept_compares']);
+                $filterField = new FilterField($label, $type, $field['required'], $field['accept_ranges'], $field['accept_compares']);
 
                 if (isset($field['ref'])) {
                     $filterField->setPropertyRef($field['ref']['class'], $field['ref']['property']);
@@ -158,7 +159,7 @@ class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
             }
 
             $config = new FilterField(
-                $propertyMetadata->filter_name,
+                (null !== $propertyMetadata->label ? $propertyMetadata->label : $propertyMetadata->filter_name),
                 $type,
                 $propertyMetadata->required,
                 $propertyMetadata->acceptRanges,

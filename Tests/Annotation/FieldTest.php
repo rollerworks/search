@@ -25,6 +25,17 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('User', $field->getName());
     }
 
+    public function testLabel()
+    {
+        $field = new FilterField(array('name' => 'User', 'label' => 'User'));
+        $this->assertEquals('User', $field->getName());
+        $this->assertEquals('User', $field->getLabel());
+
+        $field->setLabel('customer');
+        $this->assertEquals('User', $field->getName());
+        $this->assertEquals('customer', $field->getLabel());
+    }
+
     public function testNameReq()
     {
         $this->setExpectedException('\UnexpectedValueException', "Property 'name' on annotation 'Rollerworks\\Bundle\\RecordFilterBundle\\Annotation\\Field' is required.");

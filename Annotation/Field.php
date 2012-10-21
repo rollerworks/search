@@ -26,6 +26,11 @@ class Field
     private $name;
 
     /**
+     * @var string
+     */
+    private $label;
+
+    /**
      * @var boolean
      */
     private $required;
@@ -60,8 +65,9 @@ class Field
      */
     public function __construct(array $data)
     {
-        $this->name = null;
-        $this->type = null;
+        $this->name  = null;
+        $this->label = null;
+        $this->type  = null;
 
         $this->required       = false;
         $this->acceptRanges   = false;
@@ -115,6 +121,22 @@ class Field
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
     }
 
     /**

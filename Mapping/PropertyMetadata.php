@@ -20,6 +20,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine\OrmConfig;
 class PropertyMetadata extends BasePropertyMetadata
 {
     public $filter_name;
+    public $label;
     public $required;
 
     public $acceptRanges;
@@ -50,8 +51,8 @@ class PropertyMetadata extends BasePropertyMetadata
     }
 
     /**
-     * @param string               $type
-     * @param BasePropertyMetadata $value
+     * @param string $type
+     * @param object $value
      */
     public function setDoctrineConfig($type, $value)
     {
@@ -65,6 +66,7 @@ class PropertyMetadata extends BasePropertyMetadata
     {
         return serialize(array(
             $this->filter_name,
+            $this->label,
             $this->type,
 
             $this->required,
@@ -85,6 +87,7 @@ class PropertyMetadata extends BasePropertyMetadata
     {
         list(
             $this->filter_name,
+            $this->label,
             $this->type,
 
             $this->required,

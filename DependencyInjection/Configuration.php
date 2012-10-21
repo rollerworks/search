@@ -134,6 +134,7 @@ class Configuration implements ConfigurationInterface
                                         ->booleanNode('required')->defaultFalse()->end()
                                         ->booleanNode('accept_ranges')->defaultFalse()->end()
                                         ->booleanNode('accept_compares')->defaultFalse()->end()
+                                        ->scalarNode('label')->defaultValue(null)->end()
                                         ->arrayNode('type')
                                             ->beforeNormalization()->ifString()->then(function($v) { return array('name' => $v); })->end()
                                             ->children()

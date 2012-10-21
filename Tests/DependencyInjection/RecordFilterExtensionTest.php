@@ -196,6 +196,7 @@ class RecordFilterExtensionTest extends TestCase
                     'fields' => array(
                         'id' => array(
                             'type' => array('name' => 'number', 'params' => array()),
+                            'label' => null,
                             'required' => false,
                             'accept_ranges' => false,
                             'accept_compares' => false,
@@ -211,6 +212,7 @@ class RecordFilterExtensionTest extends TestCase
                             'required' => false,
                             'accept_ranges' => false,
                             'accept_compares' => false,
+                            'label' => null,
                             'type' => array('name' => 'number', 'params' => array()),
                         ),
                     ),

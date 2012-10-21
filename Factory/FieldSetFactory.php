@@ -157,7 +157,7 @@ class FieldSetFactory extends AbstractFactory
             $fields .= sprintf(
                 $fieldTemplate,
                 $fieldNameSafe,
-                '$translator->trans($transPrefix . ' . $fieldNameSafe . ', array(), $transDomain)',
+                ($field->getLabel() !== $fieldName ? var_export($field->getLabel(), true) : '$translator->trans($transPrefix . ' . $fieldNameSafe . ', array(), $transDomain)'),
                 $this->generateType($field->getType()),
                 var_export($field->isRequired(), true),
                 var_export($field->acceptRanges(), true),

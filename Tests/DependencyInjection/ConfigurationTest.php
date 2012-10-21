@@ -110,6 +110,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'fields' => array(
                     'id' => array(
                         'type' => array('name' => 'number', 'params' => array()),
+                        'label' => null,
                         'required' => false,
                         'accept_ranges' => false,
                         'accept_compares' => false,
@@ -138,6 +139,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         ),
                         'name' => array(
                             'type' => array('name' => 'text', 'params' => array()),
+                            'label' => null,
                             'required' => true,
                             'accept_ranges' => true,
                             'accept_compares' => true,
@@ -149,12 +151,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'fields' => array(
                             'id' => array(
                                 'type' => array('name' => 'number', 'params' => array()),
+                                'label' => null,
                                 'required' => false,
                                 'accept_ranges' => false,
                                 'accept_compares' => false,
                             ),
                             'name' => array(
                                 'type' => array('name' => 'text', 'params' => array()),
+                                'label' => null,
                                 'required' => true,
                                 'accept_ranges' => true,
                                 'accept_compares' => true,
@@ -185,12 +189,54 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'fields' => array(
                             'id' => array(
                                 'type' => array('name' => 'number', 'params' => array()),
+                                'label' => null,
                                 'required' => false,
                                 'accept_ranges' => false,
                                 'accept_compares' => false,
                             ),
                             'name' => array(
                                 'type' => array('name' => 'text', 'params' => array()),
+                                'label' => null,
+                                'required' => true,
+                                'accept_ranges' => true,
+                                'accept_compares' => true,
+                                'ref' => array('class' => 'customer', 'property' => 'name')
+                            )
+                        ),
+                        'import' => array(),
+                    )
+                )
+            ),
+
+            array(
+                array('customer' => array(
+                    'fields' => array(
+                        'id' => array(
+                            'type' => 'number',
+                        ),
+                        'name' => array(
+                            'type' => array('name' => 'text', 'params' => array()),
+                            'label' => 'real name',
+                            'required' => true,
+                            'accept_ranges' => true,
+                            'accept_compares' => true,
+                            'ref' => array('class' => 'customer', 'property' => 'name')
+                        )
+                    )
+                )),
+                array(
+                    'customer' => array(
+                        'fields' => array(
+                            'id' => array(
+                                'type' => array('name' => 'number', 'params' => array()),
+                                'label' => null,
+                                'required' => false,
+                                'accept_ranges' => false,
+                                'accept_compares' => false,
+                            ),
+                            'name' => array(
+                                'type' => array('name' => 'text', 'params' => array()),
+                                'label' => 'real name',
                                 'required' => true,
                                 'accept_ranges' => true,
                                 'accept_compares' => true,
@@ -230,12 +276,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'fields' => array(
                             'id' => array(
                                 'type' => array('name' => 'number', 'params' => array()),
+                                'label' => null,
                                 'required' => false,
                                 'accept_ranges' => false,
                                 'accept_compares' => false,
                             ),
                             'name' => array(
                                 'type' => array('name' => 'text', 'params' => array()),
+                                'label' => null,
                                 'required' => false,
                                 'accept_ranges' => false,
                                 'accept_compares' => false,
@@ -247,12 +295,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'fields' => array(
                             'id' => array(
                                 'type' => array('name' => 'number', 'params' => array()),
+                                'label' => null,
                                 'required' => false,
                                 'accept_ranges' => false,
                                 'accept_compares' => false,
                             ),
                             'name' => array(
                                 'type' => array('name' => 'text', 'params' => array()),
+                                'label' => null,
                                 'required' => false,
                                 'accept_ranges' => false,
                                 'accept_compares' => false,
@@ -332,6 +382,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                         'fields' => array(
                             'id' => array(
                                 'type' => array('name' => 'number', 'params' => array()),
+                                'label' => null,
                                 'required' => false,
                                 'accept_ranges' => false,
                                 'accept_compares' => false,
@@ -341,6 +392,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                                 'accept_ranges' => true,
                                 'accept_compares' => true,
                                 'type' => array('name' => 'text', 'params' => array('accept_newline' => true, 'forbidden_chars' => array('>', '<'))),
+                                'label' => null,
                             )
                         ),
                     )
