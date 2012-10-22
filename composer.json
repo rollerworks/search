@@ -23,7 +23,7 @@
         "doctrine/orm": ">=2.2,<2.4-dev"
     },
     "suggest": {
-        "doctrine/orm": "If you want to use the Doctrine ORM."
+        "doctrine/orm": "If you want to use the Doctrine ORM, this also requires doctrine/doctrine-bundle to be installed."
     },
     "autoload": {
         "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "" }

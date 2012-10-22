@@ -4,9 +4,8 @@ Configuration
 Introduction
 ------------
 
-Configuration of the RecordFilter is very simple and basic.
-
-Out of the box you don't need to configure anything to start working.
+Configuration of the RecordFilter is very simple and basic,
+out of the box you don't need to configure anything to start working.
 
 The only thing you properly want to set is the FieldSets
 and auto generating of classes.
@@ -85,16 +84,89 @@ To do this, you must configure the FieldSets in our application config.
                     # Explicit fields defined above will overwrite imported ones.
                     import:
                         -
+
+                            # Class must be an fully qualified class name with namespace
                             class: Full\Class\Name
 
                             # You can either specify fields that must be imported or fields that must be excluded.
                             # Only include_fields or exclude_fields, not both. include prevails over exclude
 
-                                # Only import only these fields (by fieldname not property-name)
-                                include_fields: [ id, name ]
+                            # Only import only these fields (by fieldname not property-name)
+                            include_fields: [ id, name ]
 
-                                # Only import only fields not present in this list
-                                exclude_fields: [ id, name ]
+                            # Only import only fields not present in this list
+                            exclude_fields: [ id, name ]
+
+    .. code-block:: php
+
+        // app/config/config.php
+        $container->loadFromExtension('rollerworks_record_filter', array(
+            /* ... */
+            'factories' => array(
+                /* ... */
+                'fieldset' => array(
+                    // Set auto generation to true, or else the cache warming is not performed
+                    'auto_generate' => true,
+
+                    // Namespace the created FieldSets are stored under
+                    // Default is %rollerworks_record_filter.filters_namespace%
+                    'namespace' => 'RecordFilter',
+
+                    /* ... */
+                ),
+            ),
+
+            'fieldsets' => array(
+                // Note: set_name must be unique for your application config
+                'set_name' => array(
+                    'fields' => array(
+                        // The fieldname must be unique per fieldset
+                        'field_name' => array(
+                            // Every option is optional and defaults to false and null respectively
+                            'required'        => false,
+                            'accept_ranges'   => false,
+                            'accept_compares' => false,
+
+                            // Label can be hardcoded or translatable (see below)
+                            'label' => null,
+
+                            // The type must be either alias-name of the type or null
+                            // Or an array when using parameters
+                            'type' => array('name' => 'type', 'params' => array('param1' => 'value'))
+
+                            // Class property reference, this is needed when Doctrine or similar is used
+                            // Class must be an fully qualified class name with namespace
+                            'ref' => array(
+                                'class'    => 'Full\Class\Name',
+
+                                // Property, NOT the filter field-name
+                                'property' => 'property-name',
+                            )
+                        ),
+
+                        // And/or you can import the class metadata.
+                        // Explicit fields defined above will overwrite imported ones.
+                        'import' => array(
+                            array(
+                                // Class must be an fully qualified class name with namespace
+                                'class'    => 'Full\Class\Name',
+
+                                // You can either specify fields that must be imported or fields that must be excluded.
+                                // Only include_fields or exclude_fields, not both. include prevails over exclude
+
+                                // Only import only these fields (by fieldname not property-name)
+                                'include_fields' => array('id', 'name'),
+
+                                // Only import only fields not present in this list
+                                'exclude_fields' => array('id', 'name'),
+                            ),
+                        ),
+                    ),
+                ),
+                /* ... */
+            ),
+        ));
+
 
 Translation
 ~~~~~~~~~~~
@@ -111,12 +183,30 @@ When no label can be found/set, the field name is used as label.
         rollerworks_record_filter:
             factories:
                 fieldset:
-                    # prefix the translator key with this.
+                    # Prefix the translator key with this.
                     # Fieldname "id" will then look something like labels.id
                     label_translator_prefix: ""
 
                     # Translator domain the labels are stored in
                     label_translator_domain: filters
+
+    .. code-block:: php
+
+        // app/config/config.php
+        $container->loadFromExtension('rollerworks_record_filter', array(
+            /* ... */
+            'factories' => array(
+                /* ... */
+                'fieldset' => array(
+                    // Prefix the translator key with this.
+                    // Fieldname "id" will then look something like labels.id
+                    'label_translator_prefix' => '',
+
+                    // Translator domain the labels are stored in
+                    'label_translator_domain' => 'filters',
+                ),
+            ),
+        ));
 
 Doctrine
 --------
@@ -140,9 +230,24 @@ The Doctrine\Orm\WhereBuilder uses Doctrine ORM for creating SQL/DQL WHERE cases
         rollerworks_record_filter:
             doctrine:
                 orm:
-                    # Default Doctrine ORM entity manager, this the entity manager "name"
+                    # Default Doctrine ORM entity manager, this is the entity manager "name"
                     # not the entity manager service reference.
                     default_entity_manager: %doctrine.default_entity_manager%
+
+
+    .. code-block:: php
+
+        // app/config/config.php
+        $container->loadFromExtension('rollerworks_record_filter', array(
+            /* ... */
+            'doctrine' => array(
+                'orm' => array(
+                    // Default Doctrine ORM entity manager, this is the entity manager "name"
+                    // not the entity manager service reference.
+                    'default_entity_manager' => '%doctrine.default_entity_manager%',
+                ),
+            ),
+        ));
 
 
 If your using DQL you must add the following to your application config.
@@ -234,6 +339,27 @@ And add the custom DQL functions as described above.
                         # Note: factories.fieldset.auto_generate must be enabled for this to work.
                         auto_generate: true
 
-                        # Default Doctrine ORM entity manager, this the entity manager "name"
+                        # Default Doctrine ORM entity manager, this is the entity manager "name"
                         # not the entity manager service reference.
                         default_entity_manager: %doctrine.default_entity_manager%
+
+    .. code-block:: php
+
+        // app/config/config.php
+        $container->loadFromExtension('rollerworks_record_filter', array(
+            /* ... */
+            'factories' => array(
+                /* ... */
+                'doctrine' => array(
+                    'orm' => array(
+                        // Enable auto generating of classes
+                        // Note: factories.fieldset.auto_generate must be enabled for this to work.
+                        'auto_generate' => true,
+
+                        // Default Doctrine ORM entity manager, this is the entity manager "name"
+                        // not the entity manager service reference.
+                        'default_entity_manager' => '%doctrine.default_entity_manager%',
+                    ),
+                ),
+            ),
+        ));
