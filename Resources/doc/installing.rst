@@ -18,10 +18,26 @@ To install RollerworksRecordFilterBundle with Composer just add the following to
         }
     }
 
+    "scripts": {
+        "post-install-cmd": [
+            // ...
+            "Rollerworks\\Component\\Locale\\Composer\\ScriptHandler::updateLocaleData"
+        ],
+        "post-update-cmd": [
+            // ...
+            "Rollerworks\\Component\\Locale\\Composer\\ScriptHandler::updateLocaleData"
+        ]
+    }
+
+The scripts part is needed for updating the localized validation and matching of filter types.
+
 .. note::
 
     Please replace `master-dev` in the snippet above with the latest stable
-    branch, for example ``2.0.*``.
+    branch, for example ``1.0.*``.
+
+    1.0.x is for Symfony 2.0
+    1.1.x is for Symfony 2.1 and up
 
 Then, you can install the new dependencies by running Composer's ``update``
 command from the directory where your ``composer.json`` file is located:
@@ -46,6 +62,9 @@ register the new bundle:
 2. Using the ``deps`` file (Symfony 2.0.x)
 ------------------------------------------
 
+Unfortunately this method is current not fully supported by the bundle.
+You should really consider switching to composer.
+
 .. code-block:: ini
 
     [RollerworksRecordFilterBundle]
@@ -61,6 +80,11 @@ register the new bundle:
     [metadata]
         git=https://github.com/schmittjoh/metadata.git
         version=1.1.1 ; <- make sure to get 1.1.1, not 1.0
+
+    [doctrine]
+        git=http://github.com/doctrine/doctrine2.git
+        ; Make sure to get 2.2.4, any version lower then this is not tested and will properly fail
+        version=2.2.4
 
 Then register the bundle with your kernel:
 

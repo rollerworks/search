@@ -14,11 +14,11 @@ This chapter is intended to prepare you for the information contained in the
 subsequent chapters of this book.
 
 The flow of the RecordFilter is to first accept input,
-format (validating/sanitizing) and then using the formatted result
+format (validating/sanitizing) and then use the formatted result
 for searching the storage engine like an database.
 
 Filter configuration specifies *what* can be filtered,
-filtering preference defines *the actual filtering* conditions you want.
+filtering preference defines the *actual filtering* conditions.
 
 System Requirements
 -------------------
@@ -57,12 +57,12 @@ The FieldSet class holds the filtering configuration of one or multiple FilterFi
 
 *Internally are FieldSets used for passing filtering configuration between components.*
 
-    An FilterField is independent of an FieldSet it is in, and contains of the following information.
+    An FilterField is independent of an FieldSet it is in, and contains the following information.
 
 +-----------------+--------------------------------------------------------------------------------------------------------+---------------------+
 | Name            | Description                                                                                            | Value-type          |
 +=================+========================================================================================================+=====================+
-| Label           | Label of the field, this is empty when the field is only used for passing information.                 | String              |
+| Label           | Label of the field, this may be is empty when the field is only used for passing information.          | String              |
 +-----------------+--------------------------------------------------------------------------------------------------------+---------------------+
 | Type            | Optional filtering type used by the *Formatter* for validation/normalisation etc.                      | null,string,object  |
 |                 | The value of this is very dependent on the context it is used in.                                      |                     |
@@ -74,9 +74,9 @@ The FieldSet class holds the filtering configuration of one or multiple FilterFi
 | AcceptCompares  | Indicates the field accepts comparison values. The Filtering type must support this to work properly.  | Boolean             |
 +-----------------+--------------------------------------------------------------------------------------------------------+---------------------+
 
-    Secondly an Field can contain an property-reference for when using ORM based query-building.
+    Secondly an Field can contain an property-reference for when using ORM or related.
 
-An FieldSet can be created on the fly or created when warming up the cache.
+FieldSets can be created on the fly or created when warming up the cache.
 
 See the :doc:`configuration` section for more information.
 
@@ -86,26 +86,23 @@ Input
 The input component provides the input to use for filtering,
 only fields present in the FieldSet will be used.
 
-Filtering can be provided using an PHP Array or the special *FilterQuery language*.
-
-For more information the FilterQuery language see :doc:`/input/filter_query`
+Filtering can be provided using an PHP Array or the special :doc:`FilterQuery language </input/filter_query>`.
 
 Formatter
 ~~~~~~~~~
 
-An formatter formats the given input by applying common operations like validation,
+The formatter formats the given input by applying common operations like validation,
 normalisation, etc.
 
-The default Formatter (ModifierFormatter) works by performing registered modifiers on the input.
+The default Formatter (ModifierFormatter) works by performing registered
+modifiers on the provided input.
 
 An modifier must implement the
 ``Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ModifierInterface``.
 
 For inspiration of creating your own Modifier look at one of the modifiers provided by the bundle,
-and register it as Service tagged "rollerworks_record_filter.formatter_modifier"
+and register it as Service tagged "rollerworks_record_filter.formatter_modifier" with
 an priority (the lower the later its performed).
-
-List provided of modifiers.
 
 +-------------------+--------------------------------------------------------------------------------------------------------+-----------+
 | Name              | Description                                                                                            | Priority  |
@@ -123,14 +120,6 @@ List provided of modifiers.
 | ValueOptimizer    | Optimizes value by OptimizableInterface filter-type implementation.                                    | -128      |
 +-------------------+--------------------------------------------------------------------------------------------------------+-----------+
 
-Doctrine
-~~~~~~~~
-
-Searches trough the database using the final filtering-preference.
-Both SQL and DQL are supported.
-
-For more information on using the Doctrine component see :doc:`/Doctrine/where_builder`
-
 Type
 ~~~~
 
@@ -138,12 +127,20 @@ Filtering types for working with values,
 each type implements its own way of handling a value including validation/sanitizing
 and possible optimizing.
 
-For more information on using the Record component see :doc:`type`
+For more information on using the Type component see :doc:`type`
+
+Doctrine
+~~~~~~~~
+
+Searches trough the database using the final filtering-preference.
+Both SQL and DQL are supported.
+
+For more information on using the Doctrine component see :doc:`/Doctrine/index`
 
 Factory
 ~~~~~~~
 
-Factories can be used for creating classes based on FieldSets that are faster
-then recreating structures on every call.
+Factories can be used for creating classes based on FieldSets,
+generated classes are faster then recreating structures every time.
 
 The factories are meanly used for CacheWarming.

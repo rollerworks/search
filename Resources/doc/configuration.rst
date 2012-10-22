@@ -6,36 +6,36 @@ Introduction
 
 Configuration of the RecordFilter is very simple and basic.
 
-Out of the box we don't need to configure anything to start working.
+Out of the box you don't need to configure anything to start working.
 
-The only thing we properly want to set is the FieldSets
+The only thing you properly want to set is the FieldSets
 and auto generating of classes.
 
 Auto generating of the classes increases performance
-and allows us easier configuration.
+and allows easier configuration.
 
 FieldSets
 ---------
 
-For better performance FieldSets can be dumped during cache warming.
+For better performance, FieldSets can be dumped during cache warming.
 
-To do this, we configure the FieldSets in our application config.
+To do this, you must configure the FieldSets in our application config.
 
-.. caution ::
+.. caution::
 
     Dumped FieldSet are marked as frozen and can't be changed,
     except for there type configurations.
 
-.. caution ::
+.. caution::
 
-    Our FieldSet names must be unique trough out the application.
+    The FieldSet names must be unique trough out the application.
 
     Its best to prefix the FieldSet name with an (optional) vendor and domain
-    like we would do with our ORM Entity classes.
+    like you would do with our ORM Entity classes.
 
-    "invoice" domain in vendor "acme"  would become "acme_invoice".
+    "invoice" domain in vendor "acme" would become "acme_invoice".
 
-    We can also prefix our fields in this way, but most time this is not needed.
+    You can also prefix the fields in this way, but most time this is not needed.
 
 .. configuration-block::
 
@@ -52,7 +52,7 @@ To do this, we configure the FieldSets in our application config.
                     namespace: RecordFilter
 
             fieldsets:
-                # Note: set_name must be unique for our application config
+                # Note: set_name must be unique for your application config
                 set_name:
                     fields:
                         # The fieldname must be unique per fieldset
@@ -61,6 +61,9 @@ To do this, we configure the FieldSets in our application config.
                             required:         false
                             accept_ranges:    false
                             accept_compares:  false
+
+                            # Label can be hardcoded or translatable (see below)
+                            label:            null
 
                             # The type must be either
 
@@ -75,16 +78,16 @@ To do this, we configure the FieldSets in our application config.
                             ref:
                                 class:    Full\Class\Name
 
-                                # Property NOT filter field-name
+                                # Property, NOT the filter field-name
                                 property: property-name
 
-                    # And/or we can import the class metadata.
+                    # And/or you can import the class metadata.
                     # Explicit fields defined above will overwrite imported ones.
                     import:
                         -
                             class: Full\Class\Name
 
-                            # We can either specify fields that must be imported or fields that must be excluded.
+                            # You can either specify fields that must be imported or fields that must be excluded.
                             # Only include_fields or exclude_fields, not both. include prevails over exclude
 
                                 # Only import only these fields (by fieldname not property-name)
@@ -93,9 +96,13 @@ To do this, we configure the FieldSets in our application config.
                                 # Only import only fields not present in this list
                                 exclude_fields: [ id, name ]
 
-As our field labels can be localized, we can also choose to use the translator.
+Translation
+~~~~~~~~~~~
 
-When no label can be found, the field name is used as label.
+As field labels can be localized,
+instead of hard coding them you can also choose to use the translator.
+
+When no label can be found/set, the field name is used as label.
 
 .. configuration-block::
 
@@ -120,7 +127,7 @@ OrmWhereBuilder
 The Doctrine\Orm\WhereBuilder uses Doctrine ORM for creating SQL/DQL WHERE cases
 "on the fly" based on the given FieldSet.
 
-.. tip ::
+.. tip::
 
     When the FieldSet is defined in the application configuration
     its better to enable the Doctrine OrmWhereBuilder factory as creating
@@ -137,9 +144,11 @@ The Doctrine\Orm\WhereBuilder uses Doctrine ORM for creating SQL/DQL WHERE cases
                     # not the entity manager service reference.
                     default_entity_manager: %doctrine.default_entity_manager%
 
-When using DQL we must not forget to add the following to our application config.
 
-If we use different entity managers, we must apply the functions for all of them.
+If your using DQL you must add the following to your application config.
+
+When your using multiple entity managers, they must be applied all entity
+managers used by the RecordFilter.
 
 .. configuration-block::
 
@@ -163,7 +172,8 @@ If we use different entity managers, we must apply the functions for all of them
         <container xmlns="http://symfony.com/schema/dic/services"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:doctrine="http://symfony.com/schema/dic/doctrine"
-            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd
+                                http://symfony.com/schema/dic/doctrine http://symfony.com/schema/dic/doctrine/doctrine-1.0.xsd">
 
             <doctrine:config>
                 <doctrine:orm>

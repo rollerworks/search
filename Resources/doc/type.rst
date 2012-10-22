@@ -1,23 +1,26 @@
 Type
 ====
 
-Filtering types for working with values,
-each type implements its own way of handling a value including
-validation/sanitizing and possible optimizing.
+The RecordFilter is more just then simple an search engine.
+
+As your properly know, searching works by filtering conditions,
+configured by fields in sets.
+
+Each field can have a special filtering type for working with values.
+Using an special type for the field allows validation/sanitizing and matching.
 
 Basic types like Date/Time and numbers are built-in,
-but building your own types is also possible and very simple.
+but you can also build your own types.
 
 .. note::
 
-    All built-in types are local aware and require either
-    the International extension or Symfony Intl Stubs
-    (The Symfony stub may not support all locales).
+    All built-in types are local aware and require the Symfony Locale component.
+    When working with none ASCII charters the International Extension must be installed.
 
 Secondly, all built-in types support comparison optimizing when possible.
 
 Its possible but not recommended to overwrite the build-in types by using
-the same alias.
+the same alias. You should only considering doing this when absolutely needed.
 
 see ``Resources/config/services.xml`` for there corresponding names.
 
@@ -45,6 +48,11 @@ Changing an existing Field.
 
     $fieldSet->get('field_name')->getType()->setOptions(array('max' => '2015-10-14'));
 
+.. note::
+
+    Just because an type supports range or comparison does not automatically
+    enable it for the field configuration. You must always do this **explicitly**.
+
 Text
 ----
 
@@ -53,9 +61,10 @@ Handles text values as-is, this type can be seen as 'abstract' for more strict h
 DateTime
 --------
 
-DateTime related types can be used for working with either date/time or a combination of both.
+DateTime related types can be used for working with either date/time
+or a combination of both. They support ranges and comparison.
 
-The following options can be set.
+The following options can be set for Date, DateTime and Time.
 
 +-------------------+----------------------------------------------------------------+----------------------+
 | Option            | Description                                                    | Accepted values      |
@@ -70,12 +79,15 @@ The following options can be set.
 Number
 ------
 
-Handles numbers, can be localized.
+Handles numeric values, can be localized.
+They support ranges and comparison.
 
-Note: When working with big numbers (beyond maximum php value),
-either bcmath or GMP must be installed and the configuration **must** use an string.
+.. note::
 
-The following options can be set.
+    When working with big numbers (beyond maximum php value),
+    either bcmath or GMP must be installed and the option values **must** be strings.
+
+The following options can be set for number.
 
 +-------------------+-----------------------------------------------------------------+----------------------+
 | Option            | Description                                                     | Accepted values      |
@@ -88,10 +100,11 @@ The following options can be set.
 Decimal
 -------
 
-Handles Decimal values, can be localized.
+Handles decimal values, can be localized.
+They support ranges and comparison.
 
-Note: When working with big numbers (beyond maximum php value),
-either bcmath or GMP must be installed and the configuration **must** use an string.
+    When working with big numbers (beyond maximum php value),
+    either bcmath or GMP must be installed and the option values **must** be strings.
 
 The following options can be set.
 
@@ -104,27 +117,29 @@ The following options can be set.
 +-------------------+------------------------------------------------------------------+----------------------+
 
 EnumType
--------
+--------
 
-EnumType is similar to ENUM of SQL, it only allows an fixed set of possible values (labels) to be used.
-The label are then converted back to the internal value.
+EnumType is similar to ENUM of SQL, it only allows an fixed set of possible
+values (labels) to be used. The label are then converted back to the internal value.
 
 For this to work, TODO.
 
 Making your own
 ---------------
 
-Often you will find that the build-in types are not enough,
-luckily making your own type is very ease.
+Often you will find that the build-in types are not enough, and you want use your own.
+Luckily making your own type is very ease, in this chapter we will get to that.
 
 Extending
 ~~~~~~~~~
 
-To safe your self some work, extending an existing one is an good option.
+If you only need an type that is slightly different then the build-in ones,
+you can save your self some work, by extending an existing one.
 
-For example: you want to be able to handle client numbers that are prefixed like C30320.
+For example: you want to handle client numbers that are prefixed like C30320.
 
-Using the Number type and overwriting the validateValue() and sanitizeString() is enough.
+Using the Number type and overwriting the validateValue() and sanitizeString()
+should be enough.
 
 .. code-block:: php
 
@@ -150,11 +165,8 @@ Using the Number type and overwriting the validateValue() and sanitizeString() i
 
 .. note::
 
-    Not all types may use strings,
-    DateTime types use an extended \DateTime class for passing information
-    between methods.
-
-
+    Not all types may use strings, DateTime types use an extended
+    \DateTime class for passing information between methods.
 
 From Scratch
 ~~~~~~~~~~~~
@@ -267,14 +279,19 @@ For this little tutorial we are going to create an type that can handle an statu
         }
     }
 
-Registering Type as Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Registering Type your as a Service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want to use your type in either Class metadata or
+If you want to use your type in the Class metadata or
 FieldSet configuration of the application the type must be
 registered in the service container.
 
-Continuing from your InvoiceStatusType.
+Continuing from our InvoiceStatusType.
+
+.. note::
+
+    The service must be tagged as "rollerworks_record_filter.filter_type"
+    and have an alias that will identify it.
 
 .. configuration-block::
 
@@ -313,9 +330,14 @@ Advanced types
 --------------
 
 An type can be *extended* with extra functionality for
-more advanced optimization and handling.
+more advanced optimization and/or handling.
 
 Look at the build-in types if you need help implementing them.
+
+.. note::
+
+    You must always implement ``Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface``.
+    The following interfaces are optional.
 
 ValueMatcherInterface
 ~~~~~~~~~~~~~~~~~~~~~
@@ -323,7 +345,7 @@ ValueMatcherInterface
 Implement the ``Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface``
 to provide an regex-based matcher for the value.
 
-This is used for the Input component, so its not required to 'always'
+This is only used for FilterQuery, so its not required to 'always'
 use quotes when the value contains a dash or comma.
 
 ConfigurableTypeInterface

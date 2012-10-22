@@ -1,10 +1,10 @@
 Introduction
 ============
 
-The RecordFilterBundle is Symfony 2 Bundle for filter-based record searching.
+The RecordFilterBundle is a Symfony 2 Bundle for filter-based record searching.
 
 Filter-based in that is uses a filtering system to search,
-you don't search by terms but by conditions.
+you search by conditions not terms.
 
 The system was designed to be used for any kind of storage, input and locale.
 
@@ -28,7 +28,6 @@ wish to learn about.
 Throughout this book you will be presented with code samples, which most
 people should find ample to implement RecordFilter appropriately in their own
 projects.
-
 
 Code Samples
 ------------

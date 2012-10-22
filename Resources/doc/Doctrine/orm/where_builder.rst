@@ -172,7 +172,7 @@ We can even mix field and value conversion on the same class.
 .. note::
 
     When using conversions with DQL, the custom functions must be configured as described in:
-    :doc:`configuration.rst`#DoctrineOrmWhereBuilder
+    :doc:`/configuration`
 
 .. note::
 

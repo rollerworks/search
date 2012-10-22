@@ -8,7 +8,7 @@ RecordFilterBundle
     overview
     installing
     configuration
-    type
     input/index.rst
+    type
     Doctrine/index.rst
     internals
