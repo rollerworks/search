@@ -7,4 +7,4 @@ The Doctrine component performs the searching of records using Doctrine ORM or O
 .. toctree::
     :maxdepth: 2
 
-    where_builder
+    orm/where_builder.rst
