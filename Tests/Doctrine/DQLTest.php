@@ -67,6 +67,40 @@ class DQLTest extends OrmTestCase
         $this->assertCount(0, $query->getParameters());
     }
 
+
+    public function testAppendWithQuery()
+    {
+        $input = $this->newInput('invoice_customer=2;');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter, array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'), $query, ' WHERE '));
+        $this->assertEquals('(I.customer IN(:invoice_customer_0))', $whereCase);
+        $this->assertQueryParamsEquals(array('invoice_customer_0' => 2), $query);
+        $this->assertEquals('SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE (I.customer IN(:invoice_customer_0))', $this->cleanSql($query->getDQL()));
+    }
+
+    public function testAppend2NoResWithQuery()
+    {
+        $input = $this->newInput('no_field=2;');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter, array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'), $query, ' WHERE '));
+        $this->assertNull($whereCase);
+        $this->assertEquals('SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I', $this->cleanSql($query->getDQL()));
+    }
+
     /**
      * @dataProvider provideValueConversionTests
      *

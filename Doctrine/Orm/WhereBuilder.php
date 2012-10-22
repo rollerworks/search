@@ -161,14 +161,20 @@ class WhereBuilder
      * Calling this method resets the parameter index counter.
      *
      * @param FormatterInterface $formatter
-     * @param array              $entityAliasMapping An array with the alias-mapping as [class or Bundle:Class] => entity-alias
-     * @param OrmQuery|null      $query              ORM Query object (required for DQL).
+     * @param array              $entityAliasMapping  An array with the alias-mapping as [class or Bundle:Class] => entity-alias
+     * @param OrmQuery|null      $query               ORM Query object (required for DQL).
+     *
+     * @param string|null        $appendQuery         Place *this value* after the current query when when there is an actual filtering result.
+     *                                                The query object will be updated as: current query + $appendQuery + filtering.
+     *                                                This value is only used when an query object is set, and SHOULD contain spaces like " WHERE "
+     * @param boolean            $resetParameterIndex Set this to false if you want to keep the parameter index when calling this method again.
+     *                                                This should only be used using multiple filtering results in the same query.
      *
      * @return null|string
      *
      * @throws \InvalidArgumentException when alias-map is empty but $query is set
      */
-    public function getWhereClause(FormatterInterface $formatter, array $entityAliasMapping = array(), OrmQuery $query = null)
+    public function getWhereClause(FormatterInterface $formatter, array $entityAliasMapping = array(), OrmQuery $query = null, $appendQuery = null, $resetParameterIndex = true)
     {
         // Convert namespace aliases to the correct className
         foreach ($entityAliasMapping as $entity => $alias) {
@@ -194,9 +200,22 @@ class WhereBuilder
 
         $this->fieldsMappingCache   = array();
         $this->fieldConversionCache = array();
-        $this->paramPosition        = array();
 
-        return $this->buildWhere($formatter);
+        if ($resetParameterIndex) {
+            $this->paramPosition = array();
+        }
+
+        $whereCase = $this->buildWhere($formatter);
+
+        if ($query && $appendQuery && $whereCase) {
+            if ($query instanceof DqlQuery) {
+                $query->setDQL($query->getDQL() . $appendQuery . $whereCase);
+            } else {
+                $query->setSQL($query->getSQL() . $appendQuery . $whereCase);
+            }
+        }
+
+        return $whereCase;
     }
 
     /**
