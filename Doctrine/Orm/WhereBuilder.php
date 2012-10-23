@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm;
 
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine\OrmConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine\OrmConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;

@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Mapping;
+namespace Rollerworks\Bundle\RecordFilterBundle\Metadata;
 
 use Metadata\PropertyMetadata as BasePropertyMetadata;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine\OrmConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine\OrmConfig;
 
 /**
  * PropertyMetadata.

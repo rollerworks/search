@@ -13,8 +13,8 @@ namespace Rollerworks\Bundle\RecordFilterBundle\CacheWarmer;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\PropertyMetadata;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\PropertyMetadata;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Metadata\MetadataFactoryInterface;

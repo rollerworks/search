@@ -13,7 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Factory;
 
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\OrmWhereBuilderFactory;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine\OrmTestCase;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -30,13 +30,7 @@ class SqlWhereBuilderFactoryTest extends OrmTestCase
     {
         parent::setUp();
 
-        $annotationReader = new AnnotationReader();
-        $annotationReader->addGlobalIgnoredName('Id');
-        $annotationReader->addGlobalIgnoredName('Column');
-        $annotationReader->addGlobalIgnoredName('GeneratedValue');
-        $annotationReader->addGlobalIgnoredName('OneToOne');
-        $annotationReader->addGlobalIgnoredName('OneToMany');
-
+        $annotationReader = $this->newAnnotationsReader();
         $metadataFactory = new MetadataFactory(new AnnotationDriver($annotationReader));
 
         $cacheDir = __DIR__ . '/../.cache/record_filter';

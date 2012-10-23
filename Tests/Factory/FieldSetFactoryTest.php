@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Factory;
 
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory;

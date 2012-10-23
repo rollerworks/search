@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine;
+namespace Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine;
 
 /**
  * Doctrine OrmConfig class.

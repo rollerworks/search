@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader;
+namespace Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader;
 
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\PropertyMetadata;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine\OrmConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\PropertyMetadata;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine\OrmConfig;
 
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\Field as AnnotationField;
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\Doctrine\SqlValueConversion;

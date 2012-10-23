@@ -11,12 +11,12 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Mapping;
 
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\Loader\AnnotationDriver;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\PropertyMetadata;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\PropertyMetadata;
 use Doctrine\Common\Annotations\AnnotationReader;
 
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\Doctrine\OrmConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine\OrmConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 
 require_once 'Tests/Fixtures/BaseBundle/Entity/ECommerce/ECommerceCustomer.php';

@@ -13,7 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Mapping\FilterTypeConfig;
+use Rollerworks\Bundle\RecordFilterBundle\Metadata\FilterTypeConfig;
 
 /**
  * FilterField.
