@@ -127,10 +127,15 @@ class MessageBag
      * @param string  $transMessage
      * @param array   $params
      * @param boolean $addTranslatorPrefix Add record_filter. prefix
+     * @param boolean $translate           set to false to use message as-is
      */
-    public function addError($transMessage, array $params = array(), $addTranslatorPrefix = true)
+    public function addError($transMessage, array $params = array(), $addTranslatorPrefix = true, $translate = true)
     {
-        $this->messages['error'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params);
+        if ($translate) {
+            $this->messages['error'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params);
+        } else {
+            $this->messages['error'][] = $transMessage;
+        }
     }
 
     /**
