@@ -14,6 +14,8 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Input;
 use Rollerworks\Bundle\RecordFilterBundle\Input\ArrayInput;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
@@ -23,19 +25,36 @@ class ArrayTest extends TestCase
     {
         $input = new ArrayInput($this->translator);
         $input->setField('user', FilterField::create('user'));
+        $input->setInput(array(array("user" => array("single-values" => array(2)))));
 
-        $input->setInput(array('user' => '2'));
-        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
+        $groups = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', null, array(new SingleValue('2'))))), $groups);
     }
 
     public function testSingleFieldWithUnicode()
     {
         $input = new ArrayInput($this->translator);
-        $input->setField('foo', FilterField::create('ß'));
-        $input->setLabelToField('foo', 'ß');
+        $input->setField('ß', FilterField::create('ß'));
+        $input->setInput(array(array("ß" => array("single-values" => array(2)))));
 
-        $input->setInput(array('ß' => '2'));
-        $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
+        $group = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array('ß' => new FilterValuesBag('ß', null, array(new SingleValue('2'))))), $group);
+    }
+
+    public function testSingleFieldWithUnicodeNumber()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setField('ß۲', FilterField::create('ß۲'));
+        $input->setInput(array(array("ß۲" => array("single-values" => array(2)))));
+
+        $group = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array('ß۲' => new FilterValuesBag('ß۲', null, array(new SingleValue('2'))))), $group);
     }
 
     public function testMultipleFields()
@@ -43,45 +62,15 @@ class ArrayTest extends TestCase
         $input = new ArrayInput($this->translator);
         $input->setField('user', FilterField::create('user'));
         $input->setField('status', FilterField::create('status'));
+        $input->setInput(array(array('user' => array('single-values' => array(2)), 'status' => array('single-values' => array('Active')))));
 
-        $input->setInput(array('User' => '2', 'Status' => 'Active'));
+        $group = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
         $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
-        )), $input->getGroups());
-    }
-
-    // Field-name appears more then once
-    public function testDoubleFields()
-    {
-        $input = new ArrayInput($this->translator);
-        $input->setField('user', FilterField::create('user'));
-        $input->setField('status', FilterField::create('status'));
-
-        $input->setLabelToField('status', 'status2');
-
-        $input->setInput(array('User' => '2', 'Status' => 'Active', 'Status2' => 'NoneActive', 'user' => '3'));
-        $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1),
-            'status' => new FilterValuesBag('status', 'Active,NoneActive', array(new SingleValue('Active'), new SingleValue('NoneActive')), array(), array(), array(), array(), 1),
-        )), $input->getGroups());
-    }
-
-    // Test the escaping of the filter-delimiter
-    public function testEscapedFilter()
-    {
-        $input = new ArrayInput($this->translator);
-        $input->setField('user', FilterField::create('user'));
-        $input->setField('status', FilterField::create('status'));
-        $input->setField('date', FilterField::create('date'));
-
-        $input->setInput(array('User' => '2', 'Status' => '"Active;None"', 'date' => '"29-10-2010"'));
-
-        $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-            'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None')), array(), array(), array(), array(), 0),
-            'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
-        )), $input->getGroups());
+            'user' => new FilterValuesBag('user', null, array(new SingleValue('2'))),
+            'status' => new FilterValuesBag('status', null, array(new SingleValue('Active')))
+        )), $group);
     }
 
     public function testOrGroup()
@@ -92,48 +81,84 @@ class ArrayTest extends TestCase
         $input->setField('date', FilterField::create('date'));
 
         $input->setInput(array(
-            array('User' => '2', 'Status' => '"Active;None"', 'date' => '"29-10-2010"'),
-            array('User' => '3', 'Status' => 'Concept', 'date' => '"30-10-2010"')
-        ));
+            array(
+                'user' => array('single-values' => array(2)),
+                'status' => array('single-values' => array('Active;None')),
+                'date' => array('single-values' => array('29-10-2010'))),
+            array(
+                'user' => array('single-values' => array(3)),
+                'status' => array('single-values' => array('Concept')),
+                'date' => array('single-values' => array('30-10-2010')))
+            )
+        );
 
+        $group = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
         $this->assertEquals(array(
             array(
-                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-                'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None')), array(), array(), array(), array(), 0),
-                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
+                'user' => new FilterValuesBag('user', null, array(new SingleValue('2'))),
+                'status' => new FilterValuesBag('status', null, array(new SingleValue('Active;None'))),
+                'date' => new FilterValuesBag('date', null, array(new SingleValue('29-10-2010'))),
             ),
             array(
-                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3')), array(), array(), array(), array(), 0),
-                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept')), array(), array(), array(), array(), 0),
-                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010')), array(), array(), array(), array(), 0),
+                'user' => new FilterValuesBag('user', null, array(new SingleValue('3'))),
+                'status' => new FilterValuesBag('status', null, array(new SingleValue('Concept'))),
+                'date' => new FilterValuesBag('date', null, array(new SingleValue('30-10-2010'))),
             ),
-        ), $input->getGroups());
+        ), $group);
     }
 
-    public function testOrGroupValueWithBars()
+    public function testSingleValueExclude()
     {
         $input = new ArrayInput($this->translator);
         $input->setField('user', FilterField::create('user'));
+        $input->setInput(array(array('user' => array('excluded-values' => array(2)))));
+
+        $groups = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', null, array(), array(new SingleValue('2'))))), $groups);
+    }
+
+    public function testRanges()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setField('user', FilterField::create('user', null, false, true));
         $input->setField('status', FilterField::create('status'));
-        $input->setField('date', FilterField::create('date'));
 
         $input->setInput(array(
-            array('User' => '2', 'Status' => '"(Active;None)"', 'date' => '"29-10-2010"'),
-            array('User' => '3', 'Status' => 'Concept', 'date' => '"30-10-2010"')
+            array('user' => array('single-values' => array(2), 'ranges' => array(array('lower' => 10, 'upper' => 20)), 'excluded-ranges' => array(array('lower' => 30, 'upper' => 50)))))
+        );
+
+        $group = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', null, array(new SingleValue('2')), array(), array(new Range(10, 20)), array(), array(new Range(30, 50))),
+        )), $group);
+    }
+
+    public function testComparisons()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setInput(array(
+            array(
+                'user' => array(
+                    'single-values' => array(2),
+                    'comparisons' => array(array('value' => '25.5.2010', 'operator' => '>')),
+                )
+            )
         ));
 
-        $this->assertEquals(array(
-            array(
-                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-                'status' => new FilterValuesBag('status', '"(Active;None)"', array(new SingleValue('(Active;None)')), array(), array(), array(), array(), 0),
-                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
-            ),
-            array(
-                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3')), array(), array(), array(), array(), 0),
-                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept')), array(), array(), array(), array(), 0),
-                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010')), array(), array(), array(), array(), 0),
-            ),
-        ), $input->getGroups());
+        $group = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', null, array(new SingleValue('2')), array(), array(), array(new Compare('25.5.2010', '>'))),
+        )), $group);
     }
 
     public function testValidationNoRange()
@@ -142,10 +167,9 @@ class ArrayTest extends TestCase
         $input->setField('User', FilterField::create('User', null, true));
         $input->setField('status', FilterField::create('status'));
         $input->setField('date', FilterField::create('date'));
-
         $input->setInput(array(
-            array('User' => '2-5', 'Status' => '"Active"', 'date' => '29.10.2010'),
-        ));
+            array('user' => array('single-values' => array(2), 'ranges' => array(array('lower' => 10, 'upper' => 20)), 'excluded-ranges' => array(array('lower' => 30, 'upper' => 50)))))
+        );
 
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'user' does not accept ranges in group 1."), $input->getMessages());
@@ -155,12 +179,17 @@ class ArrayTest extends TestCase
     {
         $input = new ArrayInput($this->translator);
         $input->setInput(array(
-            array('User' => '2,3,10-20', 'Status' => '"Active"', 'date' => '25.05.2010,>25.5.2010'),
+            array(
+                'date' => array(
+                    'single-values' => array(2),
+                    'comparisons' => array(array('value' => '25.5.2010', 'operator' => '>')),
+                )
+            )
         ));
 
-        $input->setField('user', FilterField::create('user', null, true, true));
-        $input->setField('status', FilterField::create('status', null, true, true));
-        $input->setField('date', FilterField::create('date', null, true, true));
+        $input->setField('user', FilterField::create('user', null, false, true));
+        $input->setField('status', FilterField::create('status', null, false, true));
+        $input->setField('date', FilterField::create('date', null, false, true));
 
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());
