@@ -15,6 +15,8 @@ use Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine\OrmConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -75,6 +77,11 @@ class WhereBuilder
     protected $fieldsMappingCache = array();
     protected $fieldConversionCache = array();
 
+    protected $fieldData = array(
+        'dbType' => null,
+        'column' => null,
+    );
+
     /**
      * @var OrmQuery|null
      */
@@ -125,7 +132,7 @@ class WhereBuilder
      *
      * @param string                        $fieldName
      * @param FieldConversionInterface|null $conversionObj
-     * @param array                         $params
+     * @param array                         $params        An associative array with parameters to (must NOT start with __)
      *
      * @return self
      */
@@ -143,7 +150,7 @@ class WhereBuilder
      *
      * @param string                        $fieldName
      * @param ValueConversionInterface|null $conversionObj
-     * @param array                         $params
+     * @param array                         $params        An associative array with parameters to (must NOT start with __)
      *
      * @return self
      */
@@ -311,27 +318,27 @@ class WhereBuilder
                     continue;
                 }
 
-                $column = $this->getFieldColumn($fieldName, $field);
-                $this->initValueConversion($fieldName, $field);
+                $this->initFilterField($fieldName, $field);
+                $column = ($this->valueConversions[$fieldName][0] instanceof ConversionStrategyInterface ? '' : $this->getFieldColumn($fieldName, $field));
 
                 if ($valuesBag->hasSingleValues()) {
-                    $query .= $this->valueToList($valuesBag->getSingleValues(), $column, $fieldName, $field);
+                    $query .= $this->processSingleValues($valuesBag->getSingleValues(), $column, $fieldName, $field);
                 }
 
                 if ($valuesBag->hasExcludes()) {
-                    $query .= $this->valueToList($valuesBag->getExcludes(), $column, $fieldName, $field, true);
+                    $query .= $this->processSingleValues($valuesBag->getExcludes(), $column, $fieldName, $field, true);
                 }
 
-                foreach ($valuesBag->getRanges() as $range) {
-                    $query .= sprintf('(%s BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field), $this->getValStr($range->getUpper(), $fieldName, $field));
+                if ($valuesBag->hasRanges()) {
+                    $query .= $this->processRanges($valuesBag->getRanges(), $column, $fieldName, $field);
                 }
 
-                foreach ($valuesBag->getExcludedRanges() as $range) {
-                    $query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field), $this->getValStr($range->getUpper(), $fieldName, $field));
+                if ($valuesBag->hasExcludedRanges()) {
+                    $query .= $this->processRanges($valuesBag->getExcludedRanges(), $column, $fieldName, $field, true);
                 }
 
-                foreach ($valuesBag->getCompares() as $comp) {
-                    $query .= sprintf('%s %s %s AND ', $column, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName, $field));
+                if ($valuesBag->hasCompares()) {
+                    $query .= $this->processCompares($valuesBag->getCompares(), $column, $fieldName, $field);
                 }
             }
 
@@ -354,13 +361,39 @@ class WhereBuilder
      *
      * @return string
      */
-    protected function valueToList($values, $column, $fieldName, FilterField $field, $exclude = false)
+    protected function processSingleValues($values, $column, $fieldName, FilterField $field, $exclude = false)
     {
         $inList = '';
 
-        if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
-            // TODO Implement a value conversion strategy pattern
+        // Remap the values and add as-is values to the result
+        if ($this->valueConversions[$fieldName][0] instanceof ConversionStrategyInterface) {
+            $hasCustomDql = ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface && $this->query instanceof DqlQuery);
+            $remappedValues = array();
+            $remappedColumns = array();
 
+            $type = $this->fieldData[$fieldName]['dbType'];
+
+            foreach ($values as $value) {
+                $strategy = $this->valueConversions[$fieldName][0]->getConversionStrategy($value->getValue(), $type, $this->entityManager->getConnection(), $this->valueConversions[$fieldName][1]);
+                $remappedColumns[$strategy] = $this->getFieldColumn($fieldName, $field, $strategy);
+
+                if (0 === $strategy) {
+                    $inList .= sprintf('%s AND ', $this->getValStr($value->getValue(), $fieldName, $field, 0));
+                } elseif ($hasCustomDql) {
+                    $inList .= sprintf('%s %s %s AND ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field, $strategy));
+                } else {
+                    $remappedValues[$strategy] = $value;
+                }
+            }
+
+            foreach ($remappedValues as $strategy => $value) {
+                $inList .= $this->createInList($values, $remappedColumns[$strategy], $fieldName, $field, $exclude, $strategy);
+            }
+
+            return $inList;
+        }
+
+        if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
             if ($this->query instanceof DqlQuery) {
                 foreach ($values as $value) {
                     $inList .= sprintf('%s %s %s AND ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field));
@@ -376,14 +409,88 @@ class WhereBuilder
     }
 
     /**
-     * Returns the correct column (with SQLField conversions applied).
+     * @param Range[]     $ranges
+     * @param string      $column
+     * @param string      $fieldName
+     * @param FilterField $field
+     * @param boolean     $exclude
      *
+     * @return string
+     */
+    protected function processRanges($ranges, $column, $fieldName, FilterField $field, $exclude = false)
+    {
+        $query = '';
+
+        if ($this->valueConversions[$fieldName][0] instanceof ConversionStrategyInterface) {
+            $type = $this->fieldData[$fieldName]['dbType'];
+
+            foreach ($ranges as $range) {
+                $strategy = $this->valueConversions[$fieldName][0]->getConversionStrategy($range->getLower(), $type, $this->entityManager->getConnection(), $this->valueConversions[$fieldName][1]);
+                $column = $this->getFieldColumn($fieldName, $field, $strategy);
+
+                if ($exclude) {
+                    $query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field, $strategy), $this->getValStr($range->getUpper(), $fieldName, $field, $strategy));
+                } else {
+                    $query .= sprintf('(%s BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field, $strategy), $this->getValStr($range->getUpper(), $fieldName, $field, $strategy));
+                }
+            }
+
+            return $query;
+        }
+
+        foreach ($ranges as $range) {
+            if ($exclude) {
+                $query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field), $this->getValStr($range->getUpper(), $fieldName, $field));
+            } else {
+                $query .= sprintf('(%s BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field), $this->getValStr($range->getUpper(), $fieldName, $field));
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param Compare[]   $compares
+     * @param string      $column
      * @param string      $fieldName
      * @param FilterField $field
      *
      * @return string
      */
-    protected function getFieldColumn($fieldName, FilterField $field)
+    protected function processCompares($compares, $column, $fieldName, FilterField $field)
+    {
+        $query = '';
+
+        if ($this->valueConversions[$fieldName][0] instanceof ConversionStrategyInterface) {
+            $type = $this->fieldData[$fieldName]['dbType'];
+
+            foreach ($compares as $comp) {
+                $strategy = $this->valueConversions[$fieldName][0]->getConversionStrategy($comp->getValue(), $type, $this->entityManager->getConnection(), $this->valueConversions[$fieldName][1]);
+                $column = $this->getFieldColumn($fieldName, $field, $strategy);
+
+                $query .= sprintf('%s %s %s AND ', $column, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName, $field, $strategy));
+            }
+
+            return $query;
+        }
+
+        foreach ($compares as $comp) {
+            $query .= sprintf('%s %s %s AND ', $column, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName, $field));
+        }
+
+        return $query;
+    }
+
+    /**
+     * Returns the correct column (with SQLField conversions applied).
+     *
+     * @param string       $fieldName
+     * @param FilterField  $field
+     * @param integer|null $strategy
+     *
+     * @return string
+     */
+    protected function getFieldColumn($fieldName, FilterField $field, $strategy = null)
     {
         if (isset($this->fieldsMappingCache[$fieldName])) {
             return $this->fieldsMappingCache[$fieldName];
@@ -411,12 +518,13 @@ class WhereBuilder
             $metadata = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
             $this->fieldsMappingCache[$fieldName] = $column = $columnPrefix . $metadata->getColumnName($field->getPropertyRefField());
         }
+        $this->fieldData[$fieldName]['column'] = $column;
 
         if ($this->fieldConversions[$fieldName]) {
             if ($this->query instanceof DqlQuery) {
-                $this->fieldsMappingCache[$fieldName] = "RECORD_FILTER_FIELD_CONVERSION('$fieldName', $column)";
+                $this->fieldsMappingCache[$fieldName] = "RECORD_FILTER_FIELD_CONVERSION('$fieldName', $column" . (null === $strategy ? '' : ', ' . $strategy) . ")";
             } else {
-                $this->fieldsMappingCache[$fieldName] = $this->getFieldConversionSql($fieldName, $column, $field);
+                $this->fieldsMappingCache[$fieldName] = $this->getFieldConversionSql($fieldName, $column, $field, $strategy);
             }
         }
 
@@ -433,19 +541,17 @@ class WhereBuilder
      * If there is no conversion or the conversion does not return SQL and DQL is used,
      * the value is added as a named parameter.
      *
-     * @param string      $value
-     * @param string      $fieldName
-     * @param FilterField $field
+     * @param string       $value
+     * @param string       $fieldName
+     * @param FilterField  $field
+     * @param integer|null $strategy
      *
      * @return string|float|integer
      */
-    protected function getValStr($value, $fieldName, FilterField $field)
+    protected function getValStr($value, $fieldName, FilterField $field, $strategy = null)
     {
-        $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
-        if (!is_object($type)) {
-            $type = ORMType::getType($type);
-        }
-
+        /** @var \Doctrine\DBAL\Types\Type $type */
+        $type = $this->fieldData[$fieldName]['dbType'];
         $paramName = null;
 
         if ($this->valueConversions[$fieldName][0]) {
@@ -469,9 +575,9 @@ class WhereBuilder
 
             if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
                 if ($this->query instanceof DqlQuery) {
-                    $value = "RECORD_FILTER_VALUE_CONVERSION('$fieldName', $value)";
+                    $value = "RECORD_FILTER_VALUE_CONVERSION('$fieldName', $value" . (null === $strategy ? '' : ', ' . $strategy) . ")";
                 } else {
-                    $value = $this->getValueConversionSql($fieldName, $value, $field, $type);
+                    $value = $this->getValueConversionSql($fieldName, $value, $field, $type, $strategy);
                 }
             }
         } elseif ($this->query) {
@@ -491,12 +597,14 @@ class WhereBuilder
     }
 
     /**
-     * Initialize the value conversion cache for the given field.
+     * Initialize the filtering-field.
+     *
+     * This Initializes the conversion cache and internal data.
      *
      * @param string      $fieldName
      * @param FilterField $field
      */
-    protected function initValueConversion($fieldName, FilterField  $field)
+    protected function initFilterField($fieldName, FilterField  $field)
     {
         if (!isset($this->valueConversions[$fieldName])) {
             if (($propertyConfig = $this->getPropertyConfig($field)) && $propertyConfig->hasValueConversion()) {
@@ -506,6 +614,15 @@ class WhereBuilder
                 $this->valueConversions[$fieldName] = array(null, array());
             }
         }
+
+        if (!isset($this->fieldData[$fieldName]['dbType'])) {
+            $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
+            if (!is_object($type)) {
+                $type = ORMType::getType($type);
+            }
+
+            $this->fieldData[$fieldName]['dbType'] = $type;
+        }
     }
 
     /**
@@ -514,17 +631,18 @@ class WhereBuilder
      * @param string        $fieldName
      * @param FilterField   $field
      * @param boolean       $exclude
+     * @param integer|null  $strategy
      *
      * @return string
      */
-    private function createInList($values, $column, $fieldName, FilterField $field, $exclude = false)
+    private function createInList($values, $column, $fieldName, FilterField $field, $exclude = false, $strategy = null)
     {
         $inList = '';
         $total  = count($values);
         $cur    = 1;
 
         foreach ($values as $value) {
-            $inList .= $this->getValStr($value->getValue(), $fieldName, $field) . ($total > $cur ? ', ' : '');
+            $inList .= $this->getValStr($value->getValue(), $fieldName, $field, $strategy) . ($total > $cur ? ', ' : '');
             $cur++;
         }
 

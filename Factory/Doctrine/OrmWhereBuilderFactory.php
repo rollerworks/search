@@ -209,14 +209,15 @@ QY;
                 \$valuesBag = \$filters[$_fieldName];
                 \$field = \$this->fieldSet->get($_fieldName);
                 \$column = \$this->getFieldColumn($_fieldName, \$field);
-                \$this->initValueConversion($_fieldName, \$field);
+                \$this->initFilterField($_fieldName, \$field);
+                \$column = (\$this->valueConversions[$_fieldName][0] instanceof ConversionStrategyInterface ? '' : \$this->getFieldColumn($_fieldName, \$field));
 
                 if (\$valuesBag->hasSingleValues()) {
-                    \$query .= \$this->valueToList(\$valuesBag->getSingleValues(), \$column, $_fieldName, \$field);
+                    \$query .= \$this->processSingleValues(\$valuesBag->getSingleValues(), \$column, $_fieldName, \$field);
                 }
 
                 if (\$valuesBag->hasExcludes()) {
-                    \$query .= \$this->valueToList(\$valuesBag->getExcludes(), \$column, $_fieldName, \$field, true);
+                    \$query .= \$this->processSingleValues(\$valuesBag->getExcludes(), \$column, $_fieldName, \$field, true);
                 }
 
 QY;
