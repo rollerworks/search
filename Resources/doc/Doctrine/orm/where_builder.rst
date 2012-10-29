@@ -184,6 +184,11 @@ We can even mix field and value conversion on the same class.
 When we want to use the Metadata for conversion,
 we need to add the service to our application configuration.
 
+.. note::
+
+    Parameter names must not start with '__',
+    '__' is used for internal configuration and set by the system.
+
 We can use any service name we like,
 but for sake of readability we prefix it using an vendor and domain.
 
@@ -339,6 +344,6 @@ Or using the Entity metadata.
      * @ORM\Column(type="datetime")
      *
      * @RecordFilter\Field("user_age", type="date")
-     * @RecordFilter\Doctrine\ValueConversionInterface("acme_invoice.record_filter.orm.datetime_value_conversion")
+     * @RecordFilter\Doctrine\SqlValueConversionInterface("acme_invoice.record_filter.orm.datetime_value_conversion")
      */
     public $birthday;

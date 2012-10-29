@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Factory;
 
-use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\OrmWhereBuilderFactory;
