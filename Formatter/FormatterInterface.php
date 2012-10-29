@@ -39,9 +39,9 @@ interface FormatterInterface
     public function getFilters();
 
     /**
-     * Get the fieldSet of the last performed formatting.
+     * Returns the FieldSet of the last performed formatting or null.
      *
-     * @return FieldSet
+     * @return FieldSet|null
      *
      * @api
      */

@@ -18,10 +18,10 @@ use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
- * JsonInput - accepts filtering preference in JSON format.
+ * JsonInput - accepts filtering preference in the JSON format.
  *
  * The provided input must be structured.
- * The root is an array where each entry is group with { "fieldname": { structure } }
+ * The root is an array where each entry is a group with { "fieldname": { structure } }
  *
  * There structure can contain the following.
  *
@@ -46,7 +46,7 @@ class JsonInput extends ArrayInput
     protected $input;
 
     /**
-     * Set the filtering preference.
+     * Sets the filtering preference.
      *
      * @param string $input
      *

@@ -119,7 +119,7 @@ class WhereBuilder
     }
 
     /**
-     * Set the SQL conversion configuration for an field.
+     * Set the SQL conversion configuration for a field.
      *
      * Only one converter per field, existing one is overwritten.
      *
@@ -137,7 +137,7 @@ class WhereBuilder
     }
 
     /**
-     * Set the SQL conversion configuration for an field.
+     * Set the SQL conversion configuration for a field.
      *
      * Only one converter per field, existing one is overwritten.
      *
@@ -158,21 +158,21 @@ class WhereBuilder
      * Returns the WHERE clause for the query.
      *
      * WARNING: Don't set an $query object when using the result in union.
-     * Calling this method resets the parameter index counter.
+     * Calling this method resets the parameter index counter, set $resetParameterIndex to false to prevent that.
      *
      * @param FormatterInterface $formatter
      * @param array              $entityAliasMapping  An array with the alias-mapping as [class or Bundle:Class] => entity-alias
-     * @param OrmQuery|null      $query               ORM Query object (required for DQL).
+     * @param OrmQuery|null      $query               An ORM Query object (required for DQL).
      *
-     * @param string|null        $appendQuery         Place *this value* after the current query when when there is an actual filtering result.
+     * @param string|null        $appendQuery         Place *this value* after the current query when there is an actual filtering result.
      *                                                The query object will be updated as: current query + $appendQuery + filtering.
-     *                                                This value is only used when an query object is set, and SHOULD contain spaces like " WHERE "
-     * @param boolean            $resetParameterIndex Set this to false if you want to keep the parameter index when calling this method again.
-     *                                                This should only be used using multiple filtering results in the same query.
+     *                                                This value is only used when a query object is set, and SHOULD contain spaces like " WHERE "
+     * @param boolean            $resetParameterIndex Set to false if you want to keep the parameter index when calling this method again.
+     *                                                This should only be used when using multiple filtering results in the same query.
      *
-     * @return null|string
+     * @return null|string Returns null when there is no result
      *
-     * @throws \InvalidArgumentException when alias-map is empty but $query is set
+     * @throws \InvalidArgumentException When alias-map is empty but $query is set
      */
     public function getWhereClause(FormatterInterface $formatter, array $entityAliasMapping = array(), OrmQuery $query = null, $appendQuery = null, $resetParameterIndex = true)
     {
@@ -290,7 +290,7 @@ class WhereBuilder
     /**
      * Builds and returns the WHERE clause.
      *
-     * Fields not having an PropertyReference are ignored.
+     * Fields that do not have a PropertyReference are ignored.
      *
      * @param FormatterInterface $formatter
      *
@@ -344,7 +344,7 @@ class WhereBuilder
     }
 
     /**
-     * Returns either comma-separated list of values or field = value condition list.
+     * Returns either a comma-separated list of values or a field = value condition list.
      *
      * @param SingleValue[] $values
      * @param string        $column
@@ -359,7 +359,7 @@ class WhereBuilder
         $inList = '';
 
         if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
-            // TODO Implement an value conversion strategy pattern
+            // TODO Implement a value conversion strategy pattern
 
             if ($this->query instanceof DqlQuery) {
                 foreach ($values as $value) {
@@ -424,16 +424,14 @@ class WhereBuilder
     }
 
     /**
-     * Returns either parameter-name or converted value.
+     * Returns either a parameter-name or converted value.
      *
      * When there is a conversion and the conversion returns SQL the value is threaded as-is.
-     * But if DQL is used the value is wrapped inside an FILTER_VALUE_CONVERSION() DQL function,
-     * and executed when the SQL is created.
+     * But if DQL is used the value is wrapped inside a FILTER_VALUE_CONVERSION() DQL function,
+     * and replaced when the SQL is created.
      *
      * If there is no conversion or the conversion does not return SQL and DQL is used,
-     * the value is added as named parameter. SQL always uses the value without parameters.
-     *
-     * Result is internally cached.
+     * the value is added as a named parameter.
      *
      * @param string      $value
      * @param string      $fieldName
@@ -483,7 +481,7 @@ class WhereBuilder
         } else {
             $value = $type->convertToDatabaseValue($value, $this->databasePlatform);
 
-            // Treat numbers as is
+            // Treat numbers as-is
             if (!ctype_digit($value)) {
                 $value = $this->entityManager->getConnection()->quote($value, $type->getBindingType());
             }
@@ -493,7 +491,7 @@ class WhereBuilder
     }
 
     /**
-     * Initialize value conversion cache for the given field.
+     * Initialize the value conversion cache for the given field.
      *
      * @param string      $fieldName
      * @param FilterField $field
@@ -540,7 +538,7 @@ class WhereBuilder
     }
 
     /**
-     * Returns the ORM configuration of the property or null when no existent.
+     * Returns the ORM configuration of the property or null when none is set.
      *
      * @param FilterField $field
      *

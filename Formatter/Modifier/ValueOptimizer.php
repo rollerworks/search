@@ -12,10 +12,10 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\OptimizableInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
  * Optimizes value by filter-type implementation.

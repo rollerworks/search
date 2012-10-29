@@ -18,9 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * AbstractInput.
- *
- * Provide basic functionality for an Input Class.
+ * AbstractInput - provides basic functionality for an Input Class.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -34,10 +32,6 @@ abstract class AbstractInput implements InputInterface
     protected $groups = array();
 
     /**
-     * Field aliases.
-     *
-     * An alias is kept as: alias => destination
-     *
      * @var array
      */
     protected $labelsResolve = array();
@@ -52,10 +46,6 @@ abstract class AbstractInput implements InputInterface
     protected $aliasTranslatorPrefix;
 
     /**
-     * Optional field alias using the translator.
-     *
-     * Domain to search in.
-     *
      * @var string
      */
     protected $aliasTranslatorDomain = 'filter';

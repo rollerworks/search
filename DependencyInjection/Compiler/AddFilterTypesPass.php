@@ -15,7 +15,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**
- * Adds services tagged as 'rollerworks_record_filter.filter_type' to the types_factory service.
+ * Adds services tagged as 'rollerworks_record_filter.filter_type'
+ * to the 'types_factory' service.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -35,7 +36,7 @@ class AddFilterTypesPass implements CompilerPassInterface
             if (isset($attributes[0]['alias'])) {
                 $types[$attributes[0]['alias']] = $id;
 
-                // Set the scope to prototype to make sure an unique one is always returned.
+                // Set scope to prototype to make sure an unique instance is returned
                 if ('prototype' !== $container->getDefinition($id)->getScope()) {
                     $container->getDefinition($id)->setScope('prototype');
                 }

@@ -21,35 +21,35 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
- * FilterQuery.
+ * FilterQuery - accepts input in the FilterQuery format.
  *
- * Accept input in an FilterQuery format.
+ * Every filter is a 'name=values;' pair
  *
- * Every filter is an: name=values;
- *
- * The field name must follow this regex convention: [a-z][a-z_0-9]*.
+ * The field name must follow the '[a-z][a-z_0-9]*' regex convention.
  * Unicode characters and numbers are accepted.
  *
- * If the value contains an ';' or '()', the whole value must be quoted (with double quotes).
- * If the value contains an special character, like the range symbol 'that' value-part must be quoted.
+ * If the value contains a ';' or '()', the whole value must be quoted (with double quotes).
+ * If the value contains a special character, like the range symbol 'that' value-part must be quoted.
  * Like: "value-1"-value2
  *
  * Single values containing no special characters, can be quoted. But this is not required.
  *
- * If you want to use OR-groups place the name=value; between round-bars '()'
+ * If you want to use OR-groups place the 'name=value;' pairs between round-bars '()'
  * and separate them by one comma ','.
  *
- * Important: the field=value pairs must 'always end' with an ';', especially when in an OR-group.
- * The parser will not accept an input like: (field=value),(field2=value)
+ * Like: (field1=value1;),(field1=value2;)
  *
- * Comma at the end is always ignored.
+ * Important: the 'field=value' pairs must *always* end with an ';', especially when used in an OR-group.
+ * The parser does not support an input like: (field=value),(field2=value)
+ *
+ * A comma at the end is always ignored.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class FilterQuery extends AbstractInput
 {
     /**
-     * State of the parser.
+     * Current state of the parser.
      *
      * @var boolean
      */
@@ -75,27 +75,27 @@ class FilterQuery extends AbstractInput
     protected $messages;
 
     /**
-     * Set the resolving of an field label to name, using the translator beginning with prefix.
+     * Sets the resolving of an field-label to name, using the translator.
      *
      * Example: product.labels.[label]
      *
-     * For this to work properly a Translator must be registered with setTranslator()
+     * For this to work properly a Translator instance must be registered with setTranslator()
      *
-     * @param string $pathPrefix This prefix is added before every search, like filters.labels.
-     * @param string $domain     Default is filter
+     * @param string $pathPrefix This prefix is added before every search, like: filters.labels.
+     * @param string $domain     Translation domain (default is filter)
      *
-     * @return FilterQuery
+     * @return self
      *
      * @throws \InvalidArgumentException
      */
     public function setLabelToFieldByTranslator($pathPrefix, $domain = 'filter')
     {
         if (!is_string($pathPrefix) || empty($pathPrefix)) {
-            throw new \InvalidArgumentException('Prefix must be an string and can not be empty.');
+            throw new \InvalidArgumentException('Prefix must be a string and can not be empty.');
         }
 
         if (!is_string($domain) || empty($domain)) {
-            throw new \InvalidArgumentException('Domain must be an string and can not be empty.');
+            throw new \InvalidArgumentException('Domain must be a string and can not be empty.');
         }
 
         $this->aliasTranslatorPrefix = $pathPrefix;
@@ -105,9 +105,9 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Set the resolving of an field label to name.
+     * Sets the resolving of a field label to name.
      *
-     * Existing ones are overwritten.
+     * Existing revolvings are overwritten.
      *
      * @param string       $fieldName Original field-name
      * @param string|array $label
@@ -128,7 +128,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Set the filter input.
+     * Sets the filter-input.
      *
      * @param string $input
      *
@@ -145,9 +145,9 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Get the filter-input.
+     * Returns the filter-input as-is.
      *
-     * @return string
+     * @return string|null
      */
     public function getQueryString()
     {
@@ -173,7 +173,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Returns the error message(s) of the failure.
+     * Returns the error message(s) of the last process.
      *
      * @return array
      */
@@ -183,12 +183,12 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Parse the input-filter that is set.
+     * Parses the input-filter that is set.
      */
     protected function parseQuery()
     {
         // Look for the usage of OR-group(s)
-        // There is 'minor problem', the field-value pairs must end with an ;, or else the parsing is ignored.
+        // There is 'minor problem', the 'field=value' pairs must end with an ;, or else the parsing is ignored.
         // Various solutions have been tried, but did not work...
         // But its still better, then to 'always' need to escape the grouping parentheses to use them as literals.
         if ('(' === mb_substr($this->query, 0, 1)) {
@@ -207,7 +207,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Parse the field=value pairs from the input.
+     * Parses the 'field=value' pairs from the input.
      *
      * @param string  $input
      * @param integer $group
@@ -286,7 +286,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Perform the formatting of the given values (per group).
+     * Converts the values list to an FilterValuesBag object.
      *
      * @param string       $originalInput
      * @param FilterField  $filterConfig
@@ -329,7 +329,7 @@ class FilterQuery extends AbstractInput
                 }
 
                 if (false !== strpos($currentValue, '-' )) {
-                    // Value starts with an quote, check if its range and not an quoted value with a '-' in it.
+                    // Value starts with an quote, check if its range and not an quoted value with a '-' in it
                     if ('"' === mb_substr(trim($currentValue), 0, 1)) {
                         // Both quoted
                         if (preg_match('#^("(?:(?:[^"]+|"")+)")-("(?:(?:[^"]+|"")+)")$#s', $currentValue, $rangeValue)) {
@@ -384,7 +384,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Get the corresponding fieldName by label.
+     * Gets the corresponding fieldName by label.
      *
      * @param string $label
      *
@@ -414,7 +414,7 @@ class FilterQuery extends AbstractInput
     }
 
     /**
-     * Remove and normalise quoted-values.
+     * Normalises an quoted-value.
      *
      * @param string $input
      *

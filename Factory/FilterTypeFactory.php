@@ -29,7 +29,7 @@ class FilterTypeFactory
      * Constructor.
      *
      * @param ContainerInterface $container The service container
-     * @param array              $types     An array of filter-types
+     * @param array              $types     An associative array of filter-types
      */
     public function __construct(ContainerInterface $container, array $types = array())
     {
@@ -38,14 +38,14 @@ class FilterTypeFactory
     }
 
     /**
-     * Returns the an new FilterType instance.
+     * Returns the a new FilterType instance.
      *
-     * @param string $type
-     * @param array  $options Options to pass for the type (only when accepted)
+     * @param string $type    Name of the filter-type
+     * @param array  $options Options to pass to the filter-type (only when accepted)
      *
      * @return FilterTypeInterface
      *
-     * @throws \InvalidArgumentException on unknown filter-type
+     * @throws \InvalidArgumentException When the filter-type is not registered
      */
     public function newInstance($type, array $options = array())
     {

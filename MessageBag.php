@@ -127,7 +127,7 @@ class MessageBag
      * @param string  $transMessage
      * @param array   $params
      * @param boolean $addTranslatorPrefix Add record_filter. prefix
-     * @param boolean $translate           set to false to use message as-is
+     * @param boolean $translate           Set to false to use message as-is
      */
     public function addError($transMessage, array $params = array(), $addTranslatorPrefix = true, $translate = true)
     {
@@ -141,7 +141,7 @@ class MessageBag
     /**
      * @param string  $transMessage
      * @param array   $params
-     * @param boolean $addTranslatorPrefix Add record_filter. prefix
+     * @param boolean $addTranslatorPrefix add 'record_filter.' prefix
      */
     public function addInfo($transMessage, array $params = array(), $addTranslatorPrefix = true)
     {

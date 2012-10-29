@@ -460,7 +460,7 @@ class FormatterTest extends ModifierTestCase
     {
         $input = new QueryInput($this->translator);
 
-        $this->setExpectedException('\InvalidArgumentException', 'Prefix must be an string and can not be empty');
+        $this->setExpectedException('\InvalidArgumentException', 'Prefix must be a string and can not be empty.');
         $input->setLabelToFieldByTranslator(false);
     }
 
@@ -468,7 +468,7 @@ class FormatterTest extends ModifierTestCase
     {
         $input = new QueryInput($this->translator);
 
-        $this->setExpectedException('\InvalidArgumentException', 'Domain must be an string and can not be empty');
+        $this->setExpectedException('\InvalidArgumentException', 'Domain must be a string and can not be empty.');
         $input->setLabelToFieldByTranslator('t.', false);
     }
 

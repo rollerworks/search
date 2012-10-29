@@ -20,10 +20,10 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
- * ArrayInput - accepts filtering preference an PHP Array.
+ * ArrayInput - accepts filtering preference as a PHP Array.
  *
  * The provided input must be structured.
- * The root is an array where each entry is group with { 'fieldname' => ( structure ) }
+ * The root is an array where each entry is as group with { 'fieldname' => ( structure ) }
  *
  * There structure can contain the following.
  *
@@ -100,7 +100,7 @@ class ArrayInput extends AbstractInput
     }
 
     /**
-     * Returns the error message(s) of the failure.
+     * Returns the error message(s) of the last process.
      *
      * @return array
      */
@@ -137,6 +137,8 @@ class ArrayInput extends AbstractInput
     }
 
     /**
+     * Converts the values list to an FilterValuesBag object.
+     *
      * @param FilterField  $filterConfig
      * @param array|string $values
      * @param              $group

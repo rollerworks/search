@@ -14,7 +14,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
- * Text filter type.
+ * Text filter-type.
  *
  * This type can be extended for more precise type handling.
  *

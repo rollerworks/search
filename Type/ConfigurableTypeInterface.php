@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * ConfigurableTypeInterface.
  *
- * An filter-type can implement this to provide configuring the type.
+ * A filter-type can implement this to provide configuration for the type.
  * This uses the Symfony OptionsResolver component.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -44,9 +44,9 @@ interface ConfigurableTypeInterface
     public function setOptions(array $options);
 
     /**
-     * Returns current options of the type.
+     * Returns the current options of the type.
      *
-     * The values must be exportable, resources will throw an error.
+     * The values must be exportable, resources will throw an exception.
      *
      * @return array
      *

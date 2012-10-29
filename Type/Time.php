@@ -15,7 +15,7 @@ use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 
 /**
- * Time filter type.
+ * Time filter-type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -58,7 +58,7 @@ class Time extends Date
             \IntlDateFormatter::GREGORIAN
         );
 
-        // Remove timezone
+        // Remove the timezone from the pattern
         if ($value->hasSeconds()) {
             $formatter->setPattern(preg_replace('/\s*(\(z\)|z)\s*/i', '', $formatter->getPattern()));
         }
@@ -84,7 +84,7 @@ class Time extends Date
         if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_TIME)) {
             $this->lastResult = $value;
         } elseif (!DateTimeHelper::validate($value, DateTimeHelper::ONLY_TIME, $this->lastResult)) {
-            $message = 'This value is not an valid time.';
+            $message = 'This value is not a valid time.';
 
             return false;
         }

@@ -26,21 +26,21 @@ abstract class AbstractFactory
     protected $container;
 
     /**
-     * Whether to automatically (re)generate te Classes.
+     * Whether to automatically (re)generate the classes.
      *
      * @var boolean
      */
     protected $autoGenerate;
 
     /**
-     * The namespace that contains all te Classes.
+     * The namespace that contains all the classes.
      *
      * @var string
      */
     protected $namespace;
 
     /**
-     * The directory that contains all te Classes.
+     * The directory that contains all the classes.
      *
      * @var string
      */
@@ -49,9 +49,9 @@ abstract class AbstractFactory
     /**
      * Constructor.
      *
-     * @param string  $classesDir   The directory to use for the Classes. It must exist.
-     * @param string  $filtersNs    The namespace to use for the Classes.
-     * @param boolean $autoGenerate Whether to automatically generate Classes.
+     * @param string  $classesDir   The directory to use for the classes. It must exist.
+     * @param string  $filtersNs    The namespace to use for the classes.
+     * @param boolean $autoGenerate Whether to automatically generate the classes.
      *
      * @api
      *
@@ -60,11 +60,11 @@ abstract class AbstractFactory
     public function __construct($classesDir, $filtersNs, $autoGenerate = false)
     {
         if (!$classesDir) {
-            throw new \InvalidArgumentException('You must configure a filters Formatter directory. See docs for details');
+            throw new \InvalidArgumentException('You must configure a filters Formatter directory. See the docs for details');
         }
 
         if (!$filtersNs || !self::isNamespace($filtersNs)) {
-            throw new \InvalidArgumentException('You must configure a _valid_ filters namespace. See docs for details');
+            throw new \InvalidArgumentException('You must configure a _valid_ filters namespace. See the docs for details');
         }
 
         $this->autoGenerate = $autoGenerate;

@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Decimal filter type.
+ * Decimal filter-type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -81,7 +81,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function sanitizeString($value)
     {
-        // Note we explicitly don't cast the value to an float type
+        // Note we explicitly don't cast the value to a float type
         // 64bit floats are not properly handled on a 32bit OS
 
         if (!preg_match('/[^.0-9-]/', $value)) {
@@ -384,7 +384,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     }
 
     /**
-     * Formats a BigInt to localized number.
+     * Formats a BigInt to a localized number.
      *
      * @param string      $value
      * @param null|string $locale

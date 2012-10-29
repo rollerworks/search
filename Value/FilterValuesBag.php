@@ -18,7 +18,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 /**
  * ValuesBag.
  *
- * Holds all the values (per type) of an filter
+ * Holds all the values (per type) of a filter
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -111,7 +111,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the bag has Ranges.
+     * Returns whether the bag has range-values.
      *
      * @return boolean
      *
@@ -123,9 +123,9 @@ class FilterValuesBag
     }
 
     /**
-     * Returns the Ranges of the bag.
+     * Returns the range-values of the bag.
      *
-     * @return Range[]
+     * @return Range[]|array
      *
      * @api
      */
@@ -135,7 +135,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the bag has Excluded Ranges.
+     * Returns whether the bag has excluded-range values.
      *
      * @return boolean
      *
@@ -147,9 +147,9 @@ class FilterValuesBag
     }
 
     /**
-     * Returns the Excluded Ranges of the bag.
+     * Returns the excluded-ranges of the bag.
      *
-     * @return Range[]
+     * @return Range[]|array
      *
      * @api
      */
@@ -159,7 +159,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the bag has Excludes.
+     * Returns whether the bag has excluded-values.
      *
      * @return boolean
      *
@@ -171,7 +171,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns the Excludes of the bag.
+     * Returns the excluded-values of the bag.
      *
      * @return SingleValue[]
      *
@@ -183,7 +183,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the bag has Compares.
+     * Returns whether the bag has comparison-values.
      *
      * @return boolean
      *
@@ -195,7 +195,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns the Compares of the bag.
+     * Returns the comparison-values of the bag.
      *
      * @return Compare[]
      *
@@ -207,7 +207,7 @@ class FilterValuesBag
     }
 
     /**
-     * Returns whether the bag has SingleValues.
+     * Returns whether the bag has single-values.
      *
      * @return boolean
      *
@@ -219,7 +219,7 @@ class FilterValuesBag
     }
 
     /**
-     * Removes the Values of the bag.
+     * Returns the single-values of the bag.
      *
      * @return SingleValue[]
      *
@@ -233,88 +233,88 @@ class FilterValuesBag
     /**
      * Removes a single-value from the bag.
      *
-     * @param integer $piIndex
+     * @param integer $index
      *
      * @return self
      *
      * @api
      */
-    public function removeSingleValue($piIndex)
+    public function removeSingleValue($index)
     {
-        if (isset($this->singleValues[$piIndex])) {
-            unset($this->singleValues[$piIndex]);
+        if (isset($this->singleValues[$index])) {
+            unset($this->singleValues[$index]);
         }
 
         return $this;
     }
 
     /**
-     * Removes a Exclude from the bag.
+     * Removes an exclude-value from the bag.
      *
-     * @param integer $piIndex
+     * @param integer $index
      *
      * @return self
      *
      * @api
      */
-    public function removeExclude($piIndex)
+    public function removeExclude($index)
     {
-        if (isset($this->excludes[$piIndex])) {
-            unset($this->excludes[$piIndex]);
+        if (isset($this->excludes[$index])) {
+            unset($this->excludes[$index]);
         }
 
         return $this;
     }
 
     /**
-     * Removes a Range from the bag.
+     * Removes a range-value from the bag.
      *
-     * @param integer $piIndex
+     * @param integer $index
      *
      * @return self
      *
      * @api
      */
-    public function removeRange($piIndex)
+    public function removeRange($index)
     {
-        if (isset($this->ranges[$piIndex])) {
-            unset($this->ranges[$piIndex]);
+        if (isset($this->ranges[$index])) {
+            unset($this->ranges[$index]);
         }
 
         return $this;
     }
 
     /**
-     * Removes an Excluded Range from the bag.
+     * Removes an excluded-range value from the bag.
      *
-     * @param integer $piIndex
+     * @param integer $index
      *
      * @return self
      *
      * @api
      */
-    public function removeExcludedRange($piIndex)
+    public function removeExcludedRange($index)
     {
-        if (isset($this->excludedRanges[$piIndex])) {
-            unset($this->excludedRanges[$piIndex]);
+        if (isset($this->excludedRanges[$index])) {
+            unset($this->excludedRanges[$index]);
         }
 
         return $this;
     }
 
     /**
-     * Removes a Compare from the bag.
+     * Removes a comparison-value from the bag.
      *
-     * @param integer $piIndex
+     * @param integer $index
      *
      * @return self
      *
      * @api
      */
-    public function removeCompare($piIndex)
+    public function removeCompare($index)
     {
-        if (isset($this->compares[$piIndex])) {
-            unset($this->compares[$piIndex]);
+        if (isset($this->compares[$index])) {
+            unset($this->compares[$index]);
         }
 
         return $this;
@@ -337,7 +337,7 @@ class FilterValuesBag
     }
 
     /**
-     * Add a Exclude to the bag.
+     * Adds an excluded-value to the bag.
      *
      * @param SingleValue $value
      *
@@ -353,7 +353,7 @@ class FilterValuesBag
     }
 
     /**
-     * Add a range to the bag.
+     * Adds a range-value to the bag.
      *
      * @param Range $range
      *
@@ -369,7 +369,7 @@ class FilterValuesBag
     }
 
     /**
-     * Adds an Excluded Range to the bag.
+     * Adds an excluded-range value to the bag.
      *
      * @param Range $range
      *
@@ -385,7 +385,7 @@ class FilterValuesBag
     }
 
     /**
-     * Adds a Compare to the bag.
+     * Adds a comparison-value to the bag.
      *
      * @param Compare $compare
      *

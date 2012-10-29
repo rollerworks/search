@@ -33,21 +33,21 @@ class FieldSet
     /**
      * Constructor.
      *
-     * @param string|null $name Optional fieldSet name (must be legal class-name).
+     * @param string|null $name Optional fieldSet name (must be legal a class-name).
      *
      * @throws \InvalidArgumentException When the name is invalid
      */
     public function __construct($name = null)
     {
         if (null !== $name && !preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
-            throw new \InvalidArgumentException(sprintf('Invalid fieldSet name "%s" (must be legal class-name).', $name));
+            throw new \InvalidArgumentException(sprintf('Invalid fieldSet name "%s" (must be a legal class-name without a namespace).', $name));
         }
 
         $this->name = $name;
     }
 
     /**
-     * Returns an new FieldSet instance.
+     * Returns a new FieldSet instance.
      *
      * @param string|null $name
      *
@@ -76,7 +76,7 @@ class FieldSet
      *
      * @return self
      *
-     * @throws \InvalidArgumentException on empty name
+     * @throws \InvalidArgumentException When the name is empty or invalid
      */
     public function set($name, FilterField $config)
     {
@@ -96,14 +96,14 @@ class FieldSet
     /**
      * Replaces the field.
      *
-     * Same as {@see set()}, but throws an exception when there no field with the name.
+     * Same as {@see set()}, but throws an exception when there is no field with that name.
      *
      * @param string      $name
      * @param FilterField $config
      *
      * @return self
      *
-     * @throws \RuntimeException when there is no field with the given name
+     * @throws \RuntimeException When there is no field with the given name
      */
     public function replace($name, FilterField $config)
     {
@@ -139,7 +139,7 @@ class FieldSet
      *
      * @return FilterField
      *
-     * @throws \RuntimeException when there is no field with the given name
+     * @throws \RuntimeException When there is no field with the given name
      */
     public function get($name)
     {

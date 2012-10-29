@@ -12,12 +12,12 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 
 /**
  * Removes overlapping ranges/values and merges connected ranges.
@@ -62,7 +62,7 @@ class RangeNormalizer implements ModifierInterface
         $rangesValues = array();
 
         foreach ($ranges as $valIndex => $range) {
-            // Value is overlapping in range
+            // Check if range is overlapping single-values
             foreach ($values as $myIndex => $singeValue) {
                 if ($this->isValInRange($type, $singeValue, $range)) {
                     $messageBag->addInfo('value_in_range', array(
@@ -74,7 +74,7 @@ class RangeNormalizer implements ModifierInterface
                 }
             }
 
-            // Range is connected to other range
+            // Check if range is connected to other range
             foreach ($ranges as $myIndex => $myRange) {
                 if ($myIndex === $valIndex) {
                     continue;
@@ -92,7 +92,7 @@ class RangeNormalizer implements ModifierInterface
                     $this->valuesBag->removeRange($myIndex);
                     unset($ranges[$myIndex]);
                 }
-                // Range overlaps in other range
+                // Check if range overlaps in other ranges
                 elseif ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
                     $messageBag->addInfo('range_overlap', array(
                         '{{ range1 }}' => self::getRangeQuoted($ranges[$myIndex]),
@@ -114,7 +114,7 @@ class RangeNormalizer implements ModifierInterface
             $excludes = $filterStruct->getExcludes();
 
             foreach ($rangesExcludes as $valIndex => $range) {
-                // Value is overlapping in range
+                // Check if value is overlapping in other ranges
                 foreach ($excludes as $myIndex => $singeValue) {
                     if ($this->isValInRange($type, $singeValue, $range)) {
                         $messageBag->addInfo('value_in_range', array(
@@ -126,7 +126,7 @@ class RangeNormalizer implements ModifierInterface
                     }
                 }
 
-                // Range is connected to other range
+                // Check if range is connected to other range
                 foreach ($rangesExcludes as $myIndex => $myRange) {
                     if ($myIndex === $valIndex) {
                         continue;
@@ -145,7 +145,7 @@ class RangeNormalizer implements ModifierInterface
                         unset($rangesExcludes[$myIndex]);
                     }
 
-                    // Range overlaps in other range
+                    // Check if range overlaps in other ranges
                     if ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
                         $messageBag->addInfo('range_overlap', array(
                             '{{ range1 }}' => '!' . self::getRangeQuoted($myRange),
@@ -157,7 +157,6 @@ class RangeNormalizer implements ModifierInterface
                     }
                 }
 
-                // Range already exists as normal range
                 if (false !== array_search($type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper()), $rangesValues)) {
                     $messageBag->addError('range_same_as_excluded', array('{{ value }}' => self::getRangeQuoted($range)));
 
@@ -170,7 +169,7 @@ class RangeNormalizer implements ModifierInterface
     }
 
     /**
-     * Returns the 'original' range values between quotes.
+     * Returns the 'original' range values quoted.
      *
      * @param Range $range
      * @param Range $range2

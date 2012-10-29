@@ -12,7 +12,6 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
-use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 /**
@@ -23,16 +22,16 @@ use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 interface InputInterface
 {
     /**
-     * Set the fieldSet.
+     * Sets the FieldSet.
      *
-     * @param FieldSet $fields
+     * @param FieldSet $fieldSet
      *
      * @api
      */
-    public function setFieldSet(FieldSet $fields = null);
+    public function setFieldSet(FieldSet $fieldSet = null);
 
     /**
-     * Set the configuration of an filter field.
+     * Sets the configuration of a filter-field.
      *
      * @param string      $name
      * @param FilterField $config
@@ -47,7 +46,7 @@ interface InputInterface
      * Values are not formatted nor validated.
      *
      * Returns the fields per group, like:
-     * [group-n] => array('field-name' => {\Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag object})
+     *  [group-n] => array('field-name' => {\Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag object})
      *
      * @return array|null Returns null in case of an error/failure
      *

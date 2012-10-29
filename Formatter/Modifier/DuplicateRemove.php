@@ -110,7 +110,7 @@ class DuplicateRemove implements ModifierInterface
     }
 
     /**
-     * Returns the 'original' range values between quotes.
+     * Returns the 'original' range values quoted.
      *
      * @param Range      $range
      * @param Range|null $range2

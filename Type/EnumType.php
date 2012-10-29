@@ -17,7 +17,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
- * Enum FilterType is limited to an fixed set of pre-configured values.
+ * Enum filter-type is limited to a fixed set of pre-configured values.
  *
  * Values are configured as value => label
  * And the label can be optionally translated.

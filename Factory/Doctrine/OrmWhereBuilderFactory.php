@@ -19,7 +19,8 @@ use Metadata\MetadataFactoryInterface;
 use Doctrine\ORM\EntityManager;
 
 /**
- * This factory is used to create 'Domain specific' RecordFilter SqlWhereBuilder Classes at runtime.
+ * This factory is used to create 'Domain specific' RecordFilter
+ * Doctrine ORM WhereBuilder Classes at runtime.
  *
  * The information is read from a FieldSet object.
  *
@@ -62,7 +63,10 @@ class OrmWhereBuilderFactory extends AbstractFactory
     }
 
     /**
-     * Returns an WhereBuilder instance based on the given FieldSet.
+     * Returns a new WhereBuilder instance based on the given FieldSet.
+     *
+     * When there is no class (yet),
+     * its generated unless auto generation is disabled.
      *
      * @param FieldSet                      $fieldSet
      * @param EntityManager|null            $entityManager
@@ -70,7 +74,7 @@ class OrmWhereBuilderFactory extends AbstractFactory
      *
      * @return WhereBuilder
      *
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException When missing required information
      */
     public function getWhereBuilder(FieldSet $fieldSet, EntityManager $entityManager = null, MetadataFactoryInterface $metadataFactory = null)
     {
@@ -112,10 +116,10 @@ class OrmWhereBuilderFactory extends AbstractFactory
     }
 
     /**
-     * Generates Classes for all FieldSets.
+     * Generates Classes for all the given FieldSets.
      *
-     * @param FieldSet[] $classes FieldSets
-     * @param string     $toDir   The target directory of the Classes. If not specified, the directory configured by this factory is used.
+     * @param FieldSet[] $classes An array of FieldSet objects. The Fields must contain an property reference
+     * @param string     $toDir   The target directory of the Classes. If not specified, the directory configured by this factory is used
      *
      * @throws \InvalidArgumentException
      */
@@ -127,7 +131,7 @@ class OrmWhereBuilderFactory extends AbstractFactory
 
         foreach ($classes as $fieldSet) {
             if (null === $fieldSet->getSetName()) {
-                throw new \InvalidArgumentException('FieldSet must have a unique-name.');
+                throw new \InvalidArgumentException('FieldSet name can not be null, and must be unique.');
             }
 
             $this->generateClass($fieldSet->getSetName(), $fieldSet, $toDir);
@@ -135,7 +139,7 @@ class OrmWhereBuilderFactory extends AbstractFactory
     }
 
     /**
-     * Generates a SqlWhereBuilder class file.
+     * Generates an DoctrineOrmWhereBuilder class file.
      *
      * @param string   $ns
      * @param FieldSet $fieldSet
@@ -154,14 +158,14 @@ class OrmWhereBuilderFactory extends AbstractFactory
         $dir  = $toDir . DIRECTORY_SEPARATOR . $ns;
 
         if (!is_dir($dir) && !mkdir($dir)) {
-            throw new \RuntimeException('Was unable to create the sub-dir for the RecordFilter::Doctrine::Orm::WhereBuilder.');
+            throw new \RuntimeException('Was unable to create the sub-dir for RecordFilter::Doctrine::Orm::WhereBuilder.');
         }
 
         file_put_contents($dir . DIRECTORY_SEPARATOR . 'DoctrineOrmWhereBuilder.php', $file, LOCK_EX);
     }
 
     /**
-     * Generates the fieldSet SqlWhereBuilder code.
+     * Generates the DoctrineOrmWhereBuilder code based on the given FieldSet.
      *
      * @param FieldSet $fieldSet
      *
@@ -196,8 +200,6 @@ QY;
             }
 
             $_fieldName = var_export($fieldName, true);
-
-            // XXX We should properly also hard-code the result of getFieldColumn()
 
             $query .= <<<QY
 

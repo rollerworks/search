@@ -11,11 +11,11 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine;
 
+use Metadata\MetadataFactory;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
-use Metadata\MetadataFactory;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
 

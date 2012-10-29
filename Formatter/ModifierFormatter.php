@@ -11,12 +11,12 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Formatter;
 
+use Symfony\Component\Translation\TranslatorInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ModifierInterface;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Input\InputInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Formats the filters by performing the registered modifiers.
@@ -38,14 +38,14 @@ class ModifierFormatter implements FormatterInterface
     /**
      * Final filtering values.
      *
-     * Each entry is an [group-id][field-name] => (FilterStruct object)
+     * Each entry is a [group-id][field-name] => (FilterStruct object)
      *
      * @var array
      */
     protected $finalFilters = array();
 
     /**
-     * @var \Symfony\Component\Translation\TranslatorInterface
+     * @var TranslatorInterface
      */
     protected $translator;
 
@@ -55,7 +55,7 @@ class ModifierFormatter implements FormatterInterface
     protected $modifiers = array();
 
     /**
-     * @var \Rollerworks\Bundle\RecordFilterBundle\FieldSet|null
+     * @var FieldSet|null
      */
     protected $fieldSet;
 
@@ -92,7 +92,7 @@ class ModifierFormatter implements FormatterInterface
     }
 
     /**
-     * Registers an modifier.
+     * Registers a modifier.
      *
      * @param ModifierInterface $modifier
      *
@@ -138,9 +138,9 @@ class ModifierFormatter implements FormatterInterface
     }
 
     /**
-     * Get the formatter messages.
+     * Returns the formatter messages.
      *
-     * Returns an array containing: error and info
+     * Returns an associative array containing: error and info
      *
      * @return array
      *
@@ -158,7 +158,7 @@ class ModifierFormatter implements FormatterInterface
     }
 
     /**
-     * Perform the formatting of the given values (per group).
+     * Performs the formatting of the given values (per group).
      *
      * @param FieldSet $filtersConfig
      * @param array    $filters

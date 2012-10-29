@@ -14,11 +14,11 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 /**
  * ValueMatcherInterface.
  *
- * An filter type can implement this to provide an regex-based matcher for the value.
+ * An filter type can implement this to provide a regex-based matcher for the value.
  * This way the user is not required to 'always' use quotes when the value contains a dash or comma.
  *
- * Remember that this is only for __matching__ not ***validating***, make the regex as simple as possible.
- * And __never__ match more then necessary!
+ * Remember that this is only used for _matching_ not *validating*, keep the regex as simple as possible
+ * and _never_ match more then needed!
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -27,13 +27,13 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 interface ValueMatcherInterface
 {
     /**
-     * Returns the regex as none-capturing group.
+     * Returns the regex as a none-capturing group.
      *
-     * The regex is used for matching an value in the list and detecting the end position when using an range.
-     * So it should __always__ use none-capturing (?:), ***especially*** when using or '|', (?:regex1|regex2).
+     * The regex is used for matching a value in the list and detecting the end position when using a range.
+     * So it should _always_ use none-capturing (?:), *especially* when using or '|', (?:regex1|regex2).
      *
-     * In an list the regex is used as: {match-quoted}|{regex}-{regex}|{comparison-operator}?{regex}|[^,]+
-     * You SHOULD NOT match an (optional) comma and the end, since this will cause unexpected results.
+     * In a list the regex is used as: {match-quoted}|{regex}-{regex}|{comparison-operator}?{regex}|[^,]+
+     * You SHOULD NEVER match an (optional) comma and the end, as this will causes unexpected results.
      *
      * @return string|null
      *

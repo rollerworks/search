@@ -36,7 +36,7 @@ interface ValueConversionInterface
      * Convert the value for usage.
      *
      * The value will be either used as parameter value or as-is.
-     * An string value will ALWAYS be quoted.
+     * A string value is ALWAYS quoted.
      *
      * @param mixed      $value
      * @param DBALType   $type

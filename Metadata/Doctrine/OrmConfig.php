@@ -27,7 +27,7 @@ class OrmConfig implements \Serializable
     public $fieldConversion = array('service' => null, 'params' => array());
 
     /**
-     * Set SQL conversion configuration.
+     * Sets SQL conversion configuration.
      *
      * @param string $service
      * @param array  $params
@@ -70,7 +70,7 @@ class OrmConfig implements \Serializable
     }
 
     /**
-     * Set SQL conversion configuration.
+     * Sets SQL conversion configuration.
      *
      * @param string $service
      * @param array  $params

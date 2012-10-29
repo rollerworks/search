@@ -20,9 +20,10 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
  * ModifierInterface.
  *
  * Things to remember:
- *  * An modifier is performed multiple times.
- *  * An modifier is performed per FilterValuesBag per group.
- *  * An modifier can change the values in the FilterValuesBag.
+ *
+ *  * A modifier is performed multiple times.
+ *  * A modifier is performed per FilterValuesBag object per group.
+ *  * A modifier can change the values in the FilterValuesBag.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -47,11 +48,11 @@ interface ModifierInterface
      * Return null to remove the filter from the final result.
      * Return false to skip other modifiers.
      *
-     * @param FormatterInterface $formatter
-     * @param MessageBag         $messageBag
-     * @param FilterField        $filterConfig
-     * @param FilterValuesBag    $valuesBag
-     * @param integer            $groupIndex   Group the filter is in
+     * @param FormatterInterface $formatter    Formatter object instance performing the modifiers
+     * @param MessageBag         $messageBag   MessageBag object instance for adding messages
+     * @param FilterField        $filterConfig Current FilterField to process
+     * @param FilterValuesBag    $valuesBag    FilterValuesBag object of the filter field
+     * @param integer            $groupIndex   Group the filter is in (starting from 0)
      *
      * @return null|boolean
      *

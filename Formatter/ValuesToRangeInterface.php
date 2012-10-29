@@ -26,6 +26,7 @@ interface ValuesToRangeInterface
      * Sorts the values input list.
      *
      * Must return an integer value depending on the comparison.
+     *
      * @link http://php.net/usort
      *
      * @param SingleValue $first

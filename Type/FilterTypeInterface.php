@@ -16,7 +16,7 @@ use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 /**
  * FilterTypeInterface.
  *
- * An field filter-type must implement this interface.
+ * A field filter-type must implement this interface.
  * The input for comparing values is always sanitized.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

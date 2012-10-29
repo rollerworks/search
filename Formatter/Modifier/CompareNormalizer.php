@@ -21,7 +21,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
 /**
  * Normalizes comparisons.
  *
- * Changes: >=1, >1 to >=1 (as > is already covert)
+ * Changes: '>=1, >1' to '>=1' (as > is already covert)
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -72,7 +72,7 @@ class CompareNormalizer implements ModifierInterface
     }
 
     /**
-     * Find the array index of an none-scalar value.
+     * Finds the array index of a none-scalar value.
      *
      * @param FilterTypeInterface $type
      * @param string              $operator

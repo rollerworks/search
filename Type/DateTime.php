@@ -16,7 +16,7 @@ use Rollerworks\Component\Locale\DateTime as DateTimeHelper;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * DateTime filter type.
+ * DateTime filter-type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

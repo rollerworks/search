@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Integer filter type.
+ * Integer filter-type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -142,7 +142,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
      */
     public function validateValue($value, &$message = null, MessageBag $messageBag = null)
     {
-        $message = 'This value is no valid number.';
+        $message = 'This value is not a valid number.';
 
         if (!preg_match('/^(?:[+-]?(?:\p{N}+)|(?:\p{N}+[+-]?))$/us', (string) $value)) {
             return false;

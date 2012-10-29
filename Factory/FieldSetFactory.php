@@ -17,7 +17,7 @@ use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 
 /**
- * This factory is used to creating FieldSet Classes at runtime.
+ * This factory is used for creating the FieldSet classes at runtime.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -60,10 +60,10 @@ class FieldSetFactory extends AbstractFactory
     }
 
     /**
-     * Set the resolving of an field name to label, using the translator beginning with prefix.
+     * Set the resolving of a field-name to label, using the translator.
      *
-     * @param string $pathPrefix This prefix is added before every search, like filters.labels.
-     * @param string $domain
+     * @param string $pathPrefix This prefix is added before every search, like: filters.labels.
+     * @param string $domain     Translation domain (default is filters)
      *
      * @return self
      *
@@ -72,11 +72,11 @@ class FieldSetFactory extends AbstractFactory
     public function setLabelResolver($pathPrefix, $domain = 'filters')
     {
         if (!is_string($pathPrefix) && null !== $pathPrefix) {
-            throw new \InvalidArgumentException('Prefix must be an string or null.');
+            throw new \InvalidArgumentException('Prefix must be a string or null.');
         }
 
         if (!is_string($domain) || empty($domain)) {
-            throw new \InvalidArgumentException('Domain must be an string and can not be empty.');
+            throw new \InvalidArgumentException('Domain must be a string and can not be empty.');
         }
 
         $this->translatorPrefix = $pathPrefix;
@@ -86,7 +86,7 @@ class FieldSetFactory extends AbstractFactory
     }
 
     /**
-     * Returns an WhereBuilder instance based on the given FieldSet.
+     * Returns a new FieldSet instance by the FieldSet name.
      *
      * @param string $name
      *
@@ -97,7 +97,7 @@ class FieldSetFactory extends AbstractFactory
     public function getFieldSet($name)
     {
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
-            throw new \InvalidArgumentException(sprintf('Unknown FieldSet "%s", (must be legal an class-name).', $name));
+            throw new \InvalidArgumentException(sprintf('Unknown FieldSet "%s", (must be a legal class name without namespace).', $name));
         }
 
         $fqn = $this->namespace . $name . '\FieldSet';
@@ -106,7 +106,7 @@ class FieldSetFactory extends AbstractFactory
             $fileName = $this->classesDir . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . 'FieldSet.php';
 
             if (!file_exists($fileName)) {
-                throw new \InvalidArgumentException(sprintf('Unknown FieldSet "%s", file does not exist.', $name));
+                throw new \InvalidArgumentException(sprintf('Unknown FieldSet "%s", the file does not exist.', $name));
             }
 
             require $fileName;
@@ -116,12 +116,12 @@ class FieldSetFactory extends AbstractFactory
     }
 
     /**
-     * Generates all the FieldSet Classes.
+     * Generates all the given FieldSet classes.
      *
-     * The FilterType of an FilterField must be an FilterTypeConfig object.
+     * The FilterType of a FilterField must be a FilterTypeConfig object.
      *
-     * @param FieldSet[] $classes
-     * @param string     $toDir   The target directory of the Classes. If not specified, the directory configured by this factory is used.
+     * @param FieldSet[] $classes An array of FieldSet objects
+     * @param string     $toDir   The target directory of the classes. If not specified, the directory configured by this factory is used
      *
      * @throws \InvalidArgumentException
      */
@@ -133,7 +133,7 @@ class FieldSetFactory extends AbstractFactory
 
         foreach ($classes as $fieldSet) {
             if (null === $fieldSet->getSetName()) {
-                throw new \InvalidArgumentException('FieldSet must have a unique-name.');
+                throw new \InvalidArgumentException('FieldSet name can not be null, and must be unique.');
             }
 
             $this->generateClass($fieldSet->getSetName(), $fieldSet, $toDir);
@@ -194,7 +194,7 @@ class FieldSetFactory extends AbstractFactory
         $dir  = $toDir . DIRECTORY_SEPARATOR . $ns;
 
         if (!is_dir($dir) && !mkdir($dir)) {
-            throw new \RuntimeException('Was unable to create the sub-dir for the RecordFilter::FieldSet.');
+            throw new \RuntimeException('Was unable to create the sub-dir for RecordFilter::FieldSet.');
         }
 
         file_put_contents($dir . DIRECTORY_SEPARATOR . 'FieldSet.php', $file, LOCK_EX);

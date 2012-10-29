@@ -12,14 +12,14 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
-use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
+use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**
- * Validates and formats values.
+ * Validates and formats filter values.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -140,7 +140,7 @@ class Validator implements ModifierInterface
     }
 
     /**
-     * Returns the 'original' range values between quotes.
+     * Returns the 'original' range values quoted.
      *
      * @param Range $range
      * @param Range $range2
@@ -157,7 +157,7 @@ class Validator implements ModifierInterface
     }
 
     /**
-     * Validates an 'single' value.
+     * Validates a single-value.
      *
      * @param FilterTypeInterface $type
      * @param string              $value
@@ -195,7 +195,7 @@ class Validator implements ModifierInterface
     }
 
     /**
-     * Validates an range value.
+     * Validates an range-value.
      *
      * @param FilterTypeInterface $type
      * @param Range               $range

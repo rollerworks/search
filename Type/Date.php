@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;
 
 /**
- * Date filter type.
+ * Date filter-type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -110,7 +110,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
             \IntlDateFormatter::GREGORIAN
         );
 
-        // Make year always four digit
+        // Make the year always four digit
         $formatter->setPattern(str_replace(array('yy', 'yyyyyyyy'), 'yyyy', $formatter->getPattern()));
 
         return $formatter->format($value);
@@ -263,7 +263,7 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
     }
 
     /**
-     * Validates that the value is not lower then min/higher then max.
+     * Validates that the value is not lower then min or higher then max.
      *
      * @param string     $value
      * @param MessageBag $messageBag

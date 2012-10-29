@@ -11,14 +11,13 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier;
 
-use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
-use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 
 /**
  * Converts a connected-list of values to ranges.
@@ -142,7 +141,7 @@ class ValuesToRange implements ModifierInterface
     }
 
     /**
-     * Remove an single-value.
+     * Removes an single-value.
      *
      * @param integer $index
      * @param boolean $exclude

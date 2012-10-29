@@ -20,10 +20,10 @@ use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Metadata\MetadataFactoryInterface;
 
 /**
- * Generates the Classes for RecordFilter.
+ * Generates the Classes for the RecordFilter.
  *
  * The classes generated are depended on the configuration of the application.
- * By default nothing is compiled.
+ * By default nothing is generated.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -50,8 +50,8 @@ class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
      *
      * @param string $cacheDir The cache directory
      *
-     * @throws \RuntimeException         when the directory can not be created
-     * @throws \InvalidArgumentException on invalid directory
+     * @throws \RuntimeException         When the directory can not be created
+     * @throws \InvalidArgumentException When the directory is invalid
      */
     public function warmUp($cacheDir)
     {
