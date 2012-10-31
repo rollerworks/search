@@ -208,7 +208,6 @@ QY;
                 \$hasFields = true;
                 \$valuesBag = \$filters[$_fieldName];
                 \$field = \$this->fieldSet->get($_fieldName);
-                \$column = \$this->getFieldColumn($_fieldName, \$field);
                 \$this->initFilterField($_fieldName, \$field);
                 \$column = (\$this->valueConversions[$_fieldName][0] instanceof ConversionStrategyInterface ? '' : \$this->getFieldColumn($_fieldName, \$field));
 
@@ -225,12 +224,12 @@ QY;
                 if ($field->acceptRanges()) {
                     $query .= <<<QY
 
-                foreach (\$valuesBag->getRanges() as \$range) {
-                    \$query .= sprintf('(%s BETWEEN %s AND %s) AND ', \$column, \$this->getValStr(\$range->getLower(), $_fieldName, \$field), \$this->getValStr(\$range->getUpper(), $_fieldName, \$field));
+                if (\$valuesBag->hasRanges()) {
+                    \$query .= \$this->processRanges(\$valuesBag->getRanges(), \$column, $_fieldName, \$field);
                 }
 
-                foreach (\$valuesBag->getExcludedRanges() as \$range) {
-                    \$query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', \$column, \$this->getValStr(\$range->getLower(), $_fieldName, \$field), \$this->getValStr(\$range->getUpper(), $_fieldName, \$field));
+                if (\$valuesBag->hasExcludedRanges()) {
+                    \$query .= \$this->processRanges(\$valuesBag->getExcludedRanges(), \$column, $_fieldName, \$field, true);
                 }
 
 QY;
@@ -239,8 +238,8 @@ QY;
                 if ($field->acceptCompares()) {
                     $query .= <<<QY
 
-                foreach (\$valuesBag->getCompares() as \$comp) {
-                    \$query .= sprintf('%s %s %s AND ', \$column, \$comp->getOperator(), \$this->getValStr(\$comp->getValue(), $_fieldName, \$field));
+                if (\$valuesBag->hasCompares()) {
+                    \$query .= \$this->processCompares(\$valuesBag->getCompares(), \$column, $_fieldName, \$field);
                 }
 
 QY;
