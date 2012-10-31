@@ -16,6 +16,7 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\Doctrine\SqlConversion\StrategyConversion1;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
 
@@ -300,6 +301,29 @@ class SQLTest extends OrmTestCase
         $this->assertQueryParamsEquals($queryParams, $query);
     }
 
+    /**
+     * @dataProvider provideConversionStrategyTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedSql
+     */
+    public function testConversionStrategy($filterQuery, $expectedSql)
+    {
+        $input = $this->newInput($filterQuery, 'user');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new CustomerConversion());
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $whereBuilder->setFieldConversion('birthday', new StrategyConversion1());
+        $whereBuilder->setValueConversion('birthday', new StrategyConversion1());
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
+        $this->assertEquals($expectedSql, $whereCase);
+    }
+
     public static function provideBasicsTests()
     {
         return array(
@@ -441,6 +465,41 @@ class SQLTest extends OrmTestCase
     {
         return array(
             array('customer_id=2;', '(id IN(2))'),
+        );
+    }
+
+    public static function provideConversionStrategyTests()
+    {
+        return array(
+            array('birthday=2;', "(to_char('YYYY', age(birthday)) IN('2'))"),
+            array('birthday=!2;', "(to_char('YYYY', age(birthday)) NOT IN('2'))"),
+            array('birthday=>2;', "(to_char('YYYY', age(birthday)) > '2')"),
+            array('birthday=<2;', "(to_char('YYYY', age(birthday)) < '2')"),
+            array('birthday=<=2;', "(to_char('YYYY', age(birthday)) <= '2')"),
+            array('birthday=>=2;', "(to_char('YYYY', age(birthday)) >= '2')"),
+            array('birthday=>=2;', "(to_char('YYYY', age(birthday)) >= '2')"),
+            array('birthday=2-5;', "((to_char('YYYY', age(birthday)) BETWEEN '2' AND '5'))"),
+            array('birthday=!2-5;', "((to_char('YYYY', age(birthday)) NOT BETWEEN '2' AND '5'))"),
+
+            // This actually wrong, but there is birthday type yet
+            array('birthday="1990-05-30";', "(birthday IN('1990-05-30'))"),
+            array('birthday=!"1990-05-30";', "(birthday NOT IN('1990-05-30'))"),
+            array('birthday=>"1990-05-30";', "(birthday > '1990-05-30')"),
+            array('birthday=<"1990-05-30";', "(birthday < '1990-05-30')"),
+            array('birthday=<="1990-05-30";', "(birthday <= '1990-05-30')"),
+            array('birthday=>="1990-05-30";', "(birthday >= '1990-05-30')"),
+            array('birthday="1990-05-30"-"1990-08-30";', "((birthday BETWEEN '1990-05-30' AND '1990-08-30'))"),
+            array('birthday=!"1990-05-30"-"1990-08-30";', "((birthday NOT BETWEEN '1990-05-30' AND '1990-08-30'))"),
+
+            array('birthday=2; birthday="1990-05-30";', "(to_char('YYYY', age(birthday)) IN('2') AND birthday IN('1990-05-30'))"),
+            array('birthday=2; birthday="1990-05-30",5;', "(to_char('YYYY', age(birthday)) IN('2', '5') AND birthday IN('1990-05-30'))"),
+            array('birthday=!2; birthday=!"1990-05-30";', "(to_char('YYYY', age(birthday)) NOT IN('2') AND birthday NOT IN('1990-05-30'))"),
+            array('birthday=>2; birthday=>"1990-05-30";', "(to_char('YYYY', age(birthday)) > '2' AND birthday > '1990-05-30')"),
+            array('birthday=<2; birthday=<"1990-05-30";', "(to_char('YYYY', age(birthday)) < '2' AND birthday < '1990-05-30')"),
+            array('birthday=<=2; birthday=<="1990-05-30";', "(to_char('YYYY', age(birthday)) <= '2' AND birthday <= '1990-05-30')"),
+            array('birthday=>=2; birthday=>="1990-05-30";', "(to_char('YYYY', age(birthday)) >= '2' AND birthday >= '1990-05-30')"),
+            array('birthday=2-5; birthday="1990-05-30"-"1990-08-30";', "((to_char('YYYY', age(birthday)) BETWEEN '2' AND '5') AND (birthday BETWEEN '1990-05-30' AND '1990-08-30'))"),
+            array('birthday=!2-5; birthday=!"1990-05-30"-"1990-08-30";', "((to_char('YYYY', age(birthday)) NOT BETWEEN '2' AND '5') AND (birthday NOT BETWEEN '1990-05-30' AND '1990-08-30'))"),
         );
     }
 

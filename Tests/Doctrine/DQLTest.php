@@ -15,9 +15,10 @@ use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
 use Metadata\MetadataFactory;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\QueryException;
+use Doctrine\ORM\Query;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\Doctrine\SqlConversion\StrategyConversion1;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
 
 class DQLTest extends OrmTestCase
@@ -195,7 +196,41 @@ class DQLTest extends OrmTestCase
 
         $this->assertEquals($expectedDql, $whereCase);
         $this->assertQueryParamsEquals($queryParams, $query);
-        $this->assertEquals($this->assertDqlSuccessCompile($query, $whereCase), $expectSql);
+        $this->assertEquals($expectSql, $this->assertDqlSuccessCompile($query, $whereCase, (!empty($expectSql))));
+    }
+
+    /**
+     * @dataProvider provideConversionStrategyTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedDql
+     * @param array  $queryParams
+     * @param string $expectSql
+     */
+    public function testConversionStrategy($filterQuery, $expectedDql, array $queryParams, $expectSql)
+    {
+        $input = $this->newInput($filterQuery, 'user');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new CustomerConversion());
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $whereBuilder->setFieldConversion('birthday', new StrategyConversion1());
+        $whereBuilder->setValueConversion('birthday', new StrategyConversion1());
+
+        $query = $this->em->createQuery("SELECT C FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer3 C WHERE ");
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
+            $this->formatter,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer3' => 'C'),
+            $query
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($queryParams, $query);
+        $this->assertEquals($expectSql, $this->assertDqlSuccessCompile($query, $whereCase, true));
     }
 
     public static function provideBasicsTests()
@@ -259,6 +294,18 @@ class DQLTest extends OrmTestCase
     {
         return array(
             array('customer_id=2;', '(C.id IN(:customer_id_0))', array('customer_id_0' => 2)),
+        );
+    }
+
+    public static function provideConversionStrategyTests()
+    {
+        return array(
+            array('birthday=2;', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0))", array('birthday_0' => 2), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?))"),
+
+            // This actually wrong, but there is birthday type yet
+            array('birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_0))", array('birthday_0' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?))"),
+
+            array('birthday=2; birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0) AND RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_1))", array('birthday_0' => 2, 'birthday_1' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?) AND to_char('YYYY', age(c0_.birthday)) IN (?))"),
         );
     }
 

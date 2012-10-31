@@ -105,6 +105,12 @@ class OrmTestCase extends OrmTestCaseBase
             $fieldSet
                 ->set('customer_id', FilterField::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer', 'id'))
             ;
+        } elseif ('user' == $fieldSetId) {
+            $fieldSet = new FieldSet('customer');
+            $fieldSet
+                ->set('user_id', FilterField::create('id', new CustomerType(), false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer3', 'id'))
+                ->set('birthday', FilterField::create('birthday', null, false, true, true)->setPropertyRef('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer3', 'birthday'))
+            ;
         } elseif ('invoice_with_customer' == $fieldSetId) {
             $fieldSet = new FieldSet('invoice');
             $fieldSet
@@ -189,5 +195,21 @@ class OrmTestCase extends OrmTestCaseBase
         $annotationReader->addGlobalIgnoredName('OneToMany');
 
         return $annotationReader;
+    }
+
+    /**
+     * @param string $platform
+     *
+     * @return \Doctrine\DBAL\Connection
+     */
+    protected function getConnectionMock($platform)
+    {
+        $connectionMock = $this->getMock('Doctrine\DBAL\Connection', array(), array(), '', false);
+        $connectionMock
+                ->expects($this->any())
+                ->method('getDatabasePlatform')
+                ->will($this->returnValue($platform));
+
+        return $connectionMock;
     }
 }

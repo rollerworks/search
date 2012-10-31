@@ -41,8 +41,6 @@ use Doctrine\ORM\EntityManager;
  *  * String values will always be quoted in the SQL result.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- *
- * @todo Value strategy, to use multiple "value-types" , each one uses an new IN(), null is default, -1 will be used as-is
  */
 class WhereBuilder
 {
@@ -170,7 +168,6 @@ class WhereBuilder
      * @param FormatterInterface $formatter
      * @param array              $entityAliasMapping  An array with the alias-mapping as [class or Bundle:Class] => entity-alias
      * @param OrmQuery|null      $query               An ORM Query object (required for DQL).
-     *
      * @param string|null        $appendQuery         Place *this value* after the current query when there is an actual filtering result.
      *                                                The query object will be updated as: current query + $appendQuery + filtering.
      *                                                This value is only used when a query object is set, and SHOULD contain spaces like " WHERE "
@@ -230,16 +227,17 @@ class WhereBuilder
      *
      * @internal
      *
-     * @param string      $fieldName
-     * @param string      $column
-     * @param FilterField $field
+     * @param string       $fieldName
+     * @param string       $column
+     * @param FilterField  $field
+     * @param null|integer $strategy
      *
      * @return string
      */
-    public function getFieldConversionSql($fieldName, $column, FilterField $field = null)
+    public function getFieldConversionSql($fieldName, $column, FilterField $field = null, $strategy = null)
     {
-        if (isset($this->fieldConversionCache[$fieldName])) {
-            return $this->fieldConversionCache[$fieldName];
+        if (isset($this->fieldConversionCache[$fieldName][$strategy])) {
+            return $this->fieldConversionCache[$fieldName][$strategy];
         }
 
         if (!$field) {
@@ -251,14 +249,14 @@ class WhereBuilder
             $type = ORMType::getType($type);
         }
 
-        $this->fieldConversionCache[$fieldName] = $this->fieldConversions[$fieldName][0]->getConvertFieldSql(
+        $this->fieldConversionCache[$fieldName][$strategy] = $this->fieldConversions[$fieldName][0]->getConvertFieldSql(
             $column,
             $type,
             $this->entityManager->getConnection(),
-            $this->fieldConversions[$fieldName][1]
+            $this->fieldConversions[$fieldName][1] + array('__conversion_strategy' => $strategy, '__column' => $this->fieldData[$fieldName]['column'])
         );
 
-        return $this->fieldConversionCache[$fieldName];
+        return $this->fieldConversionCache[$fieldName][$strategy];
     }
 
     /**
@@ -266,19 +264,21 @@ class WhereBuilder
      *
      * @internal
      *
-     * @param string      $fieldName
-     * @param string      $value
-     * @param FilterField $field
-     * @param ORMType     $type
+     * @param string       $fieldName
+     * @param string       $value
+     * @param FilterField  $field
+     * @param ORMType      $type
+     * @param null|integer $strategy
      *
      * @return string
      */
-    public function getValueConversionSql($fieldName, $value, FilterField $field = null, ORMType $type = null)
+    public function getValueConversionSql($fieldName, $value, FilterField $field = null, ORMType $type = null, $strategy = null)
     {
         if (!$field) {
             $field = $this->fieldSet->get($fieldName);
         }
 
+        // XXX THIS ALREADY CACHED INTERNALLY
         if (!$type) {
             $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
             if (!is_object($type)) {
@@ -290,7 +290,7 @@ class WhereBuilder
             $value,
             $type,
             $this->entityManager->getConnection(),
-            $this->valueConversions[$fieldName][1]
+            $this->valueConversions[$fieldName][1] + array('__conversion_strategy' => $strategy, '__column' => $this->fieldData[$fieldName]['column'])
         );
     }
 
@@ -382,12 +382,12 @@ class WhereBuilder
                 } elseif ($hasCustomDql) {
                     $inList .= sprintf('%s %s %s AND ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field, $strategy));
                 } else {
-                    $remappedValues[$strategy] = $value;
+                    $remappedValues[$strategy][] = $value;
                 }
             }
 
             foreach ($remappedValues as $strategy => $value) {
-                $inList .= $this->createInList($values, $remappedColumns[$strategy], $fieldName, $field, $exclude, $strategy);
+                $inList .= $this->createInList($value, $remappedColumns[$strategy], $fieldName, $field, $exclude, $strategy);
             }
 
             return $inList;
@@ -492,18 +492,8 @@ class WhereBuilder
      */
     protected function getFieldColumn($fieldName, FilterField $field, $strategy = null)
     {
-        if (isset($this->fieldsMappingCache[$fieldName])) {
-            return $this->fieldsMappingCache[$fieldName];
-        }
-
-        if (!isset($this->fieldConversions[$fieldName])) {
-            // Set to false by default so we can skip this check the next round
-            // Don't use null as isset() returns false then
-            $this->fieldConversions[$fieldName] = false;
-
-            if (($propertyConfig = $this->getPropertyConfig($field)) && $propertyConfig->hasFieldConversion()) {
-                $this->fieldConversions[$fieldName] = array($this->container->get($propertyConfig->getFieldConversionService()), $propertyConfig->getFieldConversionParams());
-            }
+        if (isset($this->fieldsMappingCache[$fieldName][$strategy])) {
+            return $this->fieldsMappingCache[$fieldName][$strategy];
         }
 
         if (isset($this->entityAliases[$field->getPropertyRefClass()])) {
@@ -513,22 +503,22 @@ class WhereBuilder
         }
 
         if ($this->query) {
-            $this->fieldsMappingCache[$fieldName] = $column = $columnPrefix . $field->getPropertyRefField();
+            $this->fieldsMappingCache[$fieldName][$strategy] = $column = $columnPrefix . $field->getPropertyRefField();
         } else {
             $metadata = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
-            $this->fieldsMappingCache[$fieldName] = $column = $columnPrefix . $metadata->getColumnName($field->getPropertyRefField());
+            $this->fieldsMappingCache[$fieldName][$strategy] = $column = $columnPrefix . $metadata->getColumnName($field->getPropertyRefField());
         }
         $this->fieldData[$fieldName]['column'] = $column;
 
         if ($this->fieldConversions[$fieldName]) {
             if ($this->query instanceof DqlQuery) {
-                $this->fieldsMappingCache[$fieldName] = "RECORD_FILTER_FIELD_CONVERSION('$fieldName', $column" . (null === $strategy ? '' : ', ' . $strategy) . ")";
+                $this->fieldsMappingCache[$fieldName][$strategy] = "RECORD_FILTER_FIELD_CONVERSION('$fieldName', $column" . (null === $strategy ? '' : ', ' . $strategy) . ")";
             } else {
-                $this->fieldsMappingCache[$fieldName] = $this->getFieldConversionSql($fieldName, $column, $field, $strategy);
+                $this->fieldsMappingCache[$fieldName][$strategy] = $this->getFieldConversionSql($fieldName, $column, $field, $strategy);
             }
         }
 
-        return $this->fieldsMappingCache[$fieldName];
+        return $this->fieldsMappingCache[$fieldName][$strategy];
     }
 
     /**
@@ -612,6 +602,16 @@ class WhereBuilder
             } else {
                 // Set to empty by default so we can skip this check the next round
                 $this->valueConversions[$fieldName] = array(null, array());
+            }
+        }
+
+        if (!isset($this->fieldConversions[$fieldName])) {
+            // Set to false by default so we can skip this check the next round
+            // Don't use null as isset() returns false then
+            $this->fieldConversions[$fieldName] = false;
+
+            if (($propertyConfig = $this->getPropertyConfig($field)) && $propertyConfig->hasFieldConversion()) {
+                $this->fieldConversions[$fieldName] = array($this->container->get($propertyConfig->getFieldConversionService()), $propertyConfig->getFieldConversionParams());
             }
         }
 

@@ -57,6 +57,7 @@ class CustomerCustomSqlConversion implements CustomSqlValueConversionInterface, 
      */
     public function getConvertValuedSql($input, DBALType $type, Connection $connection, array $parameters = array())
     {
+        unset($parameters['__column'], $parameters['__conversion_strategy']);
         if ($parameters) {
             return "get_customer_type($input, '" . json_encode($parameters) . "')";
         }

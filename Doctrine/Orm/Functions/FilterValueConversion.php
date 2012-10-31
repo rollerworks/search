@@ -16,13 +16,11 @@ use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
 use Doctrine\ORM\Query\Lexer;
 
-use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
-
 /**
  * "FILTER_VALUE_CONVERSION(FieldMame, :parameter)"
  *
  * FilterFieldConversion ::=
- *     "RECORD_FILTER_VALUE_CONVERSION" "(" StringPrimary, InParameter ")"
+ *     "RECORD_FILTER_VALUE_CONVERSION" "(" StringPrimary, InParameter ["," integer | null ] ")"
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -30,17 +28,18 @@ class FilterValueConversion extends FunctionNode
 {
     public $fieldName;
     public $columnExpression;
+    public $strategy;
 
     public function getSql(SqlWalker $sqlWalker)
     {
-        /** @var WhereBuilder $whereBuilder */
+        /** @var \Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder $whereBuilder */
         if (!($whereBuilder = $sqlWalker->getQuery()->getHint('where_builder_conversions'))) {
             throw new \LogicException('Missing "where_builder_conversions" hint for FilterFieldConversion.');
         }
 
         $fieldName = is_object($this->fieldName) ? trim($this->fieldName->dispatch($sqlWalker), "'") : $this->fieldName;
 
-        return $whereBuilder->getValueConversionSql($fieldName, $this->columnExpression->dispatch($sqlWalker));
+        return $whereBuilder->getValueConversionSql($fieldName, $this->columnExpression->dispatch($sqlWalker), null, null, $this->strategy);
     }
 
     public function parse(Parser $parser)
@@ -53,6 +52,18 @@ class FilterValueConversion extends FunctionNode
         $parser->match(Lexer::T_COMMA);
 
         $this->columnExpression = $parser->InParameter();
+
+        $lexer = $parser->getLexer();
+        if ($lexer->isNextToken(Lexer::T_COMMA)) {
+            $parser->match(Lexer::T_COMMA);
+
+            if ($lexer->isNextToken(Lexer::T_NULL)) {
+                $parser->match(Lexer::T_NULL);
+                $this->strategy = null;
+            } else {
+                $this->strategy = $parser->Literal();
+            }
+        }
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
