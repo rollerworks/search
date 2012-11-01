@@ -14,7 +14,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine;
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\AbstractFactory;
-
 use Metadata\MetadataFactoryInterface;
 use Doctrine\ORM\EntityManager;
 
