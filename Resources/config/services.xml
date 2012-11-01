@@ -35,6 +35,8 @@
         <parameter key="rollerworks_record_filter.filter_type.decimal.class">Rollerworks\Bundle\RecordFilterBundle\Type\Decimal</parameter>
         <parameter key="rollerworks_record_filter.filter_type.text.class">Rollerworks\Bundle\RecordFilterBundle\Type\Text</parameter>
         <parameter key="rollerworks_record_filter.filter_type.enum.class">Rollerworks\Bundle\RecordFilterBundle\Type\EnumType</parameter>
+
+        <parameter key="rollerworks_record_filter.doctrine.orm.conversion.age_date.class">Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\Conversion\AgeDateConversion</parameter>
     </parameters>
 
     <services>
@@ -96,6 +98,8 @@
                 <argument type="service" id="service_container"/>
             </call>
         </service>
+
+        <service id="rollerworks_record_filter.doctrine.orm.conversion.age_date" class="%rollerworks_record_filter.doctrine.orm.conversion.age_date.class%" />
 
         <!-- Input classes -->
         <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" scope="prototype">
