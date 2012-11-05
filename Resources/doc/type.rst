@@ -76,6 +76,22 @@ The following options can be set for Date, DateTime and Time.
 | time_optional     | If the time is optional (DateTime type only)                   | Boolean              |
 +-------------------+----------------------------------------------------------------+----------------------+
 
+Birthday
+--------
+
+The Birthday type can be used for birthdays and ages.
+
+Any date equal or lower then 'today' is accepted, but you can also use someones age.
+
+.. note::
+
+    For this to work completely, the storage layer must convert a birthday value to an age for comparison.
+
+    For Doctrine ORM you use the "rollerworks_record_filter.doctrine.orm.conversion.age_date" service
+    for both field and value conversion.
+
+    See also :doc:`Doctrine ORM WhereBuilder <Doctrine/orm/where_builder>`.
+
 Number
 ------
 
