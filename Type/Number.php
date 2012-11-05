@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
+use Rollerworks\Component\Locale\BigNumber;
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
@@ -35,11 +36,6 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     protected $options = array();
 
     /**
-     * @var \NumberFormatter|null
-     */
-    private static $numberFormatter = null;
-
-    /**
      * Constructor.
      *
      * @param array $options Array with min/max value as integer or string
@@ -60,7 +56,6 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
         static::setDefaultOptions($optionsResolver);
 
         $this->options = $optionsResolver->resolve($options);
-
         if (null !== $this->options['min'] && null !== $this->options['max'] && ($this->isHigher($this->options['min'], $this->options['max']) || $this->isEqual($this->options['min'], $this->options['max']))) {
             throw new \UnexpectedValueException(sprintf('Option min "%s" must not be lower or equal to option max "%s".', $this->options['min'], $this->options['max']));
         }
@@ -90,7 +85,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
      */
     public function formatOutput($value)
     {
-        return self::getNumberFormatter(\Locale::getDefault())->format($value, \NumberFormatter::TYPE_INT64 | \NumberFormatter::GROUPING_USED);
+        return BigNumber::format($value, \Locale::getDefault(), true);
     }
 
     /**
@@ -107,7 +102,6 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     public function isHigher($value, $nextValue)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
-
         if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
             return bccomp($value, $nextValue) === 1;
         }
@@ -144,13 +138,9 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     {
         $message = 'This value is not a valid number.';
 
-        if (!preg_match('/^(?:[+-]?(?:\p{N}+)|(?:\p{N}+[+-]?))$/us', (string) $value)) {
-            return false;
-        }
-
         if (ctype_digit((string) ltrim($value, '-+'))) {
             $this->lastResult = ltrim($value, '+');
-        } elseif (!($this->lastResult = self::getNumberFormatter(\Locale::getDefault())->parse((string) trim($value, '+'), \NumberFormatter::TYPE_INT64))) {
+        } elseif (null === ($this->lastResult = BigNumber::parse((string) trim($value, '+')))) {
             return false;
         }
 
@@ -177,7 +167,6 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     public function sortValuesList($first, $second)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
-
         if ((strlen($first->getValue()) > $phpMax || strlen($second->getValue()) > $phpMax) && function_exists('bccomp')) {
             return bccomp($first->getValue(), $second->getValue());
         }
@@ -195,7 +184,6 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     public function getHigherValue($value)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;
-
         if (strlen($value) > $phpMax && function_exists('bcadd')) {
             return bcadd(ltrim($value, '+'), '1');
         }
@@ -225,23 +213,5 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     public function getOptions()
     {
         return $this->options;
-    }
-
-    /**
-     * Returns a shared NumberFormatter object.
-     *
-     * @param null|string $locale
-     *
-     * @return \NumberFormatter
-     */
-    protected static function getNumberFormatter($locale = null)
-    {
-        $locale = $locale ?: \Locale::getDefault();
-
-        if (null === self::$numberFormatter || self::$numberFormatter->getLocale() !== $locale) {
-            self::$numberFormatter = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
-        }
-
-        return self::$numberFormatter;
     }
 }
