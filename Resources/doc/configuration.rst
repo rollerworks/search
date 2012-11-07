@@ -211,6 +211,33 @@ When no label can be found/set, the field name is used as label.
 Doctrine
 --------
 
+ORM
+~~~~
+
+To enable Doctrine ORM you should at least ad the following to your configuration.
+
+.. configuration-block::
+
+    .. code-block:: yaml
+
+        rollerworks_record_filter:
+            doctrine:
+                orm: ~
+
+
+    .. code-block:: php
+
+        // app/config/config.php
+        $container->loadFromExtension('rollerworks_record_filter', array(
+            /* ... */
+            'doctrine' => array(
+                'orm' => array(),
+            ),
+        ));
+
+This will load the Doctrine related services with there default values.
+Or else the Doctrine support for the RecordFilter is not enabled.
+
 OrmWhereBuilder
 ~~~~~~~~~~~~~~~
 
@@ -321,9 +348,9 @@ DoctrineOrmWhereBuilder
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 The OrmWhereBuilder factory uses Doctrine ORM for creating WHERE cases
-based in the FieldSets defined in our application configuration.
+based in the FieldSets defined in your application configuration.
 
-To enable this factory we must place the following in our application config.
+To enable this factory you must place the following in our application config.
 
 And add the custom DQL functions as described above.
 
@@ -332,6 +359,9 @@ And add the custom DQL functions as described above.
     .. code-block:: yaml
 
         rollerworks_record_filter:
+            doctrine:
+                orm: ~
+
             factories:
                 doctrine:
                     orm:
@@ -348,6 +378,9 @@ And add the custom DQL functions as described above.
         // app/config/config.php
         $container->loadFromExtension('rollerworks_record_filter', array(
             /* ... */
+            'doctrine' => array(
+                'orm' => array(/* ... */),
+            ),
             'factories' => array(
                 /* ... */
                 'doctrine' => array(

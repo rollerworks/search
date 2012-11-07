@@ -43,6 +43,10 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
 
     public function testWarmUpWithDefault()
     {
+        $this->container->loadFromExtension('rollerworks_record_filter', array(
+            'doctrine' => array('orm' => array()),
+        ));
+
         $this->compileContainer($this->container);
         $this->cacheWarmer->warmUp($this->cacheDir);
 
@@ -52,6 +56,10 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
     public function testWarmUpGenerateFieldSetsNoFields()
     {
         $this->container->setParameter('rollerworks_record_filter.factories.fieldset.auto_generate', true);
+
+        $this->container->loadFromExtension('rollerworks_record_filter', array(
+            'doctrine' => array('orm' => array()),
+        ));
 
         $this->compileContainer($this->container);
         $this->cacheWarmer->warmUp($this->cacheDir);
@@ -400,6 +408,10 @@ class RecordFilterFactoriesCacheWarmerTest extends TestCase
 
     public function testWarmUpGenerateSqlWhereBuilder()
     {
+        $this->container->loadFromExtension('rollerworks_record_filter', array(
+            'doctrine' => array('orm' => array()),
+        ));
+
         $this->container->loadFromExtension('rollerworks_record_filter', array(
             'fieldsets' => array(
                 'customer' => array(

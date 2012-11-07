@@ -42,10 +42,8 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('filters_namespace')->cannotBeEmpty()->defaultValue('RecordFilter')->end()
 
                 ->arrayNode('doctrine')
-                    ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('orm')
-                            ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('default_entity_manager')->cannotBeEmpty()->defaultValue('%doctrine.default_entity_manager%')
                             ->end()
@@ -81,11 +79,9 @@ class Configuration implements ConfigurationInterface
                         ->end()
 
                         ->arrayNode('doctrine')
-                            ->addDefaultsIfNotSet()
                             ->children()
 
                                 ->arrayNode('orm')
-                                    ->addDefaultsIfNotSet()
                                     ->children()
                                         ->arrayNode('wherebuilder')
                                             ->addDefaultsIfNotSet()

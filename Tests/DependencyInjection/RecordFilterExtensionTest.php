@@ -34,8 +34,7 @@ class RecordFilterExtensionTest extends TestCase
         $this->assertEquals('', $container->getParameter('rollerworks_record_filter.factories.fieldset.label_translator_prefix'));
         $this->assertEquals('filters', $container->getParameter('rollerworks_record_filter.factories.fieldset.label_translator_domain'));
 
-        $this->assertFalse($container->getParameter('rollerworks_record_filter.factories.doctrine.orm.wherebuilder.auto_generate'));
-        $this->assertEquals('RecordFilter', $container->getParameter('rollerworks_record_filter.factories.doctrine.orm.wherebuilder.namespace'));
+        $this->assertFalse($container->hasParameter('rollerworks_record_filter.factories.doctrine.orm.wherebuilder.auto_generate'));
     }
 
     public function testLoadConfigurationDoctrineOrm()
@@ -45,7 +44,11 @@ class RecordFilterExtensionTest extends TestCase
         $container->setParameter('doctrine.second_entity_manager', 'default');
 
         $container->registerExtension(new RollerworksRecordFilterExtension());
-        $container->loadFromExtension('rollerworks_record_filter', array('doctrine' => array('orm' => array('default_entity_manager' => 'second'))));
+        $container->loadFromExtension('rollerworks_record_filter', array(
+            'doctrine' => array('orm' => array('default_entity_manager' => 'second')),
+            'factories' => array('doctrine' => array('orm' => array()))
+        ));
+
         $this->compileContainer($container);
 
         $factoryDef = $container->getDefinition('rollerworks_record_filter.doctrine.orm.wherebuilder_factory');
@@ -78,7 +81,7 @@ class RecordFilterExtensionTest extends TestCase
         $container->setParameter('doctrine.second_entity_manager', 'default');
 
         $container->registerExtension(new RollerworksRecordFilterExtension());
-        $container->loadFromExtension('rollerworks_record_filter', array('factories' => $config));
+        $container->loadFromExtension('rollerworks_record_filter', array('doctrine' => array('orm' => array()), 'factories' => $config));
         $this->compileContainer($container);
 
         foreach ($expected as $name => $value) {

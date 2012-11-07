@@ -10,14 +10,12 @@
         <parameter key="rollerworks_record_filter.factories_cache_warmer.class">Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCacheWarmer</parameter>
 
         <parameter key="rollerworks_record_filter.types_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory</parameter>
-        <parameter key="rollerworks_record_filter.doctrine.orm.wherebuilder_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\OrmWhereBuilderFactory</parameter>
         <parameter key="rollerworks_record_filter.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="rollerworks_record_filter.metadata.driver_chain.class">Metadata\Driver\DriverChain</parameter>
         <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver</parameter>
         <parameter key="rollerworks_record_filter.metadata.cache.class">Metadata\Cache\FileCache</parameter>
 
         <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter</parameter>
-        <parameter key="rollerworks_record_filter.doctrine.orm.where_builder.class">Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder</parameter>
 
         <!-- Formatter modifiers classes -->
         <parameter key="rollerworks_record_filter.formatter.modifiers.validator.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\Validator</parameter>
@@ -35,8 +33,6 @@
         <parameter key="rollerworks_record_filter.filter_type.decimal.class">Rollerworks\Bundle\RecordFilterBundle\Type\Decimal</parameter>
         <parameter key="rollerworks_record_filter.filter_type.text.class">Rollerworks\Bundle\RecordFilterBundle\Type\Text</parameter>
         <parameter key="rollerworks_record_filter.filter_type.enum.class">Rollerworks\Bundle\RecordFilterBundle\Type\EnumType</parameter>
-
-        <parameter key="rollerworks_record_filter.doctrine.orm.conversion.age_date.class">Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\Conversion\AgeDateConversion</parameter>
     </parameters>
 
     <services>
@@ -86,21 +82,6 @@
             </call>
         </service>
 
-        <service id="rollerworks_record_filter.doctrine.orm.wherebuilder_factory" class="%rollerworks_record_filter.doctrine.orm.wherebuilder_factory.class%">
-            <argument>%rollerworks_record_filter.filters_directory%</argument>
-            <argument>%rollerworks_record_filter.factories.doctrine.orm.wherebuilder.namespace%</argument>
-            <argument>%rollerworks_record_filter.factories.doctrine.orm.wherebuilder.auto_generate%</argument>
-
-            <call method="setMetadataFactory">
-                <argument type="service" id="rollerworks_record_filter.metadata_factory" />
-            </call>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
-        <service id="rollerworks_record_filter.doctrine.orm.conversion.age_date" class="%rollerworks_record_filter.doctrine.orm.conversion.age_date.class%" />
-
         <!-- Input classes -->
         <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" scope="prototype">
             <argument type="service" id="translator"/>
@@ -108,11 +89,6 @@
 
         <service id="rollerworks_record_filter.formatter" class="%rollerworks_record_filter.formatter.class%">
             <argument type="service" id="translator"/>
-        </service>
-
-        <service id="rollerworks_record_filter.doctrine.orm.where_builder" class="%rollerworks_record_filter.doctrine.orm.where_builder.class%" scope="prototype">
-            <argument type="service" id="rollerworks_record_filter.metadata_factory"/>
-            <argument type="service" id="service_container"/>
         </service>
 
         <service id="rollerworks_record_filter.factories_cache_warmer" class="%rollerworks_record_filter.factories_cache_warmer.class%" public="false">

@@ -40,6 +40,28 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'label_translator_domain' => 'filters',
                 'auto_generate' => false,
             ),
+        ), $config['factories'], 'The factories key is set');
+    }
+
+    public function testConfigTree2()
+    {
+        $config = array_merge(self::$minimalConfig,
+            array('doctrine' => array('orm' => array())),
+            array('factories' => array('doctrine' => array('orm' => array()))
+        ));
+
+        $processor = new Processor();
+        $configuration = new Configuration();
+        $config = $processor->processConfiguration($configuration, array($config));
+
+        $this->assertEquals(array(), $config['fieldsets'], 'The fieldsets key is just an empty array');
+        $this->assertEquals(array(
+            'fieldset' => array(
+                'namespace' => '%rollerworks_record_filter.filters_namespace%',
+                'label_translator_prefix' => '',
+                'label_translator_domain' => 'filters',
+                'auto_generate' => false,
+            ),
 
             'doctrine' => array(
                 'orm' => array(
