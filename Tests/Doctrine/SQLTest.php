@@ -489,7 +489,6 @@ class SQLTest extends OrmTestCase
         $this->assertQueryParamsEquals($params, $query);
     }
 
-
     public static function provideBasicsTests()
     {
         return array(

@@ -43,6 +43,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         ), $config['factories'], 'The factories key is set');
 
         $this->assertEquals(array(
+            'default_formatter' => 'rollerworks_record_filter.modifier_formatter',
             'cache' => array(
                 'driver' => 'rollerworks_record_filter.cache_array_driver',
                 'lifetime' => 0,

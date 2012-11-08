@@ -34,7 +34,7 @@ class AgeDateConversion implements ConversionStrategyInterface, FieldConversionI
     /**
      * @var array
      */
-    static protected $connectionState = array();
+    protected static $connectionState = array();
 
     /**
      * {@inheritdoc}

@@ -177,8 +177,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
 
         if (null !== $this->options['min'] && $this->isLower($this->lastResult, $this->options['min'])) {
             $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
-        }
-        elseif (null !== $this->options['max'] && $this->isHigher($this->lastResult, $this->options['max'])) {
+        } elseif (null !== $this->options['max'] && $this->isHigher($this->lastResult, $this->options['max'])) {
             $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
         }
 

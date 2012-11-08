@@ -14,7 +14,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Input;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
 use Rollerworks\Bundle\RecordFilterBundle\Exception\ValidationException;
-use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 /**

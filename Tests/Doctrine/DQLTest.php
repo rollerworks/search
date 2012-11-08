@@ -71,7 +71,6 @@ class DQLTest extends OrmTestCase
         $this->assertCount(0, $query->getParameters());
     }
 
-
     public function testAppendWithQuery()
     {
         $input = $this->newInput('invoice_customer=2;');

@@ -171,13 +171,13 @@ class WhereBuilder
      * Calling this method resets the parameter index counter, set $resetParameterIndex to false to prevent that.
      *
      * @param FormatterInterface $formatter
-     * @param array              $entityAliasMapping  An array with the alias-mapping as [class or Bundle:Class] => entity-alias
-     * @param OrmQuery|null      $query               An ORM Query object (required for DQL).
-     * @param string|null        $appendQuery         Place *this value* after the current query when there is an actual filtering result.
-     *                                                The query object will be updated as: current query + $appendQuery + filtering.
-     *                                                This value is only used when a query object is set, and SHOULD contain spaces like " WHERE "
-     * @param boolean            $resetParameterIndex Set to false if you want to keep the parameter index when calling this method again.
-     *                                                This should only be used when using multiple filtering results in the same query.
+     * @param array              $entityAliasMapping An array with the alias-mapping as [class or Bundle:Class] => entity-alias
+     * @param OrmQuery|null      $query              An ORM Query object (required for DQL).
+     * @param string|null        $appendQuery        Place *this value* after the current query when there is an actual filtering result.
+     *                                               The query object will be updated as: current query + $appendQuery + filtering.
+     *                                               This value is only used when a query object is set, and SHOULD contain spaces like " WHERE "
+     * @param boolean $resetParameterIndex 		     Set to false if you want to keep the parameter index when calling this method again.
+     *                                               This should only be used when using multiple filtering results in the same query.
      *
      * @return null|string Returns null when there is no result
      *
