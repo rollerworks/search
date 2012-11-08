@@ -6,6 +6,8 @@
 
     <parameters>
         <parameter key="rollerworks_record_filter.input.filter_query.class">Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery</parameter>
+        <parameter key="rollerworks_record_filter.input.array.class">Rollerworks\Bundle\RecordFilterBundle\Input\ArrayInput</parameter>
+        <parameter key="rollerworks_record_filter.input.json.class">Rollerworks\Bundle\RecordFilterBundle\Input\JsonInput</parameter>
         <parameter key="rollerworks_record_filter.fieldset_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\FieldSetFactory</parameter>
         <parameter key="rollerworks_record_filter.factories_cache_warmer.class">Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCacheWarmer</parameter>
 
@@ -84,11 +86,13 @@
         </service>
 
         <!-- Input classes -->
-        <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" scope="prototype">
+        <service id="rollerworks_record_filter.input_abstract" abstract="true" scope="prototype">
             <argument type="service" id="translator"/>
         </service>
 
-        <!-- FIXME Add missing classes -->
+        <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" parent="rollerworks_record_filter.input_abstract" />
+        <service id="rollerworks_record_filter.input.array" class="%rollerworks_record_filter.input.array.class%" parent="rollerworks_record_filter.input_abstract"/>
+        <service id="rollerworks_record_filter.input.json" class="%rollerworks_record_filter.input.json.class%" parent="rollerworks_record_filter.input_abstract"/>
 
         <service id="rollerworks_record_filter.cache_array_driver" class="Doctrine\Common\Cache\ArrayCache" public="false">
             <call method="setNamespace">
@@ -96,7 +100,7 @@
             </call>
         </service>
 
-        <service id="rollerworks_record_filter.formatter" class="%rollerworks_record_filter.formatter.class%">
+        <service id="rollerworks_record_filter.modifier_formatter" class="%rollerworks_record_filter.formatter.class%">
             <argument type="service" id="translator"/>
         </service>
 

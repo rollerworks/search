@@ -44,7 +44,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('formatter')
                     ->addDefaultsIfNotSet()
                     ->children()
-
+                        ->scalarNode('default_formatter')->defaultValue('rollerworks_record_filter.modifier_formatter')->end()
                         ->arrayNode('cache')
                             ->addDefaultsIfNotSet()
                             ->children()
@@ -60,7 +60,6 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('orm')
                             ->children()
                                 ->scalarNode('default_entity_manager')->cannotBeEmpty()->defaultValue('%doctrine.default_entity_manager%')->end()
-
                                 ->arrayNode('cache')
                                     ->addDefaultsIfNotSet()
                                     ->children()
@@ -68,7 +67,6 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('lifetime')->defaultValue(0)->end()
                                     ->end()
                                 ->end()
-
 
                             ->end()
                         ->end()
@@ -104,7 +102,6 @@ class Configuration implements ConfigurationInterface
 
                         ->arrayNode('doctrine')
                             ->children()
-
                                 ->arrayNode('orm')
                                     ->children()
                                         ->arrayNode('wherebuilder')
@@ -117,7 +114,6 @@ class Configuration implements ConfigurationInterface
                                         ->end()
                                     ->end()
                                 ->end()
-
                             ->end()
                         ->end()
 

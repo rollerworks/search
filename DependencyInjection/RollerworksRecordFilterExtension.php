@@ -56,6 +56,7 @@ class RollerworksRecordFilterExtension extends Extension
 
         $container->setParameter('rollerworks_record_filter.formatter.cache_driver', $config['formatter']['cache']['driver']);
         $container->setParameter('rollerworks_record_filter.formatter.cache_lifetime', $config['formatter']['cache']['lifetime']);
+        $container->setAlias('rollerworks_record_filter.formatter', $config['formatter']['default_formatter']);
 
         if (isset($config['doctrine']['orm'])) {
             $loader->load('doctrine.orm.xml');
