@@ -54,8 +54,14 @@ class RollerworksRecordFilterExtension extends Extension
 
         $container->setParameter('rollerworks_record_filter.fieldsets', serialize($config['fieldsets']));
 
+        $container->setParameter('rollerworks_record_filter.formatter.cache_driver', $config['formatter']['cache']['driver']);
+        $container->setParameter('rollerworks_record_filter.formatter.cache_lifetime', $config['formatter']['cache']['lifetime']);
+
         if (isset($config['doctrine']['orm'])) {
             $loader->load('doctrine.orm.xml');
+
+            $container->setParameter('rollerworks_record_filter.doctrine.orm.cache_driver', $config['doctrine']['orm']['cache']['driver']);
+            $container->setParameter('rollerworks_record_filter.doctrine.orm.cache_lifetime', $config['doctrine']['orm']['cache']['lifetime']);
 
             $container->getDefinition('rollerworks_record_filter.doctrine.orm.where_builder')
                 ->addMethodCall('setEntityManager', array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $container->getParameterBag()->resolveValue($config['doctrine']['orm']['default_entity_manager'])))));

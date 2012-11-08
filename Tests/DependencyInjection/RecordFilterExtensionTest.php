@@ -37,6 +37,26 @@ class RecordFilterExtensionTest extends TestCase
         $this->assertFalse($container->hasParameter('rollerworks_record_filter.factories.doctrine.orm.wherebuilder.auto_generate'));
     }
 
+    public function testLoadFormatter()
+    {
+        $container = $this->createContainer();
+        $container->registerExtension(new RollerworksRecordFilterExtension());
+        $container->loadFromExtension('rollerworks_record_filter', array());
+        $this->compileContainer($container);
+
+        $this->assertEquals('RecordFilter', $container->getParameter('rollerworks_record_filter.filters_namespace'));
+        $this->assertEquals($container->getParameter('kernel.cache_dir') . '/record_filter', $container->getParameter('rollerworks_record_filter.filters_directory'));
+
+        $this->assertFalse($container->getParameter('rollerworks_record_filter.factories.fieldset.auto_generate'));
+        $this->assertEquals('RecordFilter', $container->getParameter('rollerworks_record_filter.factories.fieldset.namespace'));
+        $this->assertEquals('', $container->getParameter('rollerworks_record_filter.factories.fieldset.label_translator_prefix'));
+        $this->assertEquals('filters', $container->getParameter('rollerworks_record_filter.factories.fieldset.label_translator_domain'));
+        $this->assertFalse($container->hasParameter('rollerworks_record_filter.factories.doctrine.orm.wherebuilder.auto_generate'));
+
+        $this->assertEquals('rollerworks_record_filter.cache_array_driver', $container->getParameter('rollerworks_record_filter.formatter.cache_driver'));
+        $this->assertEquals(0, $container->getParameter('rollerworks_record_filter.formatter.cache_lifetime'));
+    }
+
     public function testLoadConfigurationDoctrineOrm()
     {
         $container = $this->createContainer();
@@ -50,6 +70,9 @@ class RecordFilterExtensionTest extends TestCase
         ));
 
         $this->compileContainer($container);
+
+        $this->assertEquals('rollerworks_record_filter.cache_array_driver', $container->getParameter('rollerworks_record_filter.doctrine.orm.cache_driver'));
+        $this->assertEquals(0, $container->getParameter('rollerworks_record_filter.doctrine.orm.cache_lifetime'));
 
         $factoryDef = $container->getDefinition('rollerworks_record_filter.doctrine.orm.wherebuilder_factory');
         $calls = $factoryDef->getMethodCalls();

@@ -41,6 +41,13 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'auto_generate' => false,
             ),
         ), $config['factories'], 'The factories key is set');
+
+        $this->assertEquals(array(
+            'cache' => array(
+                'driver' => 'rollerworks_record_filter.cache_array_driver',
+                'lifetime' => 0,
+            ),
+        ), $config['formatter'], 'The formatter key is set');
     }
 
     public function testConfigTree2()

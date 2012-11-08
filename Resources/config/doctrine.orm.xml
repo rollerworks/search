@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="rollerworks_record_filter.doctrine.orm.wherebuilder_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\OrmWhereBuilderFactory</parameter>
         <parameter key="rollerworks_record_filter.doctrine.orm.where_builder.class">Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder</parameter>
+        <parameter key="rollerworks_record_filter.doctrine.orm.cache_where_builder.class">Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\CacheWhereBuilder</parameter>
         <parameter key="rollerworks_record_filter.doctrine.orm.conversion.age_date.class">Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\Conversion\AgeDateConversion</parameter>
     </parameters>
 
@@ -15,6 +16,11 @@
         <service id="rollerworks_record_filter.doctrine.orm.where_builder" class="%rollerworks_record_filter.doctrine.orm.where_builder.class%" scope="prototype">
             <argument type="service" id="rollerworks_record_filter.metadata_factory"/>
             <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="rollerworks_record_filter.doctrine.orm.cache_where_builder" class="%rollerworks_record_filter.doctrine.orm.cache_where_builder.class%">
+            <argument type="service" id="%rollerworks_record_filter.doctrine.orm.cache_driver%" />
+            <argument type="string">%rollerworks_record_filter.doctrine.orm.cache_lifetime%</argument>
         </service>
 
         <service id="rollerworks_record_filter.doctrine.orm.wherebuilder_factory" class="%rollerworks_record_filter.doctrine.orm.wherebuilder_factory.class%">

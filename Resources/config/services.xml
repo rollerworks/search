@@ -16,6 +16,7 @@
         <parameter key="rollerworks_record_filter.metadata.cache.class">Metadata\Cache\FileCache</parameter>
 
         <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter</parameter>
+        <parameter key="rollerworks_record_filter.cache_formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\CacheFormatter</parameter>
 
         <!-- Formatter modifiers classes -->
         <parameter key="rollerworks_record_filter.formatter.modifiers.validator.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\Validator</parameter>
@@ -87,8 +88,25 @@
             <argument type="service" id="translator"/>
         </service>
 
+        <!-- FIXME Add missing classes -->
+
+        <service id="rollerworks_record_filter.cache_array_driver" class="Doctrine\Common\Cache\ArrayCache" public="false">
+            <call method="setNamespace">
+                <argument type="string">record_filter.</argument>
+            </call>
+        </service>
+
         <service id="rollerworks_record_filter.formatter" class="%rollerworks_record_filter.formatter.class%">
             <argument type="service" id="translator"/>
+        </service>
+
+        <service id="rollerworks_record_filter.cache_formatter" class="%rollerworks_record_filter.formatter.class%">
+            <call method="setFormatter">
+                <argument type="service" id="rollerworks_record_filter.formatter"/>
+            </call>
+
+            <argument type="service" id="%rollerworks_record_filter.formatter.cache_driver%" />
+            <argument type="string">%rollerworks_record_filter.formatter.cache_lifetime%</argument>
         </service>
 
         <service id="rollerworks_record_filter.factories_cache_warmer" class="%rollerworks_record_filter.factories_cache_warmer.class%" public="false">

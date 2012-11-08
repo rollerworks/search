@@ -41,11 +41,35 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('filters_directory')->cannotBeEmpty()->defaultValue('%kernel.cache_dir%/record_filter')->end()
                 ->scalarNode('filters_namespace')->cannotBeEmpty()->defaultValue('RecordFilter')->end()
 
+                ->arrayNode('formatter')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+
+                        ->arrayNode('cache')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('driver')->defaultValue('rollerworks_record_filter.cache_array_driver')->end()
+                                ->scalarNode('lifetime')->defaultValue(0)->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+
                 ->arrayNode('doctrine')
                     ->children()
                         ->arrayNode('orm')
                             ->children()
-                                ->scalarNode('default_entity_manager')->cannotBeEmpty()->defaultValue('%doctrine.default_entity_manager%')
+                                ->scalarNode('default_entity_manager')->cannotBeEmpty()->defaultValue('%doctrine.default_entity_manager%')->end()
+
+                                ->arrayNode('cache')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('driver')->defaultValue('rollerworks_record_filter.cache_array_driver')->end()
+                                        ->scalarNode('lifetime')->defaultValue(0)->end()
+                                    ->end()
+                                ->end()
+
+
                             ->end()
                         ->end()
                     ->end()
