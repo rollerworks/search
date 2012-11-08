@@ -12,6 +12,7 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Formatter;
 
 use Rollerworks\Bundle\RecordFilterBundle\FieldSet;
+use Rollerworks\Bundle\RecordFilterBundle\Input\InputInterface;
 
 /**
  * RecordFiltering formatting interface.
@@ -46,4 +47,15 @@ interface FormatterInterface
      * @api
      */
     public function getFieldSet();
+
+    /**
+     * Formats the input and returns either true or false.
+     *
+     * @param InputInterface $input
+     *
+     * @return boolean returns false on failure
+     *
+     * @api
+     */
+    public function formatInput(InputInterface $input);
 }

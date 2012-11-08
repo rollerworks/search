@@ -12,14 +12,17 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
+use Rollerworks\Bundle\RecordFilterBundle\Formatter\CacheFormatter;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
+use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\CacheWhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
-use Metadata\MetadataFactory;
-use Doctrine\ORM\Query\QueryException;
-use Doctrine\ORM\Query;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\Doctrine\SqlConversion\StrategyConversion1;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
+use Doctrine\Common\Cache\ArrayCache;
+use Metadata\MetadataFactory;
+use Doctrine\ORM\Query\QueryException;
+use Doctrine\ORM\Query;
 
 class DQLTest extends OrmTestCase
 {
@@ -233,6 +236,292 @@ class DQLTest extends OrmTestCase
         $this->assertEquals($expectSql, $this->assertDqlSuccessCompile($query, $whereCase, true));
     }
 
+    /**
+     * @dataProvider provideBasicsTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedDql
+     * @param array  $params
+     */
+    public function testCache($filterQuery, $expectedDql, $params)
+    {
+        $cacheDriver = new ArrayCache();
+
+        $input = $this->newInput($filterQuery);
+        $cacheFormatter = new CacheFormatter($cacheDriver);
+        $cacheFormatter->setFormatter($this->formatter);
+        $this->assertTrue($cacheFormatter->formatInput($input));
+
+        $container       = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
+    }
+
+    /**
+     * @dataProvider provideBasicsTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedDql
+     * @param array  $params
+     */
+    public function testCached($filterQuery, $expectedDql, $params)
+    {
+        $cacheDriver = new ArrayCache();
+
+        $input = $this->newInput($filterQuery);
+        $cacheFormatter = new CacheFormatter($cacheDriver);
+        $cacheFormatter->setFormatter($this->formatter);
+        $this->assertTrue($cacheFormatter->formatInput($input));
+
+        $container       = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
+
+        $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
+        $whereBuilder->expects($this->never())->method('getWhereClause');
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
+    }
+
+    /**
+     * @dataProvider provideBasicsTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedDql
+     * @param array  $params
+     */
+    public function testNoneCached($filterQuery, $expectedDql, $params)
+    {
+        $cacheDriver = new ArrayCache();
+
+        $input = $this->newInput($filterQuery);
+        $cacheFormatter = new CacheFormatter($cacheDriver);
+        $cacheFormatter->setFormatter($this->formatter);
+        $this->assertTrue($cacheFormatter->formatInput($input));
+
+        $container       = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
+
+        $input = $this->newInput(preg_match('/(\w)=/', '$1 = ', $filterQuery));
+        $cacheFormatter = new CacheFormatter($cacheDriver);
+        $cacheFormatter->setFormatter($this->formatter);
+        $this->assertTrue($cacheFormatter->formatInput($input));
+
+        $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
+        $whereBuilder->expects($this->once())->method('getWhereClause');
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query
+        );
+    }
+
+    /**
+     * @dataProvider provideBasicsTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedDql
+     * @param array  $params
+     */
+    public function testCachedEntityMapping($filterQuery, $expectedDql, $params)
+    {
+        $cacheDriver = new ArrayCache();
+
+        $input = $this->newInput($filterQuery);
+        $cacheFormatter = new CacheFormatter($cacheDriver);
+        $cacheFormatter->setFormatter($this->formatter);
+        $this->assertTrue($cacheFormatter->formatInput($input));
+
+        $container       = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
+
+        $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
+        $whereBuilder->expects($this->once())->method('getWhereClause');
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'C'),
+            $query
+        );
+    }
+
+    /**
+     * @dataProvider provideBasicsTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedDql
+     * @param array  $params
+     */
+    public function testCachedAppendQuerySame($filterQuery, $expectedDql, $params)
+    {
+        $cacheDriver = new ArrayCache();
+
+        $input = $this->newInput($filterQuery);
+        $cacheFormatter = new CacheFormatter($cacheDriver);
+        $cacheFormatter->setFormatter($this->formatter);
+        $this->assertTrue($cacheFormatter->formatInput($input));
+
+        $container       = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query,
+            ' WHERE'
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase, false, false);
+
+        $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
+        $whereBuilder->expects($this->once())->method('getWhereClause');
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'C'),
+            $query,
+            ' WHERE'
+        );
+    }
+
+    /**
+     * @dataProvider provideBasicsTests
+     *
+     * @param string $filterQuery
+     * @param string $expectedDql
+     * @param array  $params
+     */
+    public function testCachedAppendQueryNotSame($filterQuery, $expectedDql, $params)
+    {
+        $cacheDriver = new ArrayCache();
+
+        $input = $this->newInput($filterQuery);
+        $cacheFormatter = new CacheFormatter($cacheDriver);
+        $cacheFormatter->setFormatter($this->formatter);
+        $this->assertTrue($cacheFormatter->formatInput($input));
+
+        $container       = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query,
+            ' WHERE'
+        ));
+
+        $this->assertEquals($expectedDql, $whereCase);
+        $this->assertQueryParamsEquals($params, $query);
+        $this->assertDqlSuccessCompile($query, $whereCase, false, false);
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            $query,
+            ' WHERE'
+        );
+
+        $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
+        $whereBuilder->expects($this->once())->method('getWhereClause');
+        $query = $this->em->createQuery("SELECT I, 'foo' AS bar FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+
+        $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
+        $cacheWhereBuilder->getWhereClause(
+            $cacheFormatter,
+            $whereBuilder,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'C'),
+            $query,
+            ' WHERE'
+        );
+    }
+
     public static function provideBasicsTests()
     {
         return array(
@@ -332,12 +621,15 @@ class DQLTest extends OrmTestCase
      *
      * @return string
      */
-    protected function assertDqlSuccessCompile(Query $query, $whereCase, $return = false)
+    protected function assertDqlSuccessCompile(Query $query, $whereCase, $return = false, $append = true)
     {
         if (null !== $whereCase) {
             $query->useQueryCache(false);
-            $dql = $query->getDQL() . $whereCase;
-            $query->setDQL($dql);
+
+            if ($append) {
+                $dql = $query->getDQL() . $whereCase;
+                $query->setDQL($dql);
+            }
 
             try {
                 if ($return) {

@@ -108,13 +108,7 @@ class ModifierFormatter implements FormatterInterface
     }
 
     /**
-     * Formats the input, by performing all the registered modifiers.
-     *
-     * @param InputInterface $input
-     *
-     * @return boolean
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function formatInput(InputInterface $input)
     {

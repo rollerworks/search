@@ -62,4 +62,13 @@ interface InputInterface
      * @api
      */
     public function getFieldSet();
+
+    /**
+     * Returns the unique hash of the input.
+     *
+     * Used for caching.
+     *
+     * @return string
+     */
+    public function getHash();
 }

@@ -58,6 +58,11 @@ class ArrayInput extends AbstractInput
     protected $input;
 
     /**
+     * @var string
+     */
+    protected $hash;
+
+    /**
      * {@inheritdoc}
      */
     public function setInput($input)
@@ -107,6 +112,18 @@ class ArrayInput extends AbstractInput
     public function getMessages()
     {
         return $this->messages->get(MessageBag::MSG_ERROR);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHash()
+    {
+        if (!$this->hash) {
+            $this->hash = md5(serialize($this->input));
+        }
+
+        return $this->hash;
     }
 
     /**

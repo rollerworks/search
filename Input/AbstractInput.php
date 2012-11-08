@@ -108,6 +108,7 @@ abstract class AbstractInput implements InputInterface
     {
         $fieldName = mb_strtolower($fieldName);
 
+        // FIXME Remove this, this is no longer used
         if ($config->hasType() && $config->getType() instanceof ContainerAwareInterface) {
             $config->getType()->setContainer($this->container);
         }

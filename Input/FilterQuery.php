@@ -63,6 +63,11 @@ class FilterQuery extends AbstractInput
     protected $query = null;
 
     /**
+     * @var string
+     */
+    protected $hash;
+
+    /**
      * Section where the filter-input can be used.
      *
      * @var string
@@ -138,6 +143,7 @@ class FilterQuery extends AbstractInput
     {
         $this->isParsed = false;
         $this->query = trim($input);
+        $this->hash = null;
 
         $this->messages = new MessageBag($this->translator);
 
@@ -180,6 +186,18 @@ class FilterQuery extends AbstractInput
     public function getMessages()
     {
         return $this->messages->get(MessageBag::MSG_ERROR);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHash()
+    {
+        if (!$this->hash) {
+            $this->hash = md5($this->query);
+        }
+
+        return $this->hash;
     }
 
     /**

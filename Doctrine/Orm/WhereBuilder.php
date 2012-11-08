@@ -81,6 +81,11 @@ class WhereBuilder
     );
 
     /**
+     * @var array
+     */
+    protected $parameters = array();
+
+    /**
      * @var OrmQuery|null
      */
     protected $query;
@@ -201,6 +206,7 @@ class WhereBuilder
         $this->fieldSet = $formatter->getFieldSet();
         $this->entityAliases = $entityAliasMapping;
         $this->databasePlatform = $this->entityManager->getConnection()->getDatabasePlatform();
+        $this->parameters = array();
 
         $this->fieldsMappingCache   = array();
         $this->fieldConversionCache = array();
@@ -220,6 +226,16 @@ class WhereBuilder
         }
 
         return $whereCase;
+    }
+
+    /**
+     * Returns the parameters that where set during the building.
+     *
+     * @return array
+     */
+    public function getParameters()
+    {
+        return $this->parameters;
     }
 
     /**
@@ -558,6 +574,7 @@ class WhereBuilder
             if ($this->query) {
                 $paramName = $this->getUniqueParameterName($fieldName);
                 $this->query->setParameter($paramName, $value);
+                $this->parameters[$paramName] = $value;
                 $value = ':' . $paramName;
             } elseif (is_string($value)) {
                 $value = $this->entityManager->getConnection()->quote($value, 'string');
@@ -573,6 +590,7 @@ class WhereBuilder
         } elseif ($this->query) {
             $paramName = $this->getUniqueParameterName($fieldName);
             $this->query->setParameter($paramName, $value, $type);
+            $this->parameters[$paramName] = $value;
             $value = ':' . $paramName;
         } else {
             $value = $type->convertToDatabaseValue($value, $this->databasePlatform);
