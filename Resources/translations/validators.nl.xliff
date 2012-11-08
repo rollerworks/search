@@ -8,7 +8,7 @@
             </alt-trans>
             <trans-unit id="2">
                 <source>This value is not a valid date with optional time.</source>
-                <target>Deze waarde is geen geldige datum met optionele tijd. </target>
+                <target>Deze waarde is geen geldige datum met optionele tijd.</target>
             </alt-trans>
         </body>
     </file>
