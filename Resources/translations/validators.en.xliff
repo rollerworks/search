@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="validators.xliff">
+        <body>
+            <trans-unit id="1">
+                <source>This value is not a valid birthday or age.</source>
+                <target>This value is not a valid birthday or age.</target>
+            </alt-trans>
+            <trans-unit id="2">
+                <source>This value is not a valid date with optional time.</source>
+                <target>This value is not a valid date with optional time.</target>
+            </alt-trans>
+        </body>
+    </file>
+</xliff>
