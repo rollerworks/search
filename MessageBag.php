@@ -124,28 +124,30 @@ class MessageBag
     }
 
     /**
-     * @param string  $transMessage
-     * @param array   $params
-     * @param boolean $addTranslatorPrefix Add record_filter. prefix
-     * @param boolean $translate           Set to false to use message as-is
+     * @param string      $transMessage
+     * @param array       $params
+     * @param boolean     $addTranslatorPrefix Add record_filter. prefix
+     * @param boolean     $translate           Set to false to use message as-is
+     * @param null|string $domain
      */
-    public function addError($transMessage, array $params = array(), $addTranslatorPrefix = true, $translate = true)
+    public function addError($transMessage, array $params = array(), $addTranslatorPrefix = true, $translate = true, $domain = 'messages')
     {
         if ($translate) {
-            $this->messages['error'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params);
+            $this->messages['error'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params, $domain);
         } else {
             $this->messages['error'][] = $transMessage;
         }
     }
 
     /**
-     * @param string  $transMessage
-     * @param array   $params
-     * @param boolean $addTranslatorPrefix add 'record_filter.' prefix
+     * @param string      $transMessage
+     * @param array       $params
+     * @param boolean     $addTranslatorPrefix add 'record_filter.' prefix
+     * @param null|string $domain
      */
-    public function addInfo($transMessage, array $params = array(), $addTranslatorPrefix = true)
+    public function addInfo($transMessage, array $params = array(), $addTranslatorPrefix = true, $domain = 'messages')
     {
-        $this->messages['info'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params);
+        $this->messages['info'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params, $domain);
     }
 
     /**

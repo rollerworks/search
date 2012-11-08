@@ -35,7 +35,7 @@ abstract class ModifierTestCase extends \Rollerworks\Bundle\RecordFilterBundle\T
         $formatter = new Formatter($this->translator);
 
         if ($loadModifiers) {
-            $formatter->registerModifier(new Validator());
+            $formatter->registerModifier(new Validator($this->translator));
             $formatter->registerModifier(new DuplicateRemove());
             $formatter->registerModifier(new RangeNormalizer());
             $formatter->registerModifier(new ValuesToRange());

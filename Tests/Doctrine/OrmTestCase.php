@@ -62,7 +62,7 @@ class OrmTestCase extends OrmTestCaseBase
              ->will($this->returnCallback(function ($id) { return $id; } ));
 
         $this->formatter = new Formatter($this->translator);
-        $this->formatter->registerModifier(new Validator());
+        $this->formatter->registerModifier(new Validator($this->translator));
     }
 
     /**

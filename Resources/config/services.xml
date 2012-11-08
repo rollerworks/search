@@ -146,6 +146,10 @@
 
         <!-- Formatter modifiers services -->
         <service id="rollerworks_record_filter.formatter_modifier.validator" class="%rollerworks_record_filter.formatter.modifiers.validator.class%">
+            <call method="setTranslator">
+                <argument type="service" id="translator"/>
+            </call>
+
             <tag name="rollerworks_record_filter.formatter_modifier" priority="1000"/>
         </service>
 

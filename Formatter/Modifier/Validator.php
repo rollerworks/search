@@ -17,6 +17,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Validates and formats filter values.
@@ -29,6 +30,16 @@ class Validator implements ModifierInterface
      * @var boolean
      */
     protected $isError = false;
+
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
 
     /**
      * {@inheritdoc}
@@ -175,10 +186,12 @@ class Validator implements ModifierInterface
         if (!$type->validateValue($value, $message, $validationMessageBag)) {
             if (null === $message) {
                 $message = implode("\n", $validationMessageBag->get('error'));
-            }
+            } else {
+                if (!is_scalar($message)) {
+                    throw new \UnexpectedValueException('Message must be an scalar value.');
+                }
 
-            if (!is_scalar($message)) {
-                throw new \UnexpectedValueException('Message must be an scalar value.');
+                $message = $this->translator->trans($message, array(), 'validators');
             }
 
             $messageBag->addError('validation_warning', array(
