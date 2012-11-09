@@ -19,7 +19,7 @@
         </service>
 
         <service id="rollerworks_record_filter.doctrine.orm.cache_where_builder" class="%rollerworks_record_filter.doctrine.orm.cache_where_builder.class%">
-            <argument type="service" id="%rollerworks_record_filter.doctrine.orm.cache_driver%" />
+            <argument />
             <argument type="string">%rollerworks_record_filter.doctrine.orm.cache_lifetime%</argument>
         </service>
 

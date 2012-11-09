@@ -109,7 +109,7 @@
                 <argument type="service" id="rollerworks_record_filter.formatter"/>
             </call>
 
-            <argument type="service" id="%rollerworks_record_filter.formatter.cache_driver%" />
+            <argument />
             <argument type="string">%rollerworks_record_filter.formatter.cache_lifetime%</argument>
         </service>
 

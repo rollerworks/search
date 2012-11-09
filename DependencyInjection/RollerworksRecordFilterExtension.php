@@ -53,9 +53,11 @@ class RollerworksRecordFilterExtension extends Extension
         $container->setParameter('rollerworks_record_filter.factories.fieldset.label_translator_domain', $config['factories']['fieldset']['label_translator_domain']);
 
         $container->setParameter('rollerworks_record_filter.fieldsets', serialize($config['fieldsets']));
-
         $container->setParameter('rollerworks_record_filter.formatter.cache_driver', $config['formatter']['cache']['driver']);
         $container->setParameter('rollerworks_record_filter.formatter.cache_lifetime', $config['formatter']['cache']['lifetime']);
+        $container->getDefinition('rollerworks_record_filter.cache_formatter')->replaceArgument(0, new Reference($config['formatter']['cache']['driver']));
+
+
         $container->setAlias('rollerworks_record_filter.formatter', $config['formatter']['default_formatter']);
 
         if (isset($config['doctrine']['orm'])) {
@@ -63,6 +65,7 @@ class RollerworksRecordFilterExtension extends Extension
 
             $container->setParameter('rollerworks_record_filter.doctrine.orm.cache_driver', $config['doctrine']['orm']['cache']['driver']);
             $container->setParameter('rollerworks_record_filter.doctrine.orm.cache_lifetime', $config['doctrine']['orm']['cache']['lifetime']);
+            $container->getDefinition('rollerworks_record_filter.doctrine.orm.cache_where_builder')->replaceArgument(0, new Reference($config['doctrine']['orm']['cache']['driver']));
 
             $container->getDefinition('rollerworks_record_filter.doctrine.orm.where_builder')
                 ->addMethodCall('setEntityManager', array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $container->getParameterBag()->resolveValue($config['doctrine']['orm']['default_entity_manager'])))));
