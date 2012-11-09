@@ -107,8 +107,16 @@ class CacheWhereBuilder
         if ($this->cacheDriver->contains($cacheKey)) {
             $data = $this->cacheDriver->fetch($cacheKey);
 
-            if (null !== $query && !empty($data[1])) {
-                $query->setParameters($data[1]);
+            if (null !== $query) {
+                if (!empty($data[1])) {
+                    $query->setParameters($data[1]);
+                }
+
+                if ($appendQuery && $query instanceof ORMQuery) {
+                    $query->setDQL($query->getDQL() . $appendQuery . $data[0]);
+                } elseif ($appendQuery) {
+                    $query->setSQL($query->getSQL() . $appendQuery . $data[0]);
+                }
             }
 
             return $data[0];
