@@ -1,0 +1,6 @@
+id:
+    name: customer_id
+    type: customer_type
+    doctrine:
+        orm:
+            value-conversion: customer_conversion

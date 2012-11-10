@@ -1,0 +1,9 @@
+id:
+    name: customer_id
+    type: customer_type
+    doctrine:
+        orm:
+            field-conversion:
+                service: customer_conversion
+                params:
+                    foo: bar

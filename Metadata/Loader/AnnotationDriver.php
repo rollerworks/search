@@ -14,7 +14,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\PropertyMetadata;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine\OrmConfig;
-
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\Field as AnnotationField;
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\Doctrine\SqlValueConversion;
 use Rollerworks\Bundle\RecordFilterBundle\Annotation\Doctrine\SqlFieldConversion;
