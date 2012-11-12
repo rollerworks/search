@@ -294,12 +294,8 @@ class WhereBuilder
             $field = $this->fieldSet->get($fieldName);
         }
 
-        // XXX THIS ALREADY CACHED INTERNALLY
         if (!$type) {
-            $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
-            if (!is_object($type)) {
-                $type = ORMType::getType($type);
-            }
+            $type = $this->fieldData[$fieldName]['dbType'];
         }
 
         return $this->valueConversions[$fieldName][0]->getConvertValuedSql(
