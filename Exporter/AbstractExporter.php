@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Exporter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
 
 /**
- * AbstractDumper.
+ * AbstractExporter.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-abstract class AbstractDumper implements DumperInterface
+abstract class AbstractExporter implements ExporterInterface
 {
     /**
      * @param FilterTypeInterface $type

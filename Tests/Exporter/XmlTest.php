@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Exporter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
-use Rollerworks\Bundle\RecordFilterBundle\Dumper\XmlDumper as XMLDumper;
+use Rollerworks\Bundle\RecordFilterBundle\Exporter\XmlExporter;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
@@ -255,7 +255,7 @@ class XmlTest extends TestCase
      */
     protected function getXMLDumper(Formatter $formatter)
     {
-        $dumper = new XMLDumper();
+        $dumper = new XmlExporter();
         $output = $dumper->dumpFilters($formatter);
 
         $location = realpath(__DIR__ . '/../../Input/schema/dic/input/xml-input-1.0.xsd');

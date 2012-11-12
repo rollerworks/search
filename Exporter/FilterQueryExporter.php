@@ -9,19 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Exporter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
- * Dumps the filtering preferences as a FilterQuery string.
+ * Exports the filtering preferences as a FilterQuery string.
  *
  * @see \Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FilterQuery extends AbstractDumper
+class FilterQueryExporter extends AbstractExporter
 {
     /**
      * {@inheritdoc}

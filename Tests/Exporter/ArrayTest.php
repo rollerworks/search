@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Exporter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
-use Rollerworks\Bundle\RecordFilterBundle\Dumper\ArrayDumper;
+use Rollerworks\Bundle\RecordFilterBundle\Exporter\ArrayExporter;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
@@ -28,7 +28,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
 
-        $dumper = new ArrayDumper();
+        $dumper = new ArrayExporter();
         $this->assertEquals(
             array(array('user' => array('single-values' => array('1')))
         ), $dumper->dumpFilters($formatter));
@@ -43,7 +43,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
 
-        $dumper = new ArrayDumper();
+        $dumper = new ArrayExporter();
         $this->assertEquals(array(
             array('user' => array('single-values' => array('1'))),
             array('user' => array('single-values' => array('2')))
@@ -60,7 +60,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
 
-        $dumper = new ArrayDumper();
+        $dumper = new ArrayExporter();
         $this->assertEquals(array(
             array('user' => array('single-values' => array('1')), 'invoice' => array('single-values' => array('F2012-800')))
         ), $dumper->dumpFilters($formatter));
@@ -76,7 +76,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
 
-        $dumper = new ArrayDumper();
+        $dumper = new ArrayExporter();
         $this->assertEquals(array(
             array('user' => array('single-values' => array('1')), 'invoice' => array('single-values' => array('F2010-4242'))),
             array('user' => array('single-values' => array('2')), 'invoice' => array('single-values' => array('F2012-4242')))
@@ -93,7 +93,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
 
-        $dumper = new ArrayDumper();
+        $dumper = new ArrayExporter();
         $this->assertEquals(array(
             array('user' => array('single-values' => array('1')), 'invoice' => array('ranges' => array('lower' => 'F2010-4242', 'higher' => 'F2012-4242'))),
             array('user' => array('single-values' => array('2')), 'invoice' => array('single-values' => array('F2012-4242')))
@@ -110,7 +110,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
 
-        $dumper = new ArrayDumper();
+        $dumper = new ArrayExporter();
         $this->assertEquals(array(
             array('user' => array('excluded-values' => array('1')), 'invoice' => array('excluded-ranges' => array('lower' => 'F2010-4242', 'higher' => 'F2012-4242'))),
             array('user' => array('single-values' => array('2')), 'invoice' => array('single-values' => array('F2012-4242')))
@@ -127,7 +127,7 @@ class ArrayTest extends TestCase
         $formatter = new Formatter($this->translator);
         $this->assertTrue($formatter->formatInput($input));
 
-        $dumper = new ArrayDumper();
+        $dumper = new ArrayExporter();
         $this->assertEquals(array(
             array('user' => array('compares' => array(
                 array('operator' => '>',  'value' => '1'),

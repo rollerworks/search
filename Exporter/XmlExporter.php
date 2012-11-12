@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Exporter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
@@ -17,11 +17,11 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 
 /**
- * Dump the filtering preferences as formatted XML (Extensible Markup Language).
+ * Exports the filtering preferences as an XML document.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class XmlDumper extends AbstractDumper
+class XmlExporter extends AbstractExporter
 {
     /**
      * {@inheritdoc}

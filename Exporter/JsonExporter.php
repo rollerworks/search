@@ -9,18 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Exporter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**
- * Dumps the filtering preferences as a JSON string.
+ * Exports the filtering preferences as a JSON string.
  *
  * @see \Rollerworks\Bundle\RecordFilterBundle\Input\JsonIput
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class JsonDumper extends ArrayDumper
+class JsonExporter extends ArrayExporter
 {
     /**
      * {@inheritdoc}

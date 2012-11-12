@@ -9,21 +9,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Exporter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**
- * DumperInterface for dumping the filtering preference.
+ * ExporterInterface for exporting the filtering preference.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface DumperInterface
+interface ExporterInterface
 {
     /**
-     * Dump the filters in a 'serialized' format.
+     * Returns the filters in a exported format.
      *
      * @param FormatterInterface $formatter
+     *
+     * @api
      */
     public function dumpFilters(FormatterInterface $formatter);
 }

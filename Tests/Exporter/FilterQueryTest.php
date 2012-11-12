@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Exporter;
 
-use Rollerworks\Bundle\RecordFilterBundle\Dumper\FilterQuery;
+use Rollerworks\Bundle\RecordFilterBundle\Exporter\FilterQueryExporter;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
@@ -34,7 +34,7 @@ class FilterQueryTest extends TestCase
             $this->fail(print_r($formatter->getMessages(), true));
         }
 
-        $dumper = new FilterQuery();
+        $dumper = new FilterQueryExporter();
 
         $this->assertEquals('( user="2", "3", "10"-"20"; status="Active"; date="29.10.2010"; period="10", >20; )', $dumper->dumpFilters($formatter));
         $this->assertEquals('( user="2", "3", "10"-"20";'.PHP_EOL.'status="Active";'.PHP_EOL.'date="29.10.2010";'.PHP_EOL.'period="10", >20; )', $dumper->dumpFilters($formatter, true));
@@ -55,7 +55,7 @@ class FilterQueryTest extends TestCase
             $this->fail(print_r($formatter->getMessages(), true));
         }
 
-        $dumper = new FilterQuery();
+        $dumper = new FilterQueryExporter();
 
         $this->assertEquals('( user="2""", "3", "10"""-"20"; status="Active"; date="29.10.2010"; period="10", >20; )', $dumper->dumpFilters($formatter));
         $this->assertEquals('( user="2""", "3", "10"""-"20";'.PHP_EOL.'status="Active";'.PHP_EOL.'date="29.10.2010";'.PHP_EOL.'period="10", >20; )', $dumper->dumpFilters($formatter, true));
@@ -76,7 +76,7 @@ class FilterQueryTest extends TestCase
             $this->fail(print_r($formatter->getMessages(), true));
         }
 
-        $dumper = new FilterQuery();
+        $dumper = new FilterQueryExporter();
 
         $this->assertEquals('( user="2", "3", "10"-"20", !"30"-"50"; status="Active"; date="29.10.2010"; period="10", >20; ), ( user="5", "9"; status="None-active"; date="29.10.2012"; )', $dumper->dumpFilters($formatter));
         $this->assertEquals('( user="2", "3", "10"-"20", !"30"-"50";'.PHP_EOL.'status="Active";'.PHP_EOL.'date="29.10.2010";'.PHP_EOL.'period="10", >20; ), ( user="5", "9";'.PHP_EOL.'status="None-active";'.PHP_EOL.'date="29.10.2012"; )', $dumper->dumpFilters($formatter, true));

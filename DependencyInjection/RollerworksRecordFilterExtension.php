@@ -35,6 +35,7 @@ class RollerworksRecordFilterExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+        $loader->load('exporter.xml');
 
         $cacheDirectory = $container->getParameterBag()->resolveValue($config['metadata_cache']);
         if (!is_dir($cacheDirectory)) {

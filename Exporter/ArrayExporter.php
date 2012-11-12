@@ -9,19 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
+namespace Rollerworks\Bundle\RecordFilterBundle\Exporter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 
 /**
- * Dumps the filtering preference as structured PHP Array.
+ * Exports the filtering preference as a structured PHP Array.
  *
  * @see \Rollerworks\Bundle\RecordFilterBundle\Input\ArrayInput
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ArrayDumper extends AbstractDumper
+class ArrayExporter extends AbstractExporter
 {
     /**
      * {@inheritdoc}
