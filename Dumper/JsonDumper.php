@@ -14,16 +14,22 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Dumper;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
 
 /**
- * DumperInterface for dumping the filtering preference.
+ * Dumps the filtering preferences as a JSON string.
+ *
+ * @see \Rollerworks\Bundle\RecordFilterBundle\Input\JsonIput
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface DumperInterface
+class JsonDumper extends ArrayDumper
 {
     /**
-     * Dump the filters in a 'serialized' format.
+     * {@inheritdoc}
      *
-     * @param FormatterInterface $formatter
+     * @return string
      */
-    public function dumpFilters(FormatterInterface $formatter);
+    public function dumpFilters(FormatterInterface $formatter)
+    {
+        return json_encode(parent::dumpFilters($formatter));
+    }
+
 }

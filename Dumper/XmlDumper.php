@@ -21,15 +21,15 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class XML extends AbstractDumper
+class XmlDumper extends AbstractDumper
 {
     /**
      * {@inheritdoc}
      */
-    public function dumpFilters(FormatterInterface $formatter)
+    public function dumpFilters(FormatterInterface $formatter, $formatOutput = true)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = true;
+        $dom->formatOutput = $formatOutput;
 
         $filters = $dom->createElement('filters');
         $groups  = $dom->createElement('groups');
@@ -63,17 +63,6 @@ class XML extends AbstractDumper
         $dom->appendChild($filters);
 
         return $dom->saveXML();
-    }
-
-    /**
-     * Set to return the output to an read friendly format.
-     *
-     * Setting this will make the XML more readable but also increase the content size.
-     *
-     * FIXME Needs implementation
-     */
-    public function setFormatOutput()
-    {
     }
 
     /**
@@ -160,7 +149,7 @@ class XML extends AbstractDumper
         $lowerValNode->appendChild($dom->createTextNode(self::dumpValue($type, $range->getLower())));
 
         $higherValNode = $dom->createElement('higher');
-        $higherValNode->appendChild($dom->createTextNode(self::dumpValue($type,  $range->getUpper())));
+        $higherValNode->appendChild($dom->createTextNode(self::dumpValue($type, $range->getUpper())));
 
         $rangeNode->appendChild($lowerValNode);
         $rangeNode->appendChild($higherValNode);

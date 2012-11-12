@@ -13,64 +13,12 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Dumper;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
-use Rollerworks\Bundle\RecordFilterBundle\Dumper\XML as XMLDumper;
+use Rollerworks\Bundle\RecordFilterBundle\Dumper\XmlDumper as XMLDumper;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
-class XMLTest extends TestCase
+class XmlTest extends TestCase
 {
-    /**
-     * Retrieves libxml errors and clears them.
-     *
-     * @see \Symfony\Component\Routing\Loader\XmlFileLoader
-     *
-     * @return array An array of libxml error strings
-     */
-    protected function getXmlErrors()
-    {
-        $errors = array();
-        foreach (libxml_get_errors() as $error) {
-            $errors[] = sprintf('[%s %s] %s (in %s - line %d, column %d)',
-                LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
-                $error->code,
-                trim($error->message),
-                $error->file ? $error->file : 'n/a',
-                $error->line,
-                $error->column
-            );
-        }
-
-        libxml_clear_errors();
-
-        return $errors;
-    }
-
-    /**
-     * @param Formatter $formatter
-     *
-     * @return string
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function getXMLDumper(Formatter $formatter)
-    {
-        $dumper = new XMLDumper();
-        $output = $dumper->dumpFilters($formatter);
-
-        $location = realpath(__DIR__ . '/../../Dumper/schema/xml_dumper-1.0.xsd');
-
-        $dom = new \DOMDocument();
-        $dom->loadXML($output);
-
-        $current = libxml_use_internal_errors(true);
-        if (!$dom->schemaValidate($location)) {
-            throw new \InvalidArgumentException( $output . ': ' . implode("\n", $this->getXmlErrors()));
-        }
-        libxml_use_internal_errors($current);
-
-        return $output;
-    }
-
     public function testOneGroupOneField()
     {
         $formatter = new Formatter($this->translator);
@@ -270,5 +218,57 @@ class XMLTest extends TestCase
                 </group>
             </groups>
         </filters>', $this->getXMLDumper($formatter));
+    }
+
+    /**
+     * Retrieves libxml errors and clears them.
+     *
+     * @see \Symfony\Component\Routing\Loader\XmlFileLoader
+     *
+     * @return array An array of libxml error strings
+     */
+    protected function getXmlErrors()
+    {
+        $errors = array();
+        foreach (libxml_get_errors() as $error) {
+            $errors[] = sprintf('[%s %s] %s (in %s - line %d, column %d)',
+                LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
+                $error->code,
+                trim($error->message),
+                $error->file ? $error->file : 'n/a',
+                $error->line,
+                $error->column
+            );
+        }
+
+        libxml_clear_errors();
+
+        return $errors;
+    }
+
+    /**
+     * @param Formatter $formatter
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function getXMLDumper(Formatter $formatter)
+    {
+        $dumper = new XMLDumper();
+        $output = $dumper->dumpFilters($formatter);
+
+        $location = realpath(__DIR__ . '/../../Input/schema/dic/input/xml-input-1.0.xsd');
+
+        $dom = new \DOMDocument();
+        $dom->loadXML($output);
+
+        $current = libxml_use_internal_errors(true);
+        if (!$dom->schemaValidate($location)) {
+            throw new \InvalidArgumentException( $output . ': ' . implode("\n", $this->getXmlErrors()));
+        }
+        libxml_use_internal_errors($current);
+
+        return $output;
     }
 }
