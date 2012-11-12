@@ -11,10 +11,11 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\DependencyInjection;
 
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\Config\FileLocator;
 
 /**
@@ -36,13 +37,9 @@ class RollerworksRecordFilterExtension extends Extension
         $loader->load('services.xml');
 
         $cacheDirectory = $container->getParameterBag()->resolveValue($config['metadata_cache']);
-
         if (!is_dir($cacheDirectory)) {
             mkdir($cacheDirectory, 0777, true);
         }
-
-        // the cache directory should be the first argument of the cache service
-        $container->getDefinition('rollerworks_record_filter.metadata.cache')->replaceArgument(0, $cacheDirectory);
 
         $container->setParameter('rollerworks_record_filter.filters_directory', $config['filters_directory']);
         $container->setParameter('rollerworks_record_filter.filters_namespace', $config['filters_namespace']);
@@ -57,8 +54,9 @@ class RollerworksRecordFilterExtension extends Extension
         $container->setParameter('rollerworks_record_filter.formatter.cache_lifetime', $config['formatter']['cache']['lifetime']);
         $container->getDefinition('rollerworks_record_filter.cache_formatter')->replaceArgument(0, new Reference($config['formatter']['cache']['driver']));
 
-
         $container->setAlias('rollerworks_record_filter.formatter', $config['formatter']['default_formatter']);
+
+        $this->registerMetadataConfiguration($container, $loader, $cacheDirectory);
 
         if (isset($config['doctrine']['orm'])) {
             $loader->load('doctrine.orm.xml');
@@ -78,5 +76,30 @@ class RollerworksRecordFilterExtension extends Extension
                     ->addMethodCall('setEntityManager', array(new Reference(sprintf('doctrine.orm.%s_entity_manager', $container->getParameterBag()->resolveValue($config['factories']['doctrine']['orm']['wherebuilder']['default_entity_manager'])))));
             }
         }
+    }
+
+    private function registerMetadataConfiguration(ContainerBuilder $container, XmlFileLoader $loader, $cacheDirectory)
+    {
+        $loader->load('metadata.xml');
+
+        // the cache directory should be the first argument of the cache service
+        $container->getDefinition('rollerworks_record_filter.metadata.cache')->replaceArgument(0, $cacheDirectory);
+
+        $container->setParameter('rollerworks_record_filter.metadata.loader.metadata_files', $this->getMetadataFiles($container));
+    }
+
+    private function getMetadataFiles(ContainerBuilder $container)
+    {
+        $dirs = array();
+
+        foreach ($container->getParameter('kernel.bundles') as $bundle) {
+            $reflection = new \ReflectionClass($bundle);
+            if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/config/record_filter')) {
+                $dirs[$reflection->getNamespaceName()] = realpath($dir);
+                $container->addResource(new DirectoryResource($dir));
+            }
+        }
+
+        return $dirs;
     }
 }

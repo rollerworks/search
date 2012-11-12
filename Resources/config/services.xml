@@ -12,11 +12,6 @@
         <parameter key="rollerworks_record_filter.factories_cache_warmer.class">Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCacheWarmer</parameter>
 
         <parameter key="rollerworks_record_filter.types_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory</parameter>
-        <parameter key="rollerworks_record_filter.metadata_factory.class">Metadata\MetadataFactory</parameter>
-        <parameter key="rollerworks_record_filter.metadata.driver_chain.class">Metadata\Driver\DriverChain</parameter>
-        <parameter key="rollerworks_record_filter.metadata.annotation_driver.class">Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver</parameter>
-        <parameter key="rollerworks_record_filter.metadata.cache.class">Metadata\Cache\FileCache</parameter>
-
         <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter</parameter>
         <parameter key="rollerworks_record_filter.cache_formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\CacheFormatter</parameter>
 
@@ -39,28 +34,6 @@
     </parameters>
 
     <services>
-        <service id="rollerworks_record_filter.metadata.annotation_driver" class="%rollerworks_record_filter.metadata.annotation_driver.class%" public="false">
-            <argument type="service" id="annotation_reader" />
-        </service>
-
-        <service id="rollerworks_record_filter.metadata.driver_chain" class="%rollerworks_record_filter.metadata.driver_chain.class%">
-            <argument type="collection">
-                <!--<argument type="service" id="rollerworks_record_filter.metadata.yaml_driver"/>-->
-                <argument type="service" id="rollerworks_record_filter.metadata.annotation_driver"/>
-            </argument>
-        </service>
-
-        <service id="rollerworks_record_filter.metadata.cache" class="%rollerworks_record_filter.metadata.cache.class%" public="false">
-            <argument/> <!-- the cache directory (to be set later) -->
-        </service>
-
-        <service id="rollerworks_record_filter.metadata_factory" class="%rollerworks_record_filter.metadata_factory.class%" public="false">
-            <argument type="service" id="rollerworks_record_filter.metadata.driver_chain"/>
-            <call method="setCache">
-                <argument type="service" id="rollerworks_record_filter.metadata.cache"/>
-            </call>
-        </service>
-
         <service id="rollerworks_record_filter.types_factory" class="%rollerworks_record_filter.types_factory.class%">
             <argument type="service" id="service_container" />
             <argument type="collection" />

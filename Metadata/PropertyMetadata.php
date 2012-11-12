@@ -21,15 +21,15 @@ class PropertyMetadata extends BasePropertyMetadata
 {
     public $filter_name;
     public $label;
-    public $required;
+    public $required = false;
 
-    public $acceptRanges;
-    public $acceptCompares;
+    public $acceptRanges = false;
+    public $acceptCompares = false;
 
     /**
      * @var FilterTypeConfig
      */
-    public $type;
+    public $type = null;
 
     /**
      * @var array[]

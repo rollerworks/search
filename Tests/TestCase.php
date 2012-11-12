@@ -122,6 +122,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $container->getCompilerPassConfig()->setOptimizationPasses(array());
         $container->getCompilerPassConfig()->setRemovingPasses(array());
+
+        if (!$container->hasParameter('kernel.bundles')) {
+            $container->setParameter('kernel.bundles', array());
+        }
+
         $container->compile();
     }
 }

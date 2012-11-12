@@ -34,7 +34,7 @@ see the :doc:`getting started` chapter for more information.
 
     // The "rollerworks_record_filter.doctrine.orm.where_builder" service always returns an new instance
     // So any changes we make only apply to this instance
-    $whereBuilder = $container->get(rollerworks_record_filter.doctrine.orm.where_builder);
+    $whereBuilder = $container->get('rollerworks_record_filter.doctrine.orm.where_builder');
     $wereCase = $whereBuilder->getWhereClause($formatter);
 
     // Now we can use the $whereCase value in your query, don't for get to include the WHERE part.
@@ -282,15 +282,46 @@ We either configure it at the WhereBuilder.
 
 Or using the Entity metadata.
 
-.. code-block:: php-annotations
+.. configuration-block::
 
-    /**
-     * @ORM\Column(type="datetime")
-     *
-     * @RecordFilter\Field("user_age", type="date")
-     * @RecordFilter\Doctrine\SqlFieldConversion("acme_invoice.record_filter.orm.datetime_value_conversion")
-     */
-    public $birthday;
+    .. code-block:: php-annotations
+
+        /**
+         * @ORM\Column(type="datetime")
+         *
+         * @RecordFilter\Field("user_age", type="date")
+         * @RecordFilter\Doctrine\SqlFieldConversion("acme_invoice.record_filter.orm.datetime_value_conversion")
+         */
+        public $birthday;
+
+    .. code-block:: yaml
+
+        # src/Acme/StoreBundle/Resources/config/record_filter/Entity.Customer.yml
+        birthday:
+            name: user_age
+            type: date
+            doctrine:
+                orm:
+                    field-conversion: acme_invoice.record_filter.orm.datetime_value_conversion
+
+    .. code-block:: xml
+
+        <!-- src/Acme/StoreBundle/Resources/config/record_filter/Entity.Customer.xml -->
+        <properties>
+            <!-- ... -->
+
+            <property id="birthday" name="user_age">
+                <type name="date" />
+                <doctrine>
+                    <orm>
+                        <conversion>
+                            <field service="acme_invoice.record_filter.orm.datetime_value_conversion" />
+                        </conversion>
+                    </orm>
+                </doctrine>
+
+            </property>
+        </properties>
 
 Value Conversion
 ~~~~~~~~~~~~~~~~
@@ -338,12 +369,43 @@ We either configure it at the WhereBuilder.
 
 Or using the Entity metadata.
 
-.. code-block:: php-annotations
+.. configuration-block::
 
-    /**
-     * @ORM\Column(type="datetime")
-     *
-     * @RecordFilter\Field("user_age", type="date")
-     * @RecordFilter\Doctrine\SqlValueConversionInterface("acme_invoice.record_filter.orm.datetime_value_conversion")
-     */
-    public $birthday;
+    .. code-block:: php-annotations
+
+        /**
+         * @ORM\Column(type="datetime")
+         *
+         * @RecordFilter\Field("user_age", type="date")
+         * @RecordFilter\Doctrine\SqlValueConversionInterface("acme_invoice.record_filter.orm.datetime_value_conversion")
+         */
+        public $birthday;
+
+    .. code-block:: yaml
+
+        # src/Acme/StoreBundle/Resources/config/record_filter/Entity.Customer.yml
+        birthday:
+            name: user_age
+            type: date
+            doctrine:
+                orm:
+                    value-conversion: acme_invoice.record_filter.orm.datetime_value_conversion
+
+    .. code-block:: xml
+
+        <!-- src/Acme/StoreBundle/Resources/config/record_filter/Entity.Customer.xml -->
+        <properties>
+            <!-- ... -->
+
+            <property id="birthday" name="user_age">
+                <type name="date" />
+                <doctrine>
+                    <orm>
+                        <conversion>
+                            <value service="acme_invoice.record_filter.orm.datetime_value_conversion" />
+                        </conversion>
+                    </orm>
+                </doctrine>
+
+            </property>
+        </properties>

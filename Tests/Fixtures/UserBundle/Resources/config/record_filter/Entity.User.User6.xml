@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+    <property id="id" name="customer_id">
+        <type name="customer_type" />
+        <doctrine>
+            <orm>
+                <conversion>
+                    <field service="customer_conversion">
+                        <param key="foo">
+                            <value key="some">he</value>
+                            <value key="de">
+                                <value type="integer">156</value>
+                            </value>
+                            <value key="doctor">
+                                <value>
+                                    <value>who</value>
+                                    <value>zeus</value>
+                                </value>
+                            </value>
+                        </param>
+                    </field>
+                </conversion>
+            </orm>
+        </doctrine>
+    </property>
+</properties>
