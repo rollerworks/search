@@ -107,12 +107,6 @@ abstract class AbstractInput implements InputInterface
     public function setField($fieldName, FilterField $config)
     {
         $fieldName = mb_strtolower($fieldName);
-
-        // FIXME Remove this, this is no longer used
-        if ($config->hasType() && $config->getType() instanceof ContainerAwareInterface) {
-            $config->getType()->setContainer($this->container);
-        }
-
         if (null === $this->fieldsSet) {
             $this->fieldsSet = new FieldSet();
         }
