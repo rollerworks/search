@@ -8,3 +8,5 @@ only fields present in the FieldSet will be used.
     :maxdepth: 2
 
     filter_query
+    json
+    array

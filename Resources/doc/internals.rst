@@ -1,8 +1,8 @@
 Internals
 =========
 
-This sections is *an attempt* describe the internals of the
-RecordFilterBundle. And is by no means complete.
+This sections is *an attempt* to describe the internals of the
+RecordFilterBundle. This document is by no means complete.
 
 Basic processing
 ----------------
@@ -49,7 +49,7 @@ on the metadata of one or more classes.
 The metadata is read using the JMS/Metadata Component.
 
 Metadata can be stored as property annotations inside
-the class self or using loose YAML/XML files (todo).
+the class self or using loose YAML/XML files.
 
 CacheWarming code
 -----------------

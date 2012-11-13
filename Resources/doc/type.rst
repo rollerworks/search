@@ -1,34 +1,32 @@
 Type
 ====
 
-The RecordFilter is more just then simple an search engine.
+The RecordFilter is more just then just a simple search engine.
 
-As your properly know, searching works by filtering conditions,
-configured by fields in sets.
+As you properly know, searching with the system works by defining filtering conditions.
+But did you known, that each field can have a special filtering type for working with values?
 
-Each field can have a special filtering type for working with values.
 Using an special type for the field allows validation/sanitizing and matching.
-
-Basic types like Date/Time and numbers are built-in,
-but you can also build your own types.
+Basic types like Date/Time and numbers are built-in, but you can also build your own types.
 
 .. note::
 
     All built-in types are local aware and require the Symfony Locale component.
     When working with none ASCII charters the International Extension must be installed.
 
-Secondly, all built-in types support comparison optimizing when possible.
+Secondly, all built-in types support comparison and optimizing when possible.
 
 Its possible but not recommended to overwrite the build-in types by using
-the same alias. You should only considering doing this when absolutely needed.
+the same alias in the service definition.
+You should only considering doing this when absolutely needed.
 
-see ``Resources/config/services.xml`` for there corresponding names.
+see ``Resources/config/services.xml`` for the corresponding names.
 
 Configuration
 -------------
 
-Types implementing ConfigurableTypeInterface
-can be configured with extra options using the setOptions() method of the type.
+Types implementing ConfigurableTypeInterface can be configured with extra options
+using the setOptions() method of the type.
 
 When building the FieldSet.
 
@@ -40,7 +38,7 @@ When building the FieldSet.
 
     $fieldSet->set(new FilterField('name', new Date(array('max' => '2015-10-14'))));
 
-Changing an existing Field.
+Or when changing an existing Field.
 
 .. code-block:: php
 
@@ -50,19 +48,19 @@ Changing an existing Field.
 
 .. note::
 
-    Just because an type supports range or comparison does not automatically
+    Just because a type supports range or comparison does not automatically
     enable it for the field configuration. You must always do this **explicitly**.
 
 Text
 ----
 
-Handles text values as-is, this type can be seen as 'abstract' for more strict handling.
+Handles text values as-is, this type can be seen as an 'abstract' for more strict handling.
 
 DateTime
 --------
 
 DateTime related types can be used for working with either date/time
-or a combination of both. They support ranges and comparison.
+or a combination of both. Both support ranges and comparison.
 
 The following options can be set for Date, DateTime and Time.
 
@@ -79,29 +77,30 @@ The following options can be set for Date, DateTime and Time.
 Birthday
 --------
 
-The Birthday type can be used for birthdays and ages.
+The Birthday type can be used for birthday and actual age.
 
 Any date equal or lower then 'today' is accepted, but you can also use someones age.
 
 .. note::
 
-    For this to work completely, the storage layer must convert a birthday value to an age for comparison.
+    For this to work completely, the storage layer must convert a date value to an age for comparison.
 
-    For Doctrine ORM you use the "rollerworks_record_filter.doctrine.orm.conversion.age_date" service
+    For Doctrine ORM you can use the "rollerworks_record_filter.doctrine.orm.conversion.age_date" service
     for both field and value conversion.
 
-    See also :doc:`Doctrine ORM WhereBuilder <Doctrine/orm/where_builder>`.
+    See also :doc:`Doctrine ORM WhereBuilder </Doctrine/orm/index>`.
 
 Number
 ------
 
-Handles numeric values, can be localized.
-They support ranges and comparison.
+Handles (localized) numeric values.
+
+Supports ranges and comparison.
 
 .. note::
 
-    When working with big numbers (beyond maximum php value),
-    either bcmath or GMP must be installed and the option values **must** be strings.
+    When working with big numbers (beyond the maximum php integer value),
+    either bcmath or GMP must be installed and the option value **must** be a string.
 
 The following options can be set for number.
 
@@ -116,11 +115,12 @@ The following options can be set for number.
 Decimal
 -------
 
-Handles decimal values, can be localized.
-They support ranges and comparison.
+Handles (localized) decimal values.
 
-    When working with big numbers (beyond maximum php value),
-    either bcmath or GMP must be installed and the option values **must** be strings.
+Supports ranges and comparison.
+
+    When working with big numbers (beyond the maximum php integer value),
+    either bcmath or GMP must be installed and the option value **must** be a string.
 
 The following options can be set.
 
@@ -135,10 +135,70 @@ The following options can be set.
 EnumType
 --------
 
-EnumType is similar to ENUM of SQL, it only allows an fixed set of possible
-values (labels) to be used. The label are then converted back to the internal value.
+EnumType is similar to ENUM of SQL, it only allows a fixed set of possible
+values (labels) to be used. The label is then converted back to the internal value.
 
-For this to work, TODO.
+For this to work, you must register a new service with the options and value.
+
+The first parameter of the EnumType constructor is an associative array as `value => label`
+followed by the `translator` service (optional) and the translator domain.
+
+Using the translator is optional.
+
+.. note::
+
+    You can use any service name you like, but for readability
+    its best to prefix it with a vendor and domain.
+
+.. configuration-block::
+
+    .. code-block:: yaml
+
+        services:
+            acme_invoice.record_filter.filter_type.customer_gender:
+                class: %rollerworks_record_filter.filter_type.enum.class%
+                scope: prototype
+                arguments:
+                    - @translator
+                    -
+                        - gender_type.unknown
+                        - gender_type.female
+                        - gender_type.male
+                    - customer
+                tags:
+                    - { name: rollerworks_record_filter.filter_type, alias: person_gender }
+
+    .. code-block:: xml
+
+        <service id="acme_invoice.record_filter.filter_type.customer_gender" class="%rollerworks_record_filter.filter_type.enum.class%" scope="prototype">
+            <argument type="collection">
+                <argument key="0"></argument>
+                <argument key="1">gender_type.female</argument>
+                <argument key="2">gender_type.male</argument>
+            </argument>
+            <argument type="service" id="translator" />
+            <argument type="string">customer</argument>
+
+            <tag name="rollerworks_record_filter.filter_type" alias="person_gender" />
+        </service>
+
+    .. code-block:: php
+
+        use Symfony\Component\DependencyInjection\Definition;
+
+        // ...
+
+        $container->setDefinition(
+            'acme_invoice.record_filter.filter_type.customer_gender',
+            new Definition('%rollerworks_record_filter.filter_type.enum.class%',
+                array(
+                    array('gender_type.unknown', 'gender_type.female', 'gender_type.male'),
+                    new Reference('translator'),
+                    'customer'
+                )
+            )
+            ->addTag('kernel.cache_warmer', array('priority' => 0))
+        );
 
 Making your own
 ---------------
@@ -187,14 +247,56 @@ should be enough.
 From Scratch
 ~~~~~~~~~~~~
 
-For this little tutorial we are going to create an type that can handle an status flag.
+For this little tutorial we are going to create an InvoiceType that can handle an invoice value.
 
-    The status can be localized and converted back to an label,
-    and as a little bonus the Value can matched for usage with FilterQuery input.
+The value is made up from a year and incrementing number, like 2012-0259.
 
-.. tip::
+As we really want to use the power of the RecordFilter we are also adding
+support for ranges and comparisons.
 
-    This is an old example, it better to use the EnumType instead.
+First we create the value class for holding the information of our invoice.
+
+.. code-block:: php
+
+    namespace Acme\Invoice;
+
+    class InvoiceValue
+    {
+        private $year;
+        private $number;
+
+        public function __construct($input)
+        {
+            if (!preg_match('/^(?P<year>\d{4})-(?P<number>\d+)$/s', $matches)) {
+                throw new \InvalidArgumentException('This not a valid invoice value.');
+            }
+
+            $this->year = (int) $matches['year'];
+            $this->number = (int) ltrim($matches['number'], '0');
+        }
+
+        public function getYear()
+        {
+            return $this->year;
+        }
+
+        public function getNumber()
+        {
+            return $this->number;
+        }
+
+        public function __toString()
+        {
+            // Return the invoice number with leading zero
+            return sprintf('%d-%04d', $this->year, $this->number);
+        }
+    }
+
+Now we can create our filtering type.
+
+.. note::
+
+    If you want to know more about the interfaces used by the type, see below.
 
 .. code-block:: php
 
@@ -202,76 +304,63 @@ For this little tutorial we are going to create an type that can handle an statu
 
     use Symfony\Component\Translation\TranslatorInterface;
     use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
-    use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
     use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
+    use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
+    use Acme\Invoice\InvoiceValue;
 
-    class InvoiceStatusType implements FilterTypeInterface, ValueMatcherInterface
+    class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
     {
-        private $statusToString = array();
-        private $stringToStatus = array();
-        private $match;
-
-        public function setTranslator(TranslatorInterface $translator)
-        {
-            foreach (array('concept', 'unpaid', 'paid') as $status) {
-                // Get the label using the translator
-                $label = $translator->trans($status, array(), 'invoice');
-
-                $this->stringToStatus[$label] = $status;
-                $this->statusToString[$status] = $label;
-            }
-        }
-
         public function sanitizeString($value)
         {
-            // Normally its better to use mb_strtolower()
-            $value = strtolower($value);
-
-            if (isset($this->stringToStatus[$value])) {
-                $this->stringToStatus[$value];
-            }
-
-            return $value;
+            return new InvoiceValue($value);
         }
 
         public function formatOutput($value)
         {
-            return isset($this->statusToString[$value]) ? $this->statusToString[$value] : $value;
+            return (string) $value;
         }
 
         public function dumpValue($value)
         {
-            return $value;
+            return (string) $value;
         }
 
-        /**
-         * Not used.
-         */
         public function isHigher($input, $nextValue)
         {
+            if ($input->getYear() > $nextValue->getYear()) {
+                return true;
+            }
+
+            if ($input->getYear() === $nextValue->getYear() && $input->getNumber() > $nextValue->getNumber()) {
+                return true;
+            }
+
             return false;
         }
 
-        /**
-         * Not used.
-         */
         public function isLower($input, $nextValue)
         {
-            return true;
+            if ($input->getYear() < $nextValue->getYear()) {
+                return true;
+            }
+
+            if ($input->getYear() === $nextValue->getYear() && $input->getNumber() < $nextValue->getNumber()) {
+                return true;
+            }
+
+            return false;
         }
 
         public function isEqual($input, $nextValue)
         {
-            return ($input === $nextValue);
+            return ($input->getYear() === $nextValue->getYear() && $input->getNumber() === $nextValue->getNumber());
         }
 
         public function validateValue($value, &$message = null, MessageBag $messageBag = null)
         {
-            $message = 'This is not an legal invoice status.';
+            $message = 'This is not an legal invoice number.';
 
-            $value = strtolower($value);
-
-            if (!isset($this->stringToStatus[$value])) {
+            if (!preg_match('/^(\d{4})-(\d+)$/s')) {
                 return false;
             }
 
@@ -280,80 +369,77 @@ For this little tutorial we are going to create an type that can handle an statu
 
         public function getMatcherRegex()
         {
-            // This method gets called multiple times so cache the outcome
-            if (null === $this->match) {
-                $labels = $this->stringToStatus;
+            return '(?:\d{4}-\d+)';
+        }
 
-                // Escape the label to prevent mistaken regex-match
-                array_map(function ($label) { return preg_quote($label, '#'); }, $labels);
+        public function sortValuesList($first, $second)
+        {
+            // We must call getValue() as we recipe an SingleValue object
+            $a = $first->getValue();
+            $b = $second->getValue();
 
-                // Match must be an none-capturing group
-                $this->match = sprintf('(?:%s)', implode('|', $labels));
+            if ($a->getYear() === $b->getYear() && $a->getNumber() === $b->getNumber()) {
+                return 0;
             }
 
-            return $this->match;
+            return $this->isLower($a, $b) ? -1 : 1;
+        }
+
+        public function getHigherValue($value)
+        {
+            return new InvoiceValue($value->getYear() . '-' . ($value->getNumber()+1));
         }
     }
 
-Registering Type your as a Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Registering Type as a Service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want to use your type in the Class metadata or
-FieldSet configuration of the application the type must be
-registered in the service container.
+If you want to use the new type in the Class metadata or FieldSet configuration
+of the application the type must be registered in the service container.
 
-Continuing from our InvoiceStatusType.
+Continuing from our InvoiceType.
 
 .. note::
 
     The service must be tagged as "rollerworks_record_filter.filter_type"
-    and have an alias that will identify it.
+    with an alias that will identify it.
 
 .. configuration-block::
 
     .. code-block:: yaml
 
         services:
-            acme_invoice.record_filter.status_type:
-                class: Acme\Invoice\RecordFilter\Type\InvoiceStatusType
-                calls:
-                    - [ setTranslator, [ @translator ] ]
+            acme_invoice.record_filter.invoice_type:
+                class: Acme\Invoice\RecordFilter\Type\InvoiceType
                 tags:
-                    -  { name: rollerworks_record_filter.filter_type, alias: acme_invoice_type }
+                    -  { name: rollerworks_record_filter.invoice_type, alias: acme_invoice_type }
 
     .. code-block:: xml
 
-        <service id="acme_invoice.record_filter.status_type" class="Acme\Invoice\RecordFilter\Type\InvoiceStatusType">
-            <!-- Our Type needs the Translator -->
-            <call method="setContainer">
-                <argument type="service" id="translator"/>
-            </call>
-
+        <service id="acme_invoice.record_filter.invoice_type" class="Acme\Invoice\RecordFilter\Type\InvoiceType">
             <tag name="rollerworks_record_filter.filter_type" alias="acme_invoice_type" />
         </service>
 
     .. code-block:: php
 
         $container->setDefinition(
-            'acme_invoice.record_filter.status_type',
-            new Definition('Acme\Invoice\RecordFilter\Type\InvoiceStatusType'),
-            array(new Reference('translator'))
+            'acme_invoice.record_filter.invoice_type',
+            new Definition('Acme\Invoice\RecordFilter\Type\InvoiceType'))
         )
-        ->addMethodCall('setTranslator', array(new Reference('translator')))
         ->addTag('rollerworks_record_filter.filter_type', array('alias' => 'acme_invoice_type'));
 
 Advanced types
 --------------
 
-An type can be *extended* with extra functionality for
-more advanced optimization and/or handling.
+A type can be *extended* with extra functionality for more advanced optimization and/or handling.
 
 Look at the build-in types if you need help implementing them.
 
 .. note::
 
     You must always implement ``Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface``.
-    The following interfaces are optional.
+
+    The other interfaces are optional.
 
 ValueMatcherInterface
 ~~~~~~~~~~~~~~~~~~~~~
@@ -361,7 +447,7 @@ ValueMatcherInterface
 Implement the ``Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface``
 to provide an regex-based matcher for the value.
 
-This is only used for FilterQuery, so its not required to 'always'
+This is only used for FilterQuery, making it not required to 'always'
 use quotes when the value contains a dash or comma.
 
 ConfigurableTypeInterface
@@ -372,7 +458,7 @@ when the type supports dynamic configuration for an example an maximum value or 
 
 .. note::
 
-    The constructor should accept setting options, for ease of use.
+    The constructor (for ease of use) should also accept setting options.
 
 This uses the Symfony OptionsResolver component.
 
