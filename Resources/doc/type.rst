@@ -257,6 +257,7 @@ support for ranges and comparisons.
 First we create the value class for holding the information of our invoice.
 
 .. code-block:: php
+    :linenos:
 
     namespace Acme\Invoice;
 
@@ -299,6 +300,7 @@ Now we can create our filtering type.
     If you want to know more about the interfaces used by the type, see below.
 
 .. code-block:: php
+    :linenos:
 
     namespace Acme\Invoice\RecordFilter\Type;
 

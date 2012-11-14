@@ -10,3 +10,4 @@ only fields present in the FieldSet will be used.
     filter_query
     json
     array
+    xml
