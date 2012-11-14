@@ -55,7 +55,7 @@ CacheWarming code
 -----------------
 
 The cache warming (depending on the application configuration),
-creates FieldSet classes by reading there configuration from the `rollerworks_record_filter.fieldsets`
+creates FieldSet classes by reading there configuration from the ``rollerworks_record_filter.fieldsets``
 configuration of app/config.ext
 
 *By using the app/config.ext we don't have to worry about merging

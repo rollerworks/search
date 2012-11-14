@@ -19,7 +19,7 @@ have curl installed, it's as easy as:
     curl -s https://getcomposer.org/installer | php
 
 To install RollerworksRecordFilterBundle with Composer just add the following to your
-`composer.json` file:
+``composer.json`` file:
 
 .. code-block:: js
 
@@ -47,7 +47,7 @@ The scripts part is needed for updating the localized validation and matching.
 
 .. note::
 
-    Please replace `master-dev` in the snippet above with the latest stable
+    Please replace ``master-dev`` in the snippet above with the latest stable
     branch, for example ``1.0.*``.
 
 Then, you can install the new dependencies by running Composer's ``update``
