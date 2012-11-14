@@ -55,6 +55,7 @@ class JsonInput extends ArrayInput
     {
         $this->messages = new MessageBag($this->translator);
         $this->parsed = false;
+        $this->hash = null;
         $this->input = trim($input);
 
         return $this;

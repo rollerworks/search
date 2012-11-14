@@ -72,6 +72,7 @@ class ArrayInput extends AbstractInput
         }
 
         $this->messages = new MessageBag($this->translator);
+        $this->hash = null;
         $this->parsed = false;
         $this->input = $input;
 
