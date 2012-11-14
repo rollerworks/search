@@ -35,7 +35,7 @@ class CacheFormatter implements CacheFormatterInterface
     /**
      * @var FormatterInterface
      */
-    private $formatter;
+    protected $formatter;
 
     /**
      * @var FieldSet|null
@@ -45,27 +45,27 @@ class CacheFormatter implements CacheFormatterInterface
     /**
      * @var Cache
      */
-    private $cacheDriver;
+    protected $cacheDriver;
 
     /**
      * @var integer
      */
-    private $cacheLifeTime;
+    protected $cacheLifeTime;
 
     /**
      * @var string
      */
-    private $cacheKey;
+    protected $cacheKey;
 
     /**
      * @var boolean
      */
-    private $formatted = false;
+    protected $formatted = false;
 
     /**
      * @var array
      */
-    private $filters = array();
+    protected $filters = array();
 
     /**
      * Constructor.
@@ -169,7 +169,7 @@ class CacheFormatter implements CacheFormatterInterface
      *
      * @return string
      */
-    private function generateCacheKey(FieldSet $fieldSet)
+    protected function generateCacheKey(FieldSet $fieldSet)
     {
         $key = $fieldSet->getSetName();
         foreach ($fieldSet->all() as $fieldName => $field) {
