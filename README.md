@@ -37,7 +37,7 @@ The documentation of this bundle can be found in.
 
 [Resources/doc](Resources/doc)
 
-[Resources/meta/LICENSE](Resources/LICENSE)
+[Resources/meta/LICENSE](Resources/meta/LICENSE)
 
 Contributing
 ------------
