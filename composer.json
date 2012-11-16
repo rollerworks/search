@@ -25,6 +25,7 @@
     },
     "suggest": {
         "doctrine/orm": "If you want to use the Doctrine ORM, this also requires doctrine/doctrine-bundle to be installed."
+        "rollerworks/cache-bundle": "Session based caching"
     },
     "autoload": {
         "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "" }

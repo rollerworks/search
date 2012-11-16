@@ -136,13 +136,14 @@ To enable WhereBuilder Factory you must add the following to your config file.
             factories:
                 doctrine:
                     orm:
-                        # Enable auto generating of classes
-                        # Note: factories.fieldset.auto_generate must be enabled for this to work.
-                        auto_generate: true
+                        wherebuilder:
+                            # Enable auto generating of classes
+                            # Note: factories.fieldset.auto_generate must be enabled for this to work.
+                            auto_generate: true
 
-                        # Default Doctrine ORM entity manager, this is the entity manager "name"
-                        # not the entity manager service reference.
-                        default_entity_manager: %doctrine.default_entity_manager%
+                            # Default Doctrine ORM entity manager, this is the entity manager "name"
+                            # not the entity manager service reference.
+                            default_entity_manager: %doctrine.default_entity_manager%
 
     .. code-block:: php
 
@@ -156,13 +157,15 @@ To enable WhereBuilder Factory you must add the following to your config file.
                 /* ... */
                 'doctrine' => array(
                     'orm' => array(
-                        // Enable auto generating of classes
-                        // Note: factories.fieldset.auto_generate must be enabled for this to work.
-                        'auto_generate' => true,
+                        'wherebuilder' => array(
+                            // Enable auto generating of classes
+                            // Note: factories.fieldset.auto_generate must be enabled for this to work.
+                            'auto_generate' => true,
 
-                        // Default Doctrine ORM entity manager, this is the entity manager "name"
-                        // not the entity manager service reference.
-                        'default_entity_manager' => '%doctrine.default_entity_manager%',
+                            // Default Doctrine ORM entity manager, this is the entity manager "name"
+                            // not the entity manager service reference.
+                            'default_entity_manager' => '%doctrine.default_entity_manager%'
+                        )
                     ),
                 ),
             ),
