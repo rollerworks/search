@@ -8,6 +8,7 @@ RecordFilterBundle
     overview
     installing
     configuration
+    cache
     metadata
     input/index.rst
     type

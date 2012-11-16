@@ -95,6 +95,12 @@ To cache the generated result for the next page load,
 you can use CacheWhereBuilder. If the query-result is in the cache its used,
 else the Where case is generated and cached.
 
+.. note::
+
+    For this to work correct, you first need to configure a 'real' caching driver.
+
+    See :doc:`/cache` for more information.
+
 .. caution::
 
     Caching is not possible if the conversions are not static, if they depend
