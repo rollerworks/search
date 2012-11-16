@@ -1,4 +1,4 @@
-﻿README
+README
 ======
 
 [![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksRecordFilterBundle.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksRecordFilterBundle)
@@ -18,7 +18,7 @@ Out of the box it (currently) only supports Doctrine ORM for searing in.
 Requirements
 ------------
 
-You need at least Symfony 2.0 and preferably the Composer package manager.
+You need at least Symfony 2.1 and the Composer package manager.
 
     A Component that is used with this bundle currently does not support
     the old vendor-script installation.
@@ -28,7 +28,7 @@ Installation
 
 Installation is very easy, all the details about installing can be found in.
 
-[Resources/doc](Resources/doc/installing.rst)
+[Resources/doc/Installing](Resources/doc/installing.rst)
 
 Documentation
 -------------
