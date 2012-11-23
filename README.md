@@ -1,5 +1,5 @@
 README
-======
+===0===
 
 [![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksRecordFilterBundle.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksRecordFilterBundle)
 
@@ -8,12 +8,12 @@ What is the RecordFilterBundle?
 
 The RecordFilterBundle is a Symfony 2 Bundle for filter-based record searching.
 
-Filter-based in that is uses a filtering system to search,
-you search by conditions not terms.
+Filter-based in that it uses a filtering system to search. 
+You search by conditions, not terms.
 
-This bundle was designed to be used for any kind of storage, input and locale.
+This bundle was designed to be used for any kind of storage, input and local.
 
-Out of the box it (currently) only supports Doctrine ORM for searing in.
+Out of the box it (currently) only supports Doctrine ORM for searching in.
 
 Requirements
 ------------
