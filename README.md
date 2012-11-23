@@ -1,5 +1,5 @@
 README
-===0===
+======
 
 [![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksRecordFilterBundle.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksRecordFilterBundle)
 
