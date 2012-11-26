@@ -268,7 +268,7 @@ First we create the value class for holding the information of our invoice.
 
         public function __construct($input)
         {
-            if (!preg_match('/^(?P<year>\d{4})-(?P<number>\d+)$/s', $matches)) {
+            if (!preg_match('/^(?P<year>\d{4})-(?P<number>\d+)$/s', $input, $matches)) {
                 throw new \InvalidArgumentException('This not a valid invoice value.');
             }
 
