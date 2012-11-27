@@ -41,6 +41,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $translator->addLoader('array', new ArrayLoader());
 
         $translator->addResource('xliff', __DIR__ . '../../Resources/translations/messages.en.xliff', 'en');
+        $translator->addResource('xliff', __DIR__ . '../../Resources/translations/validators.en.xliff', 'en', 'validators');
 
         $this->translator = $translator;
         $this->setUpLocale();

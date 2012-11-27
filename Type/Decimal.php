@@ -89,7 +89,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
             return ltrim($value, '+');
         }
 
-        if ($value !== $this->lastResult && !$this->validateValue($value) ) {
+        if ($value !== $this->lastResult && null === ($this->lastResult = BigFloat::parse((string) trim($value, '+'))) ) {
             throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
@@ -165,27 +165,21 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
     /**
      * {@inheritdoc}
      */
-    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, MessageBag $messageBag)
     {
-        $message = 'This value is not an valid decimal.';
-
         if (null === ($this->lastResult = BigFloat::parse((string) trim($value, '+')))) {
-            return false;
-        }
+            $messageBag->addError('This value is not a valid decimal.');
 
-        $message = null;
+            return;
+        }
 
         if (null !== $this->options['min'] && $this->isLower($this->lastResult, $this->options['min'])) {
-            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false);
-        } elseif (null !== $this->options['max'] && $this->isHigher($this->lastResult, $this->options['max'])) {
-            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false);
+            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])));
         }
 
-        if ($messageBag) {
-            return !$messageBag->has('error');
+        if (null !== $this->options['max'] && $this->isHigher($this->lastResult, $this->options['max'])) {
+            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])));
         }
-
-        return true;
     }
 
     /**

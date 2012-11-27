@@ -47,12 +47,12 @@ class EnumTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
             $type = new EnumType($values);
         }
 
-        if ($expectFail) {
-            $this->assertFalse($type->validateValue($input, $message, $messageBag));
+        $type->validateValue($input, $messageBag);
 
+        if ($expectFail) {
             $this->assertEquals(array('"' . $input . '" is not accepted, only the following are accepted: Cancelled, Confirmed'), $messageBag->get('error'));
         } else {
-            $this->assertTrue($type->validateValue($input, $message, $messageBag));
+            $this->assertEquals(array(), $messageBag->get('error'), sprintf('Assert "%s" is valid', $input));
         }
     }
 

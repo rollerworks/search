@@ -73,8 +73,7 @@ class Text implements FilterTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, MessageBag $messageBag)
     {
-        return true;
     }
 }

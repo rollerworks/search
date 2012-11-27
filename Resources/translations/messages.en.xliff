@@ -2,64 +2,28 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
     <file source-language="en" datatype="plaintext" original="messages.xliff">
         <body>
-            <!-- Fatal errors -->
-            <trans-unit id="1">
-                <source>record_filter.required</source>
-                <target>Field '{{ label }}' is required in group {{ group }}.</target>
-            </trans-unit>
-            <trans-unit id="2">
-                <source>record_filter.no_range_support</source>
-                <target>Field '{{ label }}' does not accept ranges in group {{ group }}.</target>
-            </trans-unit>
-            <trans-unit id="3">
-                <source>record_filter.no_compare_support</source>
-                <target>Field '{{ label }}' does not accept comparisons in group {{ group }}.</target>
-            </trans-unit>
-
-            <!-- Validation errors -->
-            <trans-unit id="4">
-                <source>record_filter.validation_warning</source>
-                <target>Validation error(s) in field '{{ label }}' at value {{ value }} in group {{ group }}: {{ msg }}</target>
-            </trans-unit>
-            <trans-unit id="5">
-                <source>record_filter.range_not_lower</source>
-                <target>Validation error in field '{{ label }}': '{{ value1 }}' is not lower then '{{ value2 }}' in group {{ group }}.</target>
-            </trans-unit>
-            <trans-unit id="7">
-                <source>record_filter.value_in_include</source>
-                <target>Value {{ value }} in field '{{ label }}' is already marked as included and can't be excluded in group {{ group }}.</target>
-            </trans-unit>
-            <trans-unit id="8">
-                <source>record_filter.range_same_as_excluded</source>
-                <target>Excluded range {{ value }} also exists as normal range in field '{{ label }}' in group {{ group }}.</target>
-            </trans-unit>
-            <trans-unit id="14">
-                <source>record_filter.enum_value_unknown</source>
-                <target>"{{ value }}" is not accepted, only the following are accepted: {{ values }}</target>
-            </trans-unit>
-
             <!-- Optimisations -->
-            <trans-unit id="9">
+            <trans-unit id="1">
                 <source>record_filter.duplicate</source>
                 <target>Duplicate value {{ value }} in field '{{ label }}' in group {{ group }} (removed).</target>
             </trans-unit>
-            <trans-unit id="10">
+            <trans-unit id="2">
                 <source>record_filter.value_in_range</source>
                 <target>Value {{ value }} in field '{{ label }}' is overlapping in range {{ range }} in group {{ group }} (removed).</target>
             </trans-unit>
-            <trans-unit id="11">
+            <trans-unit id="3">
                 <source>record_filter.range_overlap</source>
                 <target>Range {{ range1 }} in field '{{ label }}' is overlapping in range {{ range2 }} in group {{ group }} (removed).</target>
             </trans-unit>
-            <trans-unit id="12">
+            <trans-unit id="4">
                 <source>record_filter.range_connected</source>
                 <target>Range upper-value of {{ range1 }} equals lower-value of range {{ range2 }} in field '{{ label }}' in group {{ group }} (ranges merged to {{ range3 }}).</target>
             </trans-unit>
-            <trans-unit id="13">
+            <trans-unit id="5">
                 <source>record_filter.redundant_comparison</source>
                 <target>Comparison {{ value }} is already covered by "{{ comparison }}" in field '{{ label }}' in group {{ group }} (removed).</target>
             </trans-unit>
-            <trans-unit id="15">
+            <trans-unit id="6">
                 <source>record_filter.enum_value_redundant</source>
                 <target>Detected redundant values in field '{{ label }}' in group {{ group }} (removed).</target>
             </trans-unit>

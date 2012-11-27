@@ -56,13 +56,13 @@ class StatusType implements FilterTypeInterface, OptimizableInterface
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($input, MessageBag $messageBag)
     {
-        $message = 'This is not an valid status';
-
         $input = $this->sanitizeString($input);
 
-        return in_array($input, array(1, 0, -1));
+        if (!in_array($input, array(1, 0, -1))) {
+            $messageBag->addError('This is not an valid status');
+        }
     }
 
     /**

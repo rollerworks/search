@@ -60,11 +60,14 @@ class TimeTest extends DateTimeTestCase
         \Locale::setDefault($locale);
 
         $type = new Time();
+        $messageBag = new MessageBag($this->translator);
+
+        $type->validateValue($input, $messageBag);
 
         if ($expectFail) {
-            $this->assertFalse($type->validateValue($input), sprintf('Assert "%s" not to be valid with locale "%s".', $input, $locale));
+            $this->assertTrue($messageBag->has('error'), sprintf('Assert "%s" is invalid.', $input));
         } else {
-            $this->assertTrue($type->validateValue($input), sprintf('Assert "%s" to be valid with locale "%s".', $input, $locale));
+            $this->assertEquals(array(), $messageBag->get('error'), sprintf('Assert "%s" is valid', $input));
         }
     }
 
@@ -78,14 +81,14 @@ class TimeTest extends DateTimeTestCase
         }
 
         $type = new Time($options);
+        $messageBag = new MessageBag($this->translator);
+
+        $type->validateValue($input, $messageBag);
 
         if (is_array($expectMessage)) {
-            $messageBag = new MessageBag($this->translator);
-
-            $this->assertFalse($type->validateValue($input, $message, $messageBag), sprintf('Assert "%s" is invalid', $input));
             $this->assertEquals($expectMessage, $messageBag->get('error'), sprintf('Assert "%s" is invalid and messages are equal.', $input));
         } else {
-            $this->assertTrue($type->validateValue($input), sprintf('Assert "%s" is valid', $input));
+            $this->assertEquals(array(), $messageBag->get('error'), sprintf('Assert "%s" is valid', $input));
         }
     }
 

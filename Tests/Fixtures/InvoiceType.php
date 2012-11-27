@@ -91,11 +91,11 @@ class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, Contain
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($input, MessageBag $messageBag)
     {
-        $message = 'This is not an valid invoice';
-
-        return (preg_match('/^F?\d{4}-\d+$/i', $this->sanitizeString($input)) ? true : false );
+        if (!preg_match('/^F?\d{4}-\d+$/i', $this->sanitizeString($input))) {
+            $messageBag->addError('This is not an valid invoice');
+        }
     }
 
     /**

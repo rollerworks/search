@@ -99,18 +99,12 @@ interface FilterTypeInterface
     public function isEqual($value, $nextValue);
 
     /**
-     * Returns whether the input value is legally formatted.
+     * Checks if the passed value is valid.
      *
-     * Optionally the MessageBag can be used for adding multiple messages.
-     * Set $message to null in that case.
-     *
-     * @param mixed        $value
-     * @param string|array $message
-     * @param MessageBag   $messageBag
-     *
-     * @return boolean
+     * @param mixed      $value
+     * @param MessageBag $messageBag
      *
      * @api
      */
-    public function validateValue($value, &$message = null, MessageBag $messageBag = null);
+    public function validateValue($value, MessageBag $messageBag);
 }

@@ -99,7 +99,7 @@ class MessageBag
     public function get($type)
     {
         if ('error' !== $type && 'info' !== $type) {
-            throw new \UnexpectedValueException('type must be error or info');
+            throw new \UnexpectedValueException('type must be error or info.');
         }
 
         return $this->messages[$type];
@@ -117,37 +117,40 @@ class MessageBag
     public function has($type)
     {
         if ('error' !== $type && 'info' !== $type) {
-            throw new \UnexpectedValueException('type must be error or info');
+            throw new \UnexpectedValueException('type must be error or info.');
         }
 
         return count($this->messages[$type]) > 0;
     }
 
     /**
-     * @param string      $transMessage
-     * @param array       $params
-     * @param boolean     $addTranslatorPrefix Add record_filter. prefix
-     * @param boolean     $translate           Set to false to use message as-is
-     * @param null|string $domain
+     * @param string       $message The error message.
+     * @param array        $params  The parameters parsed into the error message.
+     * @param null|integer $plural  The number to use to pluralize of the message.
+     * @param string       $domain  Alternative translation domain
      */
-    public function addError($transMessage, array $params = array(), $addTranslatorPrefix = true, $translate = true, $domain = 'messages')
+    public function addError($message, array $params = array(), $plural = null, $domain = 'validators')
     {
-        if ($translate) {
-            $this->messages['error'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params, $domain);
+        if ($plural) {
+            $this->messages['error'][] = $this->translator->transChoice($message, $plural, $params + $this->params, $domain);
         } else {
-            $this->messages['error'][] = $transMessage;
+            $this->messages['error'][] = $this->translator->trans($message, $params + $this->params, $domain);
         }
     }
 
     /**
-     * @param string      $transMessage
-     * @param array       $params
-     * @param boolean     $addTranslatorPrefix add 'record_filter.' prefix
-     * @param null|string $domain
+     * @param string       $message The info message.
+     * @param array        $params  The parameters parsed into the info message.
+     * @param null|integer $plural  The number to use to pluralize of the message.
+     * @param string       $domain  Alternative translation domain
      */
-    public function addInfo($transMessage, array $params = array(), $addTranslatorPrefix = true, $domain = 'messages')
+    public function addInfo($message, array $params = array(), $plural = null, $domain = 'messages')
     {
-        $this->messages['info'][] = $this->translator->trans(($addTranslatorPrefix ? 'record_filter.' : '') . $transMessage, $params + $this->params, $domain);
+        if ($plural) {
+            $this->messages['info'][] = $this->translator->transChoice($message, $plural, $params + $this->params, $domain);
+        } else {
+            $this->messages['info'][] = $this->translator->trans($message, $params + $this->params, $domain);
+        }
     }
 
     /**

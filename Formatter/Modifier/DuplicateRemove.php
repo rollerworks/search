@@ -45,7 +45,7 @@ class DuplicateRemove implements ModifierInterface
             $dumpValue = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
             if (in_array($dumpValue, $singleValues)) {
-                $messageBag->addInfo('duplicate', array('{{ value }}' => '"' . $value->getOriginalValue() . '"'));
+                $messageBag->addInfo('record_filter.duplicate', array('{{ value }}' => '"' . $value->getOriginalValue() . '"'));
                 $filterStruct->removeSingleValue($index);
 
                 continue;
@@ -58,7 +58,7 @@ class DuplicateRemove implements ModifierInterface
             $dumpValue = ($type ? $type->dumpValue($value->getValue()) : $value->getValue());
 
             if (in_array($dumpValue, $excludedValues)) {
-                $messageBag->addInfo('duplicate', array('{{ value }}' => '!"' . $value->getOriginalValue() . '"'));
+                $messageBag->addInfo('record_filter.duplicate', array('{{ value }}' => '!"' . $value->getOriginalValue() . '"'));
                 $filterStruct->removeExclude($index);
 
                 continue;
@@ -71,7 +71,7 @@ class DuplicateRemove implements ModifierInterface
             $dumpValue = $this->dumpRange($type, $range);
 
             if (in_array($dumpValue, $ranges)) {
-                $messageBag->addInfo('duplicate', array('{{ value }}' => self::getRangeQuoted($range)));
+                $messageBag->addInfo('record_filter.duplicate', array('{{ value }}' => self::getRangeQuoted($range)));
                 $filterStruct->removeRange($index);
 
                 continue;
@@ -84,7 +84,7 @@ class DuplicateRemove implements ModifierInterface
             $dumpValue = $this->dumpRange($type, $range);
 
             if (in_array($dumpValue, $excludedRanges)) {
-                $messageBag->addInfo('duplicate', array('{{ value }}' => '!' . self::getRangeQuoted($range)));
+                $messageBag->addInfo('record_filter.duplicate', array('{{ value }}' => '!' . self::getRangeQuoted($range)));
                 $filterStruct->removeExcludedRange($index);
 
                 continue;
@@ -97,7 +97,7 @@ class DuplicateRemove implements ModifierInterface
             $dumpValue = $compare->getOperator() . ($type ? $type->dumpValue($compare->getValue()) : $compare->getValue());
 
             if (in_array($dumpValue, $compares)) {
-                $messageBag->addInfo('duplicate', array('{{ value }}' => $compare->getOperator() . '"' . $compare->getOriginalValue() . '"'));
+                $messageBag->addInfo('record_filter.duplicate', array('{{ value }}' => $compare->getOperator() . '"' . $compare->getOriginalValue() . '"'));
                 $filterStruct->removeCompare($index);
 
                 continue;

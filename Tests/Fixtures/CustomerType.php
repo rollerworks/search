@@ -51,11 +51,11 @@ class CustomerType implements FilterTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function validateValue($input, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($input, MessageBag $messageBag)
     {
-        $message = 'This is not an valid customer.';
-
-        return ctype_digit($input);
+        if (!ctype_digit($input)) {
+            $messageBag->addError('This is not an valid customer.');
+        }
     }
 
     /**

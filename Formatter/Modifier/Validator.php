@@ -92,7 +92,7 @@ class Validator implements ModifierInterface
             }
 
             if (in_array($_value, $singleValues)) {
-                $messageBag->addError('value_in_include', array('{{ value }}' => '!"' . $value->getOriginalValue() . '"'));
+                $messageBag->addError('record_filter.value_in_include', array('{{ value }}' => '!"' . $value->getOriginalValue() . '"'));
                 $this->isError = true;
             }
 
@@ -134,7 +134,7 @@ class Validator implements ModifierInterface
             $_value = $type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper());
 
             if (in_array($_value, $ranges)) {
-                $messageBag->addError('range_same_as_excluded', array('{{ value }}' => self::getRangeQuoted($range)));
+                $messageBag->addError('record_filter.range_same_as_excluded', array('{{ value }}' => self::getRangeQuoted($range)));
                 $this->isError = true;
             }
         }
@@ -182,19 +182,13 @@ class Validator implements ModifierInterface
     protected function validateValue(FilterTypeInterface $type, $value, $originalValue, MessageBag $messageBag)
     {
         $validationMessageBag = clone $messageBag;
+        $type->validateValue($value, $validationMessageBag);
 
-        if (!$type->validateValue($value, $message, $validationMessageBag)) {
-            if (null === $message) {
-                $message = implode("\n", $validationMessageBag->get('error'));
-            } else {
-                if (!is_scalar($message)) {
-                    throw new \UnexpectedValueException('Message must be an scalar value.');
-                }
+        if ($validationMessageBag->has(MessageBag::MSG_ERROR)) {
+            // XXX This should be made configurable, maybe following the principle of the Validator Component?
+            $message = implode("\n", $validationMessageBag->get('error'));
 
-                $message = $this->translator->trans($message, array(), 'validators');
-            }
-
-            $messageBag->addError('validation_warning', array(
+            $messageBag->addError('record_filter.validation_warning', array(
                 '{{ value }}' => $originalValue,
                 '{{ msg }}'   => $message
             ));
@@ -217,7 +211,7 @@ class Validator implements ModifierInterface
     protected function validateRange(FilterTypeInterface $type, Range $range, MessageBag $messageBag)
     {
         if (!$type->isLower($range->getLower(), $range->getUpper())) {
-            $messageBag->addError('range_not_lower', array(
+            $messageBag->addError('record_filter.range_not_lower', array(
                 '{{ value1 }}' => $range->getOriginalLower(),
                 '{{ value2 }}' => $range->getOriginalUpper(),
             ));

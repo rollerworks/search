@@ -65,7 +65,7 @@ class RangeNormalizer implements ModifierInterface
             // Check if range is overlapping single-values
             foreach ($values as $myIndex => $singeValue) {
                 if ($this->isValInRange($type, $singeValue, $range)) {
-                    $messageBag->addInfo('value_in_range', array(
+                    $messageBag->addInfo('record_filter.value_in_range', array(
                         '{{ value }}' => '"' . $values[$myIndex]->getOriginalValue() . '"' ,
                         '{{ range }}' => self::getRangeQuoted($ranges[$valIndex])));
 
@@ -81,7 +81,7 @@ class RangeNormalizer implements ModifierInterface
                 }
 
                 if ($type->isEqual($range->getUpper(), $myRange->getLower())) {
-                    $messageBag->addInfo('range_connected', array(
+                    $messageBag->addInfo('record_filter.range_connected', array(
                         '{{ range1 }}' => self::getRangeQuoted($ranges[$valIndex]),
                         '{{ range2 }}' => self::getRangeQuoted($ranges[$myIndex]),
                         '{{ range3 }}' => self::getRangeQuoted($ranges[$valIndex], $ranges[$myIndex]),
@@ -94,7 +94,7 @@ class RangeNormalizer implements ModifierInterface
                 }
                 // Check if range overlaps in other ranges
                 elseif ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
-                    $messageBag->addInfo('range_overlap', array(
+                    $messageBag->addInfo('record_filter.range_overlap', array(
                         '{{ range1 }}' => self::getRangeQuoted($ranges[$myIndex]),
                         '{{ range2 }}' => self::getRangeQuoted($ranges[$valIndex]),
                     ));
@@ -117,7 +117,7 @@ class RangeNormalizer implements ModifierInterface
                 // Check if value is overlapping in other ranges
                 foreach ($excludes as $myIndex => $singeValue) {
                     if ($this->isValInRange($type, $singeValue, $range)) {
-                        $messageBag->addInfo('value_in_range', array(
+                        $messageBag->addInfo('record_filter.value_in_range', array(
                             '{{ value }}' => '!"' . $singeValue->getOriginalValue() . '"',
                             '{{ range }}' => '!' . self::getRangeQuoted($range)));
 
@@ -133,7 +133,7 @@ class RangeNormalizer implements ModifierInterface
                     }
 
                     if ($type->isEqual($range->getUpper(), $myRange->getLower())) {
-                        $messageBag->addInfo('range_connected', array(
+                        $messageBag->addInfo('record_filter.range_connected', array(
                             '{{ range1 }}' => '!' . self::getRangeQuoted($range),
                             '{{ range2 }}' => '!' . self::getRangeQuoted($myRange),
                             '{{ range3 }}' => '!' . self::getRangeQuoted($range, $myRange),
@@ -147,7 +147,7 @@ class RangeNormalizer implements ModifierInterface
 
                     // Check if range overlaps in other ranges
                     if ($type->isLower($myRange->getUpper(), $range->getUpper()) && $type->isHigher($myRange->getLower(), $range->getLower())) {
-                        $messageBag->addInfo('range_overlap', array(
+                        $messageBag->addInfo('record_filter.range_overlap', array(
                             '{{ range1 }}' => '!' . self::getRangeQuoted($myRange),
                             '{{ range2 }}' => '!' . self::getRangeQuoted($range),
                         ));
@@ -158,7 +158,7 @@ class RangeNormalizer implements ModifierInterface
                 }
 
                 if (false !== array_search($type->dumpValue($range->getLower()) . '-' . $type->dumpValue($range->getUpper()), $rangesValues)) {
-                    $messageBag->addError('range_same_as_excluded', array('{{ value }}' => self::getRangeQuoted($range)));
+                    $messageBag->addError('record_filter.range_same_as_excluded', array('{{ value }}' => self::getRangeQuoted($range)));
 
                     $isError = true;
                 }

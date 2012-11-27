@@ -87,21 +87,19 @@ class DateTime extends Date
     /**
      * {@inheritdoc}
      */
-    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, MessageBag $messageBag)
     {
-        if (DateTimeHelper::validateIso($value, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->hasTime)) {
+        $flag = ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME);
+
+        if (DateTimeHelper::validateIso($value, $flag, $this->hasTime)) {
             $this->lastResult = $value;
-        } elseif (!DateTimeHelper::validate($value, ($this->options['time_optional'] ? DateTimeHelper::ONLY_DATE_OPTIONAL_TIME : DateTimeHelper::ONLY_DATE_TIME), $this->lastResult, $this->hasTime)) {
-            $message = 'This value is not a valid date' . ($this->options['time_optional'] ? ' with optional ' : '') . 'time.';
+        } elseif (!DateTimeHelper::validate($value, $flag, $this->lastResult, $this->hasTime)) {
+            $messageBag->addError('This value is not a valid date' . ($this->options['time_optional'] ? ' with optional ' : '') . 'time.');
 
-            return false;
+            return;
         }
 
-        if (!$this->validateHigherLower($this->lastResult, $messageBag)) {
-            return false;
-        }
-
-        return true;
+        $this->validateHigherLower($this->lastResult, $messageBag);
     }
 
     /**

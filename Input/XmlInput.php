@@ -129,7 +129,7 @@ class XmlInput extends AbstractInput
 
             if (empty($values)) {
                 if (true === $filterConfig->isRequired()) {
-                    throw new ValidationException('required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
+                    throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
                 }
 
                 continue;
@@ -158,15 +158,15 @@ class XmlInput extends AbstractInput
         $hasValues = false;
 
         if (isset($values->compares) && $values->compares->count() && !$filterConfig->acceptCompares()) {
-            throw new ValidationException('no_compare_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
+            throw new ValidationException('record_filter.no_compare_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
         if (isset($values->ranges) && $values->ranges->count() && !$filterConfig->acceptRanges()) {
-            throw new ValidationException('no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
+            throw new ValidationException('record_filter.no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
         if (isset($values->{'excluded-ranges'}) && $values->{'excluded-ranges'}->count() && !$filterConfig->acceptRanges()) {
-            throw new ValidationException('no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
+            throw new ValidationException('record_filter.no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
         if (isset($values->{'single-values'})) {
@@ -205,7 +205,7 @@ class XmlInput extends AbstractInput
         }
 
         if (!$hasValues && true === $filterConfig->isRequired()) {
-            throw new ValidationException('required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
+            throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
         return new FilterValuesBag($filterConfig->getLabel(), '', $singleValues, $excludesValues, $ranges, $compares, $excludedRanges);

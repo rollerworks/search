@@ -43,8 +43,8 @@ class Birthday implements FilterTypeInterface, ValueMatcherInterface
             return $value;
         }
 
-        if ($value !== $this->lastInput && !$this->validateValue($value, $message)) {
-            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated. Message: ' . $message, $value));
+        if ($value !== $this->lastInput && !$this->validate($value)) {
+            throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
         return $this->lastResult;
@@ -161,24 +161,20 @@ class Birthday implements FilterTypeInterface, ValueMatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value,  MessageBag $messageBag)
     {
         if (is_int($value) || ctype_digit($value)) {
-            return true;
+            return;
         }
 
-        if (preg_match('/^(\p{N}+)$/u', $value)) {
-            $this->lastResult = BigNumber::parse($value);
-
-            return true;
+        if (preg_match('/^(\p{N}+)$/u', $value) && ($this->lastResult = BigNumber::parse($value)) ) {
+            return;
         }
 
-        if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_DATE)) {
-            $this->lastResult = new DateTimeExtended($value);
-        } elseif (!DateTimeHelper::validate($value, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
-            $message = 'This value is not a valid birthday or age.';
+        if (!$this->validate($value)) {
+            $messageBag->addError('This value is not a valid birthday or age.');
 
-            return false;
+            return;
         }
 
         if (!is_object($this->lastResult)) {
@@ -186,14 +182,12 @@ class Birthday implements FilterTypeInterface, ValueMatcherInterface
         }
 
         if ($this->lastResult->getTimestamp() > time()) {
-            $message = 'This value is not a valid birthday or age.';
+            $messageBag->addError('This value is not a valid birthday or age.');
 
-            return false;
+            return;
         }
 
         $this->lastInput = $value;
-
-        return true;
     }
 
     /**
@@ -202,5 +196,34 @@ class Birthday implements FilterTypeInterface, ValueMatcherInterface
     public function getMatcherRegex()
     {
         return '(?:' . DateTimeHelper::getMatcherRegex(DateTimeHelper::ONLY_DATE) . '|\p{N}+)';
+    }
+
+    protected function validate($value)
+    {
+        if (is_int($value) || ctype_digit($value)) {
+            $this->lastResult = $value;
+
+            return true;
+        }
+
+        if (preg_match('/^(\p{N}+)$/u', $value) && ($this->lastResult = BigNumber::parse($value))) {
+            return true;
+        }
+
+        if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_DATE)) {
+            $this->lastResult = new DateTimeExtended($value);
+        } elseif (!DateTimeHelper::validate($value, DateTimeHelper::ONLY_DATE, $this->lastResult)) {
+            return false;
+        }
+
+        if (!is_object($this->lastResult)) {
+            $this->lastResult = new DateTimeExtended($this->lastResult);
+        }
+
+        if ($this->lastResult->getTimestamp() > time()) {
+            return false;
+        }
+
+        return true;
     }
 }

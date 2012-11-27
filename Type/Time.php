@@ -79,21 +79,17 @@ class Time extends Date
     /**
      * {@inheritdoc}
      */
-    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, MessageBag $messageBag)
     {
         if (DateTimeHelper::validateIso($value, DateTimeHelper::ONLY_TIME)) {
             $this->lastResult = $value;
         } elseif (!DateTimeHelper::validate($value, DateTimeHelper::ONLY_TIME, $this->lastResult)) {
-            $message = 'This value is not a valid time.';
+            $messageBag->addError('This value is not a valid time.');
 
-            return false;
+            return;
         }
 
-        if (!$this->validateHigherLower($this->lastResult, $messageBag)) {
-            return false;
-        }
-
-        return true;
+        $this->validateHigherLower($this->lastResult, $messageBag);
     }
 
     /**

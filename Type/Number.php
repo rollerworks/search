@@ -73,7 +73,7 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
             return ltrim($value, '+');
         }
 
-        if ($value !== $this->lastResult && !$this->validateValue($value) ) {
+        if ($value !== $this->lastResult && !$this->validate($value) ) {
             throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
@@ -134,31 +134,21 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     /**
      * {@inheritdoc}
      */
-    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, MessageBag $messageBag)
     {
-        $message = 'This value is not a valid number.';
+        if (!$this->validate($value)) {
+            $messageBag->addError('This value is not a valid number.');
 
-        if (ctype_digit((string) ltrim($value, '-+'))) {
-            $this->lastResult = ltrim($value, '+');
-        } elseif (null === ($this->lastResult = BigNumber::parse((string) trim($value, '+')))) {
-            return false;
+            return ;
         }
 
-        $message = null;
-
         if (null !== $this->options['min'] && $this->isLower($value, $this->options['min'])) {
-            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])), false, true, 'validators');
+            $messageBag->addError('This value should be {{ limit }} or more.', array('{{ limit }}' => $this->formatOutput($this->options['min'])));
         }
 
         if (null !== $this->options['max'] && $this->isHigher($value, $this->options['max'])) {
-            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])), false, true, 'validators');
+            $messageBag->addError('This value should be {{ limit }} or less.', array('{{ limit }}' => $this->formatOutput($this->options['max'])));
         }
-
-        if ($messageBag) {
-            return !$messageBag->has('error');
-        }
-
-        return true;
     }
 
     /**
@@ -213,5 +203,16 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     public function getOptions()
     {
         return $this->options;
+    }
+
+    protected function validate($value)
+    {
+        if (ctype_digit((string) ltrim($value, '-+'))) {
+            $this->lastResult = ltrim($value, '+');
+        } elseif (null === ($this->lastResult = BigNumber::parse((string) trim($value, '+')))) {
+            return false;
+        }
+
+        return true;
     }
 }

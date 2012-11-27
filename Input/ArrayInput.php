@@ -142,7 +142,7 @@ class ArrayInput extends AbstractInput
             /** @var FilterField $filterConfig */
             if (empty($properties[$name])) {
                 if (true === $filterConfig->isRequired()) {
-                    throw new ValidationException('required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
+                    throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
                 }
 
                 continue;
@@ -191,11 +191,11 @@ class ArrayInput extends AbstractInput
         $hasValues = false;
 
         if (count($values['comparisons']) && !$filterConfig->acceptCompares()) {
-            throw new ValidationException('no_compare_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
+            throw new ValidationException('record_filter.no_compare_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
         if ((count($values['ranges']) || count($values['excluded-ranges'])) && !$filterConfig->acceptRanges()) {
-            throw new ValidationException('no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
+            throw new ValidationException('record_filter.no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
         foreach ($values['single-values'] as $index => $value) {
@@ -248,7 +248,7 @@ class ArrayInput extends AbstractInput
         }
 
         if (!$hasValues && true === $filterConfig->isRequired()) {
-            throw new ValidationException('required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
+            throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
         return new FilterValuesBag($filterConfig->getLabel(), '', $singleValues, $excludesValues, $ranges, $compares, $excludedRanges);

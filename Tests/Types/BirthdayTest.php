@@ -13,6 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Types;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\Birthday;
 use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
+use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 class BirthdayTest extends DateTimeTestCase
 {
@@ -54,11 +55,14 @@ class BirthdayTest extends DateTimeTestCase
         \Locale::setDefault($locale);
 
         $type = new Birthday();
+        $messageBag = new MessageBag($this->translator);
+
+        $type->validateValue($input, $messageBag);
 
         if ($expectFail) {
-            $this->assertFalse($type->validateValue($input));
+            $this->assertTrue($messageBag->has('error'), sprintf('Assert "%s" is invalid.', $input));
         } else {
-            $this->assertTrue($type->validateValue($input));
+            $this->assertEquals(array(), $messageBag->get('error'), sprintf('Assert "%s" is valid', $input));
         }
     }
 

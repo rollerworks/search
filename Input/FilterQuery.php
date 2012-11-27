@@ -262,7 +262,7 @@ class FilterQuery extends AbstractInput
             /** @var FilterField $filterConfig */
             if (empty($filterPairs[$name])) {
                 if (true === $filterConfig->isRequired()) {
-                    throw new ValidationException('required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
+                    throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
                 }
 
                 continue;
@@ -332,7 +332,7 @@ class FilterQuery extends AbstractInput
             // Comparison
             if (preg_match('#^(>=|<=|<>|[<>])("(?:(?:[^"]+|"")+)"'.$valueMatcherRegex.'|[^\h]+)$#us', $currentValue, $comparisonValue)) {
                 if (!$filterConfig->acceptCompares()) {
-                    throw new ValidationException('no_compare_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
+                    throw new ValidationException('record_filter.no_compare_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
                 }
 
                 $compares[ $valueIndex ] = new Compare(self::fixQuotes($comparisonValue[2]), $comparisonValue[1]);
@@ -376,7 +376,7 @@ class FilterQuery extends AbstractInput
 
                 if (null !== $value) {
                     if (!$filterConfig->acceptRanges()) {
-                        throw new ValidationException('no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
+                        throw new ValidationException('record_filter.no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
                     }
 
                     if ($isExclude) {

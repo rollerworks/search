@@ -121,10 +121,8 @@ class EnumType implements FilterTypeInterface, ValueMatcherInterface, Optimizabl
     /**
      * {@inheritDoc}
      */
-    public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+    public function validateValue($value, MessageBag $messageBag)
     {
-        $message = null;
-
         if (function_exists('mb_strtolower')) {
             $value = mb_strtolower($value);
         } else {
@@ -132,15 +130,11 @@ class EnumType implements FilterTypeInterface, ValueMatcherInterface, Optimizabl
         }
 
         if (!isset($this->labelToValue[$value])) {
-            $messageBag->addError('enum_value_unknown', array(
+            $messageBag->addError('record_filter.enum_value_unknown', array(
                 '{{ value }}'  => $value,
                 '{{ values }}' => implode(', ', array_values($this->valueToLabel)))
             );
-
-            return false;
         }
-
-        return true;
     }
 
     /**
@@ -168,7 +162,7 @@ class EnumType implements FilterTypeInterface, ValueMatcherInterface, Optimizabl
     {
         // All possible values are used so remove it
         if (count($field->getSingleValues()) === count($this->valueToLabel)) {
-            $messageBag->addInfo('enum_value_redundant');
+            $messageBag->addInfo('record_filter.enum_value_redundant');
 
             return false;
         }
