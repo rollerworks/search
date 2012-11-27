@@ -163,25 +163,11 @@ class Birthday implements FilterTypeInterface, ValueMatcherInterface
      */
     public function validateValue($value,  MessageBag $messageBag)
     {
-        if (is_int($value) || ctype_digit($value)) {
-            return;
-        }
-
-        if (preg_match('/^(\p{N}+)$/u', $value) && ($this->lastResult = BigNumber::parse($value)) ) {
+        if (is_int($value) || ctype_digit($value) || $value instanceof DateTimeExtended) {
             return;
         }
 
         if (!$this->validate($value)) {
-            $messageBag->addError('This value is not a valid birthday or age.');
-
-            return;
-        }
-
-        if (!is_object($this->lastResult)) {
-            $this->lastResult = new DateTimeExtended($this->lastResult);
-        }
-
-        if ($this->lastResult->getTimestamp() > time()) {
             $messageBag->addError('This value is not a valid birthday or age.');
 
             return;
