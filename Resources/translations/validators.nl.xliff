@@ -10,6 +10,38 @@
                 <source>This value is not a valid date with optional time.</source>
                 <target>Deze waarde is geen geldige datum met optionele tijd.</target>
             </trans-unit>
+            <trans-unit id="3">
+                <source>record_filter.validation_warning</source>
+                <target>Validatie fout in veld '{{ label }}' in de buurt van {{ value }} in groep {{ group }}: {{ msg }}</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>record_filter.required</source>
+                <target>Veld '{{ label }}' mag niet leeg zijn in groep {{ group }}.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>record_filter.no_range_support</source>
+                <target>Veld'{{ label }}' accepteert geen bereikwaardes in groep {{ group }}.</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>record_filter.no_compare_support</source>
+                <target>Veld '{{ label }}' accepteert geen vergelijkingswaardes in groep {{ group }}.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>record_filter.range_not_lower</source>
+                <target>Validatie fout in veld '{{ label }}': '{{ value1 }}' is niet lager dan '{{ value2 }}' in groep {{ group }}.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>record_filter.value_in_include</source>
+                <target>Waarde {{ value }} in veld '{{ label }}' bestaat al als losse waarde en kan niet worden uitgesloten in groep {{ group }}.</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>record_filter.range_same_as_excluded</source>
+                <target>Uitgesloten bereikwaarde {{ value }} bestaat al als normale bereikwaarde in veld '{{ label }}' in groep {{ group }}.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>record_filter.enum_value_unknown</source>
+                <target>"{{ value }}" is niet geaccepteerd, alleen de volgende waardes zijn mogelijk: {{ values }}</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
