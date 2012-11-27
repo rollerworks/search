@@ -231,11 +231,11 @@ should be enough.
             return parent::sanitizeString($value);
         }
 
-        public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+        public function validateValue($value, MessageBag $messageBag)
         {
             $value = ltrim($value, 'Cc');
 
-            return parent::validateValue($value, $message, $messageBag);
+            parent::validateValue($value, $messageBag);
         }
     }
 
@@ -358,15 +358,11 @@ Now we can create our filtering type.
             return ($input->getYear() === $nextValue->getYear() && $input->getNumber() === $nextValue->getNumber());
         }
 
-        public function validateValue($value, &$message = null, MessageBag $messageBag = null)
+        public function validateValue($value, MessageBag $messageBag)
         {
-            $message = 'This is not an legal invoice number.';
-
-            if (!preg_match('/^(\d{4})-(\d+)$/s')) {
-                return false;
+            if (!preg_match('/^(\d{4})-(\d+)$/s', $value)) {
+                $messageBag->addError('This is not an legal invoice number.');
             }
-
-            return true;
         }
 
         public function getMatcherRegex()
