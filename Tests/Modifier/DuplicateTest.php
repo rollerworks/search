@@ -128,14 +128,16 @@ class DuplicateTest extends ModifierTestCase
         $this->assertEquals(array(
             'Duplicate value "29.10.2010" in field \'date\' in group 1 (removed).',
             'Duplicate value "29-10-2010"-"10.12.2010" in field \'date\' in group 1 (removed).',
-            'Duplicate value "29.10.2010"-"10.12.2010" in field \'date\' in group 1 (removed).'), $messages['info']);
+            'Duplicate value "29.10.2010"-"10.12.2010" in field \'date\' in group 1 (removed).',
+            'Value "29.10.2010" in field \'date\' is overlapping in range "29.10.2010"-"10.12.2010" in group 1 (removed).'
+        ), $messages['info']);
 
         $filters = $formatter->getFilters();
 
         $expectedValues = array();
         $expectedValues['user']   = new FilterValuesBag('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')));
         $expectedValues['status'] = new FilterValuesBag('status', 'Active', array(new SingleValue('Active')));
-        $expectedValues['date']   = new FilterValuesBag('date', '29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"', array(new SingleValue(new DateTimeExtended('2010-10-29'), '29.10.2010')), array(), array(2 => new Range(new DateTimeExtended('2010-10-29'), new DateTimeExtended('2010-12-10'), '29.10.2010', '10.12.2010')));
+        $expectedValues['date']   = new FilterValuesBag('date', '29.10.2010,29.10.2010,"29.10.2010"-"10.12.2010","29-10-2010"-10.12.2010,"29.10.2010"-"10.12.2010"', array(), array(), array(2 => new Range(new DateTimeExtended('2010-10-29'), new DateTimeExtended('2010-12-10'), '29.10.2010', '10.12.2010')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -162,6 +164,7 @@ class DuplicateTest extends ModifierTestCase
             'Duplicate value "29-10-2010"-"10.12.2010" in field \'date\' in group 1 (removed).',
             'Duplicate value "29.10.2010"-"10.12.2010" in field \'date\' in group 1 (removed).',
 
+            'Value "29.10.2010" in field \'date\' is overlapping in range "29.10.2010"-"10.12.2010" in group 1 (removed).',
             'Range upper-value of "29.10.2010"-"10.12.2010" equals lower-value of range "10-12-2010"-"10.01.2011" in field \'date\' in group 1 (ranges merged to "29.10.2010"-"10.01.2011").',
         ), $messages['info']);
 
@@ -170,7 +173,7 @@ class DuplicateTest extends ModifierTestCase
         $expectedValues = array();
         $expectedValues['user']   = new FilterValuesBag('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')));
         $expectedValues['status'] = new FilterValuesBag('status', 'Active', array(new SingleValue('Active')));
-        $expectedValues['date']   = new FilterValuesBag('date', '29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011', array(new SingleValue(new DateTimeExtended('2010-10-29'), '29.10.2010')), array(), array(2 => new Range(new DateTimeExtended('2010-10-29'), new DateTimeExtended('2011-01-10'), '29.10.2010', '10.12.2010')));
+        $expectedValues['date']   = new FilterValuesBag('date', '29.10.2010,29.10.2010, "29.10.2010"-"10.12.2010", "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011', array(), array(), array(2 => new Range(new DateTimeExtended('2010-10-29'), new DateTimeExtended('2011-01-10'), '29.10.2010', '10.12.2010')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
@@ -196,6 +199,7 @@ class DuplicateTest extends ModifierTestCase
             'Duplicate value "29.10.2010"-"10.12.2010" in field \'date\' in group 1 (removed).',
             'Duplicate value "29.10.2010"-"10.12.2010" in field \'date\' in group 1 (removed).',
 
+            'Value "29.10.2010" in field \'date\' is overlapping in range "29-10-2010"-"10.12.2010" in group 1 (removed).',
             'Range upper-value of "29-10-2010"-"10.12.2010" equals lower-value of range "10-12-2010"-"10.01.2011" in field \'date\' in group 1 (ranges merged to "29-10-2010"-"10.01.2011").',
         ), $messages['info']);
 
@@ -204,7 +208,7 @@ class DuplicateTest extends ModifierTestCase
         $expectedValues = array();
         $expectedValues['user']   = new FilterValuesBag('user', '2,3,10-20', array(new SingleValue('2'), new SingleValue('3')), array(), array(2 => new Range('10', '20')));
         $expectedValues['status'] = new FilterValuesBag('status', 'Active', array(new SingleValue('Active')));
-        $expectedValues['date']   = new FilterValuesBag('date', '29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"', array(new SingleValue(new DateTimeExtended('2010-10-29'), '29.10.2010')), array(), array(2 => new Range(new DateTimeExtended('2010-10-29'), new DateTimeExtended('2011-01-10'), '29-10-2010', '10.12.2010')));
+        $expectedValues['date']   = new FilterValuesBag('date', '29.10.2010,29.10.2010, "29-10-2010"-10.12.2010, "29.10.2010"-"10.12.2010","10-12-2010"-10.01.2011, "29.10.2010"-"10.12.2010"', array(), array(), array(2 => new Range(new DateTimeExtended('2010-10-29'), new DateTimeExtended('2011-01-10'), '29-10-2010', '10.12.2010')));
 
         $this->assertEquals($expectedValues, $filters[0]);
     }

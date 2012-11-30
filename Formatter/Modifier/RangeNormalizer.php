@@ -204,6 +204,10 @@ class RangeNormalizer implements ModifierInterface
             return true;
         }
 
+        if ($type->isEqual($singeValue->getValue(), $range->getLower()) || $type->isEqual($singeValue->getValue(), $range->getUpper())) {
+            return true;
+        }
+
         return false;
     }
 }
