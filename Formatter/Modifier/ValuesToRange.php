@@ -49,7 +49,7 @@ class ValuesToRange implements ModifierInterface
      */
     public function modFilters(FormatterInterface $formatter, MessageBag $messageBag, FilterField $filterConfig, FilterValuesBag $filterStruct, $groupIndex)
     {
-        if (!$filterConfig->hasType() || !$filterConfig->getType() instanceof ValuesToRangeInterface || (!$filterStruct->hasSingleValues() && !$filterStruct->hasExcludes())) {
+        if (!$filterConfig->acceptRanges() || !$filterConfig->getType() instanceof ValuesToRangeInterface || (!$filterStruct->hasSingleValues() && !$filterStruct->hasExcludes())) {
             return true;
         }
 

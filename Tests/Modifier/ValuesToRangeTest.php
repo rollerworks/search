@@ -139,4 +139,24 @@ class ValuesToRangeTest extends ModifierTestCase
 
         $this->assertEquals($expectedValues, $filters[0]);
     }
+
+    public function testOptimizeValueNoRangeAccept()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setInput('User=1,2,3,4,5');
+
+        $formatter = $this->newFormatter();
+        $input->setField('user', FilterField::create('user', new Number(), false));
+
+        if (!$formatter->formatInput($input)) {
+            $this->fail(print_r($formatter->getMessages(), true));
+        }
+
+        $filters = $formatter->getFilters();
+
+        $expectedValues = array();
+        $expectedValues['user'] = new FilterValuesBag('user', '1,2,3,4,5', array(new SingleValue('1'), new SingleValue('2'), new SingleValue('3'), new SingleValue('4'), new SingleValue('5')));
+
+        $this->assertEquals($expectedValues, $filters[0]);
+    }
 }
