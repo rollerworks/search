@@ -185,21 +185,6 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
 
     /**
      * {@inheritdoc}
-     */
-    public function sortValuesList($first, $second)
-    {
-        $a = $first->getValue()->getTimestamp();
-        $b = $second->getValue()->getTimestamp();
-
-        if ($a === $b) {
-            return 0;
-        }
-
-        return $a < $b ? -1 : 1;
-    }
-
-    /**
-     * {@inheritdoc}
      *
      * @param DateTimeExtended $value
      *

@@ -370,19 +370,6 @@ Now we can create our filtering type.
             return '(?:\d{4}-\d+)';
         }
 
-        public function sortValuesList($first, $second)
-        {
-            // We must call getValue() as we recipe an SingleValue object
-            $a = $first->getValue();
-            $b = $second->getValue();
-
-            if ($a->getYear() === $b->getYear() && $a->getNumber() === $b->getNumber()) {
-                return 0;
-            }
-
-            return $this->isLower($a, $b) ? -1 : 1;
-        }
-
         public function getHigherValue($value)
         {
             return new InvoiceValue($value->getYear() . '-' . ($value->getNumber()+1));

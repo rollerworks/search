@@ -135,28 +135,6 @@ class DateTest extends DateTimeTestCase
         $this->assertEquals($type->sanitizeString($expected)->format('Y-m-d'), $type->getHigherValue($type->sanitizeString($input))->format('Y-m-d'));
     }
 
-    /**
-     * @dataProvider getDataForSorting
-     */
-    public function testSorting($locale, $input, $expected)
-    {
-        \Locale::setDefault($locale);
-
-        $type = new Date();
-
-        foreach ($input as $index => $value) {
-            $input[$index] = new SingleValue($type->sanitizeString($value), $value);
-        }
-
-        uasort($input, array(&$type, 'sortValuesList'));
-
-        foreach ($expected as $index => $value) {
-            $expected[$index] = new SingleValue($type->sanitizeString($value), $value);
-        }
-
-        $this->assertEquals($expected, $input);
-    }
-
     public static function getDataForSanitation()
     {
         return array(
@@ -233,15 +211,6 @@ class DateTest extends DateTimeTestCase
             array('nl_NL', '04-10-2010', '05-10-2010'),
             array('nl_NL', '30-11-2010', '01-12-2010'),
             array('nl_NL', '31-12-2010', '01-01-2011'),
-        );
-    }
-
-    public static function getDataForSorting()
-    {
-        return array(
-            // $locale, $values, $expected
-            array('nl_NL', array(0 => '15-04-2010', 4 => '05-03-2010', 6 => '14-05-2012'), array(4 => '05-03-2010', 0 => '15-04-2010', 6 => '14-05-2012')),
-            array('nl_NL', array(1 => '16-04-2010', 3 => '15-04-2010', 4 => '15-02-2011'), array(4 => '15-02-2011', 3 => '15-04-2010', 1 => '16-04-2010')),
         );
     }
 }

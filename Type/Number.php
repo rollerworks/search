@@ -154,23 +154,6 @@ class Number implements FilterTypeInterface, ValuesToRangeInterface, Configurabl
     /**
      * {@inheritdoc}
      */
-    public function sortValuesList($first, $second)
-    {
-        $phpMax = strlen(PHP_INT_MAX) - 1;
-        if ((strlen($first->getValue()) > $phpMax || strlen($second->getValue()) > $phpMax) && function_exists('bccomp')) {
-            return bccomp($first->getValue(), $second->getValue());
-        }
-
-        if ((integer) $first->getValue() === (integer) $second->getValue()) {
-            return 0;
-        }
-
-        return ((integer) $first->getValue() < (integer) $second->getValue() ? -1 : 1);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getHigherValue($value)
     {
         $phpMax = strlen(PHP_INT_MAX) - 1;

@@ -144,28 +144,6 @@ class TimeTest extends DateTimeTestCase
         $this->assertEquals($type->sanitizeString($expected)->format('H:i:s'), $type->getHigherValue($type->sanitizeString($input))->format('H:i:s'));
     }
 
-    /**
-     * @dataProvider getDataForSorting
-     */
-    public function testSorting($locale, $input, $expected)
-    {
-        \Locale::setDefault($locale);
-
-        $type = new Time();
-
-        foreach ($input as $index => $value) {
-            $input[$index] = new SingleValue($type->sanitizeString($value), $value);
-        }
-
-        uasort($input, array(&$type, 'sortValuesList'));
-
-        foreach ($expected as $index => $value) {
-            $expected[$index] = new SingleValue($type->sanitizeString($value), $value);
-        }
-
-        $this->assertEquals($expected, $input);
-    }
-
     public static function getDataForSanitation()
     {
         return array(
@@ -256,16 +234,6 @@ class TimeTest extends DateTimeTestCase
             array('nl_NL', '23:59:59', '00:00:00'),
             array('nl_NL', '23:20:00', '23:20:01'),
             array('nl_NL', '23:20:10', '23:20:11'),
-        );
-    }
-
-    public static function getDataForSorting()
-    {
-        return array(
-            // $locale, $values, $expected
-            array('nl_NL', array(0 => '15:15', 4 => '15:00', 6 => '16:00'), array(4 => '15:00', 0 => '15:15', 6 => '16:00')),
-            array('nl_NL', array(1 => '16:00', 3 => '15:15', 4 => '15:00'), array(4 => '15:00', 3 => '15:15', 1 => '16:00')),
-            array('nl_NL', array(0 => '16:00', 1 => '15:15', 2 => '15:00', 3 => '00:10', 5 => '00:00'), array(5 => '00:00', 3 => '00:10', 2 => '15:00', 1 => '15:15', 0 => '16:00')),
         );
     }
 }

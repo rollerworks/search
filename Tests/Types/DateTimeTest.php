@@ -140,28 +140,6 @@ class DateTimeTest extends DateTimeTestCase
         $this->assertEquals($type->sanitizeString($expected)->format('Y-m-d H:i:s'), $type->getHigherValue($type->sanitizeString($input))->format('Y-m-d H:i:s'));
     }
 
-    /**
-     * @dataProvider getDataForSorting
-     */
-    public function testSorting($locale, $input, $expected)
-    {
-        \Locale::setDefault($locale);
-
-        $type = new DateTime(array('time_optional' => true));
-
-        foreach ($input as $index => $value) {
-            $input[$index] = new SingleValue($type->sanitizeString($value), $value);
-        }
-
-        uasort($input, array(&$type, 'sortValuesList'));
-
-        foreach ($expected as $index => $value) {
-            $expected[$index] = new SingleValue($type->sanitizeString($value), $value);
-        }
-
-        $this->assertEquals($expected, $input);
-    }
-
     public static function getDataForSanitation()
     {
         return array(
@@ -269,21 +247,6 @@ class DateTimeTest extends DateTimeTestCase
 
             array('nl_NL', '04-10-2010',       '05-10-2010', array('time_optional' => true)),
             array('nl_NL', '04-10-2010',       '05-10-2010', array('time_optional' => true)),
-        );
-    }
-
-    public static function getDataForSorting()
-    {
-        return array(
-            // $locale, $values, $expected
-            array('nl_NL', array(0 => '15-04-2010', 4 => '05-03-2010', 6 => '14-05-2012', 7 => '15-04-2010 00:00'), array(4 => '05-03-2010', 0 => '15-04-2010', 7 => '15-04-2010 00:00', 6 => '14-05-2012')),
-            array('nl_NL', array(1 => '16-04-2010', 3 => '15-04-2010', 4 => '15-02-2011'), array(4 => '15-02-2011', 3 => '15-04-2010', 1 => '16-04-2010')),
-
-            array('nl_NL', array(0 => '15-04-2010 12:00', 4 => '15-04-2010 00:00', 6 => '15-04-2010 13:00'), array(4 => '15-04-2010 00:00', 0 => '15-04-2010 12:00', 6 => '15-04-2010 13:00')),
-            array('nl_NL', array(1 => '15-04-2010 12:00', 3 => '15-04-2010 00:00', 4 => '14-04-2010 23:59'), array(4 => '14-04-2010 23:59', 3 => '15-04-2010 00:00', 1 => '15-04-2010 12:00')),
-            array('nl_NL',
-                array(1 => '15-04-2010 12:00', 3 => '15-04-2010 00:00', 4 => '14-04-2010 23:59', 5 => '16-04-2010 00:00'),
-                array(4 => '14-04-2010 23:59', 3 => '15-04-2010 00:00', 1 => '15-04-2010 12:00', 5 => '16-04-2010 00:00')),
         );
     }
 }

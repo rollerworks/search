@@ -54,20 +54,32 @@ class ValuesToRange implements ModifierInterface
         }
 
         $this->filterStruct = $filterStruct;
-
-        /** @var ValuesToRangeInterface $type */
         $type = $filterConfig->getType();
+
+        $sorter = function ($first, $second) use ($type) {
+            /** @var SingleValue $first */
+            /** @var SingleValue $second */
+
+            $a = $first->getValue();
+            $b = $second->getValue();
+
+            if ($type->isEqual($a, $b)) {
+                return 0;
+            }
+
+            return $type->isLower($a, $b) ? -1 : 1;
+        };
 
         if ($filterStruct->hasSingleValues()) {
             $values = $filterStruct->getSingleValues();
-            uasort($values, array(&$type, 'sortValuesList'));
+            uasort($values, $sorter);
 
             $this->listToRanges($values, $type);
         }
 
         if ($filterStruct->hasExcludes()) {
             $excludes = $filterStruct->getExcludes();
-            uasort($excludes, array(&$type, 'sortValuesList'));
+            uasort($excludes, $sorter);
 
             $this->listToRanges($excludes, $type, true);
         }

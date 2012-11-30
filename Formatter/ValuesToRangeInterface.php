@@ -23,22 +23,6 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 interface ValuesToRangeInterface
 {
     /**
-     * Sorts the values input list.
-     *
-     * Must return an integer value depending on the comparison.
-     *
-     * @link http://php.net/usort
-     *
-     * @param SingleValue $first
-     * @param SingleValue $second
-     *
-     * @return integer
-     *
-     * @api
-     */
-    public function sortValuesList($first, $second);
-
-    /**
      * Returns the higher-by-one value of the input.
      *
      * Input value is sanitized, and the return value should be returned sanitized as well.
@@ -54,6 +38,8 @@ interface ValuesToRangeInterface
      * @param mixed $input
      *
      * @return mixed
+     *
+     * @api
      */
     public function getHigherValue($input);
 }
