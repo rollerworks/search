@@ -5,7 +5,7 @@ UPGRADE
 
     The public API has changed, if cant upgrade yet, please use the 0.0.1 version.
 
-  * FilterTypeInterface no longer uses the $message parameter but uses the $messageBag paramater (MessageBag instance).
+  * FilterTypeInterface no longer uses the $message parameter but uses the $messageBag parameter (MessageBag instance).
     Based on the existence of error messages the validation state is determined.
 
    * MessageBag addError() and addInfo() is now always translated.
