@@ -308,4 +308,86 @@ class XmlTest extends TestCase
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());
     }
+
+    public function testLimitGroups()
+    {
+        $input = new XmlInput($this->translator);
+        $input->setLimitGroups(2);
+
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status', null, false, true, true));
+        $input->setField('date', FilterField::create('date', null, false, true, true));
+
+        $input->setInput('<?xml version="1.0" encoding="UTF-8"?>
+        <filters>
+            <groups>
+                <group>
+                    <field name="date">
+                        <single-values>
+                            <value>2</value>
+                            <value>3</value>
+                        </single-values>
+                        <compares>
+                            <compare opr="&gt;">25.5.2010</compare>
+                        </compares>
+                    </field>
+                </group>
+                <group>
+                    <field name="date">
+                        <single-values>
+                            <value>2</value>
+                            <value>3</value>
+                        </single-values>
+                        <compares>
+                            <compare opr="&gt;">25.5.2010</compare>
+                        </compares>
+                    </field>
+                </group>
+                <group>
+                    <field name="date">
+                        <single-values>
+                            <value>2</value>
+                            <value>3</value>
+                        </single-values>
+                        <compares>
+                            <compare opr="&gt;">25.5.2010</compare>
+                        </compares>
+                    </field>
+                </group>
+            </groups>
+        </filters>');
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Only 2 groups or less are accepted."), $input->getMessages());
+    }
+
+    public function testLimitValues()
+    {
+        $input = new XmlInput($this->translator);
+        $input->setLimitValues(2);
+
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status', null, false, true, true));
+        $input->setField('date', FilterField::create('date', null, false, true, true));
+
+        $input->setInput('<?xml version="1.0" encoding="UTF-8"?>
+        <filters>
+            <groups>
+                <group>
+                    <field name="date">
+                        <single-values>
+                            <value>2</value>
+                            <value>3</value>
+                        </single-values>
+                        <compares>
+                            <compare opr="&gt;">25.5.2010</compare>
+                        </compares>
+                    </field>
+                </group>
+            </groups>
+        </filters>');
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'date' in group 1 may only contain 2 values or less."), $input->getMessages());
+    }
 }

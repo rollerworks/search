@@ -194,4 +194,68 @@ class ArrayTest extends TestCase
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());
     }
+
+    public function testLimitGroups()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setLimitGroups(2);
+
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status', null, false, true, true));
+        $input->setField('date', FilterField::create('date', null, false, true, true));
+
+        $input->setInput(array(
+            array(
+                'date' => array(
+                    'single-values' => array(2,3,5),
+                )
+            ),
+            array(
+                'date' => array(
+                    'single-values' => array(2,3,5),
+                )
+            ),
+            array(
+                'date' => array(
+                    'single-values' => array(2,3,5),
+                )
+            ),
+        ));
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Only 2 groups or less are accepted."), $input->getMessages());
+    }
+
+    public function testLimitValues()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setLimitValues(2);
+
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status', null, false, true, true));
+        $input->setField('date', FilterField::create('date', null, false, true, true));
+
+        $input->setInput(array(
+            array(
+                'date' => array(
+                    'single-values' => array(2,3,5),
+                )
+            )
+        ));
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'date' in group 1 may only contain 2 values or less."), $input->getMessages());
+
+        $input->setInput(array(
+            array(
+                'date' => array(
+                    'single-values' => array(2,3),
+                    'comparisons' => array(array('value' => '25.5.2010', 'operator' => '>')),
+                )
+            )
+        ));
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'date' in group 1 may only contain 2 values or less."), $input->getMessages());
+    }
 }

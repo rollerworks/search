@@ -204,4 +204,38 @@ class FilterQueryTest extends TestCase
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());
     }
+
+    public function testLimitGroups()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setLimitGroups(2);
+
+        $input->setInput('
+            (User=2,3; Status=Active; date=25.05.2010,30.5.2010,10.5.2010;),
+            (User=2,3; Status=Active; date=25.05.2010,30.5.2010,10.5.2010;),
+            (User=2,3; Status=Active; date=25.05.2010,30.5.2010,10.5.2010;)'
+        );
+
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status', null, false, true, true));
+        $input->setField('date', FilterField::create('date', null, true, true, true));
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Only 2 groups or less are accepted."), $input->getMessages());
+    }
+
+    public function testLimitValues()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setLimitValues(2);
+
+        $input->setInput('User=2,3; Status=Active; date=25.05.2010,30.5.2010,10.5.2010');
+
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status', null, false, true, true));
+        $input->setField('date', FilterField::create('date', null, true, true, true));
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'date' in group 1 may only contain 2 values or less."), $input->getMessages());
+    }
 }

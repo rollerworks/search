@@ -68,13 +68,6 @@ class FilterQuery extends AbstractInput
     protected $hash;
 
     /**
-     * Section where the filter-input can be used.
-     *
-     * @var string
-     */
-    protected $sections = array();
-
-    /**
      * @var MessageBag
      */
     protected $messages;
@@ -213,6 +206,10 @@ class FilterQuery extends AbstractInput
             if (preg_match_all('/\(((?:\s*(?:\p{L}[\p{L}\p{N}_]*)\s*=(?:(?:\s*(?:"(?:(?:[^"]+|"")+)"|[^;,]+)\s*,*)*);?\s*)*)\),?/us', $this->query, $groups)) {
                 $groupsCount = count($groups[0]);
 
+                if ($groupsCount > $this->limitGroups) {
+                    throw new ValidationException('record_filter.maximum_groups_exceeded', array('{{ limit }}' => $this->limitGroups));
+                }
+
                 for ($i = 0; $i < $groupsCount; $i++) {
                     $this->groups[$i] = $this->parseFilterPairs($groups[1][$i], $i);
                 }
@@ -325,6 +322,10 @@ class FilterQuery extends AbstractInput
         }
 
         $valueIndex = -1;
+
+        if (count($values) > $this->limitValues) {
+            throw new ValidationException('record_filter.maximum_values_exceeded', array('{{ limit }}' => $this->limitValues, '{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group+1));
+        }
 
         foreach ($values as $valueIndex => $currentValue) {
             $value = null;

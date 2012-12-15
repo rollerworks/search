@@ -180,4 +180,48 @@ class JsonTest extends TestCase
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());
     }
+
+    public function testLimitGroups()
+    {
+        $input = new JsonInput($this->translator);
+        $input->setLimitGroups(2);
+
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status', null, false, true, true));
+        $input->setField('date', FilterField::create('date', null, false, true, true, true));
+
+        $input->setInput('[
+            {
+                "date": { "single-values": ["29.10.2010", "30.10.2010"], "comparisons": [{"value": "25.5.2010", "operator": ">"}] }
+            },
+            {
+                "date": { "single-values": ["29.10.2010", "30.10.2010"], "comparisons": [{"value": "25.5.2010", "operator": ">"}] }
+            },
+            {
+                "date": { "single-values": ["29.10.2010", "30.10.2010"], "comparisons": [{"value": "25.5.2010", "operator": ">"}] }
+            }
+        ]');
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Only 2 groups or less are accepted."), $input->getMessages());
+    }
+
+    public function testLimitValues()
+    {
+        $input = new JsonInput($this->translator);
+        $input->setLimitValues(2);
+
+        $input->setField('user', FilterField::create('user', null, false, true, true));
+        $input->setField('status', FilterField::create('status', null, false, true, true));
+        $input->setField('date', FilterField::create('date', null, false, true, true, true));
+
+        $input->setInput('[
+            {
+                "date": { "single-values": ["29.10.2010", "30.10.2010"], "comparisons": [{"value": "25.5.2010", "operator": ">"}] }
+            }
+        ]');
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'date' in group 1 may only contain 2 values or less."), $input->getMessages());
+    }
 }

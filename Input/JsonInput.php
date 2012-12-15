@@ -78,6 +78,10 @@ class JsonInput extends ArrayInput
             $this->validateSyntax($this->input);
             $groups = json_decode($this->input, true);
 
+            if (count($groups) > $this->limitGroups) {
+                throw new ValidationException('record_filter.maximum_groups_exceeded', array('{{ limit }}' => $this->limitGroups));
+            }
+
             foreach ($groups as $i => $group) {
                 $this->processGroup($group, $i + 1);
             }

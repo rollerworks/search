@@ -42,6 +42,14 @@
                 <source>record_filter.enum_value_unknown</source>
                 <target>"{{ value }}" is not accepted, only the following are accepted: {{ values }}</target>
             </trans-unit>
+            <trans-unit id="11">
+                <source>record_filter.maximum_groups_exceeded</source>
+                <target>Only {{ limit }} groups or less are accepted.</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>record_filter.maximum_values_exceeded</source>
+                <target>Field '{{ label }}' in group {{ group }} may only contain {{ limit }} values or less.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
