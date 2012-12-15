@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests;
 
-use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Decimal;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 

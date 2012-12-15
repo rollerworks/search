@@ -11,8 +11,6 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Formatter;
 
-use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
-
 /**
  * Filter type supporting connected-list of values to ranges should implement this interface.
  *

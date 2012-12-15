@@ -12,7 +12,6 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Types;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
-use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 
 class DateTest extends DateTimeTestCase
