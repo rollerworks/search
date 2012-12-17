@@ -12,10 +12,10 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/framework-bundle":  "2.1.*",
-        "symfony/options-resolver":  "2.1.*",
-        "symfony/yaml":              "2.1.*",
-        "symfony/validator":         "2.1.*",
+        "symfony/framework-bundle":  ">=2.1.0,<2.3-dev",
+        "symfony/options-resolver":  ">=2.1.0,<2.3-dev",
+        "symfony/yaml":              ">=2.1.0,<2.3-dev",
+        "symfony/validator":         ">=2.1.0,<2.3-dev",
         "jms/metadata":              ">=1.1.1",
         "rollerworks/locale":        "dev-master",
         "seld/jsonlint":             "1.*"
