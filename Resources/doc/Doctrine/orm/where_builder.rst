@@ -380,7 +380,7 @@ In this example we will convert an DateTime object to an scalar value.
             return false;
         }
 
-        public function convertValue($input, DBALType $type, Connection $connection, $isDql, array $parameters = array())
+        public function convertValue($input, DBALType $type, Connection $connection, array $parameters = array())
         {
             return $connection->quote($input->format('Y-m-d H:i:s'));
         }
@@ -403,7 +403,7 @@ Or using the Metadata.
          * @ORM\Column(type="datetime")
          *
          * @RecordFilter\Field("user_age", type="date")
-         * @RecordFilter\Doctrine\SqlValueConversionInterface("acme_invoice.record_filter.orm.datetime_value_conversion")
+         * @RecordFilter\Doctrine\SqlValueConversion("acme_invoice.record_filter.orm.datetime_value_conversion")
          */
         public $birthday;
 
