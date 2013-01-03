@@ -63,7 +63,13 @@
             <argument type="service" id="translator"/>
         </service>
 
-        <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" parent="rollerworks_record_filter.input_abstract" />
+        <service id="rollerworks_record_filter.input.filter_query" class="%rollerworks_record_filter.input.filter_query.class%" parent="rollerworks_record_filter.input_abstract">
+            <call method="setLabelToFieldByTranslator">
+                <argument>%rollerworks_record_filter.factories.fieldset.label_translator_prefix%</argument>
+                <argument>%rollerworks_record_filter.factories.fieldset.label_translator_domain%</argument>
+            </call>
+        </service>
+
         <service id="rollerworks_record_filter.input.array" class="%rollerworks_record_filter.input.array.class%" parent="rollerworks_record_filter.input_abstract"/>
         <service id="rollerworks_record_filter.input.json" class="%rollerworks_record_filter.input.json.class%" parent="rollerworks_record_filter.input_abstract"/>
 
