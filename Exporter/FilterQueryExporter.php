@@ -40,7 +40,7 @@ class FilterQueryExporter extends AbstractExporter
                     $label = $name;
                 }
 
-                $filterQuery .= $label . '=' . implode(', ', self::valuesBagToArray($formatter, $label, $valuesBag, true)) . '; ';
+                $filterQuery .= $label . '=' . implode(', ', self::valuesBagToArray($formatter, $name, $valuesBag, true)) . '; ';
 
                 if ($fieldPerLine) {
                     $filterQuery = rtrim($filterQuery);
