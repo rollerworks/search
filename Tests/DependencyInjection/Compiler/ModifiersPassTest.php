@@ -30,7 +30,7 @@ class ModifiersPassTest extends TestCase
         $formatter = new Definition('Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter');
 
         $container = $this->createContainer();
-        $container->setDefinition('rollerworks_record_filter.formatter', $formatter);
+        $container->setDefinition('rollerworks_record_filter.modifier_formatter', $formatter);
 
         $container->setDefinition('validation_modifier_service', $validationModifier);
         $container->setDefinition('value_optimizer_modifier_service', $valueOptimizerModifier);
@@ -38,7 +38,7 @@ class ModifiersPassTest extends TestCase
         $profilerPass = new FormatterModifiersPass();
         $profilerPass->process($container);
 
-        $methodCalls = $container->getDefinition('rollerworks_record_filter.formatter')->getMethodCalls();
+        $methodCalls = $container->getDefinition('rollerworks_record_filter.modifier_formatter')->getMethodCalls();
 
         $this->assertEquals(2, count($methodCalls));
 
@@ -60,7 +60,7 @@ class ModifiersPassTest extends TestCase
         $formatter = new Definition('Rollerworks\Bundle\RecordFilterBundle\Formatter\Formatter');
 
         $container = $this->createContainer();
-        $container->setDefinition('rollerworks_record_filter.formatter', $formatter);
+        $container->setDefinition('rollerworks_record_filter.modifier_formatter', $formatter);
 
         $container->setDefinition('validation_modifier_service',        $validationModifier);
         $container->setDefinition('value_optimizer_modifier_service',   $valueOptimizerModifier);
@@ -68,7 +68,7 @@ class ModifiersPassTest extends TestCase
         $profilerPass = new FormatterModifiersPass();
         $profilerPass->process($container);
 
-        $methodCalls = $container->getDefinition('rollerworks_record_filter.formatter')->getMethodCalls();
+        $methodCalls = $container->getDefinition('rollerworks_record_filter.modifier_formatter')->getMethodCalls();
 
         $this->assertEquals(2, count($methodCalls));
 

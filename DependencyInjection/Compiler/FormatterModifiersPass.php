@@ -27,7 +27,7 @@ class FormatterModifiersPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('rollerworks_record_filter.formatter')) {
+        if (!$container->hasDefinition('rollerworks_record_filter.modifier_formatter')) {
             return;
         }
 
@@ -45,7 +45,7 @@ class FormatterModifiersPass implements CompilerPassInterface
             $modifiers = call_user_func_array('array_merge', $modifiers);
         }
 
-        $definition = $container->getDefinition('rollerworks_record_filter.formatter');
+        $definition = $container->getDefinition('rollerworks_record_filter.modifier_formatter');
 
         foreach ($modifiers as $service) {
             $definition->addMethodCall('registerModifier', array($service));

@@ -12,7 +12,7 @@
         <parameter key="rollerworks_record_filter.factories_cache_warmer.class">Rollerworks\Bundle\RecordFilterBundle\CacheWarmer\RecordFilterFactoriesCacheWarmer</parameter>
 
         <parameter key="rollerworks_record_filter.types_factory.class">Rollerworks\Bundle\RecordFilterBundle\Factory\FilterTypeFactory</parameter>
-        <parameter key="rollerworks_record_filter.formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter</parameter>
+        <parameter key="rollerworks_record_filter.modifier_formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter</parameter>
         <parameter key="rollerworks_record_filter.cache_formatter.class">Rollerworks\Bundle\RecordFilterBundle\Formatter\CacheFormatter</parameter>
 
         <!-- Formatter modifiers classes -->
@@ -73,11 +73,11 @@
             </call>
         </service>
 
-        <service id="rollerworks_record_filter.modifier_formatter" class="%rollerworks_record_filter.formatter.class%">
+        <service id="rollerworks_record_filter.modifier_formatter" class="%rollerworks_record_filter.modifier_formatter.class%">
             <argument type="service" id="translator"/>
         </service>
 
-        <service id="rollerworks_record_filter.cache_formatter" class="%rollerworks_record_filter.formatter.class%">
+        <service id="rollerworks_record_filter.cache_formatter" class="%rollerworks_record_filter.cache_formatter.class%">
             <call method="setFormatter">
                 <argument type="service" id="rollerworks_record_filter.formatter"/>
             </call>
@@ -119,9 +119,7 @@
 
         <!-- Formatter modifiers services -->
         <service id="rollerworks_record_filter.formatter_modifier.validator" class="%rollerworks_record_filter.formatter.modifiers.validator.class%">
-            <call method="setTranslator">
-                <argument type="service" id="translator"/>
-            </call>
+            <argument type="service" id="translator"/>
 
             <tag name="rollerworks_record_filter.formatter_modifier" priority="1000"/>
         </service>
