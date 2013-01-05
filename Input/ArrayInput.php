@@ -93,6 +93,10 @@ class ArrayInput extends AbstractInput
         }
 
         try {
+            if (count($this->input) > $this->limitGroups) {
+                throw new ValidationException('record_filter.maximum_groups_exceeded', array('{{ limit }}' => $this->limitGroups));
+            }
+
             foreach ($this->input as $i => $group) {
                 $this->processGroup($group, $i + 1);
             }
@@ -146,6 +150,10 @@ class ArrayInput extends AbstractInput
                 }
 
                 continue;
+            }
+
+            if ($this->countValues($properties[$name]) > $this->limitValues) {
+                throw new ValidationException('record_filter.maximum_values_exceeded', array('{{ limit }}' => $this->limitValues, '{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
             }
 
             $filterPairs[$name] = $this->valuesToBag($filterConfig, $properties[$name], $groupId);
@@ -252,5 +260,39 @@ class ArrayInput extends AbstractInput
         }
 
         return new FilterValuesBag($filterConfig->getLabel(), '', $singleValues, $excludesValues, $ranges, $compares, $excludedRanges);
+    }
+
+    /**
+     * Counts all the values in an array.
+     *
+     * @param array $values
+     *
+     * @return integer
+     */
+    protected function countValues(array $values)
+    {
+        $count = 0;
+
+        if (isset($values['single-values'])) {
+            $count += count($values['single-values']);
+        }
+
+        if (isset($values['excluded-values'])) {
+            $count += count($values['excluded-values']);
+        }
+
+        if (isset($values['comparisons'])) {
+            $count += count($values['comparisons']);
+        }
+
+        if (isset($values['ranges'])) {
+            $count += count($values['ranges']);
+        }
+
+        if (isset($values['excluded-ranges'])) {
+            $count += count($values['excluded-ranges']);
+        }
+
+        return $count;
     }
 }

@@ -65,6 +65,20 @@ abstract class AbstractInput implements InputInterface
     protected $container;
 
     /**
+     * Maximum number of values of a field (per group).
+     *
+     * @var integer
+     */
+    protected $limitValues = 100;
+
+    /**
+     * Maximum number of groups.
+     *
+     * @var integer
+     */
+    protected $limitGroups = 30;
+
+    /**
      * Constructor.
      *
      * @param TranslatorInterface $translator
@@ -125,5 +139,62 @@ abstract class AbstractInput implements InputInterface
         }
 
         return $this->fieldsSet;
+    }
+
+    /**
+     * Set the maximum number of values of a field (per group).
+     *
+     * The default is 100.
+     *
+     * Note: The limit applies per group, so allowing 50 groups
+     * with 300 values will result in 50 * 300 and allows for 15000 values in total!
+     *
+     * @param integer $limit
+     *
+     * @return static
+     */
+    public function setLimitValues($limit)
+    {
+        $this->limitValues = (integer) $limit;
+
+        return $this;
+    }
+
+    /**
+     * Get the maximum number of values of a field (per group).
+     *
+     * @return integer
+     */
+    public function getLimitValues()
+    {
+        return $this->limitValues;
+    }
+
+    /**
+     * Set the maximum number of groups.
+     *
+     * The default is 30.
+     *
+     * @param integer $limit
+     *
+     * @return static
+     */
+    public function setLimitGroups($limit)
+    {
+        $this->limitGroups = (integer) $limit;
+
+        return $this;
+    }
+
+    /**
+     * Get the maximum number of groups.
+     *
+     * The default is 30.
+     *
+     * @return integer
+     */
+    public function getLimitGroups()
+    {
+        return $this->limitGroups;
     }
 }

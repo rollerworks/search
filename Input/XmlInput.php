@@ -80,7 +80,13 @@ class XmlInput extends AbstractInput
         $document = $this->parseXml($this->input);
 
         try {
-            foreach ($document->groups->children() as $i => $group) {
+            $children = $document->groups->children();
+
+            if (count($children) > $this->limitGroups) {
+                throw new ValidationException('record_filter.maximum_groups_exceeded', array('{{ limit }}' => $this->limitGroups));
+            }
+
+            foreach ($children as $i => $group) {
                 $this->processGroup($group, $i + 1);
             }
         } catch (ValidationException $e) {
@@ -169,10 +175,24 @@ class XmlInput extends AbstractInput
             throw new ValidationException('record_filter.no_range_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
+        $count = 1;
+        $limit = $this->limitValues;
+        $label = $filterConfig->getLabel();
+
+        $checkMaximum = function () use (&$count, $limit, $label, $group) {
+            if ($count > $limit) {
+                throw new ValidationException('record_filter.maximum_values_exceeded', array('{{ limit }}' => $limit, '{{ label }}' => $label, '{{ group }}' => $group));
+            }
+
+            $count++;
+        };
+
         if (isset($values->{'single-values'})) {
             foreach ($values->{'single-values'}->children() as $value) {
                 $singleValues[] = new SingleValue((string) $value);
                 $hasValues = true;
+
+                $checkMaximum();
             }
         }
 
@@ -180,6 +200,8 @@ class XmlInput extends AbstractInput
             foreach ($values->{'excluded-values'}->children() as $value) {
                 $excludesValues[] = new SingleValue((string) $value);
                 $hasValues = true;
+
+                $checkMaximum();
             }
         }
 
@@ -187,6 +209,8 @@ class XmlInput extends AbstractInput
             foreach ($values->compares->children() as $comparison) {
                 $compares[] = new Compare((string) $comparison, (string) $comparison['opr']);
                 $hasValues = true;
+
+                $checkMaximum();
             }
         }
 
@@ -194,6 +218,8 @@ class XmlInput extends AbstractInput
             foreach ($values->ranges->children() as $range) {
                 $ranges[] = new Range((string) $range->lower, (string) $range->higher);
                 $hasValues = true;
+
+                $checkMaximum();
             }
         }
 
@@ -201,6 +227,8 @@ class XmlInput extends AbstractInput
             foreach ($values->{'excluded-ranges'}->children() as $range) {
                 $excludedRanges[] = new Range((string) $range->lower, (string) $range->higher);
                 $hasValues = true;
+
+                $checkMaximum();
             }
         }
 
