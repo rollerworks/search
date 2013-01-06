@@ -3,6 +3,9 @@ XmlInput
 
 Accepts filtering preference in as an XML document.
 
+Any node/leave inside the ``<field />``-node is optional.
+But at least one must exists.
+
 .. code-block:: xml
    :linenos:
 
