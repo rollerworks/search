@@ -73,59 +73,6 @@ class FilterQuery extends AbstractInput
     protected $messages;
 
     /**
-     * Sets the resolving of an field-label to name, using the translator.
-     *
-     * Example: product.labels.[label]
-     *
-     * For this to work properly a Translator instance must be registered with setTranslator()
-     *
-     * @param string $pathPrefix This prefix is added before every search, like: filters.labels.
-     * @param string $domain     Translation domain (default is filter)
-     *
-     * @return self
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function setLabelToFieldByTranslator($pathPrefix, $domain = 'filter')
-    {
-        if (!is_string($pathPrefix) || empty($pathPrefix)) {
-            throw new \InvalidArgumentException('Prefix must be a string and can not be empty.');
-        }
-
-        if (!is_string($domain) || empty($domain)) {
-            throw new \InvalidArgumentException('Domain must be a string and can not be empty.');
-        }
-
-        $this->aliasTranslatorPrefix = $pathPrefix;
-        $this->aliasTranslatorDomain = $domain;
-
-        return $this;
-    }
-
-    /**
-     * Sets the resolving of a field label to name.
-     *
-     * Existing revolvings are overwritten.
-     *
-     * @param string       $fieldName Original field-name
-     * @param string|array $label
-     *
-     * @return self
-     */
-    public function setLabelToField($fieldName, $label)
-    {
-        if (is_array($label)) {
-            foreach ($label as $fieldLabel) {
-                $this->labelsResolve[$fieldLabel] = $fieldName;
-            }
-        } elseif (is_string($label)) {
-            $this->labelsResolve[$label] = $fieldName;
-        }
-
-        return $this;
-    }
-
-    /**
      * Sets the filter-input.
      *
      * @param string $input
@@ -400,36 +347,6 @@ class FilterQuery extends AbstractInput
         }
 
         return new FilterValuesBag($filterConfig->getLabel(), $originalInput, $singleValues, $excludesValues, $ranges, $compares, $excludedRanges, $valueIndex);
-    }
-
-    /**
-     * Gets the corresponding fieldName by label.
-     *
-     * @param string $label
-     *
-     * @return string
-     *
-     * @throws \RuntimeException When no translator available
-     */
-    protected function getFieldNameByLabel($label)
-    {
-        if (null !== $this->aliasTranslatorPrefix && empty($this->translator)) {
-            throw new \RuntimeException('No translator registered.');
-        }
-
-        $fieldName = $label;
-
-        if (isset($this->labelsResolve[$label])) {
-            $fieldName = $this->labelsResolve[$label];
-        } elseif (null !== $this->aliasTranslatorPrefix) {
-            $fieldName = $this->translator->trans($this->aliasTranslatorPrefix . $label, array(), $this->aliasTranslatorDomain);
-
-            if ($this->aliasTranslatorPrefix . $label === $fieldName) {
-                $fieldName = $label;
-            }
-        }
-
-        return $fieldName;
     }
 
     /**
