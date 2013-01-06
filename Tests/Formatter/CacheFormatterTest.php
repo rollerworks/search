@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Formatter;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Number;
@@ -20,12 +20,12 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\CacheFormatter;
-use Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier\ModifierTestCase;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Formatter\Modifier\ModifierTestCase;
 use Doctrine\Common\Cache\ArrayCache;
 
 class CacheFormatterTest extends ModifierTestCase
 {
-    public function testFormatterBasic()
+    public function testCacheFormatterBasic()
     {
         $input = new QueryInput($this->translator);
         $input->setField('user', FilterField::create('user', new Number(), false, true));

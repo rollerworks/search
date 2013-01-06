@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Formatter\Modifier;
 
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Number;

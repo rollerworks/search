@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Modifier;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Formatter\Modifier;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\ModifierFormatter as Formatter;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\Validator;

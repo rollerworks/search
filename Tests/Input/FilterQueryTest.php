@@ -14,13 +14,15 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Input;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery as QueryInput;
 use Rollerworks\Bundle\RecordFilterBundle\Value\FilterValuesBag;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
+use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
 use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 
 class FilterQueryTest extends TestCase
 {
-    public function testQuerySingleField()
+    public function testSingleField()
     {
         $input = new QueryInput($this->translator);
         $input->setField('user', FilterField::create('user'));
@@ -28,20 +30,20 @@ class FilterQueryTest extends TestCase
         $input->setInput('User=2');
 
         $this->assertEquals('User=2', $input->getQueryString());
-        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2'))))), $input->getGroups());
     }
 
-    public function testQuerySingleFieldWithSpaces()
+    public function testSingleFieldWithSpaces()
     {
         $input = new QueryInput($this->translator);
         $input->setField('user', FilterField::create('user'));
 
         $input->setInput('User = 2');
 
-        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2', array(new SingleValue('2'))))), $input->getGroups());
     }
 
-    public function testQuerySingleFieldWithUnicode()
+    public function testSingleFieldWithUnicode()
     {
         $input = new QueryInput($this->translator);
         $input->setField('foo', FilterField::create('ß'));
@@ -49,10 +51,10 @@ class FilterQueryTest extends TestCase
 
         $input->setInput('ß = 2');
 
-        $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
+        $this->assertEquals(array(array('foo' => new FilterValuesBag('ß', '2', array(new SingleValue('2'))))), $input->getGroups());
     }
 
-    public function testQuerySingleFieldWithUnicodeNumber()
+    public function testSingleFieldWithUnicodeNumber()
     {
         $input = new QueryInput($this->translator);
         $input->setField('foo', FilterField::create('ß۲'));
@@ -60,10 +62,10 @@ class FilterQueryTest extends TestCase
 
         $input->setInput('ß۲ = 2');
 
-        $this->assertEquals(array(array('foo' => new FilterValuesBag('ß۲', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0))), $input->getGroups());
+        $this->assertEquals(array(array('foo' => new FilterValuesBag('ß۲', '2', array(new SingleValue('2'))))), $input->getGroups());
     }
 
-    public function testQueryMultipleFields()
+    public function testMultipleFields()
     {
         $input = new QueryInput($this->translator);
         $input->setField('user', FilterField::create('user'));
@@ -72,12 +74,12 @@ class FilterQueryTest extends TestCase
         $input->setInput('User=2; Status=Active');
 
         $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2'))),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')))
         )), $input->getGroups());
     }
 
-    public function testQueryMultipleFieldsNoSpace()
+    public function testMultipleFieldsNoSpace()
     {
         $input = new QueryInput($this->translator);
         $input->setField('user', FilterField::create('user'));
@@ -86,13 +88,24 @@ class FilterQueryTest extends TestCase
         $input->setInput('User=2;Status=Active');
 
         $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0)
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2'))),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')))
         )), $input->getGroups());
     }
 
+    public function testEmptyValue()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('user', FilterField::create('user'));
+
+        $input->setInput('User=2,,3');
+
+        $this->assertEquals('User=2,,3', $input->getQueryString());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', '2,,3', array(new SingleValue('2'), new SingleValue('3'))))), $input->getGroups());
+    }
+
     // Field-name appears more then once
-    public function testQueryDoubleFields()
+    public function testDuplicateFields()
     {
         $input = new QueryInput($this->translator);
         $input->setField('user', FilterField::create('user'));
@@ -101,12 +114,27 @@ class FilterQueryTest extends TestCase
         $input->setInput('User=2; Status=Active; User=3;');
 
         $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3')), array(), array(), array(), array(), 1),
-            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active')), array(), array(), array(), array(), 0),
+            'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3'))),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active'))),
         )), $input->getGroups());
     }
 
-    public function testQueryWithMatcher()
+    public function testDuplicateFieldsAlias()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
+        $input->setLabelToField('user', 'gebruiker');
+
+        $input->setInput('User=2; Status=Active; gebruiker=3;');
+
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3'))),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active'))),
+        )), $input->getGroups());
+    }
+
+    public function testWithMatcher()
     {
         $input = new QueryInput($this->translator);
         $input->setField('date', FilterField::create('date', new Date()));
@@ -116,8 +144,17 @@ class FilterQueryTest extends TestCase
         $this->assertEquals(array(array('date' => new FilterValuesBag('date', '6-13-2012', array(new SingleValue('6-13-2012', '6-13-2012'))))), $input->getGroups());
     }
 
-    // Test the escaping of the filter-delimiter
-    public function testEscapedFilter()
+    public function testWithMatcherWithRange()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('date', FilterField::create('date', new Date(), false, true));
+
+        $input->setInput('date=3-12-2012,6-12-2012-8-12-2012;');
+
+        $this->assertEquals(array(array('date' => new FilterValuesBag('date', '3-12-2012,6-12-2012-8-12-2012', array(new SingleValue('3-12-2012')), array(), array(1 => new Range('6-12-2012', '8-12-2012'))))), $input->getGroups());
+    }
+
+    public function testQuoted()
     {
         $input = new QueryInput($this->translator);
         $input->setField('user', FilterField::create('user'));
@@ -127,9 +164,27 @@ class FilterQueryTest extends TestCase
         $input->setInput('User=2; Status="Active;None"; date="29-10-2010"');
 
         $this->assertEquals(array(array(
-            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-            'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None')), array(), array(), array(), array(), 0),
-            'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
+            'user' => new FilterValuesBag('user', '2', array(new SingleValue('2'))),
+            'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None'))),
+            'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010'))),
+        )), $input->getGroups());
+    }
+
+    public function testQuotedComplex()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('user', FilterField::create('user', null, false, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setField('date', FilterField::create('date'));
+        $input->setField('period', FilterField::create('period', null, false, false, true));
+
+        $input->setInput('User=2,3,"10-20",!"15",10-20; Status=Active; date="29-10-2010"; period=>"20""","""20""",10');
+
+        $this->assertEquals(array(array(
+            'user' => new FilterValuesBag('user', '2,3,"10-20",!"15",10-20', array(new SingleValue('2'), new SingleValue('3'), new SingleValue('10-20')), array(3 => new SingleValue('15')), array(4 => new Range('10', '20'))),
+            'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active'))),
+            'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010'))),
+            'period' => new FilterValuesBag('period', '>"20""","""20""",10', array(1 => new SingleValue('"20"'), 2 => new SingleValue('10')), array(), array(), array(0 => new Compare('20"', '>'))),
         )), $input->getGroups());
     }
 
@@ -144,14 +199,14 @@ class FilterQueryTest extends TestCase
 
         $this->assertEquals(array(
             array(
-                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-                'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None')), array(), array(), array(), array(), 0),
-                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
+                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2'))),
+                'status' => new FilterValuesBag('status', '"Active;None"', array(new SingleValue('Active;None'))),
+                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010'))),
             ),
             array(
-                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3')), array(), array(), array(), array(), 0),
-                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept')), array(), array(), array(), array(), 0),
-                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010')), array(), array(), array(), array(), 0),
+                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3'))),
+                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept'))),
+                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010'))),
             ),
         ), $input->getGroups());
     }
@@ -167,17 +222,60 @@ class FilterQueryTest extends TestCase
 
         $this->assertEquals(array(
             array(
-                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2')), array(), array(), array(), array(), 0),
-                'status' => new FilterValuesBag('status', '"(Active;None)"', array(new SingleValue('(Active;None)')), array(), array(), array(), array(), 0),
-                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010')), array(), array(), array(), array(), 0),
+                'user' => new FilterValuesBag('user', '2', array(new SingleValue('2'))),
+                'status' => new FilterValuesBag('status', '"(Active;None)"', array(new SingleValue('(Active;None)'))),
+                'date' => new FilterValuesBag('date', '"29-10-2010"', array(new SingleValue('29-10-2010'))),
             ),
             array(
-                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3')), array(), array(), array(), array(), 0),
-                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept')), array(), array(), array(), array(), 0),
-                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010')), array(), array(), array(), array(), 0),
+                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3'))),
+                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept'))),
+                'date' => new FilterValuesBag('date', '"30-10-2010"', array(new SingleValue('30-10-2010'))),
             ),
         ), $input->getGroups());
     }
+
+    // Field-name appears more then once
+    public function testOrGroupDuplicateFields()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
+
+        $input->setInput('(User=2; Status=Active; User=3;),(User=3; Status=Concept; date="30-10-2010";)');
+
+        $this->assertEquals(array(
+            array(
+                'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3'))),
+                'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active'))),
+            ),
+            array(
+                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3'))),
+                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept'))),
+            ),
+        ), $input->getGroups());
+    }
+
+    public function testOrGroupDuplicateFieldsAlias()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('user', FilterField::create('user'));
+        $input->setField('status', FilterField::create('status'));
+        $input->setLabelToField('user', 'gebruiker');
+
+        $input->setInput('(User=2; Status=Active; gebruiker=3;),(User=3; Status=Concept; date="30-10-2010";)');
+
+        $this->assertEquals(array(
+            array(
+                'user' => new FilterValuesBag('user', '2,3', array(new SingleValue('2'), new SingleValue('3'))),
+                'status' => new FilterValuesBag('status', 'Active', array(new SingleValue('Active'))),
+            ),
+            array(
+                'user' => new FilterValuesBag('user', '3', array(new SingleValue('3'))),
+                'status' => new FilterValuesBag('status', 'Concept', array(new SingleValue('Concept'))),
+            ),
+        ), $input->getGroups());
+    }
+
 
     public function testValidationNoRange()
     {
