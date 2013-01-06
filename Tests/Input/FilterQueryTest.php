@@ -238,4 +238,12 @@ class FilterQueryTest extends TestCase
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' in group 1 may only contain 2 values or less."), $input->getMessages());
     }
+
+    public function testFieldAliasByTranslatorInvalidDomain()
+    {
+        $input = new QueryInput($this->translator);
+
+        $this->setExpectedException('\InvalidArgumentException', 'Domain must be a string and can not be empty.');
+        $input->setLabelToFieldByTranslator('t.', false);
+    }
 }

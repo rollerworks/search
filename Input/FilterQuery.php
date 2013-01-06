@@ -186,8 +186,7 @@ class FilterQuery extends AbstractInput
             $filtersCount = count($filterPairMatches[0]);
 
             for ($i = 0; $i < $filtersCount; $i++) {
-                $label = mb_strtolower($filterPairMatches[1][$i]);
-                $name  = $this->getFieldNameByLabel($label);
+                $name  = $this->getFieldNameByLabel($filterPairMatches[1][$i]);
                 $value = trim($filterPairMatches[2][$i]);
 
                 if (!$this->fieldsSet->has($name) || strlen($value) < 1) {

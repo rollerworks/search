@@ -456,14 +456,6 @@ class FormatterTest extends ModifierTestCase
 
     // Test failures
 
-    public function testFieldAliasByTranslatorInValidDomain()
-    {
-        $input = new QueryInput($this->translator);
-
-        $this->setExpectedException('\InvalidArgumentException', 'Domain must be a string and can not be empty.');
-        $input->setLabelToFieldByTranslator('t.', false);
-    }
-
     public function testGetFilterNoValidationPerformed()
     {
         $formatter = $this->newFormatter();
