@@ -309,6 +309,52 @@ class XmlTest extends TestCase
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());
     }
 
+    public function testRequired()
+    {
+        $input = new XmlInput($this->translator);
+        $input->setField('user', FilterField::create('user', null, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setInput('<?xml version="1.0" encoding="UTF-8"?>
+        <filters>
+            <groups>
+                <group>
+                    <field name="status">
+                        <single-values>
+                            <value>Active</value>
+                        </single-values>
+                    </field>
+                </group>
+            </groups>
+        </filters>');
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'user' is required in group 1."), $input->getMessages());
+    }
+
+    public function testHash()
+    {
+        $input = new XmlInput($this->translator);
+        $input->setField('user', FilterField::create('user'));
+        $input->setInput('<?xml version="1.0" encoding="UTF-8"?>
+        <filters>
+            <groups>
+                <group>
+                    <field name="user">
+                        <single-values>
+                            <value>2</value>
+                        </single-values>
+                    </field>
+                </group>
+            </groups>
+        </filters>');
+
+        $groups = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', null, array(new SingleValue('2'))))), $groups);
+        $this->assertEquals('ec4e29be25127eac19631656f0fb9f02', $input->getHash());
+    }
+
     public function testLimitGroups()
     {
         $input = new XmlInput($this->translator);

@@ -226,6 +226,44 @@ class ArrayTest extends TestCase
         $this->assertEquals(array("Only 2 groups or less are accepted."), $input->getMessages());
     }
 
+    public function testRequired()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setField('user', FilterField::create('user', null, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setInput(array(array('status' => array('single-values' => array('Active')))));
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'user' is required in group 1."), $input->getMessages());
+    }
+
+    public function testRequired2()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setField('user', FilterField::create('user', null, true));
+        $input->setField('status', FilterField::create('status'));
+        $input->setInput(array(
+            array('user' => array('single-values' => array(2)), 'status' => array('single-values' => array('Active'))),
+            array('status' => array('single-values' => array('Active')))
+        ));
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'user' is required in group 2."), $input->getMessages());
+    }
+
+    public function testHash()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setField('user', FilterField::create('user'));
+        $input->setInput(array(array("user" => array("single-values" => array(2)))));
+
+        $groups = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', null, array(new SingleValue('2'))))), $groups);
+        $this->assertEquals('af0fa098c3ad3357f8afb7059d23ca4e', $input->getHash());
+    }
+
     public function testLimitValues()
     {
         $input = new ArrayInput($this->translator);

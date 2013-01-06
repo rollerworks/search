@@ -303,6 +303,30 @@ class FilterQueryTest extends TestCase
         $this->assertEquals(array("Field 'date' does not accept comparisons in group 1."), $input->getMessages());
     }
 
+    public function testRequired()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('user', FilterField::create('user', null, true));
+        $input->setField('status', FilterField::create('status'));
+
+        $input->setInput('Status=Active');
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'user' is required in group 1."), $input->getMessages());
+    }
+
+    public function testRequired2()
+    {
+        $input = new QueryInput($this->translator);
+        $input->setField('user', FilterField::create('user', null, true));
+        $input->setField('status', FilterField::create('status'));
+
+        $input->setInput('(User=2; Status=Active;), (Status=Active;)');
+
+        $this->assertFalse($input->getGroups());
+        $this->assertEquals(array("Field 'user' is required in group 2."), $input->getMessages());
+    }
+
     public function testLimitGroups()
     {
         $input = new QueryInput($this->translator);
