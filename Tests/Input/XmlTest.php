@@ -390,4 +390,29 @@ class XmlTest extends TestCase
         $this->assertFalse($input->getGroups());
         $this->assertEquals(array("Field 'date' in group 1 may only contain 2 values or less."), $input->getMessages());
     }
+
+    public function testField()
+    {
+        $input = new XmlInput($this->translator);
+        $input->setLabelToField('user', 'gebruikers');
+
+        $input->setField('user', FilterField::create('user'));
+        $input->setInput('<?xml version="1.0" encoding="UTF-8"?>
+        <filters>
+            <groups>
+                <group>
+                    <field name="gebruikers">
+                        <single-values>
+                            <value>2</value>
+                        </single-values>
+                    </field>
+                </group>
+            </groups>
+        </filters>');
+
+        $groups = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', null, array(new SingleValue('2'))))), $groups);
+    }
 }

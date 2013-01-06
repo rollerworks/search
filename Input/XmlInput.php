@@ -129,19 +129,20 @@ class XmlInput extends AbstractInput
     protected function processGroup(\SimpleXMLElement $properties, $groupId)
     {
         $filterPairs = array();
-        foreach ($this->fieldsSet->all() as $name => $filterConfig) {
-            $name = (function_exists('mb_strtolower') ? mb_strtolower($name) : strtolower($name));
-            $values = $properties->xpath("field[@name='$name']");
-
-            if (empty($values)) {
-                if (true === $filterConfig->isRequired()) {
-                    throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
-                }
-
+        foreach ($properties->children() as $element) {
+            /** @var \SimpleXMLElement $element */
+            $name = $this->getFieldNameByLabel($element['name']);
+            if (!$this->fieldsSet->has($name)) {
                 continue;
             }
 
-            $filterPairs[$name] = $this->valuesToBag($filterConfig, $values[0], $groupId);
+            $filterPairs[$name] = $this->valuesToBag($this->fieldsSet->get($name), $element, $groupId);
+        }
+
+        foreach ($this->fieldsSet->all() as $name => $filterConfig) {
+            if (!isset($filterPairs[$name]) && true === $filterConfig->isRequired()) {
+                throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
+            }
         }
 
         $this->groups[] = $filterPairs;

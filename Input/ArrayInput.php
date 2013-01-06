@@ -140,23 +140,25 @@ class ArrayInput extends AbstractInput
     protected function processGroup(array $properties, $groupId)
     {
         $filterPairs = array();
-        foreach ($this->fieldsSet->all() as $name => $filterConfig) {
-            $name = (function_exists('mb_strtolower') ? mb_strtolower($name) : strtolower($name));
-
-            /** @var FilterField $filterConfig */
-            if (empty($properties[$name])) {
-                if (true === $filterConfig->isRequired()) {
-                    throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
-                }
-
+        foreach ($properties as $label => $value) {
+            $name = $this->getFieldNameByLabel($label);
+            if (!$this->fieldsSet->has($name)) {
                 continue;
             }
 
-            if ($this->countValues($properties[$name]) > $this->limitValues) {
+            $filterConfig = $this->fieldsSet->get($name);
+            if ($this->countValues($properties[$label]) > $this->limitValues) {
                 throw new ValidationException('record_filter.maximum_values_exceeded', array('{{ limit }}' => $this->limitValues, '{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
             }
 
-            $filterPairs[$name] = $this->valuesToBag($filterConfig, $properties[$name], $groupId);
+            $filterPairs[$name] = $this->valuesToBag($filterConfig, $properties[$label], $groupId);
+        }
+
+        foreach ($this->fieldsSet->all() as $name => $filterConfig) {
+            /** @var FilterField $filterConfig */
+            if (empty($filterPairs[$name]) && true === $filterConfig->isRequired()) {
+                throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
+            }
         }
 
         $this->groups[] = $filterPairs;

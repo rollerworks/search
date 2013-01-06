@@ -197,4 +197,77 @@ abstract class AbstractInput implements InputInterface
     {
         return $this->limitGroups;
     }
+
+    /**
+     * Sets the resolving of an field-label to name, using the translator.
+     *
+     * Example: product.labels.[label]
+     *
+     * For this to work properly a Translator instance must be registered with setTranslator()
+     *
+     * @param string $pathPrefix This prefix is added before every search, like: filters.labels.
+     * @param string $domain     Translation domain (default is filter)
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setLabelToFieldByTranslator($pathPrefix, $domain = 'filter')
+    {
+        if (!is_string($domain) || empty($domain)) {
+            throw new \InvalidArgumentException('Domain must be a string and can not be empty.');
+        }
+
+        $this->aliasTranslatorPrefix = $pathPrefix;
+        $this->aliasTranslatorDomain = $domain;
+
+        return $this;
+    }
+
+    /**
+     * Sets the resolving of a field label to name.
+     *
+     * Existing revolvings are overwritten.
+     *
+     * @param string       $fieldName Original field-name
+     * @param string|array $label
+     *
+     * @return self
+     */
+    public function setLabelToField($fieldName, $label)
+    {
+        if (is_array($label)) {
+            foreach ($label as $fieldLabel) {
+                $this->labelsResolve[$fieldLabel] = $fieldName;
+            }
+        } elseif (is_string($label)) {
+            $this->labelsResolve[$label] = $fieldName;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the corresponding fieldName by label.
+     *
+     * @param string $label
+     *
+     * @return string
+     */
+    protected function getFieldNameByLabel($label)
+    {
+        $label = (function_exists('mb_strtolower') ? mb_strtolower($label) : strtolower($label));
+
+        if (isset($this->labelsResolve[$label])) {
+            $fieldName = $this->labelsResolve[$label];
+        } else {
+            $fieldName = $this->translator->trans($this->aliasTranslatorPrefix . $label, array(), $this->aliasTranslatorDomain);
+
+            if ($this->aliasTranslatorPrefix . $label === $fieldName) {
+                $fieldName = $label;
+            }
+        }
+
+        return $fieldName;
+    }
 }
