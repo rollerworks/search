@@ -18,7 +18,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldSet
+class FieldSet implements \Countable, \IteratorAggregate
 {
     /**
      * @var FilterField[]
@@ -85,7 +85,7 @@ class FieldSet
         }
 
         if (false !== strpos($name, "'") || false !== strpos($name, '"')) {
-            throw new \InvalidArgumentException('FieldName can not contain quotes.');
+            throw new \InvalidArgumentException(sprintf('FieldName "%s" can not contain quotes.', $name));
         }
 
         $this->fields[$name] = $config;
@@ -170,5 +170,29 @@ class FieldSet
     public function has($name)
     {
         return isset($this->fields[$name]);
+    }
+
+    /**
+     * Gets the current FieldSet as an Iterator that includes all Fields.
+     *
+     * It implements \IteratorAggregate.
+     *
+     * @see all()
+     *
+     * @return \ArrayIterator An \ArrayIterator object for iterating over fields
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->fields);
+    }
+
+    /**
+     * Gets the number of Fields in this set.
+     *
+     * @return integer The number of fields
+     */
+    public function count()
+    {
+        return count($this->fields);
     }
 }

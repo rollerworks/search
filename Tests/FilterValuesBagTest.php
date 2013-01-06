@@ -16,7 +16,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Value\Compare;
 use Rollerworks\Bundle\RecordFilterBundle\Value\Range;
 use Rollerworks\Bundle\RecordFilterBundle\Value\SingleValue;
 
-class FilterStructTest extends \PHPUnit_Framework_TestCase
+class FilterValuesBagTest extends \PHPUnit_Framework_TestCase
 {
     public function testLabel()
     {
