@@ -132,26 +132,17 @@ class XmlInput extends AbstractInput
         foreach ($properties->children() as $element) {
             /** @var \SimpleXMLElement $element */
             $name = $this->getFieldNameByLabel($element['name']);
-
             if (!$this->fieldsSet->has($name)) {
                 continue;
             }
 
-            $filterPairs[$name] = $element;
+            $filterPairs[$name] = $this->valuesToBag($this->fieldsSet->get($name), $element, $groupId);
         }
 
         foreach ($this->fieldsSet->all() as $name => $filterConfig) {
-            $values = (isset($filterPairs[$name]) ? $filterPairs[$name] : null);
-
-            if (empty($values)) {
-                if (true === $filterConfig->isRequired()) {
-                    throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
-                }
-
-                continue;
+            if (!isset($filterPairs[$name]) && true === $filterConfig->isRequired()) {
+                throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
             }
-
-            $filterPairs[$name] = $this->valuesToBag($filterConfig, $values, $groupId);
         }
 
         $this->groups[] = $filterPairs;

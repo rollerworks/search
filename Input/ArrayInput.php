@@ -142,29 +142,23 @@ class ArrayInput extends AbstractInput
         $filterPairs = array();
         foreach ($properties as $label => $value) {
             $name = $this->getFieldNameByLabel($label);
-
             if (!$this->fieldsSet->has($name)) {
                 continue;
             }
 
-            $filterPairs[$name] = $value;
+            $filterConfig = $this->fieldsSet->get($name);
+            if ($this->countValues($properties[$label]) > $this->limitValues) {
+                throw new ValidationException('record_filter.maximum_values_exceeded', array('{{ limit }}' => $this->limitValues, '{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
+            }
+
+            $filterPairs[$name] = $this->valuesToBag($filterConfig, $properties[$label], $groupId);
         }
 
         foreach ($this->fieldsSet->all() as $name => $filterConfig) {
             /** @var FilterField $filterConfig */
-            if (empty($filterPairs[$name])) {
-                if (true === $filterConfig->isRequired()) {
-                    throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
-                }
-
-                continue;
+            if (empty($filterPairs[$name]) && true === $filterConfig->isRequired()) {
+                throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
             }
-
-            if ($this->countValues($filterPairs[$name]) > $this->limitValues) {
-                throw new ValidationException('record_filter.maximum_values_exceeded', array('{{ limit }}' => $this->limitValues, '{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
-            }
-
-            $filterPairs[$name] = $this->valuesToBag($filterConfig, $filterPairs[$name], $groupId);
         }
 
         $this->groups[] = $filterPairs;

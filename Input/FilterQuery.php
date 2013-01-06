@@ -241,9 +241,9 @@ class FilterQuery extends AbstractInput
 
         if (preg_match_all('#\s*("(?:(?:[^"]+|"")+)"' . $valueMatcherRegex . '|[^,]+)\s*(,\s*|$)#ius', $values, $filterValues)) {
             return $filterValues[1];
-        } else {
-            return array();
         }
+
+        return array();
     }
 
     /**
