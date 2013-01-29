@@ -33,8 +33,8 @@ class ECommerceInvoice
     private $date;
 
     /**
-     * @Column(type="integer")
-     * @OneToOne(targetEntity="ECommerceInvoice", inversedBy="ECommerceInvoiceRow")
+     * @ManyToOne(targetEntity="ECommerceCustomer")
+     * @JoinColumn(name="customer", referencedColumnName="id")
      *
      * @RecordFilter\Field("invoice_customer", type="number")
      */

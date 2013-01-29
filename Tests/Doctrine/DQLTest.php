@@ -42,11 +42,11 @@ class DQLTest extends OrmTestCase
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
             $this->formatter,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -80,12 +80,18 @@ class DQLTest extends OrmTestCase
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C");
 
-        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter, array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'), $query, ' WHERE '));
-        $this->assertEquals('(I.customer IN(:invoice_customer_0))', $whereCase);
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
+            $this->formatter,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
+            $query,
+            ' WHERE '
+        ));
+
+        $this->assertEquals('(C.id IN(:invoice_customer_0))', $whereCase);
         $this->assertQueryParamsEquals(array('invoice_customer_0' => 2), $query);
-        $this->assertEquals('SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE (I.customer IN(:invoice_customer_0))', $this->cleanSql($query->getDQL()));
+        $this->assertEquals('SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE (C.id IN(:invoice_customer_0))', $this->cleanSql($query->getDQL()));
     }
 
     public function testAppend2NoResWithQuery()
@@ -97,11 +103,17 @@ class DQLTest extends OrmTestCase
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
 
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C ");
 
-        $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter, array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'), $query, ' WHERE '));
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
+            $this->formatter,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
+            $query,
+            ' WHERE '
+        ));
+
         $this->assertNull($whereCase);
-        $this->assertEquals('SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I', $this->cleanSql($query->getDQL()));
+        $this->assertEquals('SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C ', $this->cleanSql($query->getDQL()));
     }
 
     /**
@@ -126,7 +138,7 @@ class DQLTest extends OrmTestCase
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
             $this->formatter,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -154,11 +166,11 @@ class DQLTest extends OrmTestCase
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
         $whereBuilder->setFieldConversion('invoice_customer', $container->get('customer_conversion'));
 
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
             $this->formatter,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -192,7 +204,7 @@ class DQLTest extends OrmTestCase
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
             $this->formatter,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -254,13 +266,13 @@ class DQLTest extends OrmTestCase
         $container       = $this->createContainer();
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -288,13 +300,13 @@ class DQLTest extends OrmTestCase
         $container       = $this->createContainer();
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -304,13 +316,13 @@ class DQLTest extends OrmTestCase
 
         $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
         $whereBuilder->expects($this->never())->method('getWhereClause');
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -338,13 +350,13 @@ class DQLTest extends OrmTestCase
         $container       = $this->createContainer();
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -359,7 +371,7 @@ class DQLTest extends OrmTestCase
 
         $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
         $whereBuilder->expects($this->once())->method('getWhereClause');
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $cacheWhereBuilder->getWhereClause(
@@ -389,13 +401,13 @@ class DQLTest extends OrmTestCase
         $container       = $this->createContainer();
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         ));
 
@@ -405,13 +417,13 @@ class DQLTest extends OrmTestCase
 
         $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
         $whereBuilder->expects($this->once())->method('getWhereClause');
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I WHERE ");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C WHERE ");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'C'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'A', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query
         );
     }
@@ -435,13 +447,13 @@ class DQLTest extends OrmTestCase
         $container       = $this->createContainer();
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query,
             ' WHERE'
         ));
@@ -452,13 +464,13 @@ class DQLTest extends OrmTestCase
 
         $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
         $whereBuilder->expects($this->once())->method('getWhereClause');
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'C'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'A', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query,
             ' WHERE'
         );
@@ -483,13 +495,13 @@ class DQLTest extends OrmTestCase
         $container       = $this->createContainer();
         $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $whereCase = $this->cleanSql($cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query,
             ' WHERE'
         ));
@@ -502,20 +514,20 @@ class DQLTest extends OrmTestCase
         $cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query,
             ' WHERE'
         );
 
         $whereBuilder = $this->getMock('Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder', array(), array(), '', false);
         $whereBuilder->expects($this->once())->method('getWhereClause');
-        $query = $this->em->createQuery("SELECT I, 'foo' AS bar FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I");
+        $query = $this->em->createQuery("SELECT I, 'foo' AS bar FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice I JOIN I.customer C");
 
         $cacheWhereBuilder = new CacheWhereBuilder($cacheDriver);
         $cacheWhereBuilder->getWhereClause(
             $cacheFormatter,
             $whereBuilder,
-            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'C'),
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceInvoice' => 'A', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
             $query,
             ' WHERE'
         );
@@ -524,24 +536,24 @@ class DQLTest extends OrmTestCase
     public static function provideBasicsTests()
     {
         return array(
-            array('invoice_customer=2;', '(I.customer IN(:invoice_customer_0))', array('invoice_customer_0' => 2)),
-            array('invoice_customer=>2;', '(I.customer > :invoice_customer_0)', array('invoice_customer_0' => 2)),
-            array('invoice_customer=<2;', '(I.customer < :invoice_customer_0)', array('invoice_customer_0' => 2)),
-            array('invoice_customer=!2;', '(I.customer NOT IN(:invoice_customer_0))', array('invoice_customer_0' => 2)),
-            array('invoice_customer=>=2;', '(I.customer >= :invoice_customer_0)', array('invoice_customer_0' => 2)),
-            array('invoice_customer=<=2;', '(I.customer <= :invoice_customer_0)', array('invoice_customer_0' => 2)),
+            array('invoice_customer=2;', '(C.id IN(:invoice_customer_0))', array('invoice_customer_0' => 2)),
+            array('invoice_customer=>2;', '(C.id > :invoice_customer_0)', array('invoice_customer_0' => 2)),
+            array('invoice_customer=<2;', '(C.id < :invoice_customer_0)', array('invoice_customer_0' => 2)),
+            array('invoice_customer=!2;', '(C.id NOT IN(:invoice_customer_0))', array('invoice_customer_0' => 2)),
+            array('invoice_customer=>=2;', '(C.id >= :invoice_customer_0)', array('invoice_customer_0' => 2)),
+            array('invoice_customer=<=2;', '(C.id <= :invoice_customer_0)', array('invoice_customer_0' => 2)),
 
             array('invoice_label=F2012-4242;', '(I.label IN(:invoice_label_0))', array('invoice_label_0' => 'F2012-4242')),
-            array('invoice_customer=2, 5;', '(I.customer IN(:invoice_customer_0, :invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
-            array('invoice_customer=2-5;', '((I.customer BETWEEN :invoice_customer_0 AND :invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
-            array('invoice_customer=2-5, 8;', '(I.customer IN(:invoice_customer_0) AND (I.customer BETWEEN :invoice_customer_1 AND :invoice_customer_2))', array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' =>5)),
-            array('invoice_customer=2-5,!8-10;', '((I.customer BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND (I.customer NOT BETWEEN :invoice_customer_2 AND :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8, 'invoice_customer_3' => 10)),
-            array('invoice_customer=2-5, !8;', '(I.customer NOT IN(:invoice_customer_0) AND (I.customer BETWEEN :invoice_customer_1 AND :invoice_customer_2))', array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' => 5)),
-            array('invoice_customer=2-5, >8;', '((I.customer BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND I.customer > :invoice_customer_2)', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
+            array('invoice_customer=2, 5;', '(C.id IN(:invoice_customer_0, :invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
+            array('invoice_customer=2-5;', '((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
+            array('invoice_customer=2-5, 8;', '(C.id IN(:invoice_customer_0) AND (C.id BETWEEN :invoice_customer_1 AND :invoice_customer_2))', array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' =>5)),
+            array('invoice_customer=2-5,!8-10;', '((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND (C.id NOT BETWEEN :invoice_customer_2 AND :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8, 'invoice_customer_3' => 10)),
+            array('invoice_customer=2-5, !8;', '(C.id NOT IN(:invoice_customer_0) AND (C.id BETWEEN :invoice_customer_1 AND :invoice_customer_2))', array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' => 5)),
+            array('invoice_customer=2-5, >8;', '((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND C.id > :invoice_customer_2)', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
 
-            array('(invoice_customer=2;),(invoice_customer=3;)', '(I.customer IN(:invoice_customer_0)) OR (I.customer IN(:invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 3)),
-            array('(invoice_customer=2,3;),(invoice_customer=3,5;)', '(I.customer IN(:invoice_customer_0, :invoice_customer_1)) OR (I.customer IN(:invoice_customer_2, :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5)),
-            array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', '(I.customer IN(:invoice_customer_0, :invoice_customer_1) AND I.status IN(:invoice_status_0)) OR (I.customer IN(:invoice_customer_2, :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5, 'invoice_status_0' => 1)),
+            array('(invoice_customer=2;),(invoice_customer=3;)', '(C.id IN(:invoice_customer_0)) OR (C.id IN(:invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 3)),
+            array('(invoice_customer=2,3;),(invoice_customer=3,5;)', '(C.id IN(:invoice_customer_0, :invoice_customer_1)) OR (C.id IN(:invoice_customer_2, :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5)),
+            array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', '(C.id IN(:invoice_customer_0, :invoice_customer_1) AND I.status IN(:invoice_status_0)) OR (C.id IN(:invoice_customer_2, :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5, 'invoice_status_0' => 1)),
             array('invoice_date=06/13/2012;', '(I.date IN(:invoice_date_0))', array('invoice_date_0' => new DateTimeExtended('2012-06-13'))),
 
             // Expects empty as there is no field with that name
@@ -552,17 +564,17 @@ class DQLTest extends OrmTestCase
     public static function provideFieldConversionTests()
     {
         $tests = array(
-            array('invoice_customer=2;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0))", array('invoice_customer_0' => 2)),
-            array('invoice_customer=2;invoice_label=F2012-4242;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0) AND I.label IN(:invoice_label_0))", array('invoice_label_0' => 'F2012-4242', 'invoice_customer_0' => '2')),
+            array('invoice_customer=2;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0))", array('invoice_customer_0' => 2)),
+            array('invoice_customer=2;invoice_label=F2012-4242;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0) AND I.label IN(:invoice_label_0))", array('invoice_label_0' => 'F2012-4242', 'invoice_customer_0' => '2')),
             array('invoice_label=F2012-4242;', "(I.label IN(:invoice_label_0))", array('invoice_label_0' => 'F2012-4242')),
-            array('invoice_customer=2, 5;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0, :invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
-            array('invoice_customer=2-5;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) BETWEEN :invoice_customer_0 AND :invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
-            array('invoice_customer=2-5, 8;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) BETWEEN :invoice_customer_1 AND :invoice_customer_2))", array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' =>5)),
-            array('invoice_customer=2-5, >8;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) > :invoice_customer_2)", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
+            array('invoice_customer=2, 5;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0, :invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
+            array('invoice_customer=2-5;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
+            array('invoice_customer=2-5, 8;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_1 AND :invoice_customer_2))", array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' =>5)),
+            array('invoice_customer=2-5, >8;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) > :invoice_customer_2)", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
 
-            array('(invoice_customer=2;),(invoice_customer=3;)', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0)) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 3)),
-            array('(invoice_customer=2,3;),(invoice_customer=3,5;)', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0, :invoice_customer_1)) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_2, :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5)),
-            array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_0, :invoice_customer_1) AND I.status IN(:invoice_status_0)) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) IN(:invoice_customer_2, :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5, 'invoice_status_0' => 1)),
+            array('(invoice_customer=2;),(invoice_customer=3;)', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0)) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 3)),
+            array('(invoice_customer=2,3;),(invoice_customer=3,5;)', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0, :invoice_customer_1)) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_2, :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5)),
+            array('(invoice_customer=2,3; invoice_status=Active;),(invoice_customer=3,5;)', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0, :invoice_customer_1) AND I.status IN(:invoice_status_0)) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_2, :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5, 'invoice_status_0' => 1)),
             array('invoice_date=06/13/2012;', "(I.date IN(:invoice_date_0))", array('invoice_date_0' => new DateTimeExtended('2012-06-13'))),
 
             // Expects empty as there is no field with that name
@@ -571,8 +583,8 @@ class DQLTest extends OrmTestCase
 
         // Temporarily disabled for older versions due to a bug, once 2.2.4-DEV is fixed this can changed to >=2.2.4
         if (version_compare(\Doctrine\ORM\Version::VERSION, '2.2.4', '>')) {
-            $tests[] = array('invoice_customer=2-5,!8-10;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) NOT BETWEEN :invoice_customer_2 AND :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8, 'invoice_customer_3' => 10));
-            $tests[] = array('invoice_customer=2-5, !8;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) NOT IN(:invoice_customer_0) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', I.customer) BETWEEN :invoice_customer_1 AND :invoice_customer_2))", array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' => 5));
+            $tests[] = array('invoice_customer=2-5,!8-10;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) NOT BETWEEN :invoice_customer_2 AND :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8, 'invoice_customer_3' => 10));
+            $tests[] = array('invoice_customer=2-5, !8;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) NOT IN(:invoice_customer_0) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_1 AND :invoice_customer_2))", array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' => 5));
         }
 
         return $tests;
