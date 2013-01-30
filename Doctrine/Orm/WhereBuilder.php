@@ -260,14 +260,9 @@ class WhereBuilder
             $field = $this->fieldSet->get($fieldName);
         }
 
-        $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
-        if (!is_object($type)) {
-            $type = ORMType::getType($type);
-        }
-
         $this->fieldConversionCache[$fieldName][$strategy] = $this->fieldConversions[$fieldName][0]->getConvertFieldSql(
             $column,
-            $type,
+            $this->fieldData[$fieldName]['dbType'],
             $this->entityManager->getConnection(),
             $this->fieldConversions[$fieldName][1] + array('__conversion_strategy' => $strategy, '__column' => $this->fieldData[$fieldName]['column'])
         );
@@ -508,17 +503,28 @@ class WhereBuilder
             return $this->fieldsMappingCache[$fieldName][$strategy];
         }
 
-        if (isset($this->entityAliases[$field->getPropertyRefClass()])) {
+        $columnPrefix = '';
+        $column = $field->getPropertyRefField();
+
+        // Resolve the referencedColumnName for Join
+        $metaData = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
+        if ($this->query instanceof DqlQuery && $metaData->isAssociationWithSingleJoinColumn($field->getPropertyRefField())) {
+            $joiningClass = $metaData->getAssociationTargetClass($field->getPropertyRefField());
+            if (!isset($this->entityAliases[$joiningClass])) {
+                throw new \RuntimeException(sprintf('No alias mapping set for "%s", used by "%s"#%s Join.', $joiningClass, $field->getPropertyRefClass(), $field->getPropertyRefClass()));
+            }
+
+            $columnPrefix = $this->entityAliases[$joiningClass] . '.';
+            $column = $metaData->getSingleAssociationReferencedJoinColumnName($field->getPropertyRefField());;
+        } elseif (isset($this->entityAliases[$field->getPropertyRefClass()])) {
             $columnPrefix = $this->entityAliases[$field->getPropertyRefClass()] . '.';
-        } else {
-            $columnPrefix = '';
         }
 
         if ($this->query) {
-            $this->fieldsMappingCache[$fieldName][$strategy] = $column = $columnPrefix . $field->getPropertyRefField();
+            $this->fieldsMappingCache[$fieldName][$strategy] = $column = $columnPrefix . $column;
         } else {
             $metadata = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
-            $this->fieldsMappingCache[$fieldName][$strategy] = $column = $columnPrefix . $metadata->getColumnName($field->getPropertyRefField());
+            $this->fieldsMappingCache[$fieldName][$strategy] = $column = $columnPrefix . $metadata->getColumnName($column);
         }
         $this->fieldData[$fieldName]['column'] = $column;
 
@@ -630,7 +636,18 @@ class WhereBuilder
         }
 
         if (!isset($this->fieldData[$fieldName]['dbType'])) {
-            $type = $this->entityManager->getClassMetadata($field->getPropertyRefClass())->getTypeOfField($field->getPropertyRefField());
+            $metaData = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
+            if (!($type = $metaData->getTypeOfField($field->getPropertyRefField()))) {
+                // As there is no type the only logical part is a JOIN, but we only can process a single Column JOIN
+                if (!$metaData->isAssociationWithSingleJoinColumn($field->getPropertyRefField())) {
+                    throw new \RuntimeException('Unable to get Type of none-single column Join.');
+                }
+
+                $joiningClass = $metaData->getAssociationTargetClass($field->getPropertyRefField());
+                $referencedColumnName = $metaData->getSingleAssociationReferencedJoinColumnName($field->getPropertyRefField());
+                $type = $this->entityManager->getClassMetadata($joiningClass)->getTypeOfField($referencedColumnName);
+            }
+
             if (!is_object($type)) {
                 $type = ORMType::getType($type);
             }

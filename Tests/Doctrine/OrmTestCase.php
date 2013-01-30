@@ -190,9 +190,11 @@ class OrmTestCase extends OrmTestCaseBase
         $annotationReader = new AnnotationReader();
         $annotationReader->addGlobalIgnoredName('Id');
         $annotationReader->addGlobalIgnoredName('Column');
+        $annotationReader->addGlobalIgnoredName('JoinColumn');
         $annotationReader->addGlobalIgnoredName('GeneratedValue');
         $annotationReader->addGlobalIgnoredName('OneToOne');
         $annotationReader->addGlobalIgnoredName('OneToMany');
+        $annotationReader->addGlobalIgnoredName('ManyToOne');
 
         return $annotationReader;
     }
