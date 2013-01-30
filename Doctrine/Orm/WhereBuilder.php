@@ -511,7 +511,7 @@ class WhereBuilder
         if ($this->query instanceof DqlQuery && $metaData->isAssociationWithSingleJoinColumn($field->getPropertyRefField())) {
             $joiningClass = $metaData->getAssociationTargetClass($field->getPropertyRefField());
             if (!isset($this->entityAliases[$joiningClass])) {
-                throw new \RuntimeException(sprintf('No alias mapping set for "%s", used by "%s"#%s Join.', $joiningClass, $field->getPropertyRefClass(), $field->getPropertyRefClass()));
+                throw new \RuntimeException(sprintf('No alias mapping set for "%s", used by "%s"#%s Join.', $joiningClass, $field->getPropertyRefClass(), $field->getPropertyRefField()));
             }
 
             $columnPrefix = $this->entityAliases[$joiningClass] . '.';
