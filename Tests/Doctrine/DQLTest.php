@@ -546,10 +546,10 @@ class DQLTest extends OrmTestCase
             array('invoice_label=F2012-4242;', '(I.label IN(:invoice_label_0))', array('invoice_label_0' => 'F2012-4242')),
             array('invoice_customer=2, 5;', '(C.id IN(:invoice_customer_0, :invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
             array('invoice_customer=2-5;', '((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
-            array('invoice_customer=2-5, 8;', '(C.id IN(:invoice_customer_0) AND (C.id BETWEEN :invoice_customer_1 AND :invoice_customer_2))', array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' =>5)),
-            array('invoice_customer=2-5,!8-10;', '((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND (C.id NOT BETWEEN :invoice_customer_2 AND :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8, 'invoice_customer_3' => 10)),
-            array('invoice_customer=2-5, !8;', '(C.id NOT IN(:invoice_customer_0) AND (C.id BETWEEN :invoice_customer_1 AND :invoice_customer_2))', array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' => 5)),
-            array('invoice_customer=2-5, >8;', '((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND C.id > :invoice_customer_2)', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
+            array('invoice_customer=2-5, 8;', '(C.id IN(:invoice_customer_0) OR (C.id BETWEEN :invoice_customer_1 AND :invoice_customer_2))', array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' =>5)),
+            array('invoice_customer=2-5,!8-10;', '(((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1)) AND (C.id NOT BETWEEN :invoice_customer_2 AND :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8, 'invoice_customer_3' => 10)),
+            array('invoice_customer=2-5, !8;', '(((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1)) AND C.id NOT IN(:invoice_customer_2))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
+            array('invoice_customer=2-5, >8;', '((C.id BETWEEN :invoice_customer_0 AND :invoice_customer_1) OR C.id > :invoice_customer_2)', array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
 
             array('(invoice_customer=2;),(invoice_customer=3;)', '(C.id IN(:invoice_customer_0)) OR (C.id IN(:invoice_customer_1))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 3)),
             array('(invoice_customer=2,3;),(invoice_customer=3,5;)', '(C.id IN(:invoice_customer_0, :invoice_customer_1)) OR (C.id IN(:invoice_customer_2, :invoice_customer_3))', array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5)),
@@ -569,8 +569,8 @@ class DQLTest extends OrmTestCase
             array('invoice_label=F2012-4242;', "(I.label IN(:invoice_label_0))", array('invoice_label_0' => 'F2012-4242')),
             array('invoice_customer=2, 5;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0, :invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
             array('invoice_customer=2-5;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5)),
-            array('invoice_customer=2-5, 8;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_1 AND :invoice_customer_2))", array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' =>5)),
-            array('invoice_customer=2-5, >8;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) > :invoice_customer_2)", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
+            array('invoice_customer=2-5, 8;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_1 AND :invoice_customer_2))", array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' =>5)),
+            array('invoice_customer=2-5, >8;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1) OR RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) > :invoice_customer_2)", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8)),
 
             array('(invoice_customer=2;),(invoice_customer=3;)', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0)) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_1))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 3)),
             array('(invoice_customer=2,3;),(invoice_customer=3,5;)', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_0, :invoice_customer_1)) OR (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) IN(:invoice_customer_2, :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 3, 'invoice_customer_2' => 3, 'invoice_customer_3' => 5)),
@@ -583,8 +583,8 @@ class DQLTest extends OrmTestCase
 
         // Temporarily disabled for older versions due to a bug, once 2.2.4-DEV is fixed this can changed to >=2.2.4
         if (version_compare(\Doctrine\ORM\Version::VERSION, '2.2.4', '>')) {
-            $tests[] = array('invoice_customer=2-5,!8-10;', "((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) NOT BETWEEN :invoice_customer_2 AND :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8, 'invoice_customer_3' => 10));
-            $tests[] = array('invoice_customer=2-5, !8;', "(RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) NOT IN(:invoice_customer_0) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_1 AND :invoice_customer_2))", array('invoice_customer_0' => 8, 'invoice_customer_1' => 2, 'invoice_customer_2' => 5));
+            $tests[] = array('invoice_customer=2-5,!8-10;', "(((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1)) AND (RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) NOT BETWEEN :invoice_customer_2 AND :invoice_customer_3))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8, 'invoice_customer_3' => 10));
+            $tests[] = array('invoice_customer=2-5, !8;', "(((RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) BETWEEN :invoice_customer_0 AND :invoice_customer_1)) AND RECORD_FILTER_FIELD_CONVERSION('invoice_customer', C.id) NOT IN(:invoice_customer_2))", array('invoice_customer_0' => 2, 'invoice_customer_1' => 5, 'invoice_customer_2' => 8));
         }
 
         return $tests;
@@ -605,7 +605,7 @@ class DQLTest extends OrmTestCase
             // This actually wrong, but there is birthday type yet
             array('birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_0))", array('birthday_0' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?))"),
 
-            array('birthday=2; birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0) AND RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_1))", array('birthday_0' => 2, 'birthday_1' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?) AND to_char('YYYY', age(c0_.birthday)) IN (?))"),
+            array('birthday=2; birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0) OR RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_1))", array('birthday_0' => 2, 'birthday_1' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?) OR to_char('YYYY', age(c0_.birthday)) IN (?))"),
         );
     }
 

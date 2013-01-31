@@ -159,7 +159,7 @@ class OrmTestCase extends OrmTestCaseBase
             return null;
         }
 
-        return str_replace(array("(\n", ")\n"), array('(', ')'), $input);
+        return str_replace(array("(\n", ")\n", "\n"), array('(', ')', ''), $input);
     }
 
     /**

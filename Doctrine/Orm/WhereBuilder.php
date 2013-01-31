@@ -328,28 +328,43 @@ class WhereBuilder
                 $this->initFilterField($fieldName, $field);
                 $column = ($this->valueConversions[$fieldName][0] instanceof ConversionStrategyInterface ? '' : $this->getFieldColumn($fieldName, $field));
 
+                // Place all 'inclusive' values in a group with OR as they are optional to each other
+                $valuesGroup = '';
+
                 if ($valuesBag->hasSingleValues()) {
-                    $query .= $this->processSingleValues($valuesBag->getSingleValues(), $column, $fieldName, $field);
+                    $valuesGroup .= $this->processSingleValues($valuesBag->getSingleValues(), $column, $fieldName, $field);
+                }
+
+                if ($valuesBag->hasRanges()) {
+                    $valuesGroup .= $this->processRanges($valuesBag->getRanges(), $column, $fieldName, $field);
+                }
+
+                if ($valuesBag->hasCompares()) {
+                    $valuesGroup .= $this->processCompares($valuesBag->getCompares(), $column, $fieldName, $field);
+                }
+
+                if (!empty($valuesGroup)) {
+                    $valuesGroup = rtrim($valuesGroup, " OR ");
+
+                    if ($valuesBag->hasExcludes() || $valuesBag->hasExcludedRanges()) {
+                        $query .= "($valuesGroup)\n AND\n ";
+                    } else {
+                        $query .= $valuesGroup;
+                    }
                 }
 
                 if ($valuesBag->hasExcludes()) {
                     $query .= $this->processSingleValues($valuesBag->getExcludes(), $column, $fieldName, $field, true);
                 }
 
-                if ($valuesBag->hasRanges()) {
-                    $query .= $this->processRanges($valuesBag->getRanges(), $column, $fieldName, $field);
-                }
-
                 if ($valuesBag->hasExcludedRanges()) {
                     $query .= $this->processRanges($valuesBag->getExcludedRanges(), $column, $fieldName, $field, true);
                 }
 
-                if ($valuesBag->hasCompares()) {
-                    $query .= $this->processCompares($valuesBag->getCompares(), $column, $fieldName, $field);
-                }
+                $query .= " AND ";
             }
 
-            $query = trim($query, " AND ") . ")\n OR ";
+            $query = rtrim($query, " AND ") . ")\n OR ";
         }
 
         $query = trim($query, " OR ");
@@ -385,9 +400,9 @@ class WhereBuilder
                 $remappedColumns[$strategy] = $this->getFieldColumn($fieldName, $field, $strategy);
 
                 if (0 === $strategy) {
-                    $inList .= sprintf('%s AND ', $this->getValStr($value->getValue(), $fieldName, $field, 0));
+                    $inList .= sprintf('%s %s ', $this->getValStr($value->getValue(), $fieldName, $field, 0), ($exclude ? 'AND' : 'OR'));
                 } elseif ($hasCustomDql) {
-                    $inList .= sprintf('%s %s %s AND ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field, $strategy));
+                    $inList .= sprintf('%s %s %s %s ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field, $strategy), ($exclude ? 'AND' : 'OR'));
                 } else {
                     $remappedValues[$strategy][] = $value;
                 }
@@ -403,7 +418,7 @@ class WhereBuilder
         if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
             if ($this->query instanceof DqlQuery) {
                 foreach ($values as $value) {
-                    $inList .= sprintf('%s %s %s AND ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field));
+                    $inList .= sprintf('%s %s %s %s ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field), ($exclude ? 'AND' : 'OR'));
                 }
 
                 return $inList;
@@ -438,7 +453,7 @@ class WhereBuilder
                 if ($exclude) {
                     $query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field, $strategy), $this->getValStr($range->getUpper(), $fieldName, $field, $strategy));
                 } else {
-                    $query .= sprintf('(%s BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field, $strategy), $this->getValStr($range->getUpper(), $fieldName, $field, $strategy));
+                    $query .= sprintf('(%s BETWEEN %s AND %s) OR ', $column, $this->getValStr($range->getLower(), $fieldName, $field, $strategy), $this->getValStr($range->getUpper(), $fieldName, $field, $strategy));
                 }
             }
 
@@ -449,7 +464,7 @@ class WhereBuilder
             if ($exclude) {
                 $query .= sprintf('(%s NOT BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field), $this->getValStr($range->getUpper(), $fieldName, $field));
             } else {
-                $query .= sprintf('(%s BETWEEN %s AND %s) AND ', $column, $this->getValStr($range->getLower(), $fieldName, $field), $this->getValStr($range->getUpper(), $fieldName, $field));
+                $query .= sprintf('(%s BETWEEN %s AND %s) OR ', $column, $this->getValStr($range->getLower(), $fieldName, $field), $this->getValStr($range->getUpper(), $fieldName, $field));
             }
         }
 
@@ -475,14 +490,14 @@ class WhereBuilder
                 $strategy = $this->valueConversions[$fieldName][0]->getConversionStrategy($comp->getValue(), $type, $this->entityManager->getConnection(), $this->valueConversions[$fieldName][1]);
                 $column = $this->getFieldColumn($fieldName, $field, $strategy);
 
-                $query .= sprintf('%s %s %s AND ', $column, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName, $field, $strategy));
+                $query .= sprintf('%s %s %s OR ', $column, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName, $field, $strategy));
             }
 
             return $query;
         }
 
         foreach ($compares as $comp) {
-            $query .= sprintf('%s %s %s AND ', $column, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName, $field));
+            $query .= sprintf('%s %s %s OR ', $column, $comp->getOperator(), $this->getValStr($comp->getValue(), $fieldName, $field));
         }
 
         return $query;
@@ -496,6 +511,8 @@ class WhereBuilder
      * @param integer|null $strategy
      *
      * @return string
+     *
+     * @throws \RuntimeException
      */
     protected function getFieldColumn($fieldName, FilterField $field, $strategy = null)
     {
@@ -613,6 +630,8 @@ class WhereBuilder
      *
      * @param string      $fieldName
      * @param FilterField $field
+     *
+     * @throws \RuntimeException
      */
     protected function initFilterField($fieldName, FilterField  $field)
     {
@@ -680,7 +699,7 @@ class WhereBuilder
         if ($exclude) {
             $inList = sprintf('%s NOT IN(%s) AND ', $column, $inList);
         } else {
-            $inList = sprintf('%s IN(%s) AND ', $column, $inList);
+            $inList = sprintf('%s IN(%s) OR ', $column, $inList);
         }
 
         return $inList;

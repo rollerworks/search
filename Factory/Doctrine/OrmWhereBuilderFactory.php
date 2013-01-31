@@ -202,20 +202,16 @@ QY;
 
             $query .= <<<QY
 
-
             if (isset(\$filters[$_fieldName])) {
                 \$hasFields = true;
                 \$valuesBag = \$filters[$_fieldName];
                 \$field = \$this->fieldSet->get($_fieldName);
                 \$this->initFilterField($_fieldName, \$field);
                 \$column = (\$this->valueConversions[$_fieldName][0] instanceof ConversionStrategyInterface ? '' : \$this->getFieldColumn($_fieldName, \$field));
+                \$valuesGroup = '';
 
                 if (\$valuesBag->hasSingleValues()) {
-                    \$query .= \$this->processSingleValues(\$valuesBag->getSingleValues(), \$column, $_fieldName, \$field);
-                }
-
-                if (\$valuesBag->hasExcludes()) {
-                    \$query .= \$this->processSingleValues(\$valuesBag->getExcludes(), \$column, $_fieldName, \$field, true);
+                    \$valuesGroup .= \$this->processSingleValues(\$valuesBag->getSingleValues(), \$column, $_fieldName, \$field);
                 }
 
 QY;
@@ -224,11 +220,7 @@ QY;
                     $query .= <<<QY
 
                 if (\$valuesBag->hasRanges()) {
-                    \$query .= \$this->processRanges(\$valuesBag->getRanges(), \$column, $_fieldName, \$field);
-                }
-
-                if (\$valuesBag->hasExcludedRanges()) {
-                    \$query .= \$this->processRanges(\$valuesBag->getExcludedRanges(), \$column, $_fieldName, \$field, true);
+                    \$valuesGroup .= \$this->processRanges(\$valuesBag->getRanges(), \$column, $_fieldName, \$field);
                 }
 
 QY;
@@ -238,22 +230,53 @@ QY;
                     $query .= <<<QY
 
                 if (\$valuesBag->hasCompares()) {
-                    \$query .= \$this->processCompares(\$valuesBag->getCompares(), \$column, $_fieldName, \$field);
+                    \$valuesGroup .= \$this->processCompares(\$valuesBag->getCompares(), \$column, $_fieldName, \$field);
                 }
 
 QY;
                 }
 
             $query .= <<<'QY'
-            }
+                if (!empty($valuesGroup)) {
+                    $valuesGroup = rtrim($valuesGroup, " OR ");
 
+                    if ($valuesBag->hasExcludes() || $valuesBag->hasExcludedRanges()) {
+                        $query .= "($valuesGroup)\n AND\n ";
+                    } else {
+                        $query .= $valuesGroup;
+                    }
+                }
+
+QY;
+
+            $query .= <<<QY
+                if (\$valuesBag->hasExcludes()) {
+                    \$query .= \$this->processSingleValues(\$valuesBag->getExcludes(), \$column, $_fieldName, \$field, true);
+                }
+
+QY;
+
+                if ($field->acceptRanges()) {
+                    $query .= <<<QY
+
+                if (\$valuesBag->hasExcludedRanges()) {
+                    \$query .= \$this->processRanges(\$valuesBag->getExcludedRanges(), \$column, $_fieldName, \$field, true);
+                }
+
+QY;
+                }
+
+            $query .= <<<'QY'
+                $query .= " AND ";
+
+            }
 QY;
         }
 
         $query .= <<<'QY'
 
             if ($hasFields) {
-                $query = trim($query, " AND ") . ")\n OR ";
+                $query = rtrim($query, " AND ") . ")\n OR ";
             } else {
                 $query = rtrim($query, "(\n");
             }
