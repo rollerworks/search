@@ -310,4 +310,17 @@ class ArrayTest extends TestCase
         $this->assertEquals(array(), $input->getMessages());
         $this->assertEquals(array(array('user' => new FilterValuesBag('user', null, array(new SingleValue('2'))))), $groups);
     }
+
+    public function testFieldNameAliasArray()
+    {
+        $input = new ArrayInput($this->translator);
+        $input->setLabelToField('user', array('gebruikers', 'klanten'));
+
+        $input->setField('user', FilterField::create('user'));
+        $input->setInput(array(array("gebruikers" => array("single-values" => array(2)), "klanten" => array("single-values" => array(5)))));
+        $groups = $input->getGroups();
+
+        $this->assertEquals(array(), $input->getMessages());
+        $this->assertEquals(array(array('user' => new FilterValuesBag('user', null, array(new SingleValue('2'), new SingleValue('5'))))), $groups);
+    }
 }

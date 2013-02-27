@@ -140,18 +140,27 @@ class ArrayInput extends AbstractInput
     protected function processGroup(array $properties, $groupId)
     {
         $filterPairs = array();
+        $countedPairs = array();
+
         foreach ($properties as $label => $value) {
             $name = $this->getFieldNameByLabel($label);
             if (!$this->fieldsSet->has($name)) {
                 continue;
             }
 
+            if (isset($filterPairs[$name])) {
+                $countedPairs[$name] += $this->countValues($properties[$label]);
+            } else {
+                $countedPairs[$name] = $this->countValues($properties[$label]);
+                $filterPairs[$name] = null;
+            }
+
             $filterConfig = $this->fieldsSet->get($name);
-            if ($this->countValues($properties[$label]) > $this->limitValues) {
+            if ($countedPairs[$name] > $this->limitValues) {
                 throw new ValidationException('record_filter.maximum_values_exceeded', array('{{ limit }}' => $this->limitValues, '{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $groupId));
             }
 
-            $filterPairs[$name] = $this->valuesToBag($filterConfig, $properties[$label], $groupId);
+            $filterPairs[$name] = $this->valuesToBag($filterConfig, $properties[$label], $groupId, $filterPairs[$name]);
         }
 
         foreach ($this->fieldsSet->all() as $name => $filterConfig) {
@@ -167,15 +176,16 @@ class ArrayInput extends AbstractInput
     /**
      * Converts the values list to an FilterValuesBag object.
      *
-     * @param FilterField  $filterConfig
-     * @param array|string $values
-     * @param              $group
+     * @param FilterField          $filterConfig
+     * @param array|string         $values
+     * @param integer              $group
+     * @param FilterValuesBag|null $valuesBag
      *
      * @return FilterValuesBag
      *
      * @throws ValidationException
      */
-    protected function valuesToBag(FilterField $filterConfig, array $values, $group)
+    protected function valuesToBag(FilterField $filterConfig, array $values, $group, FilterValuesBag $valuesBag = null)
     {
         if (!isset($values['single-values'])) {
             $values['single-values'] = array();
@@ -197,8 +207,11 @@ class ArrayInput extends AbstractInput
             $values['excluded-ranges'] = array();
         }
 
-        $ranges = $excludedRanges = $excludesValues = $compares = $singleValues = array();
         $hasValues = false;
+
+        if (!$valuesBag) {
+            $valuesBag = new FilterValuesBag($filterConfig->getLabel(), '');
+        }
 
         if (count($values['comparisons']) && !$filterConfig->acceptCompares()) {
             throw new ValidationException('record_filter.no_compare_support', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
@@ -213,7 +226,7 @@ class ArrayInput extends AbstractInput
                 throw new ValidationException(sprintf('Single value at index %s in group %s is not scalar.', $index, $group));
             }
 
-            $singleValues[] = new SingleValue($value);
+            $valuesBag->addSingleValue(new SingleValue($value));
             $hasValues = true;
         }
 
@@ -222,7 +235,7 @@ class ArrayInput extends AbstractInput
                 throw new ValidationException(sprintf('excluded value at index %s in group %s is not scalar.', $index, $group));
             }
 
-            $excludesValues[] = new SingleValue($value);
+            $valuesBag->addExclude(new SingleValue($value));
             $hasValues = true;
         }
 
@@ -235,7 +248,7 @@ class ArrayInput extends AbstractInput
                 throw new ValidationException(sprintf('Unknown comparison operator at index %s in group %s.', $index, $group));
             }
 
-            $compares[] = new Compare($comparison['value'], $comparison['operator']);
+            $valuesBag->addCompare(new Compare($comparison['value'], $comparison['operator']));
             $hasValues = true;
         }
 
@@ -244,7 +257,7 @@ class ArrayInput extends AbstractInput
                 throw new ValidationException(sprintf('Range at index %s in group %s is either not an array or is missing [lower] and/or [upper].', $index, $group));
             }
 
-            $ranges[] = new Range($range['lower'], $range['upper']);
+            $valuesBag->addRange(new Range($range['lower'], $range['upper']));
             $hasValues = true;
         }
 
@@ -253,7 +266,7 @@ class ArrayInput extends AbstractInput
                 throw new ValidationException(sprintf('Excluding-range at index %s in group %s is either not an array or is missing [lower] and/or [upper].', $index, $group));
             }
 
-            $excludedRanges[] = new Range($range['lower'], $range['upper']);
+            $valuesBag->addExcludedRange(new Range($range['lower'], $range['upper']));
             $hasValues = true;
         }
 
@@ -261,7 +274,7 @@ class ArrayInput extends AbstractInput
             throw new ValidationException('record_filter.required', array('{{ label }}' => $filterConfig->getLabel(), '{{ group }}' => $group));
         }
 
-        return new FilterValuesBag($filterConfig->getLabel(), '', $singleValues, $excludesValues, $ranges, $compares, $excludedRanges);
+        return $valuesBag;
     }
 
     /**

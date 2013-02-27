@@ -14,7 +14,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Factory;
 use Rollerworks\Bundle\RecordFilterBundle\Input\FilterQuery;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
 use Rollerworks\Bundle\RecordFilterBundle\Factory\Doctrine\OrmWhereBuilderFactory;
-use Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine\OrmTestCase;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine\Orm\OrmTestCase;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\MetadataFactory;
 
