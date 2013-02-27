@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine\Orm;
 
 use Doctrine\DBAL\Types\Type as DBALType;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;

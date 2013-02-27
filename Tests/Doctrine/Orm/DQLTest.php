@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine;
+namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine\Orm;
 
 use Rollerworks\Bundle\RecordFilterBundle\Type\DateTimeExtended;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\CacheFormatter;
