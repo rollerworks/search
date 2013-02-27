@@ -160,10 +160,8 @@ class EnumType implements FilterTypeInterface, ValueMatcherInterface, Optimizabl
      */
     public function optimizeField(FilterValuesBag $field, MessageBag $messageBag)
     {
-        // All possible values are used so remove it
+        // All possible values are used, so remove it
         if (count($field->getSingleValues()) === count($this->valueToLabel)) {
-            $messageBag->addInfo('record_filter.enum_value_redundant');
-
             return false;
         }
 
