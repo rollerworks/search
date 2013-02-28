@@ -13,6 +13,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
@@ -83,40 +84,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return TwigEngine
-     */
-    protected function getTwigInstance()
-    {
-        $config = array('cache' => __DIR__ . '/_TwigCache', 'strict_variables' => true);
-        $loader = new \Twig_Loader_Filesystem(array(__DIR__ . '/Fixtures/Views'));
-
-        $twig = new \Twig_Environment($loader, $config);
-        $twig->addExtension(new \Twig_Extensions_Extension_Intl());
-
-        $engine = new TwigEngine($twig);
-
-        return $engine;
-    }
-
-    /**
      * Copied from Symfony\Tests\Component\Config\Resource\DirectoryResourceTest
      *
      * @param $directory
      */
     protected function removeDirectory($directory)
     {
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory), \RecursiveIteratorIterator::CHILD_FIRST);
-        foreach ($iterator as $path) {
-            if (preg_match('#/\.\.?$#', $path->__toString())) {
-                continue;
-            }
-            if ($path->isDir()) {
-               rmdir($path->__toString());
-            } else {
-               unlink($path->__toString());
-            }
-        }
-        rmdir($directory);
+        $fs = new Filesystem();
+        $fs->remove($directory);
     }
 
     protected function compileContainer(ContainerBuilder $container)
