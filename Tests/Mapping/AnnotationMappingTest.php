@@ -19,8 +19,8 @@ use Rollerworks\Bundle\RecordFilterBundle\Metadata\FilterTypeConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine\OrmConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 
-require_once 'Tests/Fixtures/BaseBundle/Entity/ECommerce/ECommerceCustomer.php';
-require_once 'Tests/Fixtures/BaseBundle/Entity/ECommerce/ECommerceInvoice.php';
+require_once __DIR__ . '/../Fixtures/BaseBundle/Entity/ECommerce/ECommerceCustomer.php';
+require_once __DIR__ . '/../Fixtures/BaseBundle/Entity/ECommerce/ECommerceInvoice.php';
 
 class AnnotationMappingTest extends TestCase
 {

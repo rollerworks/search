@@ -18,13 +18,13 @@ use Rollerworks\Bundle\RecordFilterBundle\Metadata\Doctrine\OrmConfig;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase;
 use Metadata\Driver\FileLocator;
 
-require_once 'Tests/Fixtures/UserBundle/Entity/User/BaseUser.php';
-require_once 'Tests/Fixtures/UserBundle/Entity/User/User1.php';
-require_once 'Tests/Fixtures/UserBundle/Entity/User/User2.php';
-require_once 'Tests/Fixtures/UserBundle/Entity/User/User3.php';
-require_once 'Tests/Fixtures/UserBundle/Entity/User/User4.php';
-require_once 'Tests/Fixtures/UserBundle/Entity/User/UserAddress.php';
-require_once 'Tests/Fixtures/UserBundle/Entity/User/User1f.php';
+require_once __DIR__ . '/../Fixtures/UserBundle/Entity/User/BaseUser.php';
+require_once __DIR__ . '/../Fixtures/UserBundle/Entity/User/User1.php';
+require_once __DIR__ . '/../Fixtures/UserBundle/Entity/User/User2.php';
+require_once __DIR__ . '/../Fixtures/UserBundle/Entity/User/User3.php';
+require_once __DIR__ . '/../Fixtures/UserBundle/Entity/User/User4.php';
+require_once __DIR__ . '/../Fixtures/UserBundle/Entity/User/UserAddress.php';
+require_once __DIR__ . '/../Fixtures/UserBundle/Entity/User/User1f.php';
 
 class YamlMappingTest extends TestCase
 {
