@@ -19,11 +19,13 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    public function testSanitize($locale, $input, $expected, $expectFail = false)
+    public function testSanitize($locale, $input, $expected, $expectFail = false, $big = false)
     {
         if ($expectFail) {
             return;
         }
+
+        $this->checkBig($big);
 
         \Locale::setDefault($locale);
 
@@ -35,8 +37,10 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
     /**
      * @dataProvider getDataForSanitation
      */
-    public function testValidation($locale, $input, $expected, $expectFail = false)
+    public function testValidation($locale, $input, $expected, $expectFail = false, $big = false)
     {
+        $this->checkBig($big);
+
         \Locale::setDefault($locale);
 
         $type = new Number();
@@ -54,8 +58,10 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
     /**
      * @dataProvider getDataForAdvancedValidation
      */
-    public function testValidationAdvanced($input, $options = array(), $expectMessage = false)
+    public function testValidationAdvanced($input, $options = array(), $expectMessage = false, $big = false)
     {
+        $this->checkBig($big, true);
+
         if ('en' !== \Locale::getDefault()) {
             \Locale::setDefault('en');
         }
@@ -75,8 +81,10 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
     /**
      * @dataProvider getDataForCompare
      */
-    public function testCompares($first, $second, $comparison = null)
+    public function testCompares($first, $second, $comparison = null, $big = false)
     {
+        $this->checkBig($big);
+
         $type = new Number();
 
         if ('==' === $comparison) {
@@ -95,8 +103,10 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
     /**
      * @dataProvider getDataForGetHigherValue
      */
-    public function testGetHigherValue($input, $expected)
+    public function testGetHigherValue($input, $expected, $big = false)
     {
+        $this->checkBig($big);
+
         $type = new Number();
         $this->assertEquals($expected, $type->getHigherValue($input));
     }
@@ -104,16 +114,16 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
     public static function getDataForSanitation()
     {
         return array(
-            // $locale, $input, $expected, $expectFail
+            // $locale, $input, $expected, $expectFail, $big
             array('nl_NL', '4446546', '4446546'),
             array('nl_NL', '004446546', '004446546'),
-            array('nl_NL', '4446546000000000000000000000', '4446546000000000000000000000'),
+            array('nl_NL', '4446546000000000', '4446546000000000'),
             array('en_US', '4446546', '4446546'),
             array('uz_Arab', '۰۵', '05'),
-            array('uz_Arab', '۵۵۵۵۵۵۵۵۵۵۵۵۵۵۵۵۵۵۰', '5555555555555555550'),
-            array('en_US', '۰۵', '05'), // Not really valid, but the validation must past
+            array('uz_Arab', '۵۵۵۵۵۵۵۵۵۵۵۵۵۵۵۵۵۵۰', '5555555555555555550', false, true),
+            array('en_US', '۰۵', '05'), // Not really valid, but the validation must pass
 
-            array('en_US', '4446546.00', '', true),
+            array('en_US', '4446546.00', '4446546'),
             array('en_US', 'D4446546.00', '', true),
             array('en_US', 'A03', '', true),
         );
@@ -141,11 +151,14 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
             array('12000000', array('min' => '13000000'), array('This value should be 13,000,000 or more.')),
             array('15000000', array('max' => '12000000'), array('This value should be 12,000,000 or less.')),
 
-            array('50000000000000000', array('min' => '60000000000000000'), array('This value should be 60,000,000,000,000,000 or more.')),
-            array('70000000000000000', array('max' => '60000000000000000'), array('This value should be 60,000,000,000,000,000 or less.')),
+            array('50000000000000000', array('min' => '60000000000000000'), array('This value should be 60000000000000000 or more.')),
+            array('50000000000000000', array('min' => '60000000000000000'), array('This value should be 60,000,000,000,000,000 or more.'), true),
+            array('70000000000000000', array('max' => '60000000000000000'), array('This value should be 60,000,000,000,000,000 or less.'), true),
 
-            array('90000000000000000', array('min' => '70000000000000000', 'max' => '80000000000000000'), array('This value should be 80,000,000,000,000,000 or less.')),
-            array('70000000000000000', array('min' => '80000000000000000', 'max' => '90000000000000000'), array('This value should be 80,000,000,000,000,000 or more.')),
+            array('90000000000000000', array('min' => '70000000000000000', 'max' => '80000000000000000'), array('This value should be 80000000000000000 or less.')),
+            array('90000000000000000', array('min' => '70000000000000000', 'max' => '80000000000000000'), array('This value should be 80,000,000,000,000,000 or less.'), true),
+            array('70000000000000000', array('min' => '80000000000000000', 'max' => '90000000000000000'), array('This value should be 80000000000000000 or more.')),
+            array('70000000000000000', array('min' => '80000000000000000', 'max' => '90000000000000000'), array('This value should be 80,000,000,000,000,000 or more.'), true),
         );
     }
 
@@ -162,7 +175,7 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
             array('0700', '0600'),
             array('700', '-800'),
             array('0700', '-0800'),
-            array('70000000000000000', '60000000000000000'),
+            array('70000000000000000', '60000000000000000', ''),
             array('0070000000000000000', '0060000000000000000'),
             array('800000000000000', '-800000000000000'),
             array('44645464446544665', '446454644465'),
@@ -175,10 +188,23 @@ class NumberTest extends \Rollerworks\Bundle\RecordFilterBundle\Tests\TestCase
             // $input, $expected
             array('700', '701'),
             array('0700', '0701'),
-            array('700000000000000000000000000', '700000000000000000000000001'),
-            array('-700000000000000000000000000', '-699999999999999999999999999'),
+            array('70000', '70001'),
+            array('-70000', '-69999'),
+            array('70000000000000000', '70000000000000001'),
+            array('-70000000000000000', '-69999999999999999'),
             array('-700', '-699'),
             array('-0700', '-0699'),
         );
+    }
+
+    protected function checkBig($big, $req32bit = false)
+    {
+        if ($big && PHP_INT_MAX == '2147483647') {
+            $this->markTestSkipped('Requires 64bit support.');
+        }
+
+        if (!$big && $req32bit && PHP_INT_MAX != '2147483647') {
+            $this->markTestSkipped('Only run 32bit platform.');
+        }
     }
 }

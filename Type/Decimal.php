@@ -13,7 +13,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
 use Rollerworks\Component\Locale\BigFloat;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
-use Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;
@@ -23,34 +22,12 @@ use Symfony\Component\OptionsResolver\Options;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface, ConfigurableTypeInterface
+class Decimal extends Number
 {
-    /**
-     * @var string
-     */
-    protected $lastResult;
-
     /**
      * @var \NumberFormatter|null
      */
-    private static $numberFormatter = null;
-
-    /**
-     * @var array
-     */
-    protected $options = array();
-
-    /**
-     * Constructor.
-     *
-     * @param array $options
-     *
-     * @see setOptions()
-     */
-    public function __construct(array $options = array())
-    {
-        $this->setOptions($options);
-    }
+    protected static $numberFormatter;
 
     /**
      * {@inheritdoc}
@@ -68,6 +45,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
         static::setDefaultOptions($optionsResolver);
 
         $this->options = $optionsResolver->resolve($options);
+
         if (null !== $this->options['min'] && null !== $this->options['max'] && ($this->isHigher($this->options['min'], $this->options['max']) || $this->isEqual($this->options['min'], $this->options['max']))) {
             throw new \UnexpectedValueException(sprintf('Option min "%s" must not be lower or equal to option max "%s".', $this->options['min'], $this->options['max']));
         }
@@ -82,14 +60,11 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function sanitizeString($value)
     {
-        // Note we explicitly don't cast the value to a float type
-        // 64bit floats are not properly handled on a 32bit OS
-
         if (!preg_match('/[^.0-9-]/', $value)) {
             return ltrim($value, '+');
         }
 
-        if ($value !== $this->lastResult && null === ($this->lastResult = BigFloat::parse((string) trim($value, '+'))) ) {
+        if ($value !== $this->lastResult && false === ($this->lastResult = self::getNumberFormatter()->parse($value, \NumberFormatter::TYPE_DOUBLE))) {
             throw new \UnexpectedValueException(sprintf('Input value "%s" is not properly validated.', $value));
         }
 
@@ -101,52 +76,18 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function formatOutput($value, $formatGrouping = true)
     {
-        $options = array();
-        if (null !== $this->options['min_fraction_digits']) {
-            $options['min_fraction_digits'] = $this->options['min_fraction_digits'];
-        }
-
-        if (null !== $this->options['max_fraction_digits']) {
-            $options['max_fraction_digits'] = $this->options['max_fraction_digits'];
+        if (self::isBigNumber($value)) {
+            return $value;
         }
 
         $formatGrouping = (($formatGrouping && $this->options['format_grouping'] !== false) || true === $this->options['format_grouping']);
 
-        return BigFloat::format($value, null, $formatGrouping, $options);
-    }
+        $numberFormatter = self::getNumberFormatter();
+        $numberFormatter->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $this->options['min_fraction_digits']);
+        $numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $this->options['max_fraction_digits']);
+        $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $formatGrouping);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function dumpValue($value)
-    {
-        return $value;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isHigher($value, $nextValue)
-    {
-        $phpMax = strlen(PHP_INT_MAX) - 1;
-        if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
-            return bccomp($value, $nextValue) === 1;
-        }
-
-        return ((float) $value > (float) $nextValue);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isLower($value, $nextValue)
-    {
-        $phpMax = strlen(PHP_INT_MAX) - 1;
-        if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('bccomp')) {
-            return bccomp($value, $nextValue) === -1;
-        }
-
-        return ((float) $value < (float) $nextValue);
+        return $numberFormatter->format($value, \NumberFormatter::TYPE_DOUBLE);
     }
 
     /**
@@ -154,8 +95,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function isEqual($value, $nextValue)
     {
-        $phpMax = strlen(PHP_INT_MAX) - 1;
-        if ((strlen($value) > $phpMax || strlen($nextValue) > $phpMax) && function_exists('gmp_cmp')) {
+        if (is_string($value) XOR is_string($nextValue) && function_exists('bccomp')) {
             return bccomp($value, $nextValue) === 0;
         }
 
@@ -167,10 +107,18 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function validateValue($value, MessageBag $messageBag)
     {
-        if (null === ($this->lastResult = BigFloat::parse((string) trim($value, '+')))) {
-            $messageBag->addError('This value is not a valid decimal.');
+        if (preg_match('/^-?[0-9]+\.[0-9]+$/', $value)) {
+            $this->lastResult = (self::isBigNumber($value) ? $value : (float) $value);
+        } else {
+            $numberFormatter = self::getNumberFormatter();
+            $numberFormatter->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $this->options['min_fraction_digits']);
+            $numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $this->options['max_fraction_digits']);
 
-            return;
+            if (false === ($this->lastResult = $numberFormatter->parse($value, \NumberFormatter::TYPE_DOUBLE))) {
+                $messageBag->addError('This value is not a valid decimal.');
+
+                return;
+            }
         }
 
         if (null !== $this->options['min'] && $this->isLower($this->lastResult, $this->options['min'])) {
@@ -187,8 +135,7 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
      */
     public function getHigherValue($value)
     {
-        $phpMax = strlen(PHP_INT_MAX) - 1;
-        if (strlen($value) > $phpMax && function_exists('bcadd')) {
+        if (self::isBigNumber($value) && function_exists('bcadd')) {
             return bcadd(ltrim($value, '+'), '0.01');
         }
 
@@ -219,63 +166,42 @@ class Decimal implements FilterTypeInterface, ValueMatcherInterface, ValuesToRan
         $resolver->setDefaults(array(
             'max' => null,
             'min' => null,
-
-            'min_fraction_digits' => null,
-            'max_fraction_digits' => null,
             'format_grouping'     => true,
         ));
 
         $numberFormatter = self::getNumberFormatter();
 
         $resolver->setDefaults(array(
-            'min_fraction_digits' =>  function (Options $options) use ($numberFormatter) {
+            'min_fraction_digits' => function (Options $options) use ($numberFormatter) {
                 return $numberFormatter->getAttribute(\NumberFormatter::MIN_FRACTION_DIGITS);
             },
 
-            'max_fraction_digits' =>  function (Options $options) use ($numberFormatter) {
+            'max_fraction_digits' => function (Options $options) use ($numberFormatter) {
                 return $numberFormatter->getAttribute(\NumberFormatter::MAX_FRACTION_DIGITS);
             },
         ));
 
         $resolver->setAllowedTypes(array(
-            'max' => array('string', 'int', 'null'),
-            'min' => array('string', 'int', 'null'),
+            'max' => array('string', 'int', 'float', 'null'),
+            'min' => array('string', 'int', 'float', 'null'),
 
-            'min_fraction_digits' => array('int', 'null'),
-            'max_fraction_digits' => array('int', 'null'),
+            'min_fraction_digits' => array('int'),
+            'max_fraction_digits' => array('int'),
 
             'format_grouping' => array('bool'),
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getOptions()
+    protected static function isBigNumber($value)
     {
-        return $this->options;
-    }
-
-    /**
-     * Returns a shared NumberFormatter object.
-     *
-     * @param null|string $locale
-     * @param boolean     $forceNew Creates an new object (but leaves the current)
-     *
-     * @return \NumberFormatter
-     */
-    protected static function getNumberFormatter($locale = null, $forceNew = false)
-    {
-        $locale = $locale ?: \Locale::getDefault();
-
-        if ($forceNew) {
-            return new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
+        if (is_int($value) || is_float($value)) {
+            return false;
         }
 
-        if (null === self::$numberFormatter || self::$numberFormatter->getLocale() !== $locale) {
-            self::$numberFormatter = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
+        if (strlen(substr($value, 0, strpos($value, '.'))) > strlen(PHP_INT_MAX) - 1) {
+            return true;
         }
 
-        return self::$numberFormatter;
+        return false;
     }
 }

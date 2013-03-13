@@ -107,7 +107,7 @@ class FieldSetFactoryTest extends TestCase
                         ->set('invoice_date', FilterField::create('invoice date', new FilterTypeConfig('date')))
                         ->set('invoice_price', FilterField::create('invoice_price', new FilterTypeConfig('number'))),
                     FieldSet::create('customer')
-                        ->set('customer_id', FilterField::create('customer_id', new FilterTypeConfig('number', array('max' => null, 'min' => '0')))->setPropertyRef('ECommerceCustomer', 'id'))
+                        ->set('customer_id', FilterField::create('customer_id', new FilterTypeConfig('number', array('max' => null, 'min' => '0', 'format_grouping' => true)))->setPropertyRef('ECommerceCustomer', 'id'))
                         ->set('customer_regdate', FilterField::create('customer_regdate', new FilterTypeConfig('date')))
                 ),
             )
