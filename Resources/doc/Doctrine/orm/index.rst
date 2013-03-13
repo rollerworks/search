@@ -11,8 +11,7 @@ The `Doctrine`_ component performs the searching of records using Doctrine ORM.
 Introduction
 ------------
 
-To enable Doctrine ORM support for the RecordFilter
-add the following to your config file.
+Add the following to your config file to enable Doctrine ORM support for the ``RecordFilter``.
 
 .. configuration-block::
 
@@ -43,13 +42,13 @@ add the following to your config file.
 WhereBuilder
 ~~~~~~~~~~~~
 
-The WhereBuilder uses Doctrine ORM for creating SQL/DQL WHERE cases
-"on the fly" based on the given FieldSet.
+The ``WhereBuilder`` uses Doctrine ORM for creating SQL/DQL WHERE cases
+"on the fly" based on the given ``FieldSet``.
 
 .. tip::
 
-    When the FieldSets are defined in your config file its better to enable the WhereBuilderFactory
-    as creating a query structure is rather expensive.
+    When the ``FieldSets`` are defined in your config file, it is better to enable the ``WhereBuilderFactory``
+    because creating a query structure is rather expensive.
 
 To enable DQL support add the following to your config file.
 
@@ -114,16 +113,16 @@ To enable DQL support add the following to your config file.
 
 .. note::
 
-    If your using multiple Entity Managers, this must be configured for all Entity Managers
-    used by the RecordFilter.
+    If you use multiple Entity Managers, this must be configured for all Entity Managers
+    used by the ``RecordFilter``.
 
 WhereBuilderFactory
 -------------------
 
-The WhereBuilder Factory uses Doctrine ORM for creating WHERE cases
-based in the FieldSets defined in your configuration.
+The ``WhereBuilder Factory`` uses Doctrine ORM for creating WHERE cases
+based in the ``FieldSets`` defined in your configuration.
 
-To enable WhereBuilder Factory you must add the following to your config file.
+To enable the ``WhereBuilder Factory`` you must add the following to your config file.
 
 .. configuration-block::
 

@@ -21,6 +21,7 @@ nbproject
 # Folders to ignore
 Resources/doc/_themes
 Resources/doc/_exts
+Resources/doc/_build
 /Tests/.cache
 .idea
 

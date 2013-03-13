@@ -1,15 +1,15 @@
 WhereBuilder
 ============
 
-WhereBuilder searches in an SQL relational database like PostgreSQL, MySQL, SQLite
-and Oracle database using a WHERE case, the WHERE case can be either SQL or DQL.
+The ``WhereBuilder`` searches in an SQL relational database like PostgreSQL, MySQL, SQLite
+and Oracle database using a WHERE case. The WHERE case can be either SQL or DQL.
 
-Both NativeSql and the Doctrine Query Language (DQL) are supported.
+Both Native SQL and the Doctrine Query Language (DQL) are supported.
 
-Using the WhereBuilder is very simple.
+Using the ``WhereBuilder`` is very simple.
 
 Every filtering preference must be provided by the formatter,
-see :doc:`getting started` for more information.
+see :doc:`/overview` for more information.
 
 .. code-block:: php
 
@@ -33,10 +33,10 @@ When selecting from multiple tables or using DQL you must specify the class rela
 .. caution::
 
     Searching with joined entities might cause duplicate results.
-    Use DISTINCT on the unique id of the 'parent' table to remove duplicates.
+    Use DISTINCT on the unique ID of the 'parent' table to remove duplicates.
 
     Duplicate results happen because we ask the database to return all matching
-    records, one parent record can have multiple matching children.
+    records and one parent record can have multiple matching children.
 
 .. code-block:: php
 
@@ -53,18 +53,17 @@ When selecting from multiple tables or using DQL you must specify the class rela
 
 .. tip::
 
-    You can also use the short AcmeUserBundle:User notation.
+    You can also use the short ``AcmeUserBundle:User`` notation.
 
-By default values are embedded in the query (except for DQL), if you want the values
-to be provided as parameters you must provide an ORM Query object as third parameter.
+By default values are embedded in the query (except for DQL). If you want the values
+to be provided as parameters, you must provide an ORM Query object as third parameter.
 
 .. tip::
 
-    You can let the WhereBuilder update your query object using the 4th parameter.
+    You can let the ``WhereBuilder`` update your query object using the 4th parameter.
 
-    Only when there is an actual filtering the value of the 4th parameter is
-    placed before your search. If there is no filtering the query is untouched
-    and can be executed as it is.
+    The value of the 4th parameter is placed before your search only when there is an
+    actual filtering. Otherwise, the query is untouched and can be executed as-is.
 
     .. code-block:: php
 
@@ -85,26 +84,26 @@ The parameters are set on the Query object as "field_name_x" (x is an incrementi
 
 .. caution::
 
-    Calling getWhereClause() will reset the parameter incrementation counter.
-    To preserve the old value set the 5th parameter to false.
+    Calling ``getWhereClause()`` will reset the parameter incrementation counter.
+    To preserve the old value set the 5th parameter to ``false``.
 
 Caching
 ~~~~~~~
 
-To cache the generated result for the next page load,
-you can use CacheWhereBuilder. If the query-result is in the cache its used,
-else the Where case is generated and cached.
+You can use ``CacheWhereBuilder`` to cache the generated result for the next page
+load. If the query result is in the cache it is used. Otherwise, the where case is
+generated and cached.
 
 .. note::
 
-    For this to work correct, you first need to configure a 'real' caching driver.
+    For this to work correctly, you first need to configure a 'real' caching driver.
 
     See :doc:`/cache` for more information.
 
 .. caution::
 
-    Caching is not possible if the conversions are not static, if they depend
-    on something that varies per page request, caching should not be used.
+    Caching is not possible if the conversions are not static. Caching should not be
+    use if they depend on something that varies per page request.
 
 .. warning::
 
@@ -126,12 +125,12 @@ else the Where case is generated and cached.
 
 .. note::
 
-    Conversions can only be set on the $whereBuilder, not the CacheWhereBuilder.
+    Conversions can only be set on the $whereBuilder, not the ``CacheWhereBuilder``.
 
 Doctrine Query Language
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want to use the Doctrine Query Language instead of NativeSql,
+If you want to use the Doctrine Query Language instead of Native SQL,
 the procedure is slightly different.
 
 You **must** set the Alias mapping and provide an ORM Query object.
@@ -153,33 +152,32 @@ You **must** set the Alias mapping and provide an ORM Query object.
 Factory
 ~~~~~~~
 
-Your where cases are generated using the provided FieldSet's.
+Your where cases are generated using the provided ``FieldSets``.
 
-As most of your FieldSets will be known at forehand, you can save some processing time
-by placing them in your config file instead of in your application code.
+As most of your ``FieldSets`` will be known bforehand, you can save some processing time
+by placing them in your config file instead of your application code.
 
-After this you can start using the WhereBuilder factory which will
+After this, you can start using the ``WhereBuilder`` factory. This will
 create the structure for your where cases and reduce generation time.
 
 .. note::
 
-    You don't have to place your FieldSets in the config file.
-    But doing so will make the system create the WhereBuilder
-    classes during cache warming.
+    You don't have to place your ``FieldSets`` in the config file but doing so will
+    make the system create the ``WhereBuilder`` classes during cache warming.
 
-    Generating WhereBuilder classes based on 'dynamic' FieldSets
+    Generating ``WhereBuilder classes`` based on dynamic ``FieldSets``
     is possible, but not recommended.
 
-Replacing the WhereBuilder with the factory version is very straightforward.
+Replacing the ``WhereBuilder`` with the factory version is very straightforward.
 
 You only need to replace the "rollerworks_record_filter.doctrine.orm.where_builder" with the
 "rollerworks_record_filter.doctrine.orm.wherebuilder_factory" service and call
-getWhereBuilder() with the FieldSet - which you can get from the Formatter.
+``getWhereBuilder()`` with the ``FieldSet``, which you can get from the ``Formatter``.
 
 .. caution::
 
-    You can only use the FieldSet that was used for generating,
-    using anything else will throw an exception.
+    You can only use the ``FieldSet`` that was used for generating.
+    Using anything else will throw an exception.
 
 .. code-block:: php
 
@@ -194,7 +192,7 @@ Conversion
 In most cases you can just use the Doctrine\Orm component without any special configuration.
 
 But there are cases when you need to perform some special things,
-like *converting* the input or database value. In this chapter we will get to that.
+like converting the input or database value. This section explains how to do this.
 
 You also add field and value conversion to the same class.
 
@@ -205,21 +203,19 @@ You also add field and value conversion to the same class.
 
 .. note::
 
-    Its only possible to register *one* converter per *field* per *type*,
-    you can both apply one field and value converter.
-
-    But not two value/field converters.
+    Its only possible to register *one* converter per *field* per *type*.
+    You can both apply one field and value converter but not two value/field converters.
 
 If you want to use the class Metadata for conversions,
 you need to add the conversion service to your config file.
 
 .. note::
 
-    Parameter names can not start with '__',
-    '__' is reserved for internal configuration and is set by the system.
+    Parameter names can not start with '__'. '__' is reserved for internal configuration
+    and is set by the system.
 
-You can use any service name you like, but for readability
-its best to prefix it with a vendor and domain.
+You can use any service name you like but for readability it is best to prefix it
+with a vendor and domain.
 
 .. configuration-block::
 
@@ -244,15 +240,15 @@ its best to prefix it with a vendor and domain.
             new Definition('Acme\RecordFilter\Orm\Converter\ClassName')
         );
 
-The first value of the annotation is the service name,
-other parameters are passed to $parameters of the conversion method.
+The first value of the annotation is the service name.
+Other parameters are passed to ``$parameters`` of the conversion method.
 
 .. note::
 
     Conversions that are set using metadata can overwritten by calling
-    setFieldConversion() and setValueConversion() respectively.
+    ``setFieldConversion()`` and ``setValueConversion()`` respectively.
 
-    You can disable conversions be giving null instead of an object.
+    You can disable conversions be giving ``null`` instead of an object.
 
 Field Conversion
 ~~~~~~~~~~~~~~~~
@@ -260,25 +256,21 @@ Field Conversion
 When the value in the database is not in the desired format
 it can be converted to a more workable version.
 
-For example: you want to get the 'age' in years of some person.
+For example: you want to get the age of a person in years from their date of birth.
 
 .. tip::
 
-    The bundle has a "build-in" type for birthday conversion.
+    The bundle has a built-in type for birthday conversion.
 
     We can use the "rollerworks_record_filter.doctrine.orm.conversion.birthday"
     service for handling age and birthday.
 
-    If the input is a date its used as-is, else the database value is converted to an age.
+    If the input is a date, it is used as-is. Otherwise, the database value is converted to an age.
 
-Normally you wouldn't really store someones age but there date of birth,
-so we need to convert the date to an age.
+PostgreSQL supports getting the age of an date by using the ``age()`` database function.
+Supporting this feature in PostgreSQL is very easy but will be more difficult for other database servers.
 
-PostgreSQL supports getting the age of an date by using the age() database function,
-unless you (also) need to support a database that does not support this directly,
-this is very simple.
-
-First we must make a Conversion class for handling this.
+First we must make a ``Conversion`` class.
 
 .. code-block:: php
 
@@ -301,14 +293,14 @@ First we must make a Conversion class for handling this.
         }
     }
 
-Then we add the converter to the WhereBuilder by.
+Then we add the converter to the ``WhereBuilder`` by.
 
 .. code-block:: php
 
     /* ... */
     $whereBuilder->setFieldConversion('user_age', new AgeConversion());
 
-Or using the Metadata.
+Or using the ``Metadata``.
 
 .. configuration-block::
 
@@ -354,14 +346,14 @@ Or using the Metadata.
 Value Conversion
 ~~~~~~~~~~~~~~~~
 
-Value conversion is similar to Field conversion,
+Value conversion is similar to ``Field`` conversion,
 but works on the *user-input* instead of the *database value*.
 
-In this example we will convert an DateTime object to an scalar value.
+In this example we will convert an ``DateTime`` object to an scalar value.
 
 .. note::
 
-    Doctrine can already handle a DateTime object,
+    Doctrine can already handle a ``DateTime`` object,
     so normally we don't have to convert this.
 
 .. code-block:: php
@@ -386,14 +378,14 @@ In this example we will convert an DateTime object to an scalar value.
         }
     }
 
-Then we add the converter to the WhereBuilder by.
+Then we add the converter to the ``WhereBuilder``.
 
 .. code-block:: php
 
     /* ... */;
     $whereBuilder->setValueConversion('user_age', new AgeConverter());
 
-Or using the Metadata.
+Or using the ``Metadata``.
 
 .. configuration-block::
 

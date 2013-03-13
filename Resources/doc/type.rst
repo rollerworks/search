@@ -3,32 +3,32 @@ Type
 
 The RecordFilter is more just then just a simple search engine.
 
-As you properly know, searching with the system works by defining filtering conditions.
-But did you known, that each field can have a special filtering type for working with values?
+As you probably know, searching with the system works by defining filtering conditions.
+But did you know that each field can have a special filtering type for working with values?
 
 Using an special type for the field allows validation/sanitizing and matching.
 Basic types like Date/Time and numbers are built-in, but you can also build your own types.
 
 .. note::
 
-    All built-in types are local aware and require the Symfony Locale component.
-    When working with none ASCII charters the International Extension must be installed.
+    All built-in types are locale aware and require the Symfony Locale component.
+    When working with non-ASCII characters, the International Extension must be installed.
 
 Secondly, all built-in types support comparison and optimizing when possible.
 
-Its possible but not recommended to overwrite the build-in types by using
+It is possible, but not recommended, to overwrite the built-in types by using
 the same alias in the service definition.
-You should only considering doing this when absolutely needed.
+You should only consider doing this when absolutely necessary.
 
 see ``Resources/config/services.xml`` for the corresponding names.
 
 Configuration
 -------------
 
-Types implementing ConfigurableTypeInterface can be configured with extra options
-using the setOptions() method of the type.
+Types implementing ``ConfigurableTypeInterface`` can be configured with extra options
+using the ``setOptions()`` method of the type.
 
-When building the FieldSet.
+When building the ``FieldSet``.
 
 .. code-block:: php
 
@@ -54,7 +54,7 @@ Or when changing an existing Field.
 Text
 ----
 
-Handles text values as-is, this type can be seen as an 'abstract' for more strict handling.
+Handles text values as-is. This type can be seen as an 'abstract' for more strict handling.
 
 DateTime
 --------
@@ -64,15 +64,15 @@ or a combination of both. Both support ranges and comparison.
 
 The following options can be set for Date, DateTime and Time.
 
-+-------------------+----------------------------------------------------------------+----------------------+
-| Option            | Description                                                    | Accepted values      |
-+===================+================================================================+======================+
-| min               | Minimum value. must be lower then max (default is NULL)        | DateTime object,NULL |
-+-------------------+----------------------------------------------------------------+----------------------+
-| max               | Maximum value. must be higher then min (default is NULL)       | DateTime object,NULL |
-+-------------------+----------------------------------------------------------------+----------------------+
-| time_optional     | If the time is optional (DateTime type only)                   | Boolean              |
-+-------------------+----------------------------------------------------------------+----------------------+
++-------------------+--------------------------------------------------------------------+-------------------------------+
+| Option            | Description                                                        | Accepted values               |
++===================+====================================================================+===============================+
+| min               | Minimum value. Must be lower than max (default is ``null``)        | ``DateTime`` object, ``null`` |
++-------------------+--------------------------------------------------------------------+-------------------------------+
+| max               | Maximum value. Must be higher than min (default is ``null``)       | ``DateTime`` object, ``null`` |
++-------------------+--------------------------------------------------------------------+-------------------------------+
+| time_optional     | If the time is optional (``DateTime`` type only)                   | ``boolean``                   |
++-------------------+--------------------------------------------------------------------+-------------------------------+
 
 Birthday
 --------
@@ -83,7 +83,7 @@ Any date equal or lower then 'today' is accepted, but you can also use someones 
 
 .. note::
 
-    For this to work completely, the storage layer must convert a date value to an age for comparison.
+    For this to work correctly, the storage layer must convert a date value to an age for comparison.
 
     For Doctrine ORM you can use the "rollerworks_record_filter.doctrine.orm.conversion.age_date" service
     for both field and value conversion.
@@ -93,24 +93,24 @@ Any date equal or lower then 'today' is accepted, but you can also use someones 
 Number
 ------
 
-Handles (localized) numeric values.
+Handles localized numeric values.
 
 Supports ranges and comparison.
 
 .. note::
 
     When working with big numbers (beyond the maximum php integer value),
-    either bcmath or GMP must be installed and the option value **must** be a string.
+    either `bcmath <http://php.net/manual/en/book.bc.php>`_ or `GMP <http://php.net/manual/en/book.gmp.php>`_ must be installed and the option value **must** be a string.
 
 The following options can be set for number.
 
-+-------------------+-----------------------------------------------------------------+----------------------+
-| Option            | Description                                                     | Accepted values      |
-+===================+=================================================================+======================+
-| min               | Minimum value. must be lower then max (default is NULL)         | string,integer,NULL  |
-+-------------------+-----------------------------------------------------------------+----------------------+
-| max               | Maximum value. must be higher then min (default is NULL)        | string,integer,NULL  |
-+-------------------+-----------------------------------------------------------------+----------------------+
++-------------------+-----------------------------------------------------------------+-----------------------------------+
+| Option            | Description                                                     | Accepted values                   |
++===================+=================================================================+===================================+
+| min               | Minimum value. Must be lower than max (default is ``NULL``)     | ``string``, ``integer``, ``NULL`` |
++-------------------+-----------------------------------------------------------------+-----------------------------------+
+| max               | Maximum value. Must be higher than min (default is ``NULL``)    | ``string``, ``integer``, ``NULL`` |
++-------------------+-----------------------------------------------------------------+-----------------------------------+
 
 Decimal
 -------
@@ -119,36 +119,36 @@ Handles (localized) decimal values.
 
 Supports ranges and comparison.
 
+.. note::
+
     When working with big numbers (beyond the maximum php integer value),
-    either bcmath or GMP must be installed and the option value **must** be a string.
+    either `bcmath <http://php.net/manual/en/book.bc.php>`_ or `GMP <http://php.net/manual/en/book.gmp.php>`_ must be installed and the option value **must** be a string.
 
 The following options can be set.
 
-+-------------------+------------------------------------------------------------------+----------------------+
-| Option            | Description                                                      | Accepted values      |
-+===================+==================================================================+======================+
-| min               | Minimum value. must be lower then max (default is NULL)          | string,float,NULL    |
-+-------------------+------------------------------------------------------------------+----------------------+
-| max               | Maximum value. must be higher then min (default is NULL)         | string,float,NULL    |
-+-------------------+------------------------------------------------------------------+----------------------+
++-------------------+-----------------------------------------------------------------+---------------------------------+
+| Option            | Description                                                     | Accepted values                 |
++===================+=================================================================+=================================+
+| min               | Minimum value. Must be lower than max (default is ``NULL``)     | ``string``, ``float``, ``NULL`` |
++-------------------+-----------------------------------------------------------------+---------------------------------+
+| max               | Maximum value. Must be higher than min (default is ``NULL``)    | ``string``, ``float``, ``NULL`` |
++-------------------+-----------------------------------------------------------------+---------------------------------+
 
 EnumType
 --------
 
-EnumType is similar to ENUM of SQL, it only allows a fixed set of possible
+EnumType is similar to ENUM in SQL; it only allows a fixed set of possible
 values (labels) to be used. The label is then converted back to the internal value.
 
 For this to work, you must register a new service with the options and value.
 
-The first parameter of the EnumType constructor is an associative array as `value => label`
-followed by the `translator` service (optional) and the translator domain.
-
-Using the translator is optional.
+The first parameter of the ``EnumType`` constructor is an associative array as `value => label`, optionally
+followed by the `translator` service and the translator domain.
 
 .. note::
 
-    You can use any service name you like, but for readability
-    its best to prefix it with a vendor and domain.
+    You can use any service name you like. For readability
+    it is best to prefix it with a vendor and domain.
 
 .. configuration-block::
 
@@ -203,19 +203,20 @@ Using the translator is optional.
 Making your own
 ---------------
 
-Often you will find that the build-in types are not enough, and you want use your own.
-Luckily making your own type is very ease, in this chapter we will get to that.
+You may find that the build-in types do not meet your needs and you want use your own.
+Luckily, making your own type is very easy. The following sections explain the different options
+available to achieve this.
 
 Extending
 ~~~~~~~~~
 
-If you only need an type that is slightly different then the build-in ones,
-you can save your self some work, by extending an existing one.
+If you need a type that is only slightly different from the built-in ones,
+you can save yourself some work by extending an existing one.
 
-For example: you want to handle client numbers that are prefixed like C30320.
+For example: you want to handle client numbers that are like `C30320`.
 
-Using the Number type and overwriting the validateValue() and sanitizeString()
-should be enough.
+Using the ``Number`` type and overwriting the ``validateValue()`` and ``sanitizeString()``
+is all you need to do.
 
 .. code-block:: php
 
@@ -241,17 +242,17 @@ should be enough.
 
 .. note::
 
-    Not all types may use strings, DateTime types use an extended
-    \DateTime class for passing information between methods.
+    Not all types may use strings. ``DateTime`` types use an extended
+    ``\DateTime`` class for passing information between methods.
 
 From Scratch
 ~~~~~~~~~~~~
 
-For this little tutorial we are going to create an InvoiceType that can handle an invoice value.
+For this little tutorial we are going to create an ``InvoiceType`` that can handle an invoice value.
 
 The value is made up from a year and incrementing number, like 2012-0259.
 
-As we really want to use the power of the RecordFilter we are also adding
+As we really want to use the power of the ``RecordFilter``, we are also adding
 support for ranges and comparisons.
 
 First we create the value class for holding the information of our invoice.
@@ -376,17 +377,17 @@ Now we can create our filtering type.
         }
     }
 
-Registering Type as a Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Registering a Type as a Service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want to use the new type in the Class metadata or FieldSet configuration
+If you want to use the new type in the Class metadata or ``FieldSet`` configuration
 of the application the type must be registered in the service container.
 
-Continuing from our InvoiceType.
+Continuing from our ``InvoiceType``.
 
 .. note::
 
-    The service must be tagged as "rollerworks_record_filter.filter_type"
+    The service must be tagged as "rollerworks_record_filter.filter_type",
     with an alias that will identify it.
 
 .. configuration-block::
@@ -418,7 +419,7 @@ Advanced types
 
 A type can be *extended* with extra functionality for more advanced optimization and/or handling.
 
-Look at the build-in types if you need help implementing them.
+Look at the built-in types for help implementing them.
 
 .. note::
 
@@ -432,8 +433,8 @@ ValueMatcherInterface
 Implement the ``Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface``
 to provide an regex-based matcher for the value.
 
-This is only used for FilterQuery, making it not required to 'always'
-use quotes when the value contains a dash or comma.
+This is only used for ``FilterQuery``. It is not necessary to use quotes when the value
+contains a dash or comma.
 
 ConfigurableTypeInterface
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -445,7 +446,7 @@ when the type supports dynamic configuration for an example an maximum value or 
 
     The constructor (for ease of use) should also accept setting options.
 
-This uses the Symfony OptionsResolver component.
+This uses the Symfony ``OptionsResolver`` component.
 
 OptimizableInterface
 ~~~~~~~~~~~~~~~~~~~~
@@ -455,14 +456,14 @@ if the values can be further optimized.
 
 Optimizing includes removing redundant values and changing the filtering strategy.
 
-An example can be, where you have an 'Status' type which only accepts 'active', 'not-active' and 'remove'.
-If ***all*** the possible values are chosen, the values are redundant and the filter should be removed.
+An example of this is when you have an 'Status' type which only accepts 'active', 'not-active' and 'remove'.
+If **all** the possible values are chosen, the values are redundant and the filter should be removed.
 
 ValuesToRangeInterface
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Implement the ``Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface``
-to converted an connected-list of values to ranges.
+to convert a connected-list of values to ranges.
 
 Connected values are values where the current value increased by one equals the next value.
 

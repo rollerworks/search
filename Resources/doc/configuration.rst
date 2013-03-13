@@ -4,20 +4,20 @@ Configuration
 Introduction
 ------------
 
-Configuring the RecordFilter is very simple and basic, everything is optional.
+Configuring the ``RecordFilter`` is very simple; everything is optional.
 
 FieldSets
 ---------
 
-The first thing you properly want configure are your FieldSets,
-FieldSets can created during runtime or be a part of your app configuration.
+The first thing you need to configure are your ``FieldSets``. ``FieldSets`` can be
+created during runtime, or as part of your app configuration.
 
-Configuring the FieldSets allows for dumping them as PHP classes
-during cache warming. But only when the fieldset factory is enabled.
+Configuring the ``FieldSets`` allows them to be dumped as PHP classes
+during cache warming, but only when the fieldset factory is enabled.
 
 .. note::
 
-    Dumped FieldSet are marked as frozen and can't be changed.
+    Dumped ``FieldSets`` are marked as frozen and can't be changed.
 
     Only the options of the configured type can be changed.
     Each type object is unique so changing them will not affect others.
@@ -157,18 +157,19 @@ Add the following to your config file.
 
 .. note::
 
-    FieldSet names must be unique trough out your application.
+    ``FieldSet`` names must be unique throughout your application.
 
-    Its best to prefix the name with an (optional) vendor and domain
-    like you would do with our Entity classes.
+    It is best to prefix the name with a vendor and domain,
+    like you would do with our Entity classes, although this is optional.
 
-    "invoice" domain in vendor "acme" would become "acme_invoice".
+    For example, the "invoice" domain in the vendor "acme" would become
+    "acme_invoice".
 
 Label translation
 ~~~~~~~~~~~~~~~~~
 
-If your field labels need to be localized, instead of hard coding them
-you can use the Translator service. When no label is set or found,
+Field labels can be localized, rather than being hard coded,
+by using the Translator service. When no label is set or found,
 the field-name is used as label.
 
 Add the following to your config file.

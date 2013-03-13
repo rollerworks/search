@@ -1,11 +1,11 @@
 Caching
 =======
 
-The system processes a lot of data for formatting and actual filtering.
-To improve the overall performance of page loads the system can cache the results.
+The system processes a lot of data for formatting and filtering.
+The system cache can be utilized to improve the overall performance of page loads by caching the results.
 
-By default an Array cache is used, and only valid for the current page load.
-But its better to configure a 'real' cache service.
+By default an Array cache is used. It is only valid for the current page load.
+Alternative cache options can offer additional features.
 
 .. tip::
 
@@ -15,10 +15,10 @@ Caching is configured by specifying a service for handling.
 
 .. note::
 
-    Both the CacheFormatter and Doctrine Component, use the Doctrine Cache,
-    the cache driver must implement the ``Doctrine\Common\Cache\Cache`` interface.
+    Both the ``CacheFormatter`` and Doctrine Component use the Doctrine Cache.
+    The cache driver must implement the ``Doctrine\Common\Cache\Cache`` interface.
 
-    If you don't want to use the Doctrine cache you can either extend the CacheFormatter
+    If you don't want to use the Doctrine cache, you can either extend the ``CacheFormatter``
     class or build your own by implementing the ``CacheFormatterInterface``.
 
     The Doctrine Component of the bundle does does not enforce an interface.
@@ -57,14 +57,14 @@ Add the following to your config file.
 
 .. note::
 
-    The cache should be easy invalidated, use either a cache that is
+    The cache should be easy invalidated. Use either a cache that is
     short lived or easily removable.
 
 Session Cache
 -------------
 
 To use a PHP session for caching the results, you can install
-the "rollerworks/cache-bundle" https://github.com/rollerworks/RollerworksCacheBundle.
+the `rollerworks/cache-bundle <https://github.com/rollerworks/RollerworksCacheBundle>`_.
 
 Just add the following to your ``composer.json`` file:
 

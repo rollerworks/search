@@ -1,20 +1,20 @@
 Input
 ======
 
-The input component provides the filtering preference to use for filtering,
-only fields present in the FieldSet will be used.
+The input component provides the filtering preference to use for filtering.
+Only fields present in the ``FieldSet`` will be used.
 
 Filtering preferences can be provided in a wide range of formats.
 
 .. tip::
 
-    To search using a formula like you do in a spreadsheet you can
+    To search using a formula, like you do in a spreadsheet, you can
     use the :doc:`filter_query` syntax.
 
-Filtering preferences are provided by so called filtering pairs,
+Filtering preferences are provided by so called filtering pairs;
 a pair consists of the field name and its values.
 
-The values be either loose values, excludes (*not this value*), ranges and simple comparisons
+The values can be loose values, excludes (*not this value*), ranges and simple comparisons
 like: < > >= <=
 
 Grouping
@@ -22,7 +22,7 @@ Grouping
 
 All the filters (inside a group) are applied as *and*.
 
-So FilterQuery ``user=1; age=5;`` will be applied as ``user = 1 and age = 5``
+So ``FilterQuery`` ``user=1; age=5;`` will be applied as ``user = 1 and age = 5``
 
 To apply the second field as a standalone, it must be placed inside
 its own group.
@@ -35,33 +35,33 @@ placed inside a group.
     The grouping applies that all the pairs in a group must match.
     One or more groups can match.
 
-For example we want to search for all users that are either
-born before 12 december2000 or have a male gender.
+For example, we want to search for all users that are either
+born on 12 December 2000 or are male.
 
-Our search FilterQuery will look something like this:
+Our search ``FilterQuery`` will look something like this:
 
-.. code-block::
+.. code-block:: none
 
     (birthday="2000-12-12";), (gender=male)
 
 And this will be applied as:
 
-.. code-block::
+.. code-block:: none
 
     (birthday = "2000-12-12") OR (gender = "male")
 
 If we want narrow our searching to users that are either
-born before 12 december 2000 or are male and have an active account.
+born on 12 December 2000, or are male and have an active account.
 
 We use something like this.
 
-.. code-block::
+.. code-block:: none
 
     (birthday="2000-12-12";), (gender=male; status=active)
 
 And this will be applied as:
 
-.. code-block::
+.. code-block:: none
 
     (birthday = "2000-12-12") OR (gender="male" AND status="active")
 
@@ -75,7 +75,7 @@ Changing these limits can be done by calling ``setLimitValues()`` and ``setLimit
 respectively.
 
 Unless you want to/must support a large number of values its best to not
-set this to high.
+set this too high.
 
 .. caution::
 

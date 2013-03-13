@@ -1,20 +1,20 @@
 Metadata
 ========
 
-Class metadata is used by the FieldSet-factory for populating FieldSets
+Class metadata is used by the ``FieldSet`` factory to populate ``FieldSets``
 based on the information provided by the classes.
 
-The information can be stored directly with the class using Annotations.
-Or as a separate file using YAML or XML.
+The information can be stored directly with the class using Annotations,
+or as a separate file using YAML or XML.
 
 .. note::
 
     Metadata files are named relative to the bundle namespace, followed by
-    sub-namespace and filename in Resources/config/record_filter/.
+    sub-namespace and filename in `Resources/config/record_filter/`.
 
-    So if your class file is 'src/Acme/StoreBundle/Model/Product/Product.php'
+    So if your class file is `src/Acme/StoreBundle/Model/Product/Product.php`
     the metadata is stored in
-    'src/Acme/StoreBundle/Resources/config/record_filter/Model.Product.Product.ext'
+    `src/Acme/StoreBundle/Resources/config/record_filter/Model.Product.Product.ext`
 
 .. configuration-block::
 
@@ -101,7 +101,7 @@ Or as a separate file using YAML or XML.
 .. note::
 
     A class can accept only one metadata definition format.
-    For example, it's not possible to mix YAML metadata definitions with
+    For example, it is not possible to mix YAML metadata definitions with
     annotated PHP class definitions.
 
 Overwriting

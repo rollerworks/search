@@ -4,11 +4,10 @@ Introduction
 The RecordFilterBundle is a `Symfony 2 <http://www.symfony.com>`_ Bundle
 for filter-based record searching.
 
-Filter-based in that is uses a filtering system to search,
-you search by defining conditions not terms.
+Filter-based in that is uses a filtering system to search: You search by defining conditions not terms.
 
-The system was designed to be used for any kind of storage (DB/ODM and even webservice's),
-input (FilterQuery, Json, XML, etc.) and locale (English, French, Arabian, etc.).
+The system was designed to be used for any kind of storage (DB/ODM and even webservices),
+input (FilterQuery, JSON, XML, etc.) and locale (English, French, Arabian, etc.).
 
 Organization of this Book
 -------------------------
@@ -35,7 +34,7 @@ Code Samples
 ------------
 
 Code samples presented in this book will be displayed on a different colored
-background in a mono-spaced font. Samples are not to be taken as copy & paste
+background in a mono-spaced font. Samples are not to be taken as copy and paste
 code snippets.
 
 Code examples are used through the book to clarify what is written in text.
@@ -59,11 +58,9 @@ A code sample will look like this:
 
     */
 
-The presence of 3 dots ``...`` in a code sample indicates that we have left
-out a chunk of the code for brevity, they are not actually part of the code.
+The presence of 3 dots ``...`` in a code sample indicates that code has been excluded, for brevity. They are not actually part of the code.
 
-We will often place multi-line comments ``/* ... */`` in the code so that we
-can show alternative ways of achieving the same result.
+Multi-line comments are displayed as ``/* ... */`` and show alternative ways of achieving the same result.
 
 You should read the code examples given and try to understand them. They are
 kept concise so that you are not overwhelmed with information.
