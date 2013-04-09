@@ -103,7 +103,7 @@ generated and cached.
 .. caution::
 
     Caching is not possible if the conversions are not static. Caching should not be
-    use if they depend on something that varies per page request.
+    used if they depend on something that varies per page request.
 
 .. warning::
 
@@ -154,7 +154,7 @@ Factory
 
 Your where cases are generated using the provided ``FieldSets``.
 
-As most of your ``FieldSets`` will be known bforehand, you can save some processing time
+As most of your ``FieldSets`` will be known beforehand, you can save some processing time
 by placing them in your config file instead of your application code.
 
 After this, you can start using the ``WhereBuilder`` factory. This will

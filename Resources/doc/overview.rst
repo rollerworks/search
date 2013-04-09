@@ -82,7 +82,7 @@ Input
 The input component provides the input to use for filtering,
 **only fields present in the FieldSet are used**.
 
-Filtering can be provided using a PHP Array, JSON or the special :doc:`FilterQuery </input/filter_query>`. XML will be available in future.
+Filtering can be provided using a PHP Array, JSON, XML or the special :doc:`FilterQuery </input/filter_query>`. XML will be available in future.
 
 Formatter
 ~~~~~~~~~
