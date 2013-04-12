@@ -1,8 +1,8 @@
 Doctrine
 ========
 
-The Doctrine component performs the searching of records using Doctrine ORM or ODM
-(not supported yet).
+The Doctrine component performs the searching of records using Doctrine ORM. Support for ODM
+is planned for the future.
 
 .. toctree::
     :maxdepth: 2

@@ -1,8 +1,8 @@
 Installing
 ==========
 
-Only Composer is officially supported for installing, if your using any other method
-such as the old vendor-strict or Git submodules the Rollerworks Locale component
+Only Composer is officially supported for installing. If you use any other method,
+such as the old vendor-strict or Git submodules, the Rollerworks Locale component
 used by the build-in filter-types component will fail to work.
 
 1. Using Composer (recommended)
@@ -28,7 +28,7 @@ To install RollerworksRecordFilterBundle with Composer just add the following to
         // ...
         "require": {
             // ...
-            "rollerworks/recordfilter-bundle": "master-dev"
+            "rollerworks/recordfilter-bundle": "dev-master"
         }
     }
 
@@ -47,7 +47,7 @@ The scripts part is needed for updating the localized validation and matching.
 
 .. note::
 
-    Please replace ``master-dev`` in the snippet above with the latest stable
+    Please replace ``dev-master`` in the snippet above with the latest stable
     branch, for example ``1.0.*``.
 
 Then, you can install the new dependencies by running Composer's ``update``
@@ -66,7 +66,7 @@ register the new bundle:
     // in AppKernel::registerBundles()
     $bundles = array(
         // ...
-        new Rollerworks\Bundle\RollerworksRecordFilterBundle(),
+        new Rollerworks\Bundle\RecordFilterBundle\RollerworksRecordFilterBundle(),
         // ...
     );
 

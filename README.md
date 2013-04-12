@@ -20,8 +20,7 @@ Requirements
 
 You need at least Symfony 2.1 and the Composer package manager.
 
-    A Component that is used with this bundle currently does not support
-    the old vendor-script installation.
+    A Component that is used with this bundle currently does not support the old vendor-script installation.
 
 Installation
 ------------
@@ -33,9 +32,22 @@ Installation is very easy, all the details about installing can be found in.
 Documentation
 -------------
 
-The documentation of this bundle can be found in.
+The documentation is written in [reStructuredText][3] and can be built into standard HTML using [Sphinx][4].
 
-[Resources/doc](Resources/doc)
+To build the documentation are:
+
+1. Install [Spinx][4]
+2. Change to the `Resources/doc` directory on the command line
+3. Run `make html`
+
+This will build the documentation into the `Resources/doc/_build/html` directory.
+
+Further information can be found in The Symfony2 [documentation format][5] article.
+
+> The Sphinx extensions are already included and do not need to be downloaded separately.
+
+License
+========
 
 [Resources/meta/LICENSE](Resources/meta/LICENSE)
 
@@ -50,3 +62,6 @@ All changes go into master and are merged later into 2.0 (this is likely to chan
 
 [1]: http://symfony.com/doc/current/contributing/code/index.html
 [2]: http://symfony.com/doc/current/contributing/code/patches.html#check-list
+[3]: http://docutils.sourceforge.net/rst.html
+[4]: http://sphinx-doc.org/
+[5]: http://symfony.com/doc/current/contributing/documentation/format.html

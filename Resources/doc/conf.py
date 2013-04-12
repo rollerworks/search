@@ -17,6 +17,11 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./_exts'))
+
+# adding PhpLexer
+from sphinx.highlighting import lexers
+from pygments.lexers.web import PhpLexer
 
 # -- General configuration -----------------------------------------------------
 
@@ -25,7 +30,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sensio.sphinx.refinclude', 'sensio.sphinx.configurationblock', 'sensio.sphinx.phpcode']
 
 # Add any paths that contain templates here, relative to this directory.
 #templates_path = ['_templates']
@@ -242,22 +247,16 @@ texinfo_documents = [
 #texinfo_show_urls = 'footnote'
 
 # CUSTOM
-sys.path.append(os.path.abspath('_exts'))
-
-extensions = ['sensio.sphinx.refinclude', 'sensio.sphinx.configurationblock', 'sensio.sphinx.phpcode']
 
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 html_theme_path = ['_themes']
-html_theme = 'rollerworks'
+html_theme = 'default'
 
 pygments_style = 'native'
 primary_domain = 'php'
 highlight_language = 'php'
 
-from sphinx.highlighting import lexers
-from pygments.lexers.web import PhpLexer
 lexers['php'] = PhpLexer(startinline=True)
 lexers['php-annotations'] = PhpLexer(startinline=True)
-primary_domain = "php"
