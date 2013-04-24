@@ -58,8 +58,6 @@ This is an open source project. If you'd like to contribute,
 please read the [Contributing Code][1] part of Symfony for the basics. If you're submitting
 a pull request, please follow the guidelines in the [Submitting a Patch][2] section.
 
-All changes go into master and are merged later into 2.0 (this is likely to change).
-
 [1]: http://symfony.com/doc/current/contributing/code/index.html
 [2]: http://symfony.com/doc/current/contributing/code/patches.html#check-list
 [3]: http://docutils.sourceforge.net/rst.html
