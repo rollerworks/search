@@ -22,8 +22,9 @@ use Rollerworks\Bundle\RecordFilterBundle\FilterField;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Metadata\MetadataFactoryInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\ORM\AbstractQuery as OrmQuery;
 use Doctrine\DBAL\Types\Type as ORMType;
+use Doctrine\DBAL\Query\QueryBuilder as OrmQueryBuilder;
+use Doctrine\ORM\AbstractQuery as OrmQuery;
 use Doctrine\ORM\Query as DqlQuery;
 use Doctrine\ORM\EntityManager;
 
@@ -98,7 +99,7 @@ class WhereBuilder
     /**
      * @var array
      */
-    private $paramPosition = array();
+    protected $paramPosition = array();
 
     /**
      * Constructor.
@@ -198,8 +199,10 @@ class WhereBuilder
                 throw new \InvalidArgumentException('$entityAliasMapping must be set when using an query object.');
             }
 
+            $self = $this;
+
             if ($query instanceof DqlQuery) {
-                $query->setHint('where_builder_conversions', $this);
+                $query->setHint('where_builder_conversions', function () use ($self) { return $self; });
             }
         }
 
@@ -416,7 +419,7 @@ class WhereBuilder
         }
 
         if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
-            if ($this->query instanceof DqlQuery) {
+            if ($this->query instanceof DqlQuery || $this->query instanceof OrmQueryBuilder) {
                 foreach ($values as $value) {
                     $inList .= sprintf('%s %s %s %s ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field), ($exclude ? 'AND' : 'OR'));
                 }
@@ -525,7 +528,7 @@ class WhereBuilder
 
         // Resolve the referencedColumnName for Join
         $metaData = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
-        if ($this->query instanceof DqlQuery && $metaData->isAssociationWithSingleJoinColumn($field->getPropertyRefField())) {
+        if (($this->query instanceof DqlQuery || $this->query instanceof OrmQueryBuilder) && $metaData->isAssociationWithSingleJoinColumn($field->getPropertyRefField())) {
             $joiningClass = $metaData->getAssociationTargetClass($field->getPropertyRefField());
             if (!isset($this->entityAliases[$joiningClass])) {
                 throw new \RuntimeException(sprintf('No alias mapping set for "%s", used by "%s"#%s Join.', $joiningClass, $field->getPropertyRefClass(), $field->getPropertyRefField()));
@@ -546,7 +549,7 @@ class WhereBuilder
         $this->fieldData[$fieldName]['column'] = $column;
 
         if ($this->fieldConversions[$fieldName]) {
-            if ($this->query instanceof DqlQuery) {
+            if ($this->query instanceof DqlQuery || $this->query instanceof OrmQueryBuilder) {
                 $this->fieldsMappingCache[$fieldName][$strategy] = "RECORD_FILTER_FIELD_CONVERSION('$fieldName', $column" . (null === $strategy ? '' : ', ' . $strategy) . ")";
             } else {
                 $this->fieldsMappingCache[$fieldName][$strategy] = $this->getFieldConversionSql($fieldName, $column, $field, $strategy);

@@ -635,8 +635,6 @@ class DQLTest extends OrmTestCase
     protected function assertDqlSuccessCompile(Query $query, $whereCase, $return = false, $append = true)
     {
         if (null !== $whereCase) {
-            $query->useQueryCache(false);
-
             if ($append) {
                 $dql = $query->getDQL() . $whereCase;
                 $query->setDQL($dql);

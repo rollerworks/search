@@ -32,10 +32,13 @@ class FilterFieldConversion extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker)
     {
-        /** @var \Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder $whereBuilder */
+        /** @var \Closure $whereBuilder */
         if (!($whereBuilder = $sqlWalker->getQuery()->getHint('where_builder_conversions'))) {
             throw new \LogicException('Missing "where_builder_conversions" hint for FilterFieldConversion.');
         }
+
+        $whereBuilder = $whereBuilder();
+        /** @var \Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder $whereBuilder */
 
         $fieldName = is_object($this->fieldName) ? trim($this->fieldName->dispatch($sqlWalker), "'") : $this->fieldName;
 
