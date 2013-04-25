@@ -14,6 +14,7 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm;
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\CacheFormatterInterface;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query as ORMQuery;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Cache\Cache;
 
 /***
@@ -46,6 +47,11 @@ class CacheWhereBuilder
     private $cacheLifeTime;
 
     /**
+     * @var WhereBuilder
+     */
+    private $whereBuilder;
+
+    /**
      * Constructor.
      *
      * @param Cache   $cacheProvider
@@ -58,21 +64,39 @@ class CacheWhereBuilder
     }
 
     /**
+     * @param WhereBuilder $whereBuilder
+     */
+    public function setWhereBuilder(WhereBuilder $whereBuilder)
+    {
+        $this->whereBuilder = $whereBuilder;
+    }
+
+    /**
      * Returns the (cached) WHERE clause for the query.
      *
      * @see WhereBuilder#getWhereClause()
      *
-     * @param CacheFormatterInterface $formatter
-     * @param WhereBuilder            $whereBuilder
-     * @param array                   $entityAliasMapping
-     * @param AbstractQuery           $query
-     * @param string|null             $appendQuery
-     * @param boolean                 $resetParameterIndex
+     * @param CacheFormatterInterface    $formatter
+     * @param WhereBuilder               $whereBuilder
+     * @param array                      $entityAliasMapping
+     * @param AbstractQuery|QueryBuilder $query
+     * @param string|null                $appendQuery
+     * @param boolean                    $resetParameterIndex
      *
      * @return null|string Returns null when there is no result
+     *
+     * @throws \RuntimeException when no inner wherebuilder is set.
      */
-    public function getWhereClause(CacheFormatterInterface $formatter, WhereBuilder $whereBuilder, array $entityAliasMapping = array(), AbstractQuery $query = null, $appendQuery = null, $resetParameterIndex = true)
+    public function getWhereClause(CacheFormatterInterface $formatter, WhereBuilder $whereBuilder = null, array $entityAliasMapping = array(), $query = null, $appendQuery = null, $resetParameterIndex = true)
     {
+        if (!$whereBuilder) {
+            if (!$this->whereBuilder) {
+                throw new \RuntimeException('No WhereBuilder given or set.');
+            }
+
+            $whereBuilder = $this->whereBuilder;
+        }
+
         $cacheKey = 'doctrine.orm.where.';
         $cacheKeyAppend = '';
 
@@ -104,6 +128,8 @@ class CacheWhereBuilder
             $cacheKey .= $formatter->getCacheKey();
         }
 
+        $this->whereBuilder = $whereBuilder;
+
         if ($this->cacheDriver->contains($cacheKey)) {
             $data = $this->cacheDriver->fetch($cacheKey);
 
@@ -126,5 +152,13 @@ class CacheWhereBuilder
         $this->cacheDriver->save($cacheKey, array($result, $whereBuilder->getParameters()), $this->cacheLifeTime);
 
         return $result;
+    }
+
+    /**
+     * @return WhereBuilder|null
+     */
+    public function getInnerWhereBuilder()
+    {
+        return $this->whereBuilder;
     }
 }

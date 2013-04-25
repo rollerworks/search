@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\AbstractQuery as OrmQuery;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Tests\OrmTestCase as OrmTestCaseBase;
 
 class OrmTestCase extends OrmTestCaseBase
@@ -163,10 +164,10 @@ class OrmTestCase extends OrmTestCaseBase
     }
 
     /**
-     * @param array    $expected
-     * @param OrmQuery $query
+     * @param array                 $expected
+     * @param OrmQuery|QueryBuilder $query
      */
-    protected function assertQueryParamsEquals(array $expected, OrmQuery $query)
+    protected function assertQueryParamsEquals(array $expected, $query)
     {
         // Parameter handling changed in Doctrine ORM 2.3
         if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {

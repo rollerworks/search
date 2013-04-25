@@ -23,9 +23,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Metadata\MetadataFactoryInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type as ORMType;
-use Doctrine\DBAL\Query\QueryBuilder as OrmQueryBuilder;
 use Doctrine\ORM\AbstractQuery as OrmQuery;
 use Doctrine\ORM\Query as DqlQuery;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -130,6 +130,14 @@ class WhereBuilder
     }
 
     /**
+     * @return EntityManager
+     */
+    public function getEntityManager()
+    {
+        return $this->entityManager;
+    }
+
+    /**
      * Set the SQL conversion configuration for a field.
      *
      * Only one converter per field, existing one is overwritten.
@@ -171,20 +179,20 @@ class WhereBuilder
      * WARNING: Don't set an $query object when using the result in union.
      * Calling this method resets the parameter index counter, set $resetParameterIndex to false to prevent that.
      *
-     * @param FormatterInterface $formatter
-     * @param array              $entityAliasMapping An array with the alias-mapping as [class or Bundle:Class] => entity-alias
-     * @param OrmQuery|null      $query              An ORM Query object (required for DQL).
-     * @param string|null        $appendQuery        Place *this value* after the current query when there is an actual filtering result.
-     *                                               The query object will be updated as: current query + $appendQuery + filtering.
-     *                                               This value is only used when a query object is set, and SHOULD contain spaces like " WHERE "
-     * @param boolean $resetParameterIndex 		     Set to false if you want to keep the parameter index when calling this method again.
-     *                                               This should only be used when using multiple filtering results in the same query.
+     * @param FormatterInterface         $formatter
+     * @param array                      $entityAliasMapping  An array with the alias-mapping as [class or Bundle:Class] => entity-alias
+     * @param OrmQuery|QueryBuilder|null $query               An ORM Query object (required for DQL).
+     * @param string|null                $appendQuery         Place *this value* after the current query when there is an actual filtering result.
+     *                                                        The query object will be updated as: current query + $appendQuery + filtering.
+     *                                                        This value is only used when a query object is set, and SHOULD contain spaces like " WHERE "
+     * @param boolean                    $resetParameterIndex Set to false if you want to keep the parameter index when calling this method again.
+     *                                                        This should only be used when using multiple filtering results in the same query.
      *
      * @return null|string Returns null when there is no result
      *
      * @throws \InvalidArgumentException When alias-map is empty but $query is set
      */
-    public function getWhereClause(FormatterInterface $formatter, array $entityAliasMapping = array(), OrmQuery $query = null, $appendQuery = null, $resetParameterIndex = true)
+    public function getWhereClause(FormatterInterface $formatter, array $entityAliasMapping = array(), $query = null, $appendQuery = null, $resetParameterIndex = true)
     {
         // Convert namespace aliases to the correct className
         foreach ($entityAliasMapping as $entity => $alias) {
@@ -202,7 +210,7 @@ class WhereBuilder
             $self = $this;
 
             if ($query instanceof DqlQuery) {
-                $query->setHint('where_builder_conversions', function () use ($self) { return $self; });
+                $query->setHint('where_builder_conversions', function () use (&$self) { return $self; });
             }
         }
 
@@ -219,6 +227,10 @@ class WhereBuilder
         }
 
         $whereCase = $this->buildWhere($formatter);
+
+        if ($query instanceof QueryBuilder) {
+            $appendQuery = null;
+        }
 
         if ($query && $appendQuery && $whereCase) {
             if ($query instanceof DqlQuery) {
@@ -419,7 +431,7 @@ class WhereBuilder
         }
 
         if ($this->valueConversions[$fieldName][0] instanceof CustomSqlValueConversionInterface) {
-            if ($this->query instanceof DqlQuery || $this->query instanceof OrmQueryBuilder) {
+            if ($this->query instanceof DqlQuery || $this->query instanceof QueryBuilder) {
                 foreach ($values as $value) {
                     $inList .= sprintf('%s %s %s %s ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field), ($exclude ? 'AND' : 'OR'));
                 }
@@ -528,7 +540,7 @@ class WhereBuilder
 
         // Resolve the referencedColumnName for Join
         $metaData = $this->entityManager->getClassMetadata($field->getPropertyRefClass());
-        if (($this->query instanceof DqlQuery || $this->query instanceof OrmQueryBuilder) && $metaData->isAssociationWithSingleJoinColumn($field->getPropertyRefField())) {
+        if (($this->query instanceof DqlQuery || $this->query instanceof QueryBuilder) && $metaData->isAssociationWithSingleJoinColumn($field->getPropertyRefField())) {
             $joiningClass = $metaData->getAssociationTargetClass($field->getPropertyRefField());
             if (!isset($this->entityAliases[$joiningClass])) {
                 throw new \RuntimeException(sprintf('No alias mapping set for "%s", used by "%s"#%s Join.', $joiningClass, $field->getPropertyRefClass(), $field->getPropertyRefField()));
@@ -549,7 +561,7 @@ class WhereBuilder
         $this->fieldData[$fieldName]['column'] = $column;
 
         if ($this->fieldConversions[$fieldName]) {
-            if ($this->query instanceof DqlQuery || $this->query instanceof OrmQueryBuilder) {
+            if ($this->query instanceof DqlQuery || $this->query instanceof QueryBuilder) {
                 $this->fieldsMappingCache[$fieldName][$strategy] = "RECORD_FILTER_FIELD_CONVERSION('$fieldName', $column" . (null === $strategy ? '' : ', ' . $strategy) . ")";
             } else {
                 $this->fieldsMappingCache[$fieldName][$strategy] = $this->getFieldConversionSql($fieldName, $column, $field, $strategy);
