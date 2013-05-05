@@ -533,6 +533,31 @@ class DQLTest extends OrmTestCase
         );
     }
 
+    public function testDoctrineAlias()
+    {
+        $input = $this->newInput('invoice_customer=2;');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $config = $this->em->getConfiguration();
+        $config->addEntityNamespace('BaseBundle', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce');
+
+        $container       = $this->createContainer();
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+
+        $query = $this->em->createQuery("SELECT I FROM BaseBundle:ECommerceInvoice I JOIN I.customer C WHERE ");
+
+        $whereCase = $this->cleanSql($whereBuilder->getWhereClause(
+            $this->formatter,
+            array('BaseBundle:ECommerceInvoice' => 'I', 'Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer' => 'C'),
+            $query
+        ));
+
+        $this->assertEquals('(C.id IN(:invoice_customer_0))', $whereCase);
+        $this->assertQueryParamsEquals(array('invoice_customer_0' => 2), $query);
+        $this->assertDqlSuccessCompile($query, $whereCase);
+    }
+
     public static function provideBasicsTests()
     {
         return array(
