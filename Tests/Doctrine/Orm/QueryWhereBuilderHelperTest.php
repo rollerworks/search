@@ -18,8 +18,8 @@ use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\QueryWhereBuilderHelper;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\CacheWhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
-use Doctrine\Common\Cache\ArrayCache;
 use Metadata\MetadataFactory;
+use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\QueryBuilder;
 
