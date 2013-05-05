@@ -258,6 +258,11 @@ abstract class AbstractInput implements InputInterface
     {
         $label = (function_exists('mb_strtolower') ? mb_strtolower($label) : strtolower($label));
 
+        // Label is not aliased
+        if ($this->fieldsSet->has($label)) {
+            return $label;
+        }
+
         if (isset($this->labelsResolve[$label])) {
             $fieldName = $this->labelsResolve[$label];
         } else {
