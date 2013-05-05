@@ -626,11 +626,8 @@ class DQLTest extends OrmTestCase
     {
         return array(
             array('birthday=2;', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0))", array('birthday_0' => 2), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?))"),
-
-            // This actually wrong, but there is birthday type yet
-            array('birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_0))", array('birthday_0' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?))"),
-
-            array('birthday=2; birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0) OR RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_1))", array('birthday_0' => 2, 'birthday_1' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?) OR to_char('YYYY', age(c0_.birthday)) IN (?))"),
+            array('birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_0))", array('birthday_0' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (c0_.birthday IN (?))"),
+            array('birthday=2; birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0) OR RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_1))", array('birthday_0' => 2, 'birthday_1' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?) OR c0_.birthday IN (?))"),
         );
     }
 

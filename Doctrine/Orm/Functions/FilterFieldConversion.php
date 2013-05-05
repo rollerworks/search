@@ -42,7 +42,7 @@ class FilterFieldConversion extends FunctionNode
 
         $fieldName = is_object($this->fieldName) ? trim($this->fieldName->dispatch($sqlWalker), "'") : $this->fieldName;
 
-        return $whereBuilder->getFieldConversionSql($fieldName, $this->columnExpression->dispatch($sqlWalker), null, null, $this->strategy);
+        return $whereBuilder->getFieldConversionSql($fieldName, $this->columnExpression->dispatch($sqlWalker), null, $this->strategy);
     }
 
     public function parse(Parser $parser)
@@ -64,7 +64,7 @@ class FilterFieldConversion extends FunctionNode
                 $parser->match(Lexer::T_NULL);
                 $this->strategy = null;
             } else {
-                $this->strategy = $parser->Literal();
+                $this->strategy = $parser->Literal()->value;
             }
         }
 
