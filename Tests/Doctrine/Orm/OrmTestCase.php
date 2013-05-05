@@ -29,7 +29,7 @@ use Doctrine\ORM\AbstractQuery as OrmQuery;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Tests\OrmTestCase as OrmTestCaseBase;
 
-class OrmTestCase extends OrmTestCaseBase
+abstract class OrmTestCase extends OrmTestCaseBase
 {
     /**
      * @var \Doctrine\ORM\EntityManager

@@ -91,7 +91,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * {@inheritdoc}
      *
-     * @return self
+     * @return static
      */
     public function setFieldSet(FieldSet $fields = null)
     {
@@ -115,7 +115,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * {@inheritdoc}
      *
-     * @return self
+     * @return static
      */
     public function setField($fieldName, FilterField $config)
     {
@@ -208,7 +208,7 @@ abstract class AbstractInput implements InputInterface
      * @param string $pathPrefix This prefix is added before every search, like: filters.labels.
      * @param string $domain     Translation domain (default is filter)
      *
-     * @return self
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
@@ -232,7 +232,7 @@ abstract class AbstractInput implements InputInterface
      * @param string       $fieldName Original field-name
      * @param string|array $label
      *
-     * @return self
+     * @return static
      */
     public function setLabelToField($fieldName, $label)
     {
