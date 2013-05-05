@@ -30,7 +30,6 @@ use Metadata\MetadataFactoryInterface;
 class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
 {
     private $container;
-
     private $metadataFactory;
 
     /**
@@ -59,6 +58,7 @@ class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
             throw new \InvalidArgumentException('You must configure a filters RecordFilter directory (when record_filter is activated in the services file). See docs for details');
         }
 
+        // @codeCoverageIgnoreStart
         if (!file_exists($sFilterDirectory = $this->container->getParameter('rollerworks_record_filter.filters_directory'))) {
             if (false === @mkdir($sFilterDirectory, 0777, true)) {
                 throw new \RuntimeException(sprintf('Unable to create the RecordFilters directory "%s".', $sFilterDirectory));
@@ -66,6 +66,7 @@ class RecordFilterFactoriesCacheWarmer implements CacheWarmerInterface
         } elseif (!is_writable($sFilterDirectory)) {
             throw new \RuntimeException(sprintf('The RecordFilters directory "%s" is not writable for the current system user.', $sFilterDirectory));
         }
+        // @codeCoverageIgnoreEnd
 
         if ($this->container->getParameter('rollerworks_record_filter.factories.fieldset.auto_generate')) {
             $fieldSets = $this->createFieldSets(unserialize($this->container->getParameter('rollerworks_record_filter.fieldsets')));
