@@ -64,7 +64,7 @@ class FilterFieldConversion extends FunctionNode
                 $parser->match(Lexer::T_NULL);
                 $this->strategy = null;
             } else {
-                $this->strategy = $parser->Literal()->value;
+                $this->strategy = (int) $parser->Literal()->value;
             }
         }
 

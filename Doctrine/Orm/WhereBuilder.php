@@ -414,10 +414,14 @@ class WhereBuilder
                 $strategy = $this->valueConversions[$fieldName][0]->getConversionStrategy($value->getValue(), $type, $this->entityManager->getConnection(), $this->valueConversions[$fieldName][1]);
                 $remappedColumns[$strategy] = $this->getFieldColumn($fieldName, $field, $strategy);
 
+                if (0 === $strategy && $hasCustomDql) {
+                    throw new \UnexpectedValueException('Value conversion strategy "0" is not supported for the Doctrine Query Language, use NativeQuery or provide us with a fix! https://github.com/rollerworks/RollerworksRecordFilterBundle/issues/26');
+                }
+
                 if (0 === $strategy) {
                     $inList .= sprintf('%s %s ', $this->getValStr($value->getValue(), $fieldName, $field, 0), ($exclude ? 'AND' : 'OR'));
                 } elseif ($hasCustomDql) {
-                    $inList .= sprintf('%s %s %s %s ', $column, ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field, $strategy), ($exclude ? 'AND' : 'OR'));
+                    $inList .= sprintf('%s %s %s %s ', $remappedColumns[$strategy], ($exclude ? '<>' : '='), $this->getValStr($value->getValue(), $fieldName, $field, $strategy), ($exclude ? 'AND' : 'OR'));
                 } else {
                     $remappedValues[$strategy][] = $value;
                 }
