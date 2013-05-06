@@ -17,6 +17,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\CacheWhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\Doctrine\SqlConversion\StrategyConversion1;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\Doctrine\SqlConversion\StrategyConversion2;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
@@ -322,6 +323,7 @@ class SQLTest extends OrmTestCase
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
         $whereBuilder->setFieldConversion('birthday', new StrategyConversion1());
         $whereBuilder->setValueConversion('birthday', new StrategyConversion1());
+        $whereBuilder->setValueConversion('user_id', new StrategyConversion2());
 
         $whereCase = $this->cleanSql($whereBuilder->getWhereClause($this->formatter));
         $this->assertEquals($expectedSql, $whereCase);
@@ -665,6 +667,8 @@ class SQLTest extends OrmTestCase
             array('birthday=>=2; birthday=>="1990-05-30";', "(to_char('YYYY', age(birthday)) >= '2' OR birthday >= '1990-05-30')"),
             array('birthday=2-5; birthday="1990-05-30"-"1990-08-30";', "((to_char('YYYY', age(birthday)) BETWEEN '2' AND '5') OR (birthday BETWEEN '1990-05-30' AND '1990-08-30'))"),
             array('birthday=!2-5; birthday=!"1990-05-30"-"1990-08-30";', "((to_char('YYYY', age(birthday)) NOT BETWEEN '2' AND '5') AND (birthday NOT BETWEEN '1990-05-30' AND '1990-08-30'))"),
+
+            array('user_id=2; user_id=6;', "(id ~ '6' OR id IN('2'))"),
         );
     }
 

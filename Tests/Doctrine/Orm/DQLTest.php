@@ -18,6 +18,7 @@ use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\CacheWhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerCustomSqlConversion;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\Doctrine\SqlConversion\StrategyConversion1;
+use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\Doctrine\SqlConversion\StrategyConversion2;
 use Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\CustomerConversion;
 use Doctrine\Common\Cache\ArrayCache;
 use Metadata\MetadataFactory;
@@ -233,6 +234,7 @@ class DQLTest extends OrmTestCase
         $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
         $whereBuilder->setFieldConversion('birthday', new StrategyConversion1());
         $whereBuilder->setValueConversion('birthday', new StrategyConversion1());
+        $whereBuilder->setValueConversion('user_id', new StrategyConversion2());
 
         $query = $this->em->createQuery("SELECT C FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer3 C WHERE ");
 
@@ -245,6 +247,31 @@ class DQLTest extends OrmTestCase
         $this->assertEquals($expectedDql, $whereCase);
         $this->assertQueryParamsEquals($queryParams, $query);
         $this->assertEquals($expectSql, $this->assertDqlSuccessCompile($query, $whereCase, true));
+    }
+
+    public function testConversionStrategy0()
+    {
+        $input = $this->newInput('user_id=2; user_id=6;', 'user');
+        $this->assertTrue($this->formatter->formatInput($input));
+
+        $container = $this->createContainer();
+        $container->set('customer_conversion', new CustomerConversion());
+
+        $metadataFactory = new MetadataFactory(new AnnotationDriver($this->newAnnotationsReader()));
+        $whereBuilder    = new WhereBuilder($metadataFactory, $container, $this->em);
+        $whereBuilder->setFieldConversion('birthday', new StrategyConversion1());
+        $whereBuilder->setValueConversion('birthday', new StrategyConversion1());
+        $whereBuilder->setValueConversion('user_id', new StrategyConversion2());
+
+        $query = $this->em->createQuery("SELECT C FROM Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer3 C");
+
+        $this->setExpectedException('UnexpectedValueException', 'Value conversion strategy "0" is not supported for the Doctrine Query Language');
+
+        $this->cleanSql($whereBuilder->getWhereClause(
+            $this->formatter,
+            array('Rollerworks\Bundle\RecordFilterBundle\Tests\Fixtures\BaseBundle\Entity\ECommerce\ECommerceCustomer3' => 'C'),
+            $query, ' WHERE '
+        ));
     }
 
     /**
@@ -628,6 +655,9 @@ class DQLTest extends OrmTestCase
             array('birthday=2;', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0))", array('birthday_0' => 2), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?))"),
             array('birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_0))", array('birthday_0' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (c0_.birthday IN (?))"),
             array('birthday=2; birthday="1990-05-30";', "(RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 1) IN(:birthday_0) OR RECORD_FILTER_FIELD_CONVERSION('birthday', C.birthday, 2) IN(:birthday_1))", array('birthday_0' => 2, 'birthday_1' => '1990-05-30'), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?) OR c0_.birthday IN (?))"),
+
+            // This is not supported see https://github.com/rollerworks/RollerworksRecordFilterBundle/issues/26
+            //array('user_id=2; user_id=6;', "(C.id = RECORD_FILTER_VALUE_CONVERSION('user_id', :user_id_0, 1) OR RECORD_FILTER_VALUE_CONVERSION('user_id', :user_id_1, 0))", array('user_id_0' => 2, 'user_id_1' => 6), "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (to_char('YYYY', age(c0_.birthday)) IN (?) OR c0_.birthday IN (?))"),
         );
     }
 
@@ -651,6 +681,7 @@ class DQLTest extends OrmTestCase
      * @param Query   $query
      * @param string  $whereCase
      * @param boolean $return
+     * @param boolean $append
      *
      * @return string
      */
