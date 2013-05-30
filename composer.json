@@ -12,10 +12,10 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/framework-bundle":  ">=2.1.0,<2.3-dev",
-        "symfony/options-resolver":  ">=2.1.0,<2.3-dev",
-        "symfony/yaml":              ">=2.1.0,<2.3-dev",
-        "symfony/validator":         ">=2.1.0,<2.3-dev",
+        "symfony/framework-bundle":  "~2.1",
+        "symfony/options-resolver":  "~2.1",
+        "symfony/yaml":              "~2.1",
+        "symfony/validator":         "~2.1",
         "jms/metadata":              ">=1.1.1",
         "rollerworks/locale":        "dev-master",
         "seld/jsonlint":             "1.*"
@@ -29,7 +29,7 @@
     },
     "suggest": {
         "doctrine/orm": "If you want to use the Doctrine ORM, this also requires doctrine/doctrine-bundle to be installed.",
-        "rollerworks/cache-bundle": "Session based caching"
+        "rollerworks/cache-bundle": "Session based caching for increased performance"
     },
     "autoload": {
         "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "" }
