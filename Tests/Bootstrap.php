@@ -8,8 +8,8 @@ call_user_func(function() {
     }
 
     /** @var \Composer\Autoload\ClassLoader $loader */
-    $loader = require_once __DIR__.'/../vendor/autoload.php';
-    $loader->add('Doctrine\\Tests', str_replace('\\', '/', realpath(__DIR__.'/../vendor/doctrine/orm/tests')) . '/');
+    $loader = require_once __DIR__ . '/../vendor/autoload.php';
+    $loader->add('Doctrine\\Tests', str_replace('\\', '/', realpath(__DIR__ . '/../vendor/doctrine/orm/tests')) . '/');
 
     $bundleLoader = function($v) {
         if (0 !== strpos($v, 'Rollerworks\\Bundle\\RecordFilterBundle')) {
@@ -34,7 +34,7 @@ call_user_func(function() {
 call_user_func(function () {
     if ('' == getenv('TMPDIR')) {
         if (false !== $pos = strpos(__DIR__, '\\')) {
-            $rootDir = substr(realpath(substr(__DIR__, 0, $pos +1)), 0, -1);
+            $rootDir = substr(realpath(substr(__DIR__, 0, $pos + 1)), 0, -1);
         } else {
             $rootDir = sys_get_temp_dir();
         }

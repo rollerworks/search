@@ -271,10 +271,6 @@ class WhereBuilder
             return $this->fieldConversionCache[$fieldName][$strategy];
         }
 
-        if (!$field) {
-            $field = $this->fieldSet->get($fieldName);
-        }
-
         $this->fieldConversionCache[$fieldName][$strategy] = $this->fieldConversions[$fieldName][0]->getConvertFieldSql(
             $column,
             $this->fieldData[$fieldName]['dbType'],
@@ -300,10 +296,6 @@ class WhereBuilder
      */
     public function getValueConversionSql($fieldName, $value, FilterField $field = null, ORMType $type = null, $strategy = null)
     {
-        if (!$field) {
-            $field = $this->fieldSet->get($fieldName);
-        }
-
         if (!$type) {
             $type = $this->fieldData[$fieldName]['dbType'];
         }
@@ -397,6 +389,8 @@ class WhereBuilder
      * @param boolean       $exclude
      *
      * @return string
+     *
+     * @throws \UnexpectedValueException
      */
     protected function processSingleValues($values, $column, $fieldName, FilterField $field, $exclude = false)
     {
@@ -441,12 +435,12 @@ class WhereBuilder
                 }
 
                 return $inList;
-            } else {
-                return $this->createInList($values, $column, $fieldName, $field, $exclude);
             }
-        } else {
+
             return $this->createInList($values, $column, $fieldName, $field, $exclude);
         }
+
+        return $this->createInList($values, $column, $fieldName, $field, $exclude);
     }
 
     /**
