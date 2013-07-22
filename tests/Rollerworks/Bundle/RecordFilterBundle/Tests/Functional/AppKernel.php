@@ -2,8 +2,6 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Functional;
 
-require_once __DIR__ . '/../Bootstrap.php';
-
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;

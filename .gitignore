@@ -19,10 +19,10 @@ nbproject
 *.sublime-workspace
 
 # Folders to ignore
-Resources/doc/_themes
-Resources/doc/_exts
-Resources/doc/_build
-/Tests/.cache
+src/Rollerworks/Bundle/RecordFilterBundle/Resources/doc/_themes
+src/Rollerworks/Bundle/RecordFilterBundle/Resources/doc/_exts
+src/Rollerworks/Bundle/RecordFilterBundle/Resources/doc/_build
+tests/Rollerworks/Bundle/RecordFilterBundle/Tests/.cache
 .idea
 
 phpunit.xml
