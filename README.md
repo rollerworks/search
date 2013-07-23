@@ -8,7 +8,7 @@ What is the RecordFilterBundle?
 
 The RecordFilterBundle is a Symfony 2 Bundle for filter-based record searching.
 
-Filter-based in that it uses a filtering system to search. 
+Filter-based in that it uses a filtering system to search.
 You search by conditions, not terms.
 
 This bundle was designed to be used for any kind of storage, input and local.
@@ -27,7 +27,7 @@ Installation
 
 Installation is very easy, all the details about installing can be found in.
 
-[Resources/doc/Installing](Resources/doc/installing.rst)
+[docs/Installing](docs/installing.rst)
 
 Documentation
 -------------
@@ -37,10 +37,10 @@ The documentation is written in [reStructuredText][3] and can be built into stan
 To build the documentation are:
 
 1. Install [Spinx][4]
-2. Change to the `Resources/doc` directory on the command line
+2. Change to the `docs` directory on the command line
 3. Run `make html`
 
-This will build the documentation into the `Resources/doc/_build/html` directory.
+This will build the documentation into the `docs/_build/html` directory.
 
 Further information can be found in The Symfony2 [documentation format][5] article.
 
@@ -49,7 +49,7 @@ Further information can be found in The Symfony2 [documentation format][5] artic
 License
 ========
 
-[Resources/meta/LICENSE](Resources/meta/LICENSE)
+[LICENSE](LICENSE)
 
 Contributing
 ------------

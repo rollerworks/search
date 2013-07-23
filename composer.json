@@ -32,11 +32,10 @@
         "rollerworks/cache-bundle": "Session based caching for increased performance"
     },
     "autoload": {
-        "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "" }
+        "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "src/" }
     },
-    "target-dir": "Rollerworks/Bundle/RecordFilterBundle",
     "minimum-stability": "dev",
-    
+
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"

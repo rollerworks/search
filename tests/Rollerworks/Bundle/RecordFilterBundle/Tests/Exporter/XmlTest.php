@@ -258,7 +258,7 @@ class XmlTest extends TestCase
         $dumper = new XmlExporter();
         $output = $dumper->dumpFilters($formatter);
 
-        $location = realpath(__DIR__ . '/../../Input/schema/dic/input/xml-input-1.0.xsd');
+        $location = realpath(__DIR__ . '/../../../../../../src/Rollerworks/Bundle/RecordFilterBundle/Input/schema/dic/input/xml-input-1.0.xsd');
 
         $dom = new \DOMDocument();
         $dom->loadXML($output);
