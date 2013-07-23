@@ -169,17 +169,10 @@ class OrmTestCase extends OrmTestCaseBase
      */
     protected function assertQueryParamsEquals(array $expected, $query)
     {
-        // Parameter handling changed in Doctrine ORM 2.3
-        if (version_compare(\Doctrine\ORM\Version::VERSION, '2.3.0', '>=')) {
-            foreach ($expected as $name => $value) {
-                $paramVal = $query->getParameter($name);
-                $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-                $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : (string) $value));
-            }
-        } else {
-            foreach ($expected as $name => $value) {
-                $this->assertEquals($query->getParameter($name), (is_object($value) ? $value : (string) $value));
-            }
+        foreach ($expected as $name => $value) {
+            $paramVal = $query->getParameter($name);
+            $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
+            $this->assertEquals($query->getParameter($name)->getValue(), (is_object($value) ? $value : $value));
         }
     }
 
