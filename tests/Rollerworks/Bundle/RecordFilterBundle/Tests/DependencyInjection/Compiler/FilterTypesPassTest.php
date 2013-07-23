@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksRecordFilterBundle.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
