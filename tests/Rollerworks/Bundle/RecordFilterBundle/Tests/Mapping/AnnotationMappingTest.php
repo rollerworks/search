@@ -43,7 +43,6 @@ class AnnotationMappingTest extends TestCase
         $property->acceptRanges   = false;
         $property->acceptCompares = false;
 
-        // XXX THIS MUST BE MOVED AS ITS OPTIONAL
         $ormConfig = new OrmConfig();
         $ormConfig->setValueConversion('customer_conversion', array());
         $property->setDoctrineConfig('orm', $ormConfig);

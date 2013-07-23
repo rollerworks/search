@@ -185,7 +185,6 @@ class Validator implements ModifierInterface
         $type->validateValue($value, $validationMessageBag);
 
         if ($validationMessageBag->has(MessageBag::MSG_ERROR)) {
-            // XXX This should be made configurable, maybe following the principle of the Validator Component?
             $message = implode("\n", $validationMessageBag->get('error'));
 
             $messageBag->addError('record_filter.validation_warning', array(

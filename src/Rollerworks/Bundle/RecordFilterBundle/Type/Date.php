@@ -221,7 +221,6 @@ class Date implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeI
                 return $value;
             }
 
-            // FIXME We need pre-validation (or something) for this
             if (!is_string($value)) {
                 throw new \UnexpectedValueException(sprintf('Min/max value must be ISO formatted date(time) string, "%s" given instead.', gettype($value)));
             }
