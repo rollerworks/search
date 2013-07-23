@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksRecordFilterBundle.
+ * This file is part of the RollerworksRecordFilterBundle package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
