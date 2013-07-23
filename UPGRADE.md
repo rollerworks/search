@@ -1,7 +1,7 @@
 UPGRADE
 =======
 
-* xx-xx-2013
+* 23-07-2013
 
 The directory structure has changed to fix some issues with Composer autoloading.
 
