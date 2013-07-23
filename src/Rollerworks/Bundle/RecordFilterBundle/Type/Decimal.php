@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Bundle\RecordFilterBundle\Type;
 
-use Rollerworks\Component\Locale\BigFloat;
 use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

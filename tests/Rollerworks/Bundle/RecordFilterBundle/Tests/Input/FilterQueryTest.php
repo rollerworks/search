@@ -276,7 +276,6 @@ class FilterQueryTest extends TestCase
         ), $input->getGroups());
     }
 
-
     public function testValidationNoRange()
     {
         $input = new QueryInput($this->translator);

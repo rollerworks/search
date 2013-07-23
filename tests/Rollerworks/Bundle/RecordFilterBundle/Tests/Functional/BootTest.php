@@ -9,7 +9,7 @@ class BootTest extends BaseTestCase
      *
      * @runInSeparateProcess
      */
-    function testDefaultConfig()
+    public function testDefaultConfig()
     {
         $client = $this->createClient();
 
@@ -21,7 +21,7 @@ class BootTest extends BaseTestCase
      *
      * @runInSeparateProcess
      */
-    function testAutoGenerate()
+    public function testAutoGenerate()
     {
         $client = $this->createClient(array('config' => 'enable_auto_generate.yml'));
 

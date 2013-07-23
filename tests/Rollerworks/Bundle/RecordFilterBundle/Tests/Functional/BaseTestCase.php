@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class BaseTestCase extends WebTestCase
 {
-    static protected function createKernel(array $options = array())
+    protected static function createKernel(array $options = array())
     {
         $kernel = new AppKernel(
             isset($options['config']) ? $options['config'] : 'default.yml',

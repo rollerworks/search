@@ -15,7 +15,6 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\ConversionStrategyInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\CustomSqlValueConversionInterface;
-use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\FieldConversionInterface;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\ValueConversionInterface;
 
 class StrategyConversion2 implements ConversionStrategyInterface, ValueConversionInterface, CustomSqlValueConversionInterface

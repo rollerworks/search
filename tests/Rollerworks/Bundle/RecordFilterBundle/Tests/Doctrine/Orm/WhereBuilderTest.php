@@ -14,8 +14,6 @@ namespace Rollerworks\Bundle\RecordFilterBundle\Tests\Doctrine\Orm;
 use Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Bundle\RecordFilterBundle\Metadata\Loader\AnnotationDriver;
 use Metadata\MetadataFactory;
-use Doctrine\ORM\Query\QueryException;
-use Doctrine\ORM\Query;
 
 class WhereBuilderTest extends OrmTestCase
 {

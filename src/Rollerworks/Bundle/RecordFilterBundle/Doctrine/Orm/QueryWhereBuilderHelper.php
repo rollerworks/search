@@ -12,12 +12,7 @@
 namespace Rollerworks\Bundle\RecordFilterBundle\Doctrine\Orm;
 
 use Rollerworks\Bundle\RecordFilterBundle\Formatter\FormatterInterface;
-use Rollerworks\Bundle\RecordFilterBundle\FilterField;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\Type as ORMType;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\AbstractQuery as OrmQuery;
-use Doctrine\ORM\Query as DqlQuery;
 
 /**
  * RecordFilter Doctrine ORM QueryBuilderHelper.
