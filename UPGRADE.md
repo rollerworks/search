@@ -1,18 +1,18 @@
 UPGRADE
 =======
 
-* 23-07-2013
+## 23-07-2013
 
 The directory structure has changed to fix some issues with Composer autoloading.
 
 > These changes are fully backward compatible, but might cause some confusion at first.
 
-* All Bundle related source file have moved to src/
+* All Bundle related source files have moved to src/
 * Test have moved to tests/Rollerworks/Bundle/RecordFilterBundle/Tests
 * Documentation has moved to docs/
 * And the LICENSE file is now in the root directory
 
-* 29-11-2012
+## 29-11-2012
 
 The public API has changed, if you cant upgrade yet, please use the 0.0.1 version.
 
