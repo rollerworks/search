@@ -1,18 +1,21 @@
 {
-    "name": "rollerworks/recordfilter-bundle",
-    "description": "Advanced filter-based searching system for Symfony",
-    "keywords": ["filter", "search", "symfony", "bundle"],
-    "type": "symfony-bundle",
+    "name": "rollerworks/search",
+    "description": "Advanced search-building framework",
+    "keywords": ["filter", "search", "doctrine"],
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
             "name": "Sebastiaan Stok",
             "email": "s.stok@rollercapes.net"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/Rollerworks/Search/contributors"
         }
     ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/framework-bundle":  "~2.1",
         "symfony/options-resolver":  "~2.1",
         "symfony/yaml":              "~2.1",
         "symfony/validator":         "~2.1",
@@ -21,6 +24,7 @@
         "seld/jsonlint":             "1.*"
     },
     "require-dev": {
+        "phpspec/phpspec": "2.0.*@dev",
         "doctrine/orm": "~2.3,>=2.3.0",
         "doctrine/doctrine-bundle": ">=1.1",
         "rollerworks/cache-bundle": "1.0.*@dev",
@@ -28,11 +32,13 @@
         "symfony/browser-kit": "~2.1"
     },
     "suggest": {
-        "doctrine/orm": "Required for Doctrine\\ORM component, also requires doctrine/doctrine-bundle to be installed.",
-        "rollerworks/cache-bundle": "Session based caching for increased performance"
+        "doctrine/orm": "Required for Doctrine\\ORM component, also requires doctrine/doctrine-bundle to be installed."
     },
     "autoload": {
-        "psr-0": { "Rollerworks\\Bundle\\RecordFilterBundle": "src/" }
+        "psr-0": { "Rollerworks\\Component\\Search\\": "src/" }
+    },
+    "config": {
+        "bin-dir": "bin"
     },
     "extra": {
         "branch-alias": {
