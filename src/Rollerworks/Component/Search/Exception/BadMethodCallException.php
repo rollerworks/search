@@ -11,6 +11,9 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class UnknownValueIndex extends \InvalidArgumentException
+/**
+ * Base BadMethodCallException for the Search component.
+ */
+class BadMethodCallException extends \BadMethodCallException
 {
 }
