@@ -89,7 +89,7 @@ class SearchField implements FieldConfigInterface
      *
      * @throws \InvalidArgumentException when the name is invalid.
      */
-    public function __construct($name, ResolvedFieldTypeInterface $type, array $options)
+    public function __construct($name, ResolvedFieldTypeInterface $type, array $options = array())
     {
         FieldSet::validateName($name);
 

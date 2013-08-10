@@ -11,9 +11,8 @@
 
 namespace Rollerworks\Component\Search\Formatter;
 
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FormatterInterface;
-use Rollerworks\Component\Search\ValuesGroup;
+use Rollerworks\Component\Search\SearchConditionInterface;
 
 /**
  * ChainFormatter performs the registered formatters in sequence.
@@ -59,16 +58,16 @@ class ChainFormatter implements FormatterInterface
     /**
      * {@inheritDoc}
      */
-    public function format(FieldSet $fieldSet, ValuesGroup $valuesGroup)
+    public function format(SearchConditionInterface $condition)
     {
-        if (true === $valuesGroup->hasViolations()) {
+        if (true === $condition->getValuesGroup()->hasViolations()) {
             return;
         }
 
         foreach ($this->formatters as $formatter) {
-            $formatter->format($fieldSet, $valuesGroup);
+            $formatter->format($condition);
 
-            if (true === $valuesGroup->hasViolations()) {
+            if (true === $condition->getValuesGroup()->hasViolations()) {
                 break;
             }
         }

@@ -15,6 +15,8 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FormatterInterface;
+use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\ValuesGroup;
 
 class ChainFormatterSpec extends ObjectBehavior
@@ -36,44 +38,53 @@ class ChainFormatterSpec extends ObjectBehavior
         $this->getFormatters()->shouldReturn(array($formatter));
     }
 
-    function it_should_execute_the_registered_formatters(FieldSet $fieldSet, ValuesGroup $valuesGroup, FormatterInterface $formatter, FormatterInterface $formatter2)
+    function it_should_execute_the_registered_formatters(SearchConditionInterface $searchCondition, FieldSet $fieldSet, ValuesGroup $valuesGroup, FormatterInterface $formatter, FormatterInterface $formatter2)
     {
+        $searchCondition->getValuesGroup()->willReturn($valuesGroup);
+        $searchCondition->getFieldSet()->willReturn($fieldSet);
+
         $valuesGroup->hasViolations()->willReturn(false);
-        $formatter->format($fieldSet, $valuesGroup)->shouldBeCalled();
-        $formatter2->format($fieldSet, $valuesGroup)->shouldBeCalled();
+        $formatter->format($searchCondition)->shouldBeCalled();
+        $formatter2->format($searchCondition)->shouldBeCalled();
 
         $this->addFormatter($formatter);
         $this->addFormatter($formatter2);
 
-        $this->format($fieldSet, $valuesGroup);
+        $this->format($searchCondition);
     }
 
-    function it_should_not_execution_when_ValuesGroup_has_violations(FieldSet $fieldSet, ValuesGroup $valuesGroup, FormatterInterface $formatter, FormatterInterface $formatter2)
+    function it_should_not_execution_when_ValuesGroup_has_violations(SearchConditionInterface $searchCondition, FieldSet $fieldSet, ValuesGroup $valuesGroup, FormatterInterface $formatter, FormatterInterface $formatter2)
     {
         $valuesGroup->hasViolations()->willReturn(true);
 
-        $formatter->format($fieldSet, $valuesGroup)->shouldNotBeCalled();
-        $formatter2->format($fieldSet, $valuesGroup)->shouldNotBeCalled();
+        $searchCondition->getValuesGroup()->willReturn($valuesGroup);
+        $searchCondition->getFieldSet()->willReturn($fieldSet);
+
+        $formatter->format($searchCondition)->shouldNotBeCalled();
+        $formatter2->format($searchCondition)->shouldNotBeCalled();
 
         $this->addFormatter($formatter);
         $this->addFormatter($formatter2);
 
-        $this->format($fieldSet, $valuesGroup);
+        $this->format($searchCondition);
     }
 
-    function it_should_stop_execution_if_a_formatter_sets_violations(FieldSet $fieldSet, ValuesGroup $valuesGroup, FormatterInterface $formatter, FormatterInterface $formatter2)
+    function it_should_stop_execution_if_a_formatter_sets_violations(SearchConditionInterface $searchCondition, FieldSet $fieldSet, ValuesGroup $valuesGroup, FormatterInterface $formatter, FormatterInterface $formatter2)
     {
         $valuesGroup->hasViolations()->willReturn(false);
 
-        $formatter->format($fieldSet, $valuesGroup)->will(function() use ($valuesGroup) {
+        $searchCondition->getValuesGroup()->willReturn($valuesGroup);
+        $searchCondition->getFieldSet()->willReturn($fieldSet);
+
+        $formatter->format($searchCondition)->will(function() use ($valuesGroup) {
             $valuesGroup->hasViolations()->willReturn(true);
         });
-        $formatter2->format($fieldSet, $valuesGroup)->shouldNotBeCalled();
+        $formatter2->format($searchCondition)->shouldNotBeCalled();
 
         $this->addFormatter($formatter);
         $this->addFormatter($formatter2);
 
-        $this->format($fieldSet, $valuesGroup);
+        $this->format($searchCondition);
     }
 
     function it_should_complain_when_adding_its_own_instance(FormatterInterface $formatter)

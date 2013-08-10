@@ -19,22 +19,17 @@ namespace Rollerworks\Component\Search;
 interface FormatterInterface
 {
     /**
-     * Formats a {@link ValuesGroup}.
+     * Formats a {@link ValuesGroup} with the provided {@link FieldSet}.
      *
      * Formatting is done to remove duplicated values,
      * normalize overlapping constraints and validate/transform a value.
-     *
-     *  When a value is considered invalid, it should update the tree by calling setViolations().
-     *  Its important to set violations for the ValuesBag object, and inform its parent-groups
-     *  there is a violation in the descending group(s).
      *
      * Formatters can be run in sequence, and therefor should be as small as possible.
      *
      * If the given top ValuesGroup object contains violations,
      * the formatter is required to ignore the Group and do nothing.
      *
-     * @param FieldSet    $fieldSet
-     * @param ValuesGroup $valuesGroup
+     * @param SearchConditionInterface $condition
      */
-    public function format(FieldSet $fieldSet, ValuesGroup $valuesGroup);
+    public function format(SearchConditionInterface $condition);
 }
