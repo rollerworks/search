@@ -1,8 +1,0 @@
-imports:
-    - { resource: doctrine.yml }
-
-rollerworks_record_filter:
-    factories:
-        fieldset:
-            auto_generate: true
-            namespace: RecordFilter
