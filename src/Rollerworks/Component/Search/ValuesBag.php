@@ -11,27 +11,19 @@
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Exception\UnknownValueIndex;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
+use Rollerworks\Component\Search\Value\SingleValue;
 use Symfony\Component\Validator\ConstraintViolation;
 
 /**
- * ValuesBag.
- *
- * The value bag holds all the values per-type.
+ * ValuesBag holds all the values per-type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class ValuesBag
 {
-    const PATTERN_CONTAINS = 1;
-    const PATTERN_STARTS_WITH = 2;
-    const PATTERN_ENDS_WITH = 3;
-    const PATTERN_REGEX = 4;
-    const PATTERN_NOT_CONTAINS = 5;
-    const PATTERN_NOT_STARTS = 6;
-    const PATTERN_NOT_END = 7;
-    const PATTERN_NOT_REGEX = 8;
-
     protected $excludedValues;
     protected $ranges;
     protected $excludedRanges;
@@ -66,18 +58,9 @@ class ValuesBag
         return $this->singleValues;
     }
 
-    public function addSingleValue($value)
+    public function addSingleValue(SingleValue $value)
     {
         $this->singleValues[] = $value;
-    }
-
-    public function replaceSingleValue($index, $value)
-    {
-        if (!isset($this->singleValues[$index])) {
-            throw new UnknownValueIndex(sprintf('There is no single-value at index "%s"', $index));
-        }
-
-        $this->singleValues[$index] = $value;
     }
 
     public function hasSingleValues()
@@ -94,20 +77,11 @@ class ValuesBag
         return $this;
     }
 
-    public function addExcludedValue($value)
+    public function addExcludedValue(SingleValue $value)
     {
         $this->excludedValues[] = $value;
 
         return $this;
-    }
-
-    public function replaceExcludedValue($index, $value)
-    {
-        if (!isset($this->excludedValues[$index])) {
-            throw new UnknownValueIndex(sprintf('There is no excluded value at index "%s"', $index));
-        }
-
-        $this->excludedValues[$index] = $value;
     }
 
     public function hasExcludedValues()
@@ -129,31 +103,16 @@ class ValuesBag
         return $this;
     }
 
-    public function addRange($lower, $upper, $inclusiveLower = true, $inclusiveUpper = true)
+    public function addRange(Range $range)
     {
-        $this->ranges[] = array(
-            'lower' => $lower, 'upper' => $upper, 'lower_inclusive' => $inclusiveLower,
-            'upper_inclusive' => $inclusiveUpper
-        );
+        $this->ranges[] = $range;
 
         return $this;
     }
 
-    public function replaceRange($index, $lower, $upper, $inclusiveLower = true, $inclusiveUpper = true)
-    {
-        if (!isset($this->ranges[$index])) {
-            throw new UnknownValueIndex(sprintf('There is no range value at index "%s"', $index));
-        }
-
-        $this->ranges[$index] = array(
-            'lower' => $lower, 'upper' => $upper, 'lower_inclusive' => $inclusiveLower,
-            'upper_inclusive' => $inclusiveUpper
-        );
-    }
-
     public function hasRanges()
     {
-        return !empty($this->ranges);
+        return count($this->ranges) > 0;
     }
 
     public function getRanges()
@@ -170,26 +129,11 @@ class ValuesBag
         return $this;
     }
 
-    public function addExcludedRange($lower, $upper, $inclusiveLower = true, $inclusiveUpper = true)
+    public function addExcludedRange(Range $range)
     {
-        $this->excludedRanges[] = array(
-            'lower' => $lower, 'upper' => $upper, 'lower_inclusive' => $inclusiveLower,
-            'upper_inclusive' => $inclusiveUpper
-        );
+        $this->excludedRanges[] = $range;
 
         return $this;
-    }
-
-    public function replaceExcludedRange($index, $lower, $upper, $inclusiveLower = true, $inclusiveUpper = true)
-    {
-        if (!isset($this->excludedRanges[$index])) {
-            throw new UnknownValueIndex(sprintf('There is no excluded-range value at index "%s"', $index));
-        }
-
-        $this->excludedRanges[$index] = array(
-            'lower' => $lower, 'upper' => $upper, 'lower_inclusive' => $inclusiveLower,
-            'upper_inclusive' => $inclusiveUpper
-        );
     }
 
     public function hasExcludedRanges()
@@ -211,26 +155,9 @@ class ValuesBag
         return $this;
     }
 
-    public function addComparison($value, $operator)
+    public function addComparison(Compare $value)
     {
-        if (!in_array($operator, array('>=', '<=', '<>', '<', '>'))) {
-            throw new \InvalidArgumentException(sprintf('Unknown operator "%s", supported operators are: ">=", "<=", "<>", "<", ">"', $operator));
-        }
-
-        $this->comparisons[] = array('value' => $value, 'operator' => $operator);
-    }
-
-    public function replaceComparison($index, $value, $operator)
-    {
-        if (!isset($this->comparisons[$index])) {
-            throw new UnknownValueIndex(sprintf('There is no comparison value at index "%s"', $index));
-        }
-
-        if (!in_array($operator, array('>=', '<=', '<>', '<', '>'))) {
-            throw new \InvalidArgumentException(sprintf('Unknown operator "%s", supported operators are: ">=", "<=", "<>", "<", ">"', $operator));
-        }
-
-        $this->comparisons[$index] = array('value' => $value, 'operator' => $operator);
+        $this->comparisons[] = $value;
     }
 
     public function getComparisons()
@@ -257,26 +184,9 @@ class ValuesBag
         return $this->patternMatchers;
     }
 
-    public function addPatternMatch($value, $patternType)
+    public function addPatternMatch(PatternMatch $value)
     {
-        if ($patternType < 1 || $patternType > 8) {
-            throw new \InvalidArgumentException('Unknown pattern-match type.');
-        }
-
-        $this->patternMatchers[] = array('value' => $value, 'type' => $patternType);
-    }
-
-    public function replacePatternMatch($index, $value, $patternType)
-    {
-        if ($patternType < 1 || $patternType > 8) {
-            throw new \InvalidArgumentException('Unknown pattern-match type.');
-        }
-
-        if (!isset($this->patternMatchers[$index])) {
-            throw new UnknownValueIndex(sprintf('There is no pattern-match at index "%s"', $index));
-        }
-
-        $this->patternMatchers[$index] = array('value' => $value, 'type' => $patternType);
+        $this->patternMatchers[] = $value;
     }
 
     public function hasPatternMatch()

@@ -13,6 +13,10 @@ namespace spec\Rollerworks\Component\Search;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
+use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 
 class ValuesBagSpec extends ObjectBehavior
@@ -22,7 +26,7 @@ class ValuesBagSpec extends ObjectBehavior
         $this->shouldHaveType('Rollerworks\Component\Search\ValuesBag');
     }
 
-    function it_should_have_single_values()
+    function it_should_not_contain_single_values_by_default()
     {
         $this->getSingleValues()->shouldReturn(array());
         $this->hasSingleValues()->shouldReturn(false);
@@ -30,36 +34,25 @@ class ValuesBagSpec extends ObjectBehavior
 
     function it_should_allow_adding_single_values()
     {
-        $this->addSingleValue('value');
-        $this->addSingleValue('value2');
+        $this->addSingleValue(new SingleValue('value'));
+        $this->addSingleValue(new SingleValue('value2'));
 
-        $this->getSingleValues()->shouldReturn(array('value', 'value2'));
-        $this->hasSingleValues()->shouldReturn(true);
-    }
-
-    function it_should_allow_replacing_single_values()
-    {
-        $this->addSingleValue('value');
-        $this->addSingleValue('value2');
-
-        $this->replaceSingleValue(1, 'value3');
-
-        $this->getSingleValues()->shouldReturn(array('value', 'value3'));
+        $this->getSingleValues()->shouldBeLike(array(new SingleValue('value'), new SingleValue('value2')));
         $this->hasSingleValues()->shouldReturn(true);
     }
 
     function it_should_allow_removing_single_values()
     {
-        $this->addSingleValue('value');
-        $this->addSingleValue('value2');
+        $this->addSingleValue(new SingleValue('value'));
+        $this->addSingleValue(new SingleValue('value2'));
 
         $this->removeSingleValue(0);
 
-        $this->getSingleValues()->shouldReturn(array(1 => 'value2'));
+        $this->getSingleValues()->shouldBeLike(array(1 => new SingleValue('value2')));
         $this->hasSingleValues()->shouldReturn(true);
     }
 
-    function it_should_have_excluded_values()
+    function it_should_not_contain_excluded_values_by_default()
     {
         $this->getExcludedValues()->shouldReturn(array());
         $this->hasExcludedValues()->shouldReturn(false);
@@ -67,36 +60,25 @@ class ValuesBagSpec extends ObjectBehavior
 
     function it_should_allow_adding_excluded_values()
     {
-        $this->addExcludedValue('value1');
-        $this->addExcludedValue('value2');
+        $this->addExcludedValue(new SingleValue('value'));
+        $this->addExcludedValue(new SingleValue('value2'));
 
-        $this->getExcludedValues()->shouldReturn(array('value1', 'value2'));
-        $this->hasExcludedValues()->shouldReturn(true);
-    }
-
-    function it_should_allow_replacing_excluded_values()
-    {
-        $this->addExcludedValue('value1');
-        $this->addExcludedValue('value2');
-
-        $this->replaceExcludedValue(1, 'value3');
-
-        $this->getExcludedValues()->shouldReturn(array('value1', 'value3'));
+        $this->getExcludedValues()->shouldBeLike(array(new SingleValue('value'), new SingleValue('value2')));
         $this->hasExcludedValues()->shouldReturn(true);
     }
 
     function it_should_allow_removing_excluded_values()
     {
-        $this->addExcludedValue('value1');
-        $this->addExcludedValue('value2');
+        $this->addExcludedValue(new SingleValue('value'));
+        $this->addExcludedValue(new SingleValue('value2'));
 
         $this->removeExcludedValue(0);
 
-        $this->getExcludedValues()->shouldReturn(array(1 => 'value2'));
+        $this->getExcludedValues()->shouldBeLike(array(1 => new SingleValue('value2')));
         $this->hasExcludedValues()->shouldReturn(true);
     }
 
-    function it_should_have_ranges()
+    function it_should_not_contain_ranges_by_default()
     {
         $this->getRanges()->shouldReturn(array());
         $this->hasRanges()->shouldReturn(false);
@@ -104,41 +86,23 @@ class ValuesBagSpec extends ObjectBehavior
 
     function it_should_allow_adding_ranges()
     {
-        $this->addRange(1, 10);
-        $this->addRange(1, 10, false, false);
+        $this->addRange(new Range(1, 10));
+        $this->addRange(new Range(11, 20));
 
-        $this->getRanges()->shouldReturn(array(
-            array('lower' => 1, 'upper' => 10, 'lower_inclusive' => true, 'upper_inclusive' => true),
-            array('lower' => 1, 'upper' => 10, 'lower_inclusive' => false, 'upper_inclusive' => false)
-        ));
-    }
-
-    function it_should_allow_replacing_ranges()
-    {
-        $this->addRange(1, 10);
-        $this->addRange(1, 10, false, false);
-
-        $this->replaceRange(1, 1, 10, true, false);
-
-        $this->getRanges()->shouldReturn(array(
-            array('lower' => 1, 'upper' => 10, 'lower_inclusive' => true, 'upper_inclusive' => true),
-            array('lower' => 1, 'upper' => 10, 'lower_inclusive' => true, 'upper_inclusive' => false)
-        ));
+        $this->getRanges()->shouldBeLike(array(new Range(1, 10), new Range(11, 20)));
     }
 
     function it_should_allow_removing_ranges()
     {
-        $this->addRange(1, 10);
-        $this->addRange(1, 10, false, false);
+        $this->addRange(new Range(1, 10));
+        $this->addRange(new Range(11, 20));
 
         $this->removeRange(0);
 
-        $this->getRanges()->shouldReturn(array(
-            1 => array('lower' => 1, 'upper' => 10, 'lower_inclusive' => false, 'upper_inclusive' => false)
-        ));
+        $this->getRanges()->shouldBeLike(array(1 => new Range(11, 20)));
     }
 
-    function it_should_have_excluded_ranges()
+    function it_should_not_contain_excluded_ranges_by_default()
     {
         $this->getExcludedRanges()->shouldReturn(array());
         $this->hasExcludedRanges()->shouldReturn(false);
@@ -146,42 +110,23 @@ class ValuesBagSpec extends ObjectBehavior
 
     function it_should_allow_adding_excluded_ranges()
     {
-        $this->addExcludedRange(1, 10);
-        $this->addExcludedRange(1, 10, false, false);
+        $this->addExcludedRange(new Range(1, 10));
+        $this->addExcludedRange(new Range(11, 20));
 
-        $this->getExcludedRanges()->shouldReturn(array(
-            array('lower' => 1, 'upper' => 10, 'lower_inclusive' => true, 'upper_inclusive' => true),
-            array('lower' => 1, 'upper' => 10, 'lower_inclusive' => false, 'upper_inclusive' => false)
-        ));
-    }
-
-    function it_should_allow_replacing_excluded_ranges()
-    {
-        $this->addExcludedRange(1, 10);
-        $this->addExcludedRange(1, 10, false, false);
-
-
-        $this->replaceExcludedRange(1, 1, 10, true, false);
-
-        $this->getExcludedRanges()->shouldReturn(array(
-            array('lower' => 1, 'upper' => 10, 'lower_inclusive' => true, 'upper_inclusive' => true),
-            array('lower' => 1, 'upper' => 10, 'lower_inclusive' => true, 'upper_inclusive' => false)
-        ));
+        $this->getExcludedRanges()->shouldBeLike(array(new Range(1, 10), new Range(11, 20)));
     }
 
     function it_should_allow_removing_excluded_ranges()
     {
-        $this->addExcludedRange(1, 10);
-        $this->addExcludedRange(1, 10, false, false);
+        $this->addExcludedRange(new Range(1, 10));
+        $this->addExcludedRange(new Range(11, 20));
 
         $this->removeExcludedRange(0);
 
-        $this->getExcludedRanges()->shouldReturn(array(
-            1 => array('lower' => 1, 'upper' => 10, 'lower_inclusive' => false, 'upper_inclusive' => false)
-        ));
+        $this->getExcludedRanges()->shouldBeLike(array(1 => new Range(11, 20)));
     }
 
-    function it_should_have_comparisons()
+    function it_should_not_contain_comparisons_by_default()
     {
         $this->getComparisons()->shouldReturn(array());
         $this->hasComparisons()->shouldReturn(false);
@@ -189,36 +134,25 @@ class ValuesBagSpec extends ObjectBehavior
 
     function it_should_allow_adding_comparisons()
     {
-        $this->addComparison(10, '>');
-        $this->addComparison(5, '<');
+        $this->addComparison(new Compare(10, '>'));
+        $this->addComparison(new Compare(5, '>'));
 
-        $this->getComparisons()->shouldReturn(array(array('value' => 10, 'operator' => '>'), array('value' => 5, 'operator' => '<')));
-        $this->hasComparisons()->shouldReturn(true);
-    }
-
-    function it_should_allow_replacing_comparisons()
-    {
-        $this->addComparison(10, '>');
-        $this->addComparison(5, '<');
-
-        $this->replaceComparison(1, 2, '<=');
-
-        $this->getComparisons()->shouldReturn(array(array('value' => 10, 'operator' => '>'), array('value' => 2, 'operator' => '<=')));
+        $this->getComparisons()->shouldBeLike(array(new Compare(10, '>'), new Compare(5, '>')));
         $this->hasComparisons()->shouldReturn(true);
     }
 
     function it_should_allow_removing_comparisons()
     {
-        $this->addComparison(10, '>');
-        $this->addComparison(5, '<');
+        $this->addComparison(new Compare(10, '>'));
+        $this->addComparison(new Compare(5, '>'));
 
         $this->removeComparison(0);
 
-        $this->getComparisons()->shouldReturn(array(1 => array('value' => 5, 'operator' => '<')));
+        $this->getComparisons()->shouldBeLike(array(1 => new Compare(5, '>')));
         $this->hasComparisons()->shouldReturn(true);
     }
 
-    function it_should_have_pattern_matchers()
+    function it_should_not_contain_pattern_matchers_by_default()
     {
         $this->getPatternMatch()->shouldReturn(array());
         $this->hasPatternMatch()->shouldReturn(false);
@@ -226,51 +160,40 @@ class ValuesBagSpec extends ObjectBehavior
 
     function it_should_allow_pattern_matchers()
     {
-        $this->addPatternMatch('foo', ValuesBag::PATTERN_CONTAINS);
-        $this->addPatternMatch('bar', ValuesBag::PATTERN_ENDS_WITH);
+        $this->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS));
+        $this->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH));
 
-        $this->getPatternMatch()->shouldReturn(array(array('value' => 'foo', 'type' => ValuesBag::PATTERN_CONTAINS), array('value' => 'bar', 'type' => ValuesBag::PATTERN_ENDS_WITH)));
-        $this->hasPatternMatch()->shouldReturn(true);
-    }
-
-    function it_should_allow_replacing_pattern_matchers()
-    {
-        $this->addPatternMatch('foo', ValuesBag::PATTERN_CONTAINS);
-        $this->addPatternMatch('bar', ValuesBag::PATTERN_STARTS_WITH);
-
-        $this->replacePatternMatch(1, 'bar', ValuesBag::PATTERN_STARTS_WITH);
-
-        $this->getPatternMatch()->shouldReturn(array(array('value' => 'foo', 'type' => ValuesBag::PATTERN_CONTAINS), array('value' => 'bar', 'type' => ValuesBag::PATTERN_STARTS_WITH)));
+        $this->getPatternMatch()->shouldBeLike(array(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS), new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)));
         $this->hasPatternMatch()->shouldReturn(true);
     }
 
     function it_should_allow_removing_pattern_matchers()
     {
-        $this->addPatternMatch('foo', ValuesBag::PATTERN_CONTAINS);
-        $this->addPatternMatch('bar', ValuesBag::PATTERN_ENDS_WITH);
+        $this->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS));
+        $this->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH));
 
         $this->removePatternMatch(0);
 
-        $this->getPatternMatch()->shouldReturn(array(1 => array('value' => 'bar', 'type' => ValuesBag::PATTERN_ENDS_WITH)));
+        $this->getPatternMatch()->shouldBeLike(array(1 => new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)));
         $this->hasPatternMatch()->shouldReturn(true);
     }
 
-    function it_should_have_violations()
+    function it_should_not_contain_violations_by_default()
     {
         $this->hasViolations()->shouldReturn(false);
         $this->getViolations()->shouldReturn(array());
     }
 
     /**
-     * @param \Symfony\Component\Validator\ConstraintViolationInterface $constraint
+     * @param \Symfony\Component\Validator\ConstraintViolationInterface $violation
      */
-    function it_should_allow_setting_violations($constraint)
+    function it_should_allow_setting_violations($violation)
     {
-        $this->setViolations(array($constraint));
+        $this->setViolations(array($violation));
         $this->hasViolations()->shouldReturn(true);
     }
 
-    function it_should_allow_unsetting_violations()
+    function it_should_allow_removing_violations()
     {
         $this->setViolations(array());
         $this->hasViolations()->shouldReturn(false);
