@@ -43,7 +43,7 @@ class ChainFormatterSpec extends ObjectBehavior
         $searchCondition->getValuesGroup()->willReturn($valuesGroup);
         $searchCondition->getFieldSet()->willReturn($fieldSet);
 
-        $valuesGroup->hasViolations()->willReturn(false);
+        $valuesGroup->hasErrors()->willReturn(false);
         $formatter->format($searchCondition)->shouldBeCalled();
         $formatter2->format($searchCondition)->shouldBeCalled();
 
@@ -55,7 +55,7 @@ class ChainFormatterSpec extends ObjectBehavior
 
     function it_should_not_execution_when_ValuesGroup_has_violations(SearchConditionInterface $searchCondition, FieldSet $fieldSet, ValuesGroup $valuesGroup, FormatterInterface $formatter, FormatterInterface $formatter2)
     {
-        $valuesGroup->hasViolations()->willReturn(true);
+        $valuesGroup->hasErrors()->willReturn(true);
 
         $searchCondition->getValuesGroup()->willReturn($valuesGroup);
         $searchCondition->getFieldSet()->willReturn($fieldSet);
@@ -71,13 +71,13 @@ class ChainFormatterSpec extends ObjectBehavior
 
     function it_should_stop_execution_if_a_formatter_sets_violations(SearchConditionInterface $searchCondition, FieldSet $fieldSet, ValuesGroup $valuesGroup, FormatterInterface $formatter, FormatterInterface $formatter2)
     {
-        $valuesGroup->hasViolations()->willReturn(false);
+        $valuesGroup->hasErrors()->willReturn(false);
 
         $searchCondition->getValuesGroup()->willReturn($valuesGroup);
         $searchCondition->getFieldSet()->willReturn($fieldSet);
 
         $formatter->format($searchCondition)->will(function() use ($valuesGroup) {
-            $valuesGroup->hasViolations()->willReturn(true);
+            $valuesGroup->hasErrors()->willReturn(true);
         });
         $formatter2->format($searchCondition)->shouldNotBeCalled();
 

@@ -18,6 +18,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
+use Rollerworks\Component\Search\ValuesError;
 
 class ValuesBagSpec extends ObjectBehavior
 {
@@ -178,24 +179,16 @@ class ValuesBagSpec extends ObjectBehavior
         $this->hasPatternMatch()->shouldReturn(true);
     }
 
-    function it_should_not_contain_violations_by_default()
+    function it_should_not_have_error_by_default()
     {
-        $this->hasViolations()->shouldReturn(false);
-        $this->getViolations()->shouldReturn(array());
+        $this->hasErrors()->shouldReturn(false);
+        $this->getErrors()->shouldReturn(array());
     }
 
-    /**
-     * @param \Symfony\Component\Validator\ConstraintViolationInterface $violation
-     */
-    function it_should_allow_setting_violations($violation)
+    function it_should_allow_adding_errors(ValuesError $error)
     {
-        $this->setViolations(array($violation));
-        $this->hasViolations()->shouldReturn(true);
-    }
-
-    function it_should_allow_removing_violations()
-    {
-        $this->setViolations(array());
-        $this->hasViolations()->shouldReturn(false);
+        $this->addError($error);
+        $this->hasErrors()->shouldReturn(true);
+        $this->getErrors()->shouldReturn(array($error));
     }
 }

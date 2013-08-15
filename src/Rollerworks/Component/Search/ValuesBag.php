@@ -34,7 +34,7 @@ class ValuesBag
     /**
      * @var array
      */
-    protected $violations;
+    protected $errors;
 
     /**
      * Constructor.
@@ -47,7 +47,7 @@ class ValuesBag
         $this->excludedRanges = array();
         $this->comparisons = array();
         $this->patternMatchers = array();
-        $this->violations = array();
+        $this->errors = array();
     }
 
     /**
@@ -160,6 +160,9 @@ class ValuesBag
         $this->comparisons[] = $value;
     }
 
+    /**
+     * @return Compare[]
+     */
     public function getComparisons()
     {
         return $this->comparisons;
@@ -179,6 +182,9 @@ class ValuesBag
         return $this;
     }
 
+    /**
+     * @return PatternMatch[]
+     */
     public function getPatternMatch()
     {
         return $this->patternMatchers;
@@ -203,16 +209,9 @@ class ValuesBag
         return $this;
     }
 
-    /**
-     * Set the violations for the values-bag.
-     *
-     * @param ConstraintViolation[] $violations
-     *
-     * @return self
-     */
-    public function setViolations(array $violations)
+    public function addError(ValuesError $error)
     {
-        $this->violations = $violations;
+        $this->errors[] = $error;
 
         return $this;
     }
@@ -220,16 +219,16 @@ class ValuesBag
     /**
      * @return boolean
      */
-    public function hasViolations()
+    public function hasErrors()
     {
-        return !empty($this->violations);
+        return !empty($this->errors);
     }
 
     /**
      * @return array
      */
-    public function getViolations()
+    public function getErrors()
     {
-        return $this->violations;
+        return $this->errors;
     }
 }

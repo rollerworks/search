@@ -23,24 +23,24 @@ interface ValueComparisonInterface
     /**
      * Returns whether the first value is higher then the second value.
      *
-     * @param mixed $value
-     * @param mixed $nextValue
+     * @param mixed $higher
+     * @param mixed $lower
      * @param array $options
      *
      * @return boolean
      */
-    public function isHigher($value, $nextValue, array $options);
+    public function isHigher($higher, $lower, array $options);
 
     /**
      * Returns whether the first value is lower then the second value.
      *
-     * @param mixed $value
-     * @param mixed $nextValue
+     * @param mixed $lower
+     * @param mixed $higher
      * @param array $options
      *
      * @return boolean
      */
-    public function isLower($value, $nextValue, $options);
+    public function isLower($lower, $higher, $options);
 
     /**
      * Returns whether the first value equals the second value.

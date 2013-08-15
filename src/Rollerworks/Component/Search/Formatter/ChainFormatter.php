@@ -60,14 +60,14 @@ class ChainFormatter implements FormatterInterface
      */
     public function format(SearchConditionInterface $condition)
     {
-        if (true === $condition->getValuesGroup()->hasViolations()) {
+        if (true === $condition->getValuesGroup()->hasErrors()) {
             return;
         }
 
         foreach ($this->formatters as $formatter) {
             $formatter->format($condition);
 
-            if (true === $condition->getValuesGroup()->hasViolations()) {
+            if (true === $condition->getValuesGroup()->hasErrors()) {
                 break;
             }
         }

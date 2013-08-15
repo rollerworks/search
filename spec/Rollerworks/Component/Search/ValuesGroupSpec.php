@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Rollerworks Search Component package.
+ *
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace spec\Rollerworks\Component\Search;
 
 use PhpSpec\ObjectBehavior;
@@ -78,14 +87,14 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->getGroups()->shouldReturn(array(1 => $group2));
     }
 
-    function it_should_have_violations()
+    function it_should_have_no_errors_by_default()
     {
-        $this->hasViolations()->shouldReturn(false);
+        $this->hasErrors()->shouldReturn(false);
     }
 
     function it_should_allow_setting_violations()
     {
-        $this->setViolations(true);
-        $this->hasViolations()->shouldReturn(true);
+        $this->setHasErrors(true);
+        $this->hasErrors()->shouldReturn(true);
     }
 }

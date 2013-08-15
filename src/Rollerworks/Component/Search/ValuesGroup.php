@@ -33,7 +33,7 @@ class ValuesGroup
     /**
      * @var array
      */
-    private $violations;
+    private $errors;
 
     /**
      * Constructor.
@@ -42,7 +42,7 @@ class ValuesGroup
     {
         $this->groups = array();
         $this->fields = array();
-        $this->violations = array();
+        $this->errors = array();
     }
 
     /**
@@ -63,6 +63,22 @@ class ValuesGroup
     public function hasGroups()
     {
         return !empty($this->groups);
+    }
+
+    /**
+     * @param integer $index
+     *
+     * @return ValuesGroup
+     *
+     * @throws \InvalidArgumentException on invalid index.
+     */
+    public function getGroup($index)
+    {
+        if (!isset($this->fields[$index])) {
+            throw new \InvalidArgumentException(sprintf('Unable to get none existent group: "%d"', $index));
+        }
+
+        return $this->groups[$index];
     }
 
     /**
@@ -118,6 +134,15 @@ class ValuesGroup
         return $this->fields;
     }
 
+    public function getField($name)
+    {
+        if (!isset($this->fields[$name])) {
+            throw new \InvalidArgumentException(sprintf('Unable to get none existent field: "%s"', $name));
+        }
+
+        return $this->fields[$name];
+    }
+
     /**
      * @param string $name
      *
@@ -135,23 +160,23 @@ class ValuesGroup
     /**
      * @return boolean
      */
-    public function hasViolations()
+    public function hasErrors()
     {
-        return !empty($this->violations);
+        return !empty($this->errors);
     }
 
     /**
-     * Set whether this group has nested-values with violations.
+     * Set whether this group has nested-values with errors.
      *
-     * Actual violations are set the the {@see ValuesBag} object.
+     * Actual errors are set on the {@see ValuesBag} object.
      *
-     * @param boolean $violations
+     * @param boolean $errors
      *
      * @return self
      */
-    public function setViolations($violations)
+    public function setHasErrors($errors)
     {
-        $this->violations = $violations;
+        $this->errors = $errors;
 
         return $this;
     }
