@@ -28,13 +28,13 @@ class Compare extends SingleValue
      *
      * @param mixed  $value
      * @param string $operator
-     * @param mixed  $originalValue
+     * @param mixed  $viewValue
      *
      * @throws \InvalidArgumentException When the operator is invalid
      */
-    public function __construct($value, $operator, $originalValue = null)
+    public function __construct($value, $operator, $viewValue = null)
     {
-        parent::__construct($value, $originalValue);
+        parent::__construct($value, $viewValue);
 
         if (!in_array($operator, array('>=', '<=', '<>', '<', '>'))) {
             throw new \InvalidArgumentException(sprintf('Unknown operator "%s".', $operator));

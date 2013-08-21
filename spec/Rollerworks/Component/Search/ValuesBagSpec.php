@@ -155,8 +155,8 @@ class ValuesBagSpec extends ObjectBehavior
 
     function it_should_not_contain_pattern_matchers_by_default()
     {
-        $this->getPatternMatch()->shouldReturn(array());
-        $this->hasPatternMatch()->shouldReturn(false);
+        $this->getPatternMatchers()->shouldReturn(array());
+        $this->hasPatternMatchers()->shouldReturn(false);
     }
 
     function it_should_allow_pattern_matchers()
@@ -164,8 +164,8 @@ class ValuesBagSpec extends ObjectBehavior
         $this->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS));
         $this->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH));
 
-        $this->getPatternMatch()->shouldBeLike(array(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS), new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)));
-        $this->hasPatternMatch()->shouldReturn(true);
+        $this->getPatternMatchers()->shouldBeLike(array(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS), new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)));
+        $this->hasPatternMatchers()->shouldReturn(true);
     }
 
     function it_should_allow_removing_pattern_matchers()
@@ -175,8 +175,8 @@ class ValuesBagSpec extends ObjectBehavior
 
         $this->removePatternMatch(0);
 
-        $this->getPatternMatch()->shouldBeLike(array(1 => new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)));
-        $this->hasPatternMatch()->shouldReturn(true);
+        $this->getPatternMatchers()->shouldBeLike(array(1 => new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)));
+        $this->hasPatternMatchers()->shouldReturn(true);
     }
 
     function it_should_not_have_error_by_default()

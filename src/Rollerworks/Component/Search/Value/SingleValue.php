@@ -19,13 +19,20 @@ class SingleValue
     protected $value;
 
     /**
+     * @var string
+     */
+    protected $viewValue;
+
+    /**
      * Constructor.
      *
      * @param mixed $value
+     * @param mixed $viewValue
      */
-    public function __construct($value)
+    public function __construct($value, $viewValue = null)
     {
         $this->value = $value;
+        $this->viewValue = null !== $viewValue ? $viewValue : $value;;
     }
 
     /**
@@ -42,5 +49,21 @@ class SingleValue
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setViewValue($value)
+    {
+        $this->viewValue = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewValue()
+    {
+        return $this->viewValue;
     }
 }

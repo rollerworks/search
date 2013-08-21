@@ -13,6 +13,9 @@ namespace Rollerworks\Component\Search\Value;
 
 class Range
 {
+    protected $viewLower;
+    protected $viewUpper;
+
     protected $lower;
     protected $upper;
     protected $inclusiveLower;
@@ -25,11 +28,16 @@ class Range
      * @param mixed   $upper
      * @param boolean $inclusiveLower
      * @param boolean $inclusiveUpper
+     * @param string  $viewLower
+     * @param string  $viewUpper
      */
-    public function __construct($lower, $upper, $inclusiveLower = true, $inclusiveUpper = true)
+    public function __construct($lower, $upper, $inclusiveLower = true, $inclusiveUpper = true, $viewLower = null, $viewUpper = null)
     {
         $this->lower = $lower;
         $this->upper = $upper;
+
+        $this->viewLower = null !== $viewLower ? $viewLower : $lower;
+        $this->viewUpper = null !== $viewUpper ? $viewUpper : $upper;
 
         $this->inclusiveLower = (bool) $inclusiveLower;
         $this->inclusiveUpper = (bool) $inclusiveUpper;
@@ -93,5 +101,37 @@ class Range
     public function setUpper($value)
     {
         $this->upper = $value;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setViewLower($value)
+    {
+        $this->viewLower = $value;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setViewUpper($value)
+    {
+        $this->viewUpper = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewLower()
+    {
+        return $this->viewLower;
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewUpper()
+    {
+        return $this->viewUpper;
     }
 }

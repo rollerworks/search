@@ -185,7 +185,7 @@ class ValuesBag
     /**
      * @return PatternMatch[]
      */
-    public function getPatternMatch()
+    public function getPatternMatchers()
     {
         return $this->patternMatchers;
     }
@@ -195,7 +195,7 @@ class ValuesBag
         $this->patternMatchers[] = $value;
     }
 
-    public function hasPatternMatch()
+    public function hasPatternMatchers()
     {
         return !empty($this->patternMatchers);
     }

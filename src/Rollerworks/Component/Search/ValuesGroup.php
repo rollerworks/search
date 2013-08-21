@@ -174,7 +174,7 @@ class ValuesGroup
      *
      * @return self
      */
-    public function setHasErrors($errors)
+    public function setHasErrors($errors = true)
     {
         $this->errors = $errors;
 

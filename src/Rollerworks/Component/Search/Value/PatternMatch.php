@@ -28,6 +28,11 @@ class PatternMatch
     protected $value;
 
     /**
+     * @var mixed
+     */
+    protected $viewValue;
+
+    /**
      * Comparison operator.
      *
      * @var string
@@ -62,12 +67,31 @@ class PatternMatch
 
         $this->patternType = $patternType;
         $this->value = $value;
+        $this->viewValue = $value;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    public function setViewValue($value)
+    {
+        $this->viewValue = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewValue()
     {
         return $this->value;
     }
