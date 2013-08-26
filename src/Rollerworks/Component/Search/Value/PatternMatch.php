@@ -71,6 +71,14 @@ class PatternMatch
     }
 
     /**
+     * @param string $value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
      * @return string
      */
     public function getValue()

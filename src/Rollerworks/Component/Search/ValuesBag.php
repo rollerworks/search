@@ -51,7 +51,7 @@ class ValuesBag
     }
 
     /**
-     * @return array
+     * @return SingleValue[]
      */
     public function getSingleValues()
     {
@@ -89,6 +89,9 @@ class ValuesBag
         return !empty($this->excludedValues);
     }
 
+    /**
+     * @return SingleValue[]
+     */
     public function getExcludedValues()
     {
         return $this->excludedValues;
@@ -115,6 +118,9 @@ class ValuesBag
         return count($this->ranges) > 0;
     }
 
+    /**
+     * @return Range[]
+     */
     public function getRanges()
     {
         return $this->ranges;
@@ -141,6 +147,9 @@ class ValuesBag
         return !empty($this->excludedRanges);
     }
 
+    /**
+     * @return Range[]
+     */
     public function getExcludedRanges()
     {
        return $this->excludedRanges;
