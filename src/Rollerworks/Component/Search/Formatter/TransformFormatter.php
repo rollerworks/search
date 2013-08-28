@@ -24,8 +24,6 @@ use Rollerworks\Component\Search\ValuesGroup;
  * Transforms the values to a normalized format and view format.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- *
- * @todo check for TransformationFailedException
  */
 class TransformFormatter implements FormatterInterface
 {
