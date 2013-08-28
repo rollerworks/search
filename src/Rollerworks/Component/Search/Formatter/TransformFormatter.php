@@ -13,10 +13,12 @@ namespace Rollerworks\Component\Search\Formatter;
 
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FormatterInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesError;
+use Rollerworks\Component\Search\ValuesGroup;
 
 /**
  * Transforms the values to a normalized format and view format.
@@ -35,15 +37,13 @@ class TransformFormatter implements FormatterInterface
         $fieldSet = $condition->getFieldSet();
         $valuesGroup = $condition->getValuesGroup();
 
-        foreach ($valuesGroup->getGroups() as $group) {
-            foreach ($group->getFields() as $fieldName => $values) {
-                if (!$fieldSet->has($fieldName)) {
-                    continue;
-                }
+        $this->transformValuesInGroup($valuesGroup, $fieldSet);
+    }
 
-                $config = $fieldSet->get($fieldName);
-                $this->transformValuesBag($config, $values);
-            }
+    private function transformValuesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
+    {
+        foreach ($valuesGroup->getGroups() as $group) {
+            $this->transformValuesInGroup($group, $fieldSet);
         }
 
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
