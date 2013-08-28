@@ -12,9 +12,11 @@
 namespace Rollerworks\Component\Search\Formatter;
 
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FormatterInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\ValuesBag;
+use Rollerworks\Component\Search\ValuesGroup;
 
 /**
  * Removes duplicated values.
@@ -39,28 +41,27 @@ class DuplicateRemover implements FormatterInterface
         $fieldSet = $condition->getFieldSet();
         $valuesGroup = $condition->getValuesGroup();
 
-        foreach ($valuesGroup->getGroups() as $group) {
-            foreach ($group->getFields() as $fieldName => $values) {
-                if (!$fieldSet->has($fieldName)) {
-                    continue;
-                }
+        $this->removeDuplicatesInGroup($valuesGroup, $fieldSet);
+    }
 
-                $config = $fieldSet->get($fieldName);
-                $this->removeDuplicates($config, $values);
-            }
-        }
-
+    private function removeDuplicatesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
+    {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
             if (!$fieldSet->has($fieldName)) {
                 continue;
             }
 
             $config = $fieldSet->get($fieldName);
-            $this->removeDuplicates($config, $values);
+            $this->removeDuplicatesInValuesBag($config, $values);
+        }
+
+        // now traverse the subgroups
+        foreach ($valuesGroup->getGroups() as $group) {
+            $this->removeDuplicatesInGroup($group, $fieldSet);
         }
     }
 
-    private function removeDuplicates(FieldConfigInterface $config, ValuesBag $valuesBag)
+    private function removeDuplicatesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
     {
         $comparison = $config->getValueComparison();
         $options = $config->getOptions();
