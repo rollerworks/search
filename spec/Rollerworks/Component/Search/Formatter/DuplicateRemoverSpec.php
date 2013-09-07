@@ -281,6 +281,8 @@ class DuplicateRemoverSpec extends ObjectBehavior
             new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH),
             new PatternMatch('bla', PatternMatch::PATTERN_CONTAINS),
             new PatternMatch('bar', PatternMatch::PATTERN_CONTAINS),
+            new PatternMatch('who', PatternMatch::PATTERN_CONTAINS),
+            new PatternMatch('who', PatternMatch::PATTERN_CONTAINS, true),
         );
 
         $valuesBag->getPatternMatchers()->willReturn($currentValues);

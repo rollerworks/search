@@ -18,8 +18,8 @@ class PatternMatch
     const PATTERN_ENDS_WITH = 3;
     const PATTERN_REGEX = 4;
     const PATTERN_NOT_CONTAINS = 5;
-    const PATTERN_NOT_STARTS = 6;
-    const PATTERN_NOT_END = 7;
+    const PATTERN_NOT_STARTS_WITH = 6;
+    const PATTERN_NOT_ENDS_WITH = 7;
     const PATTERN_NOT_REGEX = 8;
 
     /**
@@ -40,14 +40,20 @@ class PatternMatch
     protected $patternType;
 
     /**
+     * @var boolean
+     */
+    protected $caseInsenstive;
+
+    /**
      * Constructor.
      *
      * @param string         $value
      * @param integer|string $patternType
+     * @param boolean        $caseInsenstive
      *
      * @throws \InvalidArgumentException When the pattern-match type is invalid.
      */
-    public function __construct($value, $patternType)
+    public function __construct($value, $patternType, $caseInsenstive = false)
     {
         if (!is_scalar($value)) {
             throw new \InvalidArgumentException('Value of PatternMatch must be a scalar value.');
@@ -68,6 +74,7 @@ class PatternMatch
         $this->patternType = $patternType;
         $this->value = $value;
         $this->viewValue = $value;
+        $this->caseInsenstive = $caseInsenstive;
     }
 
     /**
@@ -112,5 +119,21 @@ class PatternMatch
     public function getType()
     {
         return $this->patternType;
+    }
+
+    /**
+     * @param boolean $caseInsenstive
+     */
+    public function setCaseInsenstive($caseInsenstive = true)
+    {
+        $this->caseInsenstive = $caseInsenstive;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isCaseInsenstive()
+    {
+        return $this->caseInsenstive;
     }
 }

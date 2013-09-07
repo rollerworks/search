@@ -37,6 +37,17 @@ class PatternMatchSpec extends ObjectBehavior
         $this->getType()->shouldReturn(PatternMatch::PATTERN_CONTAINS);
     }
 
+    function its_case_sensitive_by_default()
+    {
+        $this->isCaseInsenstive()->shouldReturn(false);
+    }
+
+    function it_allows_case_insensitive()
+    {
+        $this->setCaseInsenstive(true);
+        $this->isCaseInsenstive()->shouldReturn(true);
+    }
+
     function it_should_complain_when_setting_an_object_as_value()
     {
         $this->shouldThrow(new \InvalidArgumentException('Value of PatternMatch must be a scalar value.'));
