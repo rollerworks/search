@@ -22,7 +22,7 @@ use Symfony\Component\Validator\ConstraintViolation;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesBag
+class ValuesBag implements \Countable
 {
     protected $excludedValues;
     protected $ranges;
@@ -30,6 +30,8 @@ class ValuesBag
     protected $comparisons;
     protected $singleValues;
     protected $patternMatchers;
+
+    protected $valuesCount;
 
     /**
      * @var array
@@ -48,6 +50,7 @@ class ValuesBag
         $this->comparisons = array();
         $this->patternMatchers = array();
         $this->errors = array();
+        $this->valuesCount = 0;
     }
 
     /**
@@ -61,6 +64,9 @@ class ValuesBag
     public function addSingleValue(SingleValue $value)
     {
         $this->singleValues[] = $value;
+        $this->valuesCount++;
+
+        return $this;
     }
 
     public function hasSingleValues()
@@ -72,6 +78,8 @@ class ValuesBag
     {
         if (isset($this->singleValues[$index])) {
             unset($this->singleValues[$index]);
+
+            $this->valuesCount--;
         }
 
         return $this;
@@ -80,6 +88,7 @@ class ValuesBag
     public function addExcludedValue(SingleValue $value)
     {
         $this->excludedValues[] = $value;
+        $this->valuesCount++;
 
         return $this;
     }
@@ -101,6 +110,8 @@ class ValuesBag
     {
         if (isset($this->excludedValues[$index])) {
             unset($this->excludedValues[$index]);
+
+            $this->valuesCount--;
         }
 
         return $this;
@@ -109,6 +120,7 @@ class ValuesBag
     public function addRange(Range $range)
     {
         $this->ranges[] = $range;
+        $this->valuesCount++;
 
         return $this;
     }
@@ -130,6 +142,8 @@ class ValuesBag
     {
         if (isset($this->ranges[$index])) {
             unset($this->ranges[$index]);
+
+            $this->valuesCount--;
         }
 
         return $this;
@@ -138,6 +152,7 @@ class ValuesBag
     public function addExcludedRange(Range $range)
     {
         $this->excludedRanges[] = $range;
+        $this->valuesCount++;
 
         return $this;
     }
@@ -159,6 +174,8 @@ class ValuesBag
     {
         if (isset($this->excludedRanges[$index])) {
             unset($this->excludedRanges[$index]);
+
+            $this->valuesCount--;
         }
 
         return $this;
@@ -167,6 +184,9 @@ class ValuesBag
     public function addComparison(Compare $value)
     {
         $this->comparisons[] = $value;
+        $this->valuesCount++;
+
+        return $this;
     }
 
     /**
@@ -186,6 +206,8 @@ class ValuesBag
     {
         if (isset($this->comparisons[$index])) {
             unset($this->comparisons[$index]);
+
+            $this->valuesCount--;
         }
 
         return $this;
@@ -202,6 +224,9 @@ class ValuesBag
     public function addPatternMatch(PatternMatch $value)
     {
         $this->patternMatchers[] = $value;
+        $this->valuesCount++;
+
+        return $this;
     }
 
     public function hasPatternMatchers()
@@ -213,6 +238,8 @@ class ValuesBag
     {
         if (isset($this->patternMatchers[$index])) {
             unset($this->patternMatchers[$index]);
+
+            $this->valuesCount--;
         }
 
         return $this;
@@ -240,4 +267,11 @@ class ValuesBag
     {
         return $this->errors;
     }
-}
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return $this->valuesCount;
+    }}

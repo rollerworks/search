@@ -20,29 +20,35 @@ namespace Rollerworks\Component\Search;
  */
 class ValuesGroup
 {
+    const GROUP_LOGICAL_OR = 'OR';
+    const GROUP_LOGICAL_AND = 'AND';
+
     /**
      * @var ValuesGroup[]
      */
-    private $groups;
+    private $groups = array();
 
     /**
      * @var ValuesBag[]
      */
-    private $fields;
+    private $fields = array();
 
     /**
-     * @var array
+     * @var boolean
      */
-    private $errors;
+    private $errors = array();
+
+    /**
+     * @var string
+     */
+    private $groupLogical;
 
     /**
      * Constructor.
      */
-    public function __construct()
+    public function __construct($groupLogical = self::GROUP_LOGICAL_AND)
     {
-        $this->groups = array();
-        $this->fields = array();
-        $this->errors = array();
+        $this->groupLogical = $groupLogical;
     }
 
     /**
@@ -179,5 +185,31 @@ class ValuesGroup
         $this->errors = $errors;
 
         return $this;
+    }
+
+    /**
+     * Get the logical case of the field.
+     *
+     * This is either one of the following class constants value:
+     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     *
+     * @return string
+     */
+    public function getGroupLogical()
+    {
+        return $this->groupLogical;
+    }
+
+    /**
+     * Set the logical case of the field.
+     *
+     * This is either one of the following class constants value:
+     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     *
+     * @param integer
+     */
+    public function setGroupLogical($groupLogical)
+    {
+        $this->groupLogical = $groupLogical;
     }
 }
