@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Input;
 
+use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Input\FilterQuery\Lexer;
@@ -278,10 +279,13 @@ class FilterQueryInput extends AbstractInput
      * @param integer     $level
      * @param integer     $groupIdx
      * @param boolean     $inGroup
+     *
+     * @throws FieldRequiredException
      */
     private function FieldValuesPairs(ValuesGroup $valuesGroup, $level = 0, $groupIdx = 0, $inGroup = false)
     {
         $groupCount = 0;
+        $allFields = $this->fieldSet->all();
 
         while (null !== $this->lexer->lookahead) {
             switch ($this->lexer->lookahead['type']) {
@@ -295,6 +299,7 @@ class FilterQueryInput extends AbstractInput
 
                 case Lexer::T_IDENTIFIER:
                     $fieldName = $this->getFieldName($this->FieldIdentification());
+                    unset($allFields[$fieldName]);
 
                     if ($valuesGroup->hasField($fieldName)) {
                         $this->FieldValues($fieldName, $valuesGroup->getField($fieldName), $level, $groupIdx);
@@ -310,6 +315,13 @@ class FilterQueryInput extends AbstractInput
                 default:
                     $this->syntaxError('"(" or FieldIdentification');
                     break;
+            }
+        }
+
+        // Now run trough all the remaining fields and look if there are required
+        foreach ($allFields as $fieldName => $filterConfig) {
+            if ($filterConfig->isRequired()) {
+                throw new FieldRequiredException($fieldName, $groupIdx, $level);
             }
         }
     }

@@ -543,7 +543,7 @@ class ArrayInputSpec extends ObjectBehavior
         ));
     }
 
-    function it_errors_when_the_is_required_but_not_set(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
+    function it_errors_when_a_field_is_required_but_not_set(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptRanges()->willReturn(false);
