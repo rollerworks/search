@@ -19,7 +19,6 @@ use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
-use Seld\JsonLint\ParsingException;
 
 // Note: Because the JSON input extends the ArrayInput we don't need extensive checks
 class JsonInputSpec extends ObjectBehavior

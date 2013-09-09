@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\Extension\Validator\Constraints;
 
-use Rollerworks\Component\Search\FieldSet;
 use Symfony\Component\Validator\Constraint;
 
 class ValuesGroup extends Constraint

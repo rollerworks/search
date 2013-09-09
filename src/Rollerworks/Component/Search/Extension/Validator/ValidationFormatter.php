@@ -13,7 +13,6 @@ namespace Rollerworks\Component\Search\Extension\Validator;
 
 use Rollerworks\Component\Search\Extension\Validator\Constraints\ValuesGroup as ValuesGroupConstraint;
 use Rollerworks\Component\Search\Extension\Validator\ViolationMapper\ViolationMapperInterface;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FormatterInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Symfony\Component\Validator\ValidatorInterface;

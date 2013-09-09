@@ -94,7 +94,7 @@ interface FieldConfigInterface
      * view to the normalized format.
      *
      * @param DataTransformerInterface $viewTransformer
-     * @param Boolean                  $forcePrepend if set to true, prepend instead of appending
+     * @param Boolean                  $forcePrepend    if set to true, prepend instead of appending
      *
      * @return self The configuration object.
      */
@@ -116,7 +116,7 @@ interface FieldConfigInterface
      * normalized to the model format.
      *
      * @param DataTransformerInterface $modelTransformer
-     * @param Boolean                  $forceAppend if set to true, append instead of prepending
+     * @param Boolean                  $forceAppend      if set to true, append instead of prepending
      *
      * @return self The configuration object.
      */

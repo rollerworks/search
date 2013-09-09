@@ -95,7 +95,7 @@ abstract class AbstractLexer
     /**
      * Checks whether a given token matches the current lookahead.
      *
-     * @param integer|string $token
+     * @param  integer|string $token
      * @return boolean
      */
     public function isNextToken($token)
@@ -106,7 +106,7 @@ abstract class AbstractLexer
     /**
      * Checks whether any of the given tokens matches the current lookahead
      *
-     * @param array $tokens
+     * @param  array   $tokens
      * @return boolean
      */
     public function isNextTokenAny(array $tokens)
@@ -150,8 +150,8 @@ abstract class AbstractLexer
     /**
      * Checks if given value is identical to the given token
      *
-     * @param mixed $value
-     * @param integer $token
+     * @param  mixed   $value
+     * @param  integer $token
      * @return boolean
      */
     public function isA($value, $token)
@@ -182,6 +182,7 @@ abstract class AbstractLexer
     {
         $peek = $this->peek();
         $this->peek = 0;
+
         return $peek;
     }
 
@@ -217,7 +218,7 @@ abstract class AbstractLexer
     /**
      * Gets the literal for a given token.
      *
-     * @param integer $token
+     * @param  integer $token
      * @return string
      */
     public function getLiteral($token)
@@ -252,7 +253,7 @@ abstract class AbstractLexer
     /**
      * Retrieve token type. Also processes the token value if necessary.
      *
-     * @param string $value
+     * @param  string  $value
      * @return integer
      */
     abstract protected function getType(&$value);

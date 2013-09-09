@@ -60,8 +60,8 @@ class PatternMatch
         }
 
         if (is_string($patternType)) {
-            if (defined('Rollerworks\\Component\\Search\\Value\\PatternMatch::PATTERN_' . $patternType)) {
-                $patternType = constant('Rollerworks\\Component\\Search\\Value\\PatternMatch::PATTERN_' . $patternType);
+            if (defined('Rollerworks\\Component\\Search\\Value\\PatternMatch::PATTERN_' . strtoupper($patternType))) {
+                $patternType = constant('Rollerworks\\Component\\Search\\Value\\PatternMatch::PATTERN_' . strtoupper($patternType));
             } else {
                 $patternType = -1;
             }

@@ -35,7 +35,7 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @param string $name FieldSet name
      *
-     * @throws UnexpectedTypeException If the name is not a string or an integer.
+     * @throws UnexpectedTypeException   If the name is not a string or an integer.
      * @throws \InvalidArgumentException If the name contains invalid characters.
      */
     public function __construct($name = null)
@@ -190,7 +190,7 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @param string|integer $name The tested form name.
      *
-     * @throws UnexpectedTypeException If the name is not a string or an integer.
+     * @throws UnexpectedTypeException   If the name is not a string or an integer.
      * @throws \InvalidArgumentException If the name contains invalid characters.
      */
     public static function validateName($name)

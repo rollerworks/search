@@ -9,7 +9,6 @@
 
 namespace Rollerworks\Component\Search;
 
-
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 interface FieldTypeInterface

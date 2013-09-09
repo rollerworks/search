@@ -106,7 +106,7 @@ abstract class AbstractInput implements InputProcessorInterface
      * @return string
      *
      * @throws UnknownFieldException When there is no field found.
-     * @throws \LogicException When there is no FieldSet configured.
+     * @throws \LogicException       When there is no FieldSet configured.
      */
     public function getFieldName($name)
     {

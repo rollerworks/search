@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\InputProcessorException;

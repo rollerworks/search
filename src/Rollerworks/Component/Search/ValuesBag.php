@@ -15,7 +15,6 @@ use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
-use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * ValuesBag holds all the values per-type.

@@ -129,7 +129,7 @@ class TransformFormatter implements FormatterInterface
     /**
      * Normalizes the value if a normalization transformer is set.
      *
-     * @param mixed                $value The value to transform
+     * @param mixed                $value  The value to transform
      * @param FieldConfigInterface $config
      *
      * @return mixed
@@ -146,7 +146,7 @@ class TransformFormatter implements FormatterInterface
     /**
      * Transforms the value if a value transformer is set.
      *
-     * @param mixed                $value The value to transform
+     * @param mixed                $value  The value to transform
      * @param FieldConfigInterface $config
      *
      * @return mixed

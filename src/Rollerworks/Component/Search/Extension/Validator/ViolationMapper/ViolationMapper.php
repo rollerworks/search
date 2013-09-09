@@ -25,7 +25,7 @@ class ViolationMapper implements ViolationMapperInterface
      * Maps a constraint violation to a ValuesGroup in the ValuesGroup tree under
      * the given ValuesGroup.
      *
-     * @param ConstraintViolationInterface $violation  The violations to map.
+     * @param ConstraintViolationInterface $violation   The violations to map.
      * @param ValuesGroup                  $valuesGroup The root group of the tree to map it to.
      */
     public function mapViolation(ConstraintViolationInterface $violation, ValuesGroup $valuesGroup)
