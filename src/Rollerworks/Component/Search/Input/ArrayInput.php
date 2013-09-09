@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
 /**
- * ArrayInput processes input provided as a PHP Array
+ * ArrayInput processes input provided as a PHP Array.
  *
  * The provided input must be structured as follow.
  *
