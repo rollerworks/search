@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
 /**
- * Exports the SearchCondition to FilterQuery format.
+ * Exports the SearchCondition as FilterQuery string.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

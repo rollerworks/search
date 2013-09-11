@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
 /**
- * Exports the SearchCondition to an array structure.
+ * Exports the SearchCondition as a structured PHP Array.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
