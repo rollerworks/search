@@ -9,27 +9,25 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Component\Search\Input;
-
-use Rollerworks\Component\Search\FieldSet;
+namespace Rollerworks\Component\Search;
 
 /**
- * Provide field-alias resolver.
+ * Provide a field-label resolver.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FieldAliasResolverInterface
+interface FieldLabelResolverInterface
 {
     /**
-     * Resolve the field alias to an real fieldname.
+     * Resolve the field name to an localized field-alias (label).
      *
      * Note: If the field alias can not be resolved
-     * it should return the $fieldName as-is.
+     * it should return the $fieldName unresolved.
      *
      * @param FieldSet $fieldSet
      * @param string   $fieldName
      *
      * @return string
      */
-    public function resolveFieldName(FieldSet $fieldSet, $fieldName);
+    public function resolveFieldLabel(FieldSet $fieldSet, $fieldName);
 }

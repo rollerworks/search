@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
+use Rollerworks\Component\Search\FieldAliasResolverInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\InputProcessorInterface;
 
