@@ -352,4 +352,63 @@ class ArrayExporterSpec extends ObjectBehavior
             )
         );
     }
+
+    function it_exports_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
+    {
+        $fieldSet->has('field1')->willReturn(true);
+        $fieldSet->get('field1')->willReturn($field);
+
+        $values = new ValuesBag();
+        $values->addSingleValue(new SingleValue('', 'value'));
+        $values->addSingleValue(new SingleValue('', 'value2'));
+
+        $group = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR);
+        $group->addField('field1', $values);
+
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $group);
+
+        $this->exportCondition($condition)->shouldBeLike(
+            array(
+                'logical-case' => 'OR',
+                'fields' => array(
+                    'field1' => array(
+                        'single-values' => array('value', 'value2')
+                    )
+                )
+            )
+        );
+    }
+
+    function it_exports_logical_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
+    {
+        $fieldSet->has('field1')->willReturn(true);
+        $fieldSet->get('field1')->willReturn($field);
+
+        $values = new ValuesBag();
+        $values->addSingleValue(new SingleValue('', 'value'));
+        $values->addSingleValue(new SingleValue('', 'value2'));
+
+        $subGroup = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR);
+        $subGroup->addField('field1', $values);
+
+        $group = new ValuesGroup();
+        $group->addGroup($subGroup);
+
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $group);
+
+        $this->exportCondition($condition)->shouldBeLike(
+            array(
+                'groups' => array(
+                    array(
+                        'logical-case' => 'OR',
+                        'fields' => array(
+                            'field1' => array(
+                                'single-values' => array('value', 'value2')
+                            )
+                        )
+                    )
+                )
+            )
+        );
+    }
 }

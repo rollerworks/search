@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
@@ -57,6 +56,10 @@ class ArrayExporter extends AbstractExporter
             foreach ($valuesGroup->getGroups() as $group) {
                 $result['groups'][] = $this->exportGroup($group, $fieldSet, $useFieldAlias, false);
             }
+        }
+
+        if (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() && (isset($result['groups']) || isset($result['fields']))) {
+            $result['logical-case'] = 'OR';
         }
 
         return $result;
@@ -138,49 +141,6 @@ class ArrayExporter extends AbstractExporter
         }
 
         return $exportedValues;
-    }
-
-    /**
-     * @param PatternMatch $patternMatch
-     *
-     * @return string
-     *
-     * @throws \RuntimeException When an unsupported pattern-match type is found.
-     */
-    protected function getPatternMatchType(PatternMatch $patternMatch)
-    {
-        $type = '';
-
-        if (in_array($patternMatch->getType(), array(PatternMatch::PATTERN_NOT_CONTAINS, PatternMatch::PATTERN_NOT_STARTS_WITH, PatternMatch::PATTERN_NOT_ENDS_WITH, PatternMatch::PATTERN_NOT_REGEX))) {
-           $type .= 'NOT_';
-        }
-
-        switch ($patternMatch->getType()) {
-            case PatternMatch::PATTERN_CONTAINS:
-            case PatternMatch::PATTERN_NOT_CONTAINS:
-                $type .= 'CONTAINS';
-                break;
-
-            case PatternMatch::PATTERN_STARTS_WITH:
-            case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                $type .= 'STARTS_WITH';
-                break;
-
-            case PatternMatch::PATTERN_ENDS_WITH:
-            case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                $type .= 'ENDS_WITH';
-                break;
-
-            case PatternMatch::PATTERN_REGEX:
-            case PatternMatch::PATTERN_NOT_REGEX:
-                $type .= 'REGEX';
-                break;
-
-            default:
-                throw new \RuntimeException(sprintf('Unsupported pattern-match type "%s" found. Please report this bug.', $patternMatch->getType()));
-        }
-
-        return $type;
     }
 
     /**
