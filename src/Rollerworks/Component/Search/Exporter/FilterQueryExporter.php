@@ -53,7 +53,13 @@ class FilterQueryExporter extends AbstractExporter
         }
 
         if (!empty($exportedFields) || !empty($exportedGroups)) {
-            $result = (!$isRoot ? '(' : '') . $exportedFields . $exportedGroups . (!$isRoot ? ');' : '');
+            // When the head group is OR-cased force to wrap it inside a group
+            if (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()) {
+                $isRoot = false;
+                $result = '*';
+            }
+
+            $result .= (!$isRoot ? '(' : '') . $exportedFields . $exportedGroups . (!$isRoot ? ');' : '');
         }
 
         return trim($result);
