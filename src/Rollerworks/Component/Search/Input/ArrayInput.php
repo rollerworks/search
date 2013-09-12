@@ -229,7 +229,13 @@ class ArrayInput extends AbstractInput
                 throw new InputProcessorException(sprintf('Range at index %d in group %d at nesting level %d is either not an array or is missing [lower] and/or [upper].', $index, $groupIdx, $level));
             }
 
-            $valuesBag->addRange(new Range($range['lower'], $range['upper']));
+            $valuesBag->addRange(
+                new Range($range['lower'], $range['upper'],
+                    (isset($range['inclusive-lower']) && false === (boolean) $range['inclusive-lower'] ? false : true),
+                    (isset($range['inclusive-upper']) && false === (boolean) $range['inclusive-upper'] ? false : true)
+                )
+            );
+
             $hasValues = true;
         }
 
@@ -238,7 +244,12 @@ class ArrayInput extends AbstractInput
                 throw new InputProcessorException(sprintf('Excluding-range at index %d in group %d at nesting level %d is either not an array or is missing [lower] and/or [upper].', $index, $groupIdx, $level));
             }
 
-            $valuesBag->addExcludedRange(new Range($range['lower'], $range['upper']));
+            $valuesBag->addExcludedRange(
+                new Range($range['lower'], $range['upper'],
+                    (isset($range['inclusive-lower']) && false === (boolean) $range['inclusive-lower'] ? false : true),
+                    (isset($range['inclusive-upper']) && false === (boolean) $range['inclusive-upper'] ? false : true)
+                )
+            );
             $hasValues = true;
         }
 

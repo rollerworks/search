@@ -133,6 +133,9 @@ class ArrayInputSpec extends ObjectBehavior
         $values->addRange(new Range(10, 20));
         $values->addRange(new Range(30, 40));
 
+        $values->addRange(new Range(50, 60, false));
+        $values->addRange(new Range(70, 80, true, false));
+
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
@@ -141,7 +144,13 @@ class ArrayInputSpec extends ObjectBehavior
             array(
                 'fields' => array(
                     'field1' => array(
-                        'ranges' => array(array('lower' => 10, 'upper' => 20), array('lower' => 30, 'upper' => 40))
+                        'ranges' => array(
+                            array('lower' => 10, 'upper' => 20),
+                            array('lower' => 30, 'upper' => 40),
+
+                            array('lower' => 50, 'upper' => 60, 'inclusive-lower' => false),
+                            array('lower' => 70, 'upper' => 80, 'inclusive-upper' => false),
+                        )
                     )
                 )
             )
