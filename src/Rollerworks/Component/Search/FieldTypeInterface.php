@@ -1,10 +1,12 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Sebastiaan Stok
- * Date: 8-8-13
- * Time: 12:55
- * To change this template use File | Settings | File Templates.
+
+/*
+ * This file is part of the Rollerworks Search Component package.
+ *
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Rollerworks\Component\Search;
@@ -46,14 +48,14 @@ interface FieldTypeInterface
     public function buildType(FieldConfigInterface $config, array $options);
 
     /**
-     * Returns whether ranges supported by this type.
+     * Returns whether ranges are supported by this type.
      *
      * @return boolean
      */
     public function hasRangeSupport();
 
     /**
-     * Returns whether comparisons supported by this type.
+     * Returns whether comparisons are supported by this type.
      *
      * @return boolean
      */

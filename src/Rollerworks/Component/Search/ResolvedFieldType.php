@@ -91,11 +91,34 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * Returns the extensions of the wrapped form type.
      *
-     * @return FieldTypeExtensionInterface[] An array of {@link FormTypeExtensionInterface} instances.
+     * @return FieldTypeExtensionInterface[] An array of {@link FieldTypeExtensionInterface} instances.
      */
     public function getTypeExtensions()
     {
         return $this->typeExtensions;
+    }
+
+    /**
+     * This configures the {@link FieldConfigInterface}.
+     *
+     * This method is called for each type in the hierarchy starting from the
+     * top most type. Type extensions can further modify the field.
+     *
+     * @param FieldConfigInterface $config
+     * @param array                $options
+     */
+    public function buildType(FieldConfigInterface $config, array $options)
+    {
+        if (null !== $this->parent) {
+            $this->parent->buildType($config, $options);
+        }
+
+        $this->innerType->buildType($config, $options);
+
+        foreach ($this->typeExtensions as $extension) {
+            /* @var FieldTypeExtensionInterface $extension */
+            $extension->buildType($config, $options);
+        }
     }
 
     /**

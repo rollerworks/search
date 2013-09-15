@@ -13,6 +13,9 @@ namespace Rollerworks\Component\Search;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 interface FieldTypeExtensionInterface
 {
     /**
