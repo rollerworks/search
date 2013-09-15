@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Exception;
  *
  * Throw this exception when the value-type is not supported for the field.
  */
-class UnsupportedValueTypeException extends \RuntimeException
+class UnsupportedValueTypeException extends \RuntimeException implements ExceptionInterface
 {
     protected $fieldName;
     protected $valueType;

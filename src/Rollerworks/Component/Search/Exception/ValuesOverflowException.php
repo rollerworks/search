@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class ValuesOverflowException extends \Exception
+class ValuesOverflowException extends \Exception implements ExceptionInterface
 {
     protected $fieldName;
     protected $max;

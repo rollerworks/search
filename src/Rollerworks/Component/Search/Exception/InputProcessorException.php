@@ -11,6 +11,6 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class InputProcessorException extends \RuntimeException
+class InputProcessorException extends \RuntimeException implements ExceptionInterface
 {
 }

@@ -11,6 +11,6 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class UnknownValueIndex extends \InvalidArgumentException
+class UnknownValueIndex extends \InvalidArgumentException implements ExceptionInterface
 {
 }

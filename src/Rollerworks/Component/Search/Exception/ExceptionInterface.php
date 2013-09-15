@@ -11,9 +11,6 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-/**
- * Base BadMethodCallException for the Search component.
- */
-class BadMethodCallException extends \BadMethodCallException implements ExceptionInterface
+interface ExceptionInterface
 {
 }

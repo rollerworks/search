@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class UnknownFieldException extends \InvalidArgumentException
+class UnknownFieldException extends \InvalidArgumentException implements ExceptionInterface
 {
     public function __construct($fieldName)
     {

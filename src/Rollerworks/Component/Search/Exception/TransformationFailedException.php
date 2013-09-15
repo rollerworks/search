@@ -11,6 +11,6 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class TransformationFailedException extends \RuntimeException
+class TransformationFailedException extends \RuntimeException implements ExceptionInterface
 {
 }

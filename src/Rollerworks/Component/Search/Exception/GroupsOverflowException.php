@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class GroupsOverflowException extends \Exception
+class GroupsOverflowException extends \Exception implements ExceptionInterface
 {
     protected $max;
     protected $count;

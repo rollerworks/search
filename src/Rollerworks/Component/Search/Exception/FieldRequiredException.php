@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class FieldRequiredException extends \RuntimeException
+class FieldRequiredException extends \RuntimeException implements ExceptionInterface
 {
     private $fieldName;
     private $groupIdx;

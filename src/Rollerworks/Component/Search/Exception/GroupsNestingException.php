@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-class GroupsNestingException extends \Exception
+class GroupsNestingException extends \Exception implements ExceptionInterface
 {
     protected $max;
     protected $groupIdx;
