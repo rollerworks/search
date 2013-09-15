@@ -20,17 +20,18 @@
         "symfony/property-access": "~2.2",
         "symfony/yaml": "~2.1",
         "symfony/validator": "~2.1",
-        "jms/metadata": ">=1.1.1",
         "seld/jsonlint": "1.*"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",
         "doctrine/orm": "~2.3,>=2.3.0",
         "symfony/class-loader": "~2.1",
-        "symfony/browser-kit": "~2.1"
+        "symfony/browser-kit": "~2.1",
+        "jms/metadata": ">=1.1.1"
     },
     "suggest": {
-        "doctrine/orm": "Required for Doctrine\\ORM component"
+        "doctrine/orm": "Required for Doctrine\\ORM component",
+        "jms/metadata": "Metadata mapping library"
     },
     "autoload": {
         "psr-0": { "Rollerworks\\Component\\Search\\": "src/" }
