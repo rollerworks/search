@@ -1,7 +1,0 @@
-id:
-    name: customer_id
-    type: customer_type
-    doctrine:
-        orm:
-            field-conversion: customer_conversion
-            value-conversion: customer_conversion

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+    <property foo="id" name="uid" type="integer" required="true" />
+    <property id="name" name="username" type="text">
+        <option type="string" key="name">doctor</option>
+        <option key="last" type="collection">
+            <option type="string">who</option>
+            <option type="string">zeus</option>
+        </option>
+    </property>
+</properties>
