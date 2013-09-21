@@ -76,11 +76,6 @@ class SearchField implements FieldConfigInterface
     private $viewTransformers = array();
 
     /**
-     * @var array
-     */
-    private $modelTransformers = array();
-
-    /**
      * Constructor.
      *
      * @param string                     $name
@@ -311,50 +306,6 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Prepends / appends a transformer to the normalization transformer chain.
-     *
-     * The transform method of the transformer is used to convert data from the
-     * model to the normalized format.
-     * The reverseTransform method of the transformer is used to convert from the
-     * normalized to the model format.
-     *
-     * @param DataTransformerInterface $modelTransformer
-     * @param Boolean                  $forceAppend      if set to true, append instead of prepending
-     *
-     * @return self The configuration object.
-     *
-     * @throws BadMethodCallException when the data is locked
-     */
-    public function addModelTransformer(DataTransformerInterface $modelTransformer, $forceAppend = false)
-    {
-        if ($forceAppend) {
-            $this->modelTransformers[] = $modelTransformer;
-        } else {
-            array_unshift($this->modelTransformers, $modelTransformer);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Clears the normalization transformers.
-     *
-     * @return self The configuration object.
-     *
-     * @throws BadMethodCallException when the data is locked
-     */
-    public function resetModelTransformers()
-    {
-        if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
-        }
-
-        $this->modelTransformers = array();
-
-        return $this;
-    }
-
-    /**
      * Returns the view transformers of the field.
      *
      * @return DataTransformerInterface[] An array of {@link DataTransformerInterface} instances.
@@ -362,16 +313,6 @@ class SearchField implements FieldConfigInterface
     public function getViewTransformers()
     {
         return $this->viewTransformers;
-    }
-
-    /**
-     * Returns the model transformers of the field.
-     *
-     * @return DataTransformerInterface[] An array of {@link DataTransformerInterface} instances.
-     */
-    public function getModelTransformers()
-    {
-        return $this->modelTransformers;
     }
 
     /**

@@ -108,40 +108,11 @@ interface FieldConfigInterface
     public function resetViewTransformers();
 
     /**
-     * Prepends / appends a transformer to the normalization transformer chain.
-     *
-     * The transform method of the transformer is used to convert data from the
-     * model to the normalized format.
-     * The reverseTransform method of the transformer is used to convert from the
-     * normalized to the model format.
-     *
-     * @param DataTransformerInterface $modelTransformer
-     * @param Boolean                  $forceAppend      if set to true, append instead of prepending
-     *
-     * @return self The configuration object.
-     */
-    public function addModelTransformer(DataTransformerInterface $modelTransformer, $forceAppend = false);
-
-    /**
-     * Clears the normalization transformers.
-     *
-     * @return self The configuration object.
-     */
-    public function resetModelTransformers();
-
-    /**
      * Returns the view transformers of the field.
      *
      * @return DataTransformerInterface[] An array of {@link DataTransformerInterface} instances.
      */
     public function getViewTransformers();
-
-    /**
-     * Returns the model transformers of the field.
-     *
-     * @return DataTransformerInterface[] An array of {@link DataTransformerInterface} instances.
-     */
-    public function getModelTransformers();
 
     /**
      * Returns whether the field's data is locked.

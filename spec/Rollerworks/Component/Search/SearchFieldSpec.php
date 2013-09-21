@@ -146,25 +146,6 @@ class SearchFieldSpec extends ObjectBehavior
         $this->getViewTransformers()->shouldHaveCount(0);
     }
 
-    public function it_should_have_no_ModelTransformers_by_default()
-    {
-        $this->getModelTransformers()->shouldHaveCount(0);
-    }
-
-    public function it_should_allow_adding_ModelTransformers(DataTransformerInterface $modelTransformer)
-    {
-        $this->addModelTransformer($modelTransformer);
-        $this->getModelTransformers()->shouldReturn(array($modelTransformer));
-    }
-
-    public function it_should_allow_resetting_ModelTransformers(DataTransformerInterface $modelTransformer)
-    {
-        $this->addModelTransformer($modelTransformer);
-        $this->resetModelTransformers();
-
-        $this->getModelTransformers()->shouldHaveCount(0);
-    }
-
     public function its_data_is_locked_by_default()
     {
         $this->getDataLocked()->shouldReturn(false);

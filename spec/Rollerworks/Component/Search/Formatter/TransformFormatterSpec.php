@@ -34,15 +34,19 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->shouldImplement('Rollerworks\Component\Search\FormatterInterface');
     }
 
-    function it_transform_singleValues_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $transformer, DataTransformerInterface $viewTransformer)
+    function it_transform_singleValues_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $viewTransformer)
     {
         $value = '2013-08-25 00:00:00';
+
         $dateValue->getValue()->will(function () use (&$value) {
             return $value;
         });
 
+        $dateValue->getViewValue()->will(function () {
+            return '2013-08-25 00:00:00';
+        });
+
         $dateField->hasOption('constraints')->willReturn(false);
-        $dateField->getModelTransformers()->willReturn(array($transformer));
         $dateField->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($dateField);
@@ -57,7 +61,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
 
-        $transformer->transform(Argument::any())->will(function ($args) use (&$value) {
+        $viewTransformer->reverseTransform(Argument::any())->will(function ($args) use (&$value) {
             $value = new \DateTime($args[0]);
 
             return $value;
@@ -73,15 +77,18 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_transform_excludedValues_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $transformer, DataTransformerInterface $viewTransformer)
+    function it_transform_excludedValues_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $viewTransformer)
     {
         $value = '2013-08-25 00:00:00';
         $dateValue->getValue()->will(function () use (&$value) {
             return $value;
         });
 
+        $dateValue->getViewValue()->will(function () {
+            return '2013-08-25 00:00:00';
+        });
+
         $dateField->hasOption('constraints')->willReturn(false);
-        $dateField->getModelTransformers()->willReturn(array($transformer));
         $dateField->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($dateField);
@@ -96,7 +103,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
 
-        $transformer->transform(Argument::any())->will(function ($args) use (&$value) {
+        $viewTransformer->reverseTransform(Argument::any())->will(function ($args) use (&$value) {
             $value = new \DateTime($args[0]);
 
             return $value;
@@ -112,11 +119,15 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_transform_ranges_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Range $dateValue, DataTransformerInterface $transformer, DataTransformerInterface $viewTransformer)
+    function it_transform_ranges_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Range $dateValue, DataTransformerInterface $viewTransformer)
     {
         $lowerValue = '2013-08-25 00:00:00';
         $dateValue->getLower()->will(function () use (&$lowerValue) {
             return $lowerValue;
+        });
+
+        $dateValue->getViewLower()->will(function () {
+            return '2013-08-25 00:00:00';
         });
 
         $upperValue = '2013-08-30 00:00:00';
@@ -124,8 +135,11 @@ class TransformFormatterSpec extends ObjectBehavior
             return $upperValue;
         });
 
+        $dateValue->getViewUpper()->will(function () {
+            return '2013-08-30 00:00:00';
+        });
+
         $dateField->hasOption('constraints')->willReturn(false);
-        $dateField->getModelTransformers()->willReturn(array($transformer));
         $dateField->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($dateField);
@@ -140,13 +154,13 @@ class TransformFormatterSpec extends ObjectBehavior
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
 
-        $transformer->transform(Argument::exact('2013-08-25 00:00:00'))->will(function () use (&$lowerValue) {
+        $viewTransformer->reverseTransform(Argument::exact('2013-08-25 00:00:00'))->will(function () use (&$lowerValue) {
             $lowerValue = new \DateTime('2013-08-25 00:00:00');
 
             return $lowerValue;
         });
 
-        $transformer->transform(Argument::exact('2013-08-30 00:00:00'))->will(function () use (&$upperValue) {
+        $viewTransformer->reverseTransform(Argument::exact('2013-08-30 00:00:00'))->will(function () use (&$upperValue) {
             $upperValue = new \DateTime('2013-08-30 00:00:00');
 
             return $upperValue;
@@ -164,11 +178,15 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_transform_excludedRanges_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Range $dateValue, DataTransformerInterface $transformer, DataTransformerInterface $viewTransformer)
+    function it_transform_excludedRanges_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Range $dateValue, DataTransformerInterface $viewTransformer)
     {
         $lowerValue = '2013-08-25 00:00:00';
         $dateValue->getLower()->will(function () use (&$lowerValue) {
             return $lowerValue;
+        });
+
+        $dateValue->getViewLower()->will(function () {
+            return '2013-08-25 00:00:00';
         });
 
         $upperValue = '2013-08-30 00:00:00';
@@ -176,8 +194,11 @@ class TransformFormatterSpec extends ObjectBehavior
             return $upperValue;
         });
 
+        $dateValue->getViewUpper()->will(function () {
+            return '2013-08-30 00:00:00';
+        });
+
         $dateField->hasOption('constraints')->willReturn(false);
-        $dateField->getModelTransformers()->willReturn(array($transformer));
         $dateField->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($dateField);
@@ -192,13 +213,13 @@ class TransformFormatterSpec extends ObjectBehavior
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
 
-        $transformer->transform(Argument::exact('2013-08-25 00:00:00'))->will(function () use (&$lowerValue) {
+        $viewTransformer->reverseTransform(Argument::exact('2013-08-25 00:00:00'))->will(function () use (&$lowerValue) {
             $lowerValue = new \DateTime('2013-08-25 00:00:00');
 
             return $lowerValue;
         });
 
-        $transformer->transform(Argument::exact('2013-08-30 00:00:00'))->will(function () use (&$upperValue) {
+        $viewTransformer->reverseTransform(Argument::exact('2013-08-30 00:00:00'))->will(function () use (&$upperValue) {
             $upperValue = new \DateTime('2013-08-30 00:00:00');
 
             return $upperValue;
@@ -216,15 +237,18 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_transform_comparisons_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Compare $dateValue, DataTransformerInterface $transformer, DataTransformerInterface $viewTransformer)
+    function it_transform_comparisons_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Compare $dateValue, DataTransformerInterface $viewTransformer)
     {
         $value = '2013-08-25 00:00:00';
         $dateValue->getValue()->will(function () use (&$value) {
             return $value;
         });
 
+        $dateValue->getViewValue()->will(function () {
+            return '2013-08-25 00:00:00';
+        });
+
         $dateField->hasOption('constraints')->willReturn(false);
-        $dateField->getModelTransformers()->willReturn(array($transformer));
         $dateField->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($dateField);
@@ -239,7 +263,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
 
-        $transformer->transform(Argument::any())->will(function ($args) use (&$value) {
+        $viewTransformer->reverseTransform(Argument::any())->will(function ($args) use (&$value) {
             $value = new \DateTime($args[0]);
 
             return $value;
@@ -256,7 +280,7 @@ class TransformFormatterSpec extends ObjectBehavior
     }
 
     // Normally you would not use objects as value, this is just for testing
-    function it_transform_patternMatchers_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, PatternMatch $dateValue, DataTransformerInterface $transformer, DataTransformerInterface $viewTransformer)
+    function it_transform_patternMatchers_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, PatternMatch $dateValue, DataTransformerInterface $viewTransformer)
     {
         $value = '2013-08-25 00:00:00';
         $dateValue->getValue()->will(function () use (&$value) {
@@ -264,8 +288,11 @@ class TransformFormatterSpec extends ObjectBehavior
         });
         $dateValue->getType()->willReturn(PatternMatch::PATTERN_CONTAINS);
 
+        $dateValue->getViewValue()->will(function () {
+            return '2013-08-25 00:00:00';
+        });
+
         $dateField->hasOption('constraints')->willReturn(false);
-        $dateField->getModelTransformers()->willReturn(array($transformer));
         $dateField->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($dateField);
@@ -280,7 +307,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
 
-        $transformer->transform(Argument::any())->will(function ($args) use (&$value) {
+        $viewTransformer->reverseTransform(Argument::any())->will(function ($args) use (&$value) {
             $value = new \DateTime($args[0]);
 
             return $value;
@@ -296,7 +323,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_does_not_transform_patternMatchers_with_type_regex(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $field, PatternMatch $searchValue, PatternMatch $searchValue2, DataTransformerInterface $transformer, DataTransformerInterface $viewTransformer)
+    function it_does_not_transform_patternMatchers_with_type_regex(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $field, PatternMatch $searchValue, PatternMatch $searchValue2, DataTransformerInterface $viewTransformer)
     {
         $searchValue->getValue()->willReturn('^foo|[bar]*');
         $searchValue->getType()->willReturn(PatternMatch::PATTERN_NOT_REGEX);
@@ -305,7 +332,6 @@ class TransformFormatterSpec extends ObjectBehavior
         $searchValue2->getType()->willReturn(PatternMatch::PATTERN_REGEX);
 
         $field->hasOption('constraints')->willReturn(false);
-        $field->getModelTransformers()->willReturn(array($transformer));
         $field->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($field);
@@ -321,7 +347,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
 
-        $transformer->transform(Argument::any())->shouldNotBeCalled();
+        $viewTransformer->reverseTransform(Argument::any())->shouldNotBeCalled();
         $viewTransformer->transform(Argument::any())->shouldNotBeCalled();
 
         $searchValue->setViewValue(Argument::any())->shouldNotBeCalled();
@@ -330,11 +356,10 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_adds_an_error_on_failed_transformation(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $transformer, ValuesBag $valuesBag)
+    function it_adds_an_error_on_failed_transformation(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, DataTransformerInterface $viewTransformer)
     {
         $dateField->hasOption('constraints')->willReturn(false);
-        $dateField->getModelTransformers()->willReturn(array($transformer));
-        $dateField->getViewTransformers()->willReturn(array());
+        $dateField->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($dateField);
         $fieldSet->has('date')->willReturn(true);
@@ -360,7 +385,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
 
-        $transformer->transform(Argument::any())->willThrow(new TransformationFailedException('Transformation failed.'));
+        $viewTransformer->reverseTransform(Argument::any())->willThrow(new TransformationFailedException('Transformation failed.'));
 
         $this->format($condition);
     }

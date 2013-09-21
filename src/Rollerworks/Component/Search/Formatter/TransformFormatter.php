@@ -56,17 +56,14 @@ class TransformFormatter implements FormatterInterface
 
     private function transformValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
     {
-        if (!$config->getModelTransformers() && !$config->getViewTransformers()) {
-            return;
-        }
-
         $propertyPath = null;
 
         try {
             if ($valuesBag->hasSingleValues()) {
                 foreach ($valuesBag->getSingleValues() as $i => $value) {
                     $propertyPath = "singleValues[$i]";
-                    $value->setValue($this->modelToNorm($value->getValue(), $config));
+
+                    $value->setValue($this->viewToNorm($value->getViewValue(), $config));
                     $value->setViewValue($this->normToView($value->getValue(), $config));
                 }
             }
@@ -74,7 +71,7 @@ class TransformFormatter implements FormatterInterface
             if ($valuesBag->hasExcludedValues()) {
                 foreach ($valuesBag->getExcludedValues() as $i => $value) {
                     $propertyPath = "excludedValues[$i]";
-                    $value->setValue($this->modelToNorm($value->getValue(), $config));
+                    $value->setValue($this->viewToNorm($value->getViewValue(), $config));
                     $value->setViewValue($this->normToView($value->getValue(), $config));
                 }
             }
@@ -82,11 +79,11 @@ class TransformFormatter implements FormatterInterface
             if ($valuesBag->hasRanges()) {
                 foreach ($valuesBag->getRanges() as $i => $value) {
                     $propertyPath = "ranges[$i].lower";
-                    $value->setLower($this->modelToNorm($value->getLower(), $config));
+                    $value->setLower($this->viewToNorm($value->getViewLower(), $config));
                     $value->setViewLower($this->normToView($value->getLower(), $config));
 
                     $propertyPath = "ranges[$i].upper";
-                    $value->setUpper($this->modelToNorm($value->getUpper(), $config));
+                    $value->setUpper($this->viewToNorm($value->getViewUpper(), $config));
                     $value->setViewUpper($this->normToView($value->getUpper(), $config));
                 }
             }
@@ -94,11 +91,11 @@ class TransformFormatter implements FormatterInterface
             if ($valuesBag->hasExcludedRanges()) {
                 foreach ($valuesBag->getExcludedRanges() as $i => $value) {
                     $propertyPath = "excludedRanges[$i].lower";
-                    $value->setLower($this->modelToNorm($value->getLower(), $config));
+                    $value->setLower($this->viewToNorm($value->getViewLower(), $config));
                     $value->setViewLower($this->normToView($value->getLower(), $config));
 
                     $propertyPath = "excludedRanges[$i].upper";
-                    $value->setUpper($this->modelToNorm($value->getUpper(), $config));
+                    $value->setUpper($this->viewToNorm($value->getViewUpper(), $config));
                     $value->setViewUpper($this->normToView($value->getUpper(), $config));
                 }
             }
@@ -106,7 +103,7 @@ class TransformFormatter implements FormatterInterface
             if ($valuesBag->hasComparisons()) {
                 foreach ($valuesBag->getComparisons() as $i => $value) {
                     $propertyPath = "comparisons[$i]";
-                    $value->setValue($this->modelToNorm($value->getValue(), $config));
+                    $value->setValue($this->viewToNorm($value->getViewValue(), $config));
                     $value->setViewValue($this->normToView($value->getValue(), $config));
                 }
             }
@@ -116,7 +113,7 @@ class TransformFormatter implements FormatterInterface
                     // Only normalize when its not a regex, normalizing might break the regex pattern
                     if (!in_array($value->getType(), array($value::PATTERN_REGEX, $value::PATTERN_NOT_REGEX))) {
                         $propertyPath = "patternMatchers[$i]";
-                        $value->setValue($this->modelToNorm($value->getValue(), $config));
+                        $value->setValue($this->viewToNorm($value->getViewValue(), $config));
                         $value->setViewValue($this->normToView($value->getValue(), $config));
                     }
                 }
@@ -124,23 +121,6 @@ class TransformFormatter implements FormatterInterface
         } catch (TransformationFailedException $e) {
             $valuesBag->addError(new ValuesError($propertyPath, $e->getMessage()));
         }
-    }
-
-    /**
-     * Normalizes the value if a normalization transformer is set.
-     *
-     * @param mixed                $value  The value to transform
-     * @param FieldConfigInterface $config
-     *
-     * @return mixed
-     */
-    private function modelToNorm($value, FieldConfigInterface $config)
-    {
-        foreach ($config->getModelTransformers() as $transformer) {
-            $value = $transformer->transform($value);
-        }
-
-        return $value;
     }
 
     /**
@@ -161,6 +141,29 @@ class TransformFormatter implements FormatterInterface
 
         foreach ($config->getViewTransformers() as $transformer) {
             $value = $transformer->transform($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Reverse transforms a value if a value transformer is set.
+     *
+     * @param string               $value The value to reverse transform
+     * @param FieldConfigInterface $config
+     *
+     * @return mixed
+     */
+    private function viewToNorm($value, FieldConfigInterface $config)
+    {
+        $transformers = $config->getViewTransformers();
+
+        if (!$transformers) {
+            return '' === $value ? null : $value;
+        }
+
+        for ($i = count($transformers) - 1; $i >= 0; --$i) {
+            $value = $transformers[$i]->reverseTransform($value);
         }
 
         return $value;
