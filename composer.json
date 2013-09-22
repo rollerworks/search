@@ -18,6 +18,7 @@
         "php": ">=5.3.3",
         "symfony/options-resolver": "~2.1",
         "symfony/property-access": "~2.2",
+        "symfony/intl": "~2.3",
         "symfony/yaml": "~2.1",
         "symfony/validator": "~2.1",
         "seld/jsonlint": "1.*"
