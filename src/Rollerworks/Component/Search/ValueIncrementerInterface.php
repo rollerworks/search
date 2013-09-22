@@ -23,7 +23,7 @@ interface ValueIncrementerInterface extends ValueComparisonInterface
     /**
      * Returns the incremented value of the input.
      *
-     * The value should returned in the normalized format.
+     * The value should be returned in the normalized format.
      *
      * @param mixed   $value      The value to increment.
      * @param array   $options    Array of options passed with the field
