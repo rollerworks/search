@@ -42,18 +42,18 @@ class PatternMatch
     /**
      * @var boolean
      */
-    protected $caseInsenstive;
+    protected $caseInsensitive;
 
     /**
      * Constructor.
      *
      * @param string         $value
      * @param integer|string $patternType
-     * @param boolean        $caseInsenstive
+     * @param boolean        $caseInsensitive
      *
      * @throws \InvalidArgumentException When the pattern-match type is invalid.
      */
-    public function __construct($value, $patternType, $caseInsenstive = false)
+    public function __construct($value, $patternType, $caseInsensitive = false)
     {
         if (!is_scalar($value)) {
             throw new \InvalidArgumentException('Value of PatternMatch must be a scalar value.');
@@ -74,7 +74,7 @@ class PatternMatch
         $this->patternType = $patternType;
         $this->value = $value;
         $this->viewValue = $value;
-        $this->caseInsenstive = $caseInsenstive;
+        $this->caseInsensitive = $caseInsensitive;
     }
 
     /**
@@ -122,18 +122,18 @@ class PatternMatch
     }
 
     /**
-     * @param boolean $caseInsenstive
+     * @param boolean $caseInsensitive
      */
-    public function setCaseInsenstive($caseInsenstive = true)
+    public function setCaseInsensitive($caseInsensitive = true)
     {
-        $this->caseInsenstive = $caseInsenstive;
+        $this->caseInsensitive = $caseInsensitive;
     }
 
     /**
      * @return boolean
      */
-    public function isCaseInsenstive()
+    public function isCaseInsensitive()
     {
-        return $this->caseInsenstive;
+        return $this->caseInsensitive;
     }
 }

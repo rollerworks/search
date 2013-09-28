@@ -204,7 +204,7 @@ class DuplicateRemover implements FormatterInterface
                         continue;
                     }
 
-                    if ($value->getType() === $value2->getType() && $comparison->isEqual($value->getValue(), $value2->getValue(), $options) && $value->isCaseInsenstive() === $value2->isCaseInsenstive()) {
+                    if ($value->getType() === $value2->getType() && $comparison->isEqual($value->getValue(), $value2->getValue(), $options) && $value->isCaseInsensitive() === $value2->isCaseInsensitive()) {
                         $valuesBag->removePatternMatch($c);
                         unset($matchers[$c]);
                     }

@@ -198,7 +198,7 @@ class XmlExporter extends AbstractExporter
             foreach ($valuesBag->getPatternMatchers() as $value) {
                 $element = $this->document->createElement('pattern-matcher');
                 $element->setAttribute('type', $this->getPatternMatchType($value));
-                $element->setAttribute('case-insensitive', $value->isCaseInsenstive() ? 'true' : 'false');
+                $element->setAttribute('case-insensitive', $value->isCaseInsensitive() ? 'true' : 'false');
                 $text = $this->document->createTextNode($value->getViewValue());
                 $element->appendChild($text);
 

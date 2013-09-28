@@ -39,13 +39,13 @@ class PatternMatchSpec extends ObjectBehavior
 
     function its_case_sensitive_by_default()
     {
-        $this->isCaseInsenstive()->shouldReturn(false);
+        $this->isCaseInsensitive()->shouldReturn(false);
     }
 
     function it_allows_case_insensitive()
     {
-        $this->setCaseInsenstive(true);
-        $this->isCaseInsenstive()->shouldReturn(true);
+        $this->setCaseInsensitive(true);
+        $this->isCaseInsensitive()->shouldReturn(true);
     }
 
     function it_should_complain_when_setting_an_object_as_value()

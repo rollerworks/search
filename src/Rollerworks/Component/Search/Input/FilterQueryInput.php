@@ -411,8 +411,8 @@ class FilterQueryInput extends AbstractInput
 
                 case Lexer::T_TILDE:
                     $this->assertAcceptsType('pattern-match', $fieldName);
-                    $type = $this->PatternMatchOperator($caseInsenstive);
-                    $valuesBag->addPatternMatch(new Value\PatternMatch($this->StringValue(), $type, $caseInsenstive));
+                    $type = $this->PatternMatchOperator($caseInsensitive);
+                    $valuesBag->addPatternMatch(new Value\PatternMatch($this->StringValue(), $type, $caseInsensitive));
 
                     $hasValues = true;
                     break;
@@ -532,19 +532,19 @@ class FilterQueryInput extends AbstractInput
     /**
      * PatternMatchOperator ::= ~* | ~> | ~< | ~? | ~!* | ~!> | ~!< | ~!? | ~i* | ~i> | ~i< | ~i? | ~i!* | ~i!> | ~i!< | ~i!?
      *
-     * @param boolean $caseInsenstive Reference case insenstive state
+     * @param boolean $caseInsensitive Reference case insensitive state
      *
      * @return string
      */
-    private function PatternMatchOperator(&$caseInsenstive)
+    private function PatternMatchOperator(&$caseInsensitive)
     {
         $this->match(Lexer::T_TILDE);
 
-        $caseInsenstive = false;
+        $caseInsensitive = false;
 
-        // look for case insenstive
+        // look for case insensitive
         if ($this->lexer->isNextToken(Lexer::T_STRING) && 'i' === strtolower($this->lexer->lookahead['value'])) {
-            $caseInsenstive = true;
+            $caseInsensitive = true;
 
             $this->match(Lexer::T_STRING);
         }

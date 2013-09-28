@@ -110,7 +110,7 @@ class FilterQueryExporter extends AbstractExporter
      */
     protected function getPatternMatchOperator(PatternMatch $patternMatch)
     {
-        $operator = $patternMatch->isCaseInsenstive() ? '~i' : '~';
+        $operator = $patternMatch->isCaseInsensitive() ? '~i' : '~';
 
         if (in_array($patternMatch->getType(), array(PatternMatch::PATTERN_NOT_CONTAINS, PatternMatch::PATTERN_NOT_STARTS_WITH, PatternMatch::PATTERN_NOT_ENDS_WITH, PatternMatch::PATTERN_NOT_REGEX))) {
            $operator .= '!';
