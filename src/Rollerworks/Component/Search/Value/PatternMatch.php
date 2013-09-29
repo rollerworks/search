@@ -136,4 +136,12 @@ class PatternMatch
     {
         return $this->caseInsensitive;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isExclusive()
+    {
+        return in_array($this->patternType, array(PatternMatch::PATTERN_NOT_STARTS_WITH, PatternMatch::PATTERN_NOT_CONTAINS, PatternMatch::PATTERN_NOT_ENDS_WITH, PatternMatch::PATTERN_NOT_REGEX));
+    }
 }

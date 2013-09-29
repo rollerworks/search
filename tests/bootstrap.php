@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksRecordFilterBundle package.
+ * This file is part of the Rollerworks Search Component package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -10,12 +10,11 @@
  */
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Composer\Autoload\ClassLoader;
 
 error_reporting(E_ALL | E_STRICT);
 
 if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    throw new \RuntimeException('Did not find vendor/autoload.php. Please Install vendors using command: composer.phar install --dev');
+    throw new \RuntimeException('Did not find vendor/autoload.php. Please Install vendors using command: composer.phar install');
 }
 
 if (version_compare(PHP_VERSION, '5.4', '>=') && gc_enabled()) {
@@ -25,10 +24,10 @@ if (version_compare(PHP_VERSION, '5.4', '>=') && gc_enabled()) {
 }
 
 /**
-* @var $loader ClassLoader
+* @var \Composer\Autoload\ClassLoader $loader
 */
 $loader = require_once __DIR__ . '/../vendor/autoload.php';
-$loader->add('Rollerworks\\Bundle\\RecordFilterBundle\\Tests', __DIR__);
+$loader->add('Rollerworks\\Component\\Search\\Tests', __DIR__);
 $loader->add('Doctrine\\Tests', realpath(__DIR__ . '/../vendor/doctrine/orm/tests') . '/');
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
