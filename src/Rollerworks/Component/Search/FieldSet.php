@@ -201,7 +201,7 @@ class FieldSet implements \Countable, \IteratorAggregate
 
         if (!self::isValidName($name)) {
             throw new \InvalidArgumentException(sprintf(
-               'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").', $name
+                'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").', $name
             ));
         }
     }

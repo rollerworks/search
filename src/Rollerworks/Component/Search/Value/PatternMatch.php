@@ -11,6 +11,9 @@
 
 namespace Rollerworks\Component\Search\Value;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class PatternMatch
 {
     const PATTERN_CONTAINS = 1;

@@ -14,6 +14,9 @@ namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 use Rollerworks\Component\Search\ValueIncrementerInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class MoneyValueComparison implements ValueIncrementerInterface
 {
     /**

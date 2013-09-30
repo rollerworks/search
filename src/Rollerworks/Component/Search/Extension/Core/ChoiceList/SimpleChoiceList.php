@@ -79,7 +79,7 @@ class SimpleChoiceList extends ChoiceList
      */
     public function getLabelForChoice($choice)
     {
-        $choices = $this->fixChoice($choice);
+        $choice = $this->fixChoice($choice);
         $labels = $this->getLabels();
 
         // The choices are identical to the values, so we can just return them

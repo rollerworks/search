@@ -11,12 +11,20 @@
 
 namespace Rollerworks\Component\Search\Extension\Core\Model;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class MoneyValue
 {
     public $currency;
-
     public $value;
 
+    /**
+     * Constructor.
+     *
+     * @param string|float $currency
+     * @param string       $value
+     */
     public function __construct($currency, $value)
     {
         $this->currency = $currency;

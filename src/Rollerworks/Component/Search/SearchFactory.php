@@ -151,7 +151,8 @@ class SearchFactory implements SearchFactoryInterface
             $type, // Type extensions are not supported for unregistered type instances,
             // i.e. type instances that are passed to the SearchFactory directly,
             // nor for their parents, if getParent() also returns a type instance.
-            array(), $parentType
+            array(),
+            $parentType
         );
     }
 }

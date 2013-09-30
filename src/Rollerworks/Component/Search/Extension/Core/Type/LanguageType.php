@@ -15,6 +15,9 @@ use Rollerworks\Component\Search\AbstractFieldType;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class LanguageType extends AbstractFieldType
 {
     /**

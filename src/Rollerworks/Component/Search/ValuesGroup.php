@@ -11,6 +11,8 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+
 /**
  * ValuesGroup.
  *
@@ -76,12 +78,12 @@ class ValuesGroup
      *
      * @return ValuesGroup
      *
-     * @throws \InvalidArgumentException on invalid index.
+     * @throws InvalidArgumentException on invalid index.
      */
     public function getGroup($index)
     {
         if (!isset($this->fields[$index])) {
-            throw new \InvalidArgumentException(sprintf('Unable to get none existent group: "%d"', $index));
+            throw new InvalidArgumentException(sprintf('Unable to get none existent group: "%d"', $index));
         }
 
         return $this->groups[$index];
@@ -140,10 +142,17 @@ class ValuesGroup
         return $this->fields;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return ValuesBag
+     *
+     * @throws InvalidArgumentException
+     */
     public function getField($name)
     {
         if (!isset($this->fields[$name])) {
-            throw new \InvalidArgumentException(sprintf('Unable to get none existent field: "%s"', $name));
+            throw new InvalidArgumentException(sprintf('Unable to get none existent field: "%s"', $name));
         }
 
         return $this->fields[$name];

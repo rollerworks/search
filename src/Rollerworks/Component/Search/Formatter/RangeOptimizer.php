@@ -55,6 +55,10 @@ class RangeOptimizer implements FormatterInterface
         $this->normalizeRangesInGroup($valuesGroup, $fieldSet);
     }
 
+    /**
+     * @param ValuesGroup $valuesGroup
+     * @param FieldSet    $fieldSet
+     */
     private function normalizeRangesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
@@ -74,6 +78,10 @@ class RangeOptimizer implements FormatterInterface
         }
     }
 
+    /**
+     * @param FieldConfigInterface $config
+     * @param ValuesBag            $valuesBag
+     */
     private function normalizeRangesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
     {
         $comparison = $config->getValueComparison();

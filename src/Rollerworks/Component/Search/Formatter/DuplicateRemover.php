@@ -44,6 +44,10 @@ class DuplicateRemover implements FormatterInterface
         $this->removeDuplicatesInGroup($valuesGroup, $fieldSet);
     }
 
+    /**
+     * @param ValuesGroup $valuesGroup
+     * @param FieldSet    $fieldSet
+     */
     private function removeDuplicatesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
@@ -61,6 +65,10 @@ class DuplicateRemover implements FormatterInterface
         }
     }
 
+    /**
+     * @param FieldConfigInterface $config
+     * @param ValuesBag            $valuesBag
+     */
     private function removeDuplicatesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
     {
         $comparison = $config->getValueComparison();

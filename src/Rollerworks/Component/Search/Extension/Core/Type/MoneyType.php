@@ -17,6 +17,9 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class MoneyType extends AbstractFieldType
 {
     /**
@@ -24,6 +27,11 @@ class MoneyType extends AbstractFieldType
      */
     protected $valueComparison;
 
+    /**
+     * Constructor.
+     *
+     * @param ValueComparisonInterface $valueComparison
+     */
     public function __construct(ValueComparisonInterface $valueComparison)
     {
         $this->valueComparison = $valueComparison;
@@ -58,8 +66,6 @@ class MoneyType extends AbstractFieldType
             'currency' => 'EUR',
         ));
     }
-
-
 
     /**
      * {@inheritDoc}

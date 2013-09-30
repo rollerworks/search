@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class BirthdayType extends AbstractFieldType
 {
     /**
@@ -26,6 +29,11 @@ class BirthdayType extends AbstractFieldType
      */
     protected $valueComparison;
 
+    /**
+     * Constructor.
+     *
+     * @param ValueComparisonInterface $valueComparison
+     */
     public function __construct(ValueComparisonInterface $valueComparison)
     {
         $this->valueComparison = $valueComparison;

@@ -12,8 +12,8 @@
 namespace Rollerworks\Component\Search;
 
 /**
-* A wrapper for a field type and its extensions.
-*/
+ * A wrapper for a field type and its extensions.
+ */
 interface ResolvedFieldTypeInterface
 {
     /**

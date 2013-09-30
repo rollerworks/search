@@ -209,6 +209,11 @@ class XmlUtils
         }
     }
 
+    /**
+     * @param boolean $internalErrors
+     *
+     * @return array
+     */
     protected static function getXmlErrors($internalErrors)
     {
         $errors = array();

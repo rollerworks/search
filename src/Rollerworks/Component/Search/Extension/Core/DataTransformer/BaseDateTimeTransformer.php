@@ -14,8 +14,15 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
+/**
+ * @author Bernhard Schussek <bschussek@gmail.com>
+ * @author Florian Eckerstorfer <florian@eckerstorfer.org>
+ */
 abstract class BaseDateTimeTransformer implements DataTransformerInterface
 {
+    /**
+     * @var array
+     */
     protected static $formats = array(
         \IntlDateFormatter::NONE,
         \IntlDateFormatter::FULL,
@@ -24,8 +31,14 @@ abstract class BaseDateTimeTransformer implements DataTransformerInterface
         \IntlDateFormatter::SHORT,
     );
 
+    /**
+     * @var string
+     */
     protected $inputTimezone;
 
+    /**
+     * @var string
+     */
     protected $outputTimezone;
 
     /**

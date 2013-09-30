@@ -11,6 +11,11 @@
 
 namespace Rollerworks\Component\Search;
 
+/**
+ * Helper class for the SearchConditionBuilder.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class ValuesBagBuilder extends ValuesBag
 {
     /**

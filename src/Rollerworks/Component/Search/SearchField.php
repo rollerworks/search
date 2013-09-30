@@ -13,6 +13,11 @@ namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 
+/**
+ * SearchField.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class SearchField implements FieldConfigInterface
 {
     /**
@@ -90,7 +95,7 @@ class SearchField implements FieldConfigInterface
 
         if ('' == $name) {
             throw new \InvalidArgumentException(sprintf(
-               'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").', $name
+                'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").', $name
             ));
         }
 
@@ -100,6 +105,11 @@ class SearchField implements FieldConfigInterface
         $this->locked = false;
     }
 
+    /**
+     * @param boolean $required
+     *
+     * @throws BadMethodCallException
+     */
     public function setRequired($required = true)
     {
         if ($this->locked) {
@@ -109,6 +119,11 @@ class SearchField implements FieldConfigInterface
         $this->required = $required;
     }
 
+    /**
+     * @param boolean $acceptRanges
+     *
+     * @throws BadMethodCallException
+     */
     public function setAcceptRange($acceptRanges = true)
     {
         if ($this->locked) {
@@ -118,6 +133,11 @@ class SearchField implements FieldConfigInterface
         $this->acceptRanges = $acceptRanges;
     }
 
+    /**
+     * @param boolean $acceptCompares
+     *
+     * @throws BadMethodCallException
+     */
     public function setAcceptCompares($acceptCompares = true)
     {
         if ($this->locked) {
@@ -127,6 +147,11 @@ class SearchField implements FieldConfigInterface
         $this->acceptCompares = $acceptCompares;
     }
 
+    /**
+     * @param boolean $acceptPatternMatch
+     *
+     * @throws BadMethodCallException
+     */
     public function setAcceptPatternMatch($acceptPatternMatch = true)
     {
         if ($this->locked) {
@@ -176,6 +201,9 @@ class SearchField implements FieldConfigInterface
         return $this->acceptCompares;
     }
 
+    /**
+     * @return boolean
+     */
     public function acceptPatternMatch()
     {
         return $this->acceptPatternMatch;

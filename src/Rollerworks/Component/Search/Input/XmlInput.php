@@ -53,6 +53,16 @@ class XmlInput extends AbstractInput
         return $valuesGroup;
     }
 
+    /**
+     * @param \SimpleXMLElement $values
+     * @param ValuesGroup       $valuesGroup
+     * @param integer           $groupIdx
+     * @param integer           $level
+     * @param boolean           $isRoot
+     *
+     * @throws FieldRequiredException
+     * @throws InputProcessorException
+     */
     private function processGroup(\SimpleXMLElement $values, ValuesGroup $valuesGroup, $groupIdx = 0, $level = 0, $isRoot = false)
     {
         $this->validateGroupNesting($groupIdx, $level);

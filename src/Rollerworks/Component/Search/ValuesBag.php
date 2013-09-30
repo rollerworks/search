@@ -60,6 +60,11 @@ class ValuesBag implements \Countable
         return $this->singleValues;
     }
 
+    /**
+     * @param SingleValue $value
+     *
+     * @return static
+     */
     public function addSingleValue(SingleValue $value)
     {
         $this->singleValues[] = $value;
@@ -68,11 +73,19 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasSingleValues()
     {
         return !empty($this->singleValues);
     }
 
+    /**
+     * @param integer $index
+     *
+     * @return static
+     */
     public function removeSingleValue($index)
     {
         if (isset($this->singleValues[$index])) {
@@ -84,6 +97,11 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @param SingleValue $value
+     *
+     * @return static
+     */
     public function addExcludedValue(SingleValue $value)
     {
         $this->excludedValues[] = $value;
@@ -92,6 +110,9 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasExcludedValues()
     {
         return !empty($this->excludedValues);
@@ -105,6 +126,11 @@ class ValuesBag implements \Countable
         return $this->excludedValues;
     }
 
+    /**
+     * @param integer $index
+     *
+     * @return static
+     */
     public function removeExcludedValue($index)
     {
         if (isset($this->excludedValues[$index])) {
@@ -116,6 +142,11 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @param Range $range
+     *
+     * @return static
+     */
     public function addRange(Range $range)
     {
         $this->ranges[] = $range;
@@ -124,6 +155,9 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasRanges()
     {
         return count($this->ranges) > 0;
@@ -137,6 +171,11 @@ class ValuesBag implements \Countable
         return $this->ranges;
     }
 
+    /**
+     * @param integer $index
+     *
+     * @return static
+     */
     public function removeRange($index)
     {
         if (isset($this->ranges[$index])) {
@@ -148,6 +187,11 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @param Range $range
+     *
+     * @return static
+     */
     public function addExcludedRange(Range $range)
     {
         $this->excludedRanges[] = $range;
@@ -156,6 +200,9 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasExcludedRanges()
     {
         return !empty($this->excludedRanges);
@@ -166,9 +213,14 @@ class ValuesBag implements \Countable
      */
     public function getExcludedRanges()
     {
-       return $this->excludedRanges;
+        return $this->excludedRanges;
     }
 
+    /**
+     * @param integer $index
+     *
+     * @return static
+     */
     public function removeExcludedRange($index)
     {
         if (isset($this->excludedRanges[$index])) {
@@ -180,6 +232,11 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @param Compare $value
+     *
+     * @return static
+     */
     public function addComparison(Compare $value)
     {
         $this->comparisons[] = $value;
@@ -196,11 +253,19 @@ class ValuesBag implements \Countable
         return $this->comparisons;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasComparisons()
     {
         return !empty($this->comparisons);
     }
 
+    /**
+     * @param integer $index
+     *
+     * @return static
+     */
     public function removeComparison($index)
     {
         if (isset($this->comparisons[$index])) {
@@ -220,6 +285,11 @@ class ValuesBag implements \Countable
         return $this->patternMatchers;
     }
 
+    /**
+     * @param PatternMatch $value
+     *
+     * @return static
+     */
     public function addPatternMatch(PatternMatch $value)
     {
         $this->patternMatchers[] = $value;
@@ -228,11 +298,19 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasPatternMatchers()
     {
         return !empty($this->patternMatchers);
     }
 
+    /**
+     * @param integer $index
+     *
+     * @return static
+     */
     public function removePatternMatch($index)
     {
         if (isset($this->patternMatchers[$index])) {
@@ -244,6 +322,11 @@ class ValuesBag implements \Countable
         return $this;
     }
 
+    /**
+     * @param ValuesError $error
+     *
+     * @return static
+     */
     public function addError(ValuesError $error)
     {
         $this->errors[] = $error;
@@ -273,4 +356,5 @@ class ValuesBag implements \Countable
     public function count()
     {
         return $this->valuesCount;
-    }}
+    }
+}

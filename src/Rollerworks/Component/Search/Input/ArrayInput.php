@@ -225,7 +225,7 @@ class ArrayInput extends AbstractInput
         }
 
         foreach ($values['ranges'] as $index => $range) {
-            if (!is_array($range) || !isset($range['lower'], $range['upper']) ) {
+            if (!is_array($range) || !isset($range['lower'], $range['upper'])) {
                 throw new InputProcessorException(sprintf('Range at index %d in group %d at nesting level %d is either not an array or is missing [lower] and/or [upper].', $index, $groupIdx, $level));
             }
 
@@ -240,7 +240,7 @@ class ArrayInput extends AbstractInput
         }
 
         foreach ($values['excluded-ranges'] as $index => $range) {
-            if (!is_array($range) || !isset($range['lower'], $range['upper']) ) {
+            if (!is_array($range) || !isset($range['lower'], $range['upper'])) {
                 throw new InputProcessorException(sprintf('Excluding-range at index %d in group %d at nesting level %d is either not an array or is missing [lower] and/or [upper].', $index, $groupIdx, $level));
             }
 
@@ -254,7 +254,7 @@ class ArrayInput extends AbstractInput
         }
 
         foreach ($values['comparisons'] as $index => $comparison) {
-            if (!is_array($comparison) || !isset($comparison['value'], $comparison['operator']) ) {
+            if (!is_array($comparison) || !isset($comparison['value'], $comparison['operator'])) {
                 throw new InputProcessorException(sprintf('Comparison at index %d in group %d at nesting level %d is either not an array or is missing [value] and/or [operator].', $index, $groupIdx, $level));
             }
 
@@ -263,7 +263,7 @@ class ArrayInput extends AbstractInput
         }
 
         foreach ($values['pattern-matchers'] as $index => $matcher) {
-            if (!is_array($matcher) || !isset($matcher['value'], $matcher['type']) ) {
+            if (!is_array($matcher) || !isset($matcher['value'], $matcher['type'])) {
                 throw new InputProcessorException(sprintf('PatternMatcher at index %d in group %d at nesting level %d is either not an array or is missing [value] and/or [type].', $index, $groupIdx, $level));
             }
 

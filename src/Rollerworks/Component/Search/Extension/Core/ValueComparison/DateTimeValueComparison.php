@@ -11,6 +11,9 @@
 
 namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class DateTimeValueComparison extends DateValueComparison
 {
     /**

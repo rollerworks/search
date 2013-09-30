@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class TimeType extends AbstractFieldType
 {
     /**
@@ -25,6 +28,11 @@ class TimeType extends AbstractFieldType
      */
     protected $valueComparison;
 
+    /**
+     * Constructor.
+     *
+     * @param ValueComparisonInterface $valueComparison
+     */
     public function __construct(ValueComparisonInterface $valueComparison)
     {
         $this->valueComparison = $valueComparison;
@@ -56,6 +64,9 @@ class TimeType extends AbstractFieldType
         $config->addViewTransformer(new DateTimeToStringTransformer($options['model_timezone'], $options['view_timezone'], $format));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(

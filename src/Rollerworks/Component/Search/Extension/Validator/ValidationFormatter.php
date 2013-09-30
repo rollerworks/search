@@ -17,6 +17,14 @@ use Rollerworks\Component\Search\FormatterInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Symfony\Component\Validator\ValidatorInterface;
 
+/**
+ * Validates the values using the configured constraints
+ * of the corresponding field.
+ *
+ * Any violation is then mapped on the ValuesBag and ValuesGroup.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class ValidationFormatter implements FormatterInterface
 {
     /**

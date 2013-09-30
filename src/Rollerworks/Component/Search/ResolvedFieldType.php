@@ -11,10 +11,14 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class ResolvedFieldType implements ResolvedFieldTypeInterface
 {
     /**
@@ -37,10 +41,20 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
      */
     private $optionsResolver;
 
+    /**
+     * Constructor.
+     *
+     * @param FieldTypeInterface         $innerType
+     * @param array                      $typeExtensions
+     * @param ResolvedFieldTypeInterface $parent
+     *
+     * @throws UnexpectedTypeException   When at least one of the given extensions is not an FieldTypeExtensionInterface.
+     * @throws InvalidArgumentException  When the Inner Fieldname is invalid.
+     */
     public function __construct(FieldTypeInterface $innerType, array $typeExtensions = array(), ResolvedFieldTypeInterface $parent = null)
     {
         if (!preg_match('/^[a-z0-9_]*$/i', $innerType->getName())) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'The "%s" field type name ("%s") is not valid. Names must only contain letters, numbers, and "_".',
                 get_class($innerType),
                 $innerType->getName()

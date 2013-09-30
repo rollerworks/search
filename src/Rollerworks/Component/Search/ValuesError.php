@@ -11,6 +11,9 @@
 
 namespace Rollerworks\Component\Search;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class ValuesError
 {
     /**

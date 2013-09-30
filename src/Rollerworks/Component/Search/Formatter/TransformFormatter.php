@@ -38,6 +38,10 @@ class TransformFormatter implements FormatterInterface
         $this->transformValuesInGroup($valuesGroup, $fieldSet);
     }
 
+    /**
+     * @param ValuesGroup $valuesGroup
+     * @param FieldSet    $fieldSet
+     */
     private function transformValuesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getGroups() as $group) {
@@ -54,6 +58,10 @@ class TransformFormatter implements FormatterInterface
         }
     }
 
+    /**
+     * @param FieldConfigInterface $config
+     * @param ValuesBag            $valuesBag
+     */
     private function transformValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
     {
         $propertyPath = null;

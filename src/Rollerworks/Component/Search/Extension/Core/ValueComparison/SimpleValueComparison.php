@@ -20,16 +20,25 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
  */
 class SimpleValueComparison implements ValueComparisonInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     public function isHigher($value, $nextValue, array $options)
     {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function isLower($value, $nextValue, $options)
     {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function isEqual($value, $nextValue, $options)
     {
         // This does not work for objects, so it should have its comparison class

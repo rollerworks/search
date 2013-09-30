@@ -78,6 +78,12 @@ class ValuesGroupValidator extends ConstraintValidator
         }
     }
 
+    /**
+     * @param string               $subPath
+     * @param SearchValuesBag      $valuesBag
+     * @param FieldConfigInterface $field
+     * @param Constraint[]         $constraints
+     */
     private function validateValuesBag($subPath, SearchValuesBag $valuesBag, FieldConfigInterface $field, $constraints)
     {
         $options = $field->getOptions();
@@ -119,6 +125,13 @@ class ValuesGroupValidator extends ConstraintValidator
         }
     }
 
+    /**
+     * @param string               $subPath
+     * @param Range                $range
+     * @param FieldConfigInterface $field
+     * @param Constraint[]         $constraints
+     * @param array                $options
+     */
     private function validateRange($subPath, Range $range, FieldConfigInterface $field, $constraints, array $options)
     {
         $this->context->validateValue($range->getLower(), $constraints, $subPath . '.lower');

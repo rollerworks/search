@@ -113,7 +113,7 @@ class FilterQueryExporter extends AbstractExporter
         $operator = $patternMatch->isCaseInsensitive() ? '~i' : '~';
 
         if (in_array($patternMatch->getType(), array(PatternMatch::PATTERN_NOT_CONTAINS, PatternMatch::PATTERN_NOT_STARTS_WITH, PatternMatch::PATTERN_NOT_ENDS_WITH, PatternMatch::PATTERN_NOT_REGEX))) {
-           $operator .= '!';
+            $operator .= '!';
         }
 
         switch ($patternMatch->getType()) {
@@ -144,6 +144,11 @@ class FilterQueryExporter extends AbstractExporter
         return $operator;
     }
 
+    /**
+     * @param Range $range
+     *
+     * @return string
+     */
     protected function exportRangeValue(Range $range)
     {
         $result = !$range->isLowerInclusive() ? ']' : '';

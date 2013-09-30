@@ -14,6 +14,9 @@ namespace Rollerworks\Component\Search\Extension\Validator\ViolationMapper;
 use Rollerworks\Component\Search\ValuesGroup;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 interface ViolationMapperInterface
 {
     /**

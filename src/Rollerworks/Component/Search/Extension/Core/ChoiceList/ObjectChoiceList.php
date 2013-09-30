@@ -13,7 +13,6 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Symfony\Component\PropertyAccess\PropertyPath;
-use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -57,13 +56,13 @@ class ObjectChoiceList extends ChoiceList
     /**
      * Creates a new object choice list.
      *
-     * @param array|\Traversable       $choices           The array of choices.
-     * @param string                   $labelPath         A property path pointing to the property used
+     * @param array|\Traversable        $choices          The array of choices.
+     * @param string                    $labelPath        A property path pointing to the property used
      *                                                    for the choice labels. The value is obtained
      *                                                    by calling the getter on the object. If the
      *                                                    path is NULL, the object's __toString() method
      *                                                    is used instead.
-     * @param string                   $valuePath         A property path pointing to the property used
+     * @param string                    $valuePath        A property path pointing to the property used
      *                                                    for the choice values. If not given, integers
      *                                                    are generated instead.
      * @param PropertyAccessorInterface $propertyAccessor The reflection graph for reading property paths.
@@ -114,6 +113,12 @@ class ObjectChoiceList extends ChoiceList
         return parent::createValue($choice);
     }
 
+    /**
+     * @param array|\Traversable $choices
+     * @param array              $labels
+     *
+     * @throws InvalidArgumentException
+     */
     private function extractLabels($choices, array &$labels)
     {
         foreach ($choices as $i => $choice) {

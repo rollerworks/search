@@ -32,7 +32,7 @@ interface SearchExtensionInterface
      *
      * @param string $name The name of the type
      *
-     * @return Boolean Whether the type is supported by this extension
+     * @return boolean Whether the type is supported by this extension
      */
     public function hasType($name);
 
@@ -41,7 +41,7 @@ interface SearchExtensionInterface
      *
      * @param string $name The name of the type
      *
-     * @return FieldTypeExtensionInterface[] An array of extensions as FormTypeExtensionInterface instances
+     * @return FieldTypeExtensionInterface[] An array of extensions as FieldTypeExtensionInterface instances
      */
     public function getTypeExtensions($name);
 }

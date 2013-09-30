@@ -14,8 +14,14 @@ namespace Rollerworks\Component\Search\Extension\Core\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class BirthdayValidator extends ConstraintValidator
 {
+    /**
+     * {@inheritDoc}
+     */
     public function validate($value, Constraint $constraint)
     {
         if (null === $value || '' === $value || ($constraint->allowAge && ctype_digit($value))) {

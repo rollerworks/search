@@ -42,7 +42,7 @@ interface FieldRegistryInterface
     /**
      * Returns the extensions loaded by the framework.
      *
-     * @return array
+     * @return SearchExtensionInterface[]
      */
     public function getExtensions();
 }

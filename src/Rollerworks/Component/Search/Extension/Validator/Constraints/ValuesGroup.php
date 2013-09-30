@@ -13,6 +13,9 @@ namespace Rollerworks\Component\Search\Extension\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class ValuesGroup extends Constraint
 {
     /**

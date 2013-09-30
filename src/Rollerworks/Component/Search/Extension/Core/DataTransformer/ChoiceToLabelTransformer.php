@@ -32,11 +32,17 @@ class ChoiceToLabelTransformer implements DataTransformerInterface
         $this->choiceList = $choiceList;
     }
 
+    /**
+     * {inheritdoc}
+     */
     public function transform($choice)
     {
         return (string) $this->choiceList->getLabelForChoice($choice);
     }
 
+    /**
+     * {inheritdoc}
+     */
     public function reverseTransform($value)
     {
         if (null !== $value && !is_scalar($value)) {

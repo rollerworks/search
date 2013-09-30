@@ -27,6 +27,9 @@ use Seld\JsonLint\ParsingException;
  */
 class JsonInput extends ArrayInput
 {
+    /**
+     * {@inheritdoc}
+     */
     public function process($input)
     {
         try {

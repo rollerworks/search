@@ -19,6 +19,10 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * @author Bernhard Schussek <bschussek@gmail.com>
+ */
 class DateTimeType extends AbstractFieldType
 {
     const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
@@ -54,6 +58,9 @@ class DateTimeType extends AbstractFieldType
      */
     private $valueComparison;
 
+    /**
+     * @var array
+     */
     private static $acceptedFormats = array(
         \IntlDateFormatter::FULL,
         \IntlDateFormatter::LONG,
@@ -61,6 +68,11 @@ class DateTimeType extends AbstractFieldType
         \IntlDateFormatter::SHORT,
     );
 
+    /**
+     * Constructor.
+     *
+     * @param ValueComparisonInterface $valueComparison
+     */
     public function __construct(ValueComparisonInterface $valueComparison)
     {
         $this->valueComparison = $valueComparison;

@@ -20,6 +20,9 @@ use Rollerworks\Component\Search\AbstractExtension;
  */
 class CoreExtension extends AbstractExtension
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function loadTypes()
     {
         $simpleValueComparison = new ValueComparison\SimpleValueComparison();

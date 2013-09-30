@@ -13,11 +13,12 @@ namespace Rollerworks\Component\Search\Extension\Core\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class Birthday extends Constraint
 {
     public $ageMessage = 'This value is not a valid birthday or age.';
-
     public $dateMessage = 'This value is not a valid birthday.';
-
     public $allowAge;
 }

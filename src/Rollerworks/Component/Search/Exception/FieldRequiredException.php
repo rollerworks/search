@@ -11,6 +11,9 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class FieldRequiredException extends \RuntimeException implements ExceptionInterface
 {
     private $fieldName;
