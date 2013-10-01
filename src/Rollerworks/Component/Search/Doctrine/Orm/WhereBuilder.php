@@ -48,7 +48,7 @@ use Rollerworks\Component\Search\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class WhereBuilder
+class WhereBuilder implements WhereBuilderInterface
 {
     /**
      * @var SearchConditionInterface
@@ -345,13 +345,15 @@ class WhereBuilder
      *
      * @param string  $prependQuery Prepends this string to the where-clause ("WHERE" or "AND" for example)
      * @param boolean $forceUpdate  Force the where-builder to update the query
+     *
+     * @return self
      */
     public function updateQuery($prependQuery = '', $forceUpdate = false)
     {
         $whereCase = $this->getWhereClause();
 
         if ($whereCase === '' || ($this->queryModified && !$forceUpdate)) {
-            return ;
+            return $this;
         }
 
         if ($this->query instanceof NativeQuery) {
@@ -365,6 +367,8 @@ class WhereBuilder
         }
 
         $this->queryModified = true;
+
+        return $this;
     }
 
     /**
@@ -438,6 +442,22 @@ class WhereBuilder
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * @return ConversionStrategyInterface[]|SqlValueConversionInterface[]|ValueConversionInterface[]
+     */
+    public function getValueConversions()
+    {
+        return $this->valueConversions;
+    }
+
+    /**
+     * @return SqlFieldConversionInterface[]|ConversionStrategyInterface[]
+     */
+    public function getFieldConversions()
+    {
+        return $this->fieldConversions;
     }
 
     /**
