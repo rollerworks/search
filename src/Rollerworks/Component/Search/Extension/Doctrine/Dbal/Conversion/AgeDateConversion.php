@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Dbal\Conversion;
+namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
