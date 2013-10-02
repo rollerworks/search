@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="validators.xliff">
+        <body>
+            <trans-unit id="1">
+                <source>Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.</source>
+                <target>Begin van het bereik {{ lower }}, moet lager zijn dan het eind bereik {{ upper }}.</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>Field {{ field }} does accept comparison values.</source>
+                <target>Veld {{ field }} accepteert geen wiskundige vergelijkingen.</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>Field {{ field }} does accept range values.</source>
+                <target>Veld {{ field }} accepteert geen bereik waardes.</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Field {{ field }} does accept pattern values.</source>
+                <target>Veld {{ field }} accepteert geen patroon vergelijkingen.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Field {{ field }} is not registered in the FieldSet or available as alias.</source>
+                <target>Veld {{ field }} is niet geregistreerd in de veldenset en is niet beschikbaar als alias.</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Field {{ field }} is required but is missing in group {{ group }} at nesting level {{ nesting }}.</source>
+                <target>Veld {{ field }} moet minstens één waarde hebben maar ontbreekt in groep {{ group }} op niveau {{ nesting }}.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Group {{ group }} at nesting level {{ nesting }} exceeds maximum nesting level of {{ max }}.</source>
+                <target>Groep {{ group }} op niveau {{ nesting }}, overschrijdt het maximum diepte niveau van {{ max }}.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</source>
+                <target>Veld {{ field }} in groep {{ group }} op niveau {{ nesting }}, overschrijdt maximum aantal waardes per groep. Maximaal: {{ max }}, huidig aantal: {{ count }}.</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>This value is not a valid birthday or age.</source>
+                <target>Deze waarde is geen geldige leeftijd of geboortedatum.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>This value is not a valid birthday.</source>
+                <target>Deze waarde is geen geldige geboortedatum.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

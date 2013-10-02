@@ -31,7 +31,7 @@ class GroupsNestingException extends \Exception implements ExceptionInterface
         $this->groupIdx = $groupIdx;
         $this->nestingLevel = $nestingLevel;
 
-        parent::__construct(sprintf('Group %d at nesting level %d exceeds maximum nesting level of %d', $groupIdx, $nestingLevel, $max));
+        parent::__construct(sprintf('Group %d at nesting level %d exceeds maximum nesting level of %d.', $groupIdx, $nestingLevel, $max));
     }
 
     /**

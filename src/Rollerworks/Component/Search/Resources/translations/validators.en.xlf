@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="validators.xliff">
+        <body>
+            <trans-unit id="1">
+                <source>Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.</source>
+                <target>Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>Field {{ field }} does accept comparison values.</source>
+                <target>Field {{ field }} does accept comparison values.</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>Field {{ field }} does accept range values.</source>
+                <target>Field {{ field }} does accept range values.</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Field {{ field }} does accept pattern values.</source>
+                <target>Field {{ field }} does accept pattern values.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Field {{ field }} is not registered in the FieldSet or available as alias.</source>
+                <target>Field {{ field }} is not registered in the FieldSet or available as alias.</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Field {{ field }} is required but is missing in group {{ group }} at nesting level {{ nesting }}.</source>
+                <target>Field {{ field }} is required but is missing in group {{ group }} at nesting level {{ nesting }}.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Group {{ group }} at nesting level {{ nesting }} exceeds maximum nesting level of {{ max }}.</source>
+                <target>Group {{ group }} at nesting level {{ nesting }} exceeds maximum nesting level of {{ max }}.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</source>
+                <target>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>This value is not a valid birthday or age.</source>
+                <target>This value is not a valid birthday or age.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>This value is not a valid birthday.</source>
+                <target>This value is not a valid birthday.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

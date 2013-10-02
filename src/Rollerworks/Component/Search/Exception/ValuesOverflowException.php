@@ -37,7 +37,7 @@ class ValuesOverflowException extends \Exception implements ExceptionInterface
         $this->nestingLevel = $nestingLevel;
 
         parent::__construct(sprintf(
-            'Field "%s" in group %d at nesting level %d exceeds maximum number values in per group, maximum: %d, total of values: %d.',
+            'Field "%s" in group %d at nesting level %d exceeds the maximum number of values per group, maximum: %d, total of values: %d.',
             $fieldName,
             $groupIdx,
             $nestingLevel,

@@ -31,6 +31,6 @@ class FieldRequiredException extends \RuntimeException implements ExceptionInter
         $this->groupIdx = $groupIdx;
         $this->nestingLevel = $nestingLevel;
 
-        parent::__construct(sprintf('Field "%s" is required but is missing in group %d at nesting level %d', $fieldName, $groupIdx, $nestingLevel));
+        parent::__construct(sprintf('Field "%s" is required but is missing in group %d at nesting level %d.', $fieldName, $groupIdx, $nestingLevel));
     }
 }
