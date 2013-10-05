@@ -59,18 +59,4 @@ class FieldType extends AbstractFieldType
     {
         $config->setValueComparison($this->valueComparison);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $optionsResolver)
-    {
-        $optionsResolver->setDefaults(array(
-            'constraints' => array()
-        ));
-
-        $optionsResolver->setAllowedTypes(array(
-            'constraints' => array('array', 'string')
-        ));
-    }
 }
