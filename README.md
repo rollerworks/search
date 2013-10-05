@@ -1,26 +1,91 @@
 README
 ======
 
-[![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksRecordFilterBundle.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksRecordFilterBundle)
+[![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksSearch.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksSearch)
 
-What is the RecordFilterBundle?
--------------------------------
+What is Rollerworks Search?
+---------------------------
 
-The RecordFilterBundle is a Symfony 2 Bundle for filter-based record searching.
+Rollerworks Search is an advanced search-building framework.
 
-Filter-based in that it uses a filtering system to search.
-You search by conditions, not terms.
+Providing some powerful basics for building your own site search-engine.
+From input to formatting and validating, and finally applying condition to the
+storage engine.
 
-This bundle was designed to be used for any kind of storage, input and local.
+This system was designed to be as expendable as possible.
+Everything, and absolute everything can be replaced with your implementation.
 
-Out of the box it (currently) only supports Doctrine ORM for searching in.
+Features
+--------
+
+The searching condition is build of fields and groups.
+Each field have any-type of value including ranges, comparisons
+and matchers (starts/ends with contains).
+
+Groups can be nested at any level of depth.
+
+## Input
+
+Input processing is possible for the following formats by default.
+
+* Array
+* JSON
+* XML
+* FilterQuery (an easy to learn and use formula-based input format).
+
+> Each provided input format also provides an related exporter component.
+
+## Formatter
+
+* Validation
+* Transformation (view representation to normalized and reverse)
+* Removing of duplicated values
+* Optimizing of ranges: detecting and removing overlapping ranges
+* Connected values to Ranges (1,2,3,4,5 gets converted to 1-5)
+
+## Types
+
+The following types are build (but can be replaced with your own if needed).
+
+> Each type is internalized.
+
+* Birthday (with optional support for ages)
+* Choice
+* Country choice
+* Currency choice
+* DateTime
+* Date
+* Integer
+* Language choice
+* Locale choice
+* Money
+* Number
+* Text
+* Timezone choice
+
+* IP-address (coming soon)
+* Mac-address (coming soon)
+
+## Storage/Index engines
+
+* Doctrine2 ORM
+* Doctrine2 DBAL (coming soon)
+* Doctrine2 phpcr-odm (coming soon)
+* CouchDB, MongoDB (coming soon)
+* Apache Solr (coming soon)
+* Elasticsearch (coming soon)
 
 Requirements
 ------------
 
-You need at least Symfony 2.1 and the Composer package manager.
+You need at least PHP 5.3.3, and preferable the Intl extension
+for international support.
 
-    A Component that is used with this bundle currently does not support the old vendor-script installation.
+For framework integration you use the following.
+
+* Symfony2 Bundle (coming soon)
+* ZendFramework2 Plugin (coming soon)
+* Silex Plugin (coming soon)
 
 Installation
 ------------
@@ -31,6 +96,8 @@ Installation is very easy, all the details about installing can be found in.
 
 Documentation
 -------------
+
+> **The current documentation is outdated, please be patient as it gets updated.**
 
 The documentation is written in [reStructuredText][3] and can be built into standard HTML using [Sphinx][4].
 

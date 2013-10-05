@@ -1,6 +1,14 @@
 UPGRADE
 =======
 
+## 2013-10-02
+
+This project was formally called the RollerworksRecordFilterBundle.
+
+If you like to switch to this new project please bare in mind
+this library is completely rewritten, you should read the new documentation
+to get started with the upgrade.
+
 ## 23-07-2013
 
 The directory structure has changed to fix some issues with Composer autoloading.
