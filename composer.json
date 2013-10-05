@@ -28,6 +28,7 @@
         "doctrine/orm": "~2.3,>=2.3.0",
         "symfony/class-loader": "~2.1",
         "symfony/browser-kit": "~2.1",
+        "symfony/dependency-injection": "~2.1",
         "jms/metadata": ">=1.1.1"
     },
     "suggest": {
