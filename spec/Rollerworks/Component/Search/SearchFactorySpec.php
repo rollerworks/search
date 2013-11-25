@@ -35,34 +35,45 @@ class SearchFactorySpec extends ObjectBehavior
     {
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
 
-        $type->getName()->willReturn('number');
-        $registry->getType('number')->willReturn($type->getWrappedObject());
-
         $expectedField = new SearchField('id', $type->getWrappedObject());
-        $this->createField('id', 'number')->shouldBeLike($expectedField);
+
+        $type->getName()->willReturn('number');
+        $type->createField('id', array())->willReturn($expectedField);
+
+        $registry->getType('number')->willReturn($type->getWrappedObject());
+        $type->buildType(Argument::exact($expectedField), array())->shouldBeCalled();
+
+        $this->createField('id', 'number')->shouldEqual($expectedField);
     }
 
     public function it_creates_field_with_type_as_object(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, FieldTypeInterface $type, ResolvedFieldTypeInterface $resolvedType)
     {
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
 
+        $expectedField = new SearchField('id', $resolvedType->getWrappedObject());
+        $resolvedType->buildType(Argument::exact($expectedField), array())->shouldBeCalled();
+
         $resolvedType->getName()->willReturn('number');
+        $resolvedType->createField('id', array())->willReturn($expectedField);
+
         $resolvedTypeFactory->createResolvedType(Argument::exact($type->getWrappedObject()), array(), null)->willReturn($resolvedType);
 
-        $expectedField = new SearchField('id', $resolvedType->getWrappedObject());
-        $this->createField('id', $type)->shouldBeLike($expectedField);
+        $this->createField('id', $type)->shouldEqual($expectedField);
     }
 
     public function it_creates_field_with_model_ref(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, ResolvedFieldTypeInterface $type)
     {
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
 
-        $type->getName()->willReturn('number');
-        $registry->getType('number')->willReturn($type->getWrappedObject());
-
         $expectedField = new SearchField('uid', $type->getWrappedObject());
         $expectedField->setModelRef('Entity\User', 'id');
 
-        $this->createFieldForProperty('Entity\User', 'id', 'uid', 'number')->shouldBeLike($expectedField);
+        $type->getName()->willReturn('number');
+        $type->createField('uid', array())->willReturn($expectedField);
+
+        $registry->getType('number')->willReturn($type->getWrappedObject());
+        $type->buildType(Argument::exact($expectedField), array())->shouldBeCalled();
+
+        $this->createFieldForProperty('Entity\User', 'id', 'uid', 'number')->shouldEqual($expectedField);
     }
 }

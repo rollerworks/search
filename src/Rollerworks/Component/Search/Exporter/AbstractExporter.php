@@ -58,7 +58,8 @@ abstract class AbstractExporter implements ExporterInterface
      * Exports the SearchCondition.
      *
      * @param SearchConditionInterface $condition     The SearchCondition to export
-     * @param boolean                  $useFieldAlias Use the localized field-alias instead of the actual name (default false)
+     * @param boolean                  $useFieldAlias Use the localized field-alias
+     *                                                instead of the actual name (default false)
      *
      * @return mixed
      *

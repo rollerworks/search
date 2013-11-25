@@ -57,8 +57,6 @@ class SearchFactory implements SearchFactoryInterface
      * @param boolean $required
      *
      * @return ResolvedFieldTypeInterface
-     *
-     * This must also configure the FieldConfig with the type
      */
     public function createField($name, $type, array $options = array(), $required = false)
     {
@@ -124,7 +122,11 @@ class SearchFactory implements SearchFactoryInterface
             throw new UnexpectedTypeException($type, 'string, Rollerworks\Component\Search\ResolvedFieldTypeInterface or Rollerworks\Component\Search\FieldTypeInterface');
         }
 
-        $field = new SearchField($name, $type, $options);
+        $field = $type->createField($name, $options);
+
+        // Explicitly call buildType() in order to be able to override either
+        // createField() or buildType() in the resolved field type
+        $type->buildType($field, $field->getOptions());
 
         return $field;
     }

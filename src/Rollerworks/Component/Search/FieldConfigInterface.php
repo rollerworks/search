@@ -26,7 +26,7 @@ interface FieldConfigInterface
     public function getName();
 
     /**
-     * Returns the field types used to construct the field.
+     * Returns the field type used to construct the field.
      *
      * @return ResolvedFieldTypeInterface The field's type.
      */

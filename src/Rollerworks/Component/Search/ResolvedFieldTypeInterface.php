@@ -31,18 +31,28 @@ interface ResolvedFieldTypeInterface
     public function getParent();
 
     /**
-     * Returns the wrapped form type.
+     * Returns the wrapped field type.
      *
-     * @return FieldTypeInterface The wrapped form type.
+     * @return FieldTypeInterface The wrapped field type.
      */
     public function getInnerType();
 
     /**
-     * Returns the extensions of the wrapped form type.
+     * Returns the extensions of the wrapped field type.
      *
-     * @return FieldTypeExtensionInterface[] An array of {@link FormTypeExtensionInterface} instances.
+     * @return FieldTypeExtensionInterface[] An array of {@link FieldTypeExtensionInterface} instances.
      */
     public function getTypeExtensions();
+
+    /**
+     * Returns a new FieldConfigInterface instance.
+     *
+     * @param string $name
+     * @param array  $options
+     *
+     * @return FieldConfigInterface
+     */
+    public function createField($name, array $options = array());
 
     /**
      * This configures the {@link FieldConfigInterface}.

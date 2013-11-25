@@ -75,7 +75,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * Returns the name of the type.
      *
-     * @return string The type name.
+     * @return string The type name
      */
     public function getName()
     {
@@ -85,7 +85,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * Returns the parent type.
      *
-     * @return ResolvedFieldTypeInterface|null The parent type or null.
+     * @return ResolvedFieldTypeInterface|null The parent type or null
      */
     public function getParent()
     {
@@ -95,7 +95,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * Returns the wrapped form type.
      *
-     * @return FieldTypeInterface The wrapped form type.
+     * @return FieldTypeInterface The wrapped form type
      */
     public function getInnerType()
     {
@@ -110,6 +110,17 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     public function getTypeExtensions()
     {
         return $this->typeExtensions;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createField($name, array $options = array())
+    {
+        $options = $this->getOptionsResolver()->resolve($options);
+        $builder = $this->newField($name, $options);
+
+        return $builder;
     }
 
     /**
@@ -138,7 +149,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * Returns the configured options resolver used for this type.
      *
-     * @return OptionsResolverInterface The options resolver.
+     * @return OptionsResolverInterface The options resolver
      */
     public function getOptionsResolver()
     {
@@ -157,5 +168,20 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
         }
 
         return $this->optionsResolver;
+    }
+
+    /**
+     * Creates a new field instance.
+     *
+     * Override this method if you want to customize the field class.
+     *
+     * @param string $name    The name of the field
+     * @param array  $options The builder options
+     *
+     * @return SearchField The new field instance
+     */
+    protected function newField($name, array $options)
+    {
+        return new SearchField($name, $this, $options);
     }
 }
