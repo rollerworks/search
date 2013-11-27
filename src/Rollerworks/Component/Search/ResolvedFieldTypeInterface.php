@@ -11,6 +11,8 @@
 
 namespace Rollerworks\Component\Search;
 
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
 /**
  * A wrapper for a field type and its extensions.
  */
@@ -66,9 +68,27 @@ interface ResolvedFieldTypeInterface
     public function buildType(FieldConfigInterface $config, array $options);
 
     /**
+     * Creates a new SearchFieldView for a field of this type.
+     *
+     * @param FieldConfigInterface $config
+     *
+     * @return SearchFieldView
+     */
+    public function createFieldView(FieldConfigInterface $config);
+
+    /**
+     * Configures a SearchFieldView for the type hierarchy.
+     *
+     * @param SearchFieldView      $view
+     * @param FieldConfigInterface $config
+     * @param array                $options
+     */
+    public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options);
+
+    /**
      * Returns the configured options resolver used for this type.
      *
-     * @return \Symfony\Component\OptionsResolver\OptionsResolverInterface The options resolver.
+     * @return OptionsResolverInterface The options resolver.
      */
     public function getOptionsResolver();
 }

@@ -32,6 +32,14 @@ interface FieldTypeExtensionInterface
     public function buildType(FieldConfigInterface $builder, array $options);
 
     /**
+     * Builds the SearchFieldView.
+     *
+     * @param FieldConfigInterface $config
+     * @param SearchFieldView      $view
+     */
+    public function buildFieldView(FieldConfigInterface $config, SearchFieldView $view);
+
+    /**
      * Overrides the default options from the extended type.
      *
      * @param OptionsResolverInterface $resolver The resolver for the options.

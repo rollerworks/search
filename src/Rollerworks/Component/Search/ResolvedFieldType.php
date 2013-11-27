@@ -124,13 +124,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     }
 
     /**
-     * This configures the {@link FieldConfigInterface}.
-     *
-     * This method is called for each type in the hierarchy starting from the
-     * top most type. Type extensions can further modify the field.
-     *
-     * @param FieldConfigInterface $config
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
@@ -143,6 +137,39 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
         foreach ($this->typeExtensions as $extension) {
             /* @var FieldTypeExtensionInterface $extension */
             $extension->buildType($config, $options);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createFieldView(FieldConfigInterface $config)
+    {
+        $view = $this->newFieldView($config);
+        $view->vars = array_merge($view->vars, array(
+            'name' => $config->getName(),
+            'type' => $config->getType()->getName(),
+            'accept_ranges' => $config->acceptRanges(),
+            'accept_compares' => $config->acceptCompares(),
+            'required' => $config->isRequired(),
+        ));
+
+        return $view;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    {
+        if (null !== $this->parent) {
+            $this->parent->buildFieldView($view, $config, $options);
+        }
+
+        $this->innerType->buildFieldView($view, $config, $options);
+
+        foreach ($this->typeExtensions as $extension) {
+            $extension->buildFieldView($config, $view);
         }
     }
 
@@ -183,5 +210,19 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     protected function newField($name, array $options)
     {
         return new SearchField($name, $this, $options);
+    }
+
+    /**
+     * Creates a new SearchFieldView instance.
+     *
+     * Override this method if you want to customize the view class.
+     *
+     * @param FieldConfigInterface $config The search field
+     *
+     * @return SearchFieldView The new view instance
+     */
+    protected function newFieldView(FieldConfigInterface $config)
+    {
+        return new SearchFieldView();
     }
 }

@@ -51,6 +51,15 @@ interface FieldTypeInterface
     public function buildType(FieldConfigInterface $config, array $options);
 
     /**
+     * Configures the SearchFieldView instance.
+     *
+     * @param SearchFieldView      $view
+     * @param FieldConfigInterface $config
+     * @param array                $options
+     */
+    public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options);
+
+    /**
      * Returns whether ranges are supported by this type.
      *
      * @return boolean

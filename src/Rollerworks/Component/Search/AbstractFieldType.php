@@ -28,6 +28,14 @@ abstract class AbstractFieldType implements FieldTypeInterface
     /**
      * {@inheritDoc}
      */
+    public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
     }
