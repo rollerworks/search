@@ -42,7 +42,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      *
      * @param MoneyValue $lower
      * @param MoneyValue $higher
-     * @param array     $options
+     * @param array      $options
      *
      * @return boolean
      */
@@ -60,7 +60,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      *
      * @param MoneyValue $value
      * @param MoneyValue $nextValue
-     * @param array     $options
+     * @param array      $options
      *
      * @return boolean
      */

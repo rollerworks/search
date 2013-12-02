@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query as DqlQuery;
 use Doctrine\ORM\QueryBuilder;

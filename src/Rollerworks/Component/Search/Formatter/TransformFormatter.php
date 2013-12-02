@@ -157,7 +157,7 @@ class TransformFormatter implements FormatterInterface
     /**
      * Reverse transforms a value if a value transformer is set.
      *
-     * @param string               $value The value to reverse transform
+     * @param string               $value  The value to reverse transform
      * @param FieldConfigInterface $config
      *
      * @return mixed

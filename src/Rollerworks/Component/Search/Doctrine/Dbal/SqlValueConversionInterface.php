@@ -29,9 +29,9 @@ interface SqlValueConversionInterface extends ValueConversionInterface
     /**
      * Returns whether the value must embedded with the statement.
      *
-     * @param mixed  $input   Input value
-     * @param array  $options Options of the Field configuration
-     * @param array  $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
+     * @param mixed $input   Input value
+     * @param array $options Options of the Field configuration
+     * @param array $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
      *
      * @return boolean Return true to receive the value as-is, false to receive the query-param name.
      */
@@ -43,9 +43,9 @@ interface SqlValueConversionInterface extends ValueConversionInterface
      * Caution: The result of this method is used as-is,
      * so its important to escape any values used in the returned statement.
      *
-     * @param mixed  $input   Query-parameter reference or real input depending on requiresRealValue()
-     * @param array  $options Options of the Field configuration
-     * @param array  $hints   Special information for the conversion process (searchField, connection, dbType)
+     * @param mixed $input   Query-parameter reference or real input depending on requiresRealValue()
+     * @param array $options Options of the Field configuration
+     * @param array $hints   Special information for the conversion process (searchField, connection, dbType)
      *
      * @return string
      */

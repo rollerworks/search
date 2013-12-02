@@ -233,7 +233,7 @@ class XmlInput extends AbstractInput
     /**
      * Loads an XML file.
      *
-     * @param string $content                      An XML file path
+     * @param string          $content          An XML file path
      * @param string|callable $schemaOrCallable An XSD schema file path or callable
      *
      * @author Martin Hasoň <martin.hason@gmail.com>

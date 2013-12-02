@@ -122,7 +122,7 @@ class XmlExporter extends AbstractExporter
     }
 
     /**
-     * @param \DOMNode    $parent
+     * @param \DOMNode  $parent
      * @param ValuesBag $valuesBag
      *
      * @return \DOMNode

@@ -25,7 +25,7 @@ interface FieldRegistryInterface
      *
      * @return ResolvedFieldTypeInterface The type
      *
-     * @throws Exception\UnexpectedTypeException if the passed name is not a string
+     * @throws Exception\UnexpectedTypeException  if the passed name is not a string
      * @throws Exception\InvalidArgumentException if the type can not be retrieved from any extension
      */
     public function getType($name);

@@ -30,9 +30,9 @@ interface ConversionStrategyInterface
      *
      * The converter will receive the strategy as 'conversionStrategy' in the $hints parameter
      *
-     * @param mixed  $value   Input value
-     * @param array  $options Options of the Field configuration
-     * @param array  $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
+     * @param mixed $value   Input value
+     * @param array $options Options of the Field configuration
+     * @param array $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
      *
      * @return null|integer The determined strategy
      */

@@ -28,11 +28,11 @@ use Rollerworks\Component\Search\ValuesGroup;
  * The provided input must be structured as follow.
  *
  * Each entry must contain an array with either 'fields' and/or groups.
- * Optional the array can contain logical-case => 'AND' to make it AND-cased.
+ * Optionally the array can contain logical-case => 'AND' to make it AND-cased.
  *
  * The groups array contains numeric groups with and the value as described above (fields and/or groups).
  *
- * The fields array is an associative array where each key if the field-name and the value as follow.s
+ * The fields array is an associative array where each key is the field-name and the value as follow.
  * All the keys are optional, but at least one must exists.
  *
  *  'single-values'   => array('value1', 'value2')

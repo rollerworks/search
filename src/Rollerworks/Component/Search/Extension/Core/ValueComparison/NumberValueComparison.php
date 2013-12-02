@@ -23,7 +23,7 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * @param integer|float $higher
      * @param integer|float $lower
-     * @param array     $options
+     * @param array         $options
      *
      * @return boolean
      */
@@ -37,7 +37,7 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * @param integer|float $lower
      * @param integer|float $higher
-     * @param array     $options
+     * @param array         $options
      *
      * @return boolean
      */
@@ -51,7 +51,7 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * @param integer|float $value
      * @param integer|float $nextValue
-     * @param array     $options
+     * @param array         $options
      *
      * @return boolean
      */

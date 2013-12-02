@@ -33,7 +33,7 @@ class XmlUtils
     /**
      * Loads an XML file.
      *
-     * @param string $file                      An XML file path
+     * @param string          $file             An XML file path
      * @param string|callable $schemaOrCallable An XSD schema file path or callable
      *
      * @return \DOMDocument

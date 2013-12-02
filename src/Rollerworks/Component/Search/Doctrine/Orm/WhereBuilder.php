@@ -136,7 +136,7 @@ class WhereBuilder implements WhereBuilderInterface
      * @param NativeQuery|DqlQuery|QueryBuilder $query           Doctrine ORM Query or QueryBuilder object
      * @param SearchConditionInterface          $searchCondition SearchCondition object
      *
-     * @throws BadMethodCallException When SearchCondition contains errors.
+     * @throws BadMethodCallException  When SearchCondition contains errors.
      * @throws UnexpectedTypeException When $query is an invalid type.
      */
     public function __construct($query, SearchConditionInterface $searchCondition)

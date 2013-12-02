@@ -36,9 +36,9 @@ interface ValueConversionInterface
      * The original value is still available
      * with originalValue in the $hints parameter
      *
-     * @param mixed  $input   Input value
-     * @param array  $options Options of the Field configuration
-     * @param array  $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
+     * @param mixed $input   Input value
+     * @param array $options Options of the Field configuration
+     * @param array $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
      *
      * @return boolean
      */
@@ -47,9 +47,9 @@ interface ValueConversionInterface
     /**
      * Returns the converted input.
      *
-     * @param mixed  $input   Query-parameter reference or real input depending on requiresRealValue()
-     * @param array  $options Options of the Field configuration
-     * @param array  $hints   Special information for the conversion process (searchField, connection, dbType, originalValue, valueObject)
+     * @param mixed $input   Query-parameter reference or real input depending on requiresRealValue()
+     * @param array $options Options of the Field configuration
+     * @param array $hints   Special information for the conversion process (searchField, connection, dbType, originalValue, valueObject)
      *
      * @return string
      */

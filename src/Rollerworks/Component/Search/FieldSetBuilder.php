@@ -71,7 +71,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      *
      * @return string
      *
-     * @throws BadMethodCallException  When the FieldSet is already generated.
+     * @throws BadMethodCallException When the FieldSet is already generated.
      */
     public function getName()
     {

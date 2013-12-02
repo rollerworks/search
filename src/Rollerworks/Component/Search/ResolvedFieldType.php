@@ -48,8 +48,8 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
      * @param array                      $typeExtensions
      * @param ResolvedFieldTypeInterface $parent
      *
-     * @throws UnexpectedTypeException   When at least one of the given extensions is not an FieldTypeExtensionInterface.
-     * @throws InvalidArgumentException  When the Inner Fieldname is invalid.
+     * @throws UnexpectedTypeException  When at least one of the given extensions is not an FieldTypeExtensionInterface.
+     * @throws InvalidArgumentException When the Inner Fieldname is invalid.
      */
     public function __construct(FieldTypeInterface $innerType, array $typeExtensions = array(), ResolvedFieldTypeInterface $parent = null)
     {

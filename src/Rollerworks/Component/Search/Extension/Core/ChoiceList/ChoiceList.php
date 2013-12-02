@@ -194,10 +194,10 @@ class ChoiceList implements ChoiceListInterface
     /**
      * Recursively adds the given choices to the list.
      *
-     * @param array|\Traversable $choices            The list of choices.
-     * @param array              $labels             The labels corresponding to the choices.
+     * @param array|\Traversable $choices The list of choices.
+     * @param array              $labels  The labels corresponding to the choices.
      *
-     * @throws InvalidArgumentException     If the structures of the choices and labels array do not match.
+     * @throws InvalidArgumentException      If the structures of the choices and labels array do not match.
      * @throws InvalidConfigurationException If no valid value or index could be created for a choice.
      */
     protected function addChoices($choices, array $labels)

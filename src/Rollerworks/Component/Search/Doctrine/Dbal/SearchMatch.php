@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Types\Type as DBALType;
 
 /**
  * SearchMatch.

@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
 /**
- * SearchQuery - processes input in the SearchQuery format.
+ * FilterQuery - processes input in the FilterQuery format.
  *
  * The formats works as follow (spaced are ignored).
  *
