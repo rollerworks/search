@@ -69,7 +69,7 @@ class YamlFileDriverSpec extends ObjectBehavior
         $this->beConstructedWith($locator);
 
         $reflection = new \ReflectionClass('Rollerworks\Component\Search\Fixtures\Entity\User');
-        $locator->findFileForClass($reflection, 'yml')->willReturn($file = __DIR__ . '/../../Fixtures/Config/Entity.User-invalid.yml');
+        $locator->findFileForClass($reflection, 'yml')->willReturn(__DIR__ . '/../../Fixtures/Config/Entity.User-invalid.yml');
 
         $this->shouldThrow(new InvalidArgumentException('No "type" found in property metadata of class "Rollerworks\Component\Search\Fixtures\Entity\User" property "name".'))->during('loadMetadataForClass', array($reflection, true));
     }

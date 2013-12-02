@@ -19,6 +19,8 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
+ *
+ * @todo should support default currency
  */
 class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
 {

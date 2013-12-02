@@ -12,7 +12,6 @@
 namespace spec\Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface;
 
 class ChoiceToLabelTransformerSpec extends ObjectBehavior

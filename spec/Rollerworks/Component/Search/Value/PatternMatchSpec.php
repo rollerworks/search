@@ -12,7 +12,6 @@
 namespace spec\Rollerworks\Component\Search\Value;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
 class PatternMatchSpec extends ObjectBehavior

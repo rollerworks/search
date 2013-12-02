@@ -142,7 +142,7 @@ class ValuesGroupValidatorSpec extends ObjectBehavior
         $endTimeView = $endTime->format('m/d/Y');
 
         $valuesBag = new ValuesBag();
-        $valuesBag->addRange($range1 = new Range($startTime, $endTime, true, true, $startTimeView, $endTimeView));
+        $valuesBag->addRange(new Range($startTime, $endTime, true, true, $startTimeView, $endTimeView));
         $valuesBag->addRange($range2 = new Range($endTime, $startTime, true, true, $endTimeView, $startTimeView));
         $valuesGroup->addField('date', $valuesBag);
 
@@ -217,7 +217,7 @@ class ValuesGroupValidatorSpec extends ObjectBehavior
         $endTimeView = $endTime->format('m/d/Y');
 
         $valuesBag = new ValuesBag();
-        $valuesBag->addExcludedRange($range1 = new Range($startTime, $endTime, true, true, $startTimeView, $endTimeView));
+        $valuesBag->addExcludedRange(new Range($startTime, $endTime, true, true, $startTimeView, $endTimeView));
         $valuesBag->addExcludedRange($range2 = new Range($endTime, $startTime, true, true, $endTimeView, $startTimeView));
         $valuesGroup->addField('date', $valuesBag);
 

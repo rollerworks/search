@@ -12,7 +12,6 @@
 namespace spec\Rollerworks\Component\Search;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 

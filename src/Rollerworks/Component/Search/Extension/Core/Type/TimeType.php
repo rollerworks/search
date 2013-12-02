@@ -61,7 +61,7 @@ class TimeType extends AbstractFieldType
             $parts[] = 'second';
         }
 
-        $config->addViewTransformer(new DateTimeToStringTransformer($options['model_timezone'], $options['view_timezone'], $format));
+        $config->addViewTransformer(new DateTimeToStringTransformer($options['model_timezone'], $options['input_timezone'], $format));
     }
 
     /**
@@ -72,7 +72,7 @@ class TimeType extends AbstractFieldType
         $resolver->setDefaults(array(
             'with_minutes'   => true,
             'with_seconds'   => false,
-            'view_timezone' => null,
+            'input_timezone' => null,
             'model_timezone' => null,
         ));
     }

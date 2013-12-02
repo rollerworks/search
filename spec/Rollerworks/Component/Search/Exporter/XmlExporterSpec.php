@@ -12,7 +12,6 @@
 namespace spec\Rollerworks\Component\Search\Exporter;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldLabelResolverInterface;
 use Rollerworks\Component\Search\FieldSet;

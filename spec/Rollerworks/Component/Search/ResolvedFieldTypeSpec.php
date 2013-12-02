@@ -18,7 +18,6 @@ use Rollerworks\Component\Search\FieldTypeExtensionInterface;
 use Rollerworks\Component\Search\FieldTypeInterface;
 use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ResolvedFieldTypeSpec extends ObjectBehavior
 {

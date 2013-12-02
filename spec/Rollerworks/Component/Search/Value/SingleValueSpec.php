@@ -3,8 +3,6 @@
 namespace spec\Rollerworks\Component\Search\Value;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use Rollerworks\Bundle\RecordFilterBundle\Type\DateTime;
 
 class SingleValueSpec extends ObjectBehavior
 {

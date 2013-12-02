@@ -12,7 +12,6 @@
 namespace spec\Rollerworks\Component\Search\Input;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;

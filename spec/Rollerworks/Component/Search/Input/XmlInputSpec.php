@@ -12,7 +12,6 @@
 namespace spec\Rollerworks\Component\Search\Input;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;

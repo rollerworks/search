@@ -63,7 +63,7 @@ class MoneyType extends AbstractFieldType
             'precision' => 2,
             'grouping' => false,
             'divisor' => 1,
-            'currency' => 'EUR',
+            'default_currency' => 'EUR',
         ));
     }
 

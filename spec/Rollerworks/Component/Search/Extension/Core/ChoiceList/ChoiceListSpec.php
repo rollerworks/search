@@ -12,7 +12,6 @@
 namespace spec\Rollerworks\Component\Search\Extension\Core\ChoiceList;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ChoiceListSpec extends ObjectBehavior
 {

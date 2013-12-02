@@ -3,7 +3,6 @@
 namespace spec\Rollerworks\Component\Search;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\ResolvedFieldTypeInterface;

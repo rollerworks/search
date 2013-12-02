@@ -12,7 +12,6 @@
 namespace spec\Rollerworks\Component\Search\Value;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class CompareSpec extends ObjectBehavior
 {

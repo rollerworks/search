@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DBALType;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;

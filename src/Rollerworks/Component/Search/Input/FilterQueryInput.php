@@ -13,7 +13,6 @@ namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Input\FilterQuery\Lexer;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\Value;

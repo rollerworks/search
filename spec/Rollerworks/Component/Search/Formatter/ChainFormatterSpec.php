@@ -12,10 +12,8 @@
 namespace spec\Rollerworks\Component\Search\Formatter;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FormatterInterface;
-use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\ValuesGroup;
 

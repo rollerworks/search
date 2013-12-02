@@ -15,7 +15,6 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\Reader;
 use Metadata\MergeableClassMetadata;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\Metadata\Field as AnnotationField;
 use Rollerworks\Component\Search\Metadata\PropertyMetadata;
 
