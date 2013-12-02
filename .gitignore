@@ -1,35 +1,5 @@
-# Numerous always-ignore extensions
-*.diff
-*.err
-*.orig
-*.log
-*.rej
-*.swo
-*.swp
-*.vi
-*~
-
-# OS or Editor folders
-.DS_Store
-Thumbs.db
-.tmproj
-*.esproj
-nbproject
-*.sublime-project
-*.sublime-workspace
-
-# Folders to ignore
-src/Rollerworks/Bundle/RecordFilterBundle/Resources/doc/_themes
-src/Rollerworks/Bundle/RecordFilterBundle/Resources/doc/_exts
-src/Rollerworks/Bundle/RecordFilterBundle/Resources/doc/_build
-tests/Rollerworks/Bundle/RecordFilterBundle/Tests/.cache
-.idea
-
-phpunit.xml
-
-# Composer
-composer.lock
-composer.phar
-autoload.php
+/phpunit.xml
+/composer.lock
+/composer.phar
 /vendor/
-/bin
+/bin/
