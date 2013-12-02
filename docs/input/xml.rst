@@ -1,7 +1,10 @@
 XmlInput
 ========
 
-Accepts filtering preference in as an XML document.
+Processes input as an XML document.
+
+See the XSD in 'src/Rollerworks/Search/Input/schema/dic/input/xml-input-1.0.xsd'
+for more information about the schema.
 
 Any node/leave inside the ``<field />``-node is optional.
 But at least one must exists.
@@ -9,48 +12,76 @@ But at least one must exists.
 .. code-block:: xml
    :linenos:
 
-    <?xml version="1.0" encoding="UTF-8"?>
-    <filters>
+    <?xml version="1.0" encoding="UTF-8"'.'?'.'>
+    <search>
+        <fields>
+            <field name="field1">
+                <single-values>
+                    <value>value</value>
+                    <value>value2</value>
+                </single-values>
+
+                <excluded-values>
+                    <value>value</value>
+                    <value>value2</value>
+                </excluded-values>
+
+                <ranges>
+                    <range>
+                        <lower>55</lower>
+                        <upper inclusive="false">60</upper>
+                    </range>
+                    <range>
+                        <lower inclusive="false">70</lower>
+                        <upper>80</upper>
+                    </range>
+                </ranges>
+
+                <excluded-ranges>
+                    <range>
+                        <lower>10</lower>
+                        <upper>20</upper>
+                    </range>
+                </excluded-ranges>
+
+                <comparisons>
+                    <compare operator="&gt;">10</compare>
+                    <compare operator="&lt;">50</compare>
+                </comparisons>
+
+                <pattern-matchers>
+                    <pattern-matcher type="contains">foo</pattern-matcher>
+                    <pattern-matcher type="ends_with" case-insensitive="true">bar</pattern-matcher>
+                </pattern-matchers>
+            </field>
+        </fields>
+
         <groups>
 
             <group>
-                <field name="user">
-                    <single-values>
-                        <value>2</value>
-                    </single-values>
-
-                    <excluded-values>
-                        <value>15</value>
-                    </excluded-values>
-
-                    <ranges>
-                        <range>
-                            <lower>10</lower>
-                            <higher>20</higher>
-                        </range>
-                    </ranges>
-
-                    <excluded-ranges>
-                        <range>
-                            <lower>10</lower>
-                            <higher>20</higher>
-                        </range>
-                    </excluded-ranges>
-
-                    <compares>
-                        <compare opr="&gt;">25</compare>
-                    </compares>
-                </field>
+                <fields>
+                    <field name="field1">
+                        <single-values>
+                            <value>value</value>
+                            <value>value2</value>
+                        </single-values>
+                    </field>
+                </fields>
             </group>
 
             <group>
-                <field name="user">
-                    <single-values>
-                        <value>100</value>
-                    </single-values>
-                    <!-- ... -->
-                </field>
+                <fields>
+                    <field name="field1">
+                        <single-values>
+                            <value>value3</value>
+                            <value>value4</value>
+                        </single-values>
+                    </field>
+                </fields>
+
+                <!--<groups> ... </groups>-->
 
             </group>
         </groups>
-    </filters>
+
+    </search>

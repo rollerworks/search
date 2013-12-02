@@ -45,8 +45,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'RollerworksRecordFilterBundle'
-copyright = u'2012, Sebastiaan Stok'
+project = u'RollerworksSearch'
+copyright = u'2013, Sebastiaan Stok'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -169,7 +169,7 @@ html_theme = 'nature'
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'RecordFilterBundledoc'
+htmlhelp_basename = 'RollerworksSearchedoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -188,7 +188,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'RecordFilterBundle.tex', u'RecordFilterBundle Documentation',
+  ('index', 'RollerworksSearch.tex', u'RollerworksSearch Documentation',
    u'Sebastiaan Stok', 'manual'),
 ]
 
@@ -218,7 +218,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'recordfilterbundle', u'RecordFilterBundle Documentation',
+    ('index', 'rollerworkssearch', u'RollerworksSearch Documentation',
      [u'Sebastiaan Stok'], 1)
 ]
 
@@ -232,8 +232,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'RecordFilterBundle', u'RecordFilterBundle Documentation',
-   u'Sebastiaan Stok', 'RecordFilterBundle', 'One line description of project.',
+  ('index', 'RollerworksSearch', u'RollerworksSearch Documentation',
+   u'Sebastiaan Stok', 'RollerworksSearch', 'Advanced search building framework',
    'Miscellaneous'),
 ]
 
@@ -252,7 +252,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 html_theme_path = ['_themes']
-html_theme = 'default'
+html_theme = 'rollerworks'
 
 pygments_style = 'native'
 primary_domain = 'php'
@@ -260,3 +260,7 @@ highlight_language = 'php'
 
 lexers['php'] = PhpLexer(startinline=True)
 lexers['php-annotations'] = PhpLexer(startinline=True)
+lexers['php-standalone'] = PhpLexer(startinline=True)
+lexers['php-symfony'] = PhpLexer(startinline=True)
+
+api_url = 'http://rollerworks.github.io/master/%s'

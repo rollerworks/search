@@ -1,290 +1,239 @@
 Type
 ====
 
-The RecordFilter is more just then just a simple search engine.
+Types are used for configuring a search field.
 
-As you probably know, searching with the system works by defining filtering conditions.
-But did you know that each field can have a special filtering type for working with values?
+As you probably know, searching with the system works by defining searching conditions.
+But in order to known how the value should be handled each field has a type specialized
+in handling the value type/format.
 
-Using an special type for the field allows validation/sanitizing and matching.
-Basic types like Date/Time and numbers are built-in, but you can also build your own types.
+The type is used for configuring the field so you don't have to apply all the configuration
+for each field individually.
 
-.. note::
+For a list of build-in types see :doc:`reference/types`.
 
-    All built-in types are locale aware and require the Symfony Locale component.
-    When working with non-ASCII characters, the International Extension must be installed.
 
-Secondly, all built-in types support comparison and optimizing when possible.
+How to Create a Custom Field Type
+---------------------------------
 
-It is possible, but not recommended, to overwrite the built-in types by using
-the same alias in the service definition.
-You should only consider doing this when absolutely necessary.
+You may find that the build-in types do not always meet your needs and you want use your own.
+Fortunately making your own field-types is very easy, this section explains how to achieve this.
 
-see ``Resources/config/services.xml`` for the corresponding names.
-
-Configuration
--------------
-
-Types implementing ``ConfigurableTypeInterface`` can be configured with extra options
-using the ``setOptions()`` method of the type.
-
-When building the ``FieldSet``.
-
-.. code-block:: php
-
-    /* ... */
-
-    use Rollerworks\Bundle\RecordFilterBundle\Type\Date;
-
-    $fieldSet->set(new FilterField('name', new Date(array('max' => '2015-10-14'))));
-
-Or when changing an existing Field.
-
-.. code-block:: php
-
-    /* ... */
-
-    $fieldSet->get('field_name')->getType()->setOptions(array('max' => '2015-10-14'));
+The first example shows how to reuse an existing type for building your field types.
+And the second one shows a more advanced example how you can create your own type
+with ValueComparison and options.
 
 .. note::
 
-    Just because a type supports range or comparison does not automatically
-    enable it for the field configuration. You must always do this **explicitly**.
+    All the methods in the type are optional, you don't have to "implement"
+    them all.
 
-Text
-----
+    Its advised to always extend the ``Rollerworks\Component\Search\AbstractFieldType`` class
+    to ensure you're types are forward compatible to any additions.
 
-Handles text values as-is. This type can be seen as an 'abstract' for more strict handling.
+ClientId
+~~~~~~~~
 
-DateTime
---------
+This example shows how you can reuse the integer-type to create the ClientNumberType which
+handles client-ids with the special format: ``C30320``.
 
-DateTime related types can be used for working with either date/time
-or a combination of both. Both support ranges and comparison.
+The ClientId begins with a 'C' prefix, and is prepended with zeros until its at least 4 digits.
 
-The following options can be set for Date, DateTime and Time.
-
-+-------------------+--------------------------------------------------------------------+-------------------------------+
-| Option            | Description                                                        | Accepted values               |
-+===================+====================================================================+===============================+
-| min               | Minimum value. Must be lower than max (default is ``null``)        | ``DateTime`` object, ``null`` |
-+-------------------+--------------------------------------------------------------------+-------------------------------+
-| max               | Maximum value. Must be higher than min (default is ``null``)       | ``DateTime`` object, ``null`` |
-+-------------------+--------------------------------------------------------------------+-------------------------------+
-| time_optional     | If the time is optional (``DateTime`` type only)                   | ``boolean``                   |
-+-------------------+--------------------------------------------------------------------+-------------------------------+
-
-Birthday
---------
-
-The Birthday type can be used for birthday and actual age.
-
-Any date equal or lower then 'today' is accepted, but you can also use someones age.
+Example: ``C30320, C0001, C442482, C0020``.
 
 .. note::
 
-    For this to work correctly, the storage layer must convert a date value to an age for comparison.
+    Inheritance is done using a special builder, its advised not to extend type-classes directly.
+    Using this special type of inheritance allows to reuse types with options-building
+    and type-extensions handling.
 
-    For Doctrine ORM you can use the "rollerworks_record_filter.doctrine.orm.conversion.age_date" service
-    for both field and value conversion.
+The Namespace does not really mather, but the convention is to use
+``VendorName\Search\Extension\ExtensionName\Type`` for types.
 
-    See also :doc:`Doctrine ORM WhereBuilder </Doctrine/orm/index>`.
+The VendorName in this example is 'Acme', and the Extension is called 'Client'.
 
-Number
-------
+Because the type handel's client-ids in a special format, the type needs a DataTransformer for this.
+DataTransformer's are reusable classes which reverseTransform the input data to a normalized format,
+and transform the normalized data back to a localized version (better known as View representation).
 
-Handles localized numeric values.
-
-Supports ranges and comparison.
-
-.. note::
-
-    When working with big numbers (beyond the maximum php integer value),
-    either `bcmath <http://php.net/manual/en/book.bc.php>`_ or `GMP <http://php.net/manual/en/book.gmp.php>`_ must be installed and the option value **must** be a string.
-
-The following options can be set for number.
-
-+-------------------+-----------------------------------------------------------------+-----------------------------------+
-| Option            | Description                                                     | Accepted values                   |
-+===================+=================================================================+===================================+
-| min               | Minimum value. Must be lower than max (default is ``NULL``)     | ``string``, ``integer``, ``NULL`` |
-+-------------------+-----------------------------------------------------------------+-----------------------------------+
-| max               | Maximum value. Must be higher than min (default is ``NULL``)    | ``string``, ``integer``, ``NULL`` |
-+-------------------+-----------------------------------------------------------------+-----------------------------------+
-
-Decimal
--------
-
-Handles (localized) decimal values.
-
-Supports ranges and comparison.
-
-.. note::
-
-    When working with big numbers (beyond the maximum php integer value),
-    either `bcmath <http://php.net/manual/en/book.bc.php>`_ or `GMP <http://php.net/manual/en/book.gmp.php>`_ must be installed and the option value **must** be a string.
-
-The following options can be set.
-
-+-------------------+-----------------------------------------------------------------+---------------------------------+
-| Option            | Description                                                     | Accepted values                 |
-+===================+=================================================================+=================================+
-| min               | Minimum value. Must be lower than max (default is ``NULL``)     | ``string``, ``float``, ``NULL`` |
-+-------------------+-----------------------------------------------------------------+---------------------------------+
-| max               | Maximum value. Must be higher than min (default is ``NULL``)    | ``string``, ``float``, ``NULL`` |
-+-------------------+-----------------------------------------------------------------+---------------------------------+
-
-EnumType
---------
-
-EnumType is similar to ENUM in SQL; it only allows a fixed set of possible
-values (labels) to be used. The label is then converted back to the internal value.
-
-For this to work, you must register a new service with the options and value.
-
-The first parameter of the ``EnumType`` constructor is an associative array as `value => label`, optionally
-followed by the `translator` service and the translator domain.
-
-.. note::
-
-    You can use any service name you like. For readability
-    it is best to prefix it with a vendor and domain.
-
-.. configuration-block::
-
-    .. code-block:: yaml
-
-        services:
-            acme_invoice.record_filter.filter_type.customer_gender:
-                class: %rollerworks_record_filter.filter_type.enum.class%
-                scope: prototype
-                arguments:
-                    - @translator
-                    -
-                        - gender_type.unknown
-                        - gender_type.female
-                        - gender_type.male
-                    - customer
-                tags:
-                    - { name: rollerworks_record_filter.filter_type, alias: person_gender }
-
-    .. code-block:: xml
-
-        <service id="acme_invoice.record_filter.filter_type.customer_gender" class="%rollerworks_record_filter.filter_type.enum.class%" scope="prototype">
-            <argument type="collection">
-                <argument key="0"></argument>
-                <argument key="1">gender_type.female</argument>
-                <argument key="2">gender_type.male</argument>
-            </argument>
-            <argument type="service" id="translator" />
-            <argument type="string">customer</argument>
-
-            <tag name="rollerworks_record_filter.filter_type" alias="person_gender" />
-        </service>
-
-    .. code-block:: php
-
-        use Symfony\Component\DependencyInjection\Definition;
-
-        // ...
-
-        $container->setDefinition(
-            'acme_invoice.record_filter.filter_type.customer_gender',
-            new Definition('%rollerworks_record_filter.filter_type.enum.class%',
-                array(
-                    array('gender_type.unknown', 'gender_type.female', 'gender_type.male'),
-                    new Reference('translator'),
-                    'customer'
-                )
-            )
-            ->addTag('kernel.cache_warmer', array('priority' => 0))
-        );
-
-Making your own
----------------
-
-You may find that the build-in types do not meet your needs and you want use your own.
-Luckily, making your own type is very easy. The following sections explain the different options
-available to achieve this.
-
-Extending
-~~~~~~~~~
-
-If you need a type that is only slightly different from the built-in ones,
-you can save yourself some work by extending an existing one.
-
-For example: you want to handle client numbers that are like `C30320`.
-
-Using the ``Number`` type and overwriting the ``validateValue()`` and ``sanitizeString()``
-is all you need to do.
-
-.. code-block:: php
-
-    use Rollerworks\Bundle\RecordFilterBundle\Type\Number;
-    use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
-
-    class CustomerType extends Number
-    {
-        public function sanitizeString($value)
-        {
-            $value = ltrim($value, 'Cc');
-
-            return parent::sanitizeString($value);
-        }
-
-        public function validateValue($value, MessageBag $messageBag)
-        {
-            $value = ltrim($value, 'Cc');
-
-            parent::validateValue($value, $messageBag);
-        }
-    }
-
-.. note::
-
-    Not all types may use strings. ``DateTime`` types use an extended
-    ``\DateTime`` class for passing information between methods.
-
-From Scratch
-~~~~~~~~~~~~
-
-For this little tutorial we are going to create an ``InvoiceType`` that can handle an invoice value.
-
-The value is made up from a year and incrementing number, like 2012-0259.
-
-As we really want to use the power of the ``RecordFilter``, we are also adding
-support for ranges and comparisons.
-
-First we create the value class for holding the information of our invoice.
+ClientIdTransformer
+*******************
 
 .. code-block:: php
     :linenos:
+
+    // src/Acme/Search/Extension/Client/DataTransformer/ClientIdTransformer.php
+
+    namespace Acme\Client\Search\Extension\Client\DataTransformer;
+
+    use Rollerworks\Component\Search\DataTransformerInterface;
+    use Rollerworks\Component\Search\Exception\TransformationFailedException;
+
+    class ClientIdTransformer implements DataTransformerInterface
+    {
+        public function transform($value)
+        {
+            return sprintf('C%04d', $value);
+        }
+
+        public function reverseTransform($value)
+        {
+            if (null !== $value && !is_scalar($value)) {
+                throw new TransformationFailedException('Expected a scalar.');
+            }
+
+            return ltrim('C0');
+        }
+    }
+
+ClientIdType
+************
+
+.. code-block:: php
+    :linenos:
+
+    // src/Acme/Search/Extension/Client/Type/ClientIdType.php
+
+    namespace Acme\Client\Search\Extension\Client\Type;
+
+    use Rollerworks\Component\Search\AbstractFieldType;
+    use Acme\Search\Extension\Client\DataTransformer\ClientIdTransformer;
+
+    class ClientIdType extends AbstractFieldType
+    {
+        /**
+         * {@inheritDoc}
+         */
+        public function buildType(FieldConfigInterface $config, array $options)
+        {
+            // The integer-type sets a special transformer for localized integers
+            // This type doesn't need this so remove the transformers
+            $config->resetViewTransformers();
+
+            $config->addViewTransformer(new ClientIdTransformer());
+        }
+
+        public function getName()
+        {
+            return 'client_id';
+        }
+
+        // This type inherits the integer-type, so define it as the parent
+        public function getParent()
+        {
+            return 'integer';
+        }
+    }
+
+Now the type is created, the SearchFactory needs to know it exists.
+This can be done using two methods: Using ``SearchFactoryBuilder->addType(new ClientIdType())`` or the
+recommended way using a SearchExtension;
+
+.. code-block:: php
+    :linenos:
+
+    // src/Acme/Client/Search/Extension/Client/ClientExtension.php
+
+    namespace Acme\Client\Search\Extension\Client;
+
+    use Rollerworks\Component\Search\AbstractExtension;
+
+    class ClientExtension extends AbstractExtension
+    {
+        protected function loadTypes()
+        {
+            return array(
+                new Type\ClientIdType(),
+            );
+        }
+    }
+
+And then registering at the FactoryBuilder.
+
+.. code-block:: php
+    :linenos:
+
+    /* ... */
+
+    $searchFactory = new Searches::createSearchFactoryBuilder()
+        ->addExtension(new ClientExtension())
+        ->getSearchFactory();
+
+That's it the type is now ready for usage.
+
+InvoiceNumber
+~~~~~~~~~~~~~
+
+This example shows an advanced example for creating a field-type,
+the InvoiceNumber consists of a year and leading-zero digits like: ``2013-0120``.
+
+Because the format is very custom, and you'd really want get the most out of the
+search system, this example shows all the details on creating a
+type using all features available.
+
+From top to bottom it shows how to make the:
+
+1. InvoiceNumber value-class for holding the invoice number.
+2. The DataTransformer for the format handling.
+3. A Validator Constraint to prevent users from passing in invalid values.
+4. A ValueComparison used for validating and optimizing.
+5. The InvoiceNumberType and the SearchExtension class.
+
+First create the value class for holding the InvoiceNumber.
+The InvoiceNumber value-class is similar to an array but ensures
+the proper values is always used, the properties are public for fast access.
+
+.. code-block:: php
+    :linenos:
+
+    // src/Acme/Invoice/InvoiceValue.php
 
     namespace Acme\Invoice;
 
     class InvoiceValue
     {
-        private $year;
-        private $number;
+        public $year;
+        public $number;
 
         public function __construct($input)
         {
             if (!preg_match('/^(?P<year>\d{4})-(?P<number>\d+)$/s', $input, $matches)) {
-                throw new \InvalidArgumentException('This not a valid invoice value.');
+                throw new \InvalidArgumentException('This not a valid invoice number.');
             }
 
             $this->year = (int) $matches['year'];
             $this->number = (int) ltrim($matches['number'], '0');
         }
 
-        public function getYear()
+        public function equals(InvoiceValue $input)
         {
-            return $this->year;
+            return $input == $this;
         }
 
-        public function getNumber()
+        public function isHigher(InvoiceValue $input)
         {
-            return $this->number;
+            if ($this->year > $input->year) {
+                return true;
+            }
+
+            if ($input->getYear === $this->getYear && $this->getNumber > $input->number) {
+                return true;
+            }
+
+            return false;
+        }
+
+        public function isLower(InvoiceValue $input)
+        {
+            if ($this->year < $input->year) {
+                return true;
+            }
+
+            if ($input->year === $this->year && $this->getNumber < $input->number) {
+                return true;
+            }
+
+            return false;
         }
 
         public function __toString()
@@ -294,177 +243,234 @@ First we create the value class for holding the information of our invoice.
         }
     }
 
-Now we can create our filtering type.
-
-.. note::
-
-    If you want to know more about the interfaces used by the type, see below.
+InvoiceNumberTransformer
+************************
 
 .. code-block:: php
     :linenos:
 
-    namespace Acme\Invoice\RecordFilter\Type;
+    // src/Acme/Invoice/Search/Extension/Invoice/DataTransformer/InvoiceNumberTransformer.php
 
-    use Symfony\Component\Translation\TranslatorInterface;
-    use Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface;
-    use Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface;
-    use Rollerworks\Bundle\RecordFilterBundle\MessageBag;
+    namespace Acme\Invoice\Search\Extension\Invoice\DataTransformer;
+
+    use Rollerworks\Component\Search\DataTransformerInterface;
+    use Rollerworks\Component\Search\Exception\TransformationFailedException;
+    use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
     use Acme\Invoice\InvoiceValue;
 
-    class InvoiceType implements FilterTypeInterface, ValueMatcherInterface, ValuesToRangeInterface
+    class InvoiceNumberTransformer implements DataTransformerInterface
     {
-        public function sanitizeString($value)
+        public function transform($value)
         {
-            return new InvoiceValue($value);
-        }
+            if (!$value instanceof InvoiceValue) {
+                throw new UnexpectedTypeException($value, 'Acme\Invoice\InvoiceValue');
+            }
 
-        public function formatOutput($value)
-        {
             return (string) $value;
         }
 
-        public function dumpValue($value)
+        public function reverseTransform($value)
         {
-            return (string) $value;
-        }
-
-        public function isHigher($input, $nextValue)
-        {
-            if ($input->getYear() > $nextValue->getYear()) {
-                return true;
+            if (null !== $value && !is_scalar($value)) {
+                throw new TransformationFailedException('Expected a scalar.');
             }
 
-            if ($input->getYear() === $nextValue->getYear() && $input->getNumber() > $nextValue->getNumber()) {
-                return true;
+            try {
+                return new InvoiceValue();
+            } catch (\Exception $e) {
+                throw new TransformationFailedException('This not a valid invoice number.')
             }
-
-            return false;
-        }
-
-        public function isLower($input, $nextValue)
-        {
-            if ($input->getYear() < $nextValue->getYear()) {
-                return true;
-            }
-
-            if ($input->getYear() === $nextValue->getYear() && $input->getNumber() < $nextValue->getNumber()) {
-                return true;
-            }
-
-            return false;
-        }
-
-        public function isEqual($input, $nextValue)
-        {
-            return ($input->getYear() === $nextValue->getYear() && $input->getNumber() === $nextValue->getNumber());
-        }
-
-        public function validateValue($value, MessageBag $messageBag)
-        {
-            if (!preg_match('/^(\d{4})-(\d+)$/s', $value)) {
-                $messageBag->addError('This is not an legal invoice number.');
-            }
-        }
-
-        public function getMatcherRegex()
-        {
-            return '(?:\d{4}-\d+)';
-        }
-
-        public function getHigherValue($value)
-        {
-            return new InvoiceValue($value->getYear() . '-' . ($value->getNumber()+1));
         }
     }
 
-Registering a Type as a Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+InvoiceNumberConstraint
+***********************
 
-If you want to use the new type in the Class metadata or ``FieldSet`` configuration
-of the application the type must be registered in the service container.
+.. code-block:: php
+    :linenos:
 
-Continuing from our ``InvoiceType``.
+    // src/Acme/Invoice/Constraints/InvoiceNumberConstraint.php
+
+    namespace Acme\Invoice\Constraints;
+
+    use Symfony\Component\Validator\Constraint;
+
+    class InvoiceNumberConstraint extends Constraint
+    {
+        public $message = 'This value is not a valid invoice number.';
+    }
+
+InvoiceNumberConstraintValidator
+********************************
+
+.. code-block:: php
+    :linenos:
+
+    // src/Acme/Invoice/Constraints/InvoiceNumberConstraintValidator.php
+
+    namespace Acme\Invoice\Constraints;
+
+    use Symfony\Component\Validator\Constraint;
+    use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+    use Acme\Invoice\InvoiceValue;
+
+    class InvoiceNumberConstraintValidator extends ConstraintValidator
+    {
+        public function validate($value, Constraint $constraint)
+        {
+            if (null === $value || '' === $value) {
+                return;
+            }
+
+            if (!$value instanceof InvoiceValue) {
+                throw new UnexpectedTypeException($value, 'Acme\Invoice\InvoiceValue');
+            }
+
+            // Ensure the invoice year is not to far in the future
+            if ($value->year > (date('Y') + 1)) {
+                $this->context->addViolation($constraint->message, array(), $value));
+            }
+        }
+    }
+
+InvoiceNumberComparison
+***********************
+
+.. code-block:: php
+    :linenos:
+
+    // src/Acme/Invoice/Search/Extension/Invoice/ValueComparison/InvoiceNumberComparison.php
+
+    namespace Acme\Invoice\Search\Extension\Invoice\ValueComparison;
+
+    use Rollerworks\Component\Search\ValueIncrementerInterface;
+
+    class InvoiceNumberComparison implements ValueIncrementerInterface
+    {
+        public function isHigher($higher, $lower, array $options)
+        {
+            return $higher->isHigher($lower);
+        }
+
+        public function isLower($lower, $higher, array $options)
+        {
+            return $lower->isLower($higher);
+        }
+
+        public function isEqual($value, $nextValue, array $options)
+        {
+            return $value->equals($nextValue);
+        }
+
+        /**
+         * Returns the incremented value of the input.
+         *
+         * The value should returned in the normalized format.
+         */
+        public function getIncrementedValue($value, array $options, $increments = 1)
+        {
+            $newValue = clone $value;
+            $newValue->number += $increments;
+
+            return $newValue;
+        }
+    }
+
+InvoiceNumberType
+*****************
+
+.. code-block:: php
+    :linenos:
+
+    // src/Acme/Invoice/Search/Extension/Invoice/Type/InvoiceNumberType.php
+
+    namespace Acme\Invoice\Search\Extension\Invoice\Type;
+
+    use Rollerworks\Component\Search\AbstractFieldType;
+    use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
+    use Rollerworks\Component\Search\FieldConfigInterface;
+    use Rollerworks\Component\Search\ValueComparisonInterface;
+    use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+    use Acme\Search\Extension\Client\DataTransformer\ClientIdTransformer;
+    use Acme\Invoice\Constraints\InvoiceNumberConstraint;
+
+    class InvoiceNumberType extends AbstractFieldType
+    {
+        protected $valueComparison;
+
+        public function __construct(ValueComparisonInterface $valueComparison)
+        {
+            $this->valueComparison = $valueComparison;
+        }
+
+        public function buildType(FieldConfigInterface $config, array $options)
+        {
+            $config->setValueComparison($this->valueComparison);
+            $config->addViewTransformer(new InvoiceNumberTransformer());
+        }
+
+        public function setDefaultOptions(OptionsResolverInterface $resolver)
+        {
+            $resolver->setDefaults(array(
+                'constraints' => array(new InvoiceNumberConstraint()),
+            ));
+        }
+
+        public function hasRangeSupport()
+        {
+            return true;
+        }
+
+        public function hasCompareSupport()
+        {
+            return true;
+        }
+
+        public function getName()
+        {
+            return 'invoice_number';
+        }
+    }
+
+Now the type is created, the SearchFactory needs to know it exists.
+
+.. code-block:: php
+    :linenos:
+
+    // src/Acme/Invoice/Search/Extension/Invoice/InvoiceExtension.php
+
+    namespace Acme\Invoice\Search\Extension\Invoice;
+
+    use Rollerworks\Component\Search\AbstractExtension;
+
+    class InvoiceExtension extends AbstractExtension
+    {
+        protected function loadTypes()
+        {
+            return array(
+                new Type\InvoiceNumberType(new ValueComparison\InvoiceNumberComparison()),
+            );
+        }
+    }
+
+And then registering at the FactoryBuilder.
 
 .. note::
 
-    The service must be tagged as "rollerworks_record_filter.filter_type",
-    with an alias that will identify it.
+    Because the InvoiceNumberType uses the 'constraints' options the
+    validator extension must be enabled as well.
 
-.. configuration-block::
+.. code-block:: php
+    :linenos:
 
-    .. code-block:: yaml
+    /* ... */
 
-        services:
-            acme_invoice.record_filter.invoice_type:
-                class: Acme\Invoice\RecordFilter\Type\InvoiceType
-                tags:
-                    -  { name: rollerworks_record_filter.invoice_type, alias: acme_invoice_type }
+    use Rollerworks\Component\Search\Extension\Validator\ValidatorExtension;
+    use Acme\Invoice\Search\Extension\Invoice\InvoiceExtension;
 
-    .. code-block:: xml
+    $searchFactory = new Searches::createSearchFactoryBuilder()
+        ->addExtension(new ValidatorExtension())
+        ->addExtension(new InvoiceExtension())
+        ->getSearchFactory();
 
-        <service id="acme_invoice.record_filter.invoice_type" class="Acme\Invoice\RecordFilter\Type\InvoiceType">
-            <tag name="rollerworks_record_filter.filter_type" alias="acme_invoice_type" />
-        </service>
-
-    .. code-block:: php
-
-        $container->setDefinition(
-            'acme_invoice.record_filter.invoice_type',
-            new Definition('Acme\Invoice\RecordFilter\Type\InvoiceType'))
-        )
-        ->addTag('rollerworks_record_filter.filter_type', array('alias' => 'acme_invoice_type'));
-
-Advanced types
---------------
-
-A type can be *extended* with extra functionality for more advanced optimization and/or handling.
-
-Look at the built-in types for help implementing them.
-
-.. note::
-
-    You must always implement ``Rollerworks\Bundle\RecordFilterBundle\Type\FilterTypeInterface``.
-
-    The other interfaces are optional.
-
-ValueMatcherInterface
-~~~~~~~~~~~~~~~~~~~~~
-
-Implement the ``Rollerworks\Bundle\RecordFilterBundle\Type\ValueMatcherInterface``
-to provide an regex-based matcher for the value.
-
-This is only used for ``FilterQuery``. It is not necessary to use quotes when the value
-contains a dash or comma.
-
-ConfigurableTypeInterface
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Implement the ``Rollerworks\Bundle\RecordFilterBundle\Type\ConfigurableTypeInterface``
-when the type supports dynamic configuration for an example an maximum value or such.
-
-.. note::
-
-    The constructor (for ease of use) should also accept setting options.
-
-This uses the Symfony ``OptionsResolver`` component.
-
-OptimizableInterface
-~~~~~~~~~~~~~~~~~~~~
-
-Implement the ``Rollerworks\Bundle\RecordFilterBundle\Formatter\OptimizableInterface``
-if the values can be further optimized.
-
-Optimizing includes removing redundant values and changing the filtering strategy.
-
-An example of this is when you have an 'Status' type which only accepts 'active', 'not-active' and 'remove'.
-If **all** the possible values are chosen, the values are redundant and the filter should be removed.
-
-ValuesToRangeInterface
-~~~~~~~~~~~~~~~~~~~~~~
-
-Implement the ``Rollerworks\Bundle\RecordFilterBundle\Formatter\ValuesToRangeInterface``
-to convert a connected-list of values to ranges.
-
-Connected values are values where the current value increased by one equals the next value.
-
-1,2,3,4,5,8,10 is converted to 1-5,8,10
+That's it the type is now ready for usage.

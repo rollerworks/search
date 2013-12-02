@@ -31,7 +31,7 @@ Input processing is provided for the following formats.
 * Array
 * JSON
 * XML
-* FilterQuery (an easy to learn and use formula-based input format).
+* FilterQuery (an easy to learn and use condition based input format).
 
 > Each provided input format also provides an related exporter.
 
@@ -97,8 +97,6 @@ The installation is very easy, all the details about installing can be found in.
 Documentation
 -------------
 
-> **The current documentation is outdated, please be patient as it gets updated.**
-
 The documentation is written in [reStructuredText][3] and can be built into standard HTML using [Sphinx][4].
 
 To build the documentation are:
@@ -130,6 +128,15 @@ And constructed with the following guidelines:
 * Bug fixes and misc changes bumps the patch
 
 For more information on SemVer, please visit <http://semver.org/>.
+
+Credits
+-------
+
+The field-type extensions are largely inspired on the Symfony2 form
+component, and contain a good amount code originally developed by the amazing
+Symfony2 community.
+
+Documentation for types is also borrowed from the Symfony2 project.
 
 License
 -------

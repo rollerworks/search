@@ -1,25 +1,10 @@
 JsonInput
 =========
 
-Accepts filtering preference in the JSON format.
+Processes input in the JSON format.
 
-The provided input must be structured.
-The root is an array where each entry is a group with
+The required input structure is the same as :doc:`array`
 
-.. code:: js
-
-    // all types are optional - but at least one must exists.
-
-    {
-        "fieldname": {
-            "single-values":    [ "value1", "value2" ]
-            "excluded-values":  [ "my value1", "my value2" ]
-            "ranges":           [ { "lower": 10, "upper": 20 } ]
-            "excluded-ranges":  [ { "lower": 25, "upper": 30 } ]
-            "comparisons":      [ { "value": 50, "operator": ">" } ]
-        }
-    }
-
-.. note::
-
-    Big integers/floats must quoted.
+The advantage of using the JsonInput processor instead decoding the JSON object
+yourself is that the JsonInput processor does a linting on the provided input,
+ensuring the JSON input is valid.

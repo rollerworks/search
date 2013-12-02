@@ -1,4 +1,4 @@
-RecordFilterBundle
+Rollerworks Search
 ==================
 
 .. toctree::
@@ -7,10 +7,9 @@ RecordFilterBundle
     introduction
     overview
     installing
-    configuration
-    cache
+    searches
     metadata
-    input/index.rst
     type
-    Doctrine/index.rst
-    internals
+    reference/types
+    input/index
+    Doctrine/index

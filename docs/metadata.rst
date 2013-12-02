@@ -1,44 +1,80 @@
 Metadata
 ========
 
-Class metadata is used by the ``FieldSet`` factory to populate ``FieldSets``
-based on the information provided by the classes.
+Class metadata is used by the ``FieldSetBuilder`` to populate a ``FieldSet`` instance
+based on the metadata of a Model class.
 
-The information can be stored directly with the class using Annotations,
-or as a separate file using YAML or XML.
+The information can be stored directly with the class using `PHP Annotations`_,
+or as a separate file using either YAML or XML.
 
 .. note::
 
-    Metadata files are named relative to the bundle namespace, followed by
-    sub-namespace and filename in `Resources/config/record_filter/`.
+    To actually use the metadata component you first need to
+    install the ``jms/metadata`` package.
 
-    So if your class file is `src/Acme/StoreBundle/Model/Product/Product.php`
-    the metadata is stored in
-    `src/Acme/StoreBundle/Resources/config/record_filter/Model.Product.Product.ext`
+    And for XML and YAML support you need to configure
+    the file-locator.
+
+    See the 'Metadata' subsection in :doc:`/installing/` for more information.
+
+The ``FileLocator`` will try to guess the the mapping config-dir by
+matching the namespace prefix to the given Model class-name.
+
+In the example below the Model class ``Acme\Store\Model\Product``
+will be mapped to the ``src/Acme/Store/Resources/Rollerworks/Search/`` directory-namespace
+and tries to find the corresponding class-name ``Product`` as either ``Product.yml`` or
+``Product.xml``
+
+.. code-block:: php
+
+    use Metadata\Driver\FileLocator;
+    use Metadata\Driver\DriverChain;
+    use Metadata\MetadataFactory;
+    use Doctrine\Common\Annotations\Reader;
+
+    use Rollerworks\Component\Search\Metadata\Driver as MappingDriver;
+
+    $locator = new FileLocator(array(
+        'Acme\Store\Model' => 'src/Acme/Store/Resources/Rollerworks/Search/',
+        'Acme\User\Model' => 'src/Acme/User/Resources/Rollerworks/Search/',
+    ));
+
+    // You'd properly want to add one of the provided caches before
+    // other drivers.
+    // See: https://github.com/schmittjoh/metadata/tree/master/src/Metadata/Cache
+
+    $driver = new DriverChain(array(
+        new MappingDriver\AnnotationDriver(),
+        new MappingDriver\XmlFileDriver($locator),
+        new MappingDriver\YamlFileDriver($locator),
+    ));
+
+    $searchFactory = new SearchFactory(..., $driver);
 
 .. configuration-block::
 
     .. code-block:: php-annotations
 
-        // src/Acme/StoreBundle/Model/Product.php
-        namespace Acme\StoreBundle\Model;
+        // src/Acme/Store/Model/Product.php
 
-        use Rollerworks\Bundle\RecordFilterBundle\Annotation as RecordFilter;
+        namespace Acme\Store\Model;
+
+        use Rollerworks\Component\Search\Metadata as Search;
 
         class Product
         {
             /**
-             * @RecordFilter\Field("product_id", required=false, type="number", AcceptRanges=true, AcceptCompares=true)
+             * @Search\Field("product_id", required=false, type="number")
              */
             protected $id;
 
             /**
-             * @RecordFilter\Field("product_name", type="text")
+             * @Search\Field("product_name", type="text")
              */
             protected $name;
 
             /**
-             * @RecordFilter\Field("product_price", type=@RecordFilter\Type("decimal", min=0.01), AcceptRanges=true, AcceptCompares=true)
+             * @Search\Field("product_price", type="decimal", options={min=0.01})
              */
             protected $price;
 
@@ -47,9 +83,9 @@ or as a separate file using YAML or XML.
 
     .. code-block:: yaml
 
-        # src/Acme/StoreBundle/Resources/config/record_filter/Model.Product.yml
+        # src/Acme/Store/Resources/Rollerworks/Search/Product.yml
         id:
-            # Name is the filter field-name
+            # Name is the search-field name
             name: product_id
             type: number
             required: false
@@ -71,7 +107,9 @@ or as a separate file using YAML or XML.
 
     .. code-block:: xml
 
-        <!-- src/Acme/StoreBundle/Resources/config/record_filter/Model.Product.xml -->
+        <!-- src/Acme/Store/Resources/Rollerworks/Search/Product.xml -->
+
+        <?xml version="1.0" encoding="UTF-8"?>
         <properties>
             <property id="id" name="product_id" required="false">
                 <type name="number" />
@@ -85,35 +123,24 @@ or as a separate file using YAML or XML.
             <property id="price" name="product_price" accept-ranges="true" accept-compares="true">
                 <type name="text">
                     <param key="min" type="float">0.01</param>
-                    <!-- An array is build as follow. Key and type are optional for <value> -->
+                    <!-- An array-value is build as follow. Key and type are optional for, type is required for collection -->
                     <!--
-                    <param key="key">
-                        <value type="string">value</value>
-                        <value type="string">
-                            <value key="foo">value</value>
-                        </value>
-                    </param>
+                    <option key="key" type="collection">
+                        <option type="string">value</option>
+                        <option type="collection">
+                            <value key="foo">value</option>
+                        </option>
+                    </option>
                     -->
                 </type>
             </property>
         </properties>
 
-.. note::
+.. caution::
 
     A class can accept only one metadata definition format.
+
     For example, it is not possible to mix YAML metadata definitions with
     annotated PHP class definitions.
 
-Overwriting
-------------
-
-Overwriting the metadata works the same as overwriting Resources in Symfony.
-
-If you don't know how to do this please read `How to use Bundle Inheritance to Override parts of a Bundle. <http://symfony.com/doc/current/cookbook/bundles/inheritance.html>`_
-
-.. caution::
-
-    Any class metadata (except annotations) that was set in the 'parent'
-    bundle is ignored, you must copy it in order to have everything.
-
-    This is will hopefully be fixed in the next version of the RecordFilterBundle.
+.. _`PHP Annotations`: http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html
