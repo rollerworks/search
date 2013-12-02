@@ -19,35 +19,35 @@ Features
 --------
 
 The searching condition is build of fields and groups.
-Each field have any-type of value including ranges, comparisons
+Each field can have any-type of value including ranges, comparisons
 and matchers (starts/ends with contains).
 
 Groups can be nested at any level of depth.
 
 ## Input
 
-Input processing is possible for the following formats by default.
+Input processing is provided for the following formats.
 
 * Array
 * JSON
 * XML
 * FilterQuery (an easy to learn and use formula-based input format).
 
-> Each provided input format also provides an related exporter component.
+> Each provided input format also provides an related exporter.
 
 ## Formatter
 
 * Validation
-* Transformation (view representation to normalized and reverse)
+* Transformation (localized representation to normalized and reverse)
 * Removing of duplicated values
 * Optimizing of ranges: detecting and removing overlapping ranges
-* Connected values to Ranges (1,2,3,4,5 gets converted to 1-5)
+* Connected values to ranges (1,2,3,4,5 gets converted to 1-5)
 
 ## Types
 
-The following types are build (but can be replaced with your own if needed).
+The following types are build-in (but can be replaced with your own if needed).
 
-> Each type is internalized.
+> Each type is localized.
 
 * Birthday (with optional support for ages)
 * Choice
@@ -90,7 +90,7 @@ For framework integration you use the following.
 Installation
 ------------
 
-Installation is very easy, all the details about installing can be found in.
+The installation is very easy, all the details about installing can be found in.
 
 [docs/Installing](docs/installing.rst)
 
@@ -111,10 +111,10 @@ This will build the documentation into the `docs/_build/html` directory.
 
 Further information can be found in The Symfony2 [documentation format][5] article.
 
-> The Sphinx extensions are already included and do not need to be downloaded separately.
+> The Sphinx extensions are already included and don't need to be downloaded separately.
 
 License
-========
+=======
 
 [LICENSE](LICENSE)
 
