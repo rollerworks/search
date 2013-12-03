@@ -16,7 +16,6 @@ use Prophecy\Argument;
 use Rollerworks\Component\Search\Extension\Validator\ViolationMapper\ViolationMapperInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\ValuesGroup;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ValidatorInterface;
 
 class ValidationFormatterSpec extends ObjectBehavior

@@ -14,7 +14,6 @@ namespace spec\Rollerworks\Component\Search\Metadata\Driver;
 use Metadata\Driver\AdvancedFileLocatorInterface;
 use Metadata\MergeableClassMetadata;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Metadata\PropertyMetadata;
 

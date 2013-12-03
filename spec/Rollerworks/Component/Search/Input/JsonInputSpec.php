@@ -89,7 +89,6 @@ class JsonInputSpec extends ObjectBehavior
 
         $this->setFieldSet($fieldSet);
 
-        //$e = new ParsingException("Input does not contain valid JSON\nParse error on line 1:\n{]\n-^\nExpected one of: 'STRING', '}'", array());
         $this->shouldThrow(new InputProcessorException('Provided input is invalid.'))->during('process', array('{]'));
     }
 }
