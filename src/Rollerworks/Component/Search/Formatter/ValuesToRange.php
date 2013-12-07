@@ -77,7 +77,7 @@ class ValuesToRange implements FormatterInterface
      *
      * @internal
      */
-    public function valuesSorter($first, $second)
+    public function valuesSorter(SingleValue $first, SingleValue $second)
     {
         $a = $first->getValue();
         $b = $second->getValue();

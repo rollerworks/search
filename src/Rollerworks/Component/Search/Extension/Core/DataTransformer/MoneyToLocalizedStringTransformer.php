@@ -128,6 +128,6 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
             $currency = $this->defaultCurrency;
         }
 
-        return new MoneyValue($currency, (string)$value);
+        return new MoneyValue($currency, (string) $value);
     }
 }

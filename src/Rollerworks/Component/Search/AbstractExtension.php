@@ -127,7 +127,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      * Initializes the type extensions.
      *
      * @throws UnexpectedTypeException if any registered type extension is not
-     * an instance of FieldTypeExtensionInterface
+     *                                 an instance of FieldTypeExtensionInterface
      */
     private function initTypeExtensions()
     {
