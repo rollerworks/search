@@ -20,6 +20,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class NumberToLocalizedStringTransformer implements DataTransformerInterface
 {
@@ -173,7 +174,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
         }
 
         $position = 0;
-        $formatter = $this->getNumberFormatter();
+        $formatter = $this->getNumberFormatter(false === $currency ? \NumberFormatter::DECIMAL : null);
         $groupSep = $formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
         $decSep = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 
@@ -185,7 +186,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
             $value = str_replace(',', $decSep, $value);
         }
 
-        if (\NumberFormatter::TYPE_CURRENCY === $this->type) {
+        if (\NumberFormatter::TYPE_CURRENCY === $this->type && false !== $currency) {
             $result = $formatter->parseCurrency($value, $currency, $position);
         } else {
             $result = $formatter->parse($value, \NumberFormatter::TYPE_DOUBLE, $position);
@@ -234,11 +235,14 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
     /**
      * Returns a preconfigured \NumberFormatter instance
      *
+     * @param integer $type
+     *
      * @return \NumberFormatter
      */
-    protected function getNumberFormatter()
+    protected function getNumberFormatter($type = null)
     {
-        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
+        $type = $type ?: (\NumberFormatter::TYPE_CURRENCY === $this->type ? \NumberFormatter::CURRENCY : \NumberFormatter::DECIMAL);
+        $formatter = new \NumberFormatter(\Locale::getDefault(), $type);
 
         if (null !== $this->precision) {
             $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $this->precision);

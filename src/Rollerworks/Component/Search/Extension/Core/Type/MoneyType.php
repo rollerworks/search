@@ -49,7 +49,8 @@ class MoneyType extends AbstractFieldType
                 $options['precision'],
                 $options['grouping'],
                 null,
-                $options['divisor']
+                $options['divisor'],
+                $options['default_currency']
             ))
         ;
     }

@@ -19,8 +19,7 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
- *
- * @todo should support default currency
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
 {
@@ -30,12 +29,18 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
     private $divisor;
 
     /**
+     * @var string
+     */
+    private $defaultCurrency;
+
+    /**
      * @param integer $precision
      * @param boolean $grouping
      * @param integer $roundingMode
      * @param integer $divisor
+     * @param string  $defaultCurrency
      */
-    public function __construct($precision = null, $grouping = null, $roundingMode = null, $divisor = null)
+    public function __construct($precision = null, $grouping = null, $roundingMode = null, $divisor = null, $defaultCurrency = null)
     {
         if (null === $grouping) {
             $grouping = true;
@@ -45,13 +50,14 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
             $precision = 2;
         }
 
-        parent::__construct($precision, $grouping, $roundingMode);
+        parent::__construct($precision, $grouping, $roundingMode, \NumberFormatter::TYPE_CURRENCY);
 
         if (null === $divisor) {
             $divisor = 1;
         }
 
         $this->divisor = $divisor;
+        $this->defaultCurrency = $defaultCurrency;
     }
 
     /**
@@ -106,12 +112,22 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
      */
     public function reverseTransform($value)
     {
+        $value = str_replace(' ', "\xc2\xa0", $value);
+
+        if (!preg_match('#\p{Sc}#u', $value)) {
+            $currency = false;
+        }
+
         $value = parent::reverseTransform($value, $currency);
 
         if (null !== $value) {
             $value *= $this->divisor;
         }
 
-        return new MoneyValue($currency, $value);
+        if (false === $currency) {
+            $currency = $this->defaultCurrency;
+        }
+
+        return new MoneyValue($currency, (string)$value);
     }
 }
