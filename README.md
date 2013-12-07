@@ -81,7 +81,7 @@ Requirements
 You need at least PHP 5.3.3, and preferable the Intl extension
 for international support.
 
-For framework integration you use the following.
+For framework integration you use the following;
 
 * Symfony2 Bundle (coming soon)
 * ZendFramework2 Plugin (coming soon)
@@ -113,8 +113,26 @@ Further information can be found in The Symfony2 [documentation format][5] artic
 
 > The Sphinx extensions are already included and don't need to be downloaded separately.
 
+Versioning
+----------
+
+For transparency and insight into our release cycle, and for striving to maintain backward compatibility,
+RollerworksSearch will be maintained under the Semantic Versioning guidelines as much as possible.
+
+Releases will be numbered with the following format:
+
+`<major>.<minor>.<patch>`
+
+And constructed with the following guidelines:
+
+* Breaking backward compatibility bumps the major (and resets the minor and patch)
+* New additions without breaking backward compatibility bumps the minor (and resets the patch)
+* Bug fixes and misc changes bumps the patch
+
+For more information on SemVer, please visit <http://semver.org/>.
+
 License
-=======
+-------
 
 [LICENSE](LICENSE)
 
