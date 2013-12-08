@@ -316,13 +316,13 @@ class WhereBuilderTest extends OrmTestCase
             ->expects($this->atLeastOnce())
             ->method('convertSqlValue')
             ->will($this->returnCallback(function ($input, array $options, array $hints) use ($test) {
-               $test->assertArrayHasKey('conversionStrategy', $hints);
+               $test->assertArrayHasKey('conversion_strategy', $hints);
 
-               if (2 === $hints['conversionStrategy']) {
+               if (2 === $hints['conversion_strategy']) {
                    return "CAST($input AS DATE)";
                }
 
-               $test->assertEquals(1, $hints['conversionStrategy']);
+               $test->assertEquals(1, $hints['conversion_strategy']);
 
                return $input;
             }))
@@ -334,12 +334,12 @@ class WhereBuilderTest extends OrmTestCase
             ->expects($this->atLeastOnce())
             ->method('convertValue')
             ->will($this->returnCallback(function ($input, array $options, array $hints) use ($test) {
-               $test->assertArrayHasKey('conversionStrategy', $hints);
+               $test->assertArrayHasKey('conversion_strategy', $hints);
 
                if ($input instanceof \DateTime) {
-                   $test->assertEquals(2, $hints['conversionStrategy']);
+                   $test->assertEquals(2, $hints['conversion_strategy']);
                } else {
-                   $test->assertEquals(1, $hints['conversionStrategy']);
+                   $test->assertEquals(1, $hints['conversion_strategy']);
                }
 
                return $input;

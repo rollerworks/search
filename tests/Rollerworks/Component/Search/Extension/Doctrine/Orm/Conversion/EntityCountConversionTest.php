@@ -41,8 +41,8 @@ class EntityCountConversionTest extends SearchIntegrationTestCase
     {
         $field = $this->factory->createFieldForProperty('Invoice', 'children', 'children', 'doctrine_orm_entity_count');
         $hints = array(
-            'searchField' => $field,
-            'entityManager' => $this->em,
+            'search_field' => $field,
+            'entity_manager' => $this->em,
         );
 
         $conversion = new EntityCountConversion();
@@ -55,8 +55,8 @@ class EntityCountConversionTest extends SearchIntegrationTestCase
     {
         $field = $this->factory->createFieldForProperty('Invoice', 'children', 'children', 'doctrine_orm_entity_count');
         $hints = array(
-            'searchField' => $field,
-            'entityManager' => $this->em,
+            'search_field' => $field,
+            'entity_manager' => $this->em,
         );
 
         $metaMock = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')->disableOriginalConstructor()->getMock();

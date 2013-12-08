@@ -29,9 +29,9 @@ class EntityCountConversion implements SqlFieldConversionInterface
     public function convertSqlField($column, array $options, array $hints)
     {
         /* @var \Doctrine\ORM\EntityManager $em */
-        $em = $hints['entityManager'];
+        $em = $hints['entity_manager'];
         /** @var FieldConfigInterface $field */
-        $field = $hints['searchField'];
+        $field = $hints['search_field'];
 
         // Note we do the table/field -name resolving here and not in the type
         // The options require the EntityManager which is not available until

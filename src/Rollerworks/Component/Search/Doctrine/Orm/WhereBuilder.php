@@ -325,7 +325,7 @@ class WhereBuilder implements WhereBuilderInterface
             }
 
             $this->fieldsData[$fieldName] = array();
-            $this->fieldsData[$fieldName]['dbType'] = $this->getDbType($field->getModelRefClass(), $field->getModelRefProperty());
+            $this->fieldsData[$fieldName]['db_type'] = $this->getDbType($field->getModelRefClass(), $field->getModelRefProperty());
             $this->fieldsData[$fieldName]['column'] = $this->resolveFieldColumn($field->getModelRefClass(), $field->getModelRefProperty(), $fieldName);
         }
 
@@ -481,11 +481,11 @@ class WhereBuilder implements WhereBuilderInterface
         $field = $field ?: $this->fieldset->get($fieldName);
 
         $hints = array(
-            'searchField' => $field,
+            'search_field' => $field,
             'connection' => $this->entityManager->getConnection(),
-            'dbType' => $this->fieldsData[$fieldName]['dbType'],
-            'conversionStrategy' => $strategy,
-            'entityManager' => $this->entityManager,
+            'db_type' => $this->fieldsData[$fieldName]['db_type'],
+            'conversion_strategy' => $strategy,
+            'entity_manager' => $this->entityManager,
         );
 
         $this->fieldConversionCache[$fieldName][$strategy] = $this->fieldConversions[$fieldName]->convertSqlField(
@@ -518,11 +518,11 @@ class WhereBuilder implements WhereBuilderInterface
         $field = $field ?: $this->fieldset->get($fieldName);
 
         $hints = array(
-            'searchField' => $field,
+            'search_field' => $field,
             'connection' => $this->entityManager->getConnection(),
-            'dbType' => $this->fieldsData[$fieldName]['dbType'],
+            'db_type' => $this->fieldsData[$fieldName]['db_type'],
             'column' => $column,
-            'conversionStrategy' => $strategy,
+            'conversion_strategy' => $strategy,
         );
 
         if ($isValueEmbedded) {
@@ -677,9 +677,9 @@ class WhereBuilder implements WhereBuilderInterface
                 $remappedColumns = array();
 
                 $hints = array(
-                    'searchField' => $field,
+                    'search_field' => $field,
                     'connection' => $this->entityManager->getConnection(),
-                    'dbType' => $this->fieldsData[$fieldName]['dbType'],
+                    'db_type' => $this->fieldsData[$fieldName]['db_type'],
                 );
 
                 foreach ($values as $value) {
@@ -758,9 +758,9 @@ class WhereBuilder implements WhereBuilderInterface
 
         if (isset($this->valueConversions[$fieldName]) && $this->valueConversions[$fieldName] instanceof ConversionStrategyInterface) {
             $hints = array(
-                'searchField' => $field,
+                'search_field' => $field,
                 'connection' => $this->entityManager->getConnection(),
-                'dbType' => $this->fieldsData[$fieldName]['dbType'],
+                'db_type' => $this->fieldsData[$fieldName]['db_type'],
             );
 
             foreach ($ranges as $range) {
@@ -838,9 +838,9 @@ class WhereBuilder implements WhereBuilderInterface
 
         if (isset($this->valueConversions[$fieldName]) && $this->valueConversions[$fieldName] instanceof ConversionStrategyInterface) {
             $hints = array(
-                'searchField' => $field,
+                'search_field' => $field,
                 'connection' => $this->entityManager->getConnection(),
-                'dbType' => $this->fieldsData[$fieldName]['dbType'],
+                'db_type' => $this->fieldsData[$fieldName]['db_type'],
             );
 
             foreach ($compares as $comparison) {
@@ -880,9 +880,9 @@ class WhereBuilder implements WhereBuilderInterface
 
         if (isset($this->valueConversions[$fieldName]) && $this->valueConversions[$fieldName] instanceof ConversionStrategyInterface) {
             $hints = array(
-                'searchField' => $field,
+                'search_field' => $field,
                 'connection' => $this->entityManager->getConnection(),
-                'dbType' => $this->fieldsData[$fieldName]['dbType'],
+                'db_type' => $this->fieldsData[$fieldName]['db_type'],
             );
 
             foreach ($patternMatchers as $patternMatch) {
@@ -960,7 +960,7 @@ class WhereBuilder implements WhereBuilderInterface
     private function getValueAsString($value, $inputValue, $fieldName, FieldConfigInterface $field, $strategy = null, $noSqlConversion = false)
     {
         /** @var \Doctrine\DBAL\Types\Type $type */
-        $type = $this->fieldsData[$fieldName]['dbType'];
+        $type = $this->fieldsData[$fieldName]['db_type'];
 
         // No conversions so set the value as query-parameter
         if (!isset($this->valueConversions[$fieldName])) {
@@ -975,13 +975,13 @@ class WhereBuilder implements WhereBuilderInterface
         $converter = $this->valueConversions[$fieldName];
 
         $hints = array(
-            'searchField' => $field,
+            'search_field' => $field,
             'connection' => $this->entityManager->getConnection(),
-            'dbType' => $this->fieldsData[$fieldName]['dbType'],
-            'conversionStrategy' => $strategy,
+            'db_type' => $this->fieldsData[$fieldName]['db_type'],
+            'conversion_strategy' => $strategy,
 
-            'originalValue' => $value,
-            'valueObject' => $inputValue,
+            'original_value' => $value,
+            'value_object' => $inputValue,
         );
 
         if ($converter->requiresBaseConversion($value, $field->getOptions(), $hints)) {

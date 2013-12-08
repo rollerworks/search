@@ -16,12 +16,12 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
  *
  * The $hints parameter always receives the following information.
  *
- * * searchField: Rollerworks\Component\Search\FieldConfigInterface
+ * * search_field: Rollerworks\Component\Search\FieldConfigInterface
  * * connection: Doctrine\DBAL\Connection
- * * dbType: Doctrine\DBAL\Types\Type
+ * * db_type: Doctrine\DBAL\Types\Type
  *
  * Value conversion only:
- * * valueObject: The value object currently being processed (SingleValue, Range, Compare, PatternMatch).
+ * * value_object: The value object currently being processed (SingleValue, Range, Compare, PatternMatch).
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -38,7 +38,7 @@ interface ValueConversionInterface
      *
      * @param mixed $input   Input value
      * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
+     * @param array $hints   Special information for the conversion process (search_field, connection, db_type, value_object)
      *
      * @return boolean
      */
@@ -49,7 +49,7 @@ interface ValueConversionInterface
      *
      * @param mixed $input   Query-parameter reference or real input depending on requiresRealValue()
      * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (searchField, connection, dbType, originalValue, valueObject)
+     * @param array $hints   Special information for the conversion process (search_field, connection, db_type, original_value, value_object)
      *
      * @return string
      */

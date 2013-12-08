@@ -16,9 +16,9 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
  *
  * The $hints parameter always receives the following information.
  *
- * * searchField: Rollerworks\Component\Search\FieldConfigInterface
+ * * search_field: Rollerworks\Component\Search\FieldConfigInterface
  * * connection: Doctrine\DBAL\Connection
- * * dbType: Doctrine\DBAL\Types\Type
+ * * db_type: Doctrine\DBAL\Types\Type
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -33,7 +33,7 @@ interface SqlFieldConversionInterface
      *
      * @param string $column  Resolved Query column
      * @param array  $options Options of the Field configuration
-     * @param array  $hints   Special information for the conversion process (searchField, connection, dbType)
+     * @param array  $hints   Special information for the conversion process (search_field, connection, db_type)
      *
      * @return string
      */

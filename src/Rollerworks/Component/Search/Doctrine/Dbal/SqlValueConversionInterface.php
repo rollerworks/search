@@ -11,16 +11,14 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
-
 /**
  * SqlValueConversionInterface provides a value conversion (as SQL statement) for the SQL generating process.
  *
  * The $hints parameter always receives the following information.
  *
- * * searchField: Rollerworks\Component\Search\FieldConfigInterface
+ * * search_field: Rollerworks\Component\Search\FieldConfigInterface
  * * connection: Doctrine\DBAL\Connection
- * * dbType: Doctrine\DBAL\Types\Type
+ * * db_type: Doctrine\DBAL\Types\Type
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -31,7 +29,7 @@ interface SqlValueConversionInterface extends ValueConversionInterface
      *
      * @param mixed $input   Input value
      * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
+     * @param array $hints   Special information for the conversion process (search_field, connection, db_type, value_object)
      *
      * @return boolean Return true to receive the value as-is, false to receive the query-param name.
      */
@@ -45,7 +43,7 @@ interface SqlValueConversionInterface extends ValueConversionInterface
      *
      * @param mixed $input   Query-parameter reference or real input depending on requiresRealValue()
      * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (searchField, connection, dbType)
+     * @param array $hints   Special information for the conversion process (search_field, connection, db_type)
      *
      * @return string
      */

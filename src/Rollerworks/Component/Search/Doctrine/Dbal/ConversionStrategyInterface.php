@@ -28,7 +28,7 @@ interface ConversionStrategyInterface
      * * If the value is a DateTime object, strategy 1 is used and the input-value is converted to a date string.
      * * If the value is an integer, strategy 2 is used and the value is transformed using a custom SQL statement.
      *
-     * The converter will receive the strategy as 'conversionStrategy' in the $hints parameter
+     * The converter will receive the strategy as 'conversion_strategy' in the $hints parameter
      *
      * @param mixed $value   Input value
      * @param array $options Options of the Field configuration

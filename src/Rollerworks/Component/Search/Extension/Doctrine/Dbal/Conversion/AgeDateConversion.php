@@ -59,7 +59,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
      */
     public function convertSqlField($column, array $options, array $hints)
     {
-        if (2 === $hints['conversionStrategy']) {
+        if (2 === $hints['conversion_strategy']) {
             return "CAST($column AS DATE)";
         }
 
@@ -113,7 +113,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
      */
     public function convertValue($value, array $options, array $hints)
     {
-        if (2 === $hints['conversionStrategy']) {
+        if (2 === $hints['conversion_strategy']) {
             return DBALType::getType('date')->convertToDatabaseValue($value, $hints['connection']->getDatabasePlatform());
         }
 
