@@ -9,8 +9,10 @@ env:
 before_script:
     - composer require symfony/framework-bundle:${SYMFONY_VERSION}
     - composer install --dev
-    
-script: bin/phpspec
+
+script:
+    - phpunit
+    - bin/phpspec
 
 php:
   - 5.3
