@@ -11,9 +11,8 @@
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
+use Rollerworks\Component\Search\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\AgeDateConversion;
-use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldTypeExtensionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -21,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class BirthdayTypeExtension implements FieldTypeExtensionInterface
+class BirthdayTypeExtension extends AbstractFieldTypeExtension
 {
     /**
      * @var AgeDateConversion
@@ -34,13 +33,6 @@ class BirthdayTypeExtension implements FieldTypeExtensionInterface
     public function __construct($conversion)
     {
         $this->conversion = $conversion;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildType(FieldConfigInterface $builder, array $options)
-    {
     }
 
     /**

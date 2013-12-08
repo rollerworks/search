@@ -11,8 +11,7 @@
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
-use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldTypeExtensionInterface;
+use Rollerworks\Component\Search\AbstractFieldTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -20,22 +19,20 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldTypeExtension implements FieldTypeExtensionInterface
+class FieldTypeExtension extends AbstractFieldTypeExtension
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildType(FieldConfigInterface $builder, array $options)
-    {
-    }
-
     /**
      * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $resolver->setDefaults(array(
+            'doctrine_dbal_conversion' => null)
+        );
+
         $resolver->setAllowedTypes(array(
             'doctrine_dbal_conversion' => array(
+                'null',
                 'Closure',
                 'Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface',
                 'Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface',

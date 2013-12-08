@@ -485,6 +485,7 @@ class WhereBuilder implements WhereBuilderInterface
             'connection' => $this->entityManager->getConnection(),
             'dbType' => $this->fieldsData[$fieldName]['dbType'],
             'conversionStrategy' => $strategy,
+            'entityManager' => $this->entityManager,
         );
 
         $this->fieldConversionCache[$fieldName][$strategy] = $this->fieldConversions[$fieldName]->convertSqlField(
