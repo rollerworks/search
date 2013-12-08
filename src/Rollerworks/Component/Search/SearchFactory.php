@@ -56,7 +56,7 @@ class SearchFactory implements SearchFactoryInterface
      * @param array   $options
      * @param boolean $required
      *
-     * @return ResolvedFieldTypeInterface
+     * @return SearchField
      */
     public function createField($name, $type, array $options = array(), $required = false)
     {
@@ -76,7 +76,7 @@ class SearchFactory implements SearchFactoryInterface
      * @param array   $options
      * @param boolean $required
      *
-     * @return ResolvedFieldTypeInterface
+     * @return SearchField
      */
     public function createFieldForProperty($class, $property, $name, $type, array $options = array(), $required = false)
     {
