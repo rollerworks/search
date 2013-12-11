@@ -11,14 +11,14 @@
 
 namespace Rollerworks\Component\Search\Extension\Validator\Type;
 
+use Rollerworks\Component\Search\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldTypeExtensionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldTypeExtension implements FieldTypeExtensionInterface
+class FieldTypeExtension extends AbstractFieldTypeExtension
 {
     /**
      * {@inheritdoc}
