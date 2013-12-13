@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Extension\Validator;
 
 use Rollerworks\Component\Search\Extension\Validator\Constraints\ValuesGroup as ValuesGroupConstraint;
+use Rollerworks\Component\Search\Extension\Validator\ViolationMapper\ViolationMapper;
 use Rollerworks\Component\Search\Extension\Validator\ViolationMapper\ViolationMapperInterface;
 use Rollerworks\Component\Search\FormatterInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
@@ -41,10 +42,10 @@ class ValidationFormatter implements FormatterInterface
      * @param ValidatorInterface       $validator
      * @param ViolationMapperInterface $violationMapper
      */
-    public function __construct(ValidatorInterface $validator, ViolationMapperInterface $violationMapper)
+    public function __construct(ValidatorInterface $validator, ViolationMapperInterface $violationMapper = null)
     {
         $this->validator = $validator;
-        $this->violationMapper = $violationMapper;
+        $this->violationMapper = $violationMapper ?: new ViolationMapper();
     }
 
     /**
