@@ -11,6 +11,8 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
+
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -27,25 +29,35 @@ class SearchConditionBuilder
     protected $parent;
 
     /**
+     * @var FieldSet
+     */
+    protected $fieldSet;
+
+    /**
      * Constructor.
      *
      * @param string                 $logical
+     * @param FieldSet               $fieldSet
      * @param SearchConditionBuilder $parent
      */
-    public function __construct($logical = ValuesGroup::GROUP_LOGICAL_AND, SearchConditionBuilder $parent = null)
+    public function __construct($logical = ValuesGroup::GROUP_LOGICAL_AND, FieldSet $fieldSet = null, SearchConditionBuilder $parent = null)
     {
         $this->valuesGroup = new ValuesGroup($logical);
         $this->parent = $parent;
+        $this->fieldSet = $fieldSet;
     }
 
     /**
-     * @param string $logical
+     * Creates a new SearchConditionBuilder.
+     *
+     * @param FieldSet $fieldSet
+     * @param string   $logical
      *
      * @return SearchConditionBuilder
      */
-    public static function create($logical = ValuesGroup::GROUP_LOGICAL_AND)
+    public static function create(FieldSet $fieldSet = null, $logical = ValuesGroup::GROUP_LOGICAL_AND)
     {
-        return new self($logical);
+        return new self($logical, $fieldSet);
     }
 
     /**
@@ -55,21 +67,26 @@ class SearchConditionBuilder
      */
     public function group($logical = ValuesGroup::GROUP_LOGICAL_AND)
     {
-        $builder = new self($logical, $this);
+        $builder = new self($logical, null, $this);
         $this->valuesGroup->addGroup($builder->getGroup());
 
         return $builder;
     }
 
     /**
-     * @param string $name
+     * @param string  $name
+     * @param boolean $forceNew
      *
      * @return ValuesBagBuilder
      */
-    public function field($name)
+    public function field($name, $forceNew = false)
     {
-        $valuesBag = new ValuesBagBuilder($this);
-        $this->valuesGroup->addField($name, $valuesBag);
+        if (!$forceNew && $this->valuesGroup->hasField($name)) {
+            $valuesBag = $this->valuesGroup->getField($name);
+        } else {
+            $valuesBag = new ValuesBagBuilder($this);
+            $this->valuesGroup->addField($name, $valuesBag);
+        }
 
         return $valuesBag;
     }
@@ -88,5 +105,31 @@ class SearchConditionBuilder
     public function getGroup()
     {
         return $this->valuesGroup;
+    }
+
+    /**
+     * @return SearchCondition
+     *
+     * @throws BadMethodCallException when there is no FieldSet configured.
+     */
+    public function getSearchCondition()
+    {
+        if ($this->parent) {
+            return $this->parent->getSearchCondition();
+        }
+
+        if (null === $this->fieldSet) {
+            throw new BadMethodCallException('Unable to create SearchCondition without FieldSet.');
+        }
+
+        return new SearchCondition($this->fieldSet, $this->valuesGroup);
+    }
+
+    /**
+     * @return FieldSet
+     */
+    public function getFieldSet()
+    {
+        return $this->fieldSet;
     }
 }
