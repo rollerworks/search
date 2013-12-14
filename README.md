@@ -8,8 +8,8 @@ What is Rollerworks Search?
 
 Rollerworks Search is an advanced search-building framework.
 
-Providing some powerful basics for building your own site search-engine.
-From input to formatting and validating, and finally applying condition to the
+Providing powerful system for building your own site search-engine.
+From input to formatting and validating, and finally applying conditions on the
 storage engine.
 
 This system was designed to be as expendable as possible.
