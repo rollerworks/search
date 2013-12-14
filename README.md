@@ -6,6 +6,9 @@ README
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/badges/quality-score.png?s=5eebfd1ff3695ab59d59406702978a0ddf29df21)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/)
 
 
+**Note:** This project has moved to https://github.com/rollerworks/RollerworksSearch
+This current version will maintained (bug fixes only) till december 2015 after this support is discontinued.
+
 What is Rollerworks Search?
 ---------------------------
 
@@ -95,7 +98,7 @@ Installation
 
 The installation is very easy, all the details about installing can be found in.
 
-[docs/Installing](docs/installing.rst)
+[doc/installing](doc/installing.rst)
 
 Documentation
 -------------
