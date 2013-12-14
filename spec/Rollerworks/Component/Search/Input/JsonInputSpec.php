@@ -15,6 +15,7 @@ use PhpSpec\ObjectBehavior;
 use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
@@ -42,6 +43,8 @@ class JsonInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             json_encode(array(
@@ -51,7 +54,7 @@ class JsonInputSpec extends ObjectBehavior
                     )
                 )
             ), JSON_FORCE_OBJECT)
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_nested_values(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -77,7 +80,7 @@ class JsonInputSpec extends ObjectBehavior
                     )
                 )
             ), JSON_FORCE_OBJECT)
-        )->shouldHaveType('Rollerworks\Component\Search\ValuesGroup');
+        )->shouldHaveType('Rollerworks\Component\Search\SearchCondition');
     }
 
     function it_errors_on_invalid_json(FieldSet $fieldSet, FieldConfigInterface $field)

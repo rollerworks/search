@@ -38,7 +38,7 @@ interface InputProcessorInterface
      *
      * @param mixed $input
      *
-     * @return null|ValuesGroup Returns null on empty input
+     * @return null|SearchConditionInterface Returns null on empty input
      */
     public function process($input);
 }

@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -51,7 +52,7 @@ class ArrayInput extends AbstractInput
      *
      * @param array $input
      *
-     * @return null|ValuesGroup Returns null on empty input
+     * @return null|SearchCondition Returns null on empty input
      *
      * @throws \InvalidArgumentException When no array is given.
      */
@@ -68,7 +69,7 @@ class ArrayInput extends AbstractInput
 
         $this->processGroup($input, $valuesGroup, 0, 0, true);
 
-        return $valuesGroup;
+        return new SearchCondition($this->fieldSet, $valuesGroup);
     }
 
     /**

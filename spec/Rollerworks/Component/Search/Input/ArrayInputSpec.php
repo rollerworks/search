@@ -21,6 +21,7 @@ use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldAliasResolverInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -50,6 +51,8 @@ class ArrayInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -59,7 +62,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_merges_field_alias(FieldSet $fieldSet, FieldConfigInterface $field, FieldAliasResolverInterface $aliasResolver)
@@ -82,6 +85,8 @@ class ArrayInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -90,7 +95,7 @@ class ArrayInputSpec extends ObjectBehavior
                     'field2' => array('single-values' => array('value3', 'value4'))
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_excluded_values(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -107,6 +112,8 @@ class ArrayInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -116,7 +123,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -138,6 +145,8 @@ class ArrayInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -153,7 +162,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_excluded_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -172,6 +181,8 @@ class ArrayInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -181,7 +192,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_comparisons(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -200,6 +211,8 @@ class ArrayInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -209,7 +222,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_pattern_matchers(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -228,6 +241,8 @@ class ArrayInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -240,7 +255,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_groups(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -260,6 +275,8 @@ class ArrayInputSpec extends ObjectBehavior
         $subGroup->addField('field1', $values);
         $expectedGroup->addGroup($subGroup);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -273,7 +290,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_multiple_groups(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -301,6 +318,8 @@ class ArrayInputSpec extends ObjectBehavior
         $subGroup->addField('field1', $values);
         $expectedGroup->addGroup($subGroup);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -321,7 +340,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_processes_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -341,6 +360,8 @@ class ArrayInputSpec extends ObjectBehavior
         $subGroup->addField('field1', $values);
         $expectedGroup->addGroup($subGroup);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
         $this->process(
             array(
@@ -355,7 +376,7 @@ class ArrayInputSpec extends ObjectBehavior
                     )
                 )
             )
-        )->shouldBeLike($expectedGroup);
+        )->shouldBeLike($condition);
     }
 
     function it_errors_when_maximum_values_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)

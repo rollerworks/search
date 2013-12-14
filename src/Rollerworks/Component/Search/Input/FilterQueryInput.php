@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\Input\FilterQuery\Lexer;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
@@ -174,7 +175,7 @@ class FilterQueryInput extends AbstractInput
      *
      * @param string $input
      *
-     * @return null|ValuesGroup Returns null on empty input
+     * @return null|SearchCondition Returns null on empty input
      */
     public function process($input)
     {
@@ -190,7 +191,7 @@ class FilterQueryInput extends AbstractInput
         $valuesGroup = new ValuesGroup();
         $this->FieldValuesPairs($valuesGroup, 0);
 
-        return $valuesGroup;
+        return new SearchCondition($this->fieldSet, $valuesGroup);
     }
 
     /**

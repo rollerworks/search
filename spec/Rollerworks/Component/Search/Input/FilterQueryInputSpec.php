@@ -21,6 +21,7 @@ use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -56,9 +57,11 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: value, value2;')->shouldBeLike($expectedGroup);
-        $this->process('field1: value, value2')->shouldBeLike($expectedGroup);
+        $this->process('field1: value, value2;')->shouldBeLike($condition);
+        $this->process('field1: value, value2')->shouldBeLike($condition);
     }
 
     // this is a special case as the dash is also used for ranges
@@ -75,8 +78,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field-1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field-1: value, value2')->shouldBeLike($expectedGroup);
+        $this->process('field-1: value, value2')->shouldBeLike($condition);
     }
 
     function it_parses_multiple_query_pairs(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
@@ -99,9 +104,11 @@ class FilterQueryInputSpec extends ObjectBehavior
         $values->addSingleValue(new SingleValue('value4'));
         $expectedGroup->addField('field2', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: value, value2; field2: value3, value4;')->shouldBeLike($expectedGroup);
-        $this->process('field1: value, value2; field2: value3, value4')->shouldBeLike($expectedGroup);
+        $this->process('field1: value, value2; field2: value3, value4;')->shouldBeLike($condition);
+        $this->process('field1: value, value2; field2: value3, value4')->shouldBeLike($condition);
     }
 
     function it_parses_a_quoted_value(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -117,8 +124,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: "value", "value""2";')->shouldBeLike($expectedGroup);
+        $this->process('field1: "value", "value""2";')->shouldBeLike($condition);
     }
 
     function it_parses_excluded_singleValues(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -134,8 +143,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: !value, value2;')->shouldBeLike($expectedGroup);
+        $this->process('field1: !value, value2;')->shouldBeLike($condition);
     }
 
     function it_parses_simple_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -152,8 +163,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: 1-10, 15 - 30;')->shouldBeLike($expectedGroup);
+        $this->process('field1: 1-10, 15 - 30;')->shouldBeLike($condition);
     }
 
     function it_parses_exclusive_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -170,8 +183,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: 1-10[ , ]15 - 30;')->shouldBeLike($expectedGroup);
+        $this->process('field1: 1-10[ , ]15 - 30;')->shouldBeLike($condition);
     }
 
     function it_parses_excluded_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -188,8 +203,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: !1-10, 15 - 30;')->shouldBeLike($expectedGroup);
+        $this->process('field1: !1-10, 15 - 30;')->shouldBeLike($condition);
     }
 
     function it_parses_comparisons(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -209,8 +226,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: > value, <= value2, >= value3;')->shouldBeLike($expectedGroup);
+        $this->process('field1: > value, <= value2, >= value3;')->shouldBeLike($condition);
     }
 
     function it_parses_matchers(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -231,8 +250,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $expectedGroup = new ValuesGroup();
         $expectedGroup->addField('field1', $values);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $expectedGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: ~* value, ~i> value2, ~< value3, ~? "^foo|bar?", ~!* value4, ~i!* value5;')->shouldBeLike($expectedGroup);
+        $this->process('field1: ~* value, ~i> value2, ~< value3, ~? "^foo|bar?", ~!* value4, ~i!* value5;')->shouldBeLike($condition);
     }
 
     function it_parses_groups(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -255,13 +276,15 @@ class FilterQueryInputSpec extends ObjectBehavior
         $subGroup->addField('field1', $values);
         $rootGroup->addGroup($subGroup);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $rootGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: value, value2; (field1: value3, value4;);')->shouldBeLike($rootGroup);
-        $this->process('field1: value, value2; (field1: value3, value4);')->shouldBeLike($rootGroup);
-        $this->process('field1: value, value2; (field1: value3, value4)')->shouldBeLike($rootGroup);
-        $this->process('(field1: value3, value4;); field1: value, value2;')->shouldBeLike($rootGroup);
-        $this->process('(field1: value3, value4); field1: value, value2;')->shouldBeLike($rootGroup);
-        $this->process('(field1: value3, value4); field1: value, value2')->shouldBeLike($rootGroup);
+        $this->process('field1: value, value2; (field1: value3, value4;);')->shouldBeLike($condition);
+        $this->process('field1: value, value2; (field1: value3, value4);')->shouldBeLike($condition);
+        $this->process('field1: value, value2; (field1: value3, value4)')->shouldBeLike($condition);
+        $this->process('(field1: value3, value4;); field1: value, value2;')->shouldBeLike($condition);
+        $this->process('(field1: value3, value4); field1: value, value2;')->shouldBeLike($condition);
+        $this->process('(field1: value3, value4); field1: value, value2')->shouldBeLike($condition);
     }
 
     function it_parses_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -284,8 +307,10 @@ class FilterQueryInputSpec extends ObjectBehavior
         $subGroup->addField('field1', $values);
         $rootGroup->addGroup($subGroup);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $rootGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('field1: value, value2; *(field1: value3, value4;);')->shouldBeLike($rootGroup);
+        $this->process('field1: value, value2; *(field1: value3, value4;);')->shouldBeLike($condition);
     }
 
     function it_parses_multiple_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -312,8 +337,10 @@ class FilterQueryInputSpec extends ObjectBehavior
 
         $rootGroup->addGroup($subGroup2);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $rootGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('(field1: value, value2;); (field1: value3, value4;)')->shouldBeLike($rootGroup);
+        $this->process('(field1: value, value2;); (field1: value3, value4;)')->shouldBeLike($condition);
     }
 
     function it_parses_nested_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
@@ -334,8 +361,10 @@ class FilterQueryInputSpec extends ObjectBehavior
 
         $rootGroup->addGroup($subGroup);
 
+        $condition = new SearchCondition($fieldSet->getWrappedObject(), $rootGroup);
+
         $this->setFieldSet($fieldSet);
-        $this->process('((field1: value, value2;))')->shouldBeLike($rootGroup);
+        $this->process('((field1: value, value2;))')->shouldBeLike($condition);
     }
 
     function it_errors_when_maximum_values_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
