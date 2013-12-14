@@ -127,7 +127,7 @@ class TransformFormatter implements FormatterInterface
                 }
             }
         } catch (TransformationFailedException $e) {
-            $valuesBag->addError(new ValuesError($propertyPath, $e->getMessage()));
+            $valuesBag->addError(new ValuesError($propertyPath, null, $config->getOption('invalid_message', $e->getMessage()), $config->getOption('invalid_message_parameters', array())));
         }
     }
 

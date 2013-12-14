@@ -359,6 +359,8 @@ class TransformFormatterSpec extends ObjectBehavior
     function it_adds_an_error_on_failed_transformation(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, DataTransformerInterface $viewTransformer)
     {
         $dateField->hasOption('constraints')->willReturn(false);
+        $dateField->getOption('invalid_message', 'Transformation failed.')->willReturn('This value is not valid.');
+        $dateField->getOption('invalid_message_parameters', array())->willReturn(array());
         $dateField->getViewTransformers()->willReturn(array($viewTransformer));
 
         $fieldSet->get('date')->willReturn($dateField);
@@ -380,7 +382,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $valuesGroup = new ValuesGroup();
         $valuesGroup->addField('date', $valuesBag->getWrappedObject());
 
-        $valuesBag->addError(Argument::exact(new ValuesError('singleValues[0]', 'Transformation failed.')))->shouldBeCalled();
+        $valuesBag->addError(Argument::exact(new ValuesError('singleValues[0]', null, 'This value is not valid.')))->shouldBeCalled();
 
         $condition->getValuesGroup()->willReturn($valuesGroup);
         $condition->getFieldSet()->willReturn($fieldSet);
