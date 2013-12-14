@@ -29,9 +29,17 @@ class EntityCountConversionTest extends SearchIntegrationTestCase
      */
     private $em;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $config;
+
     protected function setUp()
     {
+        $this->config = $this->getMock('Doctrine\ORM\Configuration');
+        $this->config->expects($this->atLeastOnce())->method('addCustomStringFunction');
         $this->em = $this->getMock('Doctrine\ORM\EntityManagerInterface');
+        $this->em->expects($this->atLeastOnce())->method('getConfiguration')->will($this->returnValue($this->config));
         $this->emRegistry = $this->createRegistryMock('default', $this->em);
 
         parent::setUp();
