@@ -22,11 +22,19 @@ use Rollerworks\Component\Search\AbstractExtension;
  */
 class DoctrineOrmExtension extends AbstractExtension
 {
-    protected $registry;
-
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @param ManagerRegistry $registry
+     * @param array           $managerNames
+     */
+    public function __construct(ManagerRegistry $registry, $managerNames = array('default'))
     {
-        $this->registry = $registry;
+        foreach ((array) $managerNames as $managerName) {
+            $emConfig = $registry->getManager($managerName)->getConfiguration();
+            /** @var \Doctrine\ORM\Configuration $emConfig */
+            $emConfig->addCustomStringFunction('RW_SEARCH_FIELD_CONVERSION', 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion');
+            $emConfig->addCustomStringFunction('RW_SEARCH_VALUE_CONVERSION', 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion');
+            $emConfig->addCustomStringFunction('RW_SEARCH_MATCH', 'Rollerworks\Component\Search\Doctrine\Orm\Functions\ValueMatch');
+        }
     }
 
     /**
