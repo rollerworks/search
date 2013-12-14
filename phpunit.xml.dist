@@ -12,18 +12,16 @@
          bootstrap="./tests/bootstrap.php"
         >
     <testsuites>
-        <testsuite name="RollerworksRecordFilterBundle Test Suite">
-            <directory>./tests/Rollerworks/Bundle/RecordFilterBundle/Tests/</directory>
+        <testsuite name="Rollerworks Search Component Test Suite">
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>./</directory>
+            <directory>./src</directory>
             <exclude>
                 <directory>./Resources</directory>
-                <directory>./vendor</directory>
-                <directory>./tests/</directory>
             </exclude>
         </whitelist>
     </filter>

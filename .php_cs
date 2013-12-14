@@ -4,9 +4,8 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->name('*.php')
     ->ignoreDotFiles(true)
     ->ignoreVCS(true)
-    ->exclude('tests/Rollerworks/Bundle/RecordFilterBundle/Tests/.cache')
+    ->exclude(array('bin', 'docs'))
     ->in(__DIR__ . '/src')
-    ->in(__DIR__ . '/tests')
 ;
 
 return Symfony\CS\Config\Config::create()

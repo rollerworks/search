@@ -1,14 +1,11 @@
 language: php
 
-env:
-    - SYMFONY_VERSION="2.1.*"
-    - SYMFONY_VERSION="2.2.*"
-    - SYMFONY_VERSION="2.3.*"
-    - SYMFONY_VERSION="dev-master@dev"
-
 before_script:
-    - composer require symfony/framework-bundle:${SYMFONY_VERSION}
-    - composer install --dev
+    - composer install --prefer-source --dev
+
+script:
+    - phpunit --configuration phpunit.xml.dist
+    - bin/phpspec
 
 php:
   - 5.3

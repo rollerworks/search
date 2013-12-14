@@ -1,32 +1,45 @@
-Bundle Overview
-===============
+Components Overview
+===================
 
-Most features for searching records are provided by the bundle
+Most features for searching are provided by the library
 using object-oriented PHP code as the interface.
 
 In this chapter we will take a short tour of the various components, which put
-together form the RecordFilter as a whole. You will learn key
+together form the Search Component as a whole. You will learn key
 terminology used throughout the rest of this book and will gain an
-understanding of the classes you will work with as you integrate the RecordFilter
+understanding of the classes you will work with as you integrate the Search Component
 into your application.
 
 This chapter is intended to prepare you for the information contained in the
 subsequent chapters of this book.
 
-The flow of the RecordFilter is to first accept input, format (validating/sanitizing)
-and then use the formatted result for searching a storage engine - like a database.
+Information flow
+~~~~~~~~~~~~~~~~
 
-Filter configuration specifies *what* can be filtered and *how* the system must handle it,
-filtering preference defines the *actual filtering* conditions - what you are searching for.
+Normally you'd accept the input, format it and then pass
+it to the storage layer. The formatting ensures all
+values are validated and normalized.
+
+But you're free to build the search condition yourself,
+and pass it directly to the storage layer without any formatting.
+
+The only thing the system is mainly concerned with is the search condition, and
+the configuration of the search fields.
 
 System Requirements
 -------------------
 
-The basic requirements to use RecordFilter are:
+The basic requirements to use the Search Component are:
 
 * PHP 5.3.3 or higher, with the SPL extension (standard)
 * `Multibyte string extension <http://www.php.net/manual/en/mbstring.setup.php>`_, for multibyte text handling
-* The Symfony 2 `Framework Bundle <https://github.com/symfony/FrameworkBundle>`_
+
+And a list 3rd party libraries (which you can find the installation chapter).
+
+.. note::
+
+    When you use Composer to install and update dependencies the
+    installation of these libraries will be handled for your.
 
 Depending on your needs, you may need the following:
 
@@ -37,105 +50,161 @@ Depending on your needs, you may need the following:
 Component Breakdown
 -------------------
 
-The RecordFilter is made up of many classes. Each of these classes can be grouped
+The Search Component is made up of many classes. Each of these classes can be grouped
 into a general "component" group which describes the task it is designed to
 perform.
 
-We'll take a brief look at the components which form the RecordFilter in this
-section of the book.
+We'll take a brief look at the components which form the Search Component as a whole,
+in this section of the book.
+
+ValuesGroup and ValuesBag
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+At the root of each search there is at least one ``ValuesGroup`` object, containing
+the field names with there values (as a ``ValuesBag`` object), and optionally subgroups
+(each one being a ``ValuesGroup`` object).
+
+A ``ValuesGroup`` is 'logically' marked as AND by default, meaning that the search
+condition will only be true if from each field inside the group a value is true (matching).
+But it is however possible to mark a group as OR, meaning that at least one field must match and
+other fields are considered optional.
+
+.. note::
+
+    Subgroups are always threaded as AND to the group there in, but are OR cased to
+    each other.
+
+The ``ValuesBag`` object holds all the values per type of a field.
+
+Supported value-types are:
+
+* Single value (any type of value)
+* Excluded single value (any type of value which should not provide a positive match)
+* Ranges (from - to, eg 10 - 100)
+* Excluded ranges (from - to, eg 10 - 100 which is should not provide a positive match)
+* Comparison value (mathematical comparison, < > >= <=)
+* PatternMatch (starts with, contains, ends with, regex) (and an excluding version)
+
+Values are stored as a normalized format en view format.
+The actual transformation is handled by the ```TransformerFormatter``.
+
+.. note::
+
+    Either side of a Range value can be marked as exclusive.
+    Meaning anything between the values except the number it self.
+
+    In practice this is the same as using ``>20 AND <30``.
+    Except that explicit ranges are much easier to optimize.
 
 FieldSet
 ~~~~~~~~
 
-The ``FieldSet`` class holds the filtering configuration of one or multiple ``FilterField`` objects.
+The ``FieldSet`` class holds the filtering configuration of
+one or multiple ``FieldConfigInterface`` instances.
+
+Normally you`d create a fieldset based on a subject-relationship.
+
+For example invoice search, order search, news items search, etc.
 
 *Internally, FieldSets are used for passing filtering configuration between components.*
 
-A ``FilterField`` is independent of the ``FieldSet`` it is in and contains the following information.
+.. note::
 
-+-----------------+----------------------------------------------------------------------------------------------------------+-----------------------------------+
-| Name            | Description                                                                                              | Value-type                        |
-+=================+==========================================================================================================+===================================+
-| Label           | Label of the field. This may be is empty when the field is only used for passing information.            | ``string``                        |
-+-----------------+----------------------------------------------------------------------------------------------------------+-----------------------------------+
-| Type            | Optional filtering type used by the ``Formatter`` for validation/normalization, etc.                     | ``null``, ``string``, ``object``  |
-|                 | The value of this is very dependent on the context it is used in.                                        |                                   |
-+-----------------+----------------------------------------------------------------------------------------------------------+-----------------------------------+
-| Required        | Indicates if the field must have a value.                                                                | ``boolean``                       |
-+-----------------+----------------------------------------------------------------------------------------------------------+-----------------------------------+
-| AcceptRanges    | Indicates the field accepts range values. The ``Filtering`` type must support this to work properly.     | ``boolean``                       |
-+-----------------+----------------------------------------------------------------------------------------------------------+-----------------------------------+
-| AcceptCompares  | Indicates the field accepts comparison values. The ``Filtering`` type must support this to work properly.| ``boolean``                       |
-+-----------------+----------------------------------------------------------------------------------------------------------+-----------------------------------+
+    The ``FieldConfigInterface`` is an interface for your own implementation.
+    The default implementation is the ``SearchField`` class.
 
-    Secondly, a Field can contain a property-reference to the class its mapped to.
+A field is independent of the ``FieldSet`` and provides the following information.
+
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| Name             | Description                                                                           | Value-type                      |
++==================+=======================================================================================+=================================+
+| Name             | Name of the field. must be unique inside the fieldset.                                | ``string``                      |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| Type             | An object implementing the ``ResolvedFieldTypeInterface``.                            | ``ResolvedFieldTypeInterface``  |
+|                  | Provides type-class for building the fields configuration.                            |                                 |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| AcceptRanges     | Indication if range values are accepted by the field.                                 | ``boolean``                     |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| AcceptCompares   | Indication if comparison values are accepted by the field.                            | ``boolean``                     |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| Required         | Indicates if the field must have at least one value.                                  | ``boolean``                     |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| ModelRefClass    | Model's fully qualified class-name reference.                                         | ``string``                      |
+|                  | This is required for some storage engines like Doctrine2                              |                                 |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| ModelRefProperty | Model's property name reference.                                                      | ``string``                      |
+|                  | This is used in combination with ModelRefClass                                        |                                 |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| ValueComparison  | ValuesComparison object used for validating and optimizing.                           | ``ValueComparisonInterface``    |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| ViewTransformers | A list of transformers for transforming from view to normalized, and reverse.         | ``DataTransformerInterface[]``  |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
+| Options          | Configured options of the field. The options handled using the Type configuration.    | ``array``                       |
++------------------+---------------------------------------------------------------------------------------+---------------------------------+
 
 .. note::
 
-    ``FieldSets`` can be created 'on the fly' or created when warming up the cache.
-
-    See :doc:`configuration` for more information.
+    A ``FieldSet`` can also be generated by using the ``FieldSetBuilder``,
+    which provides a much simpler interface then the low lever architecture.
 
 Input
 ~~~~~
 
-The input component provides the input to use for filtering,
-**only fields present in the FieldSet are used**.
+The input component process user-input to a ``SearchConditionInterface`` object.
 
-Filtering can be provided using a PHP Array, JSON, XML or the special :doc:`FilterQuery </input/filter_query>`.
+Input can be provided as a PHP Array, JSON, XML, or using the
+special :doc:`FilterQuery </input/filter_query>` format.
 
 Formatter
 ~~~~~~~~~
 
-The formatter formats the given input by applying common operations like validation,
-normalisation, etc.
+A formatter formats the given SearchCondition,
+this can include validating, transforming, optimizing, etc.
 
-The default Formatter (ModifierFormatter) works by performing registered
-modifiers on the provided input.
+The following formatters are provided with the library.
 
-    You can also add your own modifiers. A modifier must implement the
-    ``Rollerworks\Bundle\RecordFilterBundle\Formatter\Modifier\ModifierInterface`` and be registered in the Dependency Injection Container.
+.. note::
 
-    For inspiration of creating your own modifier, look at one of the modifiers provided by the bundle,
-    and register it as service tagged under "rollerworks_record_filter.formatter_modifier" with
-    an appropriate priority. The lower the priority, the later it is performed.
+    Formatters are listed in order of usage.
+    Transformation should take place before validating, and validating before optimizing.
 
-+-----------------------+------------------------------------------------------------------------------------------------------------+-----------+
-| Name                  | Description                                                                                                | Priority  |
-+=======================+============================================================================================================+===========+
-| ``Validator``         | Validates and sanitizes the value by filtering type.                                                       | 1000      |
-+-----------------------+------------------------------------------------------------------------------------------------------------+-----------+
-| ``DuplicateRemove``   | Removes duplicated values.                                                                                 | 500       |
-+-----------------------+------------------------------------------------------------------------------------------------------------+-----------+
-| ``RangeNormalizer``   | Removes overlapping ranges/values and merges connected ranges.                                             | 100       |
-+-----------------------+------------------------------------------------------------------------------------------------------------+-----------+
-| ``ValuesToRange``     | Converts a connected-list of values to ranges (filtering type must implement ``ValuesToRangeInterface``).  | 80        |
-+-----------------------+------------------------------------------------------------------------------------------------------------+-----------+
-| ``CompareNormalizer`` | Normalizes comparisons. Changes: '>=1, >1' to '>=1' (as '>' is already covert by '>=')                     | 50        |
-+-----------------------+------------------------------------------------------------------------------------------------------------+-----------+
-| ``ValueOptimizer``    | Optimizes value by ``OptimizableInterface`` filter-type implementation.                                    | -128      |
-+-----------------------+------------------------------------------------------------------------------------------------------------+-----------+
++--------------------------+---------------------------------------------------------------------------+
+| Name                     | Description                                                               |
++==========================+===========================================================================+
+| ``Chain``                | Performs the registered formatters in the sequence they were registered.  |
++--------------------------+---------------------------------------------------------------------------+
+| ``TransformerFormatter`` | Transforms the values to a normalized format and view format.             |
++--------------------------+---------------------------------------------------------------------------+
+| ``ValidatorFormatter``   | Validates values using the configured validation constraints.             |
+|                          | This formatter is provided by the Validator extension.                    |
++--------------------------+---------------------------------------------------------------------------+
+| ``DuplicateRemove``      | Removes duplicated values inside group.                                   |
++--------------------------+---------------------------------------------------------------------------+
+| ``ValuesToRange``        | Converts incremented values to inclusive ranges.                          |
++--------------------------+---------------------------------------------------------------------------+
+| ``RangeOptimizer``       | Removes overlapping ranges/values and merges connected ranges.            |
++--------------------------+---------------------------------------------------------------------------+
 
 Type
 ~~~~
 
-Filtering types for working with values. Each type implements its own way
-of handling a value including validation/sanitizing and possible optimizing.
+Types are used for configuring the field, including setting the value comparison implementation,
+ViewTransformers and accepted value-types.
 
-For more information on using the Type component see :doc:`type`
+For more information on using the Type component see :doc:`type/index`
+
+.. note::
+
+    Build-in types are provided as extension by the Core extension.
+    You are free to extend them for more advanced support.
+
+    Extending a type if described in :doc:`type/extending`
 
 Doctrine
 ~~~~~~~~
 
-Searches trough the database using the final filtering-preference.
-Both SQL and DQL are supported.
+Doctrine2 drivers for searching in the storage.
 
-For more information on using the Doctrine component see :doc:`/Doctrine/index`
+Currently only provides support for Doctrine2 ORM (both DQL and NativeSQL)
 
-Factory
-~~~~~~~
-
-Factories can be used for creating classes based on ``FieldSets``,
-generated classes are faster then recreating structures every time.
-
-The factories are mainly used for ``CacheWarming``.
+For more information on using the Doctrine component see :doc:`/doctrine/index`

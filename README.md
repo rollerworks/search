@@ -1,31 +1,96 @@
 README
 ======
 
-[![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksRecordFilterBundle.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksRecordFilterBundle)
+[![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksSearch.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksSearch)
 
-What is the RecordFilterBundle?
--------------------------------
+What is Rollerworks Search?
+---------------------------
 
-The RecordFilterBundle is a Symfony 2 Bundle for filter-based record searching.
+Rollerworks Search is an advanced search-building framework.
 
-Filter-based in that it uses a filtering system to search.
-You search by conditions, not terms.
+Providing some powerful basics for building your own site search-engine.
+From input to formatting and validating, and finally applying condition to the
+storage engine.
 
-This bundle was designed to be used for any kind of storage, input and local.
+This system was designed to be as expendable as possible.
+Everything, and absolute everything can be replaced with your implementation.
 
-Out of the box it (currently) only supports Doctrine ORM for searching in.
+Features
+--------
+
+The searching condition is build of fields and groups.
+Each field can have any-type of value including ranges, comparisons
+and matchers (starts/ends with contains).
+
+Groups can be nested at any level of depth.
+
+## Input
+
+Input processing is provided for the following formats.
+
+* Array
+* JSON
+* XML
+* FilterQuery (an easy to learn and use condition based input format).
+
+> Each provided input format also provides an related exporter.
+
+## Formatter
+
+* Validation
+* Transformation (localized representation to normalized and reverse)
+* Removing of duplicated values
+* Optimizing of ranges: detecting and removing overlapping ranges
+* Connected values to ranges (1,2,3,4,5 gets converted to 1-5)
+
+## Types
+
+The following types are build-in (but can be replaced with your own if needed).
+
+> Each type is localized.
+
+* Birthday (with optional support for ages)
+* Choice
+* Country choice
+* Currency choice
+* DateTime
+* Date
+* Integer
+* Language choice
+* Locale choice
+* Money
+* Number
+* Text
+* Timezone choice
+
+* IP-address (coming soon)
+* Mac-address (coming soon)
+
+## Storage/Index engines
+
+* Doctrine2 ORM
+* Doctrine2 DBAL (coming soon)
+* Doctrine2 phpcr-odm (coming soon)
+* CouchDB, MongoDB (coming soon)
+* Apache Solr (coming soon)
+* Elasticsearch (coming soon)
 
 Requirements
 ------------
 
-You need at least Symfony 2.1 and the Composer package manager.
+You need at least PHP 5.3.3, and preferable the Intl extension
+for international support.
 
-    A Component that is used with this bundle currently does not support the old vendor-script installation.
+For framework integration you use the following;
+
+* Symfony2 Bundle (coming soon)
+* ZendFramework2 Plugin (coming soon)
+* Silex Plugin (coming soon)
 
 Installation
 ------------
 
-Installation is very easy, all the details about installing can be found in.
+The installation is very easy, all the details about installing can be found in.
 
 [docs/Installing](docs/installing.rst)
 
@@ -44,10 +109,37 @@ This will build the documentation into the `docs/_build/html` directory.
 
 Further information can be found in The Symfony2 [documentation format][5] article.
 
-> The Sphinx extensions are already included and do not need to be downloaded separately.
+> The Sphinx extensions are already included and don't need to be downloaded separately.
+
+Versioning
+----------
+
+For transparency and insight into our release cycle, and for striving to maintain backward compatibility,
+RollerworksSearch will be maintained under the Semantic Versioning guidelines as much as possible.
+
+Releases will be numbered with the following format:
+
+`<major>.<minor>.<patch>`
+
+And constructed with the following guidelines:
+
+* Breaking backward compatibility bumps the major (and resets the minor and patch)
+* New additions without breaking backward compatibility bumps the minor (and resets the patch)
+* Bug fixes and misc changes bumps the patch
+
+For more information on SemVer, please visit <http://semver.org/>.
+
+Credits
+-------
+
+The field-type extensions are largely inspired on the Symfony2 form
+component, and contain a good amount code originally developed by the amazing
+Symfony2 community.
+
+Documentation for types is also borrowed from the Symfony2 project.
 
 License
-========
+-------
 
 [LICENSE](LICENSE)
 

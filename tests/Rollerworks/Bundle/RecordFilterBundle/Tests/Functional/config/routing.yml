@@ -1,4 +1,0 @@
-AcmeUserBundle:
-    pattern: /
-    defaults:
-        _controller: AcmeUserBundle:Dummy:index

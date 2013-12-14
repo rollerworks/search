@@ -1,5 +1,0 @@
-id:
-    name: customer_id
-    type:
-        name: customer_type
-        params: 5
