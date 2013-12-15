@@ -25,27 +25,26 @@ class CoreExtension extends AbstractExtension
      */
     protected function loadTypes()
     {
-        $simpleValueComparison = new ValueComparison\SimpleValueComparison();
         $dateTimeComparison = new ValueComparison\DateTimeValueComparison();
         $numberComparison = new ValueComparison\NumberValueComparison();
 
         return array(
-            new Type\FieldType($simpleValueComparison),
+            new Type\FieldType(new ValueComparison\SimpleValueComparison()),
             new Type\DateType(new ValueComparison\DateValueComparison()),
             new Type\DateTimeType($dateTimeComparison),
             new Type\TimeType($dateTimeComparison),
             new Type\BirthdayType(new ValueComparison\BirthdayValueComparison()),
-            new Type\ChoiceType($simpleValueComparison),
+            new Type\ChoiceType(),
             new Type\CountryType(),
             new Type\IntegerType($numberComparison),
             new Type\LanguageType(),
-            new Type\LocaleType($simpleValueComparison),
+            new Type\LocaleType(),
             new Type\MoneyType(new ValueComparison\MoneyValueComparison()),
             new Type\NumberType($numberComparison),
-            new Type\TextType($simpleValueComparison),
+            new Type\TextType(),
 
-            new Type\TimezoneType($simpleValueComparison),
-            new Type\CurrencyType($simpleValueComparison),
+            new Type\TimezoneType(),
+            new Type\CurrencyType(),
         );
     }
 }

@@ -34,27 +34,10 @@ class ChoiceType extends AbstractFieldType
     private $choiceListCache = array();
 
     /**
-     * @var ValueComparisonInterface
-     */
-    protected $valueComparison;
-
-    /**
-     * Constructor.
-     *
-     * @param ValueComparisonInterface $valueComparison
-     */
-    public function __construct(ValueComparisonInterface $valueComparison)
-    {
-        $this->valueComparison = $valueComparison;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
-        $config->setValueComparison($this->valueComparison);
-
         if (!$options['choice_list'] && !is_array($options['choices']) && !$options['choices'] instanceof \Traversable) {
             throw new InvalidConfigurationException('Either the option "choices" or "choice_list" must be set.');
         }

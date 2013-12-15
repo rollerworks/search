@@ -21,47 +21,18 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
 class TextType extends AbstractFieldType
 {
     /**
-     * @var ValueComparisonInterface
-     */
-    protected $valueComparison;
-
-    /**
-     * @param ValueComparisonInterface $valueComparison
-     */
-    public function __construct(ValueComparisonInterface $valueComparison)
-    {
-        $this->valueComparison = $valueComparison;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function buildType(FieldConfigInterface $config, array $options)
-    {
-        $config->setValueComparison($this->valueComparison);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function hasRangeSupport()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function hasCompareSupport()
-    {
-        return false;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function getName()
     {
         return 'text';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasPatternMatchSupport()
+    {
+        return true;
     }
 }

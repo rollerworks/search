@@ -19,11 +19,6 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
 
 class ChoiceTypeSpec extends ObjectBehavior
 {
-    function let(ValueComparisonInterface $valueComparison)
-    {
-        $this->beConstructedWith($valueComparison);
-    }
-
     function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Extension\Core\Type\ChoiceType');
@@ -31,7 +26,6 @@ class ChoiceTypeSpec extends ObjectBehavior
 
     function it_sets_the_value_transformer_when_configured(FieldConfigInterface $config, ChoiceListInterface $choices)
     {
-        $config->setValueComparison(Argument::any())->shouldBeCalled();
         $config->addViewTransformer(Argument::type('Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTransformer'))->shouldBeCalled();
 
         $this->buildType($config, array('label_as_value' => false, 'choice_list' => $choices));
@@ -39,7 +33,6 @@ class ChoiceTypeSpec extends ObjectBehavior
 
     function it_sets_the_label_transformer_when_configured(FieldConfigInterface $config, ChoiceListInterface $choices)
     {
-        $config->setValueComparison(Argument::any())->shouldBeCalled();
         $config->addViewTransformer(Argument::type('Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer'))->shouldBeCalled();
 
         $this->buildType($config, array('label_as_value' => true, 'choice_list' => $choices));
