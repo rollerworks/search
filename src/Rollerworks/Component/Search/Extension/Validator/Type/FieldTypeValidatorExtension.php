@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldTypeExtension extends AbstractFieldTypeExtension
+class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
 {
     /**
      * {@inheritdoc}

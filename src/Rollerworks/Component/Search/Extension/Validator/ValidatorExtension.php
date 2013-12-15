@@ -24,7 +24,7 @@ class ValidatorExtension extends AbstractExtension
     protected function loadTypeExtensions()
     {
         return array(
-            new Type\FieldTypeExtension(),
+            new Type\FieldTypeValidatorExtension(),
         );
     }
 }
