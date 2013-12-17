@@ -4,6 +4,7 @@ namespace spec\Rollerworks\Component\Search;
 
 use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
+use Metadata\MetadataFactoryInterface;
 use PhpSpec\ObjectBehavior;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\FieldConfigInterface;
@@ -73,7 +74,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $this->has('id')->shouldReturn(false);
     }
 
-    function it_supports_importing_fields_from_metadata(SearchFactoryInterface $searchFactory, DriverInterface $mappingReader)
+    function it_supports_importing_fields_from_metadata(SearchFactoryInterface $searchFactory, MetadataFactoryInterface $mappingReader)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject(), $mappingReader);
 
@@ -88,7 +89,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $propertyMetadata->filterName = 'username';
         $propertyMetadata->type = 'text';
         $classMetadata->addPropertyMetadata($propertyMetadata);
-        $mappingReader->loadMetadataForClass(new \ReflectionClass('Rollerworks\Component\Search\Fixtures\Entity\User'))->willReturn($classMetadata);
+        $mappingReader->getMetadataForClass('Rollerworks\Component\Search\Fixtures\Entity\User')->willReturn($classMetadata);
 
         $classMetadata = new ClassMetadata('Rollerworks\Component\Search\Fixtures\Entity\Group');
         $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\Group', 'id');
@@ -99,7 +100,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $propertyMetadata->filterName = 'group-name';
         $propertyMetadata->type = 'text';
         $classMetadata->addPropertyMetadata($propertyMetadata);
-        $mappingReader->loadMetadataForClass(new \ReflectionClass('Rollerworks\Component\Search\Fixtures\Entity\Group'))->willReturn($classMetadata);
+        $mappingReader->getMetadataForClass('Rollerworks\Component\Search\Fixtures\Entity\Group')->willReturn($classMetadata);
 
         $this->importFromClass('Rollerworks\Component\Search\Fixtures\Entity\User');
         $this->importFromClass('Rollerworks\Component\Search\Fixtures\Entity\Group');

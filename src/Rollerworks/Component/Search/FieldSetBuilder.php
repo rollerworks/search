@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
-use Metadata\Driver\DriverInterface;
+use Metadata\MetadataFactoryInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
@@ -50,16 +50,16 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     private $searchFactory;
 
     /**
-     * @var DriverInterface
+     * @var MetadataFactoryInterface
      */
     private $mappingReader;
 
     /**
-     * @param string                 $name
-     * @param SearchFactoryInterface $searchFactory
-     * @param DriverInterface        $mappingReader
+     * @param string                   $name
+     * @param SearchFactoryInterface   $searchFactory
+     * @param MetadataFactoryInterface $mappingReader
      */
-    public function __construct($name, SearchFactoryInterface $searchFactory, DriverInterface $mappingReader = null)
+    public function __construct($name, SearchFactoryInterface $searchFactory, MetadataFactoryInterface $mappingReader = null)
     {
         $this->name = $name;
         $this->searchFactory = $searchFactory;
@@ -214,8 +214,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             throw new BadMethodCallException('FieldSetBuilder is unable to import configuration from class because no MappingReader is set.');
         }
 
-        $metadata = $this->mappingReader->loadMetadataForClass(new \ReflectionClass($class));
-
+        $metadata = $this->mappingReader->getMetadataForClass($class);
         foreach ($metadata->propertyMetadata as $property => $field) {
             /** @var PropertyMetadata $field */
             if (($include && !in_array($field->filterName, $include)) xor ($exclude && in_array($field->filterName, $exclude))) {

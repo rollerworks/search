@@ -31,7 +31,6 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
     use Metadata\Driver\DriverChain;
     use Metadata\MetadataFactory;
     use Doctrine\Common\Annotations\Reader;
-
     use Rollerworks\Component\Search\Metadata\Driver as MappingDriver;
 
     $locator = new FileLocator(array(
@@ -39,8 +38,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
         'Acme\User\Model' => 'src/Acme/User/Resources/Rollerworks/Search/',
     ));
 
-    // You'd properly want to add one of the provided caches before
-    // other drivers.
+    // You'd properly want to use one of the provided caches
     // See: https://github.com/schmittjoh/metadata/tree/master/src/Metadata/Cache
 
     $driver = new DriverChain(array(
@@ -49,7 +47,8 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
         new MappingDriver\YamlFileDriver($locator),
     ));
 
-    $searchFactory = new SearchFactory(..., $driver);
+    $metadataFactory = new MetadataFactory($driver);
+    $searchFactory = new SearchFactory(..., $metadataFactory);
 
 .. configuration-block::
 

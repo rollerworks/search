@@ -11,8 +11,8 @@
 
 namespace Rollerworks\Component\Search;
 
-use Metadata\Driver\DriverInterface;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Symfony\Component\Validator\MetadataFactoryInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -25,7 +25,7 @@ class SearchFactory implements SearchFactoryInterface
     private $registry;
 
     /**
-     * @var DriverInterface
+     * @var MetadataFactoryInterface
      */
     private $mappingReader;
 
@@ -39,9 +39,9 @@ class SearchFactory implements SearchFactoryInterface
      *
      * @param FieldRegistryInterface            $registry
      * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
-     * @param DriverInterface                   $mappingReader
+     * @param MetadataFactoryInterface          $mappingReader
      */
-    public function __construct(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, DriverInterface $mappingReader = null)
+    public function __construct(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, MetadataFactoryInterface $mappingReader = null)
     {
         $this->registry = $registry;
         $this->resolvedTypeFactory = $resolvedTypeFactory;

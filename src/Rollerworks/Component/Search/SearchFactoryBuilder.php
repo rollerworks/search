@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search;
 
 use Metadata\Driver\DriverInterface;
+use Metadata\MetadataFactoryInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -55,7 +56,7 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function setMetaReader(DriverInterface $mappingReader)
+    public function setMetaReader(MetadataFactoryInterface $mappingReader)
     {
         $this->mappingReader = $mappingReader;
 
