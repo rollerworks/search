@@ -41,7 +41,7 @@ class YamlFileDriver extends AbstractFileDriver
             }
 
             $propertyMetadata = new PropertyMetadata($class->name, $propertyName);
-            $propertyMetadata->filterName = $property['name'];
+            $propertyMetadata->fieldName = $property['name'];
             $propertyMetadata->required = (isset($property['required']) ? $property['required'] : false);
             $propertyMetadata->type = $property['type'];
 

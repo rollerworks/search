@@ -21,7 +21,7 @@ class PropertyMetadata extends BasePropertyMetadata
     /**
      * @var string
      */
-    public $filterName;
+    public $fieldName;
 
     /**
      * @var boolean
@@ -44,7 +44,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public function serialize()
     {
         return serialize(array(
-            $this->filterName,
+            $this->fieldName,
             $this->type,
             $this->required,
             $this->options,
@@ -61,10 +61,10 @@ class PropertyMetadata extends BasePropertyMetadata
     public function unserialize($str)
     {
         list(
-            $this->filterName,
+            $this->fieldName,
             $this->type,
             $this->required,
-            $this->options,,
+            $this->options,
 
             $parentStr
         ) = unserialize($str);

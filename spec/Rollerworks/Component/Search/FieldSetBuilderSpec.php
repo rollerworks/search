@@ -80,24 +80,24 @@ class FieldSetBuilderSpec extends ObjectBehavior
 
         $classMetadata = new ClassMetadata('Rollerworks\Component\Search\Fixtures\Entity\User');
         $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\User', 'id');
-        $propertyMetadata->filterName = 'uid';
+        $propertyMetadata->fieldName = 'uid';
         $propertyMetadata->required = true;
         $propertyMetadata->type = 'integer';
         $propertyMetadata->options = array('min' => 1);
         $classMetadata->addPropertyMetadata($propertyMetadata);
         $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\User', 'name');
-        $propertyMetadata->filterName = 'username';
+        $propertyMetadata->fieldName = 'username';
         $propertyMetadata->type = 'text';
         $classMetadata->addPropertyMetadata($propertyMetadata);
         $mappingReader->getMetadataForClass('Rollerworks\Component\Search\Fixtures\Entity\User')->willReturn($classMetadata);
 
         $classMetadata = new ClassMetadata('Rollerworks\Component\Search\Fixtures\Entity\Group');
         $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\Group', 'id');
-        $propertyMetadata->filterName = 'gid';
+        $propertyMetadata->fieldName = 'gid';
         $propertyMetadata->type = 'integer';
         $classMetadata->addPropertyMetadata($propertyMetadata);
         $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\Group', 'name');
-        $propertyMetadata->filterName = 'group-name';
+        $propertyMetadata->fieldName = 'group-name';
         $propertyMetadata->type = 'text';
         $classMetadata->addPropertyMetadata($propertyMetadata);
         $mappingReader->getMetadataForClass('Rollerworks\Component\Search\Fixtures\Entity\Group')->willReturn($classMetadata);

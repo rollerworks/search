@@ -217,11 +217,11 @@ class FieldSetBuilder implements FieldSetBuilderInterface
         $metadata = $this->mappingReader->getMetadataForClass($class);
         foreach ($metadata->propertyMetadata as $property => $field) {
             /** @var PropertyMetadata $field */
-            if (($include && !in_array($field->filterName, $include)) xor ($exclude && in_array($field->filterName, $exclude))) {
+            if (($include && !in_array($field->fieldName, $include)) xor ($exclude && in_array($field->fieldName, $exclude))) {
                 continue;
             }
 
-            $this->unresolvedFields[$field->filterName] = array(
+            $this->unresolvedFields[$field->fieldName] = array(
                 'type' => $field->type,
                 'options' => $field->options,
                 'required' => $field->required,

@@ -65,13 +65,13 @@ class AnnotationDriverSpec extends ObjectBehavior
 
         $propertyMetadata = new PropertyMetadata($reflection->class, 'id');
         $propertyMetadata->reflection = null;
-        $propertyMetadata->filterName = 'uid';
+        $propertyMetadata->fieldName = 'uid';
         $propertyMetadata->type = 'integer';
         $classMetadata->addPropertyMetadata($propertyMetadata);
 
         $propertyMetadata = new PropertyMetadata($reflection->class, 'name');
         $propertyMetadata->reflection = null;
-        $propertyMetadata->filterName = 'username';
+        $propertyMetadata->fieldName = 'username';
         $propertyMetadata->type = 'text';
         $classMetadata->addPropertyMetadata($propertyMetadata);
 

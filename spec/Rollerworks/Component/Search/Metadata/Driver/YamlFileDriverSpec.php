@@ -47,14 +47,14 @@ class YamlFileDriverSpec extends ObjectBehavior
 
         $propertyMetadata = new PropertyMetadata($reflection->name, 'id');
         $propertyMetadata->reflection = null;
-        $propertyMetadata->filterName = 'uid';
+        $propertyMetadata->fieldName = 'uid';
         $propertyMetadata->required = true;
         $propertyMetadata->type = 'integer';
         $classMetadata->addPropertyMetadata($propertyMetadata);
 
         $propertyMetadata = new PropertyMetadata($reflection->name, 'name');
         $propertyMetadata->reflection = null;
-        $propertyMetadata->filterName = 'username';
+        $propertyMetadata->fieldName = 'username';
         $propertyMetadata->type = 'text';
         $propertyMetadata->options = array('name' => 'doctor', 'last' => array('who', 'zeus'));
 

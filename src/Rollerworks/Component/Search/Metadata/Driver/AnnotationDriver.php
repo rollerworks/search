@@ -60,7 +60,7 @@ class AnnotationDriver implements DriverInterface
             if (null !== $annotation) {
                 /** @var Field $annotation */
                 $propertyMetadata = new PropertyMetadata($class->name, $reflectionProperty->name);
-                $propertyMetadata->filterName = $annotation->getName();
+                $propertyMetadata->fieldName = $annotation->getName();
                 $propertyMetadata->required = $annotation->isRequired();
                 $propertyMetadata->type = $annotation->getType();
                 $propertyMetadata->options = $annotation->getOptions();

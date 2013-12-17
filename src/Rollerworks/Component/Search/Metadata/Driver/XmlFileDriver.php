@@ -61,7 +61,7 @@ class XmlFileDriver extends AbstractFileDriver
     {
         $propertyMetadata = new PropertyMetadata($class->name, (string) $property['id']);
 
-        $propertyMetadata->filterName = (string) $property['name'];
+        $propertyMetadata->fieldName = (string) $property['name'];
         $propertyMetadata->required = (isset($property['required']) ? XmlUtils::phpize($property['required']) : false);
         $propertyMetadata->type = (string) $property['type'];
 
