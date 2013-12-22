@@ -1,0 +1,56 @@
+rollerworks_search:
+    metadata:
+        cache_driver:   memory
+        cache_dir:      none
+        auto_mapping:   false
+        mappings:
+            "AcmeUser":
+                dir:        Resource/search/
+                prefix:     Model\
+                is_bundle:  true
+                mapping:    true
+    fieldsets:
+        field1:
+            imports:
+                -
+                    class: "Model\User"
+                    include_fields: [name, date]
+            fields:
+                id:
+                    type:           integer
+                    model_class:    stdClass
+                    model_property: id
+                    required:       false
+                    options:        ~
+                group:
+                    type:           text
+                    model_class:    stdClass
+                    model_property: group
+                    required:       false
+                    options:        ~
+        field2:
+            imports:
+                -
+                    class:          Model\User
+                    include_fields: [name]
+            fields:
+                id:
+                    type:           integer
+                    model_class:    stdClass
+                    model_property: id
+                    required:       false
+                    options:        []
+                group:
+                    type: text
+                    model_class: stdClass
+                    model_property: group
+                    required: false
+                    options:
+                        max: 10
+                        foo: null
+                        bar: { foo: null, 0: 100 }
+                        doctor: { name: who }
+    doctrine:
+        orm:
+            entity_managers: [default, secure]
+            cache_driver:    null

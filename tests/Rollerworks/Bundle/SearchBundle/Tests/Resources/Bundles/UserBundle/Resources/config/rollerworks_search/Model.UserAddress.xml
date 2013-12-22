@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+    <property id="id" name="address_id" type="number">
+        <option name="min">10</option>
+    </property>
+    <property id="name" name="address_label" type="text" />
+    <property id="street" name="address_street" type="text" />
+</properties>

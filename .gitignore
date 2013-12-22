@@ -1,0 +1,7 @@
+src/Rollerworks/Bundle/SearchBundle/Resources/doc/_themes
+src/Rollerworks/Bundle/SearchBundle/Resources/doc/_build
+/phpunit.xml
+/composer.lock
+/composer.phar
+/vendor/
+/bin/

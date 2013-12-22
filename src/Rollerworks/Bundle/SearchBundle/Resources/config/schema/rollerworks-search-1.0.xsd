@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns="http://rollerworks.github.io/schema/dic/rollerworks-search"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://rollerworks.github.io/schema/dic/rollerworks-search"
+    elementFormDefault="qualified">
+
+    <xsd:element name="config" type="config" />
+
+    <xsd:complexType name="config">
+        <xsd:sequence>
+            <xsd:element name="doctrine" type="doctrine" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="metadata" type="metadata" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="fieldset" type="fieldset" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="doctrine">
+        <xsd:sequence>
+            <xsd:element name="orm" type="doctrine_orm" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="doctrine_orm">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="entity-manager" type="xsd:string" maxOccurs="unbounded" minOccurs="0" />
+        </xsd:choice>
+        <xsd:attribute name="cache-driver" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="metadata">
+        <xsd:choice>
+            <xsd:element name="mapping" type="mapping" />
+        </xsd:choice>
+        <xsd:attribute name="cache-driver" type="xsd:string" />
+        <xsd:attribute name="cache-dir" type="xsd:string" />
+        <xsd:attribute name="auto-mapping" type="xsd:boolean" />
+    </xsd:complexType>
+
+    <xsd:complexType name="mapping">
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="dir" type="xsd:string" />
+        <xsd:attribute name="prefix" type="xsd:string" />
+        <xsd:attribute name="is-bundle" type="xsd:boolean" />
+    </xsd:complexType>
+
+    <xsd:complexType name="fieldset">
+        <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+            <xsd:element name="import" type="fieldset_import" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="field" type="fieldset_field" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="fieldset_import">
+        <xsd:choice minOccurs="0">
+            <xsd:element name="include-field" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="exclude-field" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:choice>
+        <xsd:attribute name="class" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="fieldset_field">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="option" type="option" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="type" type="xsd:string" use="required" />
+        <xsd:attribute name="model-class" type="xsd:string" />
+        <xsd:attribute name="model-property" type="xsd:string" />
+        <xsd:attribute name="required" type="xsd:boolean" default="false" />
+    </xsd:complexType>
+
+    <xsd:complexType name="option" mixed="true">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="option" type="option"/>
+        </xsd:choice>
+        <xsd:attribute name="type" type="option_type" default="string" />
+        <xsd:attribute name="key" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:simpleType name="option_type">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="collection"/>
+            <xsd:enumeration value="string"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>
+

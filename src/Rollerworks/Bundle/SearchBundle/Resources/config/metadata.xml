@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="rollerworks_search.metadata.directories" type="collection" />
+    </parameters>
+
+    <services>
+        <service id="rollerworks_search.metadata_factory" class="Metadata\MetadataFactory" public="false">
+            <argument type="service" id="rollerworks_search.metadata.driver.loader_chain" />
+            <call method="setCache">
+                <argument type="service" id="rollerworks_search.metadata.cache_driver" on-invalid="null" />
+            </call>
+        </service>
+        <service id="rollerworks_search.metadata.cache_driver.file" class="Metadata\Cache\FileCache" public="false">
+            <!-- the cache directory (to be set later) -->
+            <argument />
+        </service>
+        <service id="rollerworks_search.metadata.file_locator" class="Metadata\Driver\FileLocator" public="false">
+            <!-- collection of directories -->
+            <argument>%rollerworks_search.metadata.directories%</argument>
+        </service>
+        <service id="rollerworks_search.metadata.driver.loader_chain" class="Metadata\Driver\DriverChain" public="false">
+            <argument type="collection">
+                <argument type="service" id="rollerworks_search.metadata.driver.annotation" />
+                <argument type="service" id="rollerworks_search.metadata.driver.xml_files" />
+                <argument type="service" id="rollerworks_search.metadata.driver.yaml_files" />
+            </argument>
+        </service>
+        <service id="rollerworks_search.metadata.driver.annotation" class="Rollerworks\Component\Search\Metadata\Driver\AnnotationDriver" public="false">
+            <argument type="service" id="annotation_reader" />
+        </service>
+        <service id="rollerworks_search.metadata.driver.xml_files" class="Rollerworks\Component\Search\Metadata\Driver\XmlFileDriver" public="false">
+            <argument type="service" id="rollerworks_search.metadata.file_locator" />
+        </service>
+        <service id="rollerworks_search.metadata.driver.yaml_files" class="Rollerworks\Component\Search\Metadata\Driver\YamlFileDriver" public="false">
+            <argument type="service" id="rollerworks_search.metadata.file_locator" />
+        </service>
+    </services>
+</container>

@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="rollerworks_search.exporter.filter_query.class">Rollerworks\Component\Search\Exporter\FilterQueryExporter</parameter>
+        <parameter key="rollerworks_search.exporter.array.class">Rollerworks\Component\Search\Exporter\ArrayExporter</parameter>
+        <parameter key="rollerworks_search.exporter.json.class">Rollerworks\Component\Search\Exporter\JsonExporter</parameter>
+        <parameter key="rollerworks_search.exporter.xml.class">Rollerworks\Component\Search\Exporter\XmlExporter</parameter>
+    </parameters>
+
+    <services>
+        <service id="rollerworks_search.exporter.filter_query" class="%rollerworks_search.exporter.filter_query.class%" />
+        <service id="rollerworks_search.exporter.array" class="%rollerworks_search.exporter.array.class%" />
+        <service id="rollerworks_search.exporter.json" class="%rollerworks_search.exporter.json.class%" />
+        <service id="rollerworks_search.exporter.xml" class="%rollerworks_search.exporter.xml.class%" />
+    </services>
+</container>
