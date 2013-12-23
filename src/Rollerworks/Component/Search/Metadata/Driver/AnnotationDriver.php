@@ -43,7 +43,7 @@ class AnnotationDriver implements DriverInterface
      * @param \ReflectionClass $class
      * @param boolean          $test  Don't use this parameter, its only used for testing
      *
-     * @return MergeableClassMetadata
+     * @return MergeableClassMetadata|null
      */
     public function loadMetadataForClass(\ReflectionClass $class, $test = false)
     {
@@ -53,6 +53,8 @@ class AnnotationDriver implements DriverInterface
             $classMetadata->reflection = null;
             $classMetadata->createdAt = null;
         }
+
+        $hasMetadata = false;
 
         foreach ($class->getProperties() as $reflectionProperty) {
             $annotation = $this->reader->getPropertyAnnotation($reflectionProperty, 'Rollerworks\Component\Search\Metadata\Field');
@@ -70,7 +72,12 @@ class AnnotationDriver implements DriverInterface
                 }
 
                 $classMetadata->addPropertyMetadata($propertyMetadata);
+                $hasMetadata = true;
             }
+        }
+
+        if (!$hasMetadata) {
+            return null;
         }
 
         return $classMetadata;

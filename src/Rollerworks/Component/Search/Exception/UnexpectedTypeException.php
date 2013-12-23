@@ -17,8 +17,8 @@ namespace Rollerworks\Component\Search\Exception;
 class UnexpectedTypeException extends \InvalidArgumentException implements ExceptionInterface
 {
     /**
-     * @param mixed   $value
-     * @param integer $expectedType
+     * @param mixed  $value
+     * @param string $expectedType
      */
     public function __construct($value, $expectedType)
     {
