@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection\Factory;
 
 class FieldSet

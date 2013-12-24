@@ -14,7 +14,6 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Unit\DependencyInjection;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionConfigurationTestCase;
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\Configuration;
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\RollerworksSearchExtension;
-use Symfony\Component\Yaml\Yaml;
 
 class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
 {

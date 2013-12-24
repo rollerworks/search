@@ -225,7 +225,7 @@ class RollerworksSearchExtension extends Extension
     /**
      * Assertion if the specified mapping information is valid.
      *
-     * @param array  $mappingConfig
+     * @param array $mappingConfig
      *
      * @throws \InvalidArgumentException
      */

@@ -13,7 +13,6 @@ namespace Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Compiler pass to register tagged services for an input processor.

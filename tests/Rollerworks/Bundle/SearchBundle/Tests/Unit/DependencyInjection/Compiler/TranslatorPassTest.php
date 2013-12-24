@@ -13,7 +13,6 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Unit\DependencyInjection\Compile
 
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\TranslatorPass;
-use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\Finder\Finder;
