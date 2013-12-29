@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="rollerworks_search.input_factory.class">Rollerworks\Bundle\SearchBundle\DependencyInjection\Factory\InputFactory</parameter>
+        <parameter key="rollerworks_search.input_factory.class">Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\InputFactory</parameter>
     </parameters>
 
     <services>
