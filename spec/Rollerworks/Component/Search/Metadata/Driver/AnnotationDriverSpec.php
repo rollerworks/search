@@ -28,18 +28,18 @@ require_once __DIR__ . '/../../Fixtures/Entity/Group.php';
 
 class AnnotationDriverSpec extends ObjectBehavior
 {
-    function let(Reader $reader)
+    public function let(Reader $reader)
     {
         $this->beConstructedWith($reader);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Metadata\Driver\AnnotationDriver');
         $this->shouldImplement('Metadata\Driver\DriverInterface');
     }
 
-    function it_reads_the_metadata(Reader $reader, AnnotationField $annotationField, AnnotationField $annotationField2)
+    public function it_reads_the_metadata(Reader $reader, AnnotationField $annotationField, AnnotationField $annotationField2)
     {
         $this->beConstructedWith($reader);
 

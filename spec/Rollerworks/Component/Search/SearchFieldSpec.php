@@ -10,13 +10,13 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
 
 class SearchFieldSpec extends ObjectBehavior
 {
-    function let(ResolvedFieldTypeInterface $resolvedType)
+    public function let(ResolvedFieldTypeInterface $resolvedType)
     {
         $this->beConstructedWith('foobar', $resolvedType, array('name' => 'value'));
         $this->shouldImplement('Rollerworks\Component\Search\FieldConfigInterface');
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\SearchField');
     }

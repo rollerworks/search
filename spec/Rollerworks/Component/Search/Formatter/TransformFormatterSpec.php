@@ -28,13 +28,13 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class TransformFormatterSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Formatter\TransformFormatter');
         $this->shouldImplement('Rollerworks\Component\Search\FormatterInterface');
     }
 
-    function it_transform_singleValues_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $viewTransformer)
+    public function it_transform_singleValues_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $viewTransformer)
     {
         $value = '2013-08-25 00:00:00';
 
@@ -77,7 +77,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_transform_excludedValues_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $viewTransformer)
+    public function it_transform_excludedValues_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, SingleValue $dateValue, DataTransformerInterface $viewTransformer)
     {
         $value = '2013-08-25 00:00:00';
         $dateValue->getValue()->will(function () use (&$value) {
@@ -119,7 +119,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_transform_ranges_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Range $dateValue, DataTransformerInterface $viewTransformer)
+    public function it_transform_ranges_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Range $dateValue, DataTransformerInterface $viewTransformer)
     {
         $lowerValue = '2013-08-25 00:00:00';
         $dateValue->getLower()->will(function () use (&$lowerValue) {
@@ -178,7 +178,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_transform_excludedRanges_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Range $dateValue, DataTransformerInterface $viewTransformer)
+    public function it_transform_excludedRanges_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Range $dateValue, DataTransformerInterface $viewTransformer)
     {
         $lowerValue = '2013-08-25 00:00:00';
         $dateValue->getLower()->will(function () use (&$lowerValue) {
@@ -237,7 +237,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_transform_comparisons_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Compare $dateValue, DataTransformerInterface $viewTransformer)
+    public function it_transform_comparisons_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, Compare $dateValue, DataTransformerInterface $viewTransformer)
     {
         $value = '2013-08-25 00:00:00';
         $dateValue->getValue()->will(function () use (&$value) {
@@ -280,7 +280,7 @@ class TransformFormatterSpec extends ObjectBehavior
     }
 
     // Normally you would not use objects as value, this is just for testing
-    function it_transform_patternMatchers_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, PatternMatch $dateValue, DataTransformerInterface $viewTransformer)
+    public function it_transform_patternMatchers_using_the_registered_transformers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, PatternMatch $dateValue, DataTransformerInterface $viewTransformer)
     {
         $value = '2013-08-25 00:00:00';
         $dateValue->getValue()->will(function () use (&$value) {
@@ -323,7 +323,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_does_not_transform_patternMatchers_with_type_regex(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $field, PatternMatch $searchValue, PatternMatch $searchValue2, DataTransformerInterface $viewTransformer)
+    public function it_does_not_transform_patternMatchers_with_type_regex(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $field, PatternMatch $searchValue, PatternMatch $searchValue2, DataTransformerInterface $viewTransformer)
     {
         $searchValue->getValue()->willReturn('^foo|[bar]*');
         $searchValue->getType()->willReturn(PatternMatch::PATTERN_NOT_REGEX);
@@ -356,7 +356,7 @@ class TransformFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_adds_an_error_on_failed_transformation(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, DataTransformerInterface $viewTransformer)
+    public function it_adds_an_error_on_failed_transformation(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, DataTransformerInterface $viewTransformer)
     {
         $dateField->hasOption('constraints')->willReturn(false);
         $dateField->getOption('invalid_message', 'Transformation failed.')->willReturn('This value is not valid.');

@@ -31,13 +31,13 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class ArrayInputSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Input\ArrayInput');
         $this->shouldImplement('Rollerworks\Component\Search\InputProcessorInterface');
     }
 
-    function it_processes_single_values(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_single_values(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -65,7 +65,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_merges_field_alias(FieldSet $fieldSet, FieldConfigInterface $field, FieldAliasResolverInterface $aliasResolver)
+    public function it_merges_field_alias(FieldSet $fieldSet, FieldConfigInterface $field, FieldAliasResolverInterface $aliasResolver)
     {
         $aliasResolver->resolveFieldName($fieldSet->getWrappedObject(), 'field1')->willReturn('field1');
         $aliasResolver->resolveFieldName($fieldSet->getWrappedObject(), 'field2')->willReturn('field1');
@@ -98,7 +98,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_excluded_values(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_excluded_values(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -126,7 +126,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptRanges()->willReturn(true);
@@ -165,7 +165,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_excluded_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_excluded_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptRanges()->willReturn(true);
@@ -195,7 +195,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_comparisons(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_comparisons(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptCompares()->willReturn(true);
@@ -225,7 +225,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_pattern_matchers(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_pattern_matchers(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptCompares()->willReturn(true);
@@ -258,7 +258,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_groups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_groups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -293,7 +293,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_multiple_groups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_multiple_groups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -343,7 +343,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -379,7 +379,7 @@ class ArrayInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_errors_when_maximum_values_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_maximum_values_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -414,7 +414,7 @@ class ArrayInputSpec extends ObjectBehavior
         ));
     }
 
-    function it_errors_when_maximum_groups_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_maximum_groups_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -460,7 +460,7 @@ class ArrayInputSpec extends ObjectBehavior
         ));
     }
 
-    function it_errors_when_maximum_nesting_level_is_reached(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_maximum_nesting_level_is_reached(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -514,7 +514,7 @@ class ArrayInputSpec extends ObjectBehavior
         ));
     }
 
-    function it_errors_when_the_field_does_not_exist_in_fieldset(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_the_field_does_not_exist_in_fieldset(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -535,7 +535,7 @@ class ArrayInputSpec extends ObjectBehavior
         ));
     }
 
-    function it_errors_when_the_field_does_not_support_the_value_type(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
+    public function it_errors_when_the_field_does_not_support_the_value_type(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptRanges()->willReturn(false);
@@ -572,7 +572,7 @@ class ArrayInputSpec extends ObjectBehavior
         ));
     }
 
-    function it_errors_when_a_field_is_required_but_not_set(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
+    public function it_errors_when_a_field_is_required_but_not_set(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptRanges()->willReturn(false);

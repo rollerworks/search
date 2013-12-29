@@ -23,7 +23,7 @@ class DoctrineOrmFactoryTest extends OrmTestCase
      */
     protected $factory;
 
-    function testCreateWhereBuilder()
+    public function testCreateWhereBuilder()
     {
         $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
         $searchCondition = new SearchCondition(new FieldSet('invoice'), new ValuesGroup());
@@ -33,7 +33,7 @@ class DoctrineOrmFactoryTest extends OrmTestCase
         $this->assertInstanceOf('Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder', $whereBuilder);
     }
 
-    function testCreateWhereBuilderWithConversionSetting()
+    public function testCreateWhereBuilderWithConversionSetting()
     {
         $fieldSet = new FieldSet('invoice');
 
@@ -59,7 +59,7 @@ class DoctrineOrmFactoryTest extends OrmTestCase
         $this->assertCount(0, $whereBuilder->getFieldConversions());
     }
 
-    function testCreateWhereBuilderWithLazyConversionSetting()
+    public function testCreateWhereBuilderWithLazyConversionSetting()
     {
         $fieldSet = new FieldSet('invoice');
 

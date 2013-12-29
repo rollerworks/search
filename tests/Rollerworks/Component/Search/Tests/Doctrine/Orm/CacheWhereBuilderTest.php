@@ -34,7 +34,7 @@ class CacheWhereBuilderTest extends OrmTestCase
      */
     protected $whereBuilder;
 
-    function testGetWhereClauseNoCache()
+    public function testGetWhereClauseNoCache()
     {
         $this->cacheDriver
             ->expects($this->once())
@@ -65,7 +65,7 @@ class CacheWhereBuilderTest extends OrmTestCase
         $this->cacheWhereBuilder->getWhereClause();
     }
 
-    function testGetWhereClauseWithCache()
+    public function testGetWhereClauseWithCache()
     {
         $this->cacheDriver
             ->expects($this->once())
@@ -95,7 +95,7 @@ class CacheWhereBuilderTest extends OrmTestCase
         $this->cacheWhereBuilder->getWhereClause();
     }
 
-    function testUpdateQueryWithCache()
+    public function testUpdateQueryWithCache()
     {
         $this->cacheDriver
             ->expects($this->once())

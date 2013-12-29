@@ -25,17 +25,17 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $this->beConstructedWith('test', $searchFactory->getWrappedObject());
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\FieldSetBuilder');
     }
 
-    function it_has_a_name()
+    public function it_has_a_name()
     {
         $this->getName()->shouldReturn('test');
     }
 
-    function it_allows_adding_fields()
+    public function it_allows_adding_fields()
     {
         $this->add('id', 'integer');
         $this->has('id')->shouldReturn(true);
@@ -49,7 +49,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         ));
     }
 
-    function it_allows_adding_preconfigured_fields()
+    public function it_allows_adding_preconfigured_fields()
     {
         $this->add('id', 'integer');
 
@@ -65,7 +65,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         ));
     }
 
-    function it_allows_removing_fields()
+    public function it_allows_removing_fields()
     {
         $this->add('id', 'integer');
         $this->has('id')->shouldReturn(true);
@@ -74,7 +74,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $this->has('id')->shouldReturn(false);
     }
 
-    function it_supports_importing_fields_from_metadata(SearchFactoryInterface $searchFactory, MetadataFactoryInterface $mappingReader)
+    public function it_supports_importing_fields_from_metadata(SearchFactoryInterface $searchFactory, MetadataFactoryInterface $mappingReader)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject(), $mappingReader);
 
@@ -144,7 +144,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         ));
     }
 
-    function it_builds_the_fieldset(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType, FieldConfigInterface $field1, FieldConfigInterface $field2)
+    public function it_builds_the_fieldset(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType, FieldConfigInterface $field1, FieldConfigInterface $field2)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject());
 
@@ -175,7 +175,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $this->getFieldSet()->shouldBeLike($expectedFieldSet);
     }
 
-    function it_errors_when_calling_methods_after_building(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType, FieldConfigInterface $field1, FieldConfigInterface $field2)
+    public function it_errors_when_calling_methods_after_building(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType, FieldConfigInterface $field1, FieldConfigInterface $field2)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject());
 

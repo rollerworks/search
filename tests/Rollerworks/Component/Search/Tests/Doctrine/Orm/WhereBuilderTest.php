@@ -299,7 +299,7 @@ class WhereBuilderTest extends OrmTestCase
         $converter
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
-            ->will($this->returnCallback(function ($value){
+            ->will($this->returnCallback(function ($value) {
                    if (!$value instanceof \DateTime && !is_int($value)) {
                        throw new \InvalidArgumentException('Only integer/string and DateTime are accepted.');
                    }

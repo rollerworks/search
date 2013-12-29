@@ -34,13 +34,13 @@ class ValuesGroupValidatorSpec extends ObjectBehavior
      */
     protected $_executionContext;
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Extension\Validator\Constraints\ValuesGroupValidator');
         $this->shouldImplement('Symfony\Component\Validator\ConstraintValidatorInterface');
     }
 
-    function it_validates_all_fields_with_constraints(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, FieldConfigInterface $dateField, FieldConfigInterface $typeField)
+    public function it_validates_all_fields_with_constraints(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, FieldConfigInterface $dateField, FieldConfigInterface $typeField)
     {
         $this->_executionContext = $executionContext;
         $this->initialize($executionContext);
@@ -94,7 +94,7 @@ class ValuesGroupValidatorSpec extends ObjectBehavior
         $this->validate($condition, new ValuesGroupConstraint());
     }
 
-    function it_validates_ranges(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, FieldConfigInterface $dateField, ValueComparisonInterface $comparison)
+    public function it_validates_ranges(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, FieldConfigInterface $dateField, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];
@@ -169,7 +169,7 @@ class ValuesGroupValidatorSpec extends ObjectBehavior
         $this->validate($condition, new ValuesGroupConstraint());
     }
 
-    function it_validates_excluded_ranges(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, FieldConfigInterface $dateField, ValueComparisonInterface $comparison)
+    public function it_validates_excluded_ranges(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, FieldConfigInterface $dateField, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];
@@ -244,7 +244,7 @@ class ValuesGroupValidatorSpec extends ObjectBehavior
         $this->validate($condition, new ValuesGroupConstraint());
     }
 
-    function it_validates_comparisons(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField)
+    public function it_validates_comparisons(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField)
     {
         $this->_executionContext = $executionContext;
         $this->initialize($executionContext);
@@ -275,7 +275,7 @@ class ValuesGroupValidatorSpec extends ObjectBehavior
     }
 
     // Normally you would not validate matchers
-    function it_validates_matchers(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $username)
+    public function it_validates_matchers(ExecutionContextInterface $executionContext, SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $username)
     {
         $this->_executionContext = $executionContext;
         $this->initialize($executionContext);
