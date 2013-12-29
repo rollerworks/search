@@ -22,13 +22,13 @@ use Rollerworks\Component\Search\ValuesGroup;
 // Note: Because the JSON exporter extends the ArrayExporter we don't need extensive checks
 class JsonExporterSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Exporter\JsonExporter');
         $this->shouldImplement('Rollerworks\Component\Search\ExporterInterface');
     }
 
-    function its_a_json_string(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function its_a_json_string(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);

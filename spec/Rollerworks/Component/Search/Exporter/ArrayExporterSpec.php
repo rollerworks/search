@@ -25,13 +25,13 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class ArrayExporterSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Exporter\ArrayExporter');
         $this->shouldImplement('Rollerworks\Component\Search\ExporterInterface');
     }
 
-    function it_exports_single_values(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_single_values(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -56,7 +56,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_with_multiple_fields(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
+    public function it_exports_with_multiple_fields(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -92,7 +92,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_excluded_values(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_excluded_values(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -117,7 +117,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -151,7 +151,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_excluded_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_excluded_ranges(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -179,7 +179,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_comparisons(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_comparisons(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -207,7 +207,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_pattern_matchers(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_pattern_matchers(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -243,7 +243,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_supports_field_label(FieldSet $fieldSet, FieldConfigInterface $field, FieldLabelResolverInterface $labelResolver)
+    public function it_supports_field_label(FieldSet $fieldSet, FieldConfigInterface $field, FieldLabelResolverInterface $labelResolver)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -271,7 +271,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_groups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_groups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -303,7 +303,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -352,7 +352,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -378,7 +378,7 @@ class ArrayExporterSpec extends ObjectBehavior
         );
     }
 
-    function it_exports_logical_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_exports_logical_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);

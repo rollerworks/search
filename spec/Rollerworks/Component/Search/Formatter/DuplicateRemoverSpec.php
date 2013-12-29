@@ -26,13 +26,13 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class DuplicateRemoverSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Formatter\DuplicateRemover');
         $this->shouldImplement('Rollerworks\Component\Search\FormatterInterface');
     }
 
-    function it_removes_all_duplicated_singleValues(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_all_duplicated_singleValues(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::type('array'))->will(function ($args) {
             return $args[0] === $args[1];
@@ -80,7 +80,7 @@ class DuplicateRemoverSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_removes_all_duplicated_excludedValues(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_all_duplicated_excludedValues(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::type('array'))->will(function ($args) {
             return $args[0] === $args[1];
@@ -125,7 +125,7 @@ class DuplicateRemoverSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_removes_all_duplicated_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_all_duplicated_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::type('array'))->will(function ($args) {
             return $args[0] === $args[1];
@@ -172,7 +172,7 @@ class DuplicateRemoverSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_removes_all_duplicated_excludedRanges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_all_duplicated_excludedRanges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::type('array'))->will(function ($args) {
             return $args[0] === $args[1];
@@ -219,7 +219,7 @@ class DuplicateRemoverSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_removes_all_duplicated_comparison(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_all_duplicated_comparison(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::type('array'))->will(function ($args) {
             return $args[0] === $args[1];
@@ -267,7 +267,7 @@ class DuplicateRemoverSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_removes_all_duplicated_matchers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_all_duplicated_matchers(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $dateField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::type('array'))->will(function ($args) {
             return $args[0] === $args[1];

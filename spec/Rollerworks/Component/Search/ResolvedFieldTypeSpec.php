@@ -21,7 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ResolvedFieldTypeSpec extends ObjectBehavior
 {
-    function let(FieldTypeInterface $innerType)
+    public function let(FieldTypeInterface $innerType)
     {
         $innerType->getName()->willReturn('date');
         $innerType->setDefaultOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolverInterface'))->willReturn(null);
@@ -29,33 +29,33 @@ class ResolvedFieldTypeSpec extends ObjectBehavior
         $this->beConstructedWith($innerType);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\ResolvedFieldType');
         $this->shouldImplement('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
     }
 
-    function it_should_have_a_name()
+    public function it_should_have_a_name()
     {
         $this->getName()->shouldReturn('date');
     }
 
-    function it_should_have_a_inner_type()
+    public function it_should_have_a_inner_type()
     {
         $this->getInnerType()->shouldImplement('Rollerworks\Component\Search\FieldTypeInterface');
     }
 
-    function it_should_have_no_parent_by_default()
+    public function it_should_have_no_parent_by_default()
     {
         $this->getParent()->shouldReturn(null);
     }
 
-    function it_should_have_no_typeExtensions_by_default()
+    public function it_should_have_no_typeExtensions_by_default()
     {
         $this->getTypeExtensions()->shouldHaveCount(0);
     }
 
-    function it_should_allow_setting_typeExtensions(FieldTypeInterface $innerType, FieldTypeExtensionInterface $extension1, FieldTypeExtensionInterface $extension2)
+    public function it_should_allow_setting_typeExtensions(FieldTypeInterface $innerType, FieldTypeExtensionInterface $extension1, FieldTypeExtensionInterface $extension2)
     {
         $innerType->getName()->willReturn('date');
         $innerType->setDefaultOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolverInterface'))->willReturn(null);
@@ -66,7 +66,7 @@ class ResolvedFieldTypeSpec extends ObjectBehavior
         $this->getTypeExtensions()->shouldReturn($extensions);
     }
 
-    function it_should_complain_when_given_an_invalid_typeExtension(FieldTypeInterface $innerType)
+    public function it_should_complain_when_given_an_invalid_typeExtension(FieldTypeInterface $innerType)
     {
         $innerType->getName()->willReturn('date');
         $innerType->setDefaultOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolverInterface'))->willReturn(null);
@@ -77,12 +77,12 @@ class ResolvedFieldTypeSpec extends ObjectBehavior
         $this->beConstructedWith($innerType, $extensions);
     }
 
-    function it_should_provide_an_optionsResolver()
+    public function it_should_provide_an_optionsResolver()
     {
         $this->getOptionsResolver()->shouldReturnAnInstanceOf('Symfony\Component\OptionsResolver\OptionsResolverInterface');
     }
 
-    function it_should_include_options_of_the_parent_type(FieldTypeInterface $innerType, ResolvedFieldTypeInterface $parentType)
+    public function it_should_include_options_of_the_parent_type(FieldTypeInterface $innerType, ResolvedFieldTypeInterface $parentType)
     {
         $optionsResolver = new OptionsResolver();
 

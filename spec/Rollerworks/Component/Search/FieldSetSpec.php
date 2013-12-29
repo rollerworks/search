@@ -16,7 +16,7 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 
 class FieldSetSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\FieldSet');
     }

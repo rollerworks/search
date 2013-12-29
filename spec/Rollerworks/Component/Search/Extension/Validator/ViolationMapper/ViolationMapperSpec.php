@@ -21,13 +21,13 @@ use Symfony\Component\Validator\ConstraintViolation;
 
 class ViolationMapperSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Extension\Validator\ViolationMapper\ViolationMapper');
         $this->shouldImplement('Rollerworks\Component\Search\Extension\Validator\ViolationMapper\ViolationMapperInterface');
     }
 
-    function it_maps_violations_on_group_to_an_field_error(ValuesGroup $group, ValuesBag $values)
+    public function it_maps_violations_on_group_to_an_field_error(ValuesGroup $group, ValuesBag $values)
     {
         $group->getField('id')->willReturn($values->getWrappedObject());
         $group->setHasErrors(true)->shouldBeCalled();
@@ -42,7 +42,7 @@ class ViolationMapperSpec extends ObjectBehavior
         $this->mapViolation(new ConstraintViolation('Lower range-value 5 should be lower then upper range-value 20.', 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', array('{{ lower }}' => 5, '{{ upper }}' => 20), 'ValuesBag', 'fields[id].ranges[1]', new Range(5, 20)), $group);
     }
 
-    function it_maps_violations_on_nested_group_to_an_field_error(ValuesGroup $group, ValuesGroup $group2, ValuesGroup $group3, ValuesBag $values, ValuesBag $values2)
+    public function it_maps_violations_on_nested_group_to_an_field_error(ValuesGroup $group, ValuesGroup $group2, ValuesGroup $group3, ValuesBag $values, ValuesBag $values2)
     {
         $group->getGroups()->willReturn(array($group2->getWrappedObject()));
         $group->getGroup(0)->willReturn($group2->getWrappedObject());

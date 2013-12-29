@@ -31,20 +31,20 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class FilterQueryInputSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Input\FilterQueryInput');
         $this->shouldImplement('Rollerworks\Component\Search\InputProcessorInterface');
     }
 
-    function it_returns_null_on_empty_input()
+    public function it_returns_null_on_empty_input()
     {
         $this->process('')->shouldReturn(null);
         $this->process(' ')->shouldReturn(null);
         $this->process(null)->shouldReturn(null);
     }
 
-    function it_parses_a_single_query_pair(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_a_single_query_pair(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -65,7 +65,7 @@ class FilterQueryInputSpec extends ObjectBehavior
     }
 
     // this is a special case as the dash is also used for ranges
-    function it_parses_field_with_dash(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_field_with_dash(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field-1')->willReturn(true);
         $fieldSet->get('field-1')->willReturn($field);
@@ -84,7 +84,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field-1: value, value2')->shouldBeLike($condition);
     }
 
-    function it_parses_multiple_query_pairs(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
+    public function it_parses_multiple_query_pairs(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->has('field2')->willReturn(true);
@@ -111,7 +111,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: value, value2; field2: value3, value4')->shouldBeLike($condition);
     }
 
-    function it_parses_a_quoted_value(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_a_quoted_value(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -130,7 +130,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: "value", "value""2";')->shouldBeLike($condition);
     }
 
-    function it_parses_excluded_singleValues(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_excluded_singleValues(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->get('field1')->willReturn($field);
@@ -149,7 +149,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: !value, value2;')->shouldBeLike($condition);
     }
 
-    function it_parses_simple_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_simple_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->acceptRanges()->willReturn(true);
         $fieldSet->has('field1')->willReturn(true);
@@ -169,7 +169,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: 1-10, 15 - 30;')->shouldBeLike($condition);
     }
 
-    function it_parses_exclusive_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_exclusive_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->acceptRanges()->willReturn(true);
         $fieldSet->has('field1')->willReturn(true);
@@ -189,7 +189,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: 1-10[ , ]15 - 30;')->shouldBeLike($condition);
     }
 
-    function it_parses_excluded_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_excluded_range_values(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->acceptRanges()->willReturn(true);
         $fieldSet->has('field1')->willReturn(true);
@@ -209,7 +209,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: !1-10, 15 - 30;')->shouldBeLike($condition);
     }
 
-    function it_parses_comparisons(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_comparisons(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
 
@@ -232,7 +232,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: > value, <= value2, >= value3;')->shouldBeLike($condition);
     }
 
-    function it_parses_matchers(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_matchers(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->acceptCompares()->willReturn(true);
         $fieldSet->has('field1')->willReturn(true);
@@ -256,7 +256,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: ~* value, ~i> value2, ~< value3, ~? "^foo|bar?", ~!* value4, ~i!* value5;')->shouldBeLike($condition);
     }
 
-    function it_parses_groups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_groups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->all()->willReturn(array('field1' => $field));
@@ -287,7 +287,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('(field1: value3, value4); field1: value, value2')->shouldBeLike($condition);
     }
 
-    function it_parses_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_logical_groups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->all()->willReturn(array('field1' => $field));
@@ -313,7 +313,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('field1: value, value2; *(field1: value3, value4;);')->shouldBeLike($condition);
     }
 
-    function it_parses_multiple_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_multiple_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
 
@@ -343,7 +343,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('(field1: value, value2;); (field1: value3, value4;)')->shouldBeLike($condition);
     }
 
-    function it_parses_nested_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_parses_nested_subgroups(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->all()->willReturn(array('field1' => $field));
@@ -367,7 +367,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->process('((field1: value, value2;))')->shouldBeLike($condition);
     }
 
-    function it_errors_when_maximum_values_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_maximum_values_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->has('field2')->willReturn(true);
@@ -381,7 +381,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->shouldThrow(new ValuesOverflowException('field1', 3, 4, 1, 2))->during('process', array('((field1: value); (field1: value, value2, value3, value4, value5));'));
     }
 
-    function it_errors_when_maximum_values_count_is_exceeded_at_merging(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_maximum_values_count_is_exceeded_at_merging(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->has('field2')->willReturn(true);
@@ -393,7 +393,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->shouldThrow(new ValuesOverflowException('field1', 3, 4, 0, 0))->during('process', array('field1: value, value2; field1: value3, value4, value5;'));
     }
 
-    function it_errors_when_maximum_groups_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_maximum_groups_count_is_exceeded(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->has('field2')->willReturn(true);
@@ -406,7 +406,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->shouldThrow(new GroupsOverflowException(3, 4, 1, 2))->during('process', array('( ((field1: value, value2)); ((field1: value, value2;); (field1: value, value2;); (field1: value, value2;); (field1: value, value2;)) )'));
     }
 
-    function it_errors_when_maximum_nesting_level_is_reached(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_maximum_nesting_level_is_reached(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->has('field2')->willReturn(true);
@@ -418,7 +418,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->shouldThrow(new GroupsNestingException(1, 0, 2))->during('process', array('((field1: value;))'));
     }
 
-    function it_errors_when_the_syntax_is_invalid(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
+    public function it_errors_when_the_syntax_is_invalid(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->has('field2')->willReturn(true);
@@ -430,7 +430,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->shouldThrow(new QueryException("[Syntax Error] line 0, col 14: Error: Expected ; | , | ), got 'value2'"))->during('process', array('field1: value value2)'));
     }
 
-    function it_errors_when_the_field_does_not_exist_in_fieldset(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_when_the_field_does_not_exist_in_fieldset(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $fieldSet->has('field1')->willReturn(true);
         $fieldSet->has('field2')->willReturn(false);
@@ -441,7 +441,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->shouldThrow(new UnknownFieldException('field2'))->during('process', array('field2: value;'));
     }
 
-    function it_errors_when_the_field_does_not_support_the_value_type(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
+    public function it_errors_when_the_field_does_not_support_the_value_type(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
     {
         $field->acceptRanges()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -459,7 +459,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->shouldThrow(new UnsupportedValueTypeException('field2', 'comparison'))->during('process', array('field2: >12;'));
     }
 
-    function it_errors_when_a_field_is_required_but_not_set(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
+    public function it_errors_when_a_field_is_required_but_not_set(FieldSet $fieldSet, FieldConfigInterface $field, FieldConfigInterface $field2)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptRanges()->willReturn(false);

@@ -23,18 +23,18 @@ require_once __DIR__ . '/../../Fixtures/Entity/Group.php';
 
 class XmlFileDriverSpec extends ObjectBehavior
 {
-    function let(AdvancedFileLocatorInterface $locator)
+    public function let(AdvancedFileLocatorInterface $locator)
     {
         $this->beConstructedWith($locator);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Metadata\Driver\XmlFileDriver');
         $this->shouldImplement('Metadata\Driver\DriverInterface');
     }
 
-    function it_reads_the_metadata(AdvancedFileLocatorInterface $locator)
+    public function it_reads_the_metadata(AdvancedFileLocatorInterface $locator)
     {
         $this->beConstructedWith($locator);
 
@@ -63,7 +63,7 @@ class XmlFileDriverSpec extends ObjectBehavior
         $this->loadMetadataForClass($reflection, true)->shouldBeLike($classMetadata);
     }
 
-    function it_validates_the_metadata(AdvancedFileLocatorInterface $locator)
+    public function it_validates_the_metadata(AdvancedFileLocatorInterface $locator)
     {
         $this->beConstructedWith($locator);
 

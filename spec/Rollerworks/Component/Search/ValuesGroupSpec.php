@@ -17,18 +17,18 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class ValuesGroupSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\\Component\\Search\\ValuesGroup');
     }
 
-    function it_should_have_values()
+    public function it_should_have_values()
     {
         $this->getFields()->shouldReturn(array());
         $this->hasField('user')->shouldReturn(false);
     }
 
-    function it_should_allow_adding_values()
+    public function it_should_allow_adding_values()
     {
         $field = new ValuesBag();
         $field2 = new ValuesBag();
@@ -41,7 +41,7 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->hasField('foo')->shouldReturn(false);
     }
 
-    function it_should_allow_removing_values()
+    public function it_should_allow_removing_values()
     {
         $field = new ValuesBag();
         $field2 = new ValuesBag();
@@ -54,13 +54,13 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->getFields()->shouldReturn(array('date' => $field2));
     }
 
-    function it_should_have_subgroups()
+    public function it_should_have_subgroups()
     {
         $this->hasGroups()->shouldReturn(false);
         $this->getGroups()->shouldReturn(array());
     }
 
-    function it_should_allow_adding_subgroups()
+    public function it_should_allow_adding_subgroups()
     {
         $group = new ValuesGroup();
         $group2 = new ValuesGroup();
@@ -72,7 +72,7 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->getGroups()->shouldReturn(array($group, $group2));
     }
 
-    function it_should_allow_removing_subgroups()
+    public function it_should_allow_removing_subgroups()
     {
         $group = new ValuesGroup();
         $group2 = new ValuesGroup();
@@ -86,12 +86,12 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->getGroups()->shouldReturn(array(1 => $group2));
     }
 
-    function it_should_have_no_errors_by_default()
+    public function it_should_have_no_errors_by_default()
     {
         $this->hasErrors()->shouldReturn(false);
     }
 
-    function it_should_allow_setting_violations()
+    public function it_should_allow_setting_violations()
     {
         $this->setHasErrors(true);
         $this->hasErrors()->shouldReturn(true);

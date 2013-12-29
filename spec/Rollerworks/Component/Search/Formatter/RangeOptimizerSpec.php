@@ -24,13 +24,13 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class RangeOptimizerSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Formatter\RangeOptimizer');
         $this->shouldImplement('Rollerworks\Component\Search\FormatterInterface');
     }
 
-    function it_removes_singleValues_overlapping_in_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_singleValues_overlapping_in_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];
@@ -89,7 +89,7 @@ class RangeOptimizerSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_removes_ranges_overlapping_in_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_ranges_overlapping_in_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];
@@ -150,7 +150,7 @@ class RangeOptimizerSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_removes_excludedValues_overlapping_in_excludedRanges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_excludedValues_overlapping_in_excludedRanges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];
@@ -209,7 +209,7 @@ class RangeOptimizerSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_removes_excludedRanges_overlapping_in_excludedRanges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
+    public function it_removes_excludedRanges_overlapping_in_excludedRanges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];
@@ -270,7 +270,7 @@ class RangeOptimizerSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_merges_connected_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison, Range $range1, Range $range2, Range $range3, Range $range4, Range $range5)
+    public function it_merges_connected_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison, Range $range1, Range $range2, Range $range3, Range $range4, Range $range5)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];
@@ -351,7 +351,7 @@ class RangeOptimizerSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_merges_connected_excludedRanges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison, Range $range1, Range $range2, Range $range3, Range $range4, Range $range5)
+    public function it_merges_connected_excludedRanges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueComparisonInterface $comparison, Range $range1, Range $range2, Range $range3, Range $range4, Range $range5)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];

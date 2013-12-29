@@ -26,7 +26,7 @@ class SearchFactorySpec extends ObjectBehavior
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\SearchFactory');
     }

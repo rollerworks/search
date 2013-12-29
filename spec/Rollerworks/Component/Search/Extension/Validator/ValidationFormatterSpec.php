@@ -20,18 +20,18 @@ use Symfony\Component\Validator\ValidatorInterface;
 
 class ValidationFormatterSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Extension\Validator\ValidationFormatter');
         $this->shouldImplement('Rollerworks\Component\Search\FormatterInterface');
     }
 
-    function let(ValidatorInterface $validator, ViolationMapperInterface $violationMapper)
+    public function let(ValidatorInterface $validator, ViolationMapperInterface $violationMapper)
     {
         $this->beConstructedWith($validator, $violationMapper);
     }
 
-    function it_should_not_map_violations_when_there_empty(ValidatorInterface $validator, ViolationMapperInterface $violationMapper, SearchConditionInterface $condition)
+    public function it_should_not_map_violations_when_there_empty(ValidatorInterface $validator, ViolationMapperInterface $violationMapper, SearchConditionInterface $condition)
     {
         $condition->getValuesGroup()->willReturn(new ValuesGroup());
         $validator->validateValue(Argument::type('Rollerworks\Component\Search\SearchConditionInterface'), Argument::type('Rollerworks\Component\Search\Extension\Validator\Constraints\ValuesGroup'))->shouldBeCalled();
@@ -41,7 +41,7 @@ class ValidationFormatterSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_should_do_nothing_when_ValuesGroup_has_errors(SearchConditionInterface $condition, ValuesGroup $valuesGroup)
+    public function it_should_do_nothing_when_ValuesGroup_has_errors(SearchConditionInterface $condition, ValuesGroup $valuesGroup)
     {
         $valuesGroup->hasErrors()->willReturn(true);
         $condition->getValuesGroup()->willReturn($valuesGroup);

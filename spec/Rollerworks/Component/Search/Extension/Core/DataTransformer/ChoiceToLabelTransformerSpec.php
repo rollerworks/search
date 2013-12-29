@@ -16,18 +16,18 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface;
 
 class ChoiceToLabelTransformerSpec extends ObjectBehavior
 {
-    function let(ChoiceListInterface $choices)
+    public function let(ChoiceListInterface $choices)
     {
         $this->beConstructedWith($choices);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer');
         $this->shouldImplement('Rollerworks\Component\Search\DataTransformerInterface');
     }
 
-    function it_transformers_label_to_choice(ChoiceListInterface $choices)
+    public function it_transformers_label_to_choice(ChoiceListInterface $choices)
     {
         $this->beConstructedWith($choices);
 
@@ -38,7 +38,7 @@ class ChoiceToLabelTransformerSpec extends ObjectBehavior
         $this->transform('removed')->shouldReturn('2');
     }
 
-    function it_reverse_transformers_choice_to_label(ChoiceListInterface $choices)
+    public function it_reverse_transformers_choice_to_label(ChoiceListInterface $choices)
     {
         $this->beConstructedWith($choices);
 

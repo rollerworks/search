@@ -24,13 +24,13 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class ValuesToRangeSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Formatter\ValuesToRange');
         $this->shouldImplement('Rollerworks\Component\Search\FormatterInterface');
     }
 
-    function it_converts_single_proceeding_values_to_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueIncrementerInterface $comparison)
+    public function it_converts_single_proceeding_values_to_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueIncrementerInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];
@@ -88,7 +88,7 @@ class ValuesToRangeSpec extends ObjectBehavior
         $this->format($condition);
     }
 
-    function it_converts_excluded_proceeding_values_to_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueIncrementerInterface $comparison)
+    public function it_converts_excluded_proceeding_values_to_ranges(SearchConditionInterface $condition, FieldSet $fieldSet, FieldConfigInterface $idField, ValuesBag $valuesBag, ValueIncrementerInterface $comparison)
     {
         $comparison->isEqual(Argument::any(), Argument::any(), Argument::any())->will(function ($args) {
             return $args[0] == $args[1];

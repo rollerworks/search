@@ -23,13 +23,13 @@ use Rollerworks\Component\Search\ValuesGroup;
 // Note: Because the JSON input extends the ArrayInput we don't need extensive checks
 class JsonInputSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Input\JsonInput');
         $this->shouldImplement('Rollerworks\Component\Search\InputProcessorInterface');
     }
 
-    function it_processes_valid_json(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_valid_json(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
@@ -57,7 +57,7 @@ class JsonInputSpec extends ObjectBehavior
         )->shouldBeLike($condition);
     }
 
-    function it_processes_nested_values(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_processes_nested_values(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $field->acceptCompares()->willReturn(true);
@@ -83,7 +83,7 @@ class JsonInputSpec extends ObjectBehavior
         )->shouldHaveType('Rollerworks\Component\Search\SearchCondition');
     }
 
-    function it_errors_on_invalid_json(FieldSet $fieldSet, FieldConfigInterface $field)
+    public function it_errors_on_invalid_json(FieldSet $fieldSet, FieldConfigInterface $field)
     {
         $field->isRequired()->willReturn(false);
         $fieldSet->has('field1')->willReturn(true);
