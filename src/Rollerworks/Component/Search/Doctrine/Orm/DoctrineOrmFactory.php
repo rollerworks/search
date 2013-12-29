@@ -37,7 +37,7 @@ class DoctrineOrmFactory
      *
      * @param Cache $cacheDriver
      */
-    public function __construct(Cache $cacheDriver)
+    public function __construct(Cache $cacheDriver = null)
     {
         $this->cacheDriver = $cacheDriver;
     }
