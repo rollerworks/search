@@ -89,7 +89,7 @@ for international support.
 
 For framework integration you use the following;
 
-* Symfony2 Bundle (coming soon)
+* Symfony2 Bundle ([RollerworksSearchBundle](https://github.com/rollerworks/RollerworksSearchBundle))
 * ZendFramework2 Plugin (coming soon)
 * Silex Plugin (coming soon)
 
