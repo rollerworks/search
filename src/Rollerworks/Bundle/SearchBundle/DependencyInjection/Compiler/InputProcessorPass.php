@@ -39,6 +39,6 @@ class InputProcessorPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition('rollerworks_search.input_factory');
-        $definition->replaceArgument(2, $inputProcessors);
+        $definition->replaceArgument(1, $inputProcessors);
     }
 }

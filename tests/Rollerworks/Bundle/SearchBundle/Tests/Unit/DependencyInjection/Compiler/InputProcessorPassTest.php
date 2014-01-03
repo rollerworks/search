@@ -21,7 +21,7 @@ class InputProcessorPassTest extends AbstractCompilerPassTestCase
     public function testRegisteringInputProcessors()
     {
         $collectingService = new Definition();
-        $collectingService->setArguments(array(null, array(), array()));
+        $collectingService->setArguments(array(null, array()));
 
         $this->setDefinition('rollerworks_search.input_factory', $collectingService);
 
@@ -34,8 +34,7 @@ class InputProcessorPassTest extends AbstractCompilerPassTestCase
         $collectingService = $this->container->findDefinition('rollerworks_search.input_factory');
 
         $this->assertNull($collectingService->getArgument(0));
-        $this->assertCount(0, $collectingService->getArgument(1));
-        $this->assertEquals($collectingService->getArgument(2), array('jsonp' => 'acme_user.search.input_processor.jsonp'));
+        $this->assertEquals($collectingService->getArgument(1), array('jsonp' => 'acme_user.search.input_processor.jsonp'));
     }
 
     protected function registerCompilerPass(ContainerBuilder $container)
