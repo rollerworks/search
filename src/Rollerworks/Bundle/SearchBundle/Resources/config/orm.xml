@@ -13,7 +13,7 @@
         <service id="rollerworks_search.type_extension.doctrine" class="Rollerworks\Component\Search\Extension\Doctrine\Orm\DoctrineOrmExtension">
             <tag name="form.type_extension" alias="field" />
             <argument type="service" id="doctrine"/>
-            <argument type="service" id="rollerworks_search.doctrine_orm.entity_managers"/>
+            <argument>%rollerworks_search.doctrine_orm.entity_managers%</argument>
         </service>
     </services>
 </container>
