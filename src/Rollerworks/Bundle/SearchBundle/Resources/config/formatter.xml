@@ -5,7 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="rollerworks_search.chain_formatter" alias="rollerworks_search.formatter" class="Rollerworks\Component\Search\Formatter\ChainFormatter" />
+        <service id="rollerworks_search.chain_formatter" class="Rollerworks\Component\Search\Formatter\ChainFormatter" />
+        <service id="rollerworks_search.formatter" alias="rollerworks_search.chain_formatter" />
         <service id="rollerworks_search.formatter.transformer" class="Rollerworks\Component\Search\Formatter\TransformFormatter">
             <tag name="rollerworks_search.formatter" priority="1000"/>
         </service>
