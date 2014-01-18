@@ -606,7 +606,7 @@ class WhereBuilder implements WhereBuilderInterface
                 $groupSql .= "($exclusiveSqlGroup)";
             }
 
-            if ($inclusiveSqlGroup or $exclusiveSqlGroup) {
+            if ($inclusiveSqlGroup || $exclusiveSqlGroup) {
                 $query .= "($groupSql)";
             }
 
