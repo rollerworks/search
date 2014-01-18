@@ -3,7 +3,6 @@
 namespace spec\Rollerworks\Component\Search;
 
 use Metadata\ClassMetadata;
-use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactoryInterface;
 use PhpSpec\ObjectBehavior;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;

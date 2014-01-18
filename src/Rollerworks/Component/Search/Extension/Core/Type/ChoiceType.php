@@ -17,7 +17,6 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\SimpleChoiceList;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 

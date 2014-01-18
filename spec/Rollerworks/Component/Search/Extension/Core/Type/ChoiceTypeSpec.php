@@ -15,7 +15,6 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\ValueComparisonInterface;
 
 class ChoiceTypeSpec extends ObjectBehavior
 {

@@ -12,8 +12,6 @@
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
-use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\ValueComparisonInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

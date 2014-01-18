@@ -25,9 +25,9 @@ interface FieldAliasResolverInterface
      * it should return the $fieldName as-is.
      *
      * @param FieldSet $fieldSet
-     * @param string   $fieldName
+     * @param string   $fieldAlias
      *
      * @return string
      */
-    public function resolveFieldName(FieldSet $fieldSet, $fieldName);
+    public function resolveFieldName(FieldSet $fieldSet, $fieldAlias);
 }
