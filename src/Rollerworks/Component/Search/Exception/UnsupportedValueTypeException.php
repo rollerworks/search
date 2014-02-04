@@ -32,4 +32,20 @@ class UnsupportedValueTypeException extends \RuntimeException implements Excepti
 
         parent::__construct(sprintf('Field "%s" does accept %s values.', $fieldName, $valueType));
     }
+
+    /**
+     * @return string
+     */
+    public function getValueType()
+    {
+        return $this->valueType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFieldName()
+    {
+        return $this->fieldName;
+    }
 }

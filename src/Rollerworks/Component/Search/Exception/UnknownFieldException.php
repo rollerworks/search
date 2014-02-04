@@ -17,10 +17,25 @@ namespace Rollerworks\Component\Search\Exception;
 class UnknownFieldException extends \InvalidArgumentException implements ExceptionInterface
 {
     /**
+     * @var string
+     */
+    private $fieldName;
+
+    /**
      * @param string $fieldName
      */
     public function __construct($fieldName)
     {
+        $this->fieldName = $fieldName;
+
         parent::__construct(sprintf('Field "%s" is not registered in the FieldSet or available as alias.', $fieldName));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFieldName()
+    {
+        return $this->fieldName;
     }
 }
