@@ -233,7 +233,7 @@ class FilterQueryInput extends AbstractInput
         $tokenPos = (isset($token['position'])) ? $token['position'] : '-1';
 
         $message = "line 0, col {$tokenPos}: Error: ";
-        $message .= ($expected !== '') ? "Expected {$expected}, got " : 'Unexpected ';
+        $message .= ($expected !== '') ? "Expected '{$expected}', got " : 'Unexpected ';
         $message .= ($this->lexer->lookahead === null) ? 'end of string.' : "'{$token['value']}'";
 
         throw QueryException::syntaxError($message, new QueryException($this->input));

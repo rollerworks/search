@@ -427,7 +427,7 @@ class FilterQueryInputSpec extends ObjectBehavior
         $this->setFieldSet($fieldSet);
 
         $this->shouldThrow(new QueryException('[Syntax Error] line 0, col 46: Error: Expected "(" or FieldIdentification, got \')\''))->during('process', array('field1: value, value2, value3, value4, value5;)'));
-        $this->shouldThrow(new QueryException("[Syntax Error] line 0, col 14: Error: Expected ; | , | ), got 'value2'"))->during('process', array('field1: value value2)'));
+        $this->shouldThrow(new QueryException("[Syntax Error] line 0, col 14: Error: Expected '; | , | )', got 'value2'"))->during('process', array('field1: value value2)'));
     }
 
     public function it_errors_when_the_field_does_not_exist_in_fieldset(FieldSet $fieldSet, FieldConfigInterface $field)
