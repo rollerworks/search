@@ -29,8 +29,6 @@ class ValuesBagBuilder extends ValuesBag
     public function __construct($parent)
     {
         $this->parent = $parent;
-
-        parent::__construct();
     }
 
     /**
