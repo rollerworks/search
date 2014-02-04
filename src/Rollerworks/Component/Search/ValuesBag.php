@@ -21,36 +21,20 @@ use Rollerworks\Component\Search\Value\SingleValue;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesBag implements \Countable
+class ValuesBag implements \Countable, \Serializable
 {
-    protected $excludedValues;
-    protected $ranges;
-    protected $excludedRanges;
-    protected $comparisons;
-    protected $singleValues;
-    protected $patternMatchers;
-
-    protected $valuesCount;
+    protected $excludedValues = array();
+    protected $ranges = array();
+    protected $excludedRanges = array();
+    protected $comparisons = array();
+    protected $singleValues = array();
+    protected $patternMatchers = array();
+    protected $valuesCount = 0;
 
     /**
      * @var array
      */
-    protected $errors;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->singleValues = array();
-        $this->excludedValues = array();
-        $this->ranges = array();
-        $this->excludedRanges = array();
-        $this->comparisons = array();
-        $this->patternMatchers = array();
-        $this->errors = array();
-        $this->valuesCount = 0;
-    }
+    protected $errors = array();
 
     /**
      * @return SingleValue[]
@@ -356,5 +340,41 @@ class ValuesBag implements \Countable
     public function count()
     {
         return $this->valuesCount;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->excludedValues,
+            $this->ranges,
+            $this->excludedRanges,
+            $this->comparisons,
+            $this->singleValues,
+            $this->patternMatchers,
+            $this->valuesCount,
+            $this->errors
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized)
+    {
+        $data = unserialize($serialized);
+
+        list(
+            $this->excludedValues,
+            $this->ranges,
+            $this->excludedRanges,
+            $this->comparisons,
+            $this->singleValues,
+            $this->patternMatchers,
+            $this->valuesCount,
+            $this->errors
+        ) = $data;
     }
 }

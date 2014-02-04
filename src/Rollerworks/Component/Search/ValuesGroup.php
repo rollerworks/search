@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesGroup
+class ValuesGroup implements \Serializable
 {
     const GROUP_LOGICAL_OR = 'OR';
     const GROUP_LOGICAL_AND = 'AND';
@@ -220,5 +220,33 @@ class ValuesGroup
     public function setGroupLogical($groupLogical)
     {
         $this->groupLogical = $groupLogical;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->groupLogical,
+            $this->groups,
+            $this->fields,
+            $this->errors
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized)
+    {
+        $data = unserialize($serialized);
+
+        list(
+            $this->groupLogical,
+            $this->groups,
+            $this->fields,
+            $this->errors
+        ) = $data;
     }
 }
