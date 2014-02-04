@@ -7,15 +7,15 @@
                 <target>Begin van het bereik {{ lower }}, moet lager zijn dan het eind bereik {{ upper }}.</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>Field {{ field }} does accept comparison values.</source>
+                <source>Field {{ field }} does not accept comparison values.</source>
                 <target>Veld {{ field }} accepteert geen wiskundige vergelijkingen.</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>Field {{ field }} does accept range values.</source>
+                <source>Field {{ field }} does not accept range values.</source>
                 <target>Veld {{ field }} accepteert geen bereik waardes.</target>
             </trans-unit>
             <trans-unit id="4">
-                <source>Field {{ field }} does accept pattern values.</source>
+                <source>Field {{ field }} does not accept pattern values.</source>
                 <target>Veld {{ field }} accepteert geen patroon vergelijkingen.</target>
             </trans-unit>
             <trans-unit id="5">

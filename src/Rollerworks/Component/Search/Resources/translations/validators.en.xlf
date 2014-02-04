@@ -7,16 +7,16 @@
                 <target>Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>Field {{ field }} does accept comparison values.</source>
-                <target>Field {{ field }} does accept comparison values.</target>
+                <source>Field {{ field }} does not accept comparison values.</source>
+                <target>Field {{ field }} does not accept comparison values.</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>Field {{ field }} does accept range values.</source>
-                <target>Field {{ field }} does accept range values.</target>
+                <source>Field {{ field }} does not accept range values.</source>
+                <target>Field {{ field }} does not accept range values.</target>
             </trans-unit>
             <trans-unit id="4">
-                <source>Field {{ field }} does accept pattern values.</source>
-                <target>Field {{ field }} does accept pattern values.</target>
+                <source>Field {{ field }} does not accept pattern values.</source>
+                <target>Field {{ field }} does not accept pattern values.</target>
             </trans-unit>
             <trans-unit id="5">
                 <source>Field {{ field }} is not registered in the FieldSet or available as alias.</source>
