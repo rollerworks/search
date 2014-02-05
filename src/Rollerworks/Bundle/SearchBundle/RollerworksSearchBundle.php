@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Bundle\SearchBundle;
 
+use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\ExporterPass;
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\FormatterPass;
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\InputProcessorPass;
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\ExtensionPass;
@@ -25,6 +26,7 @@ class RollerworksSearchBundle extends Bundle
         $container->addCompilerPass(new ExtensionPass());
         $container->addCompilerPass(new TranslatorPass());
         $container->addCompilerPass(new InputProcessorPass());
+        $container->addCompilerPass(new ExporterPass());
         $container->addCompilerPass(new FormatterPass());
     }
 }
