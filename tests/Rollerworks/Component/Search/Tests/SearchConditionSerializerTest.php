@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
 {
-    function testSerializeUnSerialize()
+    public function testSerializeUnSerialize()
     {
         $fieldSet = new FieldSet('foobar');
 
@@ -51,7 +51,7 @@ class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($searchCondition, $unSerialized);
     }
 
-    function testUnSerializeWrongFieldSet()
+    public function testUnSerializeWrongFieldSet()
     {
         $fieldSet = new FieldSet('foobar');
 
@@ -72,7 +72,7 @@ class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         SearchConditionSerializer::unserialize($fieldSet, $serialized);
     }
 
-    function testUnSerializeMissingFields()
+    public function testUnSerializeMissingFields()
     {
         $fieldSet = new FieldSet('bar_foo');
 
@@ -84,7 +84,7 @@ class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         SearchConditionSerializer::unserialize($fieldSet, array('bar_foo'));
     }
 
-    function testUnSerializeWrongField()
+    public function testUnSerializeWrongField()
     {
         $fieldSet = new FieldSet('bar_foo');
 
@@ -96,7 +96,7 @@ class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         SearchConditionSerializer::unserialize($fieldSet, array('bar_foo', 'foo' => 'bar'));
     }
 
-    function testUnSerializeInvalidData()
+    public function testUnSerializeInvalidData()
     {
         $fieldSet = new FieldSet('bar_foo');
 

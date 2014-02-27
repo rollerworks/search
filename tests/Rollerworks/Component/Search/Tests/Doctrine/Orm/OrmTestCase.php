@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Tests\OrmTestCase as OrmTestCaseBase;
