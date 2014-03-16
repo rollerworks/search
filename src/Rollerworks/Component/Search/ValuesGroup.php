@@ -38,7 +38,7 @@ class ValuesGroup implements \Serializable
     /**
      * @var boolean
      */
-    private $errors = array();
+    private $errors = false;
 
     /**
      * @var string
@@ -177,7 +177,7 @@ class ValuesGroup implements \Serializable
      */
     public function hasErrors()
     {
-        return !empty($this->errors);
+        return $this->errors;
     }
 
     /**
