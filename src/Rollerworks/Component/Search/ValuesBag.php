@@ -32,7 +32,7 @@ class ValuesBag implements \Countable, \Serializable
     protected $valuesCount = 0;
 
     /**
-     * @var array
+     * @var ValuesError[]
      */
     protected $errors = array();
 
@@ -327,7 +327,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return array
+     * @return ValuesError[]
      */
     public function getErrors()
     {

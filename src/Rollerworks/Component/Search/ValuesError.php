@@ -121,4 +121,12 @@ class ValuesError
     {
         return $this->messagePluralization;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string) $this->getMessage();
+    }
 }
