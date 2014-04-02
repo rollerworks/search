@@ -290,34 +290,8 @@ class WhereBuilder implements WhereBuilderInterface
             return $this->whereClause;
         }
 
-        // Resolve the EntityClassMappings to a real class-name.
-        foreach ($this->entityClassMapping as $class => $alias) {
-            if (false !== strpos($class, ':')) {
-                $realClass = $this->entityManager->getClassMetadata($class)->name;
-            } else {
-                $realClass = ClassUtils::getRealClass($class);
-            }
-
-            if ($realClass !== $class) {
-                $this->entityClassMapping[$realClass] = $alias;
-                unset($this->entityClassMapping[$class]);
-            }
-        }
-
-        // Initialize the information for the fields.
-        foreach ($this->fieldset->all() as $fieldName => $fieldConfig) {
-            $field = $this->fieldset->get($fieldName);
-            if (null === $field->getModelRefClass()) {
-                continue;
-            }
-
-            $this->fields[$fieldName] = array();
-            $this->fields[$fieldName]['db_type'] = $this->getDbType($field->getModelRefClass(), $field->getModelRefProperty());
-            $this->fields[$fieldName]['column']  = $this->resolveFieldColumn($field->getModelRefClass(), $field->getModelRefProperty(), $fieldName);
-            $this->fields[$fieldName]['field']   = $fieldConfig;
-            $this->fields[$fieldName]['field_convertor'] = isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null;
-            $this->fields[$fieldName]['value_convertor'] = isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null;
-        }
+        $this->processEntityMappings();
+        $this->processFields();
 
         if ($this->query instanceof NativeQuery) {
             $this->queryGenerator = new QueryGenerator($this->entityManager->getConnection(), $this->searchCondition, $this->fields, $this->parameterPrefix);
@@ -326,7 +300,6 @@ class WhereBuilder implements WhereBuilderInterface
         }
 
         $this->whereClause = $this->queryGenerator->getGroupSql($this->searchCondition->getValuesGroup());
-
         foreach ($this->queryGenerator->getParameters() as $paramName => $paramValue) {
             $this->query->setParameter($paramName, $paramValue);
         }
@@ -518,6 +491,41 @@ class WhereBuilder implements WhereBuilderInterface
         }
 
         throw new BadMethodCallException('getValueConversionSql() is meant for internal usage, you should not call it manually.');
+    }
+
+    private function processEntityMappings()
+    {
+        // Resolve the EntityClassMappings to a real class-name.
+        foreach ($this->entityClassMapping as $class => $alias) {
+            if (false !== strpos($class, ':')) {
+                $realClass = $this->entityManager->getClassMetadata($class)->name;
+            } else {
+                $realClass = ClassUtils::getRealClass($class);
+            }
+
+            if ($realClass !== $class) {
+                $this->entityClassMapping[$realClass] = $alias;
+                unset($this->entityClassMapping[$class]);
+            }
+        }
+    }
+
+    private function processFields()
+    {
+        // Initialize the information for the fields.
+        foreach ($this->fieldset->all() as $fieldName => $fieldConfig) {
+            $field = $this->fieldset->get($fieldName);
+            if (null === $field->getModelRefClass()) {
+                continue;
+            }
+
+            $this->fields[$fieldName] = array();
+            $this->fields[$fieldName]['db_type'] = $this->getDbType($field->getModelRefClass(), $field->getModelRefProperty());
+            $this->fields[$fieldName]['column']  = $this->resolveFieldColumn($field->getModelRefClass(), $field->getModelRefProperty(), $fieldName);
+            $this->fields[$fieldName]['field']   = $fieldConfig;
+            $this->fields[$fieldName]['field_convertor'] = isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null;
+            $this->fields[$fieldName]['value_convertor'] = isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null;
+        }
     }
 
     /**
