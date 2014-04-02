@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\QueryException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder;
 use Rollerworks\Component\Search\Tests\Fixtures\CustomerId;
 use Rollerworks\Component\Search\FieldSet;
@@ -51,6 +52,39 @@ class WhereBuilderTest extends OrmTestCase
         $this->assertEquals($expectedDql, $whereCase);
         $this->assertQueryParamsEquals($queryParams, $query);
         $this->assertEquals($expectSql, $this->assertDqlCompiles($query, $whereBuilder, (!empty($expectSql))));
+    }
+
+    /**
+     * @dataProvider provideNativeQueryTests
+     *
+     * @param ValuesGroup $condition
+     * @param string      $expectedWhere
+     * @param array       $queryParams
+     * @param string      $expectSql
+     */
+    public function testNativeQuery($condition, $expectedWhere, $queryParams, $expectSql = '')
+    {
+        $rsm = new ResultSetMappingBuilder($this->em);
+        $rsm->addRootEntityFromClassMetadata('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice', 'I', array('id' => 'invoice_id'));
+        $rsm->addJoinedEntityFromClassMetadata('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer', 'C', 'I', 'customer', array('id' => 'customer_id'));
+        $query = $this->em->createNativeQuery('SELECT I FROM invoice I JOIN I.customer C WHERE ', $rsm);
+
+        $searchCondition = new SearchCondition($this->getFieldSet('invoice'), $condition);
+
+        $whereBuilder = new WhereBuilder($query, $searchCondition);
+        $whereBuilder->setEntityMappings(array(
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
+        );
+
+        $whereCase = $whereBuilder->getWhereClause();
+
+        $this->assertEquals($expectedWhere, $whereCase);
+        $this->assertQueryParamsEquals($queryParams, $query);
+
+        if ($expectSql) {
+            $this->assertEquals($expectSql, ($query->getSQL().$whereCase));
+        }
     }
 
     public function testEmptyResult()
@@ -592,6 +626,205 @@ class WhereBuilderTest extends OrmTestCase
         );
     }
 
+    public static function provideNativeQueryTests()
+    {
+        return array(
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')
+                        ->addSingleValue(new SingleValue(2))
+                        ->addSingleValue(new SingleValue(5))
+                    ->end()
+                ->getGroup(),
+                '(((I.customer IN(:invoice_customer_0, :invoice_customer_1))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 5
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')->addComparison(new Compare(2, '>'))->end()
+                ->getGroup(),
+                '(((I.customer > :invoice_customer_0)))',
+                array('invoice_customer_0' => 2)
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')->addExcludedValue(new SingleValue(2))->end()
+                ->getGroup(),
+                '(((I.customer NOT IN(:invoice_customer_0))))',
+                array('invoice_customer_0' => 2)
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')->addRange(new Range(2, 5))->end()
+                ->getGroup(),
+                '((((I.customer >= :invoice_customer_0 AND I.customer <= :invoice_customer_1))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 5,
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')
+                        ->addRange(new Range(2, 5))
+                        ->addRange(new Range(10, 20))
+                    ->end()
+                ->getGroup(),
+                '((((I.customer >= :invoice_customer_0 AND I.customer <= :invoice_customer_1) OR (I.customer >= :invoice_customer_2 AND I.customer <= :invoice_customer_3))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 5,
+                    'invoice_customer_2' => 10,
+                    'invoice_customer_3' => 20,
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')
+                        ->addExcludedRange(new Range(2, 5))
+                        ->addExcludedRange(new Range(10, 20))
+                    ->end()
+                ->getGroup(),
+                '((((I.customer <= :invoice_customer_0 OR I.customer >= :invoice_customer_1) AND (I.customer <= :invoice_customer_2 OR I.customer >= :invoice_customer_3))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 5,
+                    'invoice_customer_2' => 10,
+                    'invoice_customer_3' => 20,
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')
+                        ->addRange(new Range(2, 5))
+                        ->addExcludedRange(new Range(10, 20))
+                    ->end()
+                ->getGroup(),
+                '((((I.customer >= :invoice_customer_0 AND I.customer <= :invoice_customer_1)) AND ((I.customer <= :invoice_customer_2 OR I.customer >= :invoice_customer_3))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 5,
+                    'invoice_customer_2' => 10,
+                    'invoice_customer_3' => 20,
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')
+                        ->addRange(new Range(2, 5, false))
+                        ->addExcludedRange(new Range(10, 20, false))
+                    ->end()
+                ->getGroup(),
+                '((((I.customer > :invoice_customer_0 AND I.customer <= :invoice_customer_1)) AND ((I.customer < :invoice_customer_2 OR I.customer >= :invoice_customer_3))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 5,
+                    'invoice_customer_2' => 10,
+                    'invoice_customer_3' => 20,
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')
+                        ->addRange(new Range(2, 5, true, false))
+                        ->addExcludedRange(new Range(10, 20, true, false))
+                    ->end()
+                ->getGroup(),
+                '((((I.customer >= :invoice_customer_0 AND I.customer < :invoice_customer_1)) AND ((I.customer <= :invoice_customer_2 OR I.customer > :invoice_customer_3))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 5,
+                    'invoice_customer_2' => 10,
+                    'invoice_customer_3' => 20,
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')
+                        ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                        ->addPatternMatch(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
+                        ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
+                        ->addPatternMatch(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
+                        ->addPatternMatch(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
+                    ->end()
+                ->getGroup(),
+                "(((I.customer LIKE :invoice_customer_0 ESCAPE '\\\\' OR I.customer LIKE :invoice_customer_1 ESCAPE '\\\\' OR RW_REGEXP(:invoice_customer_2, I.customer, '') = 0 OR RW_REGEXP(:invoice_customer_3, I.customer, 'ui') = 0) AND (LOWER(I.customer) NOT LIKE LOWER(:invoice_customer_4) ESCAPE '\\\\')))",
+                array(
+                    'invoice_customer_0' => 'foo',
+                    'invoice_customer_1' => 'fo\\\'o',
+                    'invoice_customer_2' => '(foo|bar)',
+                    'invoice_customer_3' => '(doctor|who)',
+                    'invoice_customer_4' => 'bar',
+                ),
+                "SELECT I FROM invoice I JOIN I.customer C WHERE (((I.customer LIKE :invoice_customer_0 ESCAPE '\\\\' OR I.customer LIKE :invoice_customer_1 ESCAPE '\\\\' OR RW_REGEXP(:invoice_customer_2, I.customer, '') = 0 OR RW_REGEXP(:invoice_customer_3, I.customer, 'ui') = 0) AND (LOWER(I.customer) NOT LIKE LOWER(:invoice_customer_4) ESCAPE '\\\\')))"
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->group()
+                        ->field('invoice_customer')->addSingleValue(new SingleValue(2))->end()
+                    ->end()
+                    ->group()
+                        ->field('invoice_customer')->addSingleValue(new SingleValue(3))->end()
+                    ->end()
+                ->getGroup(),
+                '((((I.customer IN(:invoice_customer_0)))) OR (((I.customer IN(:invoice_customer_1)))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 3,
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('invoice_customer')->addSingleValue(new SingleValue(5))->end()
+                    ->group()
+                        ->field('invoice_customer')->addSingleValue(new SingleValue(2))->end()
+                    ->end()
+                    ->group()
+                        ->field('invoice_customer')->addSingleValue(new SingleValue(3))->end()
+                    ->end()
+                ->getGroup(),
+                '((((I.customer IN(:invoice_customer_0)))) AND ((((I.customer IN(:invoice_customer_1)))) OR (((I.customer IN(:invoice_customer_2))))))',
+                array(
+                    'invoice_customer_0' => 5,
+                    'invoice_customer_1' => 2,
+                    'invoice_customer_2' => 3,
+                )
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->group()
+                        ->group()
+                            ->field('invoice_customer')->addSingleValue(new SingleValue(2))->end()
+                        ->end()
+                        ->group()
+                            ->field('invoice_customer')->addSingleValue(new SingleValue(3))->end()
+                        ->end()
+                    ->end()
+                ->getGroup(),
+                '(((((I.customer IN(:invoice_customer_0)))) OR (((I.customer IN(:invoice_customer_1))))))',
+                array(
+                    'invoice_customer_0' => 2,
+                    'invoice_customer_1' => 3,
+                )
+            ),
+        );
+    }
+
     public static function provideValueConversionTests()
     {
         return array(
@@ -947,7 +1180,7 @@ class WhereBuilderTest extends OrmTestCase
         $query->setHint($whereBuilder->getQueryHintName(), $whereBuilder->getQueryHintValue());
 
         if ($prepend) {
-            $dql = $query->getDQL() . $whereClause;
+            $dql = $query->getDQL().$whereClause;
             $query->setDQL($dql);
         }
 
@@ -958,7 +1191,7 @@ class WhereBuilderTest extends OrmTestCase
 
             $query->getSQL();
         } catch (QueryException $e) {
-            $this->fail('compile error:' . $e->getMessage() . ' with Query: ' . $query->getDQL());
+            $this->fail('compile error:'.$e->getMessage().' with Query: '.$query->getDQL());
         }
     }
 }
