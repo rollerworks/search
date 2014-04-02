@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
@@ -53,6 +54,22 @@ class DqlQueryGenerator extends QueryGenerator
         );
 
         return sprintf($pattern[$patternMatch->getType()], $column, $value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function convertSqlValue(SqlValueConversionInterface $converter, $fieldName, $column, $value, $convertedValue, FieldConfigInterface $field, array $hints, $strategy)
+    {
+        // If the value requires embedding we inform the DQL function about the parameter-index
+        // Where he can then find the value, else its not possible to embed the value safely
+        $valueRequiresEmbedding = $converter->valueRequiresEmbedding($value, $field->getOptions(), $hints);
+
+        $paramName = $this->getUniqueParameterName($fieldName);
+        $this->parameters[$paramName] = $convertedValue;
+        $convertedValue = ':' . $paramName;
+
+        return "RW_SEARCH_VALUE_CONVERSION('$fieldName', " . $this->fields[$fieldName]['column'] . ", $convertedValue, " . (null === $strategy ? 'null' : $strategy) . ", " . ($valueRequiresEmbedding ? 'true' : 'false') . ")";
     }
 
     /**
