@@ -97,7 +97,7 @@ class QueryGenerator
 
             if (empty($fieldConfig['field'])) {
                 throw new InvalidArgumentException(
-                    sprintf('The keys "alias" should not be empty for field "%s"', $fieldName)
+                    sprintf('The keys "field" should not be empty for field "%s"', $fieldName)
                 );
             }
 
@@ -107,8 +107,12 @@ class QueryGenerator
                 );
             }
 
-            if (empty($fieldConfig['conversion'])) {
-                $fieldConfig['conversion'] = null;
+            if (empty($fieldConfig['field_convertor'])) {
+                $fieldConfig['field_convertor'] = null;
+            }
+
+            if (empty($fieldConfig['value_convertor'])) {
+                $fieldConfig['value_convertor'] = null;
             }
         }
 
@@ -194,7 +198,7 @@ class QueryGenerator
             }
 
             if ($exclusiveSqlGroup) {
-                $groupSql[] = '('.implode(' AND ', $inclusiveSqlGroup).')';
+                $groupSql[] = '('.implode(' AND ', $exclusiveSqlGroup).')';
             }
 
             if ($groupSql) {
@@ -202,9 +206,11 @@ class QueryGenerator
             }
         }
 
+        $finalQuery = array();
+
         // Wrap all the fields as a group
         if ($query) {
-            $query[] = '('.implode(ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() ? ' OR ' : ' AND ', $query).')';
+            $finalQuery[] = '('.implode(ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() ? ' OR ' : ' AND ', $query).')';
         }
 
         if ($valuesGroup->hasGroups()) {
@@ -215,32 +221,19 @@ class QueryGenerator
             }
 
             if ($groupSql) {
-                if ($query) {
-                    $query[] = '('.implode(' OR ', $groupSql).')';
-                } else {
-                    $query[] = implode(' OR ', $groupSql);
-                }
+                $finalQuery[] = '('.implode(' OR ', $groupSql).')';
+            }
+
+            if ($query) {
+                return '('.implode(' AND ', $finalQuery).')';
             }
         }
 
-        // Now wrap it one more time to finalize the group
-        if ($query) {
-            return '('.implode(' AND ', $query).')';
+        if ($finalQuery) {
+            return implode(' AND ', $finalQuery);
         }
 
         return '';
-    }
-
-    /**
-     * Returns whether the field is accepted for processing.
-     *
-     * @param FieldConfigInterface $field
-     *
-     * @return boolean
-     */
-    protected function acceptsField(FieldConfigInterface $field)
-    {
-        return true;
     }
 
     /**
@@ -253,13 +246,13 @@ class QueryGenerator
      *
      * @return string
      */
-    protected function getFieldConversionSql($fieldName, $column, FieldConfigInterface $field, $strategy = null)
+    public function getFieldConversionSql($fieldName, $column, FieldConfigInterface $field, $strategy = null)
     {
         if (isset($this->fieldConversionCache[$fieldName]) && array_key_exists($strategy, $this->fieldConversionCache[$fieldName])) {
             return $this->fieldConversionCache[$fieldName][$strategy];
         }
 
-        return $this->fieldConversionCache[$fieldName][$strategy] = $this->fields[$fieldName]['conversion']->convertSqlField(
+        return $this->fieldConversionCache[$fieldName][$strategy] = $this->fields[$fieldName]['field_convertor']->convertSqlField(
             $column,
             $field->getOptions(),
             $this->getConversionHints($fieldName, $column, $field, $strategy)
@@ -279,13 +272,26 @@ class QueryGenerator
      *
      * @throws BadMethodCallException
      */
-    protected function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field, $strategy = null)
+    public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field, $strategy = null)
     {
-        return $this->fields[$fieldName]['conversion']->convertSqlValue(
+        return $this->fields[$fieldName]['value_convertor']->convertSqlValue(
             $value,
             $field->getOptions(),
             $this->getConversionHints($fieldName, $column, $field, $strategy)
         );
+    }
+
+    /**
+     * Returns whether the field is accepted for processing.
+     *
+     * @param FieldConfigInterface $field
+     *
+     * @return boolean
+     */
+    protected function acceptsField(FieldConfigInterface $field)
+    {
+        // dummy implementation to prevent removal suggestion
+        return $field !== null;
     }
 
     /**
@@ -322,7 +328,7 @@ class QueryGenerator
         $inList = array();
 
         // Don't use IN() with a custom SQL-statement for better compatibility
-        if (!$this->fields[$fieldName]['conversion'] instanceof ConversionStrategyInterface && !$this->fields[$fieldName]['conversion'] instanceof SqlValueConversionInterface) {
+        if (!$this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface && !$this->fields[$fieldName]['value_convertor'] instanceof SqlValueConversionInterface) {
             foreach ($values as $value) {
                 $inList[] = $this->getValueAsSql($value->getValue(), $value, $fieldName, $column);
             }
@@ -335,8 +341,8 @@ class QueryGenerator
         }
 
         foreach ($values as $value) {
-            if ($this->fields[$fieldName]['conversion'] instanceof ConversionStrategyInterface) {
-                $strategy = $this->fields[$fieldName]['conversion']->getConversionStrategy($value->getValue(), $field->getOptions(), $this->getConversionHints($fieldName, $column));
+            if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
+                $strategy = $this->fields[$fieldName]['value_convertor']->getConversionStrategy($value->getValue(), $field->getOptions(), $this->getConversionHints($fieldName, $column));
             } else {
                 $strategy = null;
             }
@@ -365,13 +371,13 @@ class QueryGenerator
         $query = array();
         $hints = array();
 
-        if ($this->fields[$fieldName]['conversion'] instanceof ConversionStrategyInterface) {
+        if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
             $hints = $this->getConversionHints($fieldName, $column);
         }
 
         foreach ($ranges as $range) {
-            if ($this->fields[$fieldName]['conversion'] instanceof ConversionStrategyInterface) {
-                $strategy = $this->fields[$fieldName]['conversion']->getConversionStrategy($range->getLower(), $field->getOptions(), $hints);
+            if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
+                $strategy = $this->fields[$fieldName]['value_convertor']->getConversionStrategy($range->getLower(), $field->getOptions(), $hints);
             } else {
                 $strategy = null;
             }
@@ -388,7 +394,7 @@ class QueryGenerator
         }
 
         if ($query) {
-            return '('.implode(($exclude ? ' AND ' : ' OR '), $query).')';
+            return implode(($exclude ? ' AND ' : ' OR '), $query);
         }
 
         return '';
@@ -434,13 +440,13 @@ class QueryGenerator
         $query = array();
         $hints = array();
 
-        if ($this->fields[$fieldName]['conversion'] instanceof ConversionStrategyInterface) {
+        if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
             $hints = $this->getConversionHints($fieldName, $column);
         }
 
         foreach ($compares as $comparison) {
-            if ($this->fields[$fieldName]['conversion'] instanceof ConversionStrategyInterface) {
-                $strategy = $this->fields[$fieldName]['conversion']->getConversionStrategy($comparison->getValue(), $field->getOptions(), $hints);
+            if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
+                $strategy = $this->fields[$fieldName]['value_convertor']->getConversionStrategy($comparison->getValue(), $field->getOptions(), $hints);
             } else {
                 $strategy = null;
             }
@@ -450,7 +456,7 @@ class QueryGenerator
         }
 
         if ($query) {
-            return '('.implode(' OR ', $query).')';
+            return implode(' OR ', $query);
         }
 
         return '';
@@ -470,7 +476,7 @@ class QueryGenerator
         $query = array();
         $hints = array();
 
-        if ($this->fields[$fieldName]['conversion'] instanceof ConversionStrategyInterface) {
+        if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
             $hints = $this->getConversionHints($fieldName, $column);
         }
 
@@ -480,18 +486,18 @@ class QueryGenerator
                 continue;
             }
 
-            if ($this->fields[$fieldName]['conversion'] instanceof ConversionStrategyInterface) {
-                $strategy = $this->fields[$fieldName]['conversion']->getConversionStrategy($patternMatch->getValue(), $field->getOptions(), $hints);
+            if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
+                $strategy = $this->fields[$fieldName]['value_convertor']->getConversionStrategy($patternMatch->getValue(), $field->getOptions(), $hints);
             } else {
                 $strategy = null;
             }
 
             $column = $this->getFieldColumn($fieldName, $strategy);
-            $query[] = $this->getPatternMatcherPattern($patternMatch, $column, $this->getValueAsSql($patternMatch->getValue(), $patternMatch, $fieldName, $column, $strategy, true));
+            $query[] = $this->getPatternMatcher($patternMatch, $column, $this->getValueAsSql($patternMatch->getValue(), $patternMatch, $fieldName, $column, $strategy, true));
         }
 
         if ($query) {
-            return '('.implode(($exclude ? ' AND ' : ' OR '), $query).')';
+            return implode(($exclude ? ' AND ' : ' OR '), $query);
         }
 
         return '';
@@ -504,7 +510,7 @@ class QueryGenerator
      *
      * @return string
      */
-    protected function getPatternMatcherPattern(PatternMatch $patternMatch, $column, $value)
+    protected function getPatternMatcher(PatternMatch $patternMatch, $column, $value)
     {
         if (PatternMatch::PATTERN_REGEX === $patternMatch->getType() || PatternMatch::PATTERN_NOT_REGEX === $patternMatch->getType()) {
             return SearchMatch::getMatchSqlRegex($column, $value, $patternMatch->isCaseInsensitive(), $patternMatch->isExclusive(), $this->connection);
@@ -532,7 +538,7 @@ class QueryGenerator
     protected function getValueAsSql($value, $inputValue, $fieldName, $column, $strategy = null, $noSqlConversion = false)
     {
         // No conversions so set the value as query-parameter
-        if (!$this->fields[$fieldName]['conversion'] instanceof ValueConversionInterface) {
+        if (!$this->fields[$fieldName]['value_convertor'] instanceof ValueConversionInterface) {
             $paramName = $this->getUniqueParameterName($fieldName);
             $this->parameters[$paramName] = $value;
 
@@ -542,7 +548,7 @@ class QueryGenerator
         /** @var \Doctrine\DBAL\Types\Type $type */
         $type = $this->fields[$fieldName]['db_type'];
         /** @var ValueConversionInterface|SqlValueConversionInterface $converter */
-        $converter = $this->fields[$fieldName]['conversion'];
+        $converter = $this->fields[$fieldName]['value_convertor'];
         /** @var FieldConfigInterface $field */
         $field = $this->fields[$fieldName]['field'];
 
@@ -619,7 +625,7 @@ class QueryGenerator
             return $this->fieldsMappingCache[$fieldName][$strategy];
         }
 
-        if (isset($this->fields[$fieldName])) {
+        if ($this->fields[$fieldName]['field_convertor'] instanceof SqlFieldConversionInterface) {
             $this->fieldsMappingCache[$fieldName][$strategy] = $this->getFieldConversionSql($fieldName, $this->fields[$fieldName]['column'], $this->fields[$fieldName]['field'], $strategy);
         } else {
             $this->fieldsMappingCache[$fieldName][$strategy] = $this->fields[$fieldName]['column'];
