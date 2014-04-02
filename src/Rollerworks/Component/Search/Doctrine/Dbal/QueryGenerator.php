@@ -86,6 +86,11 @@ class QueryGenerator
         $this->parameterPrefix = $parameterPrefix;
     }
 
+    /**
+     * @param array $fields
+     *
+     * @throws InvalidArgumentException
+     */
     protected function configureFields(array $fields)
     {
         foreach ($fields as $fieldName => $fieldConfig) {
@@ -255,7 +260,7 @@ class QueryGenerator
         return $this->fieldConversionCache[$fieldName][$strategy] = $this->fields[$fieldName]['field_convertor']->convertSqlField(
             $column,
             $field->getOptions(),
-            $this->getConversionHints($fieldName, $column, $field, $strategy)
+            $this->getConversionHints($fieldName, $column, $strategy)
         );
     }
 
@@ -267,17 +272,26 @@ class QueryGenerator
      * @param string               $value
      * @param FieldConfigInterface $field
      * @param null|integer         $strategy
+     * @param boolean              $isValueEmbedded
      *
      * @return string
      *
      * @throws BadMethodCallException
      */
-    public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field, $strategy = null)
+    public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field, $strategy = null, $isValueEmbedded = false)
     {
+        if ($isValueEmbedded) {
+            if (!array_key_exists($value, $this->parameters)) {
+                throw new BadMethodCallException(sprintf('Unable to find query-parameter "%s", requested for embedding by ValueConversion.', $value));
+            }
+
+            $value = $this->parameters[$value];
+        }
+
         return $this->fields[$fieldName]['value_convertor']->convertSqlValue(
             $value,
             $field->getOptions(),
-            $this->getConversionHints($fieldName, $column, $field, $strategy)
+            $this->getConversionHints($fieldName, $column, $strategy)
         );
     }
 
@@ -329,6 +343,8 @@ class QueryGenerator
 
         // Don't use IN() with a custom SQL-statement for better compatibility
         if (!$this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface && !$this->fields[$fieldName]['value_convertor'] instanceof SqlValueConversionInterface) {
+            $column = $this->getFieldColumn($fieldName);
+
             foreach ($values as $value) {
                 $inList[] = $this->getValueAsSql($value->getValue(), $value, $fieldName, $column);
             }

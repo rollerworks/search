@@ -174,6 +174,7 @@ class WhereBuilderTest extends OrmTestCase
      * @param string      $expectedDql
      * @param array       $queryParams
      * @param array       $optionsForCustomer
+     * @param string      $expectSql
      */
     public function testFieldConversion($condition, $expectedDql, $queryParams, $optionsForCustomer = array(), $expectSql = '')
     {
@@ -218,6 +219,7 @@ class WhereBuilderTest extends OrmTestCase
      * @param string      $expectSql
      * @param array       $optionsForCustomer
      * @param boolean     $valueRequiresEmbedding
+     * @param boolean     $negative
      */
     public function testSqlValueConversion($condition, $expectedDql, array $queryParams, $expectSql, $optionsForCustomer = array(), $valueRequiresEmbedding = false, $negative = false)
     {
@@ -327,8 +329,6 @@ class WhereBuilderTest extends OrmTestCase
                return $input;
             }))
         ;
-
-        // return "to_char('YYYY', age($fieldName))";
 
         $converter
             ->expects($this->atLeastOnce())
@@ -739,6 +739,19 @@ class WhereBuilderTest extends OrmTestCase
                 "((((C.id <= RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, false) OR C.id >= RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_1, null, false)))))",
                 array('customer_id_0' => 2, 'customer_id_1' => 5),
                 'SELECT c0_.id AS id0 FROM customers c0_ WHERE ((((c0_.id <= get_customer_type(?) OR c0_.id >= get_customer_type(?)))))',
+            ),
+
+            array(
+                SearchConditionBuilder::create()
+                    ->field('customer_id')
+                        ->addExcludedRange(new Range(2, 5))
+                    ->end()
+                ->getGroup(),
+                "((((C.id <= RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, true) OR C.id >= RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_1, null, true)))))",
+                array('customer_id_0' => 2, 'customer_id_1' => 5),
+                'SELECT c0_.id AS id0 FROM customers c0_ WHERE ((((c0_.id <= get_customer_type(2) OR c0_.id >= get_customer_type(5)))))',
+                array(),
+                true,
             ),
 
             array(

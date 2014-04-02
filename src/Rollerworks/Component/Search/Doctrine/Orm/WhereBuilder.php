@@ -484,6 +484,8 @@ class WhereBuilder implements WhereBuilderInterface
      */
     public function getFieldConversionSql($fieldName, $column, FieldConfigInterface $field = null, $strategy = null)
     {
+        $field = $field ?: $this->fieldset->get($fieldName);
+
         if ($this->queryGenerator) {
             return $this->queryGenerator->getFieldConversionSql($fieldName, $column, $field, $strategy);
         }
@@ -509,11 +511,13 @@ class WhereBuilder implements WhereBuilderInterface
      */
     public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field = null, $strategy = null, $isValueEmbedded = false)
     {
+        $field = $field ?: $this->fieldset->get($fieldName);
+
         if ($this->queryGenerator) {
             return $this->queryGenerator->getValueConversionSql($fieldName, $column, $value, $field, $strategy, $isValueEmbedded);
         }
 
-        throw new BadMethodCallException('getFieldConversionSql() is meant for internal usage, you should not call it manually.');
+        throw new BadMethodCallException('getValueConversionSql() is meant for internal usage, you should not call it manually.');
     }
 
     /**

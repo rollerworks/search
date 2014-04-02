@@ -40,17 +40,17 @@ class DqlQueryGenerator extends QueryGenerator
         // So we use a custom function for this
 
         $pattern = array(
-            PatternMatch::PATTERN_STARTS_WITH => "RW_SEARCH_MATCH(%s, %s, 'starts_with', " . ($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
-            PatternMatch::PATTERN_NOT_STARTS_WITH => "RW_SEARCH_MATCH(%s, %s', 'starts_with', " . ($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
+            PatternMatch::PATTERN_STARTS_WITH => "RW_SEARCH_MATCH(%s, %s, 'starts_with', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
+            PatternMatch::PATTERN_NOT_STARTS_WITH => "RW_SEARCH_MATCH(%s, %s', 'starts_with', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
 
-            PatternMatch::PATTERN_CONTAINS => "RW_SEARCH_MATCH(%s, %s, 'contains', " . ($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
-            PatternMatch::PATTERN_NOT_CONTAINS => "RW_SEARCH_MATCH(%s, %s, 'contains', " . ($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
+            PatternMatch::PATTERN_CONTAINS => "RW_SEARCH_MATCH(%s, %s, 'contains', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
+            PatternMatch::PATTERN_NOT_CONTAINS => "RW_SEARCH_MATCH(%s, %s, 'contains', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
 
-            PatternMatch::PATTERN_ENDS_WITH => "RW_SEARCH_MATCH(%s, %s, 'ends_with', " . ($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
-            PatternMatch::PATTERN_NOT_ENDS_WITH => "RW_SEARCH_MATCH(%s, %s, 'ends_with', " . ($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
+            PatternMatch::PATTERN_ENDS_WITH => "RW_SEARCH_MATCH(%s, %s, 'ends_with', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
+            PatternMatch::PATTERN_NOT_ENDS_WITH => "RW_SEARCH_MATCH(%s, %s, 'ends_with', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
 
-            PatternMatch::PATTERN_REGEX => "RW_SEARCH_MATCH(%s, %s, 'regex', " . ($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
-            PatternMatch::PATTERN_NOT_REGEX => "RW_SEARCH_MATCH(%s, %s, 'regex', " . ($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
+            PatternMatch::PATTERN_REGEX => "RW_SEARCH_MATCH(%s, %s, 'regex', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
+            PatternMatch::PATTERN_NOT_REGEX => "RW_SEARCH_MATCH(%s, %s, 'regex', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
         );
 
         return sprintf($pattern[$patternMatch->getType()], $column, $value);
@@ -67,9 +67,9 @@ class DqlQueryGenerator extends QueryGenerator
 
         $paramName = $this->getUniqueParameterName($fieldName);
         $this->parameters[$paramName] = $convertedValue;
-        $convertedValue = ':' . $paramName;
+        $convertedValue = ':'.$paramName;
 
-        return "RW_SEARCH_VALUE_CONVERSION('$fieldName', " . $this->fields[$fieldName]['column'] . ", $convertedValue, " . (null === $strategy ? 'null' : $strategy) . ", " . ($valueRequiresEmbedding ? 'true' : 'false') . ")";
+        return "RW_SEARCH_VALUE_CONVERSION('$fieldName', ".$this->fields[$fieldName]['column'].", $convertedValue, ".(null === $strategy ? 'null' : $strategy).", ".($valueRequiresEmbedding ? 'true' : 'false').")";
     }
 
     /**
@@ -81,8 +81,12 @@ class DqlQueryGenerator extends QueryGenerator
             return $this->fieldsMappingCache[$fieldName][$strategy];
         }
 
+        if (!isset($this->fieldsMappingCache[$fieldName])) {
+            $this->fieldsMappingCache[$fieldName] = array();
+        }
+
         if ($this->fields[$fieldName]['field_convertor'] instanceof SqlFieldConversionInterface) {
-            $this->fieldsMappingCache[$fieldName][$strategy] = "RW_SEARCH_FIELD_CONVERSION('$fieldName', $this->fields[$fieldName]['column'], " . (null === $strategy ? 'null' : $strategy) . ")";
+            $this->fieldsMappingCache[$fieldName][$strategy] = "RW_SEARCH_FIELD_CONVERSION('$fieldName', ".$this->fields[$fieldName]['column'].", ".(null === $strategy ? 'null' : $strategy).")";
         } else {
             $this->fieldsMappingCache[$fieldName][$strategy] = $this->fields[$fieldName]['column'];
         }
