@@ -164,43 +164,22 @@ class QueryGenerator
                 continue;
             }
 
-            $column = $this->fields[$fieldName]['column'];
-
             $groupSql = array();
             $inclusiveSqlGroup = array();
             $exclusiveSqlGroup = array();
 
-            if ($values->hasSingleValues()) {
-                $inclusiveSqlGroup[] = $this->processSingleValues($values->getSingleValues(), $column, $fieldName, $field);
-            }
-
-            if ($values->hasRanges()) {
-                $inclusiveSqlGroup[] = $this->processRanges($values->getRanges(), $column, $fieldName, $field);
-            }
-
-            if ($values->hasComparisons()) {
-                $inclusiveSqlGroup[] = $this->processCompares($values->getComparisons(), $column, $fieldName, $field);
-            }
-
-            if ($values->hasPatternMatchers()) {
-                $inclusiveSqlGroup[] = $this->processPatternMatchers($values->getPatternMatchers(), $column, $fieldName, $field);
-            }
+            $this->processSingleValues($values->getSingleValues(), $fieldName, $inclusiveSqlGroup);
+            $this->processRanges($values->getRanges(), $fieldName, $inclusiveSqlGroup);
+            $this->processCompares($values->getComparisons(), $fieldName, $inclusiveSqlGroup);
+            $this->processPatternMatchers($values->getPatternMatchers(), $fieldName, $inclusiveSqlGroup);
 
             if ($inclusiveSqlGroup) {
                 $groupSql[] = '('.implode(' OR ', $inclusiveSqlGroup).')';
             }
 
-            if ($values->hasExcludedValues()) {
-                $exclusiveSqlGroup[] = $this->processSingleValues($values->getExcludedValues(), $column, $fieldName, $field, true);
-            }
-
-            if ($values->hasExcludedRanges()) {
-                $exclusiveSqlGroup[] = $this->processRanges($values->getExcludedRanges(), $column, $fieldName, $field, true);
-            }
-
-            if ($values->hasPatternMatchers()) {
-                $exclusiveSqlGroup[] = $this->processPatternMatchers($values->getPatternMatchers(), $column, $fieldName, $field, true);
-            }
+            $this->processSingleValues($values->getExcludedValues(), $fieldName, $exclusiveSqlGroup, true);
+            $this->processRanges($values->getExcludedRanges(), $fieldName, $exclusiveSqlGroup, true);
+            $this->processPatternMatchers($values->getPatternMatchers(), $fieldName, $exclusiveSqlGroup, true);
 
             if ($exclusiveSqlGroup) {
                 $groupSql[] = '('.implode(' AND ', $exclusiveSqlGroup).')';
@@ -329,78 +308,78 @@ class QueryGenerator
     /**
      * Processes the single-values and returns an SQL statement query result.
      *
-     * @param SingleValue[]        $values
-     * @param string               $column
-     * @param string               $fieldName
-     * @param FieldConfigInterface $field
-     * @param boolean              $exclude
+     * @param SingleValue[] $values
+     * @param string        $fieldName
+     * @param array         $query
+     * @param boolean       $exclude
      *
      * @return string
      */
-    protected function processSingleValues(array $values, $column, $fieldName, FieldConfigInterface $field, $exclude = false)
+    protected function processSingleValuesInList(array $values, $fieldName, array &$query, $exclude = false)
     {
-        $inList = array();
-
-        // Don't use IN() with a custom SQL-statement for better compatibility
-        if (!$this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface && !$this->fields[$fieldName]['value_convertor'] instanceof SqlValueConversionInterface) {
-            $column = $this->getFieldColumn($fieldName);
-
-            foreach ($values as $value) {
-                $inList[] = $this->getValueAsSql($value->getValue(), $value, $fieldName, $column);
-            }
-
-            if ($exclude) {
-                return sprintf('%s NOT IN(%s)', $column, implode(', ', $inList));
-            }
-
-            return sprintf('%s IN(%s)', $column, implode(', ', $inList));
-        }
+        $valuesQuery = array();
+        $column = $this->getFieldColumn($fieldName);
 
         foreach ($values as $value) {
-            if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
-                $strategy = $this->fields[$fieldName]['value_convertor']->getConversionStrategy($value->getValue(), $field->getOptions(), $this->getConversionHints($fieldName, $column));
-            } else {
-                $strategy = null;
-            }
-
-            if ($exclude) {
-                $inList[] = sprintf('%s <> %s', $this->getFieldColumn($fieldName, $strategy), $this->getValueAsSql($value->getValue(), $value, $fieldName, $column, $strategy));
-            } else {
-                $inList[] = sprintf('%s = %s', $this->getFieldColumn($fieldName, $strategy), $this->getValueAsSql($value->getValue(), $value, $fieldName, $column, $strategy));
-            }
+            $valuesQuery[] = $this->getValueAsSql($value->getValue(), $value, $fieldName, $column);
         }
 
-        return implode(($exclude ? ' AND ' : ' OR '), $inList);
+        if ($valuesQuery) {
+            $query[] = sprintf(($exclude ? '%s NOT IN(%s)' : '%s IN(%s)'), $column, implode(', ', $valuesQuery));
+        }
     }
 
     /**
-     * @param Range[]              $ranges
-     * @param string               $column
-     * @param string               $fieldName
-     * @param FieldConfigInterface $field
-     * @param boolean              $exclude
+     * Processes the single-values and returns an SQL statement query result.
      *
-     * @return string
+     * @param SingleValue[] $values
+     * @param string        $fieldName
+     * @param array         $query
+     * @param boolean       $exclude
      */
-    protected function processRanges(array $ranges, $column, $fieldName, FieldConfigInterface $field, $exclude = false)
+    protected function processSingleValues(array $values, $fieldName, array &$query, $exclude = false)
     {
-        $query = array();
-        $hints = array();
+        if (!$this->fields[$fieldName]['field_convertor'] instanceof ConversionStrategyInterface && !$this->fields[$fieldName]['value_convertor'] instanceof SqlValueConversionInterface) {
+            // Don't use IN() with a custom SQL-statement for better compatibility
+            // Always using OR seems to decrease the performance on some DB engines
+            $this->processSingleValuesInList($values, $fieldName, $query, $exclude);
 
-        if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
-            $hints = $this->getConversionHints($fieldName, $column);
+            return ;
         }
 
-        foreach ($ranges as $range) {
-            if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
-                $strategy = $this->fields[$fieldName]['value_convertor']->getConversionStrategy($range->getLower(), $field->getOptions(), $hints);
-            } else {
-                $strategy = null;
-            }
+        $valuesQuery = array();
 
+        foreach ($values as $value) {
+            $strategy = $this->getConversionStrategy($fieldName, $value->getValue());
             $column = $this->getFieldColumn($fieldName, $strategy);
 
-            $query[] = sprintf(
+            if ($exclude) {
+                $valuesQuery[] = sprintf('%s <> %s', $this->getFieldColumn($fieldName, $strategy), $this->getValueAsSql($value->getValue(), $value, $fieldName, $column, $strategy));
+            } else {
+                $valuesQuery[] = sprintf('%s = %s', $this->getFieldColumn($fieldName, $strategy), $this->getValueAsSql($value->getValue(), $value, $fieldName, $column, $strategy));
+            }
+        }
+
+        if ($valuesQuery) {
+            $query[] = implode(($exclude ? ' AND ' : ' OR '), $valuesQuery);
+        }
+    }
+
+    /**
+     * @param Range[] $ranges
+     * @param string  $fieldName
+     * @param array   $query
+     * @param boolean $exclude
+     */
+    protected function processRanges(array $ranges, $fieldName, array &$query, $exclude = false)
+    {
+        $valuesQuery = array();
+
+        foreach ($ranges as $range) {
+            $strategy = $this->getConversionStrategy($fieldName, $range->getLower());
+            $column = $this->getFieldColumn($fieldName, $strategy);
+
+            $valuesQuery[] = sprintf(
                 $this->getRangePattern($range, $exclude),
                 $column,
                 $this->getValueAsSql($range->getLower(), $range, $fieldName, $column, $strategy),
@@ -409,11 +388,9 @@ class QueryGenerator
             );
         }
 
-        if ($query) {
-            return implode(($exclude ? ' AND ' : ' OR '), $query);
+        if ($valuesQuery) {
+            $query[] = implode(($exclude ? ' AND ' : ' OR '), $valuesQuery);
         }
-
-        return '';
     }
 
     /**
@@ -444,57 +421,35 @@ class QueryGenerator
     }
 
     /**
-     * @param Compare[]            $compares
-     * @param string               $column
-     * @param string               $fieldName
-     * @param FieldConfigInterface $field
-     *
-     * @return string
+     * @param Compare[] $compares
+     * @param string    $fieldName
+     * @param array     $query
      */
-    protected function processCompares($compares, $column, $fieldName, FieldConfigInterface $field)
+    protected function processCompares(array $compares, $fieldName, array &$query)
     {
-        $query = array();
-        $hints = array();
-
-        if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
-            $hints = $this->getConversionHints($fieldName, $column);
-        }
+        $valuesQuery = array();
 
         foreach ($compares as $comparison) {
-            if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
-                $strategy = $this->fields[$fieldName]['value_convertor']->getConversionStrategy($comparison->getValue(), $field->getOptions(), $hints);
-            } else {
-                $strategy = null;
-            }
+            $strategy = $this->getConversionStrategy($fieldName, $comparison->getValue());
 
             $column = $this->getFieldColumn($fieldName, $strategy);
-            $query[] =  sprintf('%s %s %s', $column, $comparison->getOperator(), $this->getValueAsSql($comparison->getValue(), $comparison, $fieldName, $column, $strategy));
+            $valuesQuery[] =  sprintf('%s %s %s', $column, $comparison->getOperator(), $this->getValueAsSql($comparison->getValue(), $comparison, $fieldName, $column, $strategy));
         }
 
-        if ($query) {
-            return implode(' OR ', $query);
+        if ($valuesQuery) {
+            $query[] = implode(' OR ', $valuesQuery);
         }
-
-        return '';
     }
 
     /**
-     * @param PatternMatch[]       $patternMatchers
-     * @param string               $column
-     * @param string               $fieldName
-     * @param FieldConfigInterface $field
-     * @param boolean              $exclude
-     *
-     * @return string
+     * @param PatternMatch[] $patternMatchers
+     * @param string         $fieldName
+     * @param array          $query
+     * @param boolean        $exclude
      */
-    protected function processPatternMatchers($patternMatchers, $column, $fieldName, FieldConfigInterface $field, $exclude = false)
+    protected function processPatternMatchers(array $patternMatchers, $fieldName, array &$query, $exclude = false)
     {
-        $query = array();
-        $hints = array();
-
-        if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
-            $hints = $this->getConversionHints($fieldName, $column);
-        }
+        $valuesQuery = array();
 
         foreach ($patternMatchers as $patternMatch) {
             $isExclusive = $patternMatch->isExclusive();
@@ -502,21 +457,14 @@ class QueryGenerator
                 continue;
             }
 
-            if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
-                $strategy = $this->fields[$fieldName]['value_convertor']->getConversionStrategy($patternMatch->getValue(), $field->getOptions(), $hints);
-            } else {
-                $strategy = null;
-            }
-
+            $strategy = $this->getConversionStrategy($fieldName, $patternMatch->getValue());
             $column = $this->getFieldColumn($fieldName, $strategy);
-            $query[] = $this->getPatternMatcher($patternMatch, $column, $this->getValueAsSql($patternMatch->getValue(), $patternMatch, $fieldName, $column, $strategy, true));
+            $valuesQuery[] = $this->getPatternMatcher($patternMatch, $column, $this->getValueAsSql($patternMatch->getValue(), $patternMatch, $fieldName, $column, $strategy, true));
         }
 
-        if ($query) {
-            return implode(($exclude ? ' AND ' : ' OR '), $query);
+        if ($valuesQuery) {
+            $query[] = implode(($exclude ? ' AND ' : ' OR '), $valuesQuery);
         }
-
-        return '';
     }
 
     /**
@@ -533,6 +481,29 @@ class QueryGenerator
         }
 
         return SearchMatch::getMatchSqlLike($column, $value, $patternMatch->isCaseInsensitive(), $patternMatch->isExclusive(), $this->connection);
+    }
+
+    /**
+     * @param string $fieldName
+     * @param mixed  $value
+     *
+     * @return null|integer
+     */
+    protected function getConversionStrategy($fieldName, $value)
+    {
+        if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
+            $hints = $this->getConversionHints($fieldName, $this->fields[$fieldName]['column']);
+
+            return $this->fields[$fieldName]['value_convertor']->getConversionStrategy($value, $this->fields[$fieldName]['field']->getOptions(), $hints);
+        }
+
+        if ($this->fields[$fieldName]['field_convertor'] instanceof ConversionStrategyInterface) {
+            $hints = $this->getConversionHints($fieldName, $this->fields[$fieldName]['column']);
+
+            return $this->fields[$fieldName]['field_convertor']->getConversionStrategy($value, $this->fields[$fieldName]['field']->getOptions(), $hints);
+        }
+
+        return null;
     }
 
     /**

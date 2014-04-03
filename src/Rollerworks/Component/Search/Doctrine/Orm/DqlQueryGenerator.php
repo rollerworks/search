@@ -20,11 +20,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 class DqlQueryGenerator extends QueryGenerator
 {
     /**
-     * Returns whether the field is accepted for processing.
-     *
-     * @param FieldConfigInterface $field
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     protected function acceptsField(FieldConfigInterface $field)
     {
