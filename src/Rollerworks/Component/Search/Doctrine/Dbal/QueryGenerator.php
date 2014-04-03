@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Connection;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\FieldConfigInterface;
@@ -283,8 +283,7 @@ class QueryGenerator
      */
     protected function acceptsField(FieldConfigInterface $field)
     {
-        // dummy implementation to prevent removal suggestion
-        return $field !== null;
+        return isset($this->fields[$field->getName()]);
     }
 
     /**

@@ -22,14 +22,6 @@ class DqlQueryGenerator extends QueryGenerator
     /**
      * {@inheritdoc}
      */
-    protected function acceptsField(FieldConfigInterface $field)
-    {
-        return null !== $field->getModelRefClass();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getPatternMatcher(PatternMatch $patternMatch, $column, $value)
     {
         // Doctrine at the moment does not support case insensitive LIKE or regex match

@@ -1067,6 +1067,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldLabel->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice'));
             $fieldLabel->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('label'));
             $fieldLabel->expects($this->any())->method('getOptions')->will($this->returnValue($optionsForCustomer));
+            $fieldLabel->expects($this->any())->method('getName')->will($this->returnValue('invoice_label'));
             $fieldSet->set('invoice_label', $fieldLabel);
 
             $fieldCustomer = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
@@ -1075,6 +1076,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldCustomer->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice'));
             $fieldCustomer->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('customer'));
             $fieldCustomer->expects($this->any())->method('getOptions')->will($this->returnValue(array()));
+            $fieldCustomer->expects($this->any())->method('getName')->will($this->returnValue('invoice_customer'));
             $fieldSet->set('invoice_customer', $fieldCustomer);
 
             $fieldStatus = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
@@ -1083,6 +1085,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldStatus->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice'));
             $fieldStatus->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('status'));
             $fieldStatus->expects($this->any())->method('getOptions')->will($this->returnValue(array()));
+            $fieldStatus->expects($this->any())->method('getName')->will($this->returnValue('invoice_status'));
             $fieldSet->set('invoice_status', $fieldStatus);
 
             return $fieldSet;
@@ -1097,6 +1100,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldCustomer->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer'));
             $fieldCustomer->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('id'));
             $fieldCustomer->expects($this->any())->method('getOptions')->will($this->returnValue($optionsForCustomer));
+            $fieldCustomer->expects($this->any())->method('getName')->will($this->returnValue('customer_id'));
             $fieldSet->set('customer_id', $fieldCustomer);
 
             return $fieldSet;
@@ -1111,6 +1115,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldCustomer->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\User'));
             $fieldCustomer->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('id'));
             $fieldCustomer->expects($this->any())->method('getOptions')->will($this->returnValue(array()));
+            $fieldCustomer->expects($this->any())->method('getName')->will($this->returnValue('user_id'));
             $fieldSet->set('user_id', $fieldCustomer);
 
             $fieldBirthday = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
@@ -1119,6 +1124,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldBirthday->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\User'));
             $fieldBirthday->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('birthday'));
             $fieldBirthday->expects($this->any())->method('getOptions')->will($this->returnValue(array()));
+            $fieldBirthday->expects($this->any())->method('getName')->will($this->returnValue('user_birthday'));
             $fieldSet->set('user_birthday', $fieldBirthday);
 
             return $fieldSet;
@@ -1133,6 +1139,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldLabel->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice'));
             $fieldLabel->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('label'));
             $fieldLabel->expects($this->any())->method('getOptions')->will($this->returnValue(array()));
+            $fieldLabel->expects($this->any())->method('getName')->will($this->returnValue('invoice_label'));
             $fieldSet->set('invoice_label', $fieldLabel);
 
             $fieldCustomer = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
@@ -1141,6 +1148,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldCustomer->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice'));
             $fieldCustomer->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('customer'));
             $fieldCustomer->expects($this->any())->method('getOptions')->will($this->returnValue($optionsForCustomer));
+            $fieldCustomer->expects($this->any())->method('getName')->will($this->returnValue('invoice_customer'));
             $fieldSet->set('invoice_customer', $fieldCustomer);
 
             $fieldStatus = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
@@ -1149,6 +1157,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldStatus->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice'));
             $fieldStatus->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('status'));
             $fieldStatus->expects($this->any())->method('getOptions')->will($this->returnValue(array()));
+            $fieldStatus->expects($this->any())->method('getName')->will($this->returnValue('invoice_status'));
             $fieldSet->set('invoice_status', $fieldStatus);
 
             $fieldCustomerId = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
@@ -1157,6 +1166,7 @@ class WhereBuilderTest extends OrmTestCase
             $fieldCustomerId->expects($this->any())->method('getModelRefClass')->will($this->returnValue('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer'));
             $fieldCustomerId->expects($this->any())->method('getModelRefProperty')->will($this->returnValue('id'));
             $fieldCustomerId->expects($this->any())->method('getOptions')->will($this->returnValue(array()));
+            $fieldCustomerId->expects($this->any())->method('getName')->will($this->returnValue('customer_id'));
             $fieldSet->set('customer_id', $fieldCustomerId);
         }
     }
