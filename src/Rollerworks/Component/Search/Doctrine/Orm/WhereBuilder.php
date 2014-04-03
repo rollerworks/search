@@ -299,7 +299,7 @@ class WhereBuilder implements WhereBuilderInterface
             $this->queryGenerator = new DqlQueryGenerator($this->entityManager->getConnection(), $this->searchCondition, $this->fields, $this->parameterPrefix);
         }
 
-        $this->whereClause = $this->queryGenerator->getGroupSql($this->searchCondition->getValuesGroup());
+        $this->whereClause = $this->queryGenerator->getGroupQuery($this->searchCondition->getValuesGroup());
         foreach ($this->queryGenerator->getParameters() as $paramName => $paramValue) {
             $this->query->setParameter($paramName, $paramValue);
         }

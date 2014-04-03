@@ -71,19 +71,31 @@ class QueryGenerator
     protected $connection;
 
     /**
+     * @var array
+     */
+    protected $parametersType = array();
+
+    /**
+     * @var boolean
+     */
+    protected $embedValues;
+
+    /**
      * Constructor.
      *
      * @param Connection               $connection      Doctrine DBAL Connection object
      * @param SearchConditionInterface $searchCondition SearchCondition object
      * @param array                    $fields          Array containing the: field(FieldConfigInterface), column (including alias), db_type, conversion; per field-name
      * @param string                   $parameterPrefix
+     * @param boolean                  $embedValues
      */
-    public function __construct(Connection $connection, SearchConditionInterface $searchCondition, array $fields, $parameterPrefix = '')
+    public function __construct(Connection $connection, SearchConditionInterface $searchCondition, array $fields, $parameterPrefix = '', $embedValues = false)
     {
         $this->searchCondition = $searchCondition;
         $this->connection = $connection;
         $this->configureFields($fields);
         $this->parameterPrefix = $parameterPrefix;
+        $this->embedValues = $embedValues;
     }
 
     /**
@@ -147,12 +159,34 @@ class QueryGenerator
     }
 
     /**
+     * Returns the parameter-type that where set during the generation process.
+     *
+     * @param string $name
+     *
+     * @return \Doctrine\DBAL\Types\Type
+     */
+    public function getParameterType($name)
+    {
+        return isset($this->parametersType[$name]) ? $this->parametersType[$name] : null;
+    }
+
+    /**
+     * Returns the parameters-type that where set during the generation process.
+     *
+     * @return array
+     */
+    public function getParameterTypes()
+    {
+        return $this->parametersType;
+    }
+
+    /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
      *
      * @return string
      */
-    public function getGroupSql(ValuesGroup $valuesGroup, FieldSet $fieldSet = null)
+    public function getGroupQuery(ValuesGroup $valuesGroup, FieldSet $fieldSet = null)
     {
         $query = array();
         $fieldSet = $fieldSet ?: $this->searchCondition->getFieldSet();
@@ -201,7 +235,7 @@ class QueryGenerator
             $groupSql = array();
 
             foreach ($valuesGroup->getGroups() as $group) {
-                $groupSql[] = $this->getGroupSql($group);
+                $groupSql[] = $this->getGroupQuery($group);
             }
 
             if ($groupSql) {
@@ -283,7 +317,8 @@ class QueryGenerator
      */
     protected function acceptsField(FieldConfigInterface $field)
     {
-        return isset($this->fields[$field->getName()]);
+        // dummy implementation to prevent removal suggestion
+        return isset($this->fields[$field->getName()]) !== null;
     }
 
     /**
@@ -524,9 +559,10 @@ class QueryGenerator
     protected function getValueAsSql($value, $inputValue, $fieldName, $column, $strategy = null, $noSqlConversion = false)
     {
         // No conversions so set the value as query-parameter
-        if (!$this->fields[$fieldName]['value_convertor'] instanceof ValueConversionInterface) {
+        if (!$this->embedValues && !$this->fields[$fieldName]['value_convertor'] instanceof ValueConversionInterface) {
             $paramName = $this->getUniqueParameterName($fieldName);
             $this->parameters[$paramName] = $value;
+            $this->parametersType[$paramName] = $this->fields[$fieldName]['db_type'];
 
             return ':' . $paramName;
         }
@@ -554,8 +590,13 @@ class QueryGenerator
             return $this->convertSqlValue($converter, $fieldName, $column, $value, $convertedValue, $field, $hints, $strategy);
         }
 
+        if ($this->embedValues) {
+            return $this->connection->quote($convertedValue, $type->getBindingType());
+        }
+
         $paramName = $this->getUniqueParameterName($fieldName);
         $this->parameters[$paramName] = $convertedValue;
+        $this->parametersType[$paramName] = $type;
 
         return ':' . $paramName;
     }
@@ -574,9 +615,10 @@ class QueryGenerator
      */
     protected function convertSqlValue(SqlValueConversionInterface $converter, $fieldName, $column, $value, $convertedValue, FieldConfigInterface $field, array $hints, $strategy)
     {
-        if (!$converter->valueRequiresEmbedding($value, $field->getOptions(), $hints)) {
+        if (!$this->embedValues && !$converter->valueRequiresEmbedding($value, $field->getOptions(), $hints)) {
             $paramName = $this->getUniqueParameterName($fieldName);
             $this->parameters[$paramName] = $convertedValue;
+            $this->parametersType[$paramName] = $this->fields[$fieldName]['db_type'];
             $convertedValue = ':' . $paramName;
         }
 
