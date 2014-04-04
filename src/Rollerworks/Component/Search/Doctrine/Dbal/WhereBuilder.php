@@ -85,7 +85,7 @@ class WhereBuilder implements WhereBuilderInterface
      * @param Connection               $connection      Doctrine DBAL Connection object
      * @param SearchConditionInterface $searchCondition SearchCondition object
      *
-     * @throws BadMethodCallException  When SearchCondition contains errors.
+     * @throws BadMethodCallException When SearchCondition contains errors.
      */
     public function __construct(Connection $connection, SearchConditionInterface $searchCondition)
     {
@@ -101,10 +101,10 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * Set Field configuration for the query-generation.
      *
-     * @param string                      $fieldName      Name of the Search-field
-     * @param string                      $column         DB column-name
-     * @param string|object               $type           DB-type string or object
-     * @param string                      $alias          alias to use with the column
+     * @param string        $fieldName Name of the Search-field
+     * @param string        $column    DB column-name
+     * @param string|object $type      DB-type string or object
+     * @param string        $alias     alias to use with the column
      *
      * @return self
      *

@@ -11,11 +11,11 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
-/*
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 use Rollerworks\Component\Search\SearchConditionInterface;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 interface WhereBuilderInterface
 {
     /**

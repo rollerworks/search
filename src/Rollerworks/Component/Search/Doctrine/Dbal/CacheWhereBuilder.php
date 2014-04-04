@@ -14,15 +14,11 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Statement;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\NativeQuery;
-use Doctrine\ORM\Query as DqlQuery;
-use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\SearchConditionInterface;
 
 /***
- * Handles caching of the Doctrine ORM WhereBuilder.
+ * Handles caching of the Doctrine DBAL WhereBuilder.
  *
  * Note. For best performance caching of the WhereClause should be done on a
  * per user-session fieldset basis. This ensures enough uniqueness and
@@ -34,48 +30,13 @@ use Rollerworks\Component\Search\SearchConditionInterface;
  * Instead of calling getWhereClause() on the WhereBuilder class
  * you should call getWhereClause() on this class instead.
  *
- * WARNING. Any changes to the entities mapping should invalidate the cache
+ * WARNING. Any changes to the mapping-data should invalidate the cache
  * the system does not do this automatically.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class CacheWhereBuilder implements WhereBuilderInterface
+class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
 {
-    /**
-     * @var Cache
-     */
-    private $cacheDriver;
-
-    /**
-     * @var integer
-     */
-    private $cacheLifeTime;
-
-    /**
-     * @var WhereBuilderInterface
-     */
-    private $whereBuilder;
-
-    /**
-     * @var string
-     */
-    private $cacheKey;
-
-    /**
-     * @var string
-     */
-    private $keySuffix;
-
-    /**
-     * @var string
-     */
-    private $whereClause;
-
-    /**
-     * @var array
-     */
-    private $parameters = array();
-
     /**
      * @var array
      */
@@ -95,48 +56,6 @@ class CacheWhereBuilder implements WhereBuilderInterface
         $this->cacheDriver = $cacheDriver;
         $this->cacheLifeTime = (int) $lifeTime;
         $this->whereBuilder = $whereBuilder;
-    }
-
-    /**
-     * Set the cache key.
-     *
-     * This method also accepts a callback that can calculate the key for you.
-     * The callback will receive both the query and search-condition in order.
-     *
-     * @param string   $key
-     * @param callback $callback
-     *
-     * @return self
-     *
-     * @throws BadMethodCallException
-     */
-    public function setCacheKey($key = null, $callback = null)
-    {
-        if ((null === $key && null === $callback) || ($callback && !is_callable($callback))) {
-            throw new BadMethodCallException('Either a key or legal callback must be given.');
-        }
-
-        if ($callback) {
-            $key = call_user_func($callback, $this->whereBuilder->getQuery(), $this->whereBuilder->getSearchCondition());
-        }
-
-        $this->cacheKey = (string) $key;
-
-        return $this;
-    }
-
-    /**
-     * Set an extra suffix for the caching key.
-     *
-     * This allows to make the key more unique.
-     * For example, you can set the key to calculate automatically,
-     * and add this suffix to ensure there is no problem with different mapping.
-     *
-     * @param string $key
-     */
-    public function setCacheKeySuffix($key)
-    {
-        $this->keySuffix = $key;
     }
 
     /**
@@ -176,35 +95,11 @@ class CacheWhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * @return WhereBuilder
-     */
-    public function getInnerWhereBuilder()
-    {
-        return $this->whereBuilder;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameters()
-    {
-        return $this->parameters;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getParameterTypes()
     {
        return $this->parameterTypes;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSearchCondition()
-    {
-        return $this->whereBuilder->getSearchCondition();
     }
 
     /**
