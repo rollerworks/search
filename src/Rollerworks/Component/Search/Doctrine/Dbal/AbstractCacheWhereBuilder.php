@@ -13,7 +13,6 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\Common\Cache\Cache;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\SearchConditionInterface;
 
 /***
@@ -85,7 +84,6 @@ abstract class AbstractCacheWhereBuilder
 
         return $this;
     }
-
 
     /**
      * Set an extra suffix for the caching key.

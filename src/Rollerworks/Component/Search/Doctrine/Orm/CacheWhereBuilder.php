@@ -16,9 +16,7 @@ use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query as DqlQuery;
 use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\AbstractCacheWhereBuilder;
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\SearchConditionInterface;
 
 /***
  * Handles caching of the Doctrine ORM WhereBuilder.
