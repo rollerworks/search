@@ -82,7 +82,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
         }
 
         $cacheKey .= $this->cacheKey;
-        $cacheKey .= $this->keySuffix ? '_' . $this->keySuffix : '';
+        $cacheKey .= $this->keySuffix ? '_'.$this->keySuffix : '';
 
         if ($this->cacheDriver->contains($cacheKey)) {
             $data = $this->cacheDriver->fetch($cacheKey);
@@ -92,7 +92,14 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
         } else {
             $this->whereClause = $this->whereBuilder->getWhereClause();
             $this->applyParameters($query, $this->whereBuilder->getParameters());
-            $this->cacheDriver->save($cacheKey, array($this->whereClause, $this->whereBuilder->getParameters()), $this->cacheLifeTime);
+            $this->cacheDriver->save(
+                $cacheKey,
+                array(
+                    $this->whereClause,
+                    $this->whereBuilder->getParameters()
+                ),
+                $this->cacheLifeTime
+            );
         }
 
         return $this->whereClause;
@@ -118,9 +125,9 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
 
         $query = $this->whereBuilder->getQuery();
         if ($query instanceof NativeQuery) {
-            $query->setSQL($query->getSQL() . $prependQuery . $whereCase);
+            $query->setSQL($query->getSQL().$prependQuery.$whereCase);
         } else {
-            $query->setDQL($query->getDQL() . $prependQuery . $whereCase);
+            $query->setDQL($query->getDQL().$prependQuery.$whereCase);
         }
 
         if ($query instanceof DqlQuery) {

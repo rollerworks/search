@@ -329,9 +329,9 @@ class WhereBuilder implements WhereBuilderInterface
         }
 
         if ($this->query instanceof NativeQuery) {
-            $this->query->setSQL($this->query->getSQL() . $prependQuery . $whereCase);
+            $this->query->setSQL($this->query->getSQL().$prependQuery.$whereCase);
         } else {
-            $this->query->setDQL($this->query->getDQL() . $prependQuery . $whereCase);
+            $this->query->setDQL($this->query->getDQL().$prependQuery.$whereCase);
         }
 
         if ($this->query instanceof DqlQuery) {
@@ -397,7 +397,9 @@ class WhereBuilder implements WhereBuilderInterface
         $self = $this;
 
         // We use a closure here to prevent a nesting recursion
-        return function () use (&$self) { return $self; };
+        return function () use (&$self) {
+            return $self;
+        };
     }
 
     /**
@@ -456,7 +458,7 @@ class WhereBuilder implements WhereBuilderInterface
      */
     public function getFieldConversionSql($fieldName, $column, FieldConfigInterface $field = null, $strategy = null)
     {
-        $field = $field ?: $this->fieldset->get($fieldName);
+        $field = $field ? : $this->fieldset->get($fieldName);
 
         if ($this->queryGenerator) {
             return $this->queryGenerator->getFieldConversionSql($fieldName, $column, $field, $strategy);
@@ -483,7 +485,7 @@ class WhereBuilder implements WhereBuilderInterface
      */
     public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field = null, $strategy = null, $isValueEmbedded = false)
     {
-        $field = $field ?: $this->fieldset->get($fieldName);
+        $field = $field ? : $this->fieldset->get($fieldName);
 
         if ($this->queryGenerator) {
             return $this->queryGenerator->getValueConversionSql($fieldName, $column, $value, $field, $strategy, $isValueEmbedded);
@@ -520,8 +522,8 @@ class WhereBuilder implements WhereBuilderInterface
 
             $this->fields[$fieldName] = array();
             $this->fields[$fieldName]['db_type'] = $this->getDbType($field->getModelRefClass(), $field->getModelRefProperty());
-            $this->fields[$fieldName]['column']  = $this->resolveFieldColumn($field->getModelRefClass(), $field->getModelRefProperty(), $fieldName);
-            $this->fields[$fieldName]['field']   = $fieldConfig;
+            $this->fields[$fieldName]['column'] = $this->resolveFieldColumn($field->getModelRefClass(), $field->getModelRefProperty(), $fieldName);
+            $this->fields[$fieldName]['field'] = $fieldConfig;
             $this->fields[$fieldName]['field_convertor'] = isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null;
             $this->fields[$fieldName]['value_convertor'] = isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null;
         }
@@ -543,7 +545,7 @@ class WhereBuilder implements WhereBuilderInterface
         $metaData = $this->entityManager->getClassMetadata($entity);
 
         if (isset($this->entityFieldMapping[$fieldName])) {
-            $columnPrefix = $this->entityFieldMapping[$fieldName] . '.';
+            $columnPrefix = $this->entityFieldMapping[$fieldName].'.';
         } else {
             // We cant use the prefix directly as it might be JOIN column
             if (!$this->query instanceof NativeQuery && $metaData->isAssociationWithSingleJoinColumn($column)) {
@@ -557,16 +559,16 @@ class WhereBuilder implements WhereBuilderInterface
                     );
                 }
 
-                $columnPrefix = $this->entityClassMapping[$joiningClass] . '.';
+                $columnPrefix = $this->entityClassMapping[$joiningClass].'.';
                 $column = $metaData->getSingleAssociationReferencedJoinColumnName($column);
             } elseif (isset($this->entityClassMapping[$entity])) {
-                $columnPrefix = $this->entityClassMapping[$entity] . '.';
+                $columnPrefix = $this->entityClassMapping[$entity].'.';
             } else {
                 throw new InvalidConfigurationException(sprintf('Unable to determine entity-alias mapping for "%s"#%s, set the entity mapping explicitly.', $entity, $column));
             }
         }
 
-        $column = $columnPrefix . $column;
+        $column = $columnPrefix.$column;
 
         return $column;
     }

@@ -88,7 +88,14 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
             $this->parameters = $this->whereBuilder->getParameterS();
             $this->parameterTypes = $this->whereBuilder->getParameterTypes();
 
-            $this->cacheDriver->save($cacheKey, array($this->whereClause, $this->whereBuilder->getParameters(), $this->serializeParameterTypes($this->whereBuilder->getParameterTypes())), $this->cacheLifeTime);
+            $this->cacheDriver->save(
+                $cacheKey,
+                array(
+                   $this->whereClause, $this->whereBuilder->getParameters(),
+                   $this->serializeParameterTypes($this->whereBuilder->getParameterTypes())
+                ),
+                $this->cacheLifeTime
+            );
         }
 
         return $this->whereClause;
@@ -99,7 +106,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      */
     public function getParameterTypes()
     {
-       return $this->parameterTypes;
+        return $this->parameterTypes;
     }
 
     /**

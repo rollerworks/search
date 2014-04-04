@@ -85,7 +85,8 @@ class QueryGenerator
      *
      * @param Connection               $connection      Doctrine DBAL Connection object
      * @param SearchConditionInterface $searchCondition SearchCondition object
-     * @param array                    $fields          Array containing the: field(FieldConfigInterface), column (including alias), db_type, conversion; per field-name
+     * @param array                    $fields          Array containing the: field(FieldConfigInterface)
+     *                                                  column (including alias), db_type, conversion; per field-name
      * @param string                   $parameterPrefix
      * @param boolean                  $embedValues
      */
@@ -378,7 +379,7 @@ class QueryGenerator
             // Always using OR seems to decrease the performance on some DB engines
             $this->processSingleValuesInList($values, $fieldName, $query, $exclude);
 
-            return ;
+            return;
         }
 
         $valuesQuery = array();
@@ -467,7 +468,12 @@ class QueryGenerator
             $strategy = $this->getConversionStrategy($fieldName, $comparison->getValue());
 
             $column = $this->getFieldColumn($fieldName, $strategy);
-            $valuesQuery[] =  sprintf('%s %s %s', $column, $comparison->getOperator(), $this->getValueAsSql($comparison->getValue(), $comparison, $fieldName, $column, $strategy));
+            $valuesQuery[] = sprintf(
+                '%s %s %s',
+                $column,
+                $comparison->getOperator(),
+                $this->getValueAsSql($comparison->getValue(), $comparison, $fieldName, $column, $strategy)
+            );
         }
 
         if ($valuesQuery) {
@@ -493,7 +499,11 @@ class QueryGenerator
 
             $strategy = $this->getConversionStrategy($fieldName, $patternMatch->getValue());
             $column = $this->getFieldColumn($fieldName, $strategy);
-            $valuesQuery[] = $this->getPatternMatcher($patternMatch, $column, $this->getValueAsSql($patternMatch->getValue(), $patternMatch, $fieldName, $column, $strategy, true));
+            $valuesQuery[] = $this->getPatternMatcher(
+                $patternMatch,
+                $column,
+                $this->getValueAsSql($patternMatch->getValue(), $patternMatch, $fieldName, $column, $strategy, true)
+            );
         }
 
         if ($valuesQuery) {
@@ -564,7 +574,7 @@ class QueryGenerator
             $this->parameters[$paramName] = $value;
             $this->parametersType[$paramName] = $this->fields[$fieldName]['db_type'];
 
-            return ':' . $paramName;
+            return ':'.$paramName;
         }
 
         /** @var \Doctrine\DBAL\Types\Type $type */
@@ -598,7 +608,7 @@ class QueryGenerator
         $this->parameters[$paramName] = $convertedValue;
         $this->parametersType[$paramName] = $type;
 
-        return ':' . $paramName;
+        return ':'.$paramName;
     }
 
     /**
@@ -619,7 +629,7 @@ class QueryGenerator
             $paramName = $this->getUniqueParameterName($fieldName);
             $this->parameters[$paramName] = $convertedValue;
             $this->parametersType[$paramName] = $this->fields[$fieldName]['db_type'];
-            $convertedValue = ':' . $paramName;
+            $convertedValue = ':'.$paramName;
         }
 
         return $this->getValueConversionSql($fieldName, $column, $convertedValue, $field, $strategy);
@@ -636,7 +646,7 @@ class QueryGenerator
             $this->paramPosition[$fieldName] = -1;
         }
 
-        return (null !== $this->parameterPrefix ? $this->parameterPrefix . '_' : '') . $fieldName . '_' . $this->paramPosition[$fieldName] += 1;
+        return (null !== $this->parameterPrefix ? $this->parameterPrefix.'_' : '').$fieldName.'_'.$this->paramPosition[$fieldName] += 1;
     }
 
     /**

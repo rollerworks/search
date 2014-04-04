@@ -45,7 +45,7 @@ class DoctrineOrmFactory
     /**
      * Creates a new WhereBuilder for the SearchCondition.
      *
-     * Conversions are applied using the 'doctrine_orm_conversion' option (when present).
+     * Conversions are applied using the 'doctrine_dbal_conversion' option (when present).
      *
      * @param NativeQuery|DqlQuery|QueryBuilder $query           Doctrine ORM Query or QueryBuilder object
      * @param SearchConditionInterface          $searchCondition SearchCondition object
