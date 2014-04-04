@@ -21,7 +21,6 @@ use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
@@ -82,7 +81,7 @@ class WhereBuilder implements WhereBuilderInterface
     private $entityFieldMapping = array();
 
     /**
-     * @var ValueConversionInterface[]|SqlValueConversionInterface[]|ConversionStrategyInterface[]
+     * @var ValueConversionInterface[]|ConversionStrategyInterface[]
      */
     private $valueConversions = array();
 
@@ -426,7 +425,7 @@ class WhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * @return ConversionStrategyInterface[]|SqlValueConversionInterface[]|ValueConversionInterface[]
+     * @return ConversionStrategyInterface[]|ValueConversionInterface[]
      */
     public function getValueConversions()
     {
