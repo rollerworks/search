@@ -249,7 +249,7 @@ class WhereBuilder implements WhereBuilderInterface
      *
      * @param string $name
      *
-     * @return array|null
+     * @return \Doctrine\DBAL\Types\Type|null
      */
     public function getParametersType($name)
     {
@@ -302,7 +302,7 @@ class WhereBuilder implements WhereBuilderInterface
 
     private function processFields()
     {
-        foreach ($this->fields as $fieldName) {
+        foreach (array_keys($this->fields) as $fieldName) {
             $this->fields[$fieldName]['field_convertor'] = isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null;
             $this->fields[$fieldName]['value_convertor'] = isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null;
         }

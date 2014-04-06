@@ -14,4 +14,9 @@ class ECommerceCustomer
      * @GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @Column(type="string")
+     */
+    private $name;
 }

@@ -305,7 +305,7 @@ class QueryGenerator
         return $this->fields[$fieldName]['value_convertor']->convertSqlValue(
             $value,
             $field->getOptions(),
-            $this->getConversionHints($fieldName, $column, $strategy)
+            $this->getConversionHints($fieldName, $column, $strategy) + array('value_embedded' => $isValueEmbedded ?: $this->embedValues)
         );
     }
 
@@ -319,7 +319,7 @@ class QueryGenerator
     protected function acceptsField(FieldConfigInterface $field)
     {
         // dummy implementation to prevent removal suggestion
-        return isset($this->fields[$field->getName()]) !== null;
+        return isset($this->fields[$field->getName()]);
     }
 
     /**
@@ -584,10 +584,15 @@ class QueryGenerator
         /** @var FieldConfigInterface $field */
         $field = $this->fields[$fieldName]['field'];
 
+        if ($this->embedValues && !$converter) {
+            return $this->connection->quote($type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()), $type->getBindingType());
+        }
+
         $convertedValue = $value;
         $hints = $this->getConversionHints($fieldName, $column, $strategy) + array(
             'original_value' => $value,
             'value_object' => $inputValue,
+            'value_embedded' => $this->embedValues,
         );
 
         if ($converter->requiresBaseConversion($value, $field->getOptions(), $hints)) {

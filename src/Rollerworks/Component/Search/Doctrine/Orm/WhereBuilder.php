@@ -281,9 +281,11 @@ class WhereBuilder implements WhereBuilderInterface
      * If you use DQL, you should also set the required hints using
      * getQueryHintName() and getQueryHintValue() respectively.
      *
+     * @param boolean $embedValues Whether to embed the values (NativeQuery only), default is to assign as parameters.
+     *
      * @return string
      */
-    public function getWhereClause()
+    public function getWhereClause($embedValues = false)
     {
         if (null !== $this->whereClause) {
             return $this->whereClause;
@@ -293,7 +295,7 @@ class WhereBuilder implements WhereBuilderInterface
         $this->processFields();
 
         if ($this->query instanceof NativeQuery) {
-            $this->queryGenerator = new QueryGenerator($this->entityManager->getConnection(), $this->searchCondition, $this->fields, $this->parameterPrefix);
+            $this->queryGenerator = new QueryGenerator($this->entityManager->getConnection(), $this->searchCondition, $this->fields, $this->parameterPrefix, $embedValues);
         } else {
             $this->queryGenerator = new DqlQueryGenerator($this->entityManager->getConnection(), $this->searchCondition, $this->fields, $this->parameterPrefix);
         }

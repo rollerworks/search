@@ -9,19 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
+namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
-use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\QueryException;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder;
-use Rollerworks\Component\Search\Tests\Fixtures\CustomerId;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Value\SingleValue;
+use Rollerworks\Component\Search\Tests\Fixtures\CustomerId;
 use Rollerworks\Component\Search\ValuesGroup;
 
-class WhereBuilderTest extends OrmTestCase
+class WhereBuilderTest extends DbalTestCase
 {
     /**
      * @dataProvider provideSimpleQueryTests
@@ -33,53 +28,21 @@ class WhereBuilderTest extends OrmTestCase
      * @param boolean         $valuesEmbedding
      * @param array           $extra           Extra options like dbal_mapping, query
      */
-    public function testDqlQuery($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
+    public function testSimpleQuery($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
     {
-        $query = $this->em->createQuery($extra['query']);
+        $connection = $this->getConnectionMock();
 
-        $whereBuilder = new WhereBuilder($query, $condition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
-
-        $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
-
-        if (is_array($expectWhereCase)) {
-            $this->assertEquals($expectWhereCase[1], $whereCase);
-            $expectedDql = $expectWhereCase[1];
-        } else {
-            $this->assertEquals($expectWhereCase, $whereCase);
-            $expectedDql = $expectWhereCase;
+        if (!isset($extra['dbal_mapping'])) {
+            $extra['dbal_mapping'] = array(
+                'invoice_customer' => array('customer', 'integer', 'I')
+            );
         }
 
-        $this->assertEquals($expectedDql, $whereCase);
-        $this->assertQueryParamsEquals($queryParams, $query);
-        $this->assertEquals($expectSql, $this->assertDqlCompiles($query, $whereBuilder, (null !== $expectSql)));
-    }
+        $whereBuilder = new WhereBuilder($connection, $condition);
 
-    /**
-     * @dataProvider provideSimpleQueryTests
-     *
-     * @param SearchCondition $condition
-     * @param array|string    $expectWhereCase [native, dql] or string if only result is good enough
-     * @param array           $queryParams     [[type, value]]
-     * @param string          $expectSql
-     * @param boolean         $valuesEmbedding
-     * @param array           $extra           Extra options like dbal_mapping, query
-     */
-    public function testNativeQuery($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
-    {
-        $rsm = new ResultSetMappingBuilder($this->em);
-        $rsm->addRootEntityFromClassMetadata('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice', 'I', array('id' => 'invoice_id'));
-        $rsm->addJoinedEntityFromClassMetadata('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer', 'C', 'I', 'customer', array('id' => 'customer_id'));
-        $query = $this->em->createNativeQuery('SELECT I FROM invoice I JOIN I.customer C WHERE ', $rsm);
-
-        $whereBuilder = new WhereBuilder($query, $condition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+        foreach ($extra['dbal_mapping'] as $field => $mapping) {
+            $whereBuilder->setField($field, $mapping[0], $mapping[1], $mapping[2]);
+        }
 
         $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
 
@@ -90,77 +53,30 @@ class WhereBuilderTest extends OrmTestCase
         }
 
         if (!$valuesEmbedding) {
-            $this->assertQueryParamsEquals($queryParams, $query);
+            $this->asserParamsEquals($queryParams, $whereBuilder);
         } else {
             $this->assertCount(0, $whereBuilder->getParameters());
+            $this->assertCount(0, $whereBuilder->getParameterTypes());
+        }
+
+        // dummy to stop detection of none used-param
+        if (null !== $expectSql) {
+            $this->assertNotNull($expectSql);
         }
     }
 
     public function testEmptyResult()
     {
-        $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
+        $connection = $this->getConnectionMock();
 
-        $searchCondition = new SearchCondition(static::getFieldSet('invoice'), new ValuesGroup());
-
-        $whereBuilder = new WhereBuilder($query, $searchCondition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+        $condition = new SearchCondition($this->getFieldSet('invoice'), new ValuesGroup());
+        $whereBuilder = new WhereBuilder($connection, $condition);
+        $whereBuilder->setField('invoice_customer', 'customer', 'integer', 'I');
 
         $whereCase = $whereBuilder->getWhereClause();
         $this->assertEquals('', $whereCase);
-        $this->assertCount(0, $query->getParameters());
-    }
-
-    public function testUpdateQuery()
-    {
-        $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C');
-
-        $searchCondition = new SearchCondition($this->getFieldSet('invoice'), SearchConditionBuilder::create()
-            ->field('invoice_customer')
-                ->addSingleValue(new SingleValue(2))
-            ->end()
-        ->getGroup());
-
-        $whereBuilder = new WhereBuilder($query, $searchCondition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
-
-        $whereBuilder->updateQuery(' WHERE ');
-        $whereCase = $whereBuilder->getWhereClause();
-
-        $this->assertEquals('(((C.id IN(:invoice_customer_0))))', $whereCase);
-        $this->assertQueryParamsEquals(array('invoice_customer_0' => 2), $query);
-        $this->assertEquals('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE (((C.id IN(:invoice_customer_0))))', $query->getDQL());
-
-        // Ensure the query is not updated again
-        $whereBuilder->updateQuery(' WHERE ');
-
-        $this->assertQueryParamsEquals(array('invoice_customer_0' => 2), $query);
-        $this->assertEquals('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE (((C.id IN(:invoice_customer_0))))', $query->getDQL());
-    }
-
-    public function testUpdateQueryWithNoResult()
-    {
-        $query = $this->em->createQuery("SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C");
-
-        $searchCondition = new SearchCondition($this->getFieldSet('invoice'), new ValuesGroup());
-
-        $whereBuilder = new WhereBuilder($query, $searchCondition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
-
-        $whereCase = $whereBuilder->getWhereClause();
-        $this->assertEquals('', $whereCase);
-        $this->assertCount(0, $query->getParameters());
-
-        $whereBuilder->updateQuery(' WHERE ');
-        $this->assertEquals('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C', $query->getDQL());
+        $this->assertCount(0, $whereBuilder->getParameters());
+        $this->assertCount(0, $whereBuilder->getParameterTypes());
     }
 
     /**
@@ -175,12 +91,15 @@ class WhereBuilderTest extends OrmTestCase
      */
     public function testValueConversion($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
     {
-        $query = $this->em->createQuery($extra['query']);
+        $connection = $this->getConnectionMock();
 
-        $whereBuilder = new WhereBuilder($query, $condition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+        if (!isset($extra['dbal_mapping'])) {
+            $extra['dbal_mapping'] = array(
+                'customer_id' => array('id', 'integer', 'C')
+            );
+        }
+
+        $whereBuilder = new WhereBuilder($connection, $condition);
 
         $test = $this;
         $optionsForCustomer = isset($extra['options_for_customer']) ? $extra['options_for_customer'] : array();
@@ -204,19 +123,29 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder->setConverter('customer_id', $converter);
 
+        foreach ($extra['dbal_mapping'] as $field => $mapping) {
+            $whereBuilder->setField($field, $mapping[0], $mapping[1], $mapping[2]);
+        }
+
         $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
 
         if (is_array($expectWhereCase)) {
-            $this->assertEquals($expectWhereCase[1], $whereCase);
-            $expectedDql = $expectWhereCase[1];
+            $this->assertEquals($expectWhereCase[0], $whereCase);
         } else {
             $this->assertEquals($expectWhereCase, $whereCase);
-            $expectedDql = $expectWhereCase;
         }
 
-        $this->assertEquals($expectedDql, $whereCase);
-        $this->assertQueryParamsEquals($queryParams, $query);
-        $this->assertEquals($expectSql, $this->assertDqlCompiles($query, $whereBuilder, (null !== $expectSql)));
+        if (!$valuesEmbedding) {
+            $this->asserParamsEquals($queryParams, $whereBuilder);
+        } else {
+            $this->assertCount(0, $whereBuilder->getParameters());
+            $this->assertCount(0, $whereBuilder->getParameterTypes());
+        }
+
+        // dummy to stop detection of none used-param
+        if (null !== $expectSql) {
+            $this->assertNotNull($expectSql);
+        }
     }
 
     /**
@@ -231,13 +160,15 @@ class WhereBuilderTest extends OrmTestCase
      */
     public function testFieldConversion($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
     {
-        $query = $this->em->createQuery($extra['query']);
+        $connection = $this->getConnectionMock();
 
-        $whereBuilder = new WhereBuilder($query, $condition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+        if (!isset($extra['dbal_mapping'])) {
+            $extra['dbal_mapping'] = array(
+                'invoice_customer' => array('customer', 'integer', 'I')
+            );
+        }
+
+        $whereBuilder = new WhereBuilder($connection, $condition);
 
         $test = $this;
         $optionsForCustomer = isset($extra['options_for_customer']) ? $extra['options_for_customer'] : array();
@@ -255,19 +186,29 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder->setConverter('invoice_customer', $converter);
 
+        foreach ($extra['dbal_mapping'] as $field => $mapping) {
+            $whereBuilder->setField($field, $mapping[0], $mapping[1], $mapping[2]);
+        }
+
         $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
 
         if (is_array($expectWhereCase)) {
-            $this->assertEquals($expectWhereCase[1], $whereCase);
-            $expectedDql = $expectWhereCase[1];
+            $this->assertEquals($expectWhereCase[0], $whereCase);
         } else {
             $this->assertEquals($expectWhereCase, $whereCase);
-            $expectedDql = $expectWhereCase;
         }
 
-        $this->assertEquals($expectedDql, $whereCase);
-        $this->assertQueryParamsEquals($queryParams, $query);
-        $this->assertEquals($expectSql, $this->assertDqlCompiles($query, $whereBuilder, (null !== $expectSql)));
+        if (!$valuesEmbedding) {
+            $this->asserParamsEquals($queryParams, $whereBuilder);
+        } else {
+            $this->assertCount(0, $whereBuilder->getParameters());
+            $this->assertCount(0, $whereBuilder->getParameterTypes());
+        }
+
+        // dummy to stop detection of none used-param
+        if (null !== $expectSql) {
+            $this->assertNotNull($expectSql);
+        }
     }
 
     /**
@@ -278,22 +219,26 @@ class WhereBuilderTest extends OrmTestCase
      * @param array           $queryParams     [[type, value]]
      * @param string          $expectSql
      * @param boolean         $valuesEmbedding
-     * @param array           $extra           Extra options like dbal_mapping, query
+     * @param array           $extra           Extra options like dbal_mapping, query, negative
      */
     public function testSqlValueConversion($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
     {
-        $query = $this->em->createQuery($extra['query']);
+        $connection = $this->getConnectionMock();
 
-        $whereBuilder = new WhereBuilder($query, $condition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+        if (!isset($extra['dbal_mapping'])) {
+            $extra['dbal_mapping'] = array(
+                'customer_id' => array('id', 'integer', 'C')
+            );
+        }
+
+        $whereBuilder = new WhereBuilder($connection, $condition);
 
         $test = $this;
 
         $optionsForCustomer = isset($extra['options_for_customer']) ? $extra['options_for_customer'] : array();
         $negative = isset($extra['negative']) ? $extra['negative'] : false;
         $valueReqEmbedding = isset($extra['value_embedding']) ? $extra['value_embedding'] : false;
+        $ignoreParameters = isset($extra['ignore_parameters_dbal']) ? $extra['ignore_parameters_dbal'] : array();
         $convertField = isset($extra['convert_field']) ? $extra['convert_field'] : 'customer_id';
 
         $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface');
@@ -312,7 +257,7 @@ class WhereBuilderTest extends OrmTestCase
         ;
 
         $converter
-            ->expects(($negative ? $this->never() : $this->atLeastOnce()))
+            ->expects(($negative || $valuesEmbedding ? $this->never() : $this->atLeastOnce()))
             ->method('valueRequiresEmbedding')
             ->will($this->returnValue($valueReqEmbedding))
         ;
@@ -331,19 +276,29 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder->setConverter($convertField, $converter);
 
+        foreach ($extra['dbal_mapping'] as $field => $mapping) {
+            $whereBuilder->setField($field, $mapping[0], $mapping[1], $mapping[2]);
+        }
+
         $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
 
         if (is_array($expectWhereCase)) {
-            $this->assertEquals($expectWhereCase[1], $whereCase);
-            $expectedDql = $expectWhereCase[1];
+            $this->assertEquals($expectWhereCase[0], $whereCase);
         } else {
             $this->assertEquals($expectWhereCase, $whereCase);
-            $expectedDql = $expectWhereCase;
         }
 
-        $this->assertEquals($expectedDql, $whereCase);
-        $this->assertQueryParamsEquals($queryParams, $query);
-        $this->assertEquals($expectSql, $this->assertDqlCompiles($query, $whereBuilder, (null !== $expectSql)));
+        if (!$valuesEmbedding) {
+            $this->asserParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
+        } else {
+            $this->assertCount(0, $whereBuilder->getParameters());
+            $this->assertCount(0, $whereBuilder->getParameterTypes());
+        }
+
+        // dummy to stop detection of none used-param
+        if (null !== $expectSql) {
+            $this->assertNotNull($expectSql);
+        }
     }
 
     /**
@@ -354,22 +309,27 @@ class WhereBuilderTest extends OrmTestCase
      * @param array           $queryParams     [[type, value]]
      * @param string          $expectSql
      * @param boolean         $valuesEmbedding
-     * @param array           $extra           Extra options like dbal_mapping, query
+     * @param array           $extra           Extra options like dbal_mapping, query, negative
      */
     public function testValueConversionStrategy($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
     {
-        $query = $this->em->createQuery($extra['query']);
+        $connection = $this->getConnectionMock();
 
-        $whereBuilder = new WhereBuilder($query, $condition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\User' => 'u')
-        );
+        if (!isset($extra['dbal_mapping'])) {
+            $extra['dbal_mapping'] = array(
+                // this is actually not recommended, but field conversion is tested later
+                'user_birthday' => array('birthday', 'integer', 'u')
+            );
+        }
+
+        $whereBuilder = new WhereBuilder($connection, $condition);
 
         $test = $this;
 
         $expectedOptions = isset($extra['options']) ? $extra['options'] : array();
         $negative = isset($extra['negative']) ? $extra['negative'] : false;
         $valueReqEmbedding = isset($extra['value_embedding']) ? $extra['value_embedding'] : false;
+        $ignoreParameters = isset($extra['ignore_parameters_dbal']) ? $extra['ignore_parameters_dbal'] : array();
 
         $converter = $this->getMock('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlValueConversionStrategyInterface');
         $converter
@@ -433,7 +393,7 @@ class WhereBuilderTest extends OrmTestCase
         ;
 
         $converter
-            ->expects($negative ? $this->never() : $this->atLeastOnce())
+            ->expects($negative || $valuesEmbedding ? $this->never() : $this->atLeastOnce())
             ->method('valueRequiresEmbedding')
             ->will($this->returnCallback(function ($input, array $options, array $hints) use ($test, $expectedOptions, $valueReqEmbedding) {
                $test->assertArrayHasKey('conversion_strategy', $hints);
@@ -457,19 +417,29 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder->setConverter('user_birthday', $converter);
 
+        foreach ($extra['dbal_mapping'] as $field => $mapping) {
+            $whereBuilder->setField($field, $mapping[0], $mapping[1], $mapping[2]);
+        }
+
         $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
 
         if (is_array($expectWhereCase)) {
-            $this->assertEquals($expectWhereCase[1], $whereCase);
-            $expectedDql = $expectWhereCase[1];
+            $this->assertEquals($expectWhereCase[0], $whereCase);
         } else {
             $this->assertEquals($expectWhereCase, $whereCase);
-            $expectedDql = $expectWhereCase;
         }
 
-        $this->assertEquals($expectedDql, $whereCase);
-        $this->assertQueryParamsEquals($queryParams, $query);
-        $this->assertEquals($expectSql, $this->assertDqlCompiles($query, $whereBuilder, (null !== $expectSql)));
+        if (!$valuesEmbedding) {
+            $this->asserParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
+        } else {
+            $this->assertCount(0, $whereBuilder->getParameters());
+            $this->assertCount(0, $whereBuilder->getParameterTypes());
+        }
+
+        // dummy to stop detection of none used-param
+        if (null !== $expectSql) {
+            $this->assertNotNull($expectSql);
+        }
     }
 
     /**
@@ -480,22 +450,27 @@ class WhereBuilderTest extends OrmTestCase
      * @param array           $queryParams     [[type, value]]
      * @param string          $expectSql
      * @param boolean         $valuesEmbedding
-     * @param array           $extra           Extra options like dbal_mapping, query
+     * @param array           $extra           Extra options like dbal_mapping, query, negative
      */
     public function testFieldConversionStrategy($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
     {
-        $query = $this->em->createQuery($extra['query']);
+        $connection = $this->getConnectionMock();
 
-        $whereBuilder = new WhereBuilder($query, $condition);
-        $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\User' => 'u')
-        );
+        if (!isset($extra['dbal_mapping'])) {
+            $extra['dbal_mapping'] = array(
+                // this is actually not recommended, but field conversion is tested later
+                'user_birthday' => array('birthday', 'integer', 'u')
+            );
+        }
+
+        $whereBuilder = new WhereBuilder($connection, $condition);
 
         $test = $this;
 
         $expectedOptions = isset($extra['options']) ? $extra['options'] : array();
         $negative = isset($extra['negative']) ? $extra['negative'] : false;
         $valueReqEmbedding = isset($extra['value_embedding']) ? $extra['value_embedding'] : false;
+        $ignoreParameters = isset($extra['ignore_parameters_dbal']) ? $extra['ignore_parameters_dbal'] : array();
 
         $converter = $this->getMock('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlFieldConversionStrategyInterface');
         $converter
@@ -534,78 +509,28 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder->setConverter('user_birthday', $converter);
 
+        foreach ($extra['dbal_mapping'] as $field => $mapping) {
+            $whereBuilder->setField($field, $mapping[0], $mapping[1], $mapping[2]);
+        }
+
         $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
 
         if (is_array($expectWhereCase)) {
-            $this->assertEquals($expectWhereCase[1], $whereCase);
-            $expectedDql = $expectWhereCase[1];
+            $this->assertEquals($expectWhereCase[0], $whereCase);
         } else {
             $this->assertEquals($expectWhereCase, $whereCase);
-            $expectedDql = $expectWhereCase;
         }
 
-        $this->assertEquals($expectedDql, $whereCase);
-        $this->assertQueryParamsEquals($queryParams, $query);
-        $this->assertEquals($expectSql, $this->assertDqlCompiles($query, $whereBuilder, (null !== $expectSql)));
-    }
-
-    public function testDoctrineAlias()
-    {
-        $config = $this->em->getConfiguration();
-        $config->addEntityNamespace('ECommerce', 'Rollerworks\Component\Search\Tests\Fixtures\Entity');
-
-        $query = $this->em->createQuery('SELECT I FROM ECommerce:ECommerceInvoice I JOIN I.customer C WHERE ');
-
-        $searchCondition = new SearchCondition($this->getFieldSet('invoice'), SearchConditionBuilder::create()
-            ->field('invoice_customer')
-                ->addSingleValue(new SingleValue(2))
-            ->end()
-        ->getGroup());
-
-        $whereBuilder = new WhereBuilder($query, $searchCondition);
-        $whereBuilder->setEntityMappings(array(
-            'ECommerce:ECommerceInvoice' => 'I',
-            'ECommerce:ECommerceCustomer' => 'C')
-        );
-
-        $whereCase = $whereBuilder->getWhereClause();
-
-        $this->assertEquals('(((C.id IN(:invoice_customer_0))))', $whereCase);
-        $this->assertQueryParamsEquals(array('invoice_customer_0' => 2), $query);
-        $this->assertDqlCompiles($query, $whereBuilder);
-    }
-
-    /**
-     * @param Query        $query
-     * @param WhereBuilder $whereBuilder
-     * @param boolean      $return
-     * @param boolean      $prepend
-     *
-     * @return string
-     */
-    protected function assertDqlCompiles(Query $query, WhereBuilder $whereBuilder, $return = false, $prepend = true)
-    {
-        $whereClause = $whereBuilder->getWhereClause();
-
-        if ('' === $whereClause) {
-            return '';
+        if (!$valuesEmbedding) {
+            $this->asserParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
+        } else {
+            $this->assertCount(0, $whereBuilder->getParameters());
+            $this->assertCount(0, $whereBuilder->getParameterTypes());
         }
 
-        $query->setHint($whereBuilder->getQueryHintName(), $whereBuilder->getQueryHintValue());
-
-        if ($prepend) {
-            $dql = $query->getDQL().$whereClause;
-            $query->setDQL($dql);
-        }
-
-        try {
-            if ($return) {
-                return $query->getSQL();
-            }
-
-            $query->getSQL();
-        } catch (QueryException $e) {
-            $this->fail('compile error:'.$e->getMessage().' with Query: '.$query->getDQL());
+        // dummy to stop detection of none used-param
+        if (null !== $expectSql) {
+            $this->assertNotNull($expectSql);
         }
     }
 }

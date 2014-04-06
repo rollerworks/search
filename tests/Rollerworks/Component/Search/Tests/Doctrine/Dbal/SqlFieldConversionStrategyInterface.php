@@ -1,6 +1,6 @@
 <?php
 
-namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
+namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
