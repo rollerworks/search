@@ -101,10 +101,10 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * Set Field configuration for the query-generation.
      *
-     * @param string        $fieldName Name of the Search-field
-     * @param string        $column    DB column-name
-     * @param string|object $type      DB-type string or object
-     * @param string        $alias     alias to use with the column
+     * @param string         $fieldName Name of the Search-field
+     * @param string         $column    DB column-name
+     * @param string|ORMType $type      DB-type string or object
+     * @param string         $alias     alias to use with the column
      *
      * @return self
      *

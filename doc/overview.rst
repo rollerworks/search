@@ -205,6 +205,6 @@ Doctrine
 
 Doctrine2 drivers for searching in the storage.
 
-Currently only provides support for Doctrine2 ORM (both DQL and NativeSQL)
+Currently only provides support for Doctrine2 ORM (both DQL and NativeSQL) and DBAL.
 
 For more information on using the Doctrine component see :doc:`/doctrine/index`
