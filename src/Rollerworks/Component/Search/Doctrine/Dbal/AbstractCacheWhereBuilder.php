@@ -64,7 +64,7 @@ abstract class AbstractCacheWhereBuilder
      * The callback will receive wherebuilder.
      *
      * @param string   $key
-     * @param callback $callback
+     * @param callable $callback
      *
      * @return self
      *
