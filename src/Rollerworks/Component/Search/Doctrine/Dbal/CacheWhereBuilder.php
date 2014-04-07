@@ -73,14 +73,14 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
             return $this->whereClause;
         }
 
-        $cacheKey = 'rw_search.doctrine.dba.where.'.$this->cacheKey.$this->keySuffix ? '_'.$this->keySuffix : '';
+        $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->cacheKey.($this->keySuffix ? '_'.$this->keySuffix : '');
 
         if ($this->cacheDriver->contains($cacheKey)) {
             $data = $this->cacheDriver->fetch($cacheKey);
 
             $this->whereClause = $data[0];
             $this->parameters = $data[1];
-            $this->parameterTypes = $data[1];
+            $this->parameterTypes = $data[2];
 
             $this->resolveParametersType();
         } else {
