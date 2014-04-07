@@ -9,24 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Orm;
+namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\ORM\NativeQuery;
-use Doctrine\ORM\Query as DqlQuery;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\DBAL\Driver\Connection;
 use Rollerworks\Component\Search\SearchConditionInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DoctrineOrmFactory
+class DoctrineDbalFactory
 {
-    /**
-     * @var array
-     */
-    protected $extensions;
-
     /**
      * @var Cache
      */
@@ -47,14 +40,14 @@ class DoctrineOrmFactory
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option (when present).
      *
-     * @param NativeQuery|DqlQuery|QueryBuilder $query           Doctrine ORM Query or QueryBuilder object
-     * @param SearchConditionInterface          $searchCondition SearchCondition object
+     * @param Connection               $connection      Doctrine DBAL Connection object
+     * @param SearchConditionInterface $searchCondition SearchCondition object
      *
      * @return WhereBuilder
      */
-    public function createWhereBuilder($query, SearchConditionInterface $searchCondition)
+    public function createWhereBuilder(Connection $connection, SearchConditionInterface $searchCondition)
     {
-        $whereBuilder = new WhereBuilder($query, $searchCondition);
+        $whereBuilder = new WhereBuilder($connection, $searchCondition);
 
         foreach ($searchCondition->getFieldSet()->all() as $name => $field) {
             if (!$field->hasOption('doctrine_dbal_conversion')) {

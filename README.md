@@ -74,7 +74,6 @@ The following types are build-in (but can be replaced with your own if needed).
 * Doctrine2 ORM
 * Doctrine2 DBAL (coming soon)
 * Doctrine2 phpcr-odm (coming soon)
-* CouchDB, MongoDB (coming soon)
 * Apache Solr (coming soon)
 * Elasticsearch (coming soon)
 

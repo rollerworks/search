@@ -4,7 +4,7 @@ Doctrine
 The Doctrine component facilitates the searching
 of records using the Doctrine2 library.
 
-Searching is possible with using Doctrine ORM (both DQL and NativeQuery).
+Searching is possible with using Doctrine ORM (both DQL and NativeQuery), DBAL.
 Or other drivers provided by doctrine.
 
 Support for ODM and other storage engines is planned for future releases.
@@ -14,4 +14,5 @@ in the README.md file.
 .. toctree::
     :maxdepth: 2
 
+    dbal/index
     orm/index

@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Orm;
+namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
+use Doctrine\DBAL\Statement;
 use Rollerworks\Component\Search\SearchConditionInterface;
 
 /**
@@ -26,16 +27,6 @@ interface WhereBuilderInterface
     public function getWhereClause();
 
     /**
-     * Updates the configured query object with the where-clause.
-     */
-    public function updateQuery();
-
-    /**
-     * @return object
-     */
-    public function getQuery();
-
-    /**
      * @return SearchConditionInterface
      */
     public function getSearchCondition();
@@ -48,21 +39,18 @@ interface WhereBuilderInterface
     public function getParameters();
 
     /**
-     * Returns the Query hint name for the final query object.
+     * Returns the parameters that where set during the generation process.
      *
-     * The Query hint is used for conversions.
-     *
-     * @return string
+     * @return array
      */
-    public function getQueryHintName();
+    public function getParameterTypes();
 
     /**
-     * Returns the Query hint value for the final query object.
+     * Binds the parameters to the statement.
      *
-     * The Query hint is used for conversions for value-matchers.
+     * @param Statement $statement
      *
-     * @return \Closure
+     * @return null
      */
-    public function getQueryHintValue();
-
+    public function bindParameters(Statement $statement);
 }

@@ -8,16 +8,19 @@ The original values on the SearchCondition are left unchanged.
 
 .. note::
 
-    Unlike data-transformers your limited to only
+    Unlike data-transformers you`re limited to only
     *one* converter per search field.
 
 Converters can be set on a ``SearchField`` using the ``doctrine_dbal_conversion``
-option or directly at a query-generator (like the `WhereBuilder`_).
+option or directly at a query-generator (like the WhereBuilder).
+
+Setting the conversion directly is done by calling ``setConverter($fieldName, $convertor)`` on the
+query-generator.
 
 .. note::
 
-    Conversions set on the field are only configured at the 'query-generator'
-    when you use a builder to configure the generator.
+    Conversions configured on a field are only set at the 'query-generator',
+    when you use a builder to configure the generator for you.
 
 There are three type of converters, which you can combine together in one class.
 
@@ -52,7 +55,7 @@ In this example we will convert an ``DateTime`` object to an ISO-datetime value.
 .. code-block:: php
     :linenos:
 
-    namespace Acme\User\Search\Orm\Conversion;
+    namespace Acme\User\Search\Dbal\Conversion;
 
     use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
 
@@ -76,7 +79,6 @@ SqlField Conversion
 When the value in the database is not in the desired format
 it can be converted to a more workable version.
 
-
 In this example we want to get the age of a person in years from their date of birth.
 In short we convert an ``datetime`` database value to an actual age in year.
 
@@ -92,7 +94,7 @@ for other database servers.
 .. code-block:: php
     :linenos:
 
-    namespace Acme\User\Search\Orm\Conversion;
+    namespace Acme\User\Search\Dbal\Conversion;
 
     use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 
@@ -116,7 +118,7 @@ Sometimes its required to do some special conversions with the value,
 which can only done using actual SQL.
 
 One of these things is Spatial data which requires a special type of input.
-The input must be provided using an SQL function, and therefor can this can not be done
+The input must be provided using an SQL function, and therefor this can not be done
 with only PHP.
 
 This example describes how to implement a MySQL specific column type called Point.
@@ -165,7 +167,7 @@ And the SqlValue Conversion class:
 .. code-block:: php
     :linenos:
 
-    namespace Acme\Geo\Search\Orm\Conversion;
+    namespace Acme\Geo\Search\Dbal\Conversion;
 
     use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
     use Acme\Geo\Point;
