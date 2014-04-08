@@ -11,9 +11,6 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\DBAL\Driver\Connection;
-use Doctrine\DBAL\Statement;
-use Doctrine\DBAL\Types\Type as ORMType;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\SearchConditionInterface;
