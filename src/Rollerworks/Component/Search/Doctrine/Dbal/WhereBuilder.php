@@ -32,52 +32,12 @@ use Rollerworks\Component\Search\SearchConditionInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class WhereBuilder implements WhereBuilderInterface
+class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
 {
-    /**
-     * @var SearchConditionInterface
-     */
-    private $searchCondition;
-
-    /**
-     * @var \Rollerworks\Component\Search\FieldSet
-     */
-    private $fieldset;
-
     /**
      * @var Connection
      */
     private $connection;
-
-    /**
-     * @var ValueConversionInterface[]|SqlValueConversionInterface[]|ConversionStrategyInterface[]
-     */
-    private $valueConversions = array();
-
-    /**
-     * @var SqlFieldConversionInterface[]
-     */
-    private $fieldConversions = array();
-
-    /**
-     * @var string
-     */
-    private $parameterPrefix;
-
-    /**
-     * @var string
-     */
-    private $whereClause;
-
-    /**
-     * @var array
-     */
-    private $fields = array();
-
-    /**
-     * @var QueryGenerator
-     */
-    private $queryGenerator;
 
     /**
      * Constructor.
@@ -128,61 +88,6 @@ class WhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * Set the converters for a field.
-     *
-     * Setting is done per type (field or value), any existing conversions are overwritten.
-     *
-     * @param string                                               $fieldName
-     * @param ValueConversionInterface|SqlFieldConversionInterface $converter
-     *
-     * @return self
-     *
-     * @throws UnknownFieldException  When the field is not registered in the fieldset.
-     * @throws BadMethodCallException When the where-clause is already generated.
-     */
-    public function setConverter($fieldName, $converter)
-    {
-        if ($this->whereClause) {
-            throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
-        }
-
-        if (!$this->searchCondition->getFieldSet()->has($fieldName)) {
-            throw new UnknownFieldException($fieldName);
-        }
-
-        if ($converter instanceof ValueConversionInterface) {
-            $this->valueConversions[$fieldName] = $converter;
-        }
-
-        if ($converter instanceof SqlFieldConversionInterface) {
-            $this->fieldConversions[$fieldName] = $converter;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set the prefix to prefix the query-parameters with.
-     *
-     * This will be applied as: prefix + fieldname + group + value-index.
-     * Example: user_id_0_1
-     *
-     * @param string $prefix
-     *
-     * @return self
-     *
-     * @throws BadMethodCallException when the where-clause is already generated
-     */
-    public function setParameterPrefix($prefix)
-    {
-        if ($this->whereClause) {
-            throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
-        }
-
-        $this->parameterPrefix = $prefix;
-    }
-
-    /**
      * Returns the generated where-clause.
      *
      * The Where-clause is wrapped inside a group so it
@@ -223,18 +128,6 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getParameters()
-    {
-        if ($this->queryGenerator) {
-            return $this->queryGenerator->getParameters();
-        }
-
-        return array();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getParameterTypes()
     {
         if ($this->queryGenerator) {
@@ -258,46 +151,6 @@ class WhereBuilder implements WhereBuilderInterface
         }
 
         return null;
-    }
-
-    /**
-     * Returns the parameter-value that where set during the generation process.
-     *
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getParameter($name)
-    {
-        if ($this->queryGenerator) {
-            return $this->queryGenerator->getParameter($name);
-        }
-
-        return null;
-    }
-
-    /**
-     * @return SearchConditionInterface
-     */
-    public function getSearchCondition()
-    {
-        return $this->searchCondition;
-    }
-
-    /**
-     * @return ConversionStrategyInterface[]|SqlValueConversionInterface[]|ValueConversionInterface[]
-     */
-    public function getValueConversions()
-    {
-        return $this->valueConversions;
-    }
-
-    /**
-     * @return SqlFieldConversionInterface[]|ConversionStrategyInterface[]
-     */
-    public function getFieldConversions()
-    {
-        return $this->fieldConversions;
     }
 
     private function processFields()
