@@ -42,13 +42,29 @@ class XmlUtils
      */
     public static function loadFile($file, $schemaOrCallable = null)
     {
+        return static::parseXml(file_get_contents($file), $schemaOrCallable, sprintf('The XML file "%s" is not valid.', $file));
+    }
+
+    /**
+     * Parses an XML document.
+     *
+     * @param string          $content          An XML document as string
+     * @param string|callable $schemaOrCallable An XSD schema file path or callable
+     * @param string          $defaultMessage
+     *
+     * @return \DOMDocument
+     *
+     * @throws \InvalidArgumentException When loading of XML document returns an error
+     */
+    public static function parseXml($content, $schemaOrCallable = null, $defaultMessage = 'The XML file is not valid.')
+    {
         $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
         libxml_clear_errors();
 
         $dom = new \DOMDocument();
         $dom->validateOnParse = true;
-        if (!$dom->loadXML(file_get_contents($file), LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
+        if (!$dom->loadXML($content, LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
             libxml_disable_entity_loader($disableEntities);
 
             throw new \InvalidArgumentException(implode("\n", static::getXmlErrors($internalErrors)));
@@ -87,8 +103,9 @@ class XmlUtils
             if (!$valid) {
                 $messages = static::getXmlErrors($internalErrors);
                 if (empty($messages)) {
-                    $messages = array(sprintf('The XML file "%s" is not valid.', $file));
+                    $messages = array($defaultMessage);
                 }
+
                 throw new \InvalidArgumentException(implode("\n", $messages), 0, $e);
             }
 

@@ -16,6 +16,7 @@ use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\Util\XmlUtils;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -42,7 +43,7 @@ class XmlInput extends AbstractInput
      */
     public function process($input)
     {
-        $document = $this->parseXml($input, __DIR__ . '/schema/dic/input/xml-input-1.0.xsd');
+        $document = simplexml_import_dom(XmlUtils::parseXml($input, __DIR__ . '/schema/dic/input/xml-input-1.0.xsd'));
 
         $valuesGroup = new ValuesGroup();
         if (isset($document['logical']) && 'OR' === strtoupper((string) $document['logical'])) {
@@ -229,100 +230,5 @@ class XmlInput extends AbstractInput
         }
 
         return $valuesBag;
-    }
-
-    /**
-     * Loads an XML file.
-     *
-     * @param string          $content          An XML file path
-     * @param string|callable $schemaOrCallable An XSD schema file path or callable
-     *
-     * @author Martin Hasoň <martin.hason@gmail.com>
-     *
-     * @return \SimpleXMLElement
-     *
-     * @throws \InvalidArgumentException When loading of XML file returns error
-     */
-    private static function parseXml($content, $schemaOrCallable = null)
-    {
-        $internalErrors = libxml_use_internal_errors(true);
-        $disableEntities = libxml_disable_entity_loader(true);
-        libxml_clear_errors();
-
-        $dom = new \DOMDocument();
-        $dom->validateOnParse = true;
-        if (!$dom->loadXML($content, LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
-            libxml_disable_entity_loader($disableEntities);
-
-            throw new \InvalidArgumentException(implode("\n", static::getXmlErrors($internalErrors)));
-        }
-
-        $dom->normalizeDocument();
-
-        libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
-
-        foreach ($dom->childNodes as $child) {
-            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                throw new \InvalidArgumentException('Document types are not allowed.');
-            }
-        }
-
-        if (null !== $schemaOrCallable) {
-            $internalErrors = libxml_use_internal_errors(true);
-            libxml_clear_errors();
-
-            $e = null;
-            if (is_callable($schemaOrCallable)) {
-                try {
-                    $valid = call_user_func($schemaOrCallable, $dom, $internalErrors);
-                } catch (\Exception $e) {
-                    $valid = false;
-                }
-            } elseif (!is_array($schemaOrCallable) && is_file((string) $schemaOrCallable)) {
-                $valid = @$dom->schemaValidate(str_replace('\\', '/', $schemaOrCallable));
-            } else {
-                libxml_use_internal_errors($internalErrors);
-
-                throw new \InvalidArgumentException('The schemaOrCallable argument has to be a valid path to XSD file or callable.');
-            }
-
-            if (!$valid) {
-                $messages = static::getXmlErrors($internalErrors);
-                if (empty($messages)) {
-                    $messages = array('The XML file is not valid.');
-                }
-                throw new \InvalidArgumentException(implode("\n", $messages), 0, $e);
-            }
-
-            libxml_use_internal_errors($internalErrors);
-        }
-
-        return simplexml_import_dom($dom);
-    }
-
-    /**
-     * @param boolean $internalErrors
-     *
-     * @return array
-     */
-    private static function getXmlErrors($internalErrors)
-    {
-        $errors = array();
-        foreach (libxml_get_errors() as $error) {
-            $errors[] = sprintf('[%s %s] %s (in %s - line %d, column %d)',
-                LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
-                $error->code,
-                trim($error->message),
-                $error->file ? $error->file : 'n/a',
-                $error->line,
-                $error->column
-            );
-        }
-
-        libxml_clear_errors();
-        libxml_use_internal_errors($internalErrors);
-
-        return $errors;
     }
 }
