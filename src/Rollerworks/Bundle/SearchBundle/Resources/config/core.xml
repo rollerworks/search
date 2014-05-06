@@ -10,6 +10,7 @@
         <parameter key="rollerworks_search.factory.class">Rollerworks\Component\Search\SearchFactory</parameter>
         <parameter key="rollerworks_search.alias_resolver.chain.class">Rollerworks\Component\Search\FieldAliasResolver\ChainFieldAliasResolverInterface</parameter>
         <parameter key="rollerworks_search.extension.class">Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\DependencyInjectionExtension</parameter>
+        <parameter key="rollerworks_search.fieldset_registry.class">Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\FieldSetRegistry</parameter>
     </parameters>
 
     <services>
@@ -17,6 +18,12 @@
 
         <!-- ResolvedFormTypeFactory -->
         <service id="rollerworks_search.resolved_type_factory" class="%rollerworks_search.resolved_type_factory.class%" />
+
+        <!-- FieldSetRegistry -->
+        <service id="rollerworks_search.fieldset_registry" class="%rollerworks_search.fieldset_registry.class%">
+            <argument id="container" type="service" />
+            <argument type="collection" />
+        </service>
 
         <!-- SearchRegistry -->
         <service id="rollerworks_search.registry" class="%rollerworks_search.registry.class%">

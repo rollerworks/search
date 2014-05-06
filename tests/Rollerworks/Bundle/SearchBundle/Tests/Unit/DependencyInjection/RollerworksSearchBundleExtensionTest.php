@@ -52,6 +52,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
         $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
+        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => 'customer'));
         $fieldSetDef->addArgument('customer');
 
         $fieldDef = new Definition();
@@ -102,6 +103,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
         $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
+        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => 'customer'));
         $fieldSetDef->addArgument('customer');
 
         $fieldDef = new Definition();
@@ -176,6 +178,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
         $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
+        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => 'customer'));
         $fieldSetDef->addArgument('customer');
 
         $fieldDef = new Definition();
@@ -227,6 +230,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
         $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
+        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => 'customer'));
         $fieldSetDef->addArgument('customer');
 
         $fieldDef = new Definition();

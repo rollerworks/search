@@ -63,6 +63,7 @@ class FieldSetFactory
     {
         $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
         $fieldSetDef->addArgument($fieldSet->getName());
+        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => $fieldSet->getName()));
 
         foreach ($fieldSet->all() as $name => $field) {
             $fieldDef = new Definition();
