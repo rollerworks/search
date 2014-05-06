@@ -26,7 +26,7 @@ if (version_compare(PHP_VERSION, '5.4', '>=') && gc_enabled()) {
 /**
 * @var \Composer\Autoload\ClassLoader $loader
 */
-$loader = require_once __DIR__ . '/../vendor/autoload.php';
+$loader = require __DIR__ . '/../vendor/autoload.php';
 $loader->add('Rollerworks\\Bundle\\SearchBundle\\Tests\\', __DIR__);
 $loader->add('Doctrine\\Tests\\', realpath(__DIR__ . '/../vendor/doctrine/orm/tests') . '/');
 
