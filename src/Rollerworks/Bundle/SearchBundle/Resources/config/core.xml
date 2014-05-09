@@ -21,7 +21,7 @@
 
         <!-- FieldSetRegistry -->
         <service id="rollerworks_search.fieldset_registry" class="%rollerworks_search.fieldset_registry.class%">
-            <argument id="container" type="service" />
+            <argument id="service_container" type="service" />
             <argument type="collection" />
         </service>
 
