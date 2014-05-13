@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="2">
                 <source>Field {{ field }} does not accept comparison values.</source>
-                <target>Veld {{ field }} accepteert geen wiskundige vergelijkingen.</target>
+                <target>Veld {{ field }} accepteert geen hoger/lager vergelijkingen.</target>
             </trans-unit>
             <trans-unit id="3">
                 <source>Field {{ field }} does not accept range values.</source>
@@ -31,14 +31,18 @@
                 <target>Groep {{ group }} op niveau {{ nesting }}, overschrijdt het maximum diepte niveau van {{ max }}.</target>
             </trans-unit>
             <trans-unit id="8">
-                <source>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</source>
-                <target>Veld {{ field }} in groep {{ group }} op niveau {{ nesting }}, overschrijdt maximum aantal waardes per groep. Maximaal: {{ max }}, huidig aantal: {{ count }}.</target>
+                <source>Group {{ group }} at nesting level {{ nesting }} exceeds maximum number of groups, maximum: {{ max }}, total of groups: {{ count }}.</source>
+                <target>Groep {{ group }} op niveau {{ nesting }}, overschrijdt het maximum aantal groepen. Maximaal: {{ max }}, totaal aantal: {{ count }}.</target>
             </trans-unit>
             <trans-unit id="9">
+                <source>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</source>
+                <target>Veld {{ field }} in groep {{ group }} op niveau {{ nesting }}, overschrijdt het maximum aantal waardes per groep. Maximaal: {{ max }}, huidig aantal: {{ count }}.</target>
+            </trans-unit>
+            <trans-unit id="10">
                 <source>This value is not a valid birthday or age.</source>
                 <target>Deze waarde is geen geldige leeftijd of geboortedatum.</target>
             </trans-unit>
-            <trans-unit id="10">
+            <trans-unit id="11">
                 <source>This value is not a valid birthday.</source>
                 <target>Deze waarde is geen geldige geboortedatum.</target>
             </trans-unit>

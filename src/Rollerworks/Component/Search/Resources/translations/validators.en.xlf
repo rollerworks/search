@@ -31,14 +31,18 @@
                 <target>Group {{ group }} at nesting level {{ nesting }} exceeds maximum nesting level of {{ max }}.</target>
             </trans-unit>
             <trans-unit id="8">
+                <source>Group {{ group }} at nesting level {{ nesting }} exceeds maximum number of groups, maximum: {{ max }}, total of groups: {{ count }}.</source>
+                <target>Group {{ group }} at nesting level {{ nesting }} exceeds maximum number of groups, maximum: {{ max }}, total of groups: {{ count }}.</target>
+            </trans-unit>
+            <trans-unit id="9">
                 <source>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</source>
                 <target>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</target>
             </trans-unit>
-            <trans-unit id="9">
+            <trans-unit id="10">
                 <source>This value is not a valid birthday or age.</source>
                 <target>This value is not a valid birthday or age.</target>
             </trans-unit>
-            <trans-unit id="10">
+            <trans-unit id="11">
                 <source>This value is not a valid birthday.</source>
                 <target>This value is not a valid birthday.</target>
             </trans-unit>
