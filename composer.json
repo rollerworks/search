@@ -24,7 +24,7 @@
         "seld/jsonlint": "1.*"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2.0",
+        "phpspec/phpspec": "~2.1@dev",
         "doctrine/orm": "~2.4",
         "symfony/class-loader": "~2.1",
         "symfony/browser-kit": "~2.1",
@@ -36,7 +36,7 @@
         "jms/metadata": "Metadata mapping library"
     },
     "autoload": {
-        "psr-0": { "Rollerworks\\Component\\Search\\": "src/" }
+        "psr-4": { "Rollerworks\\Component\\Search\\": "src/" }
     },
     "config": {
         "bin-dir": "bin"
