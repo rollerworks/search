@@ -6,54 +6,61 @@ README
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/badges/quality-score.png?s=5eebfd1ff3695ab59d59406702978a0ddf29df21)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/)
 
 
-What is Rollerworks Search?
+What is RollerworksSearch?
 ---------------------------
 
-Rollerworks Search is an advanced search-building framework.
+RollerworksSearch is an advanced search-engine framework.
 
-Providing powerful system for building your own site search-engine.
-From input to formatting and validating, and finally applying conditions on the
-storage engine.
+RollerworksSearch provides you with a powerful system for building your own search-engine.
+Inout processing, normalizing, validating and every else. Save, fast and easy.
 
-This system was designed to be as expendable as possible.
-Everything, and absolute everything can be replaced with your implementation.
+This system was designed to be as flexible as possible.
+You are free to use your extensions, field-types etc.
 
 Features
 --------
 
-The searching condition is build of fields and groups.
-Each field can have any-type of value including ranges, comparisons
-and matchers (starts/ends with contains).
+RollerworksSearch works using SearchConditions.
 
-Groups can be nested at any level of depth.
+A SearchConditions is build-up of fields and condition-groups.
+Each field can hold any type of value including ranges, comparisons
+and pattern matchers (starts/ends with contains and basic regex).
+
+Condition-groups can be nested for more advanced and complex conditions.
+
+Also, SearchConditions are easily exportable to any supported format.
 
 ## Input
 
-Input processing is provided for the following formats.
+Out of the input processing is provided for the following formats.
+
+> Building your own input processor is also possible.
 
 * Array
 * JSON
 * XML
-* FilterQuery (an easy to learn and use condition based input format).
-
-> Each provided input format also provides an related exporter.
+* FilterQuery (an easy to learn and use condition based syntax).
 
 ## Formatter
 
-* Validation
-* Transformation (localized representation to normalized and reverse)
+A formatter is used for normalizing and validating values in a SearchCondition.
+The bundles formatters are designed for the most common use-cases,
+building your own is also possible.
+
+* Validation (using the Symfony Validator component)
+* Transformation (localized representation to a normalized format and reverse)
 * Removing of duplicated values
 * Optimizing of ranges: detecting and removing overlapping ranges
 * Connected values to ranges (1,2,3,4,5 gets converted to 1-5)
 
 ## Types
 
-The following types are build-in (but can be replaced with your own if needed).
+The following types are packaged with this release (but can be replaced when needed).
 
-> Each type is localized.
+> **Note: Each type listed below supports localization.
 
-* Birthday (with optional support for ages)
-* Choice
+* Birthday (with optional support for Age conversion)
+* Choice (array, entity list, custom implementation)
 * Country choice
 * Currency choice
 * DateTime
@@ -71,8 +78,11 @@ The following types are build-in (but can be replaced with your own if needed).
 
 ## Storage/Index engines
 
+> **Note: The listed engines are supported out of the box, but you are noted limited
+> to these engines. Using something like a Webservice is also possible.
+
+* Doctrine2 DBAL
 * Doctrine2 ORM
-* Doctrine2 DBAL (coming soon)
 * Doctrine2 phpcr-odm (coming soon)
 * Apache Solr (coming soon)
 * Elasticsearch (coming soon)
@@ -92,16 +102,17 @@ For framework integration you use the following;
 Installation
 ------------
 
-The installation is very easy, all the details about installing can be found in.
+For installing RollerworksSearch, you can find all the details about installing in the manual.
 
 [doc/installing](doc/installing.rst)
 
 Documentation
 -------------
 
-The documentation is written in [reStructuredText][3] and can be built into standard HTML using [Sphinx][4].
+The documentation for RollerworksSearch is written in [reStructuredText][3] and can be built
+into standard HTML using [Sphinx][4].
 
-To build the documentation are:
+To build the documentation do the following:
 
 1. Install [Spinx][4]
 2. Change to the `docs` directory on the command line
@@ -116,7 +127,7 @@ Further information can be found in The Symfony2 [documentation format][5] artic
 Versioning
 ----------
 
-For transparency and insight into our release cycle, and for striving to maintain backward compatibility,
+For transparency and insight into the release cycle, and for striving to maintain backward compatibility,
 RollerworksSearch will be maintained under the Semantic Versioning guidelines as much as possible.
 
 Releases will be numbered with the following format:
