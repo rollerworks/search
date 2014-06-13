@@ -230,12 +230,7 @@ class ArrayInput extends AbstractInput
                 throw new InputProcessorException(sprintf('Range at index %d in group %d at nesting level %d is either not an array or is missing [lower] and/or [upper].', $index, $groupIdx, $level));
             }
 
-            $valuesBag->addRange(
-                new Range($range['lower'], $range['upper'],
-                    (isset($range['inclusive-lower']) && false === (boolean) $range['inclusive-lower'] ? false : true),
-                    (isset($range['inclusive-upper']) && false === (boolean) $range['inclusive-upper'] ? false : true)
-                )
-            );
+            $valuesBag->addRange($this->createRange($range));
 
             $hasValues = true;
         }
@@ -245,12 +240,7 @@ class ArrayInput extends AbstractInput
                 throw new InputProcessorException(sprintf('Excluding-range at index %d in group %d at nesting level %d is either not an array or is missing [lower] and/or [upper].', $index, $groupIdx, $level));
             }
 
-            $valuesBag->addExcludedRange(
-                new Range($range['lower'], $range['upper'],
-                    (isset($range['inclusive-lower']) && false === (boolean) $range['inclusive-lower'] ? false : true),
-                    (isset($range['inclusive-upper']) && false === (boolean) $range['inclusive-upper'] ? false : true)
-                )
-            );
+            $valuesBag->addExcludedRange($this->createRange($range));
             $hasValues = true;
         }
 
@@ -277,6 +267,16 @@ class ArrayInput extends AbstractInput
         }
 
         return $valuesBag;
+    }
+
+    private function createRange(array $range)
+    {
+        return new Range(
+            $range['lower'],
+            $range['upper'],
+            (isset($range['inclusive-lower']) && false === (boolean) $range['inclusive-lower'] ? false : true),
+            (isset($range['inclusive-upper']) && false === (boolean) $range['inclusive-upper'] ? false : true)
+        );
     }
 
     /**
