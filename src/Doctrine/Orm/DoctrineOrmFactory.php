@@ -81,9 +81,15 @@ class DoctrineOrmFactory
      * @param int                   $lifetime
      *
      * @return CacheWhereBuilder
+     *
+     * @throws \RuntimeException when no cache-driver is configured
      */
     public function createCacheWhereBuilder(WhereBuilderInterface $whereBuilder, $lifetime = 0)
     {
+        if (null === $this->cacheDriver) {
+            throw new \RuntimeException('Unable to create CacheWhereBuilder, no CacheDriver is configured.');
+        }
+
         return new CacheWhereBuilder($whereBuilder, $this->cacheDriver, $lifetime);
     }
 }
