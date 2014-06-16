@@ -25,6 +25,11 @@ class FieldSetRegistry
     private $serviceIds = array();
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * Constructor.
      *
      * @param ContainerInterface $container
