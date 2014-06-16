@@ -75,9 +75,9 @@ class ArrayInput extends AbstractInput
     /**
      * @param array       $values
      * @param ValuesGroup $valuesGroup
-     * @param integer     $groupIdx
-     * @param integer     $level
-     * @param boolean     $isRoot
+     * @param int         $groupIdx
+     * @param int         $level
+     * @param bool        $isRoot
      *
      * @throws FieldRequiredException
      * @throws ValuesOverflowException
@@ -91,7 +91,9 @@ class ArrayInput extends AbstractInput
         $allFields = $this->fieldSet->all();
 
         if (empty($values['fields']) && empty($values['groups'])) {
-            throw new InputProcessorException(sprintf('Empty group found in group %d at nesting level %d', $groupIdx, $level));
+            throw new InputProcessorException(
+                sprintf('Empty group found in group %d at nesting level %d', $groupIdx, $level)
+            );
         }
 
         if (!isset($values['fields'])) {
@@ -112,15 +114,31 @@ class ArrayInput extends AbstractInput
             }
 
             if ($countedPairs[$fieldName] > $this->maxValues) {
-                throw new ValuesOverflowException($fieldName, $this->maxValues, $countedPairs[$fieldName], $groupIdx, $level);
+                throw new ValuesOverflowException(
+                    $fieldName,
+                    $this->maxValues,
+                    $countedPairs[$fieldName],
+                    $groupIdx,
+                    $level
+                );
             }
 
             $filterConfig = $this->fieldSet->get($fieldName);
 
             if ($valuesGroup->hasField($fieldName)) {
-                $this->valuesToBag($filterConfig, $value, $fieldName, $groupIdx, $level, $valuesGroup->getField($fieldName));
+                $this->valuesToBag(
+                    $filterConfig,
+                    $value,
+                    $fieldName,
+                    $groupIdx,
+                    $level,
+                    $valuesGroup->getField($fieldName)
+                );
             } else {
-                $valuesGroup->addField($fieldName, $this->valuesToBag($filterConfig, $value, $fieldName, $groupIdx, $level));
+                $valuesGroup->addField(
+                    $fieldName,
+                    $this->valuesToBag($filterConfig, $value, $fieldName, $groupIdx, $level)
+                );
             }
 
             unset($allFields[$fieldName]);
@@ -154,8 +172,8 @@ class ArrayInput extends AbstractInput
      * @param FieldConfigInterface $fieldConfig
      * @param array|string         $values
      * @param string               $fieldName
-     * @param integer              $groupIdx
-     * @param integer              $level
+     * @param int                  $groupIdx
+     * @param int                  $level
      * @param ValuesBag|null       $valuesBag
      *
      * @return ValuesBag
@@ -209,7 +227,14 @@ class ArrayInput extends AbstractInput
 
         foreach ($values['single-values'] as $index => $value) {
             if (!is_scalar($value)) {
-                throw new InputProcessorException(sprintf('Single value at index %d in group %d at nesting level %d is not a scalar.', $index, $groupIdx, $level));
+                throw new InputProcessorException(
+                    sprintf(
+                        'Single value at index %d in group %d at nesting level %d is not a scalar.',
+                        $index,
+                        $groupIdx,
+                        $level
+                    )
+                );
             }
 
             $valuesBag->addSingleValue(new SingleValue($value));
@@ -218,16 +243,34 @@ class ArrayInput extends AbstractInput
 
         foreach ($values['excluded-values'] as $index => $value) {
             if (!is_scalar($value)) {
-                throw new InputProcessorException(sprintf('Excluded value at index %d in group %d at nesting level %d is not scalar.', $index, $groupIdx, $level));
+                throw new InputProcessorException(
+                    sprintf(
+                        'Excluded value at index %d in group %d at nesting level %d is not scalar.',
+                        $index,
+                        $groupIdx,
+                        $level
+                    )
+                );
             }
 
-            $valuesBag->addExcludedValue(new SingleValue($value));
+            $valuesBag->addExcludedValue(
+                new SingleValue($value)
+            );
+
             $hasValues = true;
         }
 
         foreach ($values['ranges'] as $index => $range) {
             if (!is_array($range) || !isset($range['lower'], $range['upper'])) {
-                throw new InputProcessorException(sprintf('Range at index %d in group %d at nesting level %d is either not an array or is missing [lower] and/or [upper].', $index, $groupIdx, $level));
+                throw new InputProcessorException(
+                    sprintf(
+                        'Range at index %d in group %d at nesting level %d is either not an array '.
+                        'or is missing [lower] and/or [upper].',
+                        $index,
+                        $groupIdx,
+                        $level
+                    )
+                );
             }
 
             $valuesBag->addRange($this->createRange($range));
@@ -237,7 +280,15 @@ class ArrayInput extends AbstractInput
 
         foreach ($values['excluded-ranges'] as $index => $range) {
             if (!is_array($range) || !isset($range['lower'], $range['upper'])) {
-                throw new InputProcessorException(sprintf('Excluding-range at index %d in group %d at nesting level %d is either not an array or is missing [lower] and/or [upper].', $index, $groupIdx, $level));
+                throw new InputProcessorException(
+                    sprintf(
+                        'Excluding-range at index %d in group %d at nesting level %d is either not an '.
+                        'array or is missing [lower] and/or [upper].',
+                        $index,
+                        $groupIdx,
+                        $level
+                    )
+                );
             }
 
             $valuesBag->addExcludedRange($this->createRange($range));
@@ -246,7 +297,15 @@ class ArrayInput extends AbstractInput
 
         foreach ($values['comparisons'] as $index => $comparison) {
             if (!is_array($comparison) || !isset($comparison['value'], $comparison['operator'])) {
-                throw new InputProcessorException(sprintf('Comparison at index %d in group %d at nesting level %d is either not an array or is missing [value] and/or [operator].', $index, $groupIdx, $level));
+                throw new InputProcessorException(
+                    sprintf(
+                        'Comparison at index %d in group %d at nesting level %d is either not an array '.
+                        'or is missing [value] and/or [operator].',
+                        $index,
+                        $groupIdx,
+                        $level
+                    )
+                );
             }
 
             $valuesBag->addComparison(new Compare($comparison['value'], $comparison['operator']));
@@ -255,10 +314,24 @@ class ArrayInput extends AbstractInput
 
         foreach ($values['pattern-matchers'] as $index => $matcher) {
             if (!is_array($matcher) || !isset($matcher['value'], $matcher['type'])) {
-                throw new InputProcessorException(sprintf('PatternMatcher at index %d in group %d at nesting level %d is either not an array or is missing [value] and/or [type].', $index, $groupIdx, $level));
+                throw new InputProcessorException(
+                    sprintf(
+                        'PatternMatcher at index %d in group %d at nesting level %d '.
+                        'is either not an array or is missing [value] and/or [type].',
+                        $index,
+                        $groupIdx,
+                        $level
+                    )
+                );
             }
 
-            $valuesBag->addPatternMatch(new PatternMatch($matcher['value'], $matcher['type'], isset($matcher['case-insensitive']) && true === (boolean) $matcher['case-insensitive']));
+            $valuesBag->addPatternMatch(
+                new PatternMatch(
+                    $matcher['value'],
+                    $matcher['type'],
+                    isset($matcher['case-insensitive']) && true === (bool) $matcher['case-insensitive']
+                )
+            );
             $hasValues = true;
         }
 
@@ -274,8 +347,8 @@ class ArrayInput extends AbstractInput
         return new Range(
             $range['lower'],
             $range['upper'],
-            (isset($range['inclusive-lower']) && false === (boolean) $range['inclusive-lower'] ? false : true),
-            (isset($range['inclusive-upper']) && false === (boolean) $range['inclusive-upper'] ? false : true)
+            (isset($range['inclusive-lower']) && false === (bool) $range['inclusive-lower'] ? false : true),
+            (isset($range['inclusive-upper']) && false === (bool) $range['inclusive-upper'] ? false : true)
         );
     }
 
@@ -284,7 +357,7 @@ class ArrayInput extends AbstractInput
      *
      * @param array $values
      *
-     * @return integer
+     * @return int
      */
     private function countValues(array $values)
     {

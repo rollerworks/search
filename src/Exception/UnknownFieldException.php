@@ -22,13 +22,17 @@ class UnknownFieldException extends \InvalidArgumentException implements Excepti
     private $fieldName;
 
     /**
+     * Constructor.
+     *
      * @param string $fieldName
      */
     public function __construct($fieldName)
     {
         $this->fieldName = $fieldName;
 
-        parent::__construct(sprintf('Field "%s" is not registered in the FieldSet or available as alias.', $fieldName));
+        parent::__construct(
+            sprintf('Field "%s" is not registered in the FieldSet or available as alias.', $fieldName)
+        );
     }
 
     /**

@@ -28,7 +28,7 @@ abstract class AbstractCacheWhereBuilder
     protected $cacheDriver;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $cacheLifeTime;
 
@@ -45,7 +45,7 @@ abstract class AbstractCacheWhereBuilder
     /**
      * @var string
      */
-    protected $keySuffix;
+    protected $keySuffix = '';
 
     /**
      * @var string

@@ -19,7 +19,7 @@ use Rollerworks\Component\Search\AbstractFieldType;
 class TextType extends AbstractFieldType
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -27,7 +27,7 @@ class TextType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasPatternMatchSupport()
     {

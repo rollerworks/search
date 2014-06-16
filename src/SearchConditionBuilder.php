@@ -74,8 +74,8 @@ class SearchConditionBuilder
     }
 
     /**
-     * @param string  $name
-     * @param boolean $forceNew
+     * @param string $name
+     * @param bool   $forceNew
      *
      * @return ValuesBagBuilder
      */

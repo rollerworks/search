@@ -36,6 +36,8 @@ interface FieldTypeInterface
      * Sets the default options for this type.
      *
      * @param OptionsResolverInterface $resolver The resolver for the options.
+     *
+     * @return void
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver);
 
@@ -47,6 +49,8 @@ interface FieldTypeInterface
      *
      * @param FieldConfigInterface $config
      * @param array                $options
+     *
+     * @return void
      */
     public function buildType(FieldConfigInterface $config, array $options);
 
@@ -56,27 +60,29 @@ interface FieldTypeInterface
      * @param SearchFieldView      $view
      * @param FieldConfigInterface $config
      * @param array                $options
+     *
+     * @return void
      */
     public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options);
 
     /**
      * Returns whether ranges are supported by this type.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasRangeSupport();
 
     /**
      * Returns whether comparisons are supported by this type.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasCompareSupport();
 
     /**
      * Returns whether pattern-matchers are supported by this type.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPatternMatchSupport();
 }

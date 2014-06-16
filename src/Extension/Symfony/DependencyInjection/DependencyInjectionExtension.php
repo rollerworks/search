@@ -22,12 +22,28 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DependencyInjectionExtension implements SearchExtensionInterface
 {
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
-    private $typeServiceIds;
+    /**
+     * @var string[]
+     */
+    private $typeServiceIds = array();
 
-    private $typeExtensionServiceIds;
+    /**
+     * @var array[]
+     */
+    private $typeExtensionServiceIds = array();
 
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface $container
+     * @param string[]           $typeServiceIds
+     * @param array[]            $typeExtensionServiceIds
+     */
     public function __construct(ContainerInterface $container, array $typeServiceIds, array $typeExtensionServiceIds)
     {
         $this->container = $container;
@@ -38,28 +54,39 @@ class DependencyInjectionExtension implements SearchExtensionInterface
     public function getType($name)
     {
         if (!isset($this->typeServiceIds[$name])) {
-            throw new InvalidArgumentException(sprintf('The field type "%s" is not registered with the service container.', $name));
+            throw new InvalidArgumentException(
+                sprintf('The field type "%s" is not registered with the service container.', $name)
+            );
         }
 
         $type = $this->container->get($this->typeServiceIds[$name]);
 
         if ($type->getName() !== $name) {
             throw new InvalidArgumentException(
-                sprintf('The type name specified for the service "%s" does not match the actual name. Expected "%s", given "%s"',
+                sprintf(
+                    'The type name specified for the service "%s" does not match the actual name.'.
+                    'Expected "%s", given "%s"',
                     $this->typeServiceIds[$name],
                     $name,
                     $type->getName()
-                ));
+                )
+            );
         }
 
         return $type;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasType($name)
     {
         return isset($this->typeServiceIds[$name]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTypeExtensions($name)
     {
         $extensions = array();
@@ -73,6 +100,9 @@ class DependencyInjectionExtension implements SearchExtensionInterface
         return $extensions;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasTypeExtensions($name)
     {
         return isset($this->typeExtensionServiceIds[$name]);

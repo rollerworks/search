@@ -36,22 +36,22 @@ class SearchField implements FieldConfigInterface
     private $options;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $acceptRanges = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $acceptCompares = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $acceptPatternMatch = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $required = false;
 
@@ -71,7 +71,7 @@ class SearchField implements FieldConfigInterface
     private $modelRefField;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $locked = false;
 
@@ -94,9 +94,13 @@ class SearchField implements FieldConfigInterface
         FieldSet::validateName($name);
 
         if ('' == $name) {
-            throw new \InvalidArgumentException(sprintf(
-                'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").', $name
-            ));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore '.
+                    'and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").',
+                    $name
+                )
+            );
         }
 
         $this->name = $name;
@@ -106,56 +110,64 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * @param boolean $required
+     * @param bool $required
      *
      * @throws BadMethodCallException
      */
     public function setRequired($required = true)
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         $this->required = $required;
     }
 
     /**
-     * @param boolean $acceptRanges
+     * @param bool $acceptRanges
      *
      * @throws BadMethodCallException
      */
     public function setAcceptRange($acceptRanges = true)
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         $this->acceptRanges = $acceptRanges;
     }
 
     /**
-     * @param boolean $acceptCompares
+     * @param bool $acceptCompares
      *
      * @throws BadMethodCallException
      */
     public function setAcceptCompares($acceptCompares = true)
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         $this->acceptCompares = $acceptCompares;
     }
 
     /**
-     * @param boolean $acceptPatternMatch
+     * @param bool $acceptPatternMatch
      *
      * @throws BadMethodCallException
      */
     public function setAcceptPatternMatch($acceptPatternMatch = true)
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         $this->acceptPatternMatch = $acceptPatternMatch;
@@ -184,7 +196,7 @@ class SearchField implements FieldConfigInterface
     /**
      * Returns whether ranges are accepted.
      *
-     * @return boolean
+     * @return bool
      */
     public function acceptRanges()
     {
@@ -194,7 +206,7 @@ class SearchField implements FieldConfigInterface
     /**
      * Returns whether comparisons are accepted.
      *
-     * @return boolean
+     * @return bool
      */
     public function acceptCompares()
     {
@@ -202,7 +214,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function acceptPatternMatch()
     {
@@ -212,7 +224,7 @@ class SearchField implements FieldConfigInterface
     /**
      * Returns whether the field is required to have values.
      *
-     * @return boolean
+     * @return bool
      */
     public function isRequired()
     {
@@ -228,7 +240,9 @@ class SearchField implements FieldConfigInterface
     public function setModelRef($class, $property)
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         $this->modelRefClass = $class;
@@ -269,7 +283,9 @@ class SearchField implements FieldConfigInterface
     public function setValueComparison(ValueComparisonInterface $comparisonObj)
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         $this->valueComparison = $comparisonObj;
@@ -294,7 +310,7 @@ class SearchField implements FieldConfigInterface
      * view to the normalized format.
      *
      * @param DataTransformerInterface $viewTransformer
-     * @param Boolean                  $forcePrepend    if set to true, prepend instead of appending
+     * @param bool                     $forcePrepend    if set to true, prepend instead of appending
      *
      * @return self The configuration object.
      *
@@ -303,7 +319,9 @@ class SearchField implements FieldConfigInterface
     public function addViewTransformer(DataTransformerInterface $viewTransformer, $forcePrepend = false)
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         if ($forcePrepend) {
@@ -325,7 +343,9 @@ class SearchField implements FieldConfigInterface
     public function resetViewTransformers()
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         $this->viewTransformers = array();
@@ -348,14 +368,16 @@ class SearchField implements FieldConfigInterface
      *
      * After calling this method, setter methods can be no longer called.
      *
-     * @param boolean $locked
+     * @param bool $locked
      *
      * @throws BadMethodCallException when the data is locked
      */
     public function setDataLocked($locked = true)
     {
         if ($this->locked) {
-             throw new BadMethodCallException('SearchField setter methods cannot be accessed anymore once the data is locked.');
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
         }
 
         $this->locked = $locked;
@@ -367,7 +389,7 @@ class SearchField implements FieldConfigInterface
      * A field with locked data is restricted to the data passed in
      * this configuration.
      *
-     * @return Boolean Whether the data is locked.
+     * @return bool Whether the data is locked.
      */
     public function getDataLocked()
     {
@@ -389,7 +411,7 @@ class SearchField implements FieldConfigInterface
      *
      * @param string $name The option name,
      *
-     * @return Boolean Whether the option exists.
+     * @return bool Whether the option exists.
      */
     public function hasOption($name)
     {

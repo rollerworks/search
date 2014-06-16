@@ -44,12 +44,12 @@ class ValueMatch extends FunctionNode
     public $matchType;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $caseInsensitive;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSql(SqlWalker $sqlWalker)
     {
@@ -82,7 +82,7 @@ class ValueMatch extends FunctionNode
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function parse(Parser $parser)
     {

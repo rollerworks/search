@@ -40,7 +40,7 @@ class BirthdayType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
@@ -55,7 +55,7 @@ class BirthdayType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
@@ -72,7 +72,7 @@ class BirthdayType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasRangeSupport()
     {
@@ -80,7 +80,7 @@ class BirthdayType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCompareSupport()
     {

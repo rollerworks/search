@@ -24,7 +24,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $fieldName;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $required = false;
 
@@ -65,7 +65,6 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->type,
             $this->required,
             $this->options,
-
             $parentStr
         ) = unserialize($str);
 

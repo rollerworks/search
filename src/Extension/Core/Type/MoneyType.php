@@ -38,38 +38,39 @@ class MoneyType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
-
-        $config
-            ->addViewTransformer(new MoneyToLocalizedStringTransformer(
+        $config->addViewTransformer(
+            new MoneyToLocalizedStringTransformer(
                 $options['precision'],
                 $options['grouping'],
                 null,
                 $options['divisor'],
                 $options['default_currency']
-            ))
-        ;
+            )
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'precision' => 2,
-            'grouping' => false,
-            'divisor' => 1,
-            'default_currency' => 'EUR',
-        ));
+        $resolver->setDefaults(
+            array(
+                'precision' => 2,
+                'grouping' => false,
+                'divisor' => 1,
+                'default_currency' => 'EUR',
+            )
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasRangeSupport()
     {
@@ -77,7 +78,7 @@ class MoneyType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCompareSupport()
     {
@@ -85,9 +86,7 @@ class MoneyType extends AbstractFieldType
     }
 
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name.
+     * {@inheritdoc}
      */
     public function getName()
     {

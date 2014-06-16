@@ -38,17 +38,27 @@ class EntityCountConversion implements SqlFieldConversionInterface
         // all options are resolved
 
         if (null === $options['table_name']) {
-            $refClassMeta = $em->getClassMetadata($em->getClassMetadata($field->getModelRefClass())
-                ->getAssociationTargetClass($field->getModelRefProperty()));
+            $refClassMeta = $em->getClassMetadata(
+                $em->getClassMetadata(
+                    $field->getModelRefClass()
+                )->getAssociationTargetClass(
+                    $field->getModelRefProperty()
+                )
+            );
 
             $options['table_name'] = $refClassMeta->getTableName();
         }
 
         if (null === $options['table_field']) {
-            $classMetadata = $em->getClassMetadata($field->getModelRefClass());
-            $options['table_field'] = $classMetadata->getFieldForColumn($field->getModelRefProperty());
+            $classMetadata = $em->getClassMetadata(
+                $field->getModelRefClass()
+            );
+
+            $options['table_field'] = $classMetadata->getFieldForColumn(
+                $field->getModelRefProperty()
+            );
         }
 
-        return "(SELECT COUNT(*) FROM " . $options['table_name'] . " WHERE " . $options['table_field'] . " = $column)";
+        return "(SELECT COUNT(*) FROM ".$options['table_name']." WHERE ".$options['table_field']." = $column)";
     }
 }

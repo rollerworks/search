@@ -26,19 +26,21 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'doctrine_dbal_conversion' => null)
+        $resolver->setDefaults(
+            array('doctrine_dbal_conversion' => null)
         );
 
-        $resolver->setAllowedTypes(array(
-            'doctrine_dbal_conversion' => array(
-                'null',
-                'Closure',
-                'Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface',
-                'Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface',
-                'Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface'
+        $resolver->setAllowedTypes(
+            array(
+                'doctrine_dbal_conversion' => array(
+                    'null',
+                    'Closure',
+                    'Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface',
+                    'Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface',
+                    'Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface'
+                )
             )
-        ));
+        );
     }
 
     /**

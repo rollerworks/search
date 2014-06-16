@@ -18,10 +18,19 @@ namespace Rollerworks\Component\Search\Exception;
  */
 class UnsupportedValueTypeException extends \RuntimeException implements ExceptionInterface
 {
+    /**
+     * @var string
+     */
     protected $fieldName;
+
+    /**
+     * @var string
+     */
     protected $valueType;
 
     /**
+     * Constructor.
+     *
      * @param string $fieldName
      * @param string $valueType
      */
@@ -30,7 +39,9 @@ class UnsupportedValueTypeException extends \RuntimeException implements Excepti
         $this->fieldName = $fieldName;
         $this->valueType = $valueType;
 
-        parent::__construct(sprintf('Field "%s" does accept %s values.', $fieldName, $valueType));
+        parent::__construct(
+            sprintf('Field "%s" does accept %s values.', $fieldName, $valueType)
+        );
     }
 
     /**

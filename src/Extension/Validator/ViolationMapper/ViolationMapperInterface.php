@@ -25,6 +25,8 @@ interface ViolationMapperInterface
      *
      * @param ConstraintViolationInterface $violation   The violations to map.
      * @param ValuesGroup                  $valuesGroup The root group of the tree to map it to.
+     *
+     * @return void
      */
     public function mapViolation(ConstraintViolationInterface $violation, ValuesGroup $valuesGroup);
 }

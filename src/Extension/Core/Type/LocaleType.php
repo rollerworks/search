@@ -21,17 +21,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class LocaleType extends AbstractFieldType
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'choices' => Intl::getLocaleBundle()->getLocaleNames(),
-        ));
+        $resolver->setDefaults(
+            array('choices' => Intl::getLocaleBundle()->getLocaleNames())
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {
@@ -39,7 +39,7 @@ class LocaleType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

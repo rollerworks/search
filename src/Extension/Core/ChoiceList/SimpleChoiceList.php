@@ -41,7 +41,7 @@ class SimpleChoiceList extends ChoiceList
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChoiceForValue($value)
     {
@@ -58,7 +58,7 @@ class SimpleChoiceList extends ChoiceList
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getValueForChoice($choice)
     {
@@ -75,7 +75,7 @@ class SimpleChoiceList extends ChoiceList
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getLabelForChoice($choice)
     {
@@ -121,7 +121,7 @@ class SimpleChoiceList extends ChoiceList
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function fixChoices(array $choices)
     {
@@ -129,7 +129,7 @@ class SimpleChoiceList extends ChoiceList
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function createIndex($choice)
     {
@@ -137,7 +137,7 @@ class SimpleChoiceList extends ChoiceList
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function createValue($choice)
     {

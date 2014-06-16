@@ -28,20 +28,25 @@ class DqlQueryGenerator extends QueryGenerator
         // So we use a custom function for this
 
         $pattern = array(
-            PatternMatch::PATTERN_STARTS_WITH => "RW_SEARCH_MATCH(%s, %s, 'starts_with', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
-            PatternMatch::PATTERN_NOT_STARTS_WITH => "RW_SEARCH_MATCH(%s, %s', 'starts_with', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
+            PatternMatch::PATTERN_STARTS_WITH => "RW_SEARCH_MATCH(%s, %s, 'starts_with', %s) = 1",
+            PatternMatch::PATTERN_NOT_STARTS_WITH => "RW_SEARCH_MATCH(%s, %s', 'starts_with', %s) <> 1",
 
-            PatternMatch::PATTERN_CONTAINS => "RW_SEARCH_MATCH(%s, %s, 'contains', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
-            PatternMatch::PATTERN_NOT_CONTAINS => "RW_SEARCH_MATCH(%s, %s, 'contains', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
+            PatternMatch::PATTERN_CONTAINS => "RW_SEARCH_MATCH(%s, %s, 'contains', %s) = 1",
+            PatternMatch::PATTERN_NOT_CONTAINS => "RW_SEARCH_MATCH(%s, %s, 'contains', %s) <> 1",
 
-            PatternMatch::PATTERN_ENDS_WITH => "RW_SEARCH_MATCH(%s, %s, 'ends_with', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
-            PatternMatch::PATTERN_NOT_ENDS_WITH => "RW_SEARCH_MATCH(%s, %s, 'ends_with', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
+            PatternMatch::PATTERN_ENDS_WITH => "RW_SEARCH_MATCH(%s, %s, 'ends_with', %s) = 1",
+            PatternMatch::PATTERN_NOT_ENDS_WITH => "RW_SEARCH_MATCH(%s, %s, 'ends_with', %s) <> 1",
 
-            PatternMatch::PATTERN_REGEX => "RW_SEARCH_MATCH(%s, %s, 'regex', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") = 1",
-            PatternMatch::PATTERN_NOT_REGEX => "RW_SEARCH_MATCH(%s, %s, 'regex', ".($patternMatch->isCaseInsensitive() ? 'true' : 'false') .") <> 1",
+            PatternMatch::PATTERN_REGEX => "RW_SEARCH_MATCH(%s, %s, 'regex', %s) = 1",
+            PatternMatch::PATTERN_NOT_REGEX => "RW_SEARCH_MATCH(%s, %s, 'regex', %s) <> 1",
         );
 
-        return sprintf($pattern[$patternMatch->getType()], $column, $value);
+        return sprintf(
+            $pattern[$patternMatch->getType()],
+            $column,
+            $value,
+            ($patternMatch->isCaseInsensitive() ? 'true' : 'false')
+        );
     }
 
     /**
@@ -57,7 +62,14 @@ class DqlQueryGenerator extends QueryGenerator
         $this->parameters[$paramName] = $convertedValue;
         $convertedValue = ':'.$paramName;
 
-        return "RW_SEARCH_VALUE_CONVERSION('$fieldName', ".$this->fields[$fieldName]['column'].", $convertedValue, ".(null === $strategy ? 'null' : $strategy).", ".($valueRequiresEmbedding ? 'true' : 'false').")";
+        return sprintf(
+            'RW_SEARCH_VALUE_CONVERSION(\'%s\', %s, %s, %s, %s)',
+            $fieldName,
+            $this->fields[$fieldName]['column'],
+            $convertedValue,
+            (null === $strategy ? 'null' : $strategy),
+            ($valueRequiresEmbedding ? 'true' : 'false')
+        );
     }
 
     /**
@@ -74,7 +86,12 @@ class DqlQueryGenerator extends QueryGenerator
         }
 
         if ($this->fields[$fieldName]['field_convertor'] instanceof SqlFieldConversionInterface) {
-            $this->fieldsMappingCache[$fieldName][$strategy] = "RW_SEARCH_FIELD_CONVERSION('$fieldName', ".$this->fields[$fieldName]['column'].", ".(null === $strategy ? 'null' : $strategy).")";
+            $this->fieldsMappingCache[$fieldName][$strategy] = sprintf(
+                'RW_SEARCH_FIELD_CONVERSION(\'%s\', %s, %s)',
+                $fieldName,
+                $this->fields[$fieldName]['column'],
+                (null === $strategy ? 'null' : $strategy)
+            );
         } else {
             $this->fieldsMappingCache[$fieldName][$strategy] = $this->fields[$fieldName]['column'];
         }

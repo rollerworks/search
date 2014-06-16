@@ -49,7 +49,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     private $query;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $queryModified;
 
@@ -80,11 +80,16 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     public function __construct($query, SearchConditionInterface $searchCondition)
     {
         if ($searchCondition->getValuesGroup()->hasErrors()) {
-            throw new BadMethodCallException('Unable to generate the where-clause, because the SearchCondition contains errors.');
+            throw new BadMethodCallException(
+                'Unable to generate the where-clause, because the SearchCondition contains errors.'
+            );
         }
 
         if (!$query instanceof QueryBuilder && !$query instanceof AbstractQuery) {
-            throw new UnexpectedTypeException($query, 'Doctrine\ORM\Query, Doctrine\ORM\NativeQuery or Doctrine\ORM\QueryBuilder');
+            throw new UnexpectedTypeException(
+                $query,
+                'Doctrine\ORM\Query, Doctrine\ORM\NativeQuery or Doctrine\ORM\QueryBuilder'
+            );
         }
 
         $this->searchCondition = $searchCondition;
@@ -109,7 +114,9 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     public function setEntityMappings(array $mapping)
     {
         if ($this->whereClause) {
-            throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
+            throw new BadMethodCallException(
+                'WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.'
+            );
         }
 
         $this->entityClassMapping = $mapping;
@@ -130,7 +137,9 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     public function setEntityMapping($entity, $alias)
     {
         if ($this->whereClause) {
-            throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
+            throw new BadMethodCallException(
+                'WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.'
+            );
         }
 
         $this->entityClassMapping[$entity] = $alias;
@@ -159,7 +168,9 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     public function setFieldMapping($fieldName, $alias)
     {
         if ($this->whereClause) {
-            throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
+            throw new BadMethodCallException(
+                'WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.'
+            );
         }
 
         if (!$this->searchCondition->getFieldSet()->has($fieldName)) {
@@ -184,7 +195,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * If you use DQL, you should also set the required hints using
      * getQueryHintName() and getQueryHintValue() respectively.
      *
-     * @param boolean $embedValues Whether to embed the values (NativeQuery only), default is to assign as parameters.
+     * @param bool $embedValues Whether to embed the values (NativeQuery only), default is to assign as parameters.
      *
      * @return string
      */
@@ -198,12 +209,26 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         $this->processFields();
 
         if ($this->query instanceof NativeQuery) {
-            $this->queryGenerator = new QueryGenerator($this->entityManager->getConnection(), $this->searchCondition, $this->fields, $this->parameterPrefix, $embedValues);
+            $this->queryGenerator = new QueryGenerator(
+                $this->entityManager->getConnection(),
+                $this->searchCondition,
+                $this->fields,
+                $this->parameterPrefix,
+                $embedValues
+            );
         } else {
-            $this->queryGenerator = new DqlQueryGenerator($this->entityManager->getConnection(), $this->searchCondition, $this->fields, $this->parameterPrefix);
+            $this->queryGenerator = new DqlQueryGenerator(
+                $this->entityManager->getConnection(),
+                $this->searchCondition,
+                $this->fields,
+                $this->parameterPrefix
+            );
         }
 
-        $this->whereClause = $this->queryGenerator->getGroupQuery($this->searchCondition->getValuesGroup());
+        $this->whereClause = $this->queryGenerator->getGroupQuery(
+            $this->searchCondition->getValuesGroup()
+        );
+
         foreach ($this->queryGenerator->getParameters() as $paramName => $paramValue) {
             $this->query->setParameter($paramName, $paramValue);
         }
@@ -220,8 +245,8 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      *
      * Note. When the query is already updated this will do nothing.
      *
-     * @param string  $prependQuery Prepends this string to the where-clause ("WHERE" or "AND" for example)
-     * @param boolean $forceUpdate  Force the where-builder to update the query
+     * @param string $prependQuery Prepends this string to the where-clause ("WHERE" or "AND" for example)
+     * @param bool   $forceUpdate  Force the where-builder to update the query
      *
      * @return self
      */
@@ -240,7 +265,10 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         }
 
         if ($this->query instanceof DqlQuery) {
-            $this->query->setHint($this->getQueryHintName(), $this->getQueryHintValue());
+            $this->query->setHint(
+                $this->getQueryHintName(),
+                $this->getQueryHintValue()
+            );
         }
 
         $this->queryModified = true;
@@ -312,10 +340,17 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         $field = $field ? : $this->fieldset->get($fieldName);
 
         if ($this->queryGenerator) {
-            return $this->queryGenerator->getFieldConversionSql($fieldName, $column, $field, $strategy);
+            return $this->queryGenerator->getFieldConversionSql(
+                $fieldName,
+                $column,
+                $field,
+                $strategy
+            );
         }
 
-        throw new BadMethodCallException('getFieldConversionSql() is meant for internal usage, you should not call it manually.');
+        throw new BadMethodCallException(
+            'getFieldConversionSql() is meant for internal usage, you should not call it manually.'
+        );
     }
 
     /**
@@ -328,21 +363,30 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * @param string               $value
      * @param FieldConfigInterface $field
      * @param null|integer         $strategy
-     * @param boolean              $isValueEmbedded
+     * @param bool                 $valueEmbedded
      *
      * @return string
      *
      * @throws BadMethodCallException when there is no QueryGenerator
      */
-    public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field = null, $strategy = null, $isValueEmbedded = false)
+    public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field = null, $strategy = null, $valueEmbedded = false)
     {
         $field = $field ? : $this->fieldset->get($fieldName);
 
         if ($this->queryGenerator) {
-            return $this->queryGenerator->getValueConversionSql($fieldName, $column, $value, $field, $strategy, $isValueEmbedded);
+            return $this->queryGenerator->getValueConversionSql(
+                $fieldName,
+                $column,
+                $value,
+                $field,
+                $strategy,
+                $valueEmbedded
+            );
         }
 
-        throw new BadMethodCallException('getValueConversionSql() is meant for internal usage, you should not call it manually.');
+        throw new BadMethodCallException(
+            'getValueConversionSql() is meant for internal usage, you should not call it manually.'
+        );
     }
 
     private function processEntityMappings()
@@ -367,13 +411,23 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         // Initialize the information for the fields.
         foreach ($this->fieldset->all() as $fieldName => $fieldConfig) {
             $field = $this->fieldset->get($fieldName);
+
             if (null === $field->getModelRefClass()) {
                 continue;
             }
 
             $this->fields[$fieldName] = array();
-            $this->fields[$fieldName]['db_type'] = $this->getDbType($field->getModelRefClass(), $field->getModelRefProperty());
-            $this->fields[$fieldName]['column'] = $this->resolveFieldColumn($field->getModelRefClass(), $field->getModelRefProperty(), $fieldName);
+            $this->fields[$fieldName]['db_type'] = $this->getDbType(
+                $field->getModelRefClass(),
+                $field->getModelRefProperty()
+            );
+
+            $this->fields[$fieldName]['column'] = $this->resolveFieldColumn(
+                $field->getModelRefClass(),
+                $field->getModelRefProperty(),
+                $fieldName
+            );
+
             $this->fields[$fieldName]['field'] = $fieldConfig;
             $this->fields[$fieldName]['field_convertor'] = isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null;
             $this->fields[$fieldName]['value_convertor'] = isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null;
@@ -396,27 +450,37 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         $metaData = $this->entityManager->getClassMetadata($entity);
 
         if (isset($this->entityFieldMapping[$fieldName])) {
-            $columnPrefix = $this->entityFieldMapping[$fieldName].'.';
-        } else {
-            // We cant use the prefix directly as it might be JOIN column
-            if (!$this->query instanceof NativeQuery && $metaData->isAssociationWithSingleJoinColumn($column)) {
-                $joiningClass = $metaData->getAssociationTargetClass($column);
-                if (!isset($this->entityClassMapping[$joiningClass])) {
-                    throw new InvalidConfigurationException(sprintf(
-                        "No entity-mapping set for \"%s\", used by \"%s\"#%s using a JOIN association.\n
-                        You can solve this by either adding the mapping for \"%s\", or by setting the alias for \"%\$1s\" explicitly.",
-                        $joiningClass,
-                        $entity, $column)
-                    );
-                }
+            return $this->entityFieldMapping[$fieldName].'.'.$column;
+        }
 
-                $columnPrefix = $this->entityClassMapping[$joiningClass].'.';
-                $column = $metaData->getSingleAssociationReferencedJoinColumnName($column);
-            } elseif (isset($this->entityClassMapping[$entity])) {
-                $columnPrefix = $this->entityClassMapping[$entity].'.';
-            } else {
-                throw new InvalidConfigurationException(sprintf('Unable to determine entity-alias mapping for "%s"#%s, set the entity mapping explicitly.', $entity, $column));
+        // We cant use the prefix directly as it might be JOIN column
+        if (!$this->query instanceof NativeQuery && $metaData->isAssociationWithSingleJoinColumn($column)) {
+            $joiningClass = $metaData->getAssociationTargetClass($column);
+            if (!isset($this->entityClassMapping[$joiningClass])) {
+                throw new InvalidConfigurationException(
+                    sprintf(
+                        'No entity-mapping set for "%s", used by "%s"#%s using a JOIN association.'."\n".
+                        'You can solve this by either adding the mapping for "%s",'.
+                        'or by setting the alias for "%\$1s" explicitly.',
+                        $joiningClass,
+                        $entity,
+                        $column
+                    )
+                );
             }
+
+            $columnPrefix = $this->entityClassMapping[$joiningClass].'.';
+            $column = $metaData->getSingleAssociationReferencedJoinColumnName($column);
+        } elseif (isset($this->entityClassMapping[$entity])) {
+            $columnPrefix = $this->entityClassMapping[$entity].'.';
+        } else {
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'Unable to determine entity-alias mapping for "%s"#%s, set the entity mapping explicitly.',
+                    $entity,
+                    $column
+                )
+            );
         }
 
         $column = $columnPrefix.$column;
@@ -439,7 +503,14 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         if (!($type = $metaData->getTypeOfField($propertyName))) {
             // As there is no type, the only logical part is a JOIN, but we can only process a single Column JOIN
             if (!$metaData->isAssociationWithSingleJoinColumn($propertyName)) {
-                throw new \RuntimeException(sprintf('Column "%s"::"%s" seems be to a JOIN but has multiple reference columns, making it impossible to determine the correct type.'));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Column "%s"::"%s" seems be to a JOIN but has multiple reference columns,'.
+                        'making it impossible to determine the correct type.',
+                        $entity,
+                        $propertyName
+                    )
+                );
             }
 
             $joiningClass = $metaData->getAssociationTargetClass($propertyName);

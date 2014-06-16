@@ -23,7 +23,7 @@ class DateTimeValueComparison extends DateValueComparison
      *
      * @param \DateTime $value      The value to increment.
      * @param array     $options    Array of options passed with the field
-     * @param integer   $increments Number of increments
+     * @param int       $increments Number of increments
      *
      * @return \DateTime
      */
@@ -32,11 +32,11 @@ class DateTimeValueComparison extends DateValueComparison
         $newValue = clone $value;
 
         if ($options['with_seconds']) {
-            $newValue->modify('+' . $increments . ' seconds');
+            $newValue->modify('+'.$increments.' seconds');
         } elseif ($options['with_minutes']) {
-            $newValue->modify('+' . $increments . ' minutes');
+            $newValue->modify('+'.$increments.' minutes');
         } else {
-            $newValue->modify('+' . $increments . ' hours');
+            $newValue->modify('+'.$increments.' hours');
         }
 
         return $newValue;

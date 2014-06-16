@@ -41,7 +41,10 @@ class JsonInput extends ArrayInput
         $array = json_decode($input, true, $this->maxNestingLevel+10);
 
         if (json_last_error() <> JSON_ERROR_NONE) {
-            throw new InputProcessorException('Provided input is invalid, JSON contains an error or the maximum stack depth has been exceeded.', json_last_error());
+            throw new InputProcessorException(
+                'Provided input is invalid, JSON contains an error or the maximum stack depth has been exceeded.',
+                json_last_error()
+            );
         }
 
         return parent::process($array);
@@ -50,7 +53,7 @@ class JsonInput extends ArrayInput
     /**
      * @param string $json
      *
-     * @return boolean true on success
+     * @return bool true on success
      *
      * @throws ParsingException
      */
@@ -66,6 +69,9 @@ class JsonInput extends ArrayInput
             return true;
         }
 
-        throw new ParsingException('Input does not contain valid JSON'."\n".$result->getMessage(), $result->getDetails());
+        throw new ParsingException(
+            'Input does not contain valid JSON: '."\n".$result->getMessage(),
+            $result->getDetails()
+        );
     }
 }

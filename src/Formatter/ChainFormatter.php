@@ -39,7 +39,9 @@ class ChainFormatter implements FormatterInterface
     {
         // Ensure we got no end-less loops
         if ($formatter === $this) {
-            throw new \InvalidArgumentException('Unable to add formatter to chain, can not assign formatter to its self.');
+            throw new \InvalidArgumentException(
+                'Unable to add formatter to chain, can not assign formatter to its self.'
+            );
         }
 
         $this->formatters[] = $formatter;
@@ -48,7 +50,7 @@ class ChainFormatter implements FormatterInterface
     }
 
     /**
-     * @return FormatterInterface
+     * @return FormatterInterface[]
      */
     public function getFormatters()
     {
@@ -56,7 +58,7 @@ class ChainFormatter implements FormatterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function format(SearchConditionInterface $condition)
     {

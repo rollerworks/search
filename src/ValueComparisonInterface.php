@@ -27,7 +27,7 @@ interface ValueComparisonInterface
      * @param mixed $lower
      * @param array $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isHigher($higher, $lower, array $options);
 
@@ -38,7 +38,7 @@ interface ValueComparisonInterface
      * @param mixed $higher
      * @param array $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isLower($lower, $higher, $options);
 
@@ -49,7 +49,7 @@ interface ValueComparisonInterface
      * @param mixed $nextValue
      * @param array $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isEqual($value, $nextValue, $options);
 }

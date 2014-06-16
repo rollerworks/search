@@ -79,7 +79,7 @@ class DateTimeType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
@@ -91,43 +91,52 @@ class DateTimeType extends AbstractFieldType
         $pattern = is_string($options['format']) ? $options['format'] : null;
 
         if (!in_array($dateFormat, self::$acceptedFormats, true)) {
-            throw new InvalidConfigurationException('The "date_format" option must be one of the IntlDateFormatter constants (FULL, LONG, MEDIUM, SHORT) or a string representing a custom format.');
+            throw new InvalidConfigurationException(
+                'The "date_format" option must be one of the IntlDateFormatter constants (FULL, LONG, MEDIUM, SHORT) '.
+                'or a string representing a custom format.'
+            );
         }
 
         if (self::HTML5_FORMAT === $pattern) {
-            $config->addViewTransformer(new DateTimeToRfc3339Transformer(
-                $options['model_timezone'],
-                $options['view_timezone']
-            ));
+            $config->addViewTransformer(
+                new DateTimeToRfc3339Transformer(
+                    $options['model_timezone'],
+                    $options['view_timezone']
+                )
+            );
         } else {
-            $config->addViewTransformer(new DateTimeToLocalizedStringTransformer(
-                $options['model_timezone'],
-                $options['view_timezone'],
-                $dateFormat,
-                $timeFormat,
-                $calendar,
-                $pattern
-            ));
+            $config->addViewTransformer(
+                new DateTimeToLocalizedStringTransformer(
+                    $options['model_timezone'],
+                    $options['view_timezone'],
+                    $dateFormat,
+                    $timeFormat,
+                    $calendar,
+                    $pattern
+                )
+            );
         }
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'model_timezone' => null,
-            'view_timezone'  => null,
-            'format'         => self::HTML5_FORMAT,
-            'date_format'    => null,
-            'with_minutes'   => true,
-            'with_seconds'   => false,
-        ));
+        $resolver->setDefaults(
+            array(
+                'model_timezone' => null,
+                'view_timezone'  => null,
+                'format'         => self::HTML5_FORMAT,
+                'date_format'    => null,
+                'with_minutes'   => true,
+                'with_seconds'   => false,
+            )
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasRangeSupport()
     {
@@ -135,7 +144,7 @@ class DateTimeType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCompareSupport()
     {
@@ -143,9 +152,7 @@ class DateTimeType extends AbstractFieldType
     }
 
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name.
+     * {@inheritdoc}
      */
     public function getName()
     {

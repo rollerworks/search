@@ -24,20 +24,32 @@ use Symfony\Component\Yaml\Yaml;
 class YamlFileDriver extends AbstractFileDriver
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function loadMetadataFromFile(\ReflectionClass $class, $file, $test = false)
+    protected function loadMetadataFromFile(\ReflectionClass $class, $file, $noReflection = false)
     {
         $classMetadata = new MergeableClassMetadata($class->name);
         $data = Yaml::parse($file);
 
         foreach ($data as $propertyName => $property) {
             if (!isset($property['name'])) {
-                throw new InvalidArgumentException(sprintf('No "name" found in property metadata of class "%s" property "%s".', $class->name, $propertyName));
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'No "name" found in property metadata of class "%s" property "%s".',
+                        $class->name,
+                        $propertyName
+                    )
+                );
             }
 
             if (!isset($property['type'])) {
-                throw new InvalidArgumentException(sprintf('No "type" found in property metadata of class "%s" property "%s".', $class->name, $propertyName));
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'No "type" found in property metadata of class "%s" property "%s".',
+                        $class->name,
+                        $propertyName
+                    )
+                );
             }
 
             $propertyMetadata = new PropertyMetadata($class->name, $propertyName);
@@ -49,7 +61,7 @@ class YamlFileDriver extends AbstractFileDriver
                 $propertyMetadata->options = $property['options'];
             }
 
-            if ($test) {
+            if ($noReflection) {
                 $propertyMetadata->reflection = null;
             }
 

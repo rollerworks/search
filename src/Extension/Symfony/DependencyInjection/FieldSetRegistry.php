@@ -20,6 +20,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class FieldSetRegistry
 {
     /**
+     * @var string[]
+     */
+    private $serviceIds = array();
+
+    /**
+     * Constructor.
+     *
      * @param ContainerInterface $container
      * @param array              $serviceIds
      */
@@ -41,7 +48,12 @@ class FieldSetRegistry
     public function getFieldSet($name)
     {
         if (!isset($this->serviceIds[$name])) {
-            throw new \InvalidArgumentException(sprintf('Unable to get FieldSet "%s", FieldSet does not seem to be registered in the Service Container.', $name));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Unable to get FieldSet "%s", FieldSet does not seem to be registered in the Service Container.',
+                    $name
+                )
+            );
         }
 
         return $this->container->get($this->serviceIds[$name]);

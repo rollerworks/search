@@ -40,25 +40,25 @@ class EntityCountType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $conversion = $this->conversion;
 
-        $resolver->setDefaults(array(
-            'table_name' => null,
-            'table_field' => null,
-            'doctrine_dbal_conversion' => function () use ($conversion) {
-                return $conversion;
-            },
-        ));
+        $resolver->setDefaults(
+            array(
+                'table_name' => null,
+                'table_field' => null,
+                'doctrine_dbal_conversion' => function () use ($conversion) {
+                    return $conversion;
+                },
+            )
+        );
     }
 
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name.
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -66,7 +66,7 @@ class EntityCountType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {

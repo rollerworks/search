@@ -32,7 +32,7 @@ interface SearchExtensionInterface
      *
      * @param string $name The name of the type
      *
-     * @return boolean Whether the type is supported by this extension
+     * @return bool Whether the type is supported by this extension
      */
     public function hasType($name);
 

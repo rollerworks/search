@@ -20,7 +20,8 @@ use Doctrine\ORM\Query\Lexer;
  * "RW_SEARCH_VALUE_CONVERSION(FieldMame, :parameter, Strategy, IsValueEmbedded)"
  *
  * SearchValueConversion ::=
- *     "RW_SEARCH_VALUE_CONVERSION" "(" StringPrimary, StateFieldPathExpression, InParameter "," [ integer | null ] "," Literal ")"
+ *     "RW_SEARCH_VALUE_CONVERSION" "(" StringPrimary, StateFieldPathExpression,
+ *      InParameter "," [ integer | null ] "," Literal ")"
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -47,12 +48,12 @@ class SqlValueConversion extends FunctionNode
     public $strategy;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $isValueEmbedded;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSql(SqlWalker $sqlWalker)
     {
@@ -70,11 +71,18 @@ class SqlValueConversion extends FunctionNode
             $value = $this->valueExpression->dispatch($sqlWalker);
         }
 
-        return $whereBuilder->getValueConversionSql($this->fieldName, $sqlWalker->walkPathExpression($this->column), $value, null, $this->strategy, $this->isValueEmbedded);
+        return $whereBuilder->getValueConversionSql(
+            $this->fieldName,
+            $sqlWalker->walkPathExpression($this->column),
+            $value,
+            null,
+            $this->strategy,
+            $this->isValueEmbedded
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function parse(Parser $parser)
     {

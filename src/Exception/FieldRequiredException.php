@@ -16,14 +16,27 @@ namespace Rollerworks\Component\Search\Exception;
  */
 class FieldRequiredException extends \RuntimeException implements ExceptionInterface
 {
+    /**
+     * @var string
+     */
     private $fieldName;
+
+    /**
+     * @var int
+     */
     private $groupIdx;
+
+    /**
+     * @var int
+     */
     private $nestingLevel;
 
     /**
-     * @param string  $fieldName
-     * @param integer $groupIdx
-     * @param integer $nestingLevel
+     * Constructor.
+     *
+     * @param string $fieldName
+     * @param int    $groupIdx
+     * @param int    $nestingLevel
      */
     public function __construct($fieldName, $groupIdx, $nestingLevel)
     {
@@ -31,7 +44,14 @@ class FieldRequiredException extends \RuntimeException implements ExceptionInter
         $this->groupIdx = $groupIdx;
         $this->nestingLevel = $nestingLevel;
 
-        parent::__construct(sprintf('Field "%s" is required but is missing in group %d at nesting level %d.', $fieldName, $groupIdx, $nestingLevel));
+        parent::__construct(
+            sprintf(
+                'Field "%s" is required but is missing in group %d at nesting level %d.',
+                $fieldName,
+                $groupIdx,
+                $nestingLevel
+            )
+        );
     }
 
     /**

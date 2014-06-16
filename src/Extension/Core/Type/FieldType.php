@@ -37,7 +37,7 @@ class FieldType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -45,7 +45,7 @@ class FieldType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {
@@ -53,7 +53,7 @@ class FieldType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
@@ -61,18 +61,22 @@ class FieldType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'invalid_message' => 'This value is not valid.',
-            'invalid_message_parameters' => array(),
-        ));
+        $resolver->setDefaults(
+            array(
+                'invalid_message' => 'This value is not valid.',
+                'invalid_message_parameters' => array(),
+            )
+        );
 
-        $resolver->setAllowedTypes(array(
-            'invalid_message' => array('string'),
-            'invalid_message_parameters' => array('array'),
-        ));
+        $resolver->setAllowedTypes(
+            array(
+                'invalid_message' => array('string'),
+                'invalid_message_parameters' => array('array'),
+            )
+        );
     }
 }

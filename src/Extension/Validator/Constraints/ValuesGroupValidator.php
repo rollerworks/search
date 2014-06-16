@@ -29,7 +29,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 class ValuesGroupValidator extends ConstraintValidator
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function validate($condition, Constraint $constraint)
     {
@@ -41,7 +41,11 @@ class ValuesGroupValidator extends ConstraintValidator
         $valuesGroup = $condition->getValuesGroup();
 
         foreach ($valuesGroup->getGroups() as $i => $group) {
-            $this->context->validateValue(new SearchCondition($fieldSet, $group), $constraint, 'groups[' . $i .']');
+            $this->context->validateValue(
+                new SearchCondition($fieldSet, $group),
+                $constraint,
+                'groups['.$i.']'
+            );
         }
 
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
@@ -65,10 +69,16 @@ class ValuesGroupValidator extends ConstraintValidator
             // Validate the data against the constraints defined
             // in the field
             $constraints = $config->getOption('constraints');
+
             foreach ($constraints as $constraint) {
                 foreach ($groups as $group) {
                     if (in_array($group, $constraint->groups)) {
-                        $this->validateValuesBag(sprintf('fields[%s]', $fieldName), $values, $fieldSet->get($fieldName), $constraints);
+                        $this->validateValuesBag(
+                            sprintf('fields[%s]', $fieldName),
+                            $values,
+                            $fieldSet->get($fieldName),
+                            $constraints
+                        );
 
                         // Prevent duplicate validation
                         continue 2;
@@ -90,37 +100,45 @@ class ValuesGroupValidator extends ConstraintValidator
 
         if ($valuesBag->hasSingleValues()) {
             foreach ($valuesBag->getSingleValues() as $i => $value) {
-                $this->context->validateValue($value->getValue(), $constraints, $subPath . '.singleValues[' . $i . '].value');
+                $this->context->validateValue($value->getValue(), $constraints, $subPath.'.singleValues['.$i.'].value');
             }
         }
 
         if ($valuesBag->hasExcludedValues()) {
             foreach ($valuesBag->getExcludedValues() as $i => $value) {
-                $this->context->validateValue($value->getValue(), $constraints, $subPath . '.excludedValues[' . $i . '].value');
+                $this->context->validateValue(
+                    $value->getValue(),
+                    $constraints,
+                    $subPath.'.excludedValues['.$i.'].value'
+                );
             }
         }
 
         if ($valuesBag->hasRanges()) {
             foreach ($valuesBag->getRanges() as $i => $value) {
-                $this->validateRange($subPath . '.ranges[' . $i . ']', $value, $field, $constraints, $options);
+                $this->validateRange($subPath.'.ranges['.$i.']', $value, $field, $constraints, $options);
             }
         }
 
         if ($valuesBag->hasExcludedRanges()) {
             foreach ($valuesBag->getExcludedRanges() as $i => $value) {
-                $this->validateRange($subPath . '.excludedRanges[' . $i . ']', $value, $field, $constraints, $options);
+                $this->validateRange($subPath.'.excludedRanges['.$i.']', $value, $field, $constraints, $options);
             }
         }
 
         if ($valuesBag->hasComparisons()) {
             foreach ($valuesBag->getComparisons() as $i => $value) {
-                $this->context->validateValue($value->getValue(), $constraints, $subPath . '.comparisons[' . $i . '].value');
+                $this->context->validateValue($value->getValue(), $constraints, $subPath.'.comparisons['.$i.'].value');
             }
         }
 
         if ($valuesBag->hasPatternMatchers()) {
             foreach ($valuesBag->getPatternMatchers() as $i => $value) {
-                $this->context->validateValue($value->getValue(), $constraints, $subPath . '.patternMatchers[' . $i . '].value');
+                $this->context->validateValue(
+                    $value->getValue(),
+                    $constraints,
+                    $subPath.'.patternMatchers['.$i.'].value'
+                );
             }
         }
     }
@@ -134,8 +152,8 @@ class ValuesGroupValidator extends ConstraintValidator
      */
     private function validateRange($subPath, Range $range, FieldConfigInterface $field, $constraints, array $options)
     {
-        $this->context->validateValue($range->getLower(), $constraints, $subPath . '.lower');
-        $this->context->validateValue($range->getUpper(), $constraints, $subPath . '.upper');
+        $this->context->validateValue($range->getLower(), $constraints, $subPath.'.lower');
+        $this->context->validateValue($range->getUpper(), $constraints, $subPath.'.upper');
 
         // Only validate when the range is inclusive, its not really possible to validate an exclusive range
         // ]1-5[ should be validated as ">0 AND 6<", but as the value-structure is not not known at this point
@@ -143,10 +161,15 @@ class ValuesGroupValidator extends ConstraintValidator
 
         if ($range->isLowerInclusive() && $range->isUpperInclusive()) {
             if (!$field->getValueComparison()->isLower($range->getLower(), $range->getUpper(), $options)) {
-                $this->context->addViolationAt($subPath, 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', array(
-                    '{{ lower }}' => $range->getViewLower(),
-                    '{{ upper }}' => $range->getViewUpper()
-                ), $range);
+                $this->context->addViolationAt(
+                    $subPath,
+                    'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.',
+                    array(
+                        '{{ lower }}' => $range->getViewLower(),
+                        '{{ upper }}' => $range->getViewUpper()
+                    ),
+                    $range
+                );
             }
         }
     }
@@ -154,7 +177,7 @@ class ValuesGroupValidator extends ConstraintValidator
     /**
      * Returns the validation groups of the given field.
      *
-     * @param FieldConfigInterface $field The field.
+     * @param FieldConfigInterface $field The field
      *
      * @return array The validation groups.
      */
@@ -172,8 +195,8 @@ class ValuesGroupValidator extends ConstraintValidator
     /**
      * Post-processes the validation groups option for a given field.
      *
-     * @param array|callable       $groups The validation groups.
-     * @param FieldConfigInterface $field  The field form.
+     * @param array|callable       $groups The validation groups
+     * @param FieldConfigInterface $field  The field form
      *
      * @return array The validation groups.
      */

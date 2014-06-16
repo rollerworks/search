@@ -39,12 +39,10 @@ class TimeType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
-        $config->setValueComparison($this->valueComparison);
-
         $format = 'H';
 
         if ($options['with_seconds'] && !$options['with_minutes']) {
@@ -53,32 +51,39 @@ class TimeType extends AbstractFieldType
 
         if ($options['with_minutes']) {
             $format .= ':i';
-            $parts[] = 'minute';
         }
 
         if ($options['with_seconds']) {
             $format .= ':s';
-            $parts[] = 'second';
         }
 
-        $config->addViewTransformer(new DateTimeToStringTransformer($options['model_timezone'], $options['input_timezone'], $format));
+        $config->setValueComparison($this->valueComparison);
+        $config->addViewTransformer(
+            new DateTimeToStringTransformer(
+                $options['model_timezone'],
+                $options['input_timezone'],
+                $format
+            )
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'with_minutes'   => true,
-            'with_seconds'   => false,
-            'input_timezone' => null,
-            'model_timezone' => null,
-        ));
+        $resolver->setDefaults(
+            array(
+                'with_minutes'   => true,
+                'with_seconds'   => false,
+                'input_timezone' => null,
+                'model_timezone' => null,
+            )
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasRangeSupport()
     {
@@ -86,7 +91,7 @@ class TimeType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCompareSupport()
     {
@@ -94,9 +99,7 @@ class TimeType extends AbstractFieldType
     }
 
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name.
+     * {@inheritdoc}
      */
     public function getName()
     {

@@ -33,7 +33,7 @@ class ChoiceToValueTransformer implements DataTransformerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function transform($choice)
     {
@@ -41,7 +41,7 @@ class ChoiceToValueTransformer implements DataTransformerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function reverseTransform($value)
     {
@@ -58,7 +58,9 @@ class ChoiceToValueTransformer implements DataTransformerInterface
         $choice = $this->choiceList->getChoiceForValue($value);
 
         if (null === $choice) {
-            throw new TransformationFailedException(sprintf('The choice "%s" does not exist.', $value));
+            throw new TransformationFailedException(
+                sprintf('The choice "%s" does not exist.', $value)
+            );
         }
 
         return '' === $choice ? null : $choice;

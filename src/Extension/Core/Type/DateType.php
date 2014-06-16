@@ -54,7 +54,7 @@ class DateType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
@@ -66,41 +66,55 @@ class DateType extends AbstractFieldType
         $pattern = is_string($options['format']) ? $options['format'] : null;
 
         if (!in_array($dateFormat, self::$acceptedFormats, true)) {
-            throw new InvalidConfigurationException('The "format" option must be one of the IntlDateFormatter constants (FULL, LONG, MEDIUM, SHORT) or a string representing a custom format.');
+            throw new InvalidConfigurationException(
+                'The "format" option must be one of the IntlDateFormatter constants (FULL, LONG, MEDIUM, SHORT) '.
+                'or a string representing a custom format.'
+            );
         }
 
-        if (null !== $pattern && (false === strpos($pattern, 'y') || false === strpos($pattern, 'M') || false === strpos($pattern, 'd'))) {
-            throw new InvalidConfigurationException(sprintf('The "format" option should contain the letters "y", "M" and "d". Its current value is "%s".', $pattern));
+        if (null !== $pattern && (false === strpos($pattern, 'y') || false === strpos($pattern, 'M')
+            || false === strpos($pattern, 'd'))
+        ) {
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'The "format" option should contain the letters "y", "M" and "d". Its current value is "%s".',
+                    $pattern
+                )
+            );
         }
 
-        $config->addViewTransformer(new DateTimeToLocalizedStringTransformer(
-            $options['model_timezone'],
-            $options['view_timezone'],
-            $dateFormat,
-            $timeFormat,
-            $calendar,
-            $pattern
-        ));
+        $config->addViewTransformer(
+            new DateTimeToLocalizedStringTransformer(
+                $options['model_timezone'],
+                $options['view_timezone'],
+                $dateFormat,
+                $timeFormat,
+                $calendar,
+                $pattern
+            )
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'format' => DateType::DEFAULT_FORMAT,
-            'model_timezone' => null,
-            'input_timezone' => null,
-        ));
+        $resolver->setDefaults(
+            array(
+                'format' => DateType::DEFAULT_FORMAT,
+                'model_timezone' => null,
+                'input_timezone' => null,
+            )
+        );
 
-        $resolver->setAllowedTypes(array(
-            'format' => array('int', 'string'),
-        ));
+        $resolver->setAllowedTypes(
+            array('format' => array('int', 'string'),)
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasRangeSupport()
     {
@@ -108,7 +122,7 @@ class DateType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCompareSupport()
     {
@@ -116,9 +130,7 @@ class DateType extends AbstractFieldType
     }
 
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name.
+     * {@inheritdoc}
      */
     public function getName()
     {

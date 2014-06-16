@@ -34,7 +34,7 @@ use Rollerworks\Component\Search\ValuesGroup;
 class DuplicateRemover implements FormatterInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function format(SearchConditionInterface $condition)
     {
@@ -134,11 +134,15 @@ class DuplicateRemover implements FormatterInterface
                     }
 
                     // Only compare when both inclusive are equal
-                    if ($value->isLowerInclusive() !== $value2->isLowerInclusive() || $value->isUpperInclusive() !== $value2->isUpperInclusive()) {
+                    if ($value->isLowerInclusive() !== $value2->isLowerInclusive() ||
+                        $value->isUpperInclusive() !== $value2->isUpperInclusive()
+                    ) {
                         continue;
                     }
 
-                    if ($comparison->isEqual($value->getLower(), $value2->getLower(), $options) && $comparison->isEqual($value->getUpper(), $value2->getUpper(), $options)) {
+                    if ($comparison->isEqual($value->getLower(), $value2->getLower(), $options) &&
+                        $comparison->isEqual($value->getUpper(), $value2->getUpper(), $options)
+                    ) {
                         $valuesBag->removeRange($c);
                         unset($ranges[$c]);
                     }
@@ -162,11 +166,15 @@ class DuplicateRemover implements FormatterInterface
                     }
 
                     // Only compare when both inclusive are equal
-                    if ($value->isLowerInclusive() !== $value2->isLowerInclusive() || $value->isUpperInclusive() !== $value2->isUpperInclusive()) {
+                    if ($value->isLowerInclusive() !== $value2->isLowerInclusive() ||
+                        $value->isUpperInclusive() !== $value2->isUpperInclusive()
+                    ) {
                         continue;
                     }
 
-                    if ($comparison->isEqual($value->getLower(), $value2->getLower(), $options) && $comparison->isEqual($value->getUpper(), $value2->getUpper(), $options)) {
+                    if ($comparison->isEqual($value->getLower(), $value2->getLower(), $options) &&
+                        $comparison->isEqual($value->getUpper(), $value2->getUpper(), $options)
+                    ) {
                         $valuesBag->removeExcludedRange($c);
                         unset($ranges[$c]);
                     }
@@ -189,7 +197,9 @@ class DuplicateRemover implements FormatterInterface
                         continue;
                     }
 
-                    if ($value->getOperator() === $value2->getOperator() && $comparison->isEqual($value->getValue(), $value2->getValue(), $options)) {
+                    if ($value->getOperator() === $value2->getOperator() &&
+                        $comparison->isEqual($value->getValue(), $value2->getValue(), $options)
+                    ) {
                         $valuesBag->removeComparison($c);
                         unset($comparisons[$c]);
                     }
@@ -212,7 +222,10 @@ class DuplicateRemover implements FormatterInterface
                         continue;
                     }
 
-                    if ($value->getType() === $value2->getType() && $comparison->isEqual($value->getValue(), $value2->getValue(), $options) && $value->isCaseInsensitive() === $value2->isCaseInsensitive()) {
+                    if ($value->getType() === $value2->getType() &&
+                        $comparison->isEqual($value->getValue(), $value2->getValue(), $options) &&
+                        $value->isCaseInsensitive() === $value2->isCaseInsensitive()
+                    ) {
                         $valuesBag->removePatternMatch($c);
                         unset($matchers[$c]);
                     }

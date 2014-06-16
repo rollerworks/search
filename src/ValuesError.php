@@ -53,13 +53,13 @@ class ValuesError
      * Any array key in $messageParameters will be used as a placeholder in
      * $messageTemplate.
      *
-     * @param string       $subPath              Sub-path of the error, this is relative to
-     *                                           the ValuesBag object.
-     * @param string       $message              The translated error message
-     * @param string|null  $messageTemplate      The template for the error message
-     * @param array        $messageParameters    The parameters that should be
-     *                                           substituted in the message template.
-     * @param integer|null $messagePluralization The value for error message pluralization
+     * @param string      $subPath              Sub-path of the error, this is relative to
+     *                                          the ValuesBag object.
+     * @param string      $message              The translated error message
+     * @param string|null $messageTemplate      The template for the error message
+     * @param array       $messageParameters    The parameters that should be
+     *                                          substituted in the message template.
+     * @param int|null    $messagePluralization The value for error message pluralization
      *
      * @see \Symfony\Component\Translation\Translator
      */
@@ -115,7 +115,7 @@ class ValuesError
     /**
      * Returns the value for error message pluralization.
      *
-     * @return integer|null
+     * @return int|null
      */
     public function getMessagePluralization()
     {

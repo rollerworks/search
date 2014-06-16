@@ -98,7 +98,7 @@ class OrmTestCase extends DbalTestCase
         \Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
             self::$doctrineAnnotationsDir . "/../../../lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php");
 
-        return new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader, (array)$paths);
+        return new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader, (array) $paths);
     }
 
     /**

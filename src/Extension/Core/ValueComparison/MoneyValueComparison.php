@@ -26,7 +26,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      * @param MoneyValue $lower
      * @param array      $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isHigher($higher, $lower, array $options)
     {
@@ -44,7 +44,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      * @param MoneyValue $higher
      * @param array      $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isLower($lower, $higher, $options)
     {
@@ -62,7 +62,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      * @param MoneyValue $nextValue
      * @param array      $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isEqual($value, $nextValue, $options)
     {
@@ -76,7 +76,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      *
      * @param MoneyValue $value      The value to increment
      * @param array      $options    Array of options passed with the field
-     * @param integer    $increments Number of increments
+     * @param int        $increments Number of increments
      *
      * @return MoneyValue
      */

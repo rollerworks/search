@@ -87,7 +87,7 @@ class ChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChoices()
     {
@@ -95,7 +95,7 @@ class ChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getValues()
     {
@@ -103,7 +103,7 @@ class ChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChoiceForValue($givenValue)
     {
@@ -119,7 +119,7 @@ class ChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getValueForChoice($givenChoice)
     {
@@ -135,7 +135,7 @@ class ChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getLabels()
     {
@@ -143,7 +143,7 @@ class ChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChoiceForLabel($givenLabel)
     {
@@ -157,7 +157,7 @@ class ChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getLabelForChoice($givenChoice)
     {
@@ -184,7 +184,7 @@ class ChoiceList implements ChoiceListInterface
      *
      * @param string $name The tested form name.
      *
-     * @return Boolean Whether the name is valid.
+     * @return bool Whether the name is valid.
      */
     public static function isValidName($name)
     {
@@ -225,13 +225,23 @@ class ChoiceList implements ChoiceListInterface
         $index = $this->createIndex($choice);
 
         if ('' === $index || null === $index || !static::isValidName((string) $index)) {
-            throw new InvalidConfigurationException(sprintf('The index "%s" created by the choice list is invalid. It should be a valid, non-empty Form name.', $index));
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'The index "%s" created by the choice list is invalid. It should be a valid, non-empty Form name.',
+                    $index
+                )
+            );
         }
 
         $value = $this->createValue($choice);
 
         if (!is_string($value)) {
-            throw new InvalidConfigurationException(sprintf('The value created by the choice list is of type "%s", but should be a string.', gettype($value)));
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'The value created by the choice list is of type "%s", but should be a string.',
+                    gettype($value)
+                )
+            );
         }
 
         $this->choices[$index] = $this->fixChoice($choice);
@@ -246,8 +256,8 @@ class ChoiceList implements ChoiceListInterface
      *
      * @param mixed $choice The choice to create an index for
      *
-     * @return integer|string A unique index containing only ASCII letters,
-     *                        digits and underscores.
+     * @return int|string A unique index containing only ASCII letters,
+     *                    digits and underscores.
      */
     protected function createIndex($choice)
     {
@@ -289,7 +299,7 @@ class ChoiceList implements ChoiceListInterface
      *
      * @param mixed $index The choice index.
      *
-     * @return integer|string The index as PHP array key.
+     * @return int|string The index as PHP array key.
      */
     protected function fixIndex($index)
     {

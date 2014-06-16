@@ -35,17 +35,26 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
 
     public static function assertDateTimeEquals(\DateTime $expected, \DateTime $actual)
     {
-        self::assertEquals($expected->format('c'), $actual->format('c'));
+        self::assertEquals(
+            $expected->format('c'),
+            $actual->format('c')
+        );
     }
 
     protected function assertTransformedEquals(FieldConfigInterface $column, ValuesBag $expectedValue, $input)
     {
-        $this->assertEquals($expectedValue, $this->formatInput($column, $input));
+        $this->assertEquals(
+            $expectedValue,
+            $this->formatInput($column, $input)
+        );
     }
 
     protected function assertTransformedNotEquals(FieldConfigInterface $column, ValuesBag $expectedValue, $input)
     {
-        $this->assertNotEquals($expectedValue, $this->formatInput($column, $input));
+        $this->assertNotEquals(
+            $expectedValue,
+            $this->formatInput($column, $input)
+        );
     }
 
     protected function formatInput(FieldConfigInterface $column, $input)
@@ -55,6 +64,7 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
 
         $condition = new SearchConditionBuilder();
         $condition->field($column->getName())->addSingleValue(new SingleValue($input));
+
         $searchCondition = new SearchCondition($fieldSet, $condition->getGroup());
 
         $this->transformer->format($searchCondition);
@@ -63,5 +73,8 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
         return $values[0];
     }
 
+    /**
+     * @return string
+     */
     abstract protected function getTestedType();
 }

@@ -43,7 +43,9 @@ class PreloadedExtension implements SearchExtensionInterface
     public function getType($name)
     {
         if (!isset($this->types[$name])) {
-            throw new InvalidArgumentException(sprintf('The type "%s" can not be loaded by this extension', $name));
+            throw new InvalidArgumentException(
+                sprintf('The type "%s" can not be loaded by this extension', $name)
+            );
         }
 
         return $this->types[$name];
@@ -62,9 +64,7 @@ class PreloadedExtension implements SearchExtensionInterface
      */
     public function getTypeExtensions($name)
     {
-        return isset($this->typeExtensions[$name])
-            ? $this->typeExtensions[$name]
-            : array();
+        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : array();
     }
 
     /**

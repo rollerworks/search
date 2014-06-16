@@ -54,16 +54,21 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     public function __construct(FieldTypeInterface $innerType, array $typeExtensions = array(), ResolvedFieldTypeInterface $parent = null)
     {
         if (!preg_match('/^[a-z0-9_]*$/i', $innerType->getName())) {
-            throw new InvalidArgumentException(sprintf(
-                'The "%s" field type name ("%s") is not valid. Names must only contain letters, numbers, and "_".',
-                get_class($innerType),
-                $innerType->getName()
-            ));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The "%s" field type name ("%s") is not valid. Names must only contain letters, numbers, and "_".',
+                    get_class($innerType),
+                    $innerType->getName()
+                )
+            );
         }
 
         foreach ($typeExtensions as $extension) {
             if (!$extension instanceof FieldTypeExtensionInterface) {
-                throw new UnexpectedTypeException($extension, 'Rollerworks\Component\Search\FieldTypeExtensionInterface');
+                throw new UnexpectedTypeException(
+                    $extension,
+                    'Rollerworks\Component\Search\FieldTypeExtensionInterface'
+                );
             }
         }
 
@@ -223,6 +228,6 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
      */
     protected function newFieldView(FieldConfigInterface $config)
     {
-        return new SearchFieldView();
+        return new SearchFieldView($config);
     }
 }

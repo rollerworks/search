@@ -32,9 +32,10 @@ interface ConversionStrategyInterface
      *
      * @param mixed $value   Input value
      * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (searchField, connection, dbType, valueObject)
+     * @param array $hints   Special information for the conversion process
+     *                       (searchField, connection, dbType, valueObject)
      *
-     * @return null|integer The determined strategy
+     * @return null|int The determined strategy
      */
     public function getConversionStrategy($value, array $options, array $hints);
 }

@@ -58,7 +58,7 @@ class FieldRegistry implements FieldRegistryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getType($name)
     {
@@ -79,7 +79,9 @@ class FieldRegistry implements FieldRegistryInterface
             }
 
             if (!$type) {
-                throw new InvalidArgumentException(sprintf('Could not load type "%s"', $name));
+                throw new InvalidArgumentException(
+                    sprintf('Could not load type "%s"', $name)
+                );
             }
 
             $this->resolveAndAddType($type);
@@ -89,7 +91,7 @@ class FieldRegistry implements FieldRegistryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasType($name)
     {
@@ -107,7 +109,7 @@ class FieldRegistry implements FieldRegistryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getExtensions()
     {
@@ -136,12 +138,15 @@ class FieldRegistry implements FieldRegistryInterface
         foreach ($this->extensions as $extension) {
             /* @var SearchExtensionInterface $extension */
             $typeExtensions = array_merge(
-                $typeExtensions, $extension->getTypeExtensions($type->getName())
+                $typeExtensions,
+                $extension->getTypeExtensions($type->getName())
             );
         }
 
         $this->types[$type->getName()] = $this->resolvedTypeFactory->createResolvedType(
-            $type, $typeExtensions, $parentType ? $this->getType($parentType) : null
+            $type,
+            $typeExtensions,
+            $parentType ? $this->getType($parentType) : null
         );
     }
 }

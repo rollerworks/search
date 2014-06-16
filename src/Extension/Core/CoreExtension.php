@@ -42,7 +42,6 @@ class CoreExtension extends AbstractExtension
             new Type\MoneyType(new ValueComparison\MoneyValueComparison()),
             new Type\NumberType($numberComparison),
             new Type\TextType(),
-
             new Type\TimezoneType(),
             new Type\CurrencyType(),
         );

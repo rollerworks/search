@@ -27,9 +27,9 @@ class ExporterFactory
     private $container;
 
     /**
-     * @var array
+     * @var string[]
      */
-    private $serviceIds;
+    private $serviceIds = array();
 
     /**
      * @param ContainerInterface $container
@@ -53,7 +53,9 @@ class ExporterFactory
     public function create($format)
     {
         if (!isset($this->serviceIds[$format])) {
-            throw new \InvalidArgumentException(sprintf('Enable to create exporter, format "%s" has no registered exporter.', $format));
+            throw new \InvalidArgumentException(
+                sprintf('Enable to create exporter, format "%s" has no registered exporter.', $format)
+            );
         }
 
         return $this->container->get($this->serviceIds[$format]);

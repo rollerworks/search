@@ -50,7 +50,9 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     public function __construct(Connection $connection, SearchConditionInterface $searchCondition)
     {
         if ($searchCondition->getValuesGroup()->hasErrors()) {
-            throw new BadMethodCallException('Unable to generate the where-clause, because the SearchCondition contains errors.');
+            throw new BadMethodCallException(
+                'Unable to generate the where-clause with a SearchCondition that contains errors.'
+            );
         }
 
         $this->searchCondition = $searchCondition;
@@ -74,7 +76,9 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     public function setField($fieldName, $column, $type = 'string', $alias = null)
     {
         if ($this->whereClause) {
-            throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
+            throw new BadMethodCallException(
+                'WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.'
+            );
         }
 
         if (!$this->searchCondition->getFieldSet()->has($fieldName)) {
@@ -93,7 +97,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * The Where-clause is wrapped inside a group so it
      * can be safely used with other conditions.
      *
-     * @param boolean $embedValues Whether to embed the values, default is to assign as parameters.
+     * @param bool $embedValues Whether to embed the values, default is to assign as parameters
      *
      * @return string
      */
@@ -105,8 +109,17 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
 
         $this->processFields();
 
-        $this->queryGenerator = new QueryGenerator($this->connection, $this->searchCondition, $this->fields, $this->parameterPrefix, $embedValues);
-        $this->whereClause = $this->queryGenerator->getGroupQuery($this->searchCondition->getValuesGroup());
+        $this->queryGenerator = new QueryGenerator(
+            $this->connection,
+            $this->searchCondition,
+            $this->fields,
+            $this->parameterPrefix,
+            $embedValues
+        );
+
+        $this->whereClause = $this->queryGenerator->getGroupQuery(
+            $this->searchCondition->getValuesGroup()
+        );
 
         return $this->whereClause;
     }
@@ -121,7 +134,11 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         }
 
         foreach ($this->queryGenerator->getParameters() as $paramName => $paramValue) {
-            $statement->bindValue($paramName, $paramValue, $this->queryGenerator->getParameterType($paramName));
+            $statement->bindValue(
+                $paramName,
+                $paramValue,
+                $this->queryGenerator->getParameterType($paramName)
+            );
         }
     }
 
@@ -156,8 +173,17 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     private function processFields()
     {
         foreach (array_keys($this->fields) as $fieldName) {
-            $this->fields[$fieldName]['field_convertor'] = isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null;
-            $this->fields[$fieldName]['value_convertor'] = isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null;
+            if (isset($this->fieldConversions[$fieldName])) {
+                $this->fields[$fieldName]['field_convertor'] = $this->fieldConversions[$fieldName];
+            } else {
+                $this->fields[$fieldName]['field_convertor'] = null;
+            }
+
+            if (isset($this->valueConversions[$fieldName])) {
+                $this->fields[$fieldName]['value_convertor'] = $this->valueConversions[$fieldName];
+            } else {
+                $this->fields[$fieldName]['value_convertor'] = null;
+            }
         }
     }
 }

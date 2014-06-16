@@ -39,7 +39,7 @@ class ValuesToRange implements FormatterInterface
     private $comparison;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function format(SearchConditionInterface $condition)
     {
@@ -73,7 +73,7 @@ class ValuesToRange implements FormatterInterface
      * @param SingleValue $first
      * @param SingleValue $second
      *
-     * @return integer
+     * @return int
      *
      * @internal
      */
@@ -146,7 +146,7 @@ class ValuesToRange implements FormatterInterface
      * @param SingleValue[]        $values
      * @param ValuesBag            $valuesBag
      * @param FieldConfigInterface $config
-     * @param boolean              $exclude
+     * @param bool                 $exclude
      */
     private function listToRanges($values, ValuesBag $valuesBag, FieldConfigInterface $config, $exclude = false)
     {
@@ -189,7 +189,14 @@ class ValuesToRange implements FormatterInterface
                 $unsetIndex = $prevIndex;
 
                 if (!$comparison->isEqual($value->getValue(), $increasedValue, $options) || $curCount === $valuesCount) {
-                    $range = new Range($rangeLower->getValue(), $rangeUpper->getValue(), true, true, $rangeLower->getViewValue(), $rangeUpper->getViewValue());
+                    $range = new Range(
+                        $rangeLower->getValue(),
+                        $rangeUpper->getValue(),
+                        true,
+                        true,
+                        $rangeLower->getViewValue(),
+                        $rangeUpper->getViewValue()
+                    );
 
                     if ($exclude) {
                         $valuesBag->addExcludedRange($range);
@@ -199,7 +206,9 @@ class ValuesToRange implements FormatterInterface
 
                     $unsetIndex = $prevIndex;
 
-                    if ($comparison->isEqual($value->getValue(), $increasedValue, $options) && $curCount === $valuesCount) {
+                    if ($comparison->isEqual($value->getValue(), $increasedValue, $options) &&
+                        $curCount === $valuesCount
+                    ) {
                         $unsetIndex = $valIndex;
                     }
 

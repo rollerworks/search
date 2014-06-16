@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Metadata\PropertyMetadata;
 class FieldSetBuilder implements FieldSetBuilderInterface
 {
     /**
-     * @var boolean
+     * @var bool
      */
     private $locked;
 
@@ -76,7 +76,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     public function getName()
     {
         if ($this->locked) {
-            throw new BadMethodCallException('FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.');
+            throw new BadMethodCallException(
+                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
+            );
         }
 
         return $this->name;
@@ -86,7 +88,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      * @param string|FieldConfigInterface $field
      * @param string|FieldTypeInterface   $type
      * @param array                       $options
-     * @param boolean                     $required
+     * @param bool                        $required
      * @param string                      $modelClass
      * @param string                      $property
      *
@@ -98,7 +100,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     public function add($field, $type = null, array $options = array(), $required = false, $modelClass = null, $property = null)
     {
         if ($this->locked) {
-            throw new BadMethodCallException('FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.');
+            throw new BadMethodCallException(
+                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
+            );
         }
 
         if (!is_string($field) && !$field instanceof FieldConfigInterface) {
@@ -137,7 +141,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     public function remove($name)
     {
         if ($this->locked) {
-            throw new BadMethodCallException('FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.');
+            throw new BadMethodCallException(
+                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
+            );
         }
 
         unset($this->fields[$name]);
@@ -149,14 +155,16 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      *
      * @throws BadMethodCallException
      */
     public function has($name)
     {
         if ($this->locked) {
-            throw new BadMethodCallException('FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.');
+            throw new BadMethodCallException(
+                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
+            );
         }
 
         if (isset($this->unresolvedFields[$name])) {
@@ -181,7 +189,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     public function get($name)
     {
         if ($this->locked) {
-            throw new BadMethodCallException('FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.');
+            throw new BadMethodCallException(
+                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
+            );
         }
 
         if (isset($this->unresolvedFields[$name])) {
@@ -207,11 +217,15 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     public function importFromClass($class, array $include = array(), array $exclude = array())
     {
         if ($this->locked) {
-            throw new BadMethodCallException('FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.');
+            throw new BadMethodCallException(
+                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
+            );
         }
 
         if (!$this->mappingReader) {
-            throw new BadMethodCallException('FieldSetBuilder is unable to import configuration from class because no MappingReader is set.');
+            throw new BadMethodCallException(
+                'FieldSetBuilder is unable to import configuration from class because no MappingReader is set.'
+            );
         }
 
         $metadata = $this->mappingReader->getMetadataForClass($class);
@@ -241,15 +255,30 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     public function getFieldSet()
     {
         if ($this->locked) {
-            throw new BadMethodCallException('FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.');
+            throw new BadMethodCallException(
+                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
+            );
         }
 
         foreach ($this->unresolvedFields as $name => $field) {
             if (!empty($field['class'])) {
-                $this->fields[$name] = $this->searchFactory->createFieldForProperty($field['class'], $field['property'], $name, $field['type'], $field['options'], $field['required']);
+                $this->fields[$name] = $this->searchFactory->createFieldForProperty(
+                    $field['class'],
+                    $field['property'],
+                    $name,
+                    $field['type'],
+                    $field['options'],
+                    $field['required']
+                );
             } else {
-                $this->fields[$name] = $this->searchFactory->createField($name, $field['type'], $field['options'], $field['required']);
+                $this->fields[$name] = $this->searchFactory->createField(
+                    $name,
+                    $field['type'],
+                    $field['options'],
+                    $field['required']
+                );
             }
+
             unset($this->unresolvedFields[$name]);
         }
 

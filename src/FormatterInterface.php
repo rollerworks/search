@@ -30,6 +30,8 @@ interface FormatterInterface
      * the formatter is required to ignore the Group and do nothing.
      *
      * @param SearchConditionInterface $condition
+     *
+     * @return void
      */
     public function format(SearchConditionInterface $condition);
 }

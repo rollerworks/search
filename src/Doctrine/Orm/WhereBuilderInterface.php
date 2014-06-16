@@ -64,5 +64,4 @@ interface WhereBuilderInterface
      * @return \Closure
      */
     public function getQueryHintValue();
-
 }

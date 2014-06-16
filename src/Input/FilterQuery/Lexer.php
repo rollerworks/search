@@ -63,7 +63,7 @@ class Lexer extends AbstractLexer
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getCatchablePatterns()
     {
@@ -76,7 +76,7 @@ class Lexer extends AbstractLexer
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getNonCatchablePatterns()
     {
@@ -84,7 +84,7 @@ class Lexer extends AbstractLexer
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getType(&$value)
     {
@@ -117,6 +117,8 @@ class Lexer extends AbstractLexer
                 return self::T_STRING;
 
             // Recognize symbols
+            // @codingStandardsIgnoreStart
+
             case ($value === ','): return self::T_COMMA;
             case ($value === '('): return self::T_OPEN_PARENTHESIS;
             case ($value === ')'): return self::T_CLOSE_PARENTHESIS;
@@ -140,6 +142,7 @@ class Lexer extends AbstractLexer
             case ($value === '.'): return self::T_DOT;
             case ($value === '{'): return self::T_OPEN_CURLY_BRACE;
             case ($value === '}'): return self::T_CLOSE_CURLY_BRACE;
+            // @codingStandardsIgnoreEnd
 
             // Default
             default:
