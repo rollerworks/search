@@ -192,7 +192,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     /**
      * Validates whether the given variable is a valid fieldset name.
      *
-     * @param string|integer $name The tested fieldset name.
+     * @param string|null $name The tested fieldset name.
      *
      * @throws UnexpectedTypeException   If the name is not a string or an integer.
      * @throws \InvalidArgumentException If the name contains invalid characters.
