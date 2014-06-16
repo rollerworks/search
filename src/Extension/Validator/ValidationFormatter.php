@@ -49,7 +49,7 @@ class ValidationFormatter implements FormatterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function format(SearchConditionInterface $condition)
     {

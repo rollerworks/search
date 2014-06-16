@@ -22,7 +22,7 @@ interface FieldLabelResolverInterface
      * Resolve the field name to an localized field-alias (label).
      *
      * Note: If the field alias can not be resolved
-     * it should return the $fieldName unresolved.
+     * this should return the $fieldName unresolved.
      *
      * @param FieldSet $fieldSet
      * @param string   $fieldName

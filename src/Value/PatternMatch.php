@@ -43,16 +43,16 @@ class PatternMatch
     protected $patternType;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $caseInsensitive;
 
     /**
      * Constructor.
      *
-     * @param string         $value
-     * @param integer|string $patternType
-     * @param boolean        $caseInsensitive
+     * @param string     $value
+     * @param int|string $patternType
+     * @param bool       $caseInsensitive
      *
      * @throws \InvalidArgumentException When the pattern-match type is invalid.
      */
@@ -63,8 +63,10 @@ class PatternMatch
         }
 
         if (is_string($patternType)) {
-            if (defined('Rollerworks\\Component\\Search\\Value\\PatternMatch::PATTERN_' . strtoupper($patternType))) {
-                $patternType = constant('Rollerworks\\Component\\Search\\Value\\PatternMatch::PATTERN_' . strtoupper($patternType));
+            $typeConst = 'Rollerworks\\Component\\Search\\Value\\PatternMatch::PATTERN_'.strtoupper($patternType);
+
+            if (defined($typeConst)) {
+                $patternType = constant($typeConst);
             } else {
                 $patternType = -1;
             }
@@ -117,7 +119,7 @@ class PatternMatch
     /**
      * Gets the pattern-match type.
      *
-     * @return integer
+     * @return int
      */
     public function getType()
     {
@@ -125,7 +127,7 @@ class PatternMatch
     }
 
     /**
-     * @param boolean $caseInsensitive
+     * @param bool $caseInsensitive
      */
     public function setCaseInsensitive($caseInsensitive = true)
     {
@@ -133,7 +135,7 @@ class PatternMatch
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isCaseInsensitive()
     {
@@ -141,10 +143,28 @@ class PatternMatch
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isExclusive()
     {
-        return in_array($this->patternType, array(PatternMatch::PATTERN_NOT_STARTS_WITH, PatternMatch::PATTERN_NOT_CONTAINS, PatternMatch::PATTERN_NOT_ENDS_WITH, PatternMatch::PATTERN_NOT_REGEX));
+        return in_array(
+            $this->patternType,
+            array(
+                PatternMatch::PATTERN_NOT_STARTS_WITH,
+                PatternMatch::PATTERN_NOT_CONTAINS,
+                PatternMatch::PATTERN_NOT_ENDS_WITH,
+                PatternMatch::PATTERN_NOT_REGEX
+            )
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRegex()
+    {
+        return PatternMatch::PATTERN_REGEX === $this->patternType
+            || PatternMatch::PATTERN_NOT_REGEX === $this->patternType
+        ;
     }
 }

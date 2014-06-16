@@ -33,7 +33,7 @@ class ChoiceType extends AbstractFieldType
     private $choiceListCache = array();
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
@@ -42,14 +42,18 @@ class ChoiceType extends AbstractFieldType
         }
 
         if ($options['label_as_value']) {
-            $config->addViewTransformer(new ChoiceToLabelTransformer($options['choice_list']));
+            $config->addViewTransformer(
+                new ChoiceToLabelTransformer($options['choice_list'])
+            );
         } else {
-            $config->addViewTransformer(new ChoiceToValueTransformer($options['choice_list']));
+            $config->addViewTransformer(
+                new ChoiceToValueTransformer($options['choice_list'])
+            );
         }
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {

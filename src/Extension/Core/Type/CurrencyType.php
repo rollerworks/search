@@ -21,17 +21,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class CurrencyType extends AbstractFieldType
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'choices' => Intl::getCurrencyBundle()->getCurrencyNames(),
-        ));
+        $resolver->setDefaults(
+            array('choices' => Intl::getCurrencyBundle()->getCurrencyNames())
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {
@@ -39,7 +39,7 @@ class CurrencyType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

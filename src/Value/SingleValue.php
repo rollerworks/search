@@ -35,7 +35,7 @@ class SingleValue
     public function __construct($value, $viewValue = null)
     {
         $this->value = $value;
-        $this->viewValue = null !== $viewValue ? $viewValue : $value;;
+        $this->viewValue = null !== $viewValue ? $viewValue : $value;
     }
 
     /**

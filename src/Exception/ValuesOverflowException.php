@@ -16,18 +16,39 @@ namespace Rollerworks\Component\Search\Exception;
  */
 class ValuesOverflowException extends \Exception implements ExceptionInterface
 {
+    /**
+     * @var string
+     */
     protected $fieldName;
+
+    /**
+     * @var int
+     */
     protected $max;
+
+    /**
+     * @var int
+     */
     protected $count;
+
+    /**
+     * @var int
+     */
     protected $groupIdx;
+
+    /**
+     * @var int
+     */
     protected $nestingLevel;
 
     /**
-     * @param string  $fieldName
-     * @param integer $max
-     * @param integer $count
-     * @param integer $groupIdx
-     * @param integer $nestingLevel
+     * Constructor.
+     *
+     * @param string $fieldName
+     * @param int    $max
+     * @param int    $count
+     * @param int    $groupIdx
+     * @param int    $nestingLevel
      */
     public function __construct($fieldName, $max, $count, $groupIdx, $nestingLevel)
     {
@@ -36,14 +57,17 @@ class ValuesOverflowException extends \Exception implements ExceptionInterface
         $this->groupIdx = $groupIdx;
         $this->nestingLevel = $nestingLevel;
 
-        parent::__construct(sprintf(
-            'Field "%s" in group %d at nesting level %d exceeds the maximum number of values per group, maximum: %d, total of values: %d.',
-            $fieldName,
-            $groupIdx,
-            $nestingLevel,
-            $max,
-            $count
-        ));
+        parent::__construct(
+            sprintf(
+                'Field "%s" in group %d at nesting level %d exceeds the maximum number of values per group, '.
+                'maximum: %d, total of values: %d.',
+                $fieldName,
+                $groupIdx,
+                $nestingLevel,
+                $max,
+                $count
+            )
+        );
     }
 
     /**
@@ -55,7 +79,7 @@ class ValuesOverflowException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getMax()
     {
@@ -63,7 +87,7 @@ class ValuesOverflowException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getCount()
     {
@@ -71,7 +95,7 @@ class ValuesOverflowException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getGroupIdx()
     {
@@ -79,7 +103,7 @@ class ValuesOverflowException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getNestingLevel()
     {

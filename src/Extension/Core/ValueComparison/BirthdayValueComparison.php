@@ -25,7 +25,7 @@ class BirthdayValueComparison implements ValueIncrementerInterface
      * @param \DateTime $lower
      * @param array     $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isHigher($higher, $lower, array $options)
     {
@@ -43,7 +43,7 @@ class BirthdayValueComparison implements ValueIncrementerInterface
      * @param \DateTime $higher
      * @param array     $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isLower($lower, $higher, $options)
     {
@@ -61,7 +61,7 @@ class BirthdayValueComparison implements ValueIncrementerInterface
      * @param \DateTime $nextValue
      * @param array     $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isEqual($value, $nextValue, $options)
     {
@@ -79,7 +79,7 @@ class BirthdayValueComparison implements ValueIncrementerInterface
      *
      * @param \DateTime $value      The value to increment.
      * @param array     $options    Array of options passed with the field
-     * @param integer   $increments Number of increments
+     * @param int       $increments Number of increments
      *
      * @return \DateTime
      */
@@ -87,7 +87,7 @@ class BirthdayValueComparison implements ValueIncrementerInterface
     {
         if (is_object($value)) {
             $newValue = clone $value;
-            $newValue->modify('+' . $increments . ' days');
+            $newValue->modify('+'.$increments.' days');
 
             return $newValue;
         }

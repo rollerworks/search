@@ -64,6 +64,8 @@ interface ResolvedFieldTypeInterface
      *
      * @param FieldConfigInterface $config
      * @param array                $options
+     *
+     * @return void
      */
     public function buildType(FieldConfigInterface $config, array $options);
 
@@ -82,6 +84,8 @@ interface ResolvedFieldTypeInterface
      * @param SearchFieldView      $view
      * @param FieldConfigInterface $config
      * @param array                $options
+     *
+     * @return void
      */
     public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options);
 

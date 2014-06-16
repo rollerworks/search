@@ -36,7 +36,7 @@ class ValuesGroup implements \Serializable
     private $fields = array();
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $errors = false;
 
@@ -66,7 +66,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasGroups()
     {
@@ -74,7 +74,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return ValuesGroup
      *
@@ -83,7 +83,9 @@ class ValuesGroup implements \Serializable
     public function getGroup($index)
     {
         if (!isset($this->fields[$index])) {
-            throw new InvalidArgumentException(sprintf('Unable to get none existent group: "%d"', $index));
+            throw new InvalidArgumentException(
+                sprintf('Unable to get none existent group: "%d"', $index)
+            );
         }
 
         return $this->groups[$index];
@@ -98,7 +100,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return self
      */
@@ -127,7 +129,7 @@ class ValuesGroup implements \Serializable
     /**
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasField($name)
     {
@@ -152,7 +154,9 @@ class ValuesGroup implements \Serializable
     public function getField($name)
     {
         if (!isset($this->fields[$name])) {
-            throw new InvalidArgumentException(sprintf('Unable to get none existent field: "%s"', $name));
+            throw new InvalidArgumentException(
+                sprintf('Unable to get none existent field: "%s"', $name)
+            );
         }
 
         return $this->fields[$name];
@@ -173,7 +177,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasErrors()
     {
@@ -185,7 +189,7 @@ class ValuesGroup implements \Serializable
      *
      * Actual errors are set on the {@see ValuesBag} object.
      *
-     * @param boolean $errors
+     * @param bool $errors
      *
      * @return self
      */
@@ -215,7 +219,7 @@ class ValuesGroup implements \Serializable
      * This is either one of the following class constants value:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
      *
-     * @param integer
+     * @param int
      */
     public function setGroupLogical($groupLogical)
     {

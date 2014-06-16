@@ -58,7 +58,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasSingleValues()
     {
@@ -66,7 +66,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return static
      */
@@ -95,7 +95,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasExcludedValues()
     {
@@ -111,7 +111,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return static
      */
@@ -140,7 +140,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasRanges()
     {
@@ -156,7 +156,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return static
      */
@@ -185,7 +185,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasExcludedRanges()
     {
@@ -201,7 +201,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return static
      */
@@ -238,7 +238,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasComparisons()
     {
@@ -246,7 +246,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return static
      */
@@ -283,7 +283,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasPatternMatchers()
     {
@@ -291,7 +291,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return static
      */
@@ -319,7 +319,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasErrors()
     {
@@ -335,7 +335,7 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function count()
     {

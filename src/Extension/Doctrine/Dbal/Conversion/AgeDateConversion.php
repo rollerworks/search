@@ -39,7 +39,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     protected static $connectionState = array();
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConversionStrategy($value, array $options, array $hints)
     {
@@ -55,7 +55,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function convertSqlField($column, array $options, array $hints)
     {
@@ -96,12 +96,17 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
                 return "search_conversion_age($column)";
 
             default:
-                throw new \RuntimeException(sprintf('Unsupported platform "%s" for AgeDateConversion.', $connection->getDatabasePlatform()->getName()));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unsupported platform "%s" for AgeDateConversion.',
+                        $connection->getDatabasePlatform()->getName()
+                    )
+                );
         }
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function requiresBaseConversion($input, array $options, array $hints)
     {
@@ -109,12 +114,15 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function convertValue($value, array $options, array $hints)
     {
         if (2 === $hints['conversion_strategy']) {
-            return DBALType::getType('date')->convertToDatabaseValue($value, $hints['connection']->getDatabasePlatform());
+            return DBALType::getType('date')->convertToDatabaseValue(
+                $value,
+                $hints['connection']->getDatabasePlatform()
+            );
         }
 
         return (int) $value;

@@ -58,9 +58,9 @@ class XmlInput extends AbstractInput
     /**
      * @param \SimpleXMLElement $values
      * @param ValuesGroup       $valuesGroup
-     * @param integer           $groupIdx
-     * @param integer           $level
-     * @param boolean           $isRoot
+     * @param int               $groupIdx
+     * @param int               $level
+     * @param bool              $isRoot
      *
      * @throws FieldRequiredException
      * @throws InputProcessorException
@@ -71,7 +71,9 @@ class XmlInput extends AbstractInput
         $allFields = $this->fieldSet->all();
 
         if (!isset($values->fields) && !isset($values->groups)) {
-            throw new InputProcessorException(sprintf('Empty group found in group %d at nesting level %d', $groupIdx, $level));
+            throw new InputProcessorException(
+                sprintf('Empty group found in group %d at nesting level %d', $groupIdx, $level)
+            );
         }
 
         if (isset($values->fields)) {
@@ -81,9 +83,19 @@ class XmlInput extends AbstractInput
                 $filterConfig = $this->fieldSet->get($fieldName);
 
                 if ($valuesGroup->hasField($fieldName)) {
-                    $this->valuesToBag($filterConfig, $element, $fieldName, $groupIdx, $level, $valuesGroup->getField($fieldName));
+                    $this->valuesToBag(
+                        $filterConfig,
+                        $element,
+                        $fieldName,
+                        $groupIdx,
+                        $level,
+                        $valuesGroup->getField($fieldName)
+                    );
                 } else {
-                    $valuesGroup->addField($fieldName, $this->valuesToBag($filterConfig, $element, $fieldName, $groupIdx, $level));
+                    $valuesGroup->addField(
+                        $fieldName,
+                        $this->valuesToBag($filterConfig, $element, $fieldName, $groupIdx, $level)
+                    );
                 }
 
                 unset($allFields[$fieldName]);
@@ -109,7 +121,13 @@ class XmlInput extends AbstractInput
                     $subValuesGroup->setGroupLogical(ValuesGroup::GROUP_LOGICAL_OR);
                 }
 
-                $this->processGroup($element, $subValuesGroup, $index, ($isRoot ? 0 : $level+1));
+                $this->processGroup(
+                    $element,
+                    $subValuesGroup,
+                    $index,
+                    ($isRoot ? 0 : $level+1)
+                );
+
                 $valuesGroup->addGroup($subValuesGroup);
                 $index++;
             }
@@ -122,8 +140,8 @@ class XmlInput extends AbstractInput
      * @param FieldConfigInterface $fieldConfig
      * @param \SimpleXMLElement    $values
      * @param string               $fieldName
-     * @param integer              $groupIdx
-     * @param integer              $level
+     * @param int                  $groupIdx
+     * @param int                  $level
      * @param ValuesBag|null       $valuesBag
      *
      * @return ValuesBag
@@ -192,7 +210,12 @@ class XmlInput extends AbstractInput
                 $count++;
 
                 $valuesBag->addRange(
-                    new Range((string) $range->lower, (string) $range->upper, 'false' !== strtolower($range->lower['inclusive']), 'false' !== strtolower($range->upper['inclusive']))
+                    new Range(
+                        (string) $range->lower,
+                        (string) $range->upper,
+                        'false' !== strtolower($range->lower['inclusive']),
+                        'false' !== strtolower($range->upper['inclusive'])
+                    )
                 );
             }
         }
@@ -205,7 +228,12 @@ class XmlInput extends AbstractInput
                 $count++;
 
                 $valuesBag->addExcludedRange(
-                    new Range((string) $range->lower, (string) $range->upper, 'false' !== strtolower($range->lower['inclusive']), 'false' !== strtolower($range->upper['inclusive']))
+                    new Range(
+                        (string) $range->lower,
+                        (string) $range->upper,
+                        'false' !== strtolower($range->lower['inclusive']),
+                        'false' !== strtolower($range->upper['inclusive'])
+                    )
                 );
             }
         }
@@ -220,7 +248,11 @@ class XmlInput extends AbstractInput
                 $count++;
 
                 $valuesBag->addPatternMatch(
-                    new PatternMatch((string) $patternMatch, (string) $patternMatch['type'], 'true' === strtolower($patternMatch['case-insensitive']))
+                    new PatternMatch(
+                        (string) $patternMatch,
+                        (string) $patternMatch['type'],
+                        'true' === strtolower($patternMatch['case-insensitive'])
+                    )
                 );
             }
         }

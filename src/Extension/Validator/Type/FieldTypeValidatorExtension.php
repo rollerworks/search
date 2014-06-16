@@ -36,16 +36,16 @@ class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $optionsResolver)
     {
-        $optionsResolver->setDefaults(array(
-            'constraints' => array()
-        ));
+        $optionsResolver->setDefaults(
+            array('constraints' => array())
+        );
 
-        $optionsResolver->setAllowedTypes(array(
-            'constraints' => array('array', 'string')
-        ));
+        $optionsResolver->setAllowedTypes(
+            array('constraints' => array('array', 'string'))
+        );
     }
 }

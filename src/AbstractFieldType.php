@@ -19,14 +19,14 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 abstract class AbstractFieldType implements FieldTypeInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options)
     {
@@ -34,14 +34,14 @@ abstract class AbstractFieldType implements FieldTypeInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasRangeSupport()
     {
@@ -49,7 +49,7 @@ abstract class AbstractFieldType implements FieldTypeInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCompareSupport()
     {
@@ -57,7 +57,7 @@ abstract class AbstractFieldType implements FieldTypeInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasPatternMatchSupport()
     {
@@ -65,7 +65,7 @@ abstract class AbstractFieldType implements FieldTypeInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {

@@ -21,17 +21,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class LanguageType extends AbstractFieldType
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'choices' => Intl::getLanguageBundle()->getLanguageNames(),
-        ));
+        $resolver->setDefaults(
+            array('choices' => Intl::getLanguageBundle()->getLanguageNames())
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {
@@ -39,7 +39,7 @@ class LanguageType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

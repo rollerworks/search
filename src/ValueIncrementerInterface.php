@@ -25,9 +25,9 @@ interface ValueIncrementerInterface extends ValueComparisonInterface
      *
      * The value should be returned in the normalized format.
      *
-     * @param mixed   $value      The value to increment.
-     * @param array   $options    Array of options passed with the field
-     * @param integer $increments Number of increments
+     * @param mixed $value      The value to increment.
+     * @param array $options    Array of options passed with the field
+     * @param int   $increments Number of increments
      *
      * @return mixed
      */

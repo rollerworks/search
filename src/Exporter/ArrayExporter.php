@@ -26,8 +26,8 @@ class ArrayExporter extends AbstractExporter
     /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
-     * @param boolean     $useFieldAlias
-     * @param boolean     $isRoot
+     * @param bool        $useFieldAlias
+     * @param bool        $isRoot
      *
      * @return array
      */
@@ -58,7 +58,9 @@ class ArrayExporter extends AbstractExporter
             }
         }
 
-        if (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() && (isset($result['groups']) || isset($result['fields']))) {
+        if (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() &&
+            (isset($result['groups']) || isset($result['fields']))
+        ) {
             $result['logical-case'] = 'OR';
         }
 
@@ -76,6 +78,7 @@ class ArrayExporter extends AbstractExporter
 
         if ($valuesBag->hasSingleValues()) {
             $singleValues = array();
+
             foreach ($valuesBag->getSingleValues() as $value) {
                 $singleValues[] = $value->getViewValue();
             }
@@ -87,6 +90,7 @@ class ArrayExporter extends AbstractExporter
 
         if ($valuesBag->hasExcludedValues()) {
             $excludedValues = array();
+
             foreach ($valuesBag->getExcludedValues() as $value) {
                 $excludedValues[] = $value->getViewValue();
             }
@@ -98,6 +102,7 @@ class ArrayExporter extends AbstractExporter
 
         if ($valuesBag->hasRanges()) {
             $exportedRanges = array();
+
             foreach ($valuesBag->getRanges() as $value) {
                 $exportedRanges[] = $this->exportRangeValue($value);
             }
@@ -109,6 +114,7 @@ class ArrayExporter extends AbstractExporter
 
         if ($valuesBag->hasExcludedRanges()) {
             $exportedExcludedRanges = array();
+
             foreach ($valuesBag->getExcludedRanges() as $value) {
                 $exportedExcludedRanges[] = $this->exportRangeValue($value);
             }
@@ -120,8 +126,12 @@ class ArrayExporter extends AbstractExporter
 
         if ($valuesBag->hasComparisons()) {
             $exportedComparisons = array();
+
             foreach ($valuesBag->getComparisons() as $value) {
-                $exportedComparisons[] = array('operator' => $value->getOperator(), 'value' => $value->getViewValue());
+                $exportedComparisons[] = array(
+                    'operator' => $value->getOperator(),
+                    'value' => $value->getViewValue()
+                );
             }
 
             if (count($exportedComparisons)) {
@@ -131,8 +141,13 @@ class ArrayExporter extends AbstractExporter
 
         if ($valuesBag->hasPatternMatchers()) {
             $exportedPatternMatchers = array();
+
             foreach ($valuesBag->getPatternMatchers() as $value) {
-                $exportedPatternMatchers[] = array('type' => $this->getPatternMatchType($value), 'value' => $value->getViewValue(), 'case-insensitive' => $value->isCaseInsensitive());
+                $exportedPatternMatchers[] = array(
+                    'type' => $this->getPatternMatchType($value),
+                    'value' => $value->getViewValue(),
+                    'case-insensitive' => $value->isCaseInsensitive()
+                );
             }
 
             if (count($exportedPatternMatchers)) {
@@ -150,7 +165,10 @@ class ArrayExporter extends AbstractExporter
      */
     protected function exportRangeValue(Range $range)
     {
-        $result = array('lower' => $range->getViewLower(), 'upper' => $range->getViewUpper());
+        $result = array(
+            'lower' => $range->getViewLower(),
+            'upper' => $range->getViewUpper()
+        );
 
         if (!$range->isLowerInclusive()) {
             $result['inclusive-lower'] = false;

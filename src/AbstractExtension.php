@@ -34,7 +34,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
     private $typeExtensions;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getType($name)
     {
@@ -43,14 +43,16 @@ abstract class AbstractExtension implements SearchExtensionInterface
         }
 
         if (!isset($this->types[$name])) {
-            throw new InvalidArgumentException(sprintf('The type "%s" can not be loaded by this extension', $name));
+            throw new InvalidArgumentException(
+                sprintf('The type "%s" can not be loaded by this extension', $name)
+            );
         }
 
         return $this->types[$name];
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasType($name)
     {
@@ -62,7 +64,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTypeExtensions($name)
     {
@@ -74,7 +76,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasTypeExtensions($name)
     {
@@ -135,7 +137,10 @@ abstract class AbstractExtension implements SearchExtensionInterface
 
         foreach ($this->loadTypeExtensions() as $extension) {
             if (!$extension instanceof FieldTypeExtensionInterface) {
-                throw new UnexpectedTypeException($extension, 'Rollerworks\Component\Search\FieldTypeExtensionInterface');
+                throw new UnexpectedTypeException(
+                    $extension,
+                    'Rollerworks\Component\Search\FieldTypeExtensionInterface'
+                );
             }
 
             $type = $extension->getExtendedType();

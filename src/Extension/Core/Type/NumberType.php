@@ -38,46 +38,51 @@ class NumberType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
-
-        $config->addViewTransformer(new NumberToLocalizedStringTransformer(
-            $options['precision'],
-            $options['grouping'],
-            $options['rounding_mode']
-        ));
+        $config->addViewTransformer(
+            new NumberToLocalizedStringTransformer(
+                $options['precision'],
+                $options['grouping'],
+                $options['rounding_mode']
+            )
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            // default precision is locale specific (usually around 3)
-            'precision' => null,
-            'grouping' => false,
-            'rounding_mode' => \NumberFormatter::ROUND_HALFUP,
-        ));
+        $resolver->setDefaults(
+            array(
+                // default precision is locale specific (usually around 3)
+                'precision' => null,
+                'grouping' => false,
+                'rounding_mode' => \NumberFormatter::ROUND_HALFUP,
+            )
+        );
 
-        $resolver->setAllowedValues(array(
-            'rounding_mode' => array(
-                \NumberFormatter::ROUND_FLOOR,
-                \NumberFormatter::ROUND_DOWN,
-                \NumberFormatter::ROUND_HALFDOWN,
-                \NumberFormatter::ROUND_HALFEVEN,
-                \NumberFormatter::ROUND_HALFUP,
-                \NumberFormatter::ROUND_UP,
-                \NumberFormatter::ROUND_CEILING,
-            ),
-        ));
+        $resolver->setAllowedValues(
+            array(
+                'rounding_mode' => array(
+                    \NumberFormatter::ROUND_FLOOR,
+                    \NumberFormatter::ROUND_DOWN,
+                    \NumberFormatter::ROUND_HALFDOWN,
+                    \NumberFormatter::ROUND_HALFEVEN,
+                    \NumberFormatter::ROUND_HALFUP,
+                    \NumberFormatter::ROUND_UP,
+                    \NumberFormatter::ROUND_CEILING,
+                ),
+            )
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasRangeSupport()
     {
@@ -85,7 +90,7 @@ class NumberType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCompareSupport()
     {
@@ -93,9 +98,7 @@ class NumberType extends AbstractFieldType
     }
 
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name.
+     * {@inheritdoc}
      */
     public function getName()
     {

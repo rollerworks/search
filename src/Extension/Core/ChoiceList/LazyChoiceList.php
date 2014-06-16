@@ -32,7 +32,7 @@ abstract class LazyChoiceList implements ChoiceListInterface
     private $choiceList;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChoices()
     {
@@ -44,7 +44,7 @@ abstract class LazyChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getValues()
     {
@@ -56,7 +56,7 @@ abstract class LazyChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChoiceForValue($value)
     {
@@ -68,7 +68,7 @@ abstract class LazyChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getValueForChoice($choices)
     {
@@ -93,7 +93,12 @@ abstract class LazyChoiceList implements ChoiceListInterface
         $choiceList = $this->loadChoiceList();
 
         if (!$choiceList instanceof ChoiceListInterface) {
-            throw new InvalidArgumentException(sprintf('loadChoiceList() should return a ChoiceListInterface instance. Got %s', gettype($choiceList)));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'loadChoiceList() should return a ChoiceListInterface instance. Got %s',
+                    gettype($choiceList)
+                )
+            );
         }
 
         $this->choiceList = $choiceList;

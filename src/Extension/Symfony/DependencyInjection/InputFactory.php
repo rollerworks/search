@@ -27,11 +27,13 @@ class InputFactory
     private $container;
 
     /**
-     * @var array
+     * @var string[]
      */
     private $serviceIds;
 
     /**
+     * Constructor.
+     *
      * @param ContainerInterface $container
      * @param array              $serviceIds
      */
@@ -53,7 +55,9 @@ class InputFactory
     public function create($name)
     {
         if (!isset($this->serviceIds[$name])) {
-            throw new \InvalidArgumentException(sprintf('Enable to create input-processor, "%s" is not registered as processor.', $name));
+            throw new \InvalidArgumentException(
+                sprintf('Enable to create input-processor, "%s" is not registered as processor.', $name)
+            );
         }
 
         return $this->container->get($this->serviceIds[$name]);

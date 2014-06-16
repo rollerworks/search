@@ -102,7 +102,7 @@ class ObjectChoiceList extends ChoiceList
      *
      * @param mixed $choice The choice to create a value for
      *
-     * @return integer|string A unique value without character limitations.
+     * @return int|string A unique value without character limitations.
      */
     protected function createValue($choice)
     {
@@ -127,7 +127,13 @@ class ObjectChoiceList extends ChoiceList
             } elseif (method_exists($choice, '__toString')) {
                 $labels[$i] = (string) $choice;
             } else {
-                throw new InvalidArgumentException(sprintf('A "__toString()" method was not found on the objects of type "%s" passed to the choice field. To read a custom getter instead, set the argument $labelPath to the desired property path.', get_class($choice)));
+                throw new InvalidArgumentException(
+                    sprintf(
+                        '"__toString()" method was not found on the objects of type "%s" passed to the choice field.'.
+                        'To read a custom getter instead, set the argument $labelPath to the desired property path.',
+                        get_class($choice)
+                    )
+                );
             }
         }
     }

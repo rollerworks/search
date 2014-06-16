@@ -16,14 +16,27 @@ namespace Rollerworks\Component\Search\Exception;
  */
 class GroupsNestingException extends \Exception implements ExceptionInterface
 {
+    /**
+     * @var string
+     */
     protected $max;
+
+    /**
+     * @var int
+     */
     protected $groupIdx;
+
+    /**
+     * @var int
+     */
     protected $nestingLevel;
 
     /**
-     * @param string  $max
-     * @param integer $groupIdx
-     * @param integer $nestingLevel
+     * Constructor.
+     *
+     * @param string $max
+     * @param int    $groupIdx
+     * @param int    $nestingLevel
      */
     public function __construct($max, $groupIdx, $nestingLevel)
     {
@@ -31,11 +44,18 @@ class GroupsNestingException extends \Exception implements ExceptionInterface
         $this->groupIdx = $groupIdx;
         $this->nestingLevel = $nestingLevel;
 
-        parent::__construct(sprintf('Group %d at nesting level %d exceeds maximum nesting level of %d.', $groupIdx, $nestingLevel, $max));
+        parent::__construct(
+            sprintf(
+                'Group %d at nesting level %d exceeds maximum nesting level of %d.',
+                $groupIdx,
+                $nestingLevel,
+                $max
+            )
+        );
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getMaxNesting()
     {
@@ -43,7 +63,7 @@ class GroupsNestingException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getGroupIdx()
     {
@@ -51,7 +71,7 @@ class GroupsNestingException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getNestingLevel()
     {

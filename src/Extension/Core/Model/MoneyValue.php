@@ -22,8 +22,8 @@ class MoneyValue
     /**
      * Constructor.
      *
-     * @param string       $currency
-     * @param string|float $value
+     * @param string $currency
+     * @param string $value
      */
     public function __construct($currency, $value)
     {

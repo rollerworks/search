@@ -24,7 +24,8 @@ class JsonExporter extends ArrayExporter
      * Exports the SearchCondition.
      *
      * @param SearchConditionInterface $condition     The SearchCondition to export
-     * @param boolean                  $useFieldAlias Use the localized field-alias instead of the actual name (default false)
+     * @param bool                     $useFieldAlias Use the localized field-alias
+     *                                                instead of the actual name (default false)
      *
      * @return string
      *
@@ -36,6 +37,14 @@ class JsonExporter extends ArrayExporter
             throw new \RuntimeException('Unable resolve field-name to alias because no labelResolver is configured.');
         }
 
-        return json_encode($this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), $useFieldAlias, true), JSON_FORCE_OBJECT);
+        return json_encode(
+            $this->exportGroup(
+                $condition->getValuesGroup(),
+                $condition->getFieldSet(),
+                $useFieldAlias,
+                true
+            ),
+            JSON_FORCE_OBJECT
+        );
     }
 }

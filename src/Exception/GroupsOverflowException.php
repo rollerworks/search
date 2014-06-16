@@ -16,16 +16,33 @@ namespace Rollerworks\Component\Search\Exception;
  */
 class GroupsOverflowException extends \Exception implements ExceptionInterface
 {
+    /**
+     * @var int
+     */
     protected $max;
+
+    /**
+     * @var int
+     */
     protected $count;
+
+    /**
+     * @var int
+     */
     protected $groupIdx;
+
+    /**
+     * @var int
+     */
     protected $nestingLevel;
 
     /**
-     * @param integer $max
-     * @param integer $count
-     * @param integer $groupIdx
-     * @param integer $nestingLevel
+     * Constructor.
+     *
+     * @param int $max
+     * @param int $count
+     * @param int $groupIdx
+     * @param int $nestingLevel
      */
     public function __construct($max, $count, $groupIdx, $nestingLevel)
     {
@@ -34,11 +51,19 @@ class GroupsOverflowException extends \Exception implements ExceptionInterface
         $this->groupIdx = $groupIdx;
         $this->nestingLevel = $nestingLevel;
 
-        parent::__construct(sprintf('Group "%d" at nesting level %d exceeds maximum number of groups, maximum: %d, total of groups: %d.', $groupIdx, $nestingLevel, $max, $count));
+        parent::__construct(
+            sprintf(
+                'Group "%d" at nesting level %d exceeds maximum number of groups, maximum: %d, total of groups: %d.',
+                $groupIdx,
+                $nestingLevel,
+                $max,
+                $count
+            )
+        );
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getMax()
     {
@@ -46,7 +71,7 @@ class GroupsOverflowException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getCount()
     {
@@ -54,7 +79,7 @@ class GroupsOverflowException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getGroupIdx()
     {
@@ -62,7 +87,7 @@ class GroupsOverflowException extends \Exception implements ExceptionInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getNestingLevel()
     {

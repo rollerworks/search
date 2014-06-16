@@ -27,17 +27,17 @@ class TimezoneType extends AbstractFieldType
     private static $timezones;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'choices' => self::getTimezones(),
-        ));
+        $resolver->setDefaults(
+            array('choices' => self::getTimezones())
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {
@@ -45,7 +45,7 @@ class TimezoneType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -72,7 +72,7 @@ class TimezoneType extends AbstractFieldType
 
                 if (count($parts) > 2) {
                     $region = $parts[0];
-                    $name = $parts[1] . '-' . $parts[2];
+                    $name = $parts[1].'-'.$parts[2];
                 } elseif (count($parts) > 1) {
                     $region = $parts[0];
                     $name = $parts[1];

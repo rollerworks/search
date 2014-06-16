@@ -31,14 +31,14 @@ use Rollerworks\Component\Search\ValuesGroup;
 class RangeOptimizer implements FormatterInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function format(SearchConditionInterface $condition)
     {
         $fieldSet = $condition->getFieldSet();
         $valuesGroup = $condition->getValuesGroup();
-
         $supportsRanges = false;
+
         foreach ($fieldSet->all() as $field) {
             if ($field->acceptRanges()) {
                 $supportsRanges = true;
@@ -67,6 +67,7 @@ class RangeOptimizer implements FormatterInterface
             }
 
             $config = $fieldSet->get($fieldName);
+
             if ($config->acceptRanges() && ($values->hasRanges() || $values->hasExcludedRanges())) {
                 $this->normalizeRangesInValuesBag($config, $values);
             }
@@ -118,7 +119,10 @@ class RangeOptimizer implements FormatterInterface
                     // connected is when the upper-bound is equal to the lower-bound of the second range
                     // only when the bounds inclusiveness are equal they can be optimized
 
-                    if ($range->isLowerInclusive() === $value->isLowerInclusive() && $range->isUpperInclusive() === $value->isUpperInclusive() && $comparison->isEqual($range->getUpper(), $value->getLower(), $options)) {
+                    if ($range->isLowerInclusive() === $value->isLowerInclusive() &&
+                        $range->isUpperInclusive() === $value->isUpperInclusive() &&
+                        $comparison->isEqual($range->getUpper(), $value->getLower(), $options)
+                    ) {
                         $range->setUpper($value->getUpper());
 
                         // remove the second range as its merged now
@@ -162,7 +166,10 @@ class RangeOptimizer implements FormatterInterface
                     // connected is when the upper-bound is equal to the lower-bound of the second range
                     // only when the bounds inclusiveness are equal they can be optimized
 
-                    if ($range->isLowerInclusive() === $value->isLowerInclusive() && $range->isUpperInclusive() === $value->isUpperInclusive() && $comparison->isEqual($range->getUpper(), $value->getLower(), $options)) {
+                    if ($range->isLowerInclusive() === $value->isLowerInclusive() &&
+                        $range->isUpperInclusive() === $value->isUpperInclusive() &&
+                        $comparison->isEqual($range->getUpper(), $value->getLower(), $options)
+                    ) {
                         $range->setUpper($value->getUpper());
 
                         // remove the second range as its merged now
@@ -184,7 +191,7 @@ class RangeOptimizer implements FormatterInterface
      * @param ValueComparisonInterface $comparison
      * @param array                    $options
      *
-     * @return boolean
+     * @return bool
      */
     private function isValInRange(SingleValue $singeValue, Range $range, ValueComparisonInterface $comparison, $options)
     {
@@ -193,17 +200,29 @@ class RangeOptimizer implements FormatterInterface
 
         // This has been made very verbose to not make a complete spaghetti mess of it
 
-        if ($range->isLowerInclusive() && ($comparison->isEqual($singeValue->getValue(), $range->getLower(), $options) || $comparison->isHigher($singeValue->getValue(), $range->getLower(), $options))) {
+        if ($range->isLowerInclusive() &&
+            ($comparison->isEqual($singeValue->getValue(), $range->getLower(), $options) ||
+             $comparison->isHigher($singeValue->getValue(), $range->getLower(), $options))
+        ) {
             $isLower = true;
-        } elseif (!$range->isLowerInclusive() && $comparison->isHigher($singeValue->getValue(), $range->getLower(), $options)) {
+        } elseif (!$range->isLowerInclusive() &&
+            $comparison->isHigher($singeValue->getValue(), $range->getLower(), $options)
+        ) {
             $isLower = true;
         }
 
         // value is higher (or equal) then lower bound, so now check the lower bound
         if ($isLower) {
-            if ($range->isUpperInclusive() && ($comparison->isEqual($singeValue->getValue(), $range->getUpper(), $options) || $comparison->isLower($singeValue->getValue(), $range->getUpper(), $options))) {
+            if ($range->isUpperInclusive() &&
+                (
+                    $comparison->isEqual($singeValue->getValue(), $range->getUpper(), $options) ||
+                    $comparison->isLower($singeValue->getValue(), $range->getUpper(), $options)
+                )
+            ) {
                 $overlap = true;
-            } elseif (!$range->isUpperInclusive() && $comparison->isLower($singeValue->getValue(), $range->getUpper(), $options)) {
+            } elseif (!$range->isUpperInclusive() &&
+                $comparison->isLower($singeValue->getValue(), $range->getUpper(), $options)
+            ) {
                 $overlap = true;
             }
         }
@@ -219,7 +238,7 @@ class RangeOptimizer implements FormatterInterface
      * @param ValueComparisonInterface $comparison
      * @param array                    $options
      *
-     * @return boolean
+     * @return bool
      */
     private function isRangeInRange(Range $range1, Range $range, ValueComparisonInterface $comparison, $options)
     {
@@ -230,9 +249,16 @@ class RangeOptimizer implements FormatterInterface
         // Ranges are more difficult as each can be inclusive and exclusive
 
         if ($range->isLowerInclusive()) {
-            if ($range1->isLowerInclusive() && ($comparison->isEqual($range1->getLower(), $range->getLower(), $options) || $comparison->isHigher($range1->getLower(), $range->getLower(), $options))) {
+            if ($range1->isLowerInclusive() &&
+                (
+                    $comparison->isEqual($range1->getLower(), $range->getLower(), $options) ||
+                    $comparison->isHigher($range1->getLower(), $range->getLower(), $options)
+                )
+            ) {
                 $isLower = true;
-            } elseif (!$range1->isLowerInclusive() && $comparison->isHigher($range1->getLower(), $range->getLower(), $options)) {
+            } elseif (!$range1->isLowerInclusive() &&
+                $comparison->isHigher($range1->getLower(), $range->getLower(), $options)
+            ) {
                 $isLower = true;
             }
         } elseif ($comparison->isHigher($range1->getLower(), $range->getLower(), $options)) {
@@ -243,9 +269,16 @@ class RangeOptimizer implements FormatterInterface
         // value is higher (or equal) then lower bound, so now check the lower bound
         if ($isLower) {
             if ($range->isUpperInclusive()) {
-                if ($range1->isUpperInclusive() && ($comparison->isEqual($range1->getUpper(), $range->getUpper(), $options) || $comparison->isLower($range1->getUpper(), $range->getUpper(), $options))) {
+                if ($range1->isUpperInclusive() &&
+                    (
+                        $comparison->isEqual($range1->getUpper(), $range->getUpper(), $options) ||
+                        $comparison->isLower($range1->getUpper(), $range->getUpper(), $options)
+                    )
+                ) {
                     $overlap = true;
-                } elseif (!$range1->isUpperInclusive() && $comparison->isLower($range->getUpper(), $range1->getUpper(), $options)) {
+                } elseif (!$range1->isUpperInclusive() &&
+                          $comparison->isLower($range->getUpper(), $range1->getUpper(), $options)
+                ) {
                     // Because the second upper-bound is exclusive we check the
                     $overlap = true;
                 }

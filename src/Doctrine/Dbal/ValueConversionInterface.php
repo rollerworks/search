@@ -36,11 +36,12 @@ interface ValueConversionInterface
      * The original value is still available
      * with originalValue in the $hints parameter
      *
-     * @param mixed $input   Input value
-     * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (search_field, connection, db_type, value_object)
+     * @param string $input   Input value
+     * @param array  $options Options of the Field configuration
+     * @param array  $hints   Special information for the conversion process
+     *                        (search_field, connection, db_type, value_object)
      *
-     * @return boolean
+     * @return bool
      */
     public function requiresBaseConversion($input, array $options, array $hints);
 
@@ -49,7 +50,8 @@ interface ValueConversionInterface
      *
      * @param mixed $input   Query-parameter reference or real input depending on requiresRealValue()
      * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (search_field, connection, db_type, original_value, value_object)
+     * @param array $hints   Special information for the conversion process
+     *                       (search_field, connection, db_type, original_value, value_object)
      *
      * @return string
      */

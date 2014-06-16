@@ -47,7 +47,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      *
      * @param WhereBuilderInterface $whereBuilder The WhereBuilder to use for generating and updating the query
      * @param Cache                 $cacheDriver  Doctrine Cache instance
-     * @param integer               $lifeTime     Lifetime in seconds after which the cache is expired
+     * @param int                   $lifeTime     Lifetime in seconds after which the cache is expired
      *
      * @throws UnexpectedTypeException when the whereBuilder is invalid
      */
@@ -63,7 +63,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      *
      * @see WhereBuilder::getWhereClause()
      *
-     * @param boolean $embedValues Whether to embed the values, default is to assign as parameters.
+     * @param bool $embedValues Whether to embed the values, default is to assign as parameters.
      *
      * @return string
      */
@@ -91,8 +91,9 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
             $this->cacheDriver->save(
                 $cacheKey,
                 array(
-                   $this->whereClause, $this->whereBuilder->getParameters(),
-                   $this->serializeParameterTypes($this->whereBuilder->getParameterTypes())
+                    $this->whereClause,
+                    $this->whereBuilder->getParameters(),
+                    $this->serializeParameterTypes($this->whereBuilder->getParameterTypes())
                 ),
                 $this->cacheLifeTime
             );
@@ -131,6 +132,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
     private function serializeParameterTypes(array $types)
     {
         $typesArray = array();
+
         foreach ($types as $name => $type) {
             $typesArray[$name] = $type->getName();
         }

@@ -58,12 +58,14 @@ class ViolationMapper implements ViolationMapperInterface
                     $subPath = sprintf('%s[%d]', $it[$currentIdx++], $it[$currentIdx]);
                 }
 
-                $currentBag->addError(new ValuesError(
-                    $subPath,
-                    $violation->getMessage(),
-                    $violation->getMessageTemplate(),
-                    $violation->getMessageParameters(),
-                    $violation->getMessagePluralization())
+                $currentBag->addError(
+                    new ValuesError(
+                        $subPath,
+                        $violation->getMessage(),
+                        $violation->getMessageTemplate(),
+                        $violation->getMessageParameters(),
+                        $violation->getMessagePluralization()
+                    )
                 );
 
                 // Stop the loop as we have found the final path

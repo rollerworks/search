@@ -25,15 +25,15 @@ use Rollerworks\Component\Search\Util\XmlUtils;
 class XmlFileDriver extends AbstractFileDriver
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function loadMetadataFromFile(\ReflectionClass $class, $file, $test = false)
+    protected function loadMetadataFromFile(\ReflectionClass $class, $file, $noReflection = false)
     {
         $xml = $this->parseFile($file);
         $classMetadata = new MergeableClassMetadata($class->name);
 
         foreach ($xml as $property) {
-            $propertyMetadata = $this->parseProperty($class, $property, $test);
+            $propertyMetadata = $this->parseProperty($class, $property, $noReflection);
             $classMetadata->addPropertyMetadata($propertyMetadata);
         }
 
@@ -53,11 +53,11 @@ class XmlFileDriver extends AbstractFileDriver
     /**
      * @param \ReflectionClass $class
      * @param SimpleXMLElement $property
-     * @param boolean          $test
+     * @param bool             $noReflection
      *
      * @return PropertyMetadata
      */
-    private function parseProperty(\ReflectionClass $class, SimpleXMLElement $property, $test)
+    private function parseProperty(\ReflectionClass $class, SimpleXMLElement $property, $noReflection)
     {
         $propertyMetadata = new PropertyMetadata($class->name, (string) $property['id']);
 
@@ -69,7 +69,7 @@ class XmlFileDriver extends AbstractFileDriver
             $propertyMetadata->options = $property->getArgumentsAsPhp('option');
         }
 
-        if ($test) {
+        if ($noReflection) {
             $propertyMetadata->reflection = null;
         }
 

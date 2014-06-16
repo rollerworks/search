@@ -58,7 +58,9 @@ class ChoiceToLabelTransformer implements DataTransformerInterface
         $choice = $this->choiceList->getChoiceForLabel($value);
 
         if (null === $choice) {
-            throw new TransformationFailedException(sprintf('The choice "%s" does not exist.', $value));
+            throw new TransformationFailedException(
+                sprintf('The choice "%s" does not exist.', $value)
+            );
         }
 
         return '' === $choice ? null : $choice;

@@ -20,7 +20,7 @@ interface FieldSetBuilderInterface
      * @param string|FieldConfigInterface $field
      * @param string|FieldTypeInterface   $type
      * @param array                       $options
-     * @param boolean                     $required
+     * @param bool                        $required
      * @param string                      $modelClass
      * @param string                      $property
      *
@@ -38,7 +38,7 @@ interface FieldSetBuilderInterface
     /**
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function has($name);
 

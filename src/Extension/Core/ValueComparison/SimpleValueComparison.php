@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
 class SimpleValueComparison implements ValueComparisonInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isHigher($value, $nextValue, array $options)
     {
@@ -29,7 +29,7 @@ class SimpleValueComparison implements ValueComparisonInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isLower($value, $nextValue, $options)
     {
@@ -37,7 +37,7 @@ class SimpleValueComparison implements ValueComparisonInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isEqual($value, $nextValue, $options)
     {

@@ -153,8 +153,8 @@ class FilterQueryInput extends AbstractInput
     /**
      * Frees this parser, enabling it to be reused.
      *
-     * @param boolean $deep     Whether to clean peek and reset errors.
-     * @param integer $position Position to reset.
+     * @param bool $deep     Whether to clean peek and reset errors.
+     * @param int  $position Position to reset.
      */
     public function free($deep = false, $position = 0)
     {
@@ -240,10 +240,11 @@ class FilterQueryInput extends AbstractInput
     }
 
     /**
-     * Group ::= {"(" {Group}* FieldValuesPairs {";" Group}* ")" | "(" FieldValuesPairs ";" FieldValuesPairs {";" Group}* ")" [ ";" ] | {Group}+ [ ";" ]}+
+     * Group ::= {"(" {Group}* FieldValuesPairs {";" Group}* ")" |
+     *     "(" FieldValuesPairs ";" FieldValuesPairs {";" Group}* ")" [ ";" ] | {Group}+ [ ";" ]}+
      *
-     * @param integer $level
-     * @param integer $idx
+     * @param int $level
+     * @param int $idx
      *
      * @return ValuesGroup
      */
@@ -258,6 +259,7 @@ class FilterQueryInput extends AbstractInput
 
             $valuesGroup->setGroupLogical(ValuesGroup::GROUP_LOGICAL_OR);
         }
+
         $this->match(Lexer::T_OPEN_PARENTHESIS);
 
         // if there is a subgroup the FieldValuesPairs() method will handle it
@@ -276,9 +278,9 @@ class FilterQueryInput extends AbstractInput
      * {FieldIdentification ":" FieldValues}*
      *
      * @param ValuesGroup $valuesGroup
-     * @param integer     $level
-     * @param integer     $groupIdx
-     * @param boolean     $inGroup
+     * @param int         $level
+     * @param int         $groupIdx
+     * @param bool        $inGroup
      *
      * @throws FieldRequiredException
      */
@@ -340,12 +342,13 @@ class FilterQueryInput extends AbstractInput
     }
 
     /**
-     * FieldValues ::= [ "!" ] StringValue {"," [ "!" ] StringValue | [ "!" ] RangeValue | Comparison | PatternMatch}* [ ";" ]
+     * FieldValues ::= [ "!" ] StringValue {"," [ "!" ] StringValue |
+     *     [ "!" ] RangeValue | Comparison | PatternMatch}* [ ";" ]
      *
      * @param string    $fieldName
      * @param ValuesBag $valuesBag
-     * @param integer   $level
-     * @param integer   $groupIdx
+     * @param int       $level
+     * @param int       $groupIdx
      *
      * @return ValuesBag
      *
@@ -403,7 +406,10 @@ class FilterQueryInput extends AbstractInput
                     break;
 
                 default:
-                    $this->syntaxError('String | QuotedString | Range | Excluded Value | Excluded Range | Comparison | PatternMatch', $this->lexer->lookahead);
+                    $this->syntaxError(
+                        'String | QuotedString | Range | Excluded Value | Excluded Range | Comparison | PatternMatch',
+                        $this->lexer->lookahead
+                    );
                     break;
             }
 
@@ -413,7 +419,10 @@ class FilterQueryInput extends AbstractInput
         }
 
         if (!$hasValues) {
-            $this->syntaxError('String | QuotedString | Range | ExcludedValue | ExcludedRange | Comparison | PatternMatch', $this->lexer->lookahead);
+            $this->syntaxError(
+                'String | QuotedString | Range | ExcludedValue | ExcludedRange | Comparison | PatternMatch',
+                $this->lexer->lookahead
+            );
         }
 
         return $valuesBag;
@@ -566,9 +575,10 @@ class FilterQueryInput extends AbstractInput
     }
 
     /**
-     * PatternMatchOperator ::= ~* | ~> | ~< | ~? | ~!* | ~!> | ~!< | ~!? | ~i* | ~i> | ~i< | ~i? | ~i!* | ~i!> | ~i!< | ~i!?
+     * PatternMatchOperator ::= ~* | ~> | ~< | ~? | ~!* | ~!> | ~!< | ~!? | ~i* |
+     *     ~i> | ~i< | ~i? | ~i!* | ~i!> | ~i!< | ~i!?
      *
-     * @param boolean $caseInsensitive Reference case insensitive state
+     * @param bool $caseInsensitive Reference case insensitive state
      *
      * @return string
      */
@@ -597,22 +607,27 @@ class FilterQueryInput extends AbstractInput
         switch ($this->lexer->lookahead['value']) {
             case '*':
                 $this->match(Lexer::T_MULTIPLY);
+
                 return 'CONTAINS';
 
             case '>':
                 $this->match(Lexer::T_GREATER_THAN);
+
                 return 'STARTS_WITH';
 
             case '<':
                 $this->match(Lexer::T_LOWER_THAN);
+
                 return 'ENDS_WITH';
 
             case '?':
                 $this->match(Lexer::T_QUESTION_MARK);
+
                 return 'REGEX';
 
             case '!':
                 $this->match(Lexer::T_NEGATE);
+
                 return 'NOT_'.$this->getPatternMatchOperator();
 
             default:

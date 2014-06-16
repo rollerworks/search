@@ -46,15 +46,18 @@ class SimpleXMLElement extends \SimpleXMLElement
             if (isset($arg['name'])) {
                 $arg['key'] = (string) $arg['name'];
             }
+
             $key = isset($arg['key']) ? (string) $arg['key'] : (!$arguments ? 0 : max(array_keys($arguments)) + 1);
 
             switch ($arg['type']) {
                 case 'collection':
                     $arguments[$key] = $arg->getArgumentsAsPhp($name);
                     break;
+
                 case 'string':
                     $arguments[$key] = (string) $arg;
                     break;
+
                 default:
                     $arguments[$key] = self::phpize($arg);
             }

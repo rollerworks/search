@@ -21,11 +21,11 @@ class NumberValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value is higher then the second value.
      *
-     * @param integer|float $higher
-     * @param integer|float $lower
-     * @param array         $options
+     * @param int|float $higher
+     * @param int|float $lower
+     * @param array     $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isHigher($higher, $lower, array $options)
     {
@@ -35,11 +35,11 @@ class NumberValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value is lower then the second value.
      *
-     * @param integer|float $lower
-     * @param integer|float $higher
-     * @param array         $options
+     * @param int|float $lower
+     * @param int|float $higher
+     * @param array     $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isLower($lower, $higher, $options)
     {
@@ -49,11 +49,11 @@ class NumberValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value equals the second value.
      *
-     * @param integer|float $value
-     * @param integer|float $nextValue
-     * @param array         $options
+     * @param int|float $value
+     * @param int|float $nextValue
+     * @param array     $options
      *
-     * @return boolean
+     * @return bool
      */
     public function isEqual($value, $nextValue, $options)
     {
@@ -65,11 +65,11 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * The value should returned in the normalized format.
      *
-     * @param integer|float $value      The value to increment.
-     * @param array         $options    Array of options passed with the field
-     * @param integer       $increments Number of increments
+     * @param int|float $value      The value to increment.
+     * @param array     $options    Array of options passed with the field
+     * @param int       $increments Number of increments
      *
-     * @return integer|float
+     * @return double
      */
     public function getIncrementedValue($value, array $options, $increments = 1)
     {

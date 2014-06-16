@@ -51,12 +51,20 @@ class SearchConditionSerializer
      */
     public static function unserialize(FieldSet $fieldSet, array $searchCondition)
     {
-        if (count($searchCondition) <> 2 || !isset($searchCondition[0], $searchCondition[1]) ) {
-            throw new InvalidArgumentException('Serialized SearchCondition must be exactly two values [fieldSet-name, ValuesGroup].');
+        if (count($searchCondition) <> 2 || !isset($searchCondition[0], $searchCondition[1])) {
+            throw new InvalidArgumentException(
+                'Serialized SearchCondition must be exactly two values [fieldSet-name, ValuesGroup].'
+            );
         }
 
         if ($fieldSet->getSetName() !== $searchCondition[0]) {
-            throw new InvalidArgumentException(sprintf('Wrong FieldSet, expected FieldSet "%s", but got "%s".', $searchCondition[0], $fieldSet->getSetName()));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Wrong FieldSet, expected FieldSet "%s", but got "%s".',
+                    $searchCondition[0],
+                    $fieldSet->getSetName()
+                )
+            );
         }
 
         if (!$group = @unserialize($searchCondition[1])) {

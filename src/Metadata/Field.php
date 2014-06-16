@@ -30,7 +30,7 @@ class Field
     private $name;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $required;
 
@@ -65,21 +65,27 @@ class Field
         }
 
         foreach ($data as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = 'set'.ucfirst($key);
 
             if (!method_exists($this, $method)) {
-                throw new BadMethodCallException(sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this)));
+                throw new BadMethodCallException(
+                    sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this))
+                );
             }
 
             $this->$method($value);
         }
 
         if (null === $this->name) {
-            throw new InvalidArgumentException(sprintf("Property '%s' on annotation '%s' is required.", 'name', get_class($this)));
+            throw new InvalidArgumentException(
+                sprintf("Property '%s' on annotation '%s' is required.", 'name', get_class($this))
+            );
         }
 
         if (null === $this->type) {
-            throw new InvalidArgumentException(sprintf("Property '%s' on annotation '%s' is required.", 'type', get_class($this)));
+            throw new InvalidArgumentException(
+                sprintf("Property '%s' on annotation '%s' is required.", 'type', get_class($this))
+            );
         }
     }
 
@@ -100,7 +106,7 @@ class Field
     }
 
     /**
-     * @param boolean $required
+     * @param bool $required
      */
     public function setRequired($required)
     {
@@ -108,7 +114,7 @@ class Field
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isRequired()
     {

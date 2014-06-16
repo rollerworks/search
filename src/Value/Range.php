@@ -27,12 +27,12 @@ class Range
     /**
      * Constructor.
      *
-     * @param mixed   $lower
-     * @param mixed   $upper
-     * @param boolean $inclusiveLower
-     * @param boolean $inclusiveUpper
-     * @param string  $viewLower
-     * @param string  $viewUpper
+     * @param mixed  $lower
+     * @param mixed  $upper
+     * @param bool   $inclusiveLower
+     * @param bool   $inclusiveUpper
+     * @param string $viewLower
+     * @param string $viewUpper
      */
     public function __construct($lower, $upper, $inclusiveLower = true, $inclusiveUpper = true, $viewLower = null, $viewUpper = null)
     {
@@ -69,7 +69,7 @@ class Range
     /**
      * Return whether the lower-value of the range is inclusive.
      *
-     * @return boolean
+     * @return bool
      */
     public function isLowerInclusive()
     {
@@ -79,7 +79,7 @@ class Range
     /**
      * Return whether the upper-value of the range is inclusive.
      *
-     * @return boolean
+     * @return bool
      */
     public function isUpperInclusive()
     {

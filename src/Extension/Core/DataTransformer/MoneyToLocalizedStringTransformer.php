@@ -34,11 +34,11 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
     private $defaultCurrency;
 
     /**
-     * @param integer $precision
-     * @param boolean $grouping
-     * @param integer $roundingMode
-     * @param integer $divisor
-     * @param string  $defaultCurrency
+     * @param int    $precision
+     * @param bool   $grouping
+     * @param int    $roundingMode
+     * @param int    $divisor
+     * @param string $defaultCurrency
      */
     public function __construct($precision = null, $grouping = null, $roundingMode = null, $divisor = null, $defaultCurrency = null)
     {

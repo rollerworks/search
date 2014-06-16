@@ -19,10 +19,10 @@ interface SearchFactoryInterface
     /**
      * Create a new search field.
      *
-     * @param string  $name
-     * @param string  $type
-     * @param array   $options
-     * @param boolean $required
+     * @param string $name
+     * @param string $type
+     * @param array  $options
+     * @param bool   $required
      *
      * @return FieldConfigInterface
      */
@@ -31,12 +31,12 @@ interface SearchFactoryInterface
     /**
      * Create a new search field referenced by property.
      *
-     * @param string  $class
-     * @param string  $property
-     * @param string  $name
-     * @param string  $type
-     * @param array   $options
-     * @param boolean $required
+     * @param string $class
+     * @param string $property
+     * @param string $name
+     * @param string $type
+     * @param array  $options
+     * @param bool   $required
      *
      * @return FieldConfigInterface
      */

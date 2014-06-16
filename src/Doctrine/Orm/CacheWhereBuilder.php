@@ -39,7 +39,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
 {
     /**
-     * @var boolean
+     * @var bool
      */
     private $queryModified;
 
@@ -48,7 +48,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      *
      * @param WhereBuilderInterface $whereBuilder The WhereBuilder to use for generating and updating the query
      * @param Cache                 $cacheDriver  Doctrine Cache instance
-     * @param integer               $lifeTime     Lifetime in seconds after which the cache is expired
+     * @param int                   $lifeTime     Lifetime in seconds after which the cache is expired
      *
      * @throws UnexpectedTypeException when the whereBuilder is invalid
      */
@@ -82,7 +82,10 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
         }
 
         $cacheKey .= $this->cacheKey;
-        $cacheKey .= $this->keySuffix ? '_'.$this->keySuffix : '';
+
+        if ('' !== $this->keySuffix) {
+            $cacheKey .= '_'.$this->keySuffix;
+        }
 
         if ($this->cacheDriver->contains($cacheKey)) {
             $data = $this->cacheDriver->fetch($cacheKey);
@@ -110,8 +113,8 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      *
      * @see WhereBuilder::updateQuery()
      *
-     * @param string  $prependQuery Prepends this string to the where-clause ("WHERE" or "AND" for example)
-     * @param boolean $forceUpdate  Force the where-builder to update the query
+     * @param string $prependQuery Prepends this string to the where-clause ("WHERE" or "AND" for example)
+     * @param bool   $forceUpdate  Force the where-builder to update the query
      *
      * @return self
      */
@@ -131,7 +134,10 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
         }
 
         if ($query instanceof DqlQuery) {
-            $query->setHint($this->whereBuilder->getQueryHintName(), $this->whereBuilder->getQueryHintValue());
+            $query->setHint(
+                $this->whereBuilder->getQueryHintName(),
+                $this->whereBuilder->getQueryHintValue()
+            );
         }
 
         $this->queryModified = true;

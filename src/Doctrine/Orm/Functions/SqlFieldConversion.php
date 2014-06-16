@@ -42,7 +42,7 @@ class SqlFieldConversion extends FunctionNode
     public $strategy;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSql(SqlWalker $sqlWalker)
     {
@@ -54,11 +54,16 @@ class SqlFieldConversion extends FunctionNode
         $whereBuilder = $whereBuilder();
         /** @var \Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder $whereBuilder */
 
-        return $whereBuilder->getFieldConversionSql($this->fieldName, $this->columnExpression->dispatch($sqlWalker), null, $this->strategy);
+        return $whereBuilder->getFieldConversionSql(
+            $this->fieldName,
+            $this->columnExpression->dispatch($sqlWalker),
+            null,
+            $this->strategy
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function parse(Parser $parser)
     {

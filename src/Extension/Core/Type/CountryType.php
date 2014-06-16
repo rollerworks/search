@@ -21,17 +21,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class CountryType extends AbstractFieldType
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'choices' => Intl::getRegionBundle()->getCountryNames(),
-        ));
+        $resolver->setDefaults(
+            array('choices' => Intl::getRegionBundle()->getCountryNames())
+        );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {
@@ -39,7 +39,7 @@ class CountryType extends AbstractFieldType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

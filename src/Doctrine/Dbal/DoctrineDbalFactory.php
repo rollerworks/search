@@ -71,7 +71,7 @@ class DoctrineDbalFactory
      * Creates a new CacheWhereBuilder instance for the given WhereBuilder.
      *
      * @param WhereBuilderInterface $whereBuilder
-     * @param integer               $lifetime
+     * @param int                   $lifetime
      *
      * @return CacheWhereBuilder
      */

@@ -30,7 +30,7 @@ class BirthdayTypeExtension extends AbstractFieldTypeExtension
     /**
      * @param AgeDateConversion $conversion
      */
-    public function __construct($conversion)
+    public function __construct(AgeDateConversion $conversion)
     {
         $this->conversion = $conversion;
     }
@@ -40,9 +40,9 @@ class BirthdayTypeExtension extends AbstractFieldTypeExtension
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'doctrine_dbal_conversion' => $this->conversion
-        ));
+        $resolver->setDefaults(
+            array('doctrine_dbal_conversion' => $this->conversion)
+        );
     }
 
     /**

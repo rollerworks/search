@@ -29,9 +29,10 @@ interface SqlValueConversionInterface extends ValueConversionInterface
      *
      * @param mixed $input   Input value
      * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (search_field, connection, db_type, value_object)
+     * @param array $hints   Special information for the conversion process
+     *                       (search_field, connection, db_type, value_object)
      *
-     * @return boolean Return true to receive the value as-is, false to receive the query-param name.
+     * @return bool Return true to receive the value as-is, false to receive the query-param name.
      */
     public function valueRequiresEmbedding($input, array $options, array $hints);
 

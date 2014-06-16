@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 use Doctrine\DBAL\Connection;
 
 /**
- * SearchMatch.
+ * SearchMatch is utility class for pattern-matcher searching with Doctrine DBAL.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -45,7 +45,7 @@ class SearchMatch
         $chars = str_split($chars);
 
         foreach ($chars as $char) {
-            $value = str_replace($char, '\\' . $char, $value);
+            $value = str_replace($char, '\\'.$char, $value);
         }
 
         return $value;
@@ -72,8 +72,8 @@ class SearchMatch
      *
      * @param string     $column
      * @param string     $value           Fully escaped value or parameter-name
-     * @param boolean    $caseInsensitive Is the match case insensitive
-     * @param boolean    $negative        Is the match negative (exclude)
+     * @param bool       $caseInsensitive Is the match case insensitive
+     * @param bool       $negative        Is the match negative (exclude)
      * @param Connection $connection      Connection of the statement
      *
      * @return string Example "Column LIKE '%foo' ESCAPE '\0'"
@@ -83,12 +83,12 @@ class SearchMatch
     public static function getMatchSqlLike($column, $value, $caseInsensitive, $negative, Connection $connection)
     {
         if (!$caseInsensitive) {
-            return $column . ($negative ? ' NOT' : '') . " LIKE $value ESCAPE '\\\\'";
+            return $column.($negative ? ' NOT' : '')." LIKE $value ESCAPE '\\\\'";
         }
 
         switch ($connection->getDatabasePlatform()->getName()) {
             case 'postgresql':
-                return $column . ($negative ? ' NOT' : '') . "ILIKE $value ESCAPE '\\\\'";
+                return $column.($negative ? ' NOT' : '')."ILIKE $value ESCAPE '\\\\'";
 
             case 'mysql':
             case 'drizzle':
@@ -96,10 +96,12 @@ class SearchMatch
             case 'mssql':
             case 'sqlite':
             case 'mock':
-                return "LOWER($column) " . ($negative ? 'NOT ' : '') . "LIKE LOWER($value) ESCAPE '\\\\'";
+                return "LOWER($column) ".($negative ? 'NOT ' : '')."LIKE LOWER($value) ESCAPE '\\\\'";
 
             default:
-                throw new \RuntimeException(sprintf('Unsupported platform "%s".', $connection->getDatabasePlatform()->getName()));
+                throw new \RuntimeException(
+                    sprintf('Unsupported platform "%s".', $connection->getDatabasePlatform()->getName())
+                );
         }
     }
 
@@ -108,8 +110,8 @@ class SearchMatch
      *
      * @param string     $column
      * @param string     $value           Fully escaped value or parameter-name
-     * @param boolean    $caseInsensitive Is the match case insensitive
-     * @param boolean    $negative        Is the match negative (exclude)
+     * @param bool       $caseInsensitive Is the match case insensitive
+     * @param bool       $negative        Is the match negative (exclude)
      * @param Connection $connection      Connection of the statement
      *
      * @return string
@@ -120,42 +122,80 @@ class SearchMatch
     {
         switch ($connection->getDatabasePlatform()->getName()) {
             case 'postgresql':
-                return sprintf('%s %s~%s %s', $column, ($negative ? '!' : ''), ($caseInsensitive ? '*' : ''), $value);
+                return sprintf(
+                    '%s %s~%s %s',
+                    $column,
+                    ($negative ? '!' : ''),
+                    ($caseInsensitive ? '*' : ''),
+                    $value
+                );
 
             case 'mysql':
             case 'drizzle':
-                return sprintf('%s%s%s REGEXP %s', $column, ($caseInsensitive ? 'BINARY ' : ''), ($negative ? ' NOT' : ''), $value);
+                return sprintf(
+                    '%s%s%s REGEXP %s',
+                    $column,
+                    ($caseInsensitive ? 'BINARY ' : ''),
+                    ($negative ? ' NOT' : ''),
+                    $value
+                );
 
             case 'oracle':
-                return sprintf("REGEXP_LIKE(%s, %s, '%s')", $column, $value, ($caseInsensitive ? 'i' : 'c'));
+                return sprintf(
+                    "REGEXP_LIKE(%s, %s, '%s')",
+                    $column,
+                    $value,
+                    ($caseInsensitive ? 'i' : 'c')
+                );
 
             case 'mssql':
-                throw new \RuntimeException("MSSQL currently does not support regex matching without the usage of a custom extension.\nBecause of this its not possible to support this.\nIf you have a workable solution let me know.");
+                throw new \RuntimeException(
+                    'MSSQL currently does not support regex matching without the usage of a custom extension.'
+                );
 
             case 'mock':
-                return sprintf("RW_REGEXP(%s, %s, '%s') = %d", $value, $column, ($caseInsensitive ? 'ui' : ''), ($negative ? '1' : '0'));
+                return sprintf(
+                    "RW_REGEXP(%s, %s, '%s') = %d",
+                    $value,
+                    $column,
+                    ($caseInsensitive ? 'ui' : ''),
+                    ($negative ? '1' : '0')
+                );
 
-            // SQLite is a bit difficult, we must use a custom function
+            // SQLite is a bit difficult, we must use a custom function.
             // But we can only register this once.
             case 'sqlite':
                 $conn = $connection->getWrappedConnection();
                 $objHash = spl_object_hash($conn);
-                if (!isset(self::$connectionState[$objHash])) {
-                    $conn->sqliteCreateFunction('RW_REGEXP', function ($pattern, $string, $flags) {
-                        if (preg_match('{' . $pattern . '}' . $flags, $string)) {
-                            return 1;
-                        }
 
-                        return 0;
-                    }, 3);
+                if (!isset(self::$connectionState[$objHash])) {
+                    $conn->sqliteCreateFunction(
+                        'RW_REGEXP',
+                        function ($pattern, $string, $flags) {
+                            if (preg_match('{'.$pattern.'}'.$flags, $string)) {
+                                return 1;
+                            }
+
+                            return 0;
+                        },
+                        3
+                    );
 
                     self::$connectionState[$objHash] = true;
                 }
 
-                return sprintf("RW_REGEXP(%s, %s, '%s') = %d", $value, $column, ($caseInsensitive ? 'ui' : ''), ($negative ? '1' : '0'));
+                return sprintf(
+                    "RW_REGEXP(%s, %s, '%s') = %d",
+                    $value,
+                    $column,
+                    ($caseInsensitive ? 'ui' : 'u'),
+                    ($negative ? 1 : 0)
+                );
 
             default:
-                throw new \RuntimeException(sprintf('Unsupported platform "%s".', $connection->getDatabasePlatform()->getName()));
+                throw new \RuntimeException(
+                    sprintf('Unsupported platform "%s".', $connection->getDatabasePlatform()->getName())
+                );
         }
     }
 }

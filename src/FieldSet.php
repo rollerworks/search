@@ -33,7 +33,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     /**
      * Constructor.
      *
-     * @param string $name FieldSet name
+     * @param string|null $name FieldSet name
      *
      * @throws UnexpectedTypeException   If the name is not a string or an integer.
      * @throws \InvalidArgumentException If the name contains invalid characters.
@@ -99,7 +99,9 @@ class FieldSet implements \Countable, \IteratorAggregate
     public function replace($name, FieldConfigInterface $config)
     {
         if (!isset($this->fields[$name])) {
-            throw new \RuntimeException(sprintf('Unable to replace none existent field: %s', $name));
+            throw new \RuntimeException(
+                sprintf('Unable to replace none existent field: %s', $name)
+            );
         }
 
         $this->fields[$name] = $config;
@@ -135,7 +137,9 @@ class FieldSet implements \Countable, \IteratorAggregate
     public function get($name)
     {
         if (!isset($this->fields[$name])) {
-            throw new \RuntimeException(sprintf('Unable to find filter field: %s', $name));
+            throw new \RuntimeException(
+                sprintf('Unable to find filter field: %s', $name)
+            );
         }
 
         return $this->fields[$name];
@@ -156,7 +160,7 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function has($name)
     {
@@ -178,7 +182,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     /**
      * Returns the number of Fields in this set.
      *
-     * @return integer The number of fields
+     * @return int The number of fields
      */
     public function count()
     {
@@ -186,9 +190,9 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Validates whether the given variable is a valid form name.
+     * Validates whether the given variable is a valid fieldset name.
      *
-     * @param string|integer $name The tested form name.
+     * @param string|integer $name The tested fieldset name.
      *
      * @throws UnexpectedTypeException   If the name is not a string or an integer.
      * @throws \InvalidArgumentException If the name contains invalid characters.
@@ -200,9 +204,13 @@ class FieldSet implements \Countable, \IteratorAggregate
         }
 
         if (!self::isValidName($name)) {
-            throw new \InvalidArgumentException(sprintf(
-                'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").', $name
-            ));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore '.
+                    'and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").',
+                    $name
+                )
+            );
         }
     }
 
@@ -218,9 +226,9 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @param string $name The tested name.
      *
-     * @return Boolean Whether the name is valid.
+     * @return bool Whether the name is valid.
      */
-    public static function isValidName($name)
+    final public static function isValidName($name)
     {
         return '' === $name || null === $name || preg_match('/^[a-zA-Z0-9_][a-zA-Z0-9_\-:]*$/D', $name);
     }

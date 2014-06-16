@@ -61,7 +61,6 @@ class FieldSetBuilderSpec extends ObjectBehavior
     {
         $this->add('id', 'integer');
 
-
         $this->has('id')->shouldReturn(true);
 
         $this->get('id')->shouldBeLike(array(

@@ -24,13 +24,6 @@ namespace Rollerworks\Component\Search\Util;
 class XmlUtils
 {
     /**
-     * This class should not be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * Loads an XML file.
      *
      * @param string          $file             An XML file path
@@ -42,7 +35,11 @@ class XmlUtils
      */
     public static function loadFile($file, $schemaOrCallable = null)
     {
-        return static::parseXml(file_get_contents($file), $schemaOrCallable, sprintf('The XML file "%s" is not valid.', $file));
+        return static::parseXml(
+            file_get_contents($file),
+            $schemaOrCallable,
+            sprintf('The XML file "%s" is not valid.', $file)
+        );
     }
 
     /**
@@ -64,10 +61,13 @@ class XmlUtils
 
         $dom = new \DOMDocument();
         $dom->validateOnParse = true;
+
         if (!$dom->loadXML($content, LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
             libxml_disable_entity_loader($disableEntities);
 
-            throw new \InvalidArgumentException(implode("\n", static::getXmlErrors($internalErrors)));
+            throw new \InvalidArgumentException(
+                implode("\n", static::getXmlErrors($internalErrors))
+            );
         }
 
         $dom->normalizeDocument();
@@ -86,6 +86,7 @@ class XmlUtils
             libxml_clear_errors();
 
             $e = null;
+
             if (is_callable($schemaOrCallable)) {
                 try {
                     $valid = call_user_func($schemaOrCallable, $dom, $internalErrors);
@@ -97,7 +98,9 @@ class XmlUtils
             } else {
                 libxml_use_internal_errors($internalErrors);
 
-                throw new \InvalidArgumentException('The schemaOrCallable argument has to be a valid path to XSD file or callable.');
+                throw new \InvalidArgumentException(
+                    'The schemaOrCallable argument has to be a valid path to XSD file or callable.'
+                );
             }
 
             if (!$valid) {
@@ -131,7 +134,7 @@ class XmlUtils
      *  * The nested-tags are converted to keys (<foo><foo>bar</foo></foo>)
      *
      * @param \DomElement $element     A \DomElement instance
-     * @param Boolean     $checkPrefix Check prefix in an element or an attribute name
+     * @param bool        $checkPrefix Check prefix in an element or an attribute name
      *
      * @return array A PHP array
      */
@@ -140,6 +143,7 @@ class XmlUtils
         $prefix = (string) $element->prefix;
         $empty = true;
         $config = array();
+
         foreach ($element->attributes as $name => $node) {
             if ($checkPrefix && !in_array((string) $node->prefix, array('', $prefix), true)) {
                 continue;
@@ -149,6 +153,7 @@ class XmlUtils
         }
 
         $nodeValue = false;
+
         foreach ($element->childNodes as $node) {
             if ($node instanceof \DOMText) {
                 if (trim($node->nodeValue)) {
@@ -159,12 +164,13 @@ class XmlUtils
                 continue;
             } elseif (!$node instanceof \DOMComment) {
                 $value = static::convertDomElementToArray($node, $checkPrefix);
-
                 $key = $node->localName;
+
                 if (isset($config[$key])) {
                     if (!is_array($config[$key]) || !is_int(key($config[$key]))) {
                         $config[$key] = array($config[$key]);
                     }
+
                     $config[$key][] = $value;
                 } else {
                     $config[$key] = $value;
@@ -176,6 +182,7 @@ class XmlUtils
 
         if (false !== $nodeValue) {
             $value = static::phpize($nodeValue);
+
             if (count($config)) {
                 $config['value'] = $value;
             } else {
@@ -201,33 +208,41 @@ class XmlUtils
         switch (true) {
             case 'null' === $lowercaseValue:
                 return null;
+
             case ctype_digit($value):
                 $raw = $value;
                 $cast = intval($value);
 
                 return '0' == $value[0] ? octdec($value) : (((string) $raw == (string) $cast) ? $cast : $raw);
+
             case isset($value[1]) && '-' === $value[0] && ctype_digit(substr($value, 1)):
                 $raw = $value;
                 $cast = intval($value);
 
                 return '0' == $value[1] ? octdec($value) : (((string) $raw == (string) $cast) ? $cast : $raw);
+
             case 'true' === $lowercaseValue:
                 return true;
+
             case 'false' === $lowercaseValue:
                 return false;
+
             case isset($value[1]) && '0b' == $value[0].$value[1]:
                 return bindec($value);
+
             case is_numeric($value):
                 return '0x' == $value[0].$value[1] ? hexdec($value) : floatval($value);
+
             case preg_match('/^(-|\+)?[0-9]+(\.[0-9]+)?$/', $value):
                 return floatval($value);
+
             default:
                 return $value;
         }
     }
 
     /**
-     * @param boolean $internalErrors
+     * @param bool $internalErrors
      *
      * @return array
      */
@@ -235,7 +250,8 @@ class XmlUtils
     {
         $errors = array();
         foreach (libxml_get_errors() as $error) {
-            $errors[] = sprintf('[%s %s] %s (in %s - line %d, column %d)',
+            $errors[] = sprintf(
+                '[%s %s] %s (in %s - line %d, column %d)',
                 LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
                 $error->code,
                 trim($error->message),
@@ -249,5 +265,12 @@ class XmlUtils
         libxml_use_internal_errors($internalErrors);
 
         return $errors;
+    }
+
+    /**
+     * This class should not be instantiated
+     */
+    private function __construct()
+    {
     }
 }

@@ -58,7 +58,7 @@ abstract class AbstractExporter implements ExporterInterface
      * Exports the SearchCondition.
      *
      * @param SearchConditionInterface $condition     The SearchCondition to export
-     * @param boolean                  $useFieldAlias Use the localized field-alias
+     * @param bool                     $useFieldAlias Use the localized field-alias
      *                                                instead of the actual name (default false)
      *
      * @return mixed
@@ -85,7 +85,17 @@ abstract class AbstractExporter implements ExporterInterface
     {
         $type = '';
 
-        if (in_array($patternMatch->getType(), array(PatternMatch::PATTERN_NOT_CONTAINS, PatternMatch::PATTERN_NOT_STARTS_WITH, PatternMatch::PATTERN_NOT_ENDS_WITH, PatternMatch::PATTERN_NOT_REGEX))) {
+        if (
+            in_array(
+                $patternMatch->getType(),
+                array(
+                    PatternMatch::PATTERN_NOT_CONTAINS,
+                    PatternMatch::PATTERN_NOT_STARTS_WITH,
+                    PatternMatch::PATTERN_NOT_ENDS_WITH,
+                    PatternMatch::PATTERN_NOT_REGEX
+                )
+            )
+        ) {
             $type .= 'NOT_';
         }
 
@@ -111,7 +121,12 @@ abstract class AbstractExporter implements ExporterInterface
                 break;
 
             default:
-                throw new \RuntimeException(sprintf('Unsupported pattern-match type "%s" found. Please report this bug.', $patternMatch->getType()));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unsupported pattern-match type "%s" found. Please report this bug.',
+                        $patternMatch->getType()
+                    )
+                );
         }
 
         return $type;
@@ -120,8 +135,8 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
-     * @param boolean     $useFieldAlias
-     * @param boolean     $isRoot
+     * @param bool        $useFieldAlias
+     * @param bool        $isRoot
      *
      * @return mixed
      */

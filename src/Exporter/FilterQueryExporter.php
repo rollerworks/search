@@ -27,8 +27,8 @@ class FilterQueryExporter extends AbstractExporter
     /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
-     * @param boolean     $useFieldAlias
-     * @param boolean     $isRoot
+     * @param bool        $useFieldAlias
+     * @param bool        $isRoot
      *
      * @return string
      */
@@ -44,7 +44,7 @@ class FilterQueryExporter extends AbstractExporter
             // Only export fields with actual values
             if (!empty($exportedValue)) {
                 $exportedFields .= ($useFieldAlias ? $this->labelResolver->resolveFieldLabel($fieldSet, $name) : $name);
-                $exportedFields .= ': ' . $exportedValue . '; ';
+                $exportedFields .= ': '.$exportedValue.'; ';
             }
         }
 
@@ -59,7 +59,7 @@ class FilterQueryExporter extends AbstractExporter
                 $result = '*';
             }
 
-            $result .= (!$isRoot ? '(' : '') . $exportedFields . $exportedGroups . (!$isRoot ? ');' : '');
+            $result .= (!$isRoot ? '(' : '').$exportedFields.$exportedGroups.(!$isRoot ? ');' : '');
         }
 
         return trim($result);
@@ -75,27 +75,27 @@ class FilterQueryExporter extends AbstractExporter
         $exportedValues = '';
 
         foreach ($valuesBag->getSingleValues() as $value) {
-            $exportedValues .= $this->exportValuePart($value->getViewValue()) . ', ';
+            $exportedValues .= $this->exportValuePart($value->getViewValue()).', ';
         }
 
         foreach ($valuesBag->getExcludedValues() as $value) {
-            $exportedValues .= '!' . $this->exportValuePart($value->getViewValue()) . ', ';
+            $exportedValues .= '!'.$this->exportValuePart($value->getViewValue()).', ';
         }
 
         foreach ($valuesBag->getRanges() as $value) {
-            $exportedValues .= $this->exportRangeValue($value) . ', ';
+            $exportedValues .= $this->exportRangeValue($value).', ';
         }
 
         foreach ($valuesBag->getExcludedRanges() as $value) {
-            $exportedValues .= '!' . $this->exportRangeValue($value) . ', ';
+            $exportedValues .= '!'.$this->exportRangeValue($value).', ';
         }
 
         foreach ($valuesBag->getComparisons() as $value) {
-            $exportedValues .= $value->getOperator() . $this->exportValuePart($value->getViewValue()) . ', ';
+            $exportedValues .= $value->getOperator().$this->exportValuePart($value->getViewValue()).', ';
         }
 
         foreach ($valuesBag->getPatternMatchers() as $value) {
-            $exportedValues .= $this->getPatternMatchOperator($value) . $this->exportValuePart($value->getViewValue()) . ', ';
+            $exportedValues .= $this->getPatternMatchOperator($value).$this->exportValuePart($value->getViewValue()).', ';
         }
 
         return rtrim($exportedValues, ', ');
@@ -112,7 +112,7 @@ class FilterQueryExporter extends AbstractExporter
     {
         $operator = $patternMatch->isCaseInsensitive() ? '~i' : '~';
 
-        if (in_array($patternMatch->getType(), array(PatternMatch::PATTERN_NOT_CONTAINS, PatternMatch::PATTERN_NOT_STARTS_WITH, PatternMatch::PATTERN_NOT_ENDS_WITH, PatternMatch::PATTERN_NOT_REGEX))) {
+        if ($patternMatch->isExclusive()) {
             $operator .= '!';
         }
 
@@ -138,7 +138,12 @@ class FilterQueryExporter extends AbstractExporter
                 break;
 
             default:
-                throw new \RuntimeException(sprintf('Unsupported pattern-match type "%s" found. Please report this bug.', $patternMatch->getType()));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unsupported pattern-match type "%s" found. Please report this bug.',
+                        $patternMatch->getType()
+                    )
+                );
         }
 
         return $operator;
@@ -174,15 +179,21 @@ class FilterQueryExporter extends AbstractExporter
     protected function exportValuePart($value)
     {
         if (null === $value) {
-            throw new \InvalidArgumentException('Unable to export empty view-value. Please make sure there is a view-value set.');
+            throw new \InvalidArgumentException(
+                'Unable to export empty view-value. '.
+                'Please make sure there is a view-value set.'
+            );
         }
 
         if (!is_scalar($value)) {
-            throw new \InvalidArgumentException('Unable to export none-scalar view-value. Please use a formatter to transform the value before exporting.');
+            throw new \InvalidArgumentException(
+                'Unable to export none-scalar view-value. '.
+                'Please use a formatter to transform the value before exporting.'
+            );
         }
 
         if (!is_numeric($value) && !preg_match('/^(?:(?:[\p{L}+\p{N}]+)|(?:\p{N}+(?:[.]\p{N}+)*))$/siu', $value)) {
-            return '"' . str_replace('"', '""', $value) . '"' ;
+            return '"'.str_replace('"', '""', $value).'"';
         }
 
         return $value;

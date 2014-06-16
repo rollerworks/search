@@ -28,7 +28,7 @@ use Rollerworks\Component\Search\ValuesGroup;
 class TransformFormatter implements FormatterInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function format(SearchConditionInterface $condition)
     {
@@ -121,13 +121,25 @@ class TransformFormatter implements FormatterInterface
                     // Only normalize when its not a regex, normalizing might break the regex pattern
                     if (!in_array($value->getType(), array($value::PATTERN_REGEX, $value::PATTERN_NOT_REGEX))) {
                         $propertyPath = "patternMatchers[$i]";
-                        $value->setValue($this->viewToNorm($value->getViewValue(), $config));
-                        $value->setViewValue($this->normToView($value->getValue(), $config));
+                        $value->setValue(
+                            $this->viewToNorm($value->getViewValue(), $config)
+                        );
+
+                        $value->setViewValue(
+                            $this->normToView($value->getValue(), $config)
+                        );
                     }
                 }
             }
         } catch (TransformationFailedException $e) {
-            $valuesBag->addError(new ValuesError($propertyPath, null, $config->getOption('invalid_message', $e->getMessage()), $config->getOption('invalid_message_parameters', array())));
+            $valuesBag->addError(
+                new ValuesError(
+                    $propertyPath,
+                    null,
+                    $config->getOption('invalid_message', $e->getMessage()),
+                    $config->getOption('invalid_message_parameters', array())
+                )
+            );
         }
     }
 
@@ -137,7 +149,7 @@ class TransformFormatter implements FormatterInterface
      * @param mixed                $value  The value to transform
      * @param FieldConfigInterface $config
      *
-     * @return mixed
+     * @return string
      */
     private function normToView($value, FieldConfigInterface $config)
     {

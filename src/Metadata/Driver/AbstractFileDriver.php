@@ -36,7 +36,7 @@ abstract class AbstractFileDriver implements AdvancedDriverInterface
 
     /**
      * @param \ReflectionClass $class
-     * @param boolean          $test  Don't use this parameter, its only used for testing
+     * @param bool             $test  Don't use this parameter, its only used for testing
      *
      * @return \Metadata\ClassMetadata
      */
@@ -57,7 +57,7 @@ abstract class AbstractFileDriver implements AdvancedDriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAllClassNames()
     {
@@ -69,7 +69,7 @@ abstract class AbstractFileDriver implements AdvancedDriverInterface
      *
      * @param \ReflectionClass $class
      * @param string           $file
-     * @param boolean          $test
+     * @param bool             $test
      *
      * @return \MetaData\ClassMetadata|null
      */

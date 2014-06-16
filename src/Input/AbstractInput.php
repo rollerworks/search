@@ -27,17 +27,17 @@ use Rollerworks\Component\Search\InputProcessorInterface;
 abstract class AbstractInput implements InputProcessorInterface
 {
     /**
-     * @var integer
+     * @var int
      */
     protected $maxNestingLevel = 100;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $maxValues = 10000;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $maxGroups = 100;
 
@@ -71,7 +71,7 @@ abstract class AbstractInput implements InputProcessorInterface
     public function getFieldSet()
     {
         if (null === $this->fieldSet) {
-            throw new \LogicException('Unable to return FieldSet. as no FieldSet set for the input processor.');
+            throw new \LogicException('Unable to return FieldSet. No FieldSet set for the input processor.');
         }
 
         return $this->fieldSet;
@@ -129,7 +129,7 @@ abstract class AbstractInput implements InputProcessorInterface
     /**
      * Set the maximum group nesting level.
      *
-     * @param integer $maxNestingLevel
+     * @param int $maxNestingLevel
      */
     public function setMaxNestingLevel($maxNestingLevel)
     {
@@ -137,9 +137,9 @@ abstract class AbstractInput implements InputProcessorInterface
     }
 
     /**
-     * Get the maximum group nesting level.
+     * Gets the maximum group nesting level.
      *
-     * @return integer
+     * @return int
      */
     public function getMaxNestingLevel()
     {
@@ -149,7 +149,7 @@ abstract class AbstractInput implements InputProcessorInterface
     /**
      * Set the maximum number of values per group.
      *
-     * @param integer $maxValues
+     * @param int $maxValues
      */
     public function setMaxValues($maxValues)
     {
@@ -159,7 +159,7 @@ abstract class AbstractInput implements InputProcessorInterface
     /**
      * Get the maximum number of values per group.
      *
-     * @return integer
+     * @return int
      */
     public function getMaxValues()
     {
@@ -172,7 +172,7 @@ abstract class AbstractInput implements InputProcessorInterface
      * To calculate an absolute maximum use following formula:
      * maxGroups * maxNestingLevel.
      *
-     * @param integer $maxGroups
+     * @param int $maxGroups
      */
     public function setMaxGroups($maxGroups)
     {
@@ -182,7 +182,7 @@ abstract class AbstractInput implements InputProcessorInterface
     /**
      * Get the maximum number of groups per nesting level.
      *
-     * @return integer
+     * @return int
      */
     public function getMaxGroups()
     {
@@ -192,24 +192,28 @@ abstract class AbstractInput implements InputProcessorInterface
     /**
      * Checks if the maximum group nesting level is exceeded.
      *
-     * @param integer $groupIdx
-     * @param integer $nestingLevel
+     * @param int $groupIdx
+     * @param int $nestingLevel
      *
      * @throws GroupsNestingException
      */
     protected function validateGroupNesting($groupIdx, $nestingLevel)
     {
         if ($nestingLevel > $this->maxNestingLevel) {
-            throw new GroupsNestingException($this->maxNestingLevel, $groupIdx, $nestingLevel);
+            throw new GroupsNestingException(
+                $this->maxNestingLevel,
+                $groupIdx,
+                $nestingLevel
+            );
         }
     }
 
     /**
      * Checks if the maximum group count is exceeded.
      *
-     * @param integer $groupIdx
-     * @param integer $count
-     * @param integer $nestingLevel
+     * @param int $groupIdx
+     * @param int $count
+     * @param int $nestingLevel
      *
      * @throws GroupsOverflowException
      */
