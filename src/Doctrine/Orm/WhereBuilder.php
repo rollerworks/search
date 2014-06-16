@@ -246,6 +246,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * Note. When the query is already updated this will do nothing.
      *
      * @param string $prependQuery Prepends this string to the where-clause ("WHERE" or "AND" for example)
+     *                             This should not be used when using a QueryBuilder.
      * @param bool   $forceUpdate  Force the where-builder to update the query
      *
      * @return self
@@ -260,6 +261,8 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
 
         if ($this->query instanceof NativeQuery) {
             $this->query->setSQL($this->query->getSQL().$prependQuery.$whereCase);
+        } elseif ($this->query instanceof QueryBuilder) {
+            $this->query->andWhere($prependQuery.$whereCase);
         } else {
             $this->query->setDQL($this->query->getDQL().$prependQuery.$whereCase);
         }
