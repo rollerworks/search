@@ -143,6 +143,64 @@ class WhereBuilderTest extends OrmTestCase
         $this->assertEquals('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE (((C.id IN(:invoice_customer_0))))', $query->getDQL());
     }
 
+    public function testUpdateQueryWithQueryBuilder()
+    {
+        $query = $this->em->createQueryBuilder();
+        $query
+            ->select('I')
+            ->from('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice', 'I')
+            ->join('I.customer', 'C');
+
+        $searchCondition = new SearchCondition($this->getFieldSet('invoice'), SearchConditionBuilder::create()
+            ->field('invoice_customer')
+                ->addSingleValue(new SingleValue(2))
+            ->end()
+        ->getGroup());
+
+        $whereBuilder = new WhereBuilder($query, $searchCondition);
+        $whereBuilder->setEntityMappings(array(
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
+        );
+
+        $whereBuilder->updateQuery();
+        $whereCase = $whereBuilder->getWhereClause();
+
+        $this->assertEquals('(((C.id IN(:invoice_customer_0))))', $whereCase);
+        $this->assertQueryParamsEquals(array('invoice_customer_0' => 2), $query);
+        $this->assertEquals('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I INNER JOIN I.customer C WHERE (((C.id IN(:invoice_customer_0))))', $query->getDQL());
+    }
+
+    public function testUpdateQueryWithQueryBuilderAndExistingWhere()
+    {
+        $query = $this->em->createQueryBuilder();
+        $query
+            ->select('I')
+            ->from('Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice', 'I')
+            ->join('I.customer', 'C')
+            ->where('I.customer = 5')
+        ;
+
+        $searchCondition = new SearchCondition($this->getFieldSet('invoice'), SearchConditionBuilder::create()
+            ->field('invoice_customer')
+                ->addSingleValue(new SingleValue(2))
+            ->end()
+        ->getGroup());
+
+        $whereBuilder = new WhereBuilder($query, $searchCondition);
+        $whereBuilder->setEntityMappings(array(
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
+        );
+
+        $whereBuilder->updateQuery();
+        $whereCase = $whereBuilder->getWhereClause();
+
+        $this->assertEquals('(((C.id IN(:invoice_customer_0))))', $whereCase);
+        $this->assertQueryParamsEquals(array('invoice_customer_0' => 2), $query);
+        $this->assertEquals('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I INNER JOIN I.customer C WHERE I.customer = 5 AND (((C.id IN(:invoice_customer_0))))', $query->getDQL());
+    }
+
     public function testUpdateQueryWithNoResult()
     {
         $query = $this->em->createQuery("SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C");
