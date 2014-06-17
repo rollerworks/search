@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search;
 
-use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -40,7 +39,7 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     private $typeExtensions = array();
 
     /**
-     * @var DriverInterface
+     * @var MetadataFactoryInterface
      */
     private $mappingReader;
 

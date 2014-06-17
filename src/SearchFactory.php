@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Symfony\Component\Validator\MetadataFactoryInterface;
+use Metadata\MetadataFactoryInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
