@@ -64,8 +64,8 @@ class TimezoneType extends AbstractFieldType
      */
     public static function getTimezones()
     {
-        if (null === static::$timezones) {
-            static::$timezones = array();
+        if (null === self::$timezones) {
+            self::$timezones = array();
 
             foreach (\DateTimeZone::listIdentifiers() as $timezone) {
                 $parts = explode('/', $timezone);
@@ -81,10 +81,10 @@ class TimezoneType extends AbstractFieldType
                     $name = $parts[0];
                 }
 
-                static::$timezones[$region][$timezone] = str_replace('_', ' ', $name);
+                self::$timezones[$region][$timezone] = str_replace('_', ' ', $name);
             }
         }
 
-        return static::$timezones;
+        return self::$timezones;
     }
 }
