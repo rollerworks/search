@@ -174,7 +174,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
         }
 
         $position = 0;
-        $formatter = $this->getNumberFormatter(false === $currency ? \NumberFormatter::DECIMAL : null);
+        $formatter = $this->getNumberFormatter(null === $currency ? \NumberFormatter::DECIMAL : null);
         $groupSep = $formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
         $decSep = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 
@@ -186,7 +186,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
             $value = str_replace(',', $decSep, $value);
         }
 
-        if (\NumberFormatter::TYPE_CURRENCY === $this->type && false !== $currency) {
+        if (\NumberFormatter::TYPE_CURRENCY === $this->type && null !== $currency) {
             $result = $formatter->parseCurrency($value, $currency, $position);
         } else {
             $result = $formatter->parse($value, \NumberFormatter::TYPE_DOUBLE, $position);
