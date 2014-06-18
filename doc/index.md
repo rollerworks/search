@@ -255,4 +255,6 @@ Always use a Cache Driver that can be easily removed, like a PHP session.
 Now that you have completed the basic installation and configuration,
 you are ready to learn about more advanced features and usages of this extension.
 
+* [Converters](converters.md)
+
 [1]: http://www.doctrine-project.org/projects/dbal.html
