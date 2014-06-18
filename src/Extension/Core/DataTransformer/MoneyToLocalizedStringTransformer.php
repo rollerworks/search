@@ -115,7 +115,7 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
         $value = str_replace(' ', "\xc2\xa0", $value);
 
         if (!preg_match('#\p{Sc}#u', $value)) {
-            $currency = null;
+            $currency = false;
         }
 
         $value = parent::reverseTransform($value, $currency);
@@ -124,7 +124,7 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
             $value *= $this->divisor;
         }
 
-        if (null === $currency) {
+        if (false === $currency) {
             $currency = $this->defaultCurrency;
         }
 
