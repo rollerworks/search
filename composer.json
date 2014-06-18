@@ -1,0 +1,46 @@
+{
+    "name": "rollerworks/search-doctrine-dbal",
+    "description": "Doctrine DBAL extension for RollerworksSearch",
+    "keywords": ["rollerworks", "search", "doctrine", "dbal"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/Rollerworks/rollerworks-search-doctrine-dbal/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "rollerworks/search": ">=1.0.0-beta3@dev",
+        "doctrine/dbal": "~2.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Doctrine\\Dbal\\": "src/",
+            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Dbal\\": "src/Extension/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Tests\\Mocks\\": "tests/Mocks/",
+            "Rollerworks\\Component\\Search\\Tests\\Fixtures\\": "tests/Fixtures/",
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "tests/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
