@@ -3,6 +3,7 @@ filter:
         - 'vendor/*'
         - 'doc/*'
         - 'bin/*'
+        - 'test/*'
 
 tools:
     php_changetracking:
