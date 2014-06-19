@@ -28,7 +28,6 @@ if (version_compare(PHP_VERSION, '5.4', '>=') && gc_enabled()) {
 */
 $loader = require_once __DIR__ . '/../vendor/autoload.php';
 $loader->add('Rollerworks\\Component\\Search\\Tests\\', __DIR__);
-$loader->add('Doctrine\\Tests\\', realpath(__DIR__ . '/../vendor/doctrine/orm/tests') . '/');
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 

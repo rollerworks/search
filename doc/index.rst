@@ -12,4 +12,3 @@ Rollerworks Search
     type
     reference/types
     input/index
-    doctrine/index

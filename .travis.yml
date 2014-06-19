@@ -1,7 +1,7 @@
 language: php
 
 before_script:
-    - composer install --prefer-source --dev
+    - composer install --dev
 
 script:
     - phpunit --configuration phpunit.xml.dist
