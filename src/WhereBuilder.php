@@ -127,7 +127,8 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * Set the entity mapping per class.
      *
      * @param string $entity class or Doctrine alias
-     * @param string $alias  Entity alias as used in the query
+     * @param string $alias  Entity alias as used in the query.
+     *                       Set to the null to remove the mapping
      *
      * @return self
      *
@@ -157,7 +158,8 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * needs a special alias reference you can set it as alias FieldB => AB.
      *
      * @param string      $fieldName FieldName as registered in the fieldset
-     * @param string|null $alias     Set to the null to remove the mapping
+     * @param string|null $alias     Entity alias as used in the query.
+     *                               Set to the null to remove the mapping
      *
      * @return self
      *
