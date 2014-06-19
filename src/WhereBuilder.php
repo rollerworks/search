@@ -13,7 +13,6 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\DBAL\Types\Type as ORMType;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query as DqlQuery;
@@ -85,7 +84,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
             );
         }
 
-        if (!$query instanceof QueryBuilder && !$query instanceof AbstractQuery) {
+        if (!$query instanceof QueryBuilder && !$query instanceof NativeQuery && !$query instanceof DqlQuery) {
             throw new UnexpectedTypeException(
                 $query,
                 'Doctrine\ORM\Query, Doctrine\ORM\NativeQuery or Doctrine\ORM\QueryBuilder'
