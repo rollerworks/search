@@ -1,0 +1,141 @@
+filter:
+    excluded_paths:
+        - 'vendor/*'
+        - 'doc/*'
+        - 'spec/*'
+        - 'bin/*'
+        - 'app/*'
+        - 'web/*'
+        - 'var/*'
+        - '*/spec/*'
+        - '*/Tests/*'
+
+tools:
+    php_changetracking:
+        enabled: true
+        bug_patterns:
+            - '\bfix(?:es|ed)?\b'
+            - '\btest\b'
+        feature_patterns:
+            - '\badd(?:s|ed)?\b'
+            - '\brefactor\b'
+            - '\bfeat\b'
+            - '\bimplement(?:s|ed)?\b'
+
+    # Code Coverage
+    external_code_coverage:
+        enabled: false
+
+    php_code_coverage:
+        enabled: false
+
+    # Code Sniffer
+    php_code_sniffer:
+        enabled: true
+        config:
+            standard: psr2
+            sniffs:
+                generic:
+                    files:
+                        line_length_sniff: { max_length: 200 }
+
+    # Copy/Paste Detector
+    php_cpd:
+        excluded_dirs:
+            - bin
+            - vendor
+            - features
+            - doc
+            - tests
+            - Tests
+            - spec
+            - app
+            - web
+            - var
+
+    # PHP CS Fixer (http://http://cs.sensiolabs.org/).
+    php_cs_fixer:
+        enabled: true
+        config:
+            level: all
+            fixers:
+                indentation: true
+                linefeed: true
+                trailing_spaces: true
+                unused_use: false
+                phpdoc_params: false
+                visibility: false
+                return: false
+                short_tag: true
+                braces: false
+                include: false
+                php_closing_tag: true
+                extra_empty_lines: true
+                controls_spaces: false
+                elseif: false
+                eof_ending: true
+
+    # Analyzes the size and structure of a PHP project.
+    php_loc:
+        enabled: true
+        excluded_dirs:
+            - bin
+            - vendor
+            - features
+            - doc
+            - tests
+            - Tests
+            - spec
+            - app
+            - web
+            - var
+
+    # PHP Mess Detector (http://phpmd.org).
+    php_mess_detector:
+        enabled: true
+        config:
+            code_size_rules:
+                cyclomatic_complexity: true
+                excessive_method_length: true
+                excessive_class_length: true
+                excessive_public_count: true
+                too_many_fields: true
+                too_many_methods: true
+            unused_code_rules:
+                unused_local_variable: true
+                unused_private_method: true
+                unused_formal_parameter: true
+            naming_rules:
+                long_variable: true
+            controversial_rules:
+                camel_case_class_name: true
+                camel_case_property_name: true
+                camel_case_method_name: true
+                camel_case_parameter_name: true
+                camel_case_variable_name: true
+
+    # Analyzes the size and structure of a PHP project.
+    php_pdepend:
+        enabled: true
+        excluded_dirs:
+            - bin
+            - vendor
+            - features
+            - doc
+            - tests
+            - Tests
+            - spec
+            - app
+            - web
+            - var
+
+    # Runs Scrutinizer's PHP Analyzer Tool
+    php_analyzer:
+        enabled:              true
+        config:
+            checkstyle:
+                no_trailing_whitespace: true
+                enabled: true
+
+    # Security Advisory Checker
+    sensiolabs_security_checker: true
