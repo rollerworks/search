@@ -25,7 +25,7 @@ Documentation
 The bulk of the documentation is stored in the `doc/index.md`
 file in this package:
 
-[Read the Documentation for master](https://github.com/rollerworks/rollerworks-doctrine-orm/blob/master/doc/index.md)
+[Read the Documentation for master](https://github.com/rollerworks/rollerworks-search-doctrine-orm/blob/master/doc/index.md)
 
 License
 -------
