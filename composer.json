@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "rollerworks/search": ">=1.0.0-beta3@dev",
+        "rollerworks/search": ">=1.0.0-beta2@dev",
         "doctrine/dbal": "~2.4"
     },
     "require-dev": {
