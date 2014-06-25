@@ -11,11 +11,10 @@
 
 namespace Rollerworks\Component\Search;
 
-use Metadata\MetadataFactoryInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\Metadata\PropertyMetadata;
+use Rollerworks\Component\Search\Metadata\MetadataReaderInterface;
 
 /**
  * A builder for creating {@link FieldSet} instances.
@@ -50,16 +49,16 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     private $searchFactory;
 
     /**
-     * @var MetadataFactoryInterface
+     * @var MetadataReaderInterface
      */
     private $mappingReader;
 
     /**
-     * @param string                   $name
-     * @param SearchFactoryInterface   $searchFactory
-     * @param MetadataFactoryInterface $mappingReader
+     * @param string                  $name
+     * @param SearchFactoryInterface  $searchFactory
+     * @param MetadataReaderInterface $mappingReader
      */
-    public function __construct($name, SearchFactoryInterface $searchFactory, MetadataFactoryInterface $mappingReader = null)
+    public function __construct($name, SearchFactoryInterface $searchFactory, MetadataReaderInterface $mappingReader = null)
     {
         $this->name = $name;
         $this->searchFactory = $searchFactory;
@@ -228,9 +227,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             );
         }
 
-        $metadata = $this->mappingReader->getMetadataForClass($class);
-        foreach ($metadata->propertyMetadata as $property => $field) {
-            /** @var PropertyMetadata $field */
+        foreach ($this->mappingReader->getSearchFields($class) as $field) {
             if (($include && !in_array($field->fieldName, $include)) xor ($exclude && in_array($field->fieldName, $exclude))) {
                 continue;
             }
@@ -239,8 +236,8 @@ class FieldSetBuilder implements FieldSetBuilderInterface
                 'type' => $field->type,
                 'options' => $field->options,
                 'required' => $field->required,
-                'class' => $class,
-                'property' => $property
+                'class' => $field->class,
+                'property' => $field->property
             );
         }
 

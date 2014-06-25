@@ -11,8 +11,9 @@
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Metadata\MetadataFactoryInterface;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Rollerworks\Component\Search\Metadata\MetadataReaderInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -25,7 +26,7 @@ class SearchFactory implements SearchFactoryInterface
     private $registry;
 
     /**
-     * @var MetadataFactoryInterface
+     * @var MetadataReaderInterface
      */
     private $mappingReader;
 
@@ -37,14 +38,33 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * Constructor.
      *
-     * @param FieldRegistryInterface            $registry
-     * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
-     * @param MetadataFactoryInterface          $mappingReader
+     * Note. Passing the `Metadata\MetadataFactoryInterface` is deprecated since 1.0beta3 (will be removed in 2.0),
+     * use the `Rollerworks\Component\Search\Metadata\JmsMetadataReader` instead.
+     *
+     * @param FieldRegistryInterface                           $registry
+     * @param ResolvedFieldTypeFactoryInterface                $resolvedTypeFactory
+     * @param MetadataFactoryInterface|MetadataReaderInterface $mappingReader
+     *
+     * @throws \RuntimeException When a MetadataFactoryInterface instance is passed
+     *                           but the required package is not installed
      */
-    public function __construct(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, MetadataFactoryInterface $mappingReader = null)
+    public function __construct(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, $mappingReader = null)
     {
         $this->registry = $registry;
         $this->resolvedTypeFactory = $resolvedTypeFactory;
+
+        // BC layer, to be removed in 2.0
+        if ($mappingReader instanceof MetadataFactoryInterface) {
+            if (!class_exists('Rollerworks\Component\Search\Metadata\JmsMetadataReader')) {
+                throw new \RuntimeException(
+                    'Unable to use the JMS "MetadataFactoryInterface".'."\n".
+                    'Please install the "rollerworks/search-jms-metadata" composer-package.'
+                );
+            }
+
+            $mappingReader = new \Rollerworks\Component\Search\Metadata\JmsMetadataReader($mappingReader);
+        }
+
         $this->mappingReader = $mappingReader;
     }
 

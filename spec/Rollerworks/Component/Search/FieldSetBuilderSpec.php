@@ -11,20 +11,18 @@
 
 namespace spec\Rollerworks\Component\Search;
 
-use Metadata\ClassMetadata;
-use Metadata\MetadataFactoryInterface;
 use PhpSpec\ObjectBehavior;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\Metadata\PropertyMetadata;
+use Rollerworks\Component\Search\Metadata\MetadataReaderInterface;
+use Rollerworks\Component\Search\Metadata\SearchField as MappingSearchField;
 use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
 use Rollerworks\Component\Search\SearchFactoryInterface;
 use Rollerworks\Component\Search\SearchField;
 
 // Autoloading is not possible for this
-require_once __DIR__ . '/Fixtures/Entity/User.php';
-require_once __DIR__ . '/Fixtures/Entity/Group.php';
+require_once __DIR__.'/Fixtures/Entity/User.php';
+require_once __DIR__.'/Fixtures/Entity/Group.php';
 
 class FieldSetBuilderSpec extends ObjectBehavior
 {
@@ -81,36 +79,25 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $this->has('id')->shouldReturn(false);
     }
 
-    public function it_supports_importing_fields_from_metadata(SearchFactoryInterface $searchFactory, MetadataFactoryInterface $mappingReader)
+    public function it_supports_importing_fields_from_metadata(SearchFactoryInterface $searchFactory, MetadataReaderInterface $mappingReader)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject(), $mappingReader);
 
-        $classMetadata = new ClassMetadata('Rollerworks\Component\Search\Fixtures\Entity\User');
-        $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\User', 'id');
-        $propertyMetadata->fieldName = 'uid';
-        $propertyMetadata->required = true;
-        $propertyMetadata->type = 'integer';
-        $propertyMetadata->options = array('min' => 1);
-        $classMetadata->addPropertyMetadata($propertyMetadata);
-        $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\User', 'name');
-        $propertyMetadata->fieldName = 'username';
-        $propertyMetadata->type = 'text';
-        $classMetadata->addPropertyMetadata($propertyMetadata);
-        $mappingReader->getMetadataForClass('Rollerworks\Component\Search\Fixtures\Entity\User')->willReturn($classMetadata);
+        $searchFieldsUser = array(
+            'uid' => new MappingSearchField('uid', 'User', 'id', true, 'integer', array('min' => 1)),
+            'username' => new MappingSearchField('username', 'User', 'name', false, 'text'),
+        );
 
-        $classMetadata = new ClassMetadata('Rollerworks\Component\Search\Fixtures\Entity\Group');
-        $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\Group', 'id');
-        $propertyMetadata->fieldName = 'gid';
-        $propertyMetadata->type = 'integer';
-        $classMetadata->addPropertyMetadata($propertyMetadata);
-        $propertyMetadata = new PropertyMetadata('Rollerworks\Component\Search\Fixtures\Entity\Group', 'name');
-        $propertyMetadata->fieldName = 'group-name';
-        $propertyMetadata->type = 'text';
-        $classMetadata->addPropertyMetadata($propertyMetadata);
-        $mappingReader->getMetadataForClass('Rollerworks\Component\Search\Fixtures\Entity\Group')->willReturn($classMetadata);
+        $searchFieldsGroup = array(
+            'gid' => new MappingSearchField('gid', 'Group', 'id', false, 'integer'),
+            'group-name' => new MappingSearchField('group-name', 'Group', 'name', false, 'text'),
+        );
 
-        $this->importFromClass('Rollerworks\Component\Search\Fixtures\Entity\User');
-        $this->importFromClass('Rollerworks\Component\Search\Fixtures\Entity\Group');
+        $mappingReader->getSearchFields('User')->willReturn($searchFieldsUser);
+        $mappingReader->getSearchFields('Group')->willReturn($searchFieldsGroup);
+
+        $this->importFromClass('User');
+        $this->importFromClass('Group');
 
         $this->has('uid')->shouldReturn(true);
         $this->has('username')->shouldReturn(true);
@@ -122,7 +109,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'integer',
             'options' => array('min' => 1),
             'required' => true,
-            'class' => 'Rollerworks\Component\Search\Fixtures\Entity\User',
+            'class' => 'User',
             'property' => 'id'
         ));
 
@@ -130,7 +117,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'text',
             'options' => array(),
             'required' => false,
-            'class' => 'Rollerworks\Component\Search\Fixtures\Entity\User',
+            'class' => 'User',
             'property' => 'name'
         ));
 
@@ -138,7 +125,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'integer',
             'options' => array(),
             'required' => false,
-            'class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
+            'class' => 'Group',
             'property' => 'id'
         ));
 
@@ -146,12 +133,12 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'text',
             'options' => array(),
             'required' => false,
-            'class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
+            'class' => 'Group',
             'property' => 'name'
         ));
     }
 
-    public function it_builds_the_fieldset(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType, FieldConfigInterface $field1, FieldConfigInterface $field2)
+    public function it_builds_the_fieldset(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject());
 
@@ -182,7 +169,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $this->getFieldSet()->shouldBeLike($expectedFieldSet);
     }
 
-    public function it_errors_when_calling_methods_after_building(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType, FieldConfigInterface $field1, FieldConfigInterface $field2)
+    public function it_errors_when_calling_methods_after_building(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject());
 
