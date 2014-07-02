@@ -4,11 +4,7 @@ filter:
         - 'doc/*'
         - 'spec/*'
         - 'bin/*'
-        - 'app/*'
-        - 'web/*'
-        - 'var/*'
-        - '*/spec/*'
-        - '*/Tests/*'
+        - 'tests/*'
 
 tools:
     php_changetracking:
@@ -44,14 +40,9 @@ tools:
         excluded_dirs:
             - bin
             - vendor
-            - features
             - doc
             - tests
-            - Tests
             - spec
-            - app
-            - web
-            - var
 
     # PHP CS Fixer (http://http://cs.sensiolabs.org/).
     php_cs_fixer:
@@ -81,14 +72,9 @@ tools:
         excluded_dirs:
             - bin
             - vendor
-            - features
             - doc
             - tests
-            - Tests
             - spec
-            - app
-            - web
-            - var
 
     # PHP Mess Detector (http://phpmd.org).
     php_mess_detector:
@@ -120,14 +106,9 @@ tools:
         excluded_dirs:
             - bin
             - vendor
-            - features
             - doc
             - tests
-            - Tests
             - spec
-            - app
-            - web
-            - var
 
     # Runs Scrutinizer's PHP Analyzer Tool
     php_analyzer:
