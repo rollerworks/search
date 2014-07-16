@@ -23,7 +23,7 @@ interface MetadataReaderInterface
      *
      * @param string $class The class name to test (FQCN).
      *
-     * @return SearchField[] An associative array with search fields
+     * @return SearchField[]|array An associative array with search fields
      */
     public function getSearchFields($class);
 
