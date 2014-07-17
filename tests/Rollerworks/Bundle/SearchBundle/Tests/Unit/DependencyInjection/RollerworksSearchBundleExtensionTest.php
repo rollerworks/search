@@ -58,6 +58,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $fieldDef = new Definition();
         $fieldDef->setFactoryService('rollerworks_search.factory');
         $fieldDef->setFactoryMethod('createField');
+        $fieldDef->addArgument('id');
         $fieldDef->addArgument('integer');
         $fieldDef->addArgument(array('active' => true));
         $fieldDef->addArgument(true);
@@ -111,6 +112,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $fieldDef->setFactoryMethod('createFieldForProperty');
         $fieldDef->addArgument('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model\Customer');
         $fieldDef->addArgument('id');
+        $fieldDef->addArgument('customer_id');
         $fieldDef->addArgument('customer_type');
         $fieldDef->addArgument(array());
         $fieldDef->addArgument(false);
@@ -121,6 +123,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $fieldDef->setFactoryMethod('createFieldForProperty');
         $fieldDef->addArgument('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User');
         $fieldDef->addArgument('id');
+        $fieldDef->addArgument('user_id');
         $fieldDef->addArgument('user_type');
         $fieldDef->addArgument(array());
         $fieldDef->addArgument(false);
@@ -129,6 +132,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $fieldDef = new Definition();
         $fieldDef->setFactoryService('rollerworks_search.factory');
         $fieldDef->setFactoryMethod('createField');
+        $fieldDef->addArgument('id');
         $fieldDef->addArgument('integer');
         $fieldDef->addArgument(array('active' => true));
         $fieldDef->addArgument(true);
@@ -186,6 +190,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $fieldDef->setFactoryMethod('createFieldForProperty');
         $fieldDef->addArgument('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User');
         $fieldDef->addArgument('id');
+        $fieldDef->addArgument('user_id');
         $fieldDef->addArgument('integer');
         $fieldDef->addArgument(array());
         $fieldDef->addArgument(false);
@@ -236,6 +241,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $fieldDef = new Definition();
         $fieldDef->setFactoryService('rollerworks_search.factory');
         $fieldDef->setFactoryMethod('createField');
+        $fieldDef->addArgument('user_id');
         $fieldDef->addArgument('integer');
         $fieldDef->addArgument(array('active' => true));
         $fieldDef->addArgument(true);
@@ -257,8 +263,6 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->compile();
 
         $this->assertEquals(array('default'), $this->container->getParameter('rollerworks_search.doctrine_orm.entity_managers'));
-
-        $this->assertContainerBuilderHasService('rollerworks_search.doctrine_orm.cache_driver', 'Doctrine\Common\Cache\ArrayCache');
 
         $this->assertContainerBuilderHasService('rollerworks_search.doctrine_orm.factory', 'Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory');
         $this->assertContainerBuilderHasService('rollerworks_search.type_extension.doctrine', 'Rollerworks\Component\Search\Extension\Doctrine\Orm\DoctrineOrmExtension');
