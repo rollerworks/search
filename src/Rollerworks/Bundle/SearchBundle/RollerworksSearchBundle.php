@@ -11,16 +11,19 @@
 
 namespace Rollerworks\Bundle\SearchBundle;
 
-use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\ExporterPass;
-use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\FormatterPass;
-use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\InputProcessorPass;
-use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\ExtensionPass;
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\TranslatorPass;
+use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Compiler\ExporterPass;
+use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Compiler\ExtensionPass;
+use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Compiler\FormatterPass;
+use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Compiler\InputProcessorPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class RollerworksSearchBundle extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new ExtensionPass());

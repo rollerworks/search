@@ -9,6 +9,8 @@
  * with this source code in the file LICENSE.
  */
 
+/* @var $container \Symfony\Component\DependencyInjection\ContainerBuilder */
+$container->loadFromExtension('rollerworks_search', array(
     'metadata' => array(
         'cache_driver' => 'memory',
         'cache_dir' => 'none',

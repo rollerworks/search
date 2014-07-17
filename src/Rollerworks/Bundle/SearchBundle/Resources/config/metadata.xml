@@ -15,14 +15,17 @@
                 <argument type="service" id="rollerworks_search.metadata.cache_driver" on-invalid="null" />
             </call>
         </service>
+
         <service id="rollerworks_search.metadata.cache_driver.file" class="Metadata\Cache\FileCache" public="false">
             <!-- the cache directory (to be set later) -->
             <argument />
         </service>
+
         <service id="rollerworks_search.metadata.file_locator" class="Metadata\Driver\FileLocator" public="false">
             <!-- collection of directories -->
             <argument>%rollerworks_search.metadata.directories%</argument>
         </service>
+
         <service id="rollerworks_search.metadata.driver.loader_chain" class="Metadata\Driver\DriverChain" public="false">
             <argument type="collection">
                 <argument type="service" id="rollerworks_search.metadata.driver.annotation" />
