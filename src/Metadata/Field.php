@@ -11,8 +11,7 @@
 
 namespace Rollerworks\Component\Search\Metadata;
 
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Mapping\Field as MappingSearchField;
 
 /**
  * Annotation class for search fields.
@@ -21,135 +20,10 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  *
  * @Annotation
  * @Target({"PROPERTY"})
+ *
+ * @deprecated This class is deprecated since 1.0beta3 and will be removed 2.0,
+ *             use `Rollerworks\Component\Search\Mapping\SearchField` instead
  */
-class Field
+class Field extends MappingSearchField
 {
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var bool
-     */
-    private $required;
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * @var array
-     */
-    private $options = array();
-
-    /**
-     * Constructor.
-     *
-     * @param array $data An array of key/value parameters
-     *
-     * @throws BadMethodCallException
-     * @throws InvalidArgumentException
-     */
-    public function __construct(array $data)
-    {
-        $this->name = null;
-        $this->type = null;
-        $this->required = false;
-        $this->options = array();
-
-        if (isset($data['value'])) {
-            $data['name'] = $data['value'];
-            unset($data['value']);
-        }
-
-        foreach ($data as $key => $value) {
-            $method = 'set'.ucfirst($key);
-
-            if (!method_exists($this, $method)) {
-                throw new BadMethodCallException(
-                    sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this))
-                );
-            }
-
-            $this->$method($value);
-        }
-
-        if (null === $this->name) {
-            throw new InvalidArgumentException(
-                sprintf("Property '%s' on annotation '%s' is required.", 'name', get_class($this))
-            );
-        }
-
-        if (null === $this->type) {
-            throw new InvalidArgumentException(
-                sprintf("Property '%s' on annotation '%s' is required.", 'type', get_class($this))
-            );
-        }
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param bool $required
-     */
-    public function setRequired($required)
-    {
-        $this->required = $required;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRequired()
-    {
-        return $this->required;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
 }

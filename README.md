@@ -5,14 +5,13 @@ README
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/92caf31d-dae6-49dd-9526-440d859daa31/mini.png)](https://insight.sensiolabs.com/projects/92caf31d-dae6-49dd-9526-440d859daa31)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/badges/quality-score.png?s=5eebfd1ff3695ab59d59406702978a0ddf29df21)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/)
 
-
 What is RollerworksSearch?
 ---------------------------
 
 RollerworksSearch is an advanced search-engine framework.
 
 RollerworksSearch provides you with a powerful system for building your own search-engine.
-Inout processing, normalizing, validating and every else. Save, fast and easy.
+Input processing, normalizing, validating and every else. Save, fast and easy.
 
 This system was designed to be as flexible as possible.
 You are free to use your extensions, field-types etc.
@@ -32,9 +31,8 @@ Also, SearchConditions are easily exportable to any supported format.
 
 ## Input
 
-Out of the input processing is provided for the following formats.
-
-> Building your own input processor is also possible.
+Input processing is provided for the following formats.
+But building your own input processor is also possible.
 
 * Array
 * JSON
@@ -81,9 +79,8 @@ The following types are packaged with this release (but can be replaced when nee
 > **Note: The listed engines are supported out of the box, but you are noted limited
 > to these engines. Using something like a Webservice is also possible.
 
-* Doctrine2 DBAL
-* Doctrine2 ORM
-* Doctrine2 phpcr-odm (coming soon)
+* [Doctrine2 DBAL](https://github.com/rollerworks/rollerworks-search-doctrine-dbal)
+* [Doctrine2 ORM](https://github.com/rollerworks/rollerworks-search-doctrine-orm)
 * Apache Solr (coming soon)
 * Elasticsearch (coming soon)
 
@@ -95,7 +92,8 @@ for international support.
 
 For framework integration you use the following;
 
-* Symfony2 Bundle ([RollerworksSearchBundle](https://github.com/rollerworks/RollerworksSearchBundle))
+* [Symfony2 Bundle](https://github.com/rollerworks/RollerworksSearchBundle)
+* [Symfony2 DependencyInjection](https://github.com/rollerworks/rollerworks-search-symfony-di)
 * ZendFramework2 Plugin (coming soon)
 * Silex Plugin (coming soon)
 
