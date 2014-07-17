@@ -1,7 +1,7 @@
 {
     "name": "rollerworks/search",
     "description": "Advanced search-building framework",
-    "keywords": ["filter", "search", "doctrine"],
+    "keywords": ["rollerworks", "filter", "search"],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -26,13 +26,7 @@
     "require-dev": {
         "phpspec/phpspec": "~2.1@dev",
         "phpspec/prophecy": "~1.1@dev",
-        "symfony/class-loader": "~2.1",
-        "symfony/browser-kit": "~2.1",
-        "symfony/dependency-injection": "~2.1",
-        "jms/metadata": "~1.1,>=1.1.1"
-    },
-    "suggest": {
-        "jms/metadata": "Metadata mapping library"
+        "rollerworks/search-jms-metadata": "1.*@dev"
     },
     "autoload": {
         "psr-4": { "Rollerworks\\Component\\Search\\": "src/" }
