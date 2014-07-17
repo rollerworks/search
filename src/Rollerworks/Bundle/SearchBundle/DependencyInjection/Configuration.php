@@ -158,7 +158,7 @@ class Configuration implements ConfigurationInterface
                                 ->useAttributeAsKey('name')
                                 ->prototype('array')
                                     ->validate()
-                                        ->ifTrue(function ($v) { return empty($v['model_class']) XOR empty($v['model_property']); } )
+                                        ->ifTrue(function ($v) { return empty($v['model_class']) xor empty($v['model_property']); } )
                                         ->thenInvalid('When setting the model reference, both "model_class" and "model_property" must have a value.')
                                     ->end()
                                     ->children()
