@@ -81,7 +81,6 @@ The following types are packaged with this release (but can be replaced when nee
 
 * [Doctrine2 DBAL](https://github.com/rollerworks/rollerworks-search-doctrine-dbal)
 * [Doctrine2 ORM](https://github.com/rollerworks/rollerworks-search-doctrine-orm)
-* Doctrine2 phpcr-odm (coming soon)
 * Apache Solr (coming soon)
 * Elasticsearch (coming soon)
 
@@ -93,7 +92,8 @@ for international support.
 
 For framework integration you use the following;
 
-* Symfony2 Bundle ([RollerworksSearchBundle](https://github.com/rollerworks/RollerworksSearchBundle))
+* [Symfony2 Bundle](https://github.com/rollerworks/RollerworksSearchBundle)
+* [Symfony2 DependencyInjection](https://github.com/rollerworks/rollerworks-search-symfony-di)
 * ZendFramework2 Plugin (coming soon)
 * Silex Plugin (coming soon)
 
