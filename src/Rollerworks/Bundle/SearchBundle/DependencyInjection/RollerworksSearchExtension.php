@@ -11,7 +11,8 @@
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
-use Rollerworks\Bundle\SearchBundle\DependencyInjection\Factory\FieldSetFactory;
+use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Factory\FieldSetFactory;
+use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\ServiceLoader;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,11 +35,15 @@ class RollerworksSearchExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $config);
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('core.xml');
-        $loader->load('formatter.xml');
-        $loader->load('input_processor.xml');
-        $loader->load('exporter.xml');
+        $serviceLoader = new ServiceLoader($container);
+        $serviceLoader->loadFile('services');
+        $serviceLoader->loadFile('type');
+        $serviceLoader->loadFile('input_processor');
+        $serviceLoader->loadFile('exporter');
+        $serviceLoader->loadFile('formatter');
+
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
 
         if (isset($config['metadata'])) {
             $this->registerMetadata($container, $loader, $config['metadata']);
@@ -77,20 +82,34 @@ class RollerworksSearchExtension extends Extension
      */
     private function registerFieldSets(ContainerBuilder $container, array $fieldSets)
     {
-        $factory = new FieldSetFactory($container, $container->get('rollerworks_search.metadata_factory', ContainerBuilder::NULL_ON_INVALID_REFERENCE));
+        $factory = new FieldSetFactory(
+            $container,
+            $container->get('rollerworks_search.metadata_factory', ContainerBuilder::NULL_ON_INVALID_REFERENCE)
+        );
 
         foreach ($fieldSets as $name => $fieldSetConfig) {
             $fieldSet = $factory->createFieldSetBuilder($name);
 
             foreach ($fieldSetConfig['imports'] as $import) {
-                $fieldSet->importFromClass($import['class'], $import['include_fields'], $import['exclude_fields']);
+                $fieldSet->importFromClass(
+                    $import['class'],
+                    $import['include_fields'],
+                    $import['exclude_fields']
+                );
 
                 $r = new \ReflectionClass($import['class']);
                 $container->addResource(new FileResource($r->getFileName()));
             }
 
             foreach ($fieldSetConfig['fields'] as $fieldName => $field) {
-                $fieldSet->set($fieldName, $field['type'], $field['options'], $field['required'], $field['model_class'], $field['model_property']);
+                $fieldSet->set(
+                    $fieldName,
+                    $field['type'],
+                    $field['options'],
+                    $field['required'],
+                    $field['model_class'],
+                    $field['model_property']
+                );
             }
 
             $factory->register($fieldSet->getFieldSet());
@@ -139,11 +158,9 @@ class RollerworksSearchExtension extends Extension
                 mkdir($cacheDirectory, 0777, true);
             }
 
-            $container->getDefinition('rollerworks_search.metadata.cache_driver.file')->replaceArgument(0, $cacheDirectory);
-        }
-
-        if (null === $config['cache_driver']) {
-            $container->findDefinition('rollerworks_search.metadata_factory')->removeMethodCall('setCache');
+            $container->findDefinition('rollerworks_search.metadata.cache_driver.file')->replaceArgument(0, $cacheDirectory);
+        } elseif (null === $config['cache_driver']) {
+            $container->findDefinition('rollerworks_search.metadata.metadata_reader')->removeMethodCall('setCache');
         } else {
             $container->setAlias('rollerworks_search.metadata.cache_driver', $config['cache_driver']);
         }
