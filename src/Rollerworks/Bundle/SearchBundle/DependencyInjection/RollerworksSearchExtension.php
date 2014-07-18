@@ -43,6 +43,7 @@ class RollerworksSearchExtension extends Extension
         $serviceLoader->loadFile('formatter');
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
 
         if (isset($config['metadata'])) {
             $this->registerMetadata($container, $loader, $config['metadata']);
@@ -157,11 +158,9 @@ class RollerworksSearchExtension extends Extension
                 mkdir($cacheDirectory, 0777, true);
             }
 
-            $container->getDefinition('rollerworks_search.metadata.cache_driver.file')->replaceArgument(0, $cacheDirectory);
-        }
-
-        if (null === $config['cache_driver']) {
-            $container->findDefinition('rollerworks_search.metadata_factory')->removeMethodCall('setCache');
+            $container->findDefinition('rollerworks_search.metadata.cache_driver.file')->replaceArgument(0, $cacheDirectory);
+        } elseif (null === $config['cache_driver']) {
+            $container->findDefinition('rollerworks_search.metadata.metadata_reader')->removeMethodCall('setCache');
         } else {
             $container->setAlias('rollerworks_search.metadata.cache_driver', $config['cache_driver']);
         }
