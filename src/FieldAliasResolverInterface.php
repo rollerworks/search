@@ -12,16 +12,16 @@
 namespace Rollerworks\Component\Search;
 
 /**
- * Provide field-alias resolver.
+ * FieldAliasResolverInterface must be implemented by every AliasResolver.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface FieldAliasResolverInterface
 {
     /**
-     * Resolve the field alias to an real fieldname.
+     * Resolve the field alias to a real fieldname.
      *
-     * Note: If the field alias can not be resolved
+     * Note: If a field alias can not be resolved
      * it should return the $fieldName as-is.
      *
      * @param FieldSet $fieldSet
