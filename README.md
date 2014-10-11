@@ -71,9 +71,6 @@ The following types are packaged with this release (but can be replaced when nee
 * Text
 * Timezone choice
 
-* IP-address (coming soon)
-* Mac-address (coming soon)
-
 ## Storage/Index engines
 
 > **Note: The listed engines are supported out of the box, but you are noted limited
