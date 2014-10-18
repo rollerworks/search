@@ -15,6 +15,9 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FormatterInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\Value\Range;
+use Rollerworks\Component\Search\Value\SingleValue;
+use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
@@ -25,7 +28,7 @@ use Rollerworks\Component\Search\ValuesGroup;
  * has a value also present at a higher level its not removed.
  *
  *  Doing so would require to keep track of all the previous-values per-type.
- *  Which can get very complicated very fast.
+ *  Which can get very complicated very easily.
  *
  * Values are compared using the {@see \Rollerworks\Component\Search\ValueComparisonInterface}.
  *
@@ -74,165 +77,145 @@ class DuplicateRemover implements FormatterInterface
         $comparison = $config->getValueComparison();
         $options = $config->getOptions();
 
-        if ($valuesBag->hasSingleValues()) {
-            $singleValues = $valuesBag->getSingleValues();
+        $this->removeDuplicateValues($valuesBag->getSingleValues(), $valuesBag, $comparison, $options);
+        $this->removeDuplicateValues($valuesBag->getExcludedValues(), $valuesBag, $comparison, $options, true);
 
-            foreach ($singleValues as $i => $value) {
-                if (!isset($singleValues[$i])) {
+        $this->removeDuplicateRanges($valuesBag->getRanges(), $valuesBag, $comparison, $options);
+        $this->removeDuplicateRanges($valuesBag->getExcludedRanges(), $valuesBag, $comparison, $options, true);
+
+        $this->removeDuplicateComparisons($valuesBag, $comparison, $options);
+        $this->removeDuplicateMatchers($valuesBag, $comparison, $options);
+    }
+
+    /**
+     * @param SingleValue[]            $values
+     * @param ValuesBag                $valuesBag
+     * @param ValueComparisonInterface $comparison
+     * @param array                    $options
+     * @param bool                     $exclude
+     */
+    private function removeDuplicateValues(
+        array $values,
+        ValuesBag $valuesBag,
+        ValueComparisonInterface $comparison,
+        array $options,
+        $exclude = false
+    ) {
+        foreach ($values as $i => $value) {
+            foreach ($values as $c => $value2) {
+                if ($i === $c || !$comparison->isEqual($value->getValue(), $value2->getValue(), $options)) {
                     continue;
                 }
 
-                foreach ($singleValues as $c => $value2) {
-                    if ($i === $c) {
-                        continue;
-                    }
-
-                    if ($comparison->isEqual($value->getValue(), $value2->getValue(), $options)) {
-                        $valuesBag->removeSingleValue($c);
-                        unset($singleValues[$c]);
-                    }
+                if ($exclude) {
+                    $valuesBag->removeExcludedValue($i);
+                } else {
+                    $valuesBag->removeSingleValue($i);
                 }
+
+                unset($values[$i]);
             }
-
-            unset($singleValues);
         }
+    }
 
-        if ($valuesBag->hasExcludedValues()) {
-            $excludedValues = $valuesBag->getExcludedValues();
-
-            foreach ($excludedValues as $i => $value) {
-                if (!isset($excludedValues[$i])) {
+    /**
+     * @param Range[]                  $ranges
+     * @param ValuesBag                $valuesBag
+     * @param ValueComparisonInterface $comparison
+     * @param array                    $options
+     * @param bool                     $exclude
+     */
+    private function removeDuplicateRanges(
+        array $ranges,
+        ValuesBag $valuesBag,
+        ValueComparisonInterface $comparison,
+        array $options,
+        $exclude = false
+    ) {
+        foreach ($ranges as $i => $value) {
+            foreach ($ranges as $c => $value2) {
+                if ($i === $c) {
                     continue;
                 }
 
-                foreach ($excludedValues as $c => $value2) {
-                    if ($i === $c) {
-                        continue;
-                    }
-
-                    if ($comparison->isEqual($value->getValue(), $value2->getValue(), $options)) {
-                        $valuesBag->removeExcludedValue($c);
-                        unset($excludedValues[$c]);
-                    }
-                }
-            }
-
-            unset($excludedValues);
-        }
-
-        if ($valuesBag->hasRanges()) {
-            $ranges = $valuesBag->getRanges();
-
-            foreach ($ranges as $i => $value) {
-                if (!isset($ranges[$i])) {
+                // Only compare when both inclusive are equal
+                if ($value->isLowerInclusive() !== $value2->isLowerInclusive() ||
+                    $value->isUpperInclusive() !== $value2->isUpperInclusive()
+                ) {
                     continue;
                 }
 
-                foreach ($ranges as $c => $value2) {
-                    if ($i === $c) {
-                        continue;
-                    }
-
-                    // Only compare when both inclusive are equal
-                    if ($value->isLowerInclusive() !== $value2->isLowerInclusive() ||
-                        $value->isUpperInclusive() !== $value2->isUpperInclusive()
-                    ) {
-                        continue;
-                    }
-
-                    if ($comparison->isEqual($value->getLower(), $value2->getLower(), $options) &&
-                        $comparison->isEqual($value->getUpper(), $value2->getUpper(), $options)
-                    ) {
-                        $valuesBag->removeRange($c);
-                        unset($ranges[$c]);
-                    }
-                }
-            }
-
-            unset($ranges);
-        }
-
-        if ($valuesBag->hasExcludedRanges()) {
-            $ranges = $valuesBag->getExcludedRanges();
-
-            foreach ($ranges as $i => $value) {
-                foreach ($ranges as $c => $value2) {
-                    if (!isset($ranges[$i])) {
-                        continue;
-                    }
-
-                    if ($i === $c) {
-                        continue;
-                    }
-
-                    // Only compare when both inclusive are equal
-                    if ($value->isLowerInclusive() !== $value2->isLowerInclusive() ||
-                        $value->isUpperInclusive() !== $value2->isUpperInclusive()
-                    ) {
-                        continue;
-                    }
-
-                    if ($comparison->isEqual($value->getLower(), $value2->getLower(), $options) &&
-                        $comparison->isEqual($value->getUpper(), $value2->getUpper(), $options)
-                    ) {
-                        $valuesBag->removeExcludedRange($c);
-                        unset($ranges[$c]);
-                    }
-                }
-            }
-
-            unset($ranges);
-        }
-
-        if ($valuesBag->hasComparisons()) {
-            $comparisons = $valuesBag->getComparisons();
-
-            foreach ($comparisons as $i => $value) {
-                if (!isset($comparisons[$i])) {
+                if (!$comparison->isEqual($value->getLower(), $value2->getLower(), $options) ||
+                    !$comparison->isEqual($value->getUpper(), $value2->getUpper(), $options)
+                ) {
                     continue;
                 }
 
-                foreach ($comparisons as $c => $value2) {
-                    if ($i === $c) {
-                        continue;
-                    }
-
-                    if ($value->getOperator() === $value2->getOperator() &&
-                        $comparison->isEqual($value->getValue(), $value2->getValue(), $options)
-                    ) {
-                        $valuesBag->removeComparison($c);
-                        unset($comparisons[$c]);
-                    }
+                if ($exclude) {
+                    $valuesBag->removeExcludedRange($i);
+                } else {
+                    $valuesBag->removeRange($i);
                 }
+
+                unset($ranges[$i]);
             }
-
-            unset($comparisons);
         }
+    }
 
-        if ($valuesBag->hasPatternMatchers()) {
-            $matchers = $valuesBag->getPatternMatchers();
+    /**
+     * @param ValuesBag                $valuesBag
+     * @param ValueComparisonInterface $comparison
+     * @param array                    $options
+     */
+    private function removeDuplicateComparisons(
+        ValuesBag $valuesBag,
+        ValueComparisonInterface $comparison,
+        array $options
+    ) {
+        $comparisons = $valuesBag->getComparisons();
 
-            foreach ($matchers as $i => $value) {
-                if (!isset($matchers[$i])) {
+        foreach ($comparisons as $i => $value) {
+            foreach ($comparisons as $c => $value2) {
+                if ($i === $c) {
                     continue;
                 }
 
-                foreach ($matchers as $c => $value2) {
-                    if ($i === $c) {
-                        continue;
-                    }
-
-                    if ($value->getType() === $value2->getType() &&
-                        $comparison->isEqual($value->getValue(), $value2->getValue(), $options) &&
-                        $value->isCaseInsensitive() === $value2->isCaseInsensitive()
-                    ) {
-                        $valuesBag->removePatternMatch($c);
-                        unset($matchers[$c]);
-                    }
+                if ($value->getOperator() === $value2->getOperator() &&
+                    $comparison->isEqual($value->getValue(), $value2->getValue(), $options)
+                ) {
+                    $valuesBag->removeComparison($i);
+                    unset($comparisons[$i]);
                 }
             }
+        }
+    }
 
-            unset($matchers);
+    /**
+     * @param ValuesBag                $valuesBag
+     * @param ValueComparisonInterface $comparison
+     * @param array                    $options
+     */
+    private function removeDuplicateMatchers(
+        ValuesBag $valuesBag,
+        ValueComparisonInterface $comparison,
+        array $options
+    ) {
+        $matchers = $valuesBag->getPatternMatchers();
+
+        foreach ($matchers as $i => $value) {
+            foreach ($matchers as $c => $value2) {
+                if ($i === $c) {
+                    continue;
+                }
+
+                if ($value->getType() === $value2->getType() &&
+                    $comparison->isEqual($value->getValue(), $value2->getValue(), $options) &&
+                    $value->isCaseInsensitive() === $value2->isCaseInsensitive()
+                ) {
+                    $valuesBag->removePatternMatch($i);
+                    unset($matchers[$i]);
+                }
+            }
         }
     }
 }
