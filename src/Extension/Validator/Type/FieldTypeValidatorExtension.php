@@ -42,24 +42,24 @@ class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
     public function setDefaultOptions(OptionsResolverInterface $optionsResolver)
     {
         $optionsResolver->setDefaults(
-            array('constraints' => array()),
-            array('validation_groups' => array('Default'))
+            array(
+                'constraints' => array(),
+                'validation_groups' => array('Default'),
+            )
         );
 
         $optionsResolver->setAllowedTypes(
-            array('constraints' => array('array', 'Symfony\Component\Validator\Constraint')),
-            array('validation_groups' => array('array'))
+            array(
+                'constraints' => array('array', 'Symfony\Component\Validator\Constraint'),
+                'validation_groups' => array('array'),
+            )
         );
 
         $optionsResolver->setNormalizers(
             array(
                 'constraints' => function (Options $options, $value) {
-                    if (!is_array($value)) {
-                        return array($value);
-                    }
-
-                    return $value;
-                }
+                    return !is_array($value) ? array($value) : $value;
+                },
             )
         );
     }
