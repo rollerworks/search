@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Extension\Validator\Type;
 
 use Rollerworks\Component\Search\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -41,11 +42,25 @@ class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
     public function setDefaultOptions(OptionsResolverInterface $optionsResolver)
     {
         $optionsResolver->setDefaults(
-            array('constraints' => array())
+            array('constraints' => array()),
+            array('validation_groups' => array('Default'))
         );
 
         $optionsResolver->setAllowedTypes(
-            array('constraints' => array('array', 'string'))
+            array('constraints' => array('array', 'Symfony\Component\Validator\Constraint')),
+            array('validation_groups' => array('array'))
+        );
+
+        $optionsResolver->setNormalizers(
+            array(
+                'constraints' => function (Options $options, $value) {
+                    if (!is_array($value)) {
+                        return array($value);
+                    }
+
+                    return $value;
+                }
+            )
         );
     }
 }
