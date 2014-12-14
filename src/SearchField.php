@@ -123,6 +123,8 @@ class SearchField implements FieldConfigInterface
         }
 
         $this->required = $required;
+
+        return $this;
     }
 
     /**
@@ -139,6 +141,8 @@ class SearchField implements FieldConfigInterface
         }
 
         $this->acceptRanges = $acceptRanges;
+
+        return $this;
     }
 
     /**
@@ -155,6 +159,8 @@ class SearchField implements FieldConfigInterface
         }
 
         $this->acceptCompares = $acceptCompares;
+
+        return $this;
     }
 
     /**
@@ -171,6 +177,8 @@ class SearchField implements FieldConfigInterface
         }
 
         $this->acceptPatternMatch = $acceptPatternMatch;
+
+        return $this;
     }
 
     /**
@@ -247,6 +255,8 @@ class SearchField implements FieldConfigInterface
 
         $this->modelRefClass = $class;
         $this->modelRefField = $property;
+
+        return $this;
     }
 
     /**
@@ -289,6 +299,8 @@ class SearchField implements FieldConfigInterface
         }
 
         $this->valueComparison = $comparisonObj;
+
+        return $this;
     }
 
     /**
