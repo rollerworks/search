@@ -88,98 +88,174 @@ class RangeOptimizer implements FormatterInterface
         $comparison = $config->getValueComparison();
         $options = $config->getOptions();
 
+        // Optimize the ranges before single values, so we have less ranges to loop trough
+        // Each operation is run separate to prevent to much complexity, this results in less performance
+        // but better readability; Results should be cached anyway
+
         if ($valuesBag->hasRanges()) {
-            $singleValues = $valuesBag->getSingleValues();
-            $ranges = $valuesBag->getRanges();
+            $this->removeOverlappingRanges(
+                $valuesBag->getRanges(),
+                $valuesBag,
+                $comparison,
+                $options
+            );
 
-            foreach ($ranges as $i => $range) {
-                if (!isset($ranges[$i])) {
-                    continue;
-                }
+            $this->optimizeConnectedRanges(
+                $valuesBag->getRanges(),
+                $valuesBag,
+                $comparison,
+                $options
+            );
 
-                foreach ($singleValues as $c => $value) {
-                    if ($this->isValInRange($value, $range, $comparison, $options)) {
-                        $valuesBag->removeSingleValue($c);
-                    }
-                }
-
-                foreach ($ranges as $c => $value) {
-                    if ($i === $c) {
-                        continue;
-                    }
-
-                    if ($this->isRangeInRange($value, $range, $comparison, $options)) {
-                        $valuesBag->removeRange($c);
-                        unset($ranges[$c]);
-
-                        continue;
-                    }
-
-                    // check if the range is connected
-                    // connected is when the upper-bound is equal to the lower-bound of the second range
-                    // only when the bounds inclusiveness are equal they can be optimized
-
-                    if ($range->isLowerInclusive() === $value->isLowerInclusive() &&
-                        $range->isUpperInclusive() === $value->isUpperInclusive() &&
-                        $comparison->isEqual($range->getUpper(), $value->getLower(), $options)
-                    ) {
-                        $range->setUpper($value->getUpper());
-
-                        // remove the second range as its merged now
-                        $valuesBag->removeRange($c);
-                        unset($ranges[$c]);
-                    }
-                }
-            }
-
-            unset($singleValues);
+            $this->removeOverlappingSingleValues(
+                $valuesBag->getSingleValues(),
+                $valuesBag->getRanges(),
+                $valuesBag,
+                $comparison,
+                $options
+            );
         }
 
         if ($valuesBag->hasExcludedRanges()) {
-            $excludedValues = $valuesBag->getExcludedValues();
-            $excludedRanges = $valuesBag->getExcludedRanges();
+            $this->removeOverlappingRanges(
+                $valuesBag->getExcludedRanges(),
+                $valuesBag,
+                $comparison,
+                $options,
+                true
+            );
 
-            foreach ($excludedRanges as $i => $range) {
-                if (!isset($excludedRanges[$i])) {
-                    continue;
-                }
+            $this->optimizeConnectedRanges(
+                $valuesBag->getExcludedRanges(),
+                $valuesBag,
+                $comparison,
+                $options,
+                true
+            );
 
-                foreach ($excludedValues as $c => $value) {
-                    if ($this->isValInRange($value, $range, $comparison, $options)) {
+            $this->removeOverlappingSingleValues(
+                $valuesBag->getExcludedValues(),
+                $valuesBag->getExcludedRanges(),
+                $valuesBag,
+                $comparison,
+                $options,
+                true
+            );
+        }
+    }
+
+    /**
+     * @param SingleValue[]            $singleValues
+     * @param Range[]                  $ranges
+     * @param ValuesBag                $valuesBag
+     * @param ValueComparisonInterface $comparison
+     * @param array                    $options
+     * @param bool                     $exclude
+     */
+    private function removeOverlappingSingleValues(
+        array $singleValues,
+        array $ranges,
+        ValuesBag $valuesBag,
+        ValueComparisonInterface $comparison,
+        array $options,
+        $exclude = false
+    ) {
+        foreach ($ranges as $i => $range) {
+            foreach ($singleValues as $c => $value) {
+                if ($this->isValInRange($value, $range, $comparison, $options)) {
+                    if ($exclude) {
                         $valuesBag->removeExcludedValue($c);
-                    }
-                }
-
-                foreach ($excludedRanges as $c => $value) {
-                    if ($i === $c) {
-                        continue;
-                    }
-
-                    if ($this->isRangeInRange($value, $range, $comparison, $options)) {
-                        $valuesBag->removeExcludedRange($c);
-                        unset($excludedRanges[$c]);
-
-                        continue;
-                    }
-
-                    // check if the range is connected
-                    // connected is when the upper-bound is equal to the lower-bound of the second range
-                    // only when the bounds inclusiveness are equal they can be optimized
-
-                    if ($range->isLowerInclusive() === $value->isLowerInclusive() &&
-                        $range->isUpperInclusive() === $value->isUpperInclusive() &&
-                        $comparison->isEqual($range->getUpper(), $value->getLower(), $options)
-                    ) {
-                        $range->setUpper($value->getUpper());
-
-                        // remove the second range as its merged now
-                        $valuesBag->removeExcludedRange($c);
-                        unset($excludedRanges[$c]);
+                    } else {
+                        $valuesBag->removeSingleValue($c);
                     }
                 }
             }
+        }
+    }
 
-            unset($singleValues);
+    /**
+     * @param Range[]                  $ranges
+     * @param ValuesBag                $valuesBag
+     * @param ValueComparisonInterface $comparison
+     * @param array                    $options
+     * @param bool                     $exclude
+     */
+    private function removeOverlappingRanges(
+        array $ranges,
+        ValuesBag $valuesBag,
+        ValueComparisonInterface $comparison,
+        array $options,
+        $exclude = false
+    ) {
+        foreach ($ranges as $i => $range) {
+            if (!isset($ranges[$i])) {
+                continue;
+            }
+
+            foreach ($ranges as $c => $value) {
+                if ($i === $c) {
+                    continue;
+                }
+
+                if ($this->isRangeInRange($value, $range, $comparison, $options)) {
+                    if ($exclude) {
+                        $valuesBag->removeExcludedRange($c);
+                    } else {
+                        $valuesBag->removeRange($c);
+                    }
+
+                    unset($ranges[$c]);
+                }
+            }
+        }
+    }
+
+    /**
+     * a range is connected when the upper-bound is equal to the lower-bound of the second range
+     * only when the bounds inclusiveness are equal they can be optimized.
+     *
+     * @param Range[]                  $ranges
+     * @param ValuesBag                $valuesBag
+     * @param ValueComparisonInterface $comparison
+     * @param array                    $options
+     * @param bool                     $exclude
+     */
+    private function optimizeConnectedRanges(
+        array $ranges,
+        ValuesBag $valuesBag,
+        ValueComparisonInterface $comparison,
+        array $options,
+        $exclude = false
+    ) {
+        foreach ($ranges as $i => $range) {
+            if (!isset($ranges[$i])) {
+                continue;
+            }
+
+            foreach ($ranges as $c => $value) {
+                if ($i === $c) {
+                    continue;
+                }
+
+                if ($range->isLowerInclusive() !== $value->isLowerInclusive() ||
+                    $range->isUpperInclusive() !== $value->isUpperInclusive()) {
+                    continue;
+                }
+
+                if ($comparison->isEqual($range->getUpper(), $value->getLower(), $options)) {
+                    $range->setUpper($value->getUpper());
+                    $range->setViewUpper($value->getViewUpper());
+
+                    // remove the second range as its merged now
+                    if ($exclude) {
+                        $valuesBag->removeExcludedRange($c);
+                    } else {
+                        $valuesBag->removeRange($c);
+                    }
+
+                    unset($ranges[$c]);
+                }
+            }
         }
     }
 

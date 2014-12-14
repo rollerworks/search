@@ -42,7 +42,7 @@ abstract class FormatterTestCase extends \PHPUnit_Framework_TestCase
         $this->searchFactory = Searches::createSearchFactoryBuilder()->getSearchFactory();
 
         $fieldSet = new FieldSetBuilder('test', $this->searchFactory);
-        $fieldSet->add('id', 'integer');
+        $fieldSet->add($this->searchFactory->createField('id', 'integer')->setAcceptRange(true));
         $fieldSet->add('name', 'text');
 
         $this->fieldSet = $fieldSet->getFieldSet();
