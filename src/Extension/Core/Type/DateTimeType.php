@@ -125,12 +125,12 @@ class DateTimeType extends AbstractFieldType
     {
         $resolver->setDefaults(
             array(
-                'model_timezone' => null,
-                'view_timezone'  => null,
-                'format'         => self::HTML5_FORMAT,
-                'date_format'    => null,
-                'with_minutes'   => true,
-                'with_seconds'   => false,
+                'model_timezone' => 'UTC',
+                'view_timezone' => null,
+                'format' => self::HTML5_FORMAT,
+                'date_format' => null,
+                'with_minutes' => true,
+                'with_seconds' => false,
             )
         );
     }

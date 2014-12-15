@@ -26,7 +26,7 @@ class TimeType extends AbstractFieldType
     /**
      * @var ValueComparisonInterface
      */
-    protected $valueComparison;
+    private $valueComparison;
 
     /**
      * Constructor.
@@ -74,10 +74,8 @@ class TimeType extends AbstractFieldType
     {
         $resolver->setDefaults(
             array(
-                'with_minutes'   => true,
-                'with_seconds'   => false,
-                'input_timezone' => null,
-                'model_timezone' => null,
+                'with_minutes' => true,
+                'with_seconds' => false,
             )
         );
     }
