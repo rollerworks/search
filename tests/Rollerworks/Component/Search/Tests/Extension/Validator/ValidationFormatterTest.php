@@ -15,7 +15,6 @@ use Rollerworks\Component\Search\Extension\Validator\ValidationFormatter;
 use Rollerworks\Component\Search\Extension\Validator\ValidatorExtension;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\Test\FormatterTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -38,7 +37,7 @@ final class ValidationFormatterTest extends FormatterTestCase
         $this->formatter = new ValidationFormatter($this->validator);
     }
 
-    protected function getFieldSet()
+    protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->factory);
         $fieldSet->add('id', 'integer', array('constraints' => new Assert\Range(array('min' => 5))));
