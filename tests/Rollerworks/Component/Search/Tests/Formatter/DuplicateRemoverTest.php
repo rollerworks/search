@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Tests\Formatter;
 
 use Rollerworks\Component\Search\Formatter\DuplicateRemover;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\Test\FormatterTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;

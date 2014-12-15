@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Tests\Formatter;
 
 use Rollerworks\Component\Search\Formatter\ValuesToRange;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\Test\FormatterTestCase;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
