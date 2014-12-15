@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by sstok at 2014-12-15 14:29
+
+`RangeOptimizer::isRangeInRange()` should also be re-factored, but it was already a nightmare to make this logic (work) so changing this is not easy :no_good: The good news is that its working and thats the most important part.
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2014-12-15 15:18
+
+The [inspection](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/inspections/4b92559f-eddb-48dd-905f-3fae5823415c) completed: **1 new issues, 13 updated code elements**
