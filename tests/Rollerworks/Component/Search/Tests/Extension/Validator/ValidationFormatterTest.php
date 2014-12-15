@@ -15,7 +15,7 @@ use Rollerworks\Component\Search\Extension\Validator\ValidationFormatter;
 use Rollerworks\Component\Search\Extension\Validator\ValidatorExtension;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Searches;
+use Rollerworks\Component\Search\Test\FormatterTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -25,16 +25,9 @@ use Rollerworks\Component\Search\ValuesError;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ValidationFormatterTest extends \PHPUnit_Framework_TestCase
+final class ValidationFormatterTest extends FormatterTestCase
 {
     private $validator;
-    private $fieldSet;
-    private $searchFactory;
-
-    /**
-     * @var ValidationFormatter
-     */
-    private $formatter;
 
     protected function setUp()
     {
@@ -42,18 +35,21 @@ final class ValidationFormatterTest extends \PHPUnit_Framework_TestCase
 
         $this->validator = Validation::createValidator();
         $this->formatter = new ValidationFormatter($this->validator);
+    }
 
-        $this->searchFactory = Searches::createSearchFactoryBuilder()
-            ->addExtension(new ValidatorExtension())
-            ->getSearchFactory()
-        ;
-
-        $fieldSet = new FieldSetBuilder('test', $this->searchFactory);
+    protected function getFieldSet($build = true)
+    {
+        $fieldSet = new FieldSetBuilder('test', $this->factory);
         $fieldSet->add('id', 'integer', array('constraints' => new Assert\Range(array('min' => 5))));
         $fieldSet->add('date', 'date', array('constraints' => new Assert\Date()));
         $fieldSet->add('type', 'text');
 
-        $this->fieldSet = $fieldSet->getFieldSet();
+        return $fieldSet->getFieldSet();
+    }
+
+    protected function getExtensions()
+    {
+        return array(new ValidatorExtension());
     }
 
     /**
@@ -181,7 +177,7 @@ final class ValidationFormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function it_validates_matchers()
     {
-        $fieldSet = new FieldSetBuilder('test', $this->searchFactory);
+        $fieldSet = new FieldSetBuilder('test', $this->factory);
         $fieldSet->add('username', 'text', array('constraints' => new Assert\NotBlank()));
 
         $this->fieldSet = $fieldSet->getFieldSet();

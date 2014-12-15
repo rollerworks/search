@@ -13,10 +13,12 @@ namespace Rollerworks\Component\Search\Test;
 
 use Rollerworks\Component\Search\Extension\Core\CoreExtension;
 use Rollerworks\Component\Search\FieldRegistry;
+use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\ResolvedFieldTypeFactory;
 use Rollerworks\Component\Search\SearchFactory;
+use Rollerworks\Component\Search\ValuesBag;
 
-class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
+abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
     * @var SearchFactory
@@ -37,5 +39,38 @@ class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
     protected function getExtensions()
     {
         return array();
+    }
+
+    protected function getFieldSet($build = true)
+    {
+        $fieldSet = new FieldSetBuilder('test', $this->factory);
+        $fieldSet->add($this->factory->createField('id', 'integer')->setAcceptRange(true));
+        $fieldSet->add('name', 'text');
+
+        return $build ? $fieldSet->getFieldSet() : $fieldSet;
+    }
+
+    protected function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
+    {
+        $expectedArray = array(
+            'single' => $expected->getSingleValues(),
+            'excluded' => $expected->getExcludedValues(),
+            'ranges' => $expected->getRanges(),
+            'excludedRanges' => $expected->getExcludedRanges(),
+            'compares' => $expected->getComparisons(),
+            'matchers' => $expected->getPatternMatchers(),
+        );
+
+        // use array_merge to renumber indexes and prevent mismatches
+        $resultArray = array(
+            'single' => array_merge(array(), $result->getSingleValues()),
+            'excluded' => array_merge(array(), $result->getExcludedValues()),
+            'ranges' => array_merge(array(), $result->getRanges()),
+            'excludedRanges' => array_merge(array(), $result->getExcludedRanges()),
+            'compares' => array_merge(array(), $result->getComparisons()),
+            'matchers' => array_merge(array(), $result->getPatternMatchers()),
+        );
+
+        $this->assertEquals($expectedArray, $resultArray);
     }
 }

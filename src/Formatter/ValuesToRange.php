@@ -29,31 +29,20 @@ use Rollerworks\Component\Search\ValuesGroup;
 class ValuesToRange implements FormatterInterface
 {
     /**
-     * @var array
-     */
-    private $options;
-
-    /**
-     * @var ValueIncrementerInterface
-     */
-    private $comparison;
-
-    /**
      * {@inheritdoc}
      */
     public function format(SearchConditionInterface $condition)
     {
         $fieldSet = $condition->getFieldSet();
         $valuesGroup = $condition->getValuesGroup();
-
         $optimize = false;
+
         foreach ($fieldSet->all() as $field) {
             if ($field->acceptRanges() && $field->getValueComparison() instanceof ValueIncrementerInterface) {
                 $optimize = true;
 
                 break;
             }
-
         }
 
         // None of the fields supports ranges or value-increments so don't optimize
@@ -62,31 +51,6 @@ class ValuesToRange implements FormatterInterface
         }
 
         $this->optimizeValuesInGroup($valuesGroup, $fieldSet);
-    }
-
-    /**
-     * SingleValue sorter callback.
-     *
-     * This method is defined at class level to
-     * prevent creating a large number of closures.
-     *
-     * @param SingleValue $first
-     * @param SingleValue $second
-     *
-     * @return int
-     *
-     * @internal
-     */
-    public function valuesSorter(SingleValue $first, SingleValue $second)
-    {
-        $a = $first->getValue();
-        $b = $second->getValue();
-
-        if ($this->comparison->isEqual($a, $b, $this->options)) {
-            return 0;
-        }
-
-        return $this->comparison->isLower($a, $b, $this->options) ? -1 : 1;
     }
 
     /**
@@ -119,22 +83,30 @@ class ValuesToRange implements FormatterInterface
      */
     private function optimizeValuesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
     {
-        $this->comparison = $config->getValueComparison();
-        $this->options = $config->getOptions();
+        $comparison = $config->getValueComparison();
+        $options = $config->getOptions();
 
-        // repress the warning about a changed array for uasort()
-        // this seems to happen because we are using an object for the comparison
+        $comparisonFunc = function (SingleValue $first, SingleValue $second) use ($comparison, $options) {
+            $a = $first->getValue();
+            $b = $second->getValue();
+
+            if ($comparison->isEqual($a, $b, $options)) {
+                return 0;
+            }
+
+            return $comparison->isLower($a, $b, $options) ? -1 : 1;
+        };
 
         if ($valuesBag->hasSingleValues()) {
             $values = $valuesBag->getSingleValues();
-            @uasort($values, array($this, 'valuesSorter'));
+            uasort($values, $comparisonFunc);
 
             $this->listToRanges($values, $valuesBag, $config);
         }
 
         if ($valuesBag->hasExcludedValues()) {
             $excludes = $valuesBag->getExcludedValues();
-            @uasort($excludes, array($this, 'valuesSorter'));
+            uasort($excludes, $comparisonFunc);
 
             $this->listToRanges($excludes, $valuesBag, $config, true);
         }
