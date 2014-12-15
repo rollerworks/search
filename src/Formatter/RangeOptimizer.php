@@ -353,7 +353,7 @@ class RangeOptimizer implements FormatterInterface
                 ) {
                     $overlap = true;
                 } elseif (!$range1->isUpperInclusive() &&
-                          $comparison->isLower($range->getUpper(), $range1->getUpper(), $options)
+                    $comparison->isLower($range->getUpper(), $range1->getUpper(), $options)
                 ) {
                     // Because the second upper-bound is exclusive we check the
                     $overlap = true;
