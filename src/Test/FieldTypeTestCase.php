@@ -54,7 +54,7 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
         if ($expectedValue instanceof \DateTime) {
             $this->assertDateTimeEquals($expectedValue, $values[0]->getValue());
         } else {
-            $this->assertEquals($expectedValue, $this->formatInput($field, $input));
+            $this->assertEquals($expectedValue, $values[0]->getValue());
         }
     }
 
@@ -79,9 +79,8 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
         $searchCondition = new SearchCondition($fieldSet, $condition->getGroup());
 
         $this->transformer->format($searchCondition);
-        return $searchCondition->getValuesGroup()->getField($field->getName());
 
-        ;
+        return $searchCondition->getValuesGroup()->getField($field->getName());
     }
 
     /**
