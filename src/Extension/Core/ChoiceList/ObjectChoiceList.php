@@ -19,7 +19,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 /**
  * A choice list for object choices.
  *
- * Supports generation of choice labels, choice groups and choice values
+ * Supports generation of choice labels and choice values
  * by calling getters of the object (or associated objects).
  *
  * <code>
@@ -77,6 +77,46 @@ class ObjectChoiceList extends ChoiceList
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getValueForChoice($choice)
+    {
+        if (!$this->valuePath || !is_object($choice) && !is_array($choice)) {
+            return parent::getValueForChoice($choice);
+        }
+
+        $choice = $this->fixChoice($choice);
+        $givenValue = (string) $this->propertyAccessor->getValue($choice, $this->valuePath);
+
+        if (array_key_exists($givenValue, $this->values)) {
+            return $givenValue;
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLabelForChoice($choice)
+    {
+        if (!$this->labelPath || !is_object($choice) && !is_array($choice)) {
+            return parent::getLabelForChoice($choice);
+        }
+
+        $choice = $this->fixChoice($choice);
+        $givenValue = (string) $this->propertyAccessor->getValue($choice, $this->valuePath);
+
+        foreach ($this->values as $i => $value) {
+            if ($value === $givenValue) {
+                return $this->labels[$i];
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Initializes the list with choices.
      *
      * Safe to be called multiple times. The list is cleared on every call.
@@ -123,7 +163,7 @@ class ObjectChoiceList extends ChoiceList
     {
         foreach ($choices as $i => $choice) {
             if ($this->labelPath) {
-                $labels[$i] = $this->propertyAccessor->getValue($choice, $this->labelPath);
+                $labels[$i] = (string) $this->propertyAccessor->getValue($choice, $this->labelPath);
             } elseif (method_exists($choice, '__toString')) {
                 $labels[$i] = (string) $choice;
             } else {

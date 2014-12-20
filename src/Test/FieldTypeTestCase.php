@@ -41,7 +41,7 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
         );
     }
 
-    protected function assertTransformedEquals(FieldConfigInterface $field, $expectedValue, $input)
+    protected function assertTransformedEquals(FieldConfigInterface $field, $expectedValue, $input, $expectedView = null)
     {
         $values = $this->formatInput($field, $input);
 
@@ -55,6 +55,10 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
             $this->assertDateTimeEquals($expectedValue, $values[0]->getValue());
         } else {
             $this->assertEquals($expectedValue, $values[0]->getValue());
+        }
+
+        if (null !== $expectedView) {
+            $this->assertEquals($expectedView, $values[0]->getViewValue());
         }
     }
 
