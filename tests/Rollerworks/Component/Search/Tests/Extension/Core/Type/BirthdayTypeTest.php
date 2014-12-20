@@ -30,7 +30,7 @@ class BirthdayTypeTest extends FieldTypeTestCase
         ));
 
         $outputTime = new \DateTime('2010-06-02');
-        $this->assertTransformedEquals($field, $outputTime, '2010-06-02');
+        $this->assertTransformedEquals($field, $outputTime, '2010-06-02', '2010-06-02');
         $this->assertTransformedFails($field, '21');
     }
 
@@ -40,10 +40,10 @@ class BirthdayTypeTest extends FieldTypeTestCase
             'format' => 'yyyy-MM-dd',
         ));
 
-        $this->assertTransformedEquals($field, 15, '15');
+        $this->assertTransformedEquals($field, 15, '15', '15');
 
         $outputTime = new \DateTime('2010-06-02');
-        $this->assertTransformedEquals($field, $outputTime, '2010-06-02');
+        $this->assertTransformedEquals($field, $outputTime, '2010-06-02', '2010-06-02');
     }
 
     public function testWrongInputFails()
