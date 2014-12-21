@@ -60,8 +60,8 @@ class TimeType extends AbstractFieldType
         $config->setValueComparison($this->valueComparison);
         $config->addViewTransformer(
             new DateTimeToStringTransformer(
-                $options['model_timezone'],
-                $options['input_timezone'],
+                'UTC',
+                'UTC',
                 $format
             )
         );
