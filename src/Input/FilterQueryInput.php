@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -182,7 +182,7 @@ class FilterQueryInput extends AbstractInput
         $input = trim($input);
 
         if (empty($input)) {
-            return null;
+            return;
         }
 
         $this->lexer->setInput($input);

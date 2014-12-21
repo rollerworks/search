@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -130,7 +130,7 @@ class ArrayExporter extends AbstractExporter
             foreach ($valuesBag->getComparisons() as $value) {
                 $exportedComparisons[] = array(
                     'operator' => $value->getOperator(),
-                    'value' => $value->getViewValue()
+                    'value' => $value->getViewValue(),
                 );
             }
 
@@ -146,7 +146,7 @@ class ArrayExporter extends AbstractExporter
                 $exportedPatternMatchers[] = array(
                     'type' => $this->getPatternMatchType($value),
                     'value' => $value->getViewValue(),
-                    'case-insensitive' => $value->isCaseInsensitive()
+                    'case-insensitive' => $value->isCaseInsensitive(),
                 );
             }
 
@@ -167,7 +167,7 @@ class ArrayExporter extends AbstractExporter
     {
         $result = array(
             'lower' => $range->getViewLower(),
-            'upper' => $range->getViewUpper()
+            'upper' => $range->getViewUpper(),
         );
 
         if (!$range->isLowerInclusive()) {

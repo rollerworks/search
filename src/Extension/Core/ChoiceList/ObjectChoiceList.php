@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -12,9 +12,9 @@
 namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
-use Symfony\Component\PropertyAccess\PropertyPath;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * A choice list for object choices.
@@ -92,7 +92,7 @@ class ObjectChoiceList extends ChoiceList
             return $givenValue;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -113,7 +113,7 @@ class ObjectChoiceList extends ChoiceList
             }
         }
 
-        return null;
+        return;
     }
 
     /**

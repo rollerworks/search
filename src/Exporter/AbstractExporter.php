@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -92,8 +92,8 @@ abstract class AbstractExporter implements ExporterInterface
                     PatternMatch::PATTERN_NOT_CONTAINS,
                     PatternMatch::PATTERN_NOT_STARTS_WITH,
                     PatternMatch::PATTERN_NOT_ENDS_WITH,
-                    PatternMatch::PATTERN_NOT_REGEX
-                )
+                    PatternMatch::PATTERN_NOT_REGEX,
+                ), true
             )
         ) {
             $type .= 'NOT_';

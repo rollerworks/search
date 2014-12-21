@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -93,7 +93,7 @@ class SearchField implements FieldConfigInterface
     {
         FieldSet::validateName($name);
 
-        if ('' == $name) {
+        if ('' === $name) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore '.

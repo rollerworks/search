@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -106,7 +106,7 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             (int) $dateTime->format('U')
         );
 
-        if (intl_get_error_code() != 0) {
+        if (intl_get_error_code() !== 0) {
             throw new TransformationFailedException(intl_get_error_message());
         }
 
@@ -131,12 +131,12 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         }
 
         if ('' === $value) {
-            return null;
+            return;
         }
 
         $timestamp = $this->getIntlDateFormatter()->parse($value);
 
-        if (intl_get_error_code() != 0) {
+        if (intl_get_error_code() !== 0) {
             throw new TransformationFailedException(intl_get_error_message());
         }
 

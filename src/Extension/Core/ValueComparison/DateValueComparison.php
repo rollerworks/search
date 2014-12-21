@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -57,7 +57,7 @@ class DateValueComparison implements ValueIncrementerInterface
      */
     public function isEqual($value, $nextValue, $options)
     {
-        return $value == $nextValue;
+        return $value === $nextValue;
     }
 
     /**
@@ -74,7 +74,7 @@ class DateValueComparison implements ValueIncrementerInterface
     public function getIncrementedValue($value, array $options, $increments = 1)
     {
         $newValue = clone $value;
-        $newValue->modify('+' . $increments . ' days');
+        $newValue->modify('+'.$increments.' days');
 
         return $newValue;
     }

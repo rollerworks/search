@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -54,7 +54,7 @@ class SimpleChoiceList extends ChoiceList
             return $value;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -71,7 +71,7 @@ class SimpleChoiceList extends ChoiceList
             return $choice;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -88,7 +88,7 @@ class SimpleChoiceList extends ChoiceList
             return $labels[$choice];
         }
 
-        return null;
+        return;
     }
 
     /**

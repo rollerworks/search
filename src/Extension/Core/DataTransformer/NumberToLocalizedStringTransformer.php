@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -166,7 +166,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
         }
 
         if ('' === $value) {
-            return null;
+            return;
         }
 
         if ('NaN' === $value) {
@@ -200,7 +200,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
             throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like');
         }
 
-        if (function_exists('mb_detect_encoding') && false !== $encoding = mb_detect_encoding($value)) {
+        if (function_exists('mb_detect_encoding') && false !== $encoding = mb_detect_encoding($value, mb_detect_order(), true)) {
             $strlen = function ($string) use ($encoding) {
                 return mb_strlen($string, $encoding);
             };

@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -124,7 +124,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             'options' => $options,
             'required' => $required,
             'class' => $modelClass,
-            'property' => $property
+            'property' => $property,
         );
 
         return $this;
@@ -228,7 +228,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
         }
 
         foreach ($this->mappingReader->getSearchFields($class) as $field) {
-            if (($include && !in_array($field->fieldName, $include)) xor ($exclude && in_array($field->fieldName, $exclude))) {
+            if (($include && !in_array($field->fieldName, $include, true)) xor ($exclude && in_array($field->fieldName, $exclude, true))) {
                 continue;
             }
 
@@ -237,7 +237,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
                 'options' => $field->options,
                 'required' => $field->required,
                 'class' => $field->class,
-                'property' => $field->property
+                'property' => $field->property,
             );
         }
 

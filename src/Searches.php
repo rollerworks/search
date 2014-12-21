@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Extension\Core\CoreExtension;
  *
  * Use this class to conveniently create new search factories:
  *
-* <code>
+ * <code>
  * use Rollerworks\Component\Search\Searches;
  *
  * $searchFactory = Searches::createSearchFactory();

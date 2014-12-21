@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -30,7 +30,6 @@ abstract class AbstractFieldType implements FieldTypeInterface
      */
     public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options)
     {
-
     }
 
     /**

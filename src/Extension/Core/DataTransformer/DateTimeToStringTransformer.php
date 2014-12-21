@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -131,7 +131,7 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
     public function reverseTransform($value)
     {
         if (empty($value)) {
-            return null;
+            return;
         }
 
         if (!is_string($value)) {
@@ -161,16 +161,16 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
 
                 // Check which of the date parts are present in the pattern
                 preg_match(
-                    '/(' .
-                    '(?P<day>[djDl])|' .
-                    '(?P<month>[FMmn])|' .
-                    '(?P<year>[Yy])|' .
-                    '(?P<hour>[ghGH])|' .
-                    '(?P<minute>i)|' .
-                    '(?P<second>s)|' .
-                    '(?P<dayofyear>z)|' .
-                    '(?P<timestamp>U)|' .
-                    '[^djDlFMmnYyghGHiszU]' .
+                    '/('.
+                    '(?P<day>[djDl])|'.
+                    '(?P<month>[FMmn])|'.
+                    '(?P<year>[Yy])|'.
+                    '(?P<hour>[ghGH])|'.
+                    '(?P<minute>i)|'.
+                    '(?P<second>s)|'.
+                    '(?P<dayofyear>z)|'.
+                    '(?P<timestamp>U)|'.
+                    '[^djDlFMmnYyghGHiszU]'.
                     ')*/',
                     $this->parseFormat,
                     $matches

@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -89,7 +89,7 @@ class ValidationFormatter implements FormatterInterface
 
             foreach ($constraints as $constraint) {
                 foreach ($groups as $group) {
-                    if (in_array($group, $constraint->groups)) {
+                    if (in_array($group, $constraint->groups, true)) {
                         $this->validateValuesBag(
                             $valuesGroup,
                             $values,

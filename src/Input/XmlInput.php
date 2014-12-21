@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -43,7 +43,7 @@ class XmlInput extends AbstractInput
      */
     public function process($input)
     {
-        $document = simplexml_import_dom(XmlUtils::parseXml($input, __DIR__ . '/schema/dic/input/xml-input-1.0.xsd'));
+        $document = simplexml_import_dom(XmlUtils::parseXml($input, __DIR__.'/schema/dic/input/xml-input-1.0.xsd'));
 
         $valuesGroup = new ValuesGroup();
         if (isset($document['logical']) && 'OR' === strtoupper((string) $document['logical'])) {

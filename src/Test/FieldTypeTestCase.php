@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -17,7 +17,6 @@ use Rollerworks\Component\Search\Formatter\TransformFormatter;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Value\SingleValue;
-use Rollerworks\Component\Search\ValuesBag;
 
 abstract class FieldTypeTestCase extends SearchIntegrationTestCase
 {
