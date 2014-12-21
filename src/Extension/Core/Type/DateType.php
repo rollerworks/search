@@ -85,8 +85,8 @@ class DateType extends AbstractFieldType
 
         $config->addViewTransformer(
             new DateTimeToLocalizedStringTransformer(
-                $options['model_timezone'],
-                $options['view_timezone'],
+                'UTC',
+                'UTC',
                 $dateFormat,
                 $timeFormat,
                 $calendar,
@@ -103,13 +103,11 @@ class DateType extends AbstractFieldType
         $resolver->setDefaults(
             array(
                 'format' => DateType::DEFAULT_FORMAT,
-                'model_timezone' => null,
-                'input_timezone' => null,
             )
         );
 
         $resolver->setAllowedTypes(
-            array('format' => array('int', 'string'),)
+            array('format' => array('int', 'string'))
         );
     }
 

@@ -36,21 +36,21 @@ class ChoiceList implements ChoiceListInterface
      *
      * @var array
      */
-    private $choices = array();
+    protected $choices = array();
 
     /**
      * The choice values with the indices of the matching choices as keys.
      *
      * @var array
      */
-    private $values = array();
+    protected $values = array();
 
     /**
      * The choice values with the indices of the matching choices as keys.
      *
      * @var array
      */
-    private $labels = array();
+    protected $labels = array();
 
     /**
      * Creates a new choice list.
@@ -340,19 +340,5 @@ class ChoiceList implements ChoiceListInterface
     protected function fixChoice($choice)
     {
         return $choice;
-    }
-
-    /**
-     * Fixes the data type of the given choices to avoid comparison problems.
-     *
-     * @param array $choices The choices.
-     *
-     * @return array The fixed choices.
-     *
-     * @see fixChoice
-     */
-    protected function fixChoices(array $choices)
-    {
-        return $choices;
     }
 }

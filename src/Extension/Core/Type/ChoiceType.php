@@ -64,7 +64,7 @@ class ChoiceType extends AbstractFieldType
             $choices = null !== $options['choices'] ? $options['choices'] : array();
 
             // Reuse existing choice lists in order to increase performance
-            $hash = hash('sha256', json_encode(array($choices)));
+            $hash = hash('sha256', serialize(array($choices)));
 
             if (!isset($choiceListCache[$hash])) {
                 $choiceListCache[$hash] = new SimpleChoiceList($choices);

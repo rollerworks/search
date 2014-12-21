@@ -26,7 +26,7 @@ class TimeType extends AbstractFieldType
     /**
      * @var ValueComparisonInterface
      */
-    protected $valueComparison;
+    private $valueComparison;
 
     /**
      * Constructor.
@@ -60,8 +60,8 @@ class TimeType extends AbstractFieldType
         $config->setValueComparison($this->valueComparison);
         $config->addViewTransformer(
             new DateTimeToStringTransformer(
-                $options['model_timezone'],
-                $options['input_timezone'],
+                'UTC',
+                'UTC',
                 $format
             )
         );
@@ -74,10 +74,8 @@ class TimeType extends AbstractFieldType
     {
         $resolver->setDefaults(
             array(
-                'with_minutes'   => true,
-                'with_seconds'   => false,
-                'input_timezone' => null,
-                'model_timezone' => null,
+                'with_minutes' => true,
+                'with_seconds' => false,
             )
         );
     }

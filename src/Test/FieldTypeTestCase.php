@@ -41,36 +41,50 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
         );
     }
 
-    protected function assertTransformedEquals(FieldConfigInterface $column, ValuesBag $expectedValue, $input)
+    protected function assertTransformedEquals(FieldConfigInterface $field, $expectedValue, $input, $expectedView = null)
     {
-        $this->assertEquals(
-            $expectedValue,
-            $this->formatInput($column, $input)
-        );
+        $values = $this->formatInput($field, $input);
+
+        if ($values->hasErrors()) {
+            $this->fail(implode(', ', $values->getErrors()));
+        }
+
+        $values = $values->getSingleValues();
+
+        if ($expectedValue instanceof \DateTime) {
+            $this->assertDateTimeEquals($expectedValue, $values[0]->getValue());
+        } else {
+            $this->assertEquals($expectedValue, $values[0]->getValue());
+        }
+
+        if (null !== $expectedView) {
+            $this->assertEquals($expectedView, $values[0]->getViewValue());
+        }
     }
 
-    protected function assertTransformedNotEquals(FieldConfigInterface $column, ValuesBag $expectedValue, $input)
+    protected function assertTransformedFails(FieldConfigInterface $field, $input)
     {
-        $this->assertNotEquals(
-            $expectedValue,
-            $this->formatInput($column, $input)
-        );
+        $this->assertTrue($this->formatInput($field, $input)->hasErrors());
     }
 
-    protected function formatInput(FieldConfigInterface $column, $input)
+    protected function assertTransformedNotEquals(FieldConfigInterface $field, $expectedValue, $input)
+    {
+        $this->assertNotEquals($expectedValue, $this->formatInput($field, $input));
+    }
+
+    protected function formatInput(FieldConfigInterface $field, $input)
     {
         $fieldSet = new FieldSet('testSet');
-        $fieldSet->set($this->getTestedType(), $column);
+        $fieldSet->set($field->getName(), $field);
 
         $condition = new SearchConditionBuilder();
-        $condition->field($column->getName())->addSingleValue(new SingleValue($input));
+        $condition->field($field->getName())->addSingleValue(new SingleValue($input));
 
         $searchCondition = new SearchCondition($fieldSet, $condition->getGroup());
 
         $this->transformer->format($searchCondition);
-        $values = $searchCondition->getValuesGroup()->getField($column->getName())->getSingleValues();
 
-        return $values[0];
+        return $searchCondition->getValuesGroup()->getField($field->getName());
     }
 
     /**

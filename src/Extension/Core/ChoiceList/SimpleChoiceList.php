@@ -123,14 +123,6 @@ class SimpleChoiceList extends ChoiceList
     /**
      * {@inheritdoc}
      */
-    protected function fixChoices(array $choices)
-    {
-        return $this->fixIndices($choices);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function createIndex($choice)
     {
         return (string) $choice;
