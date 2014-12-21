@@ -67,7 +67,7 @@ interface ChoiceListInterface
      *
      * @param string $choice
      *
-     * @return array The value of the the choice
+     * @return string The value of the the choice
      */
     public function getValueForChoice($choice);
 
