@@ -19,17 +19,17 @@ class GroupsNestingException extends \Exception implements ExceptionInterface
     /**
      * @var string
      */
-    protected $max;
+    private $max;
 
     /**
      * @var int
      */
-    protected $groupIdx;
+    private $groupIdx;
 
     /**
      * @var int
      */
-    protected $nestingLevel;
+    private $nestingLevel;
 
     /**
      * Constructor.

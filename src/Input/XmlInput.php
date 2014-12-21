@@ -13,6 +13,8 @@ namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\InputProcessorException;
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchCondition;
@@ -35,40 +37,62 @@ use Rollerworks\Component\Search\ValuesGroup;
 class XmlInput extends AbstractInput
 {
     /**
-     * Process the input and returns the result.
+     * {@inheritdoc}
      *
-     * @param string $input
-     *
-     * @return null|SearchCondition Returns null on empty input
+     * @param ProcessorConfig $config
+     * @param string          $input
      */
-    public function process($input)
+    public function process(ProcessorConfig $config, $input)
     {
+        if (!is_string($input)) {
+            throw new UnexpectedTypeException($input, 'string');
+        }
+
+        $input = trim($input);
+
+        if (empty($input)) {
+            return;
+        }
+
         $document = simplexml_import_dom(XmlUtils::parseXml($input, __DIR__.'/schema/dic/input/xml-input-1.0.xsd'));
+
+        $this->config = $config;
 
         $valuesGroup = new ValuesGroup();
         if (isset($document['logical']) && 'OR' === strtoupper((string) $document['logical'])) {
             $valuesGroup->setGroupLogical(ValuesGroup::GROUP_LOGICAL_OR);
         }
 
-        $this->processGroup($document, $valuesGroup, 0, 0, true);
+        $this->processGroup($document, $valuesGroup, 0, 0);
 
-        return new SearchCondition($this->fieldSet, $valuesGroup);
+        $condition = new SearchCondition(
+            $config->getFieldSet(),
+            $valuesGroup
+        );
+
+        if ($condition->getValuesGroup()->hasErrors()) {
+            throw new InvalidSearchConditionException($condition);
+        }
+
+        return $condition;
     }
 
-    /**
-     * @param \SimpleXMLElement $values
-     * @param ValuesGroup       $valuesGroup
-     * @param int               $groupIdx
-     * @param int               $level
-     * @param bool              $isRoot
-     *
-     * @throws FieldRequiredException
-     * @throws InputProcessorException
-     */
-    private function processGroup(\SimpleXMLElement $values, ValuesGroup $valuesGroup, $groupIdx = 0, $level = 0, $isRoot = false)
+    private function validateValuesCount($fieldName, $count, $groupIdx, $level)
+    {
+        if ($count > $this->config->getMaxValues()) {
+            throw new ValuesOverflowException(
+                $fieldName,
+                $this->config->getMaxValues(),
+                $count,
+                $groupIdx,
+                $level
+            );
+        }
+    }
+
+    private function processGroup(\SimpleXMLElement $values, ValuesGroup $valuesGroup, $groupIdx = 0, $level = 0)
     {
         $this->validateGroupNesting($groupIdx, $level);
-        $allFields = $this->fieldSet->all();
 
         if (!isset($values->fields) && !isset($values->groups)) {
             throw new InputProcessorException(
@@ -77,43 +101,59 @@ class XmlInput extends AbstractInput
         }
 
         if (isset($values->fields)) {
+            $this->processFields($values, $valuesGroup, $groupIdx, $level);
+        }
+
+        if (isset($values->groups)) {
+            $this->processGroups($values, $valuesGroup, $groupIdx, $level);
+        }
+    }
+
+    private function processFields(\SimpleXMLElement $values, ValuesGroup $valuesGroup, $groupIdx, $level)
+    {
+        $allFields = $this->config->getFieldSet()->all();
+
             foreach ($values->fields->children() as $element) {
                 /** @var \SimpleXMLElement $element */
                 $fieldName = $this->getFieldName((string) $element['name']);
-                $filterConfig = $this->fieldSet->get($fieldName);
+                $fieldConfig = $this->config->getFieldSet()->get($fieldName);
 
                 if ($valuesGroup->hasField($fieldName)) {
                     $this->valuesToBag(
-                        $filterConfig,
+                        $fieldConfig,
                         $element,
-                        $fieldName,
+                        $valuesGroup->getField($fieldName),
                         $groupIdx,
-                        $level,
-                        $valuesGroup->getField($fieldName)
+                        $level
                     );
                 } else {
                     $valuesGroup->addField(
                         $fieldName,
-                        $this->valuesToBag($filterConfig, $element, $fieldName, $groupIdx, $level)
+                        $this->valuesToBag($fieldConfig, $element, new ValuesBag(), $groupIdx, $level)
                     );
                 }
 
                 unset($allFields[$fieldName]);
             }
-        }
 
         // Now run trough all the remaining fields and look if there are required
         // Fields that were set without values have already been checked by valuesToBag()
-        foreach ($allFields as $fieldName => $filterConfig) {
-            if ($filterConfig->isRequired()) {
-                throw new FieldRequiredException($fieldName, $groupIdx, $level);
+        // This is only run when there are fields in the group as a group can also contain only groups
+        if ($values->fields->children()->count()) {
+            foreach ($allFields as $fieldName => $fieldConfig) {
+                if ($fieldConfig->isRequired()) {
+                    throw new FieldRequiredException($fieldName, $groupIdx, $level);
+                }
             }
         }
+    }
 
-        if (isset($values->groups)) {
-            $this->validateGroupsCount($this->maxGroups, $values->groups->children()->count(), $level);
+    private function processGroups(\SimpleXMLElement $values, ValuesGroup $valuesGroup, $groupIdx, $level)
+    {
+            $this->validateGroupsCount($groupIdx, $values->groups->children()->count(), $level);
 
             $index = 0;
+
             foreach ($values->groups->children() as $element) {
                 $subValuesGroup = new ValuesGroup();
 
@@ -125,126 +165,88 @@ class XmlInput extends AbstractInput
                     $element,
                     $subValuesGroup,
                     $index,
-                    ($isRoot ? 0 : $level+1)
+                    $level+1
                 );
 
                 $valuesGroup->addGroup($subValuesGroup);
                 $index++;
             }
         }
-    }
 
-    /**
-     * Converts the values list to an FilterValuesBag object.
-     *
-     * @param FieldConfigInterface $fieldConfig
-     * @param \SimpleXMLElement    $values
-     * @param string               $fieldName
-     * @param int                  $groupIdx
-     * @param int                  $level
-     * @param ValuesBag|null       $valuesBag
-     *
-     * @return ValuesBag
-     *
-     * @throws FieldRequiredException
-     * @throws ValuesOverflowException
-     */
-    private function valuesToBag(FieldConfigInterface $fieldConfig, \SimpleXMLElement $values, $fieldName, $groupIdx, $level = 0, ValuesBag $valuesBag = null)
-    {
+    private function valuesToBag(
+        FieldConfigInterface $fieldConfig,
+        \SimpleXMLElement $values,
+        ValuesBag $valuesBag,
+        $groupIdx,
+        $level = 0
+    ) {
         if (isset($values->comparisons)) {
-            $this->assertAcceptsType('comparison', $fieldName);
+            $this->assertAcceptsType($fieldConfig, 'comparison');
         }
 
         if (isset($values->ranges) || isset($values->{'excluded-ranges'})) {
-            $this->assertAcceptsType('range', $fieldName);
+            $this->assertAcceptsType($fieldConfig, 'range');
         }
 
         if (isset($values->{'pattern-matchers'})) {
-            $this->assertAcceptsType('pattern-match', $fieldName);
-        }
-
-        if (!$valuesBag) {
-            $valuesBag = new ValuesBag();
+            $this->assertAcceptsType($fieldConfig, 'pattern-match');
         }
 
         $count = $valuesBag->count();
+        $fieldName = $fieldConfig->getName();
 
         if (isset($values->{'single-values'})) {
             foreach ($values->{'single-values'}->children() as $value) {
-                if ($count > $this->maxValues) {
-                    throw new ValuesOverflowException($fieldName, $this->maxValues, $count, $groupIdx, $level);
-                }
+                $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addSingleValue(new SingleValue((string) $value));
+                $valuesBag->addSingleValue($this->createSingleValue($value, $fieldConfig, $valuesBag));
             }
         }
 
         if (isset($values->{'excluded-values'})) {
             foreach ($values->{'excluded-values'}->children() as $value) {
-                if ($count > $this->maxValues) {
-                    throw new ValuesOverflowException($fieldName, $this->maxValues, $count, $groupIdx, $level);
-                }
+                $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addExcludedValue(new SingleValue((string) $value));
+                $valuesBag->addExcludedValue($this->createSingleValue($value, $fieldConfig, $valuesBag, true));
             }
         }
 
         if (isset($values->comparisons)) {
             foreach ($values->comparisons->children() as $comparison) {
-                if ($count > $this->maxValues) {
-                    throw new ValuesOverflowException($fieldName, $this->maxValues, $count, $groupIdx, $level);
-                }
+                $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addComparison(new Compare((string) $comparison, (string) $comparison['operator']));
+                $valuesBag->addComparison($this->createComparisonValue($comparison, $fieldConfig, $valuesBag));
             }
         }
 
         if (isset($values->ranges)) {
             foreach ($values->ranges->children() as $range) {
-                if ($count > $this->maxValues) {
-                    throw new ValuesOverflowException($fieldName, $this->maxValues, $count, $groupIdx, $level);
-                }
+                $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
                 $valuesBag->addRange(
-                    new Range(
-                        (string) $range->lower,
-                        (string) $range->upper,
-                        'false' !== strtolower($range->lower['inclusive']),
-                        'false' !== strtolower($range->upper['inclusive'])
-                    )
+                    $this->createRange($range, $fieldConfig, $valuesBag)
                 );
             }
         }
 
         if (isset($values->{'excluded-ranges'})) {
             foreach ($values->{'excluded-ranges'}->children() as $range) {
-                if ($count > $this->maxValues) {
-                    throw new ValuesOverflowException($fieldName, $this->maxValues, $count, $groupIdx, $level);
-                }
+                $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
                 $valuesBag->addExcludedRange(
-                    new Range(
-                        (string) $range->lower,
-                        (string) $range->upper,
-                        'false' !== strtolower($range->lower['inclusive']),
-                        'false' !== strtolower($range->upper['inclusive'])
-                    )
+                    $this->createRange($range, $fieldConfig, $valuesBag, true)
                 );
             }
         }
 
         if (isset($values->{'pattern-matchers'})) {
-            $this->assertAcceptsType('pattern-match', $fieldName);
-
             foreach ($values->{'pattern-matchers'}->children() as $patternMatch) {
-                if ($count > $this->maxValues) {
-                    throw new ValuesOverflowException($fieldName, $this->maxValues, $count, $groupIdx, $level);
-                }
+                $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
                 $valuesBag->addPatternMatch(
@@ -258,9 +260,81 @@ class XmlInput extends AbstractInput
         }
 
         if (0 === $count && $fieldConfig->isRequired()) {
-            throw new FieldRequiredException($fieldName, $groupIdx, $level);
+            throw new FieldRequiredException($fieldConfig->getName(), $groupIdx, $level);
         }
 
         return $valuesBag;
+    }
+
+    private function createSingleValue(
+        $value,
+        FieldConfigInterface $fieldConfig,
+        ValuesBag $valuesBag,
+        $negative = false
+    ) {
+        $path = $negative ? "excludedValues[".count($valuesBag->getExcludedValues())."]" :
+            "singleValues[".count($valuesBag->getSingleValues())."]";
+
+        $value = (string) $value;
+
+        $normValue = $this->viewToNorm($value, $fieldConfig, $path, $valuesBag);
+        $viewValue = $this->normToView($normValue, $fieldConfig, $path, $valuesBag);
+
+        if (null === $normValue || null === $viewValue) {
+            $singleValue = new SingleValue($value);
+        } else {
+            $singleValue = new SingleValue($normValue, $viewValue);
+        }
+
+        return $singleValue;
+    }
+
+    private function createRange($range, FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $negative = false)
+    {
+        $lowerInclusive = 'false' !== strtolower($range->lower['inclusive']);
+        $upperInclusive = 'false' !== strtolower($range->upper['inclusive']);
+
+        $lowerBound = (string) $range->lower;
+        $upperBound = (string) $range->upper;
+
+        $path = $negative ? "excludedRanges[".count($valuesBag->getExcludedRanges())."]" :
+            "ranges[".count($valuesBag->getRanges())."]";
+
+        $lowerNormValue = $this->viewToNorm($lowerBound, $fieldConfig, $path.'.lower', $valuesBag);
+        $lowerViewValue = $this->normToView($lowerNormValue, $fieldConfig, $path.'.lower', $valuesBag);
+
+        $upperNormValue = $this->viewToNorm($upperBound, $fieldConfig, $path.'.upper', $valuesBag);
+        $upperViewValue = $this->normToView($upperNormValue, $fieldConfig, $path.'.upper', $valuesBag);
+
+        if (null === $lowerNormValue || null === $lowerViewValue || null === $upperNormValue || null === $upperViewValue) {
+            $range = new Range($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
+        } else {
+            $range = new Range(
+                $lowerNormValue, $upperNormValue, $lowerInclusive, $upperInclusive, $lowerViewValue, $upperViewValue
+            );
+
+            $this->validateRangeBounds($range, $fieldConfig, $valuesBag, $path);
+        }
+
+        return $range;
+    }
+
+    private function createComparisonValue($comparison, FieldConfigInterface $fieldConfig, ValuesBag $valuesBag)
+    {
+        $operator = (string) $comparison['operator'];
+        $value = (string) $comparison;
+
+        $path = "comparisons[".count($valuesBag->getComparisons())."].value";
+
+        $normValue = $this->viewToNorm($value, $fieldConfig, $path, $valuesBag);
+        $viewValue = $this->normToView($normValue, $fieldConfig, $path, $valuesBag);
+
+        if (null === $normValue || null === $viewValue) {
+            $comparison = new Compare($value, $operator);
+        } else {
+            $comparison = new Compare($normValue, $operator, $viewValue);
+        }
+
+        return $comparison;
     }
 }

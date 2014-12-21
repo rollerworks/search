@@ -11,34 +11,32 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Input\ProcessorConfig;
+
 /**
- * InputProcessorInterface.
- *
- * Processes the provided input and returns the ValuesGroup
- * for further formatting.
+ * InputProcessorInterface must be implemented by each input-processor.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface InputProcessorInterface
 {
     /**
-     * Returns the FieldSet.
-     *
-     * @return FieldSet
-     */
-    public function getFieldSet();
-
-    /**
      * Process the input and returns the result.
      *
      * The processor should only handle fields
      * that are registered in the FieldSet.
      *
-     * Unknown fields must throw an NoFieldException.
+     * @param ProcessorConfig $config Configuration for the processor
+     * @param mixed           $input  Input to process, depends on the
+     *                                processor implementation
      *
-     * @param mixed $input
+     * @throws Exception\InvalidSearchConditionException When search condition is created
+     *                                                   but has errors
+     * @throws Exception\ValuesOverflowException         When maximum values count is exceeded
+     * @throws Exception\FieldRequiredException          When a field is required but missing
+     * @throws Exception\UnknownFieldException           When an unknown field is given in the input
      *
      * @return null|SearchConditionInterface Returns null on empty input
      */
-    public function process($input);
+    public function process(ProcessorConfig $config, $input);
 }

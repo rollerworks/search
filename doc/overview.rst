@@ -85,8 +85,8 @@ Supported value-types are:
 * Comparison value (mathematical comparison, < > >= <=)
 * PatternMatch (starts with, contains, ends with, regex) (and an excluding version)
 
-Values are stored as a normalized format en view format.
-The actual transformation is handled by the ```TransformerFormatter``.
+Values are stored as a normalized model and view format.
+The actual transformation is handled by the DataTransformers registered on the Search field configuration.
 
 .. note::
 

@@ -12,7 +12,11 @@
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\FieldRequiredException;
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
+use Rollerworks\Component\Search\FieldAliasResolverInterface;
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Input\FilterQuery\Lexer;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\SearchCondition;
@@ -133,65 +137,73 @@ class FilterQueryInput extends AbstractInput
     private $input;
 
     /**
-     * Creates a new query parser object.
+     * @param FieldAliasResolverInterface $aliasResolver
      */
-    public function __construct()
+    public function __construct(FieldAliasResolverInterface $aliasResolver)
     {
+        $this->aliasResolver = $aliasResolver;
         $this->lexer = new Lexer();
-    }
-
-    /**
-     * Gets the lexer used by the parser.
-     *
-     * @return Lexer
-     */
-    public function getLexer()
-    {
-        return $this->lexer;
-    }
-
-    /**
-     * Frees this parser, enabling it to be reused.
-     *
-     * @param bool $deep     Whether to clean peek and reset errors.
-     * @param int  $position Position to reset.
-     */
-    public function free($deep = false, $position = 0)
-    {
-        // WARNING! Use this method with care. It resets the scanner!
-        $this->lexer->resetPosition($position);
-
-        // Deep = true cleans peek and also any previously defined errors
-        if ($deep) {
-            $this->lexer->resetPeek();
-        }
-
-        $this->lexer->token = null;
-        $this->lexer->lookahead = null;
     }
 
     /**
      * Process the input and returns the result.
      *
-     * @param string $input
+     * @param ProcessorConfig $config
+     * @param string          $input
      *
      * @return null|SearchCondition Returns null on empty input
+     *
+     * @throws InvalidSearchConditionException
      */
-    public function process($input)
+    public function process(ProcessorConfig $config, $input)
     {
+        if (!is_string($input)) {
+            throw new UnexpectedTypeException($input, 'string');
+        }
+
         $input = trim($input);
 
         if (empty($input)) {
             return;
         }
 
+        $condition = new SearchCondition(
+            $config->getFieldSet(),
+            $this->parse($config, $input)
+        );
+
+        if ($condition->getValuesGroup()->hasErrors()) {
+            throw new InvalidSearchConditionException($condition);
+        }
+
+        return $condition;
+    }
+
+    /**
+     * @param ProcessorConfig $config
+     * @param                 $input
+     *
+     * @return ValuesGroup
+     */
+    private function parse(ProcessorConfig $config, $input)
+    {
+        $this->config = $config;
+        $this->input = $input;
+
         $this->lexer->setInput($input);
         $this->lexer->moveNext();
 
         $valuesGroup = new ValuesGroup();
+
+        if ($this->lexer->isNextToken(Lexer::T_MULTIPLY)) {
+            $this->match(Lexer::T_MULTIPLY);
+
+            $valuesGroup->setGroupLogical(ValuesGroup::GROUP_LOGICAL_OR);
+        }
+
         $this->fieldValuesPairs($valuesGroup, 0);
 
-        return new SearchCondition($this->fieldSet, $valuesGroup);
+        return $valuesGroup;
     }
 
     /**
@@ -287,7 +299,7 @@ class FilterQueryInput extends AbstractInput
     private function fieldValuesPairs(ValuesGroup $valuesGroup, $level = 0, $groupIdx = 0, $inGroup = false)
     {
         $groupCount = 0;
-        $allFields = $this->fieldSet->all();
+        $allFields = $this->config->getFieldSet()->all();
 
         while (null !== $this->lexer->lookahead) {
             switch ($this->lexer->lookahead['type']) {
@@ -301,12 +313,22 @@ class FilterQueryInput extends AbstractInput
 
                 case Lexer::T_IDENTIFIER:
                     $fieldName = $this->getFieldName($this->fieldIdentification());
+                    $fieldConfig = $this->config->getFieldSet()->get($fieldName);
+
                     unset($allFields[$fieldName]);
 
                     if ($valuesGroup->hasField($fieldName)) {
-                        $this->fieldValues($fieldName, $valuesGroup->getField($fieldName), $level, $groupIdx);
+                        $this->fieldValues(
+                            $fieldConfig,
+                            $valuesGroup->getField($fieldName),
+                            $level,
+                            $groupIdx
+                        );
                     } else {
-                        $valuesGroup->addField($fieldName, $this->fieldValues($fieldName, null, $level, $groupIdx));
+                        $valuesGroup->addField(
+                            $fieldName,
+                            $this->fieldValues($fieldConfig, new ValuesBag(), $level, $groupIdx)
+                        );
                     }
                     break;
 
@@ -345,64 +367,53 @@ class FilterQueryInput extends AbstractInput
      * FieldValues ::= [ "!" ] StringValue {"," [ "!" ] StringValue |
      *     [ "!" ] RangeValue | Comparison | PatternMatch}* [ ";" ]
      *
-     * @param string    $fieldName
-     * @param ValuesBag $valuesBag
-     * @param int       $level
-     * @param int       $groupIdx
+     * @param FieldConfigInterface $fieldConfig
+     * @param ValuesBag            $valuesBag
+     * @param int                  $level
+     * @param int                  $groupIdx
      *
      * @return ValuesBag
      *
      * @throws ValuesOverflowException
      */
-    private function fieldValues($fieldName, ValuesBag $valuesBag = null, $level = 0, $groupIdx = 0)
+    private function fieldValues(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $level = 0, $groupIdx = 0)
     {
-        $valuesBag = $valuesBag ?: new ValuesBag();
         $hasValues = false;
 
         while (null !== $this->lexer->lookahead) {
             $valuesCount = $valuesBag->count();
-            if ($valuesCount > $this->maxValues) {
-                throw new ValuesOverflowException($fieldName, $this->maxValues, $valuesCount, $groupIdx, $level);
+            if ($valuesCount > $this->config->getMaxValues()) {
+                throw new ValuesOverflowException(
+                    $fieldConfig->getName(),
+                    $this->config->getMaxValues(),
+                    $valuesCount,
+                    $groupIdx,
+                    $level
+                );
             }
 
             switch ($this->lexer->lookahead['type']) {
                 case Lexer::T_STRING:
-                case Lexer::T_FLOAT:
-                case Lexer::T_INTEGER:
-                    $this->singleValueOrRange($fieldName, $valuesBag);
-                    $hasValues = true;
+                    $this->singleValueOrRange($fieldConfig, $valuesBag);
                     break;
 
                 case Lexer::T_OPEN_BRACE:
                 case Lexer::T_CLOSE_BRACE:
-                    $this->assertAcceptsType('range', $fieldName);
-                    $valuesBag->addRange($this->rangeValue());
-
-                    $hasValues = true;
+                    $this->processRangeValue($fieldConfig, $valuesBag);
                     break;
 
                 case Lexer::T_NEGATE:
                     $this->match(Lexer::T_NEGATE);
-                    $this->singleValueOrRange($fieldName, $valuesBag, true);
-
-                    $hasValues = true;
+                    $this->singleValueOrRange($fieldConfig, $valuesBag, true);
                     break;
 
                 case Lexer::T_LOWER_THAN:
                 case Lexer::T_GREATER_THAN:
-                    $this->assertAcceptsType('comparison', $fieldName);
-                    $operator = $this->comparisonOperator();
-                    $valuesBag->addComparison(new Value\Compare($this->stringValue(), $operator));
-
-                    $hasValues = true;
+                    $this->processComparison($fieldConfig, $valuesBag);
                     break;
 
                 case Lexer::T_TILDE:
-                    $this->assertAcceptsType('pattern-match', $fieldName);
-                    $type = $this->patternMatchOperator($caseInsensitive);
-                    $valuesBag->addPatternMatch(new Value\PatternMatch($this->stringValue(), $type, $caseInsensitive));
-
-                    $hasValues = true;
+                    $this->processMatcher($fieldConfig, $valuesBag);
                     break;
 
                 default:
@@ -412,6 +423,9 @@ class FilterQueryInput extends AbstractInput
                     );
                     break;
             }
+
+            // We got here, so no errors
+            $hasValues = true;
 
             if (null !== $this->lexer->lookahead && $this->commaOrGroupEnd()) {
                 break;
@@ -428,37 +442,119 @@ class FilterQueryInput extends AbstractInput
         return $valuesBag;
     }
 
+    private function processSingleValue(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $negative = false)
+    {
+        $value = $this->logicalValue();
+        $path = $negative ? "excludedValues[".count($valuesBag->getExcludedValues())."]" :
+            "singleValues[".count($valuesBag->getSingleValues())."]";
+
+        $normValue = $this->viewToNorm($value, $fieldConfig, $path, $valuesBag);
+        $viewValue = $this->normToView($normValue, $fieldConfig, $path, $valuesBag);
+
+        if (null === $normValue || null === $viewValue) {
+            $singleValue = new Value\SingleValue($value);
+        } else {
+            $singleValue = new Value\SingleValue($normValue, $viewValue);
+        }
+
+        if ($negative) {
+            $valuesBag->addExcludedValue($singleValue);
+        } else {
+            $valuesBag->addSingleValue($singleValue);
+        }
+    }
+
+    /**
+     * RangeValue ::= [ "[" | "]" ] StringValue "-" StringValue [ "[" | "]" ]
+     *
+     * @param FieldConfigInterface $fieldConfig
+     * @param ValuesBag            $valuesBag
+     * @param bool                 $negative
+     */
+    private function processRangeValue(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $negative = false)
+    {
+        $this->assertAcceptsType($fieldConfig, 'range');
+
+        $lowerInclusive = Lexer::T_CLOSE_BRACE !== $this->lexer->matchAndMoveNext(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE));
+
+        $lowerBound = $this->logicalValue();
+        $this->match(Lexer::T_MINUS);
+        $upperBound = $this->logicalValue();
+
+        $upperInclusive = Lexer::T_OPEN_BRACE !== $this->lexer->matchAndMoveNext(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE));
+
+        $path = $negative ? "excludedRanges[".count($valuesBag->getExcludedRanges())."]" :
+            "ranges[".count($valuesBag->getRanges())."]";
+
+        $lowerNormValue = $this->viewToNorm($lowerBound, $fieldConfig, $path.'.lower', $valuesBag);
+        $lowerViewValue = $this->normToView($lowerNormValue, $fieldConfig, $path.'.lower', $valuesBag);
+
+        $upperNormValue = $this->viewToNorm($upperBound, $fieldConfig, $path.'.upper', $valuesBag);
+        $upperViewValue = $this->normToView($upperNormValue, $fieldConfig, $path.'.upper', $valuesBag);
+
+        if (null === $lowerNormValue || null === $lowerViewValue || null === $upperNormValue || null === $upperViewValue) {
+            $range = new Value\Range($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
+        } else {
+            $range = new Value\Range(
+                $lowerNormValue, $upperNormValue, $lowerInclusive, $upperInclusive, $lowerViewValue, $upperViewValue
+            );
+
+            $this->validateRangeBounds($range, $fieldConfig, $valuesBag, $path);
+        }
+
+        if ($negative) {
+            $valuesBag->addExcludedRange($range);
+        } else {
+            $valuesBag->addRange($range);
+        }
+    }
+
+    private function processComparison(FieldConfigInterface $config, ValuesBag $valuesBag)
+    {
+        $this->assertAcceptsType($config, 'comparison');
+
+        $operator = $this->comparisonOperator();
+        $value = $this->logicalValue();
+
+        $path = "comparisons[".count($valuesBag->getComparisons())."].value";
+
+        $normValue = $this->viewToNorm($value, $config, $path, $valuesBag);
+        $viewValue = $this->normToView($normValue, $config, $path, $valuesBag);
+
+        if (null === $normValue || null === $viewValue) {
+            $comparison = new Value\Compare($value, $operator);
+        } else {
+            $comparison = new Value\Compare($normValue, $operator, $viewValue);
+        }
+
+        $valuesBag->addComparison($comparison);
+    }
+
+    private function processMatcher(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag)
+    {
+        $this->assertAcceptsType($fieldConfig, 'pattern-match');
+
+        $type = $this->patternMatchOperator($caseInsensitive);
+        $value = $this->logicalValue();
+
+        $valuesBag->addPatternMatch(new Value\PatternMatch($value, $type, $caseInsensitive));
+    }
+
     /**
      * Matches either a SingleValue or Range.
      *
-     * @param string    $fieldName
-     * @param ValuesBag $valuesBag
-     * @param bool      $negative
+     * @param FieldConfigInterface $fieldConfig
+     * @param ValuesBag            $valuesBag
+     * @param bool                 $negative
      */
-    private function singleValueOrRange($fieldName, ValuesBag $valuesBag, $negative = false)
+    private function singleValueOrRange(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $negative = false)
     {
-        $peekToken = $this->lexer->glimpse();
-
         if ($this->lexer->isNextTokenAny(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE))
-            || (null !== $peekToken && Lexer::T_MINUS === $peekToken['type'])
+            || ($this->lexer->isGlimpse(Lexer::T_MINUS))
         ) {
-            $this->assertAcceptsType('range', $fieldName);
-
-            if ($negative) {
-                $valuesBag->addExcludedRange($this->rangeValue());
-            } else {
-                $valuesBag->addRange($this->rangeValue());
-            }
+            $this->processRangeValue($fieldConfig, $valuesBag, $negative);
         } else {
-            if ($negative) {
-                $valuesBag->addExcludedValue(
-                    new Value\SingleValue($this->stringValue())
-                );
-            } else {
-                $valuesBag->addSingleValue(
-                    new Value\SingleValue($this->stringValue())
-                );
-            }
+            $this->processSingleValue($fieldConfig, $valuesBag, $negative);
         }
     }
 
@@ -483,12 +579,6 @@ class FilterQueryInput extends AbstractInput
             return true;
         }
 
-        if ($this->lexer->isNextToken(Lexer::T_CLOSE_PARENTHESIS)) {
-            // Semicolon is optional when last
-            // values list has ended.
-            return true;
-        }
-
         $this->syntaxError('; | , | )', $this->lexer->lookahead);
     }
 
@@ -497,9 +587,9 @@ class FilterQueryInput extends AbstractInput
      *
      * @return string
      */
-    private function stringValue()
+    private function logicalValue()
     {
-        if (!$this->lexer->isNextTokenAny(array(Lexer::T_STRING, Lexer::T_FLOAT, Lexer::T_INTEGER))) {
+        if (!$this->lexer->isNextTokenAny(array(Lexer::T_STRING))) {
             $this->syntaxError('simple string, quoted string, integer or float', $this->lexer->token);
         }
 
@@ -507,33 +597,6 @@ class FilterQueryInput extends AbstractInput
         $value = $this->lexer->token['value'];
 
         return $value;
-    }
-
-    /**
-     * RangeValue ::= [ "[" | "]" ] StringValue "-" StringValue [ "[" | "]" ]
-     *
-     * @return Value\Range
-     */
-    private function rangeValue()
-    {
-        $lowerInclusive = true;
-        $upperInclusive = true;
-
-        if ($this->lexer->isNextTokenAny(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE))) {
-            $lowerInclusive = $this->lexer->isNextToken(Lexer::T_OPEN_BRACE);
-            $this->lexer->moveNext();
-        }
-
-        $lowerBound = $this->stringValue();
-        $this->match(Lexer::T_MINUS);
-        $upperBound = $this->stringValue();
-
-        if ($this->lexer->isNextTokenAny(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE))) {
-            $upperInclusive = $this->lexer->isNextToken(Lexer::T_CLOSE_BRACE);
-            $this->lexer->moveNext();
-        }
-
-        return new Value\Range($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
     }
 
     /**

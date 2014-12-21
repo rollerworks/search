@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Test;
 
+use Prophecy\Prophet;
 use Rollerworks\Component\Search\Extension\Core\CoreExtension;
 use Rollerworks\Component\Search\FieldRegistry;
 use Rollerworks\Component\Search\FieldSetBuilder;
@@ -25,8 +26,17 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
      */
     protected $factory;
 
+    /**
+     * @var Prophet
+     */
+    protected $prophet;
+
     protected function setUp()
     {
+        parent::setUp();
+
+        $this->prophet = new Prophet();
+
         $resolvedTypeFactory = new ResolvedFieldTypeFactory();
 
         $extensions = array(new CoreExtension());
@@ -36,11 +46,25 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
         $this->factory = new SearchFactory($typesRegistry, $resolvedTypeFactory, null);
     }
 
+    protected function tearDown()
+    {
+        if ($this->prophet) {
+            $this->prophet->checkPredictions();
+        }
+
+        parent::tearDown();
+    }
+
     protected function getExtensions()
     {
         return array();
     }
 
+    /**
+     * @param bool $build
+     *
+     * @return \Rollerworks\Component\Search\FieldSet|FieldSetBuilder
+     */
     protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->factory);

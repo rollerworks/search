@@ -21,7 +21,8 @@
         "symfony/intl": "~2.3",
         "symfony/yaml": "~2.1",
         "symfony/validator": "~2.1",
-        "seld/jsonlint": "1.*"
+        "seld/jsonlint": "1.*",
+        "doctrine/lexer": "~1.0,>=1.0.1"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.1@dev",

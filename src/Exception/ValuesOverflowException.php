@@ -52,6 +52,7 @@ class ValuesOverflowException extends \Exception implements ExceptionInterface
      */
     public function __construct($fieldName, $max, $count, $groupIdx, $nestingLevel)
     {
+        $this->fieldName = $fieldName;
         $this->max = $max;
         $this->count = $count;
         $this->groupIdx = $groupIdx;

@@ -5,25 +5,27 @@ Input
 =====
 
 The input component processes a condition to a ``SearchCondition`` instance.
-Only fields registered in the ``FieldSet`` will be processed.
 
-.. warning::
+.. note::
 
-    Because user-input may can contain invalid or unsupported formats,
-    the input should transformed and validated before passing it to a storage layer.
+    Only fields registered in the ``FieldSet`` will be processed,
+    other fields are simple ignored.
 
 The input can be provided in a wide range of formats.
 
 .. tip::
 
-    The :doc:`filter_query` works similar to a spreadsheet and is perfect
-    single input conditions.
+    The :doc:`filter_query` works similar to a spreadsheet formula's syntax
+    and is perfect single input conditions.
 
 Values limit
 ------------
 
-To prevent overloading system the input can limited a by values (per group), maximum amount
-of groups and group nesting level.
+To prevent overloading your system the provided input can limited
+a by values (per group), maximum amount of groups and group nesting level.
+
+Configuring happens using a ``Rollerworks\Component\Search\Input\ProcessorConfig``
+object instance.
 
 By default the input is limited to 10000 values per group and 100 groups in total,
 with nesting level of 100 levels deep.

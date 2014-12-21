@@ -26,25 +26,4 @@ class QueryException extends \Exception
     {
         return new self('[Syntax Error] '.$message, 0, $previous);
     }
-
-    /**
-     * @param string          $message
-     * @param \Exception|null $previous
-     *
-     * @return QueryException
-     */
-    public static function semanticError($message, $previous = null)
-    {
-        return new self('[Semantic Error] '.$message, 0, $previous);
-    }
-
-    /**
-     * @param string $literal
-     *
-     * @return QueryException
-     */
-    public static function invalidLiteral($literal)
-    {
-        return new self("Invalid literal '$literal'");
-    }
 }
