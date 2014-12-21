@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -49,7 +49,7 @@ class FieldType extends AbstractFieldType
      */
     public function getParent()
     {
-        return null;
+        return;
     }
 
     /**

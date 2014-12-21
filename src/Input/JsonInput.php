@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -40,7 +40,7 @@ class JsonInput extends ArrayInput
 
         $array = json_decode($input, true, $this->maxNestingLevel+10);
 
-        if (json_last_error() <> JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new InputProcessorException(
                 'Provided input is invalid, JSON contains an error or the maximum stack depth has been exceeded.',
                 json_last_error()

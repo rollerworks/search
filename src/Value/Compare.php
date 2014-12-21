@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -36,7 +36,7 @@ class Compare extends SingleValue
     {
         parent::__construct($value, $viewValue);
 
-        if (!in_array($operator, array('>=', '<=', '<>', '<', '>'))) {
+        if (!in_array($operator, array('>=', '<=', '<>', '<', '>'), true)) {
             throw new \InvalidArgumentException(
                 sprintf('Unknown operator "%s".', $operator)
             );

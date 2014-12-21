@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -51,7 +51,7 @@ class SearchConditionSerializer
      */
     public static function unserialize(FieldSet $fieldSet, array $searchCondition)
     {
-        if (count($searchCondition) <> 2 || !isset($searchCondition[0], $searchCondition[1])) {
+        if (count($searchCondition) !== 2 || !isset($searchCondition[0], $searchCondition[1])) {
             throw new InvalidArgumentException(
                 'Serialized SearchCondition must be exactly two values [fieldSet-name, ValuesGroup].'
             );

@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -21,8 +21,8 @@ use Rollerworks\Component\Search\ValuesBag;
 abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-    * @var SearchFactory
-    */
+     * @var SearchFactory
+     */
     protected $factory;
 
     protected function setUp()

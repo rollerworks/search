@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -119,7 +119,7 @@ class TransformFormatter implements FormatterInterface
             if ($valuesBag->hasPatternMatchers()) {
                 foreach ($valuesBag->getPatternMatchers() as $i => $value) {
                     // Only normalize when its not a regex, normalizing might break the regex pattern
-                    if (!in_array($value->getType(), array($value::PATTERN_REGEX, $value::PATTERN_NOT_REGEX))) {
+                    if (!in_array($value->getType(), array($value::PATTERN_REGEX, $value::PATTERN_NOT_REGEX), true)) {
                         $propertyPath = "patternMatchers[$i]";
                         $value->setValue(
                             $this->viewToNorm($value->getViewValue(), $config)

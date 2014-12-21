@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -24,7 +24,7 @@ class QueryException extends \Exception
      */
     public static function syntaxError($message, $previous = null)
     {
-        return new self('[Syntax Error] ' . $message, 0, $previous);
+        return new self('[Syntax Error] '.$message, 0, $previous);
     }
 
     /**
@@ -35,7 +35,7 @@ class QueryException extends \Exception
      */
     public static function semanticError($message, $previous = null)
     {
-        return new self('[Semantic Error] ' . $message, 0, $previous);
+        return new self('[Semantic Error] '.$message, 0, $previous);
     }
 
     /**

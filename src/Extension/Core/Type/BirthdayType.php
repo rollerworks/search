@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -63,7 +63,7 @@ class BirthdayType extends AbstractFieldType
             'allow_age' => true,
             'constraints' => function (Options $options) {
                 return new ConstraintBirthday(array('allowAge' => $options['allow_age']));
-            }
+            },
         ));
 
         $resolver->setAllowedTypes(array(

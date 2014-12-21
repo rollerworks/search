@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -35,7 +35,7 @@ class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
     public function transform($value)
     {
         if (null === $value) {
-            return null;
+            return;
         }
 
         if (!$value instanceof \DateTime) {
@@ -65,7 +65,7 @@ class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
     public function reverseTransform($value)
     {
         if (null === $value) {
-            return null;
+            return;
         }
 
         if (!is_numeric($value)) {

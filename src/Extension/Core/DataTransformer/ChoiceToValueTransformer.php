@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
  * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -52,7 +52,7 @@ class ChoiceToValueTransformer implements DataTransformerInterface
         // These are now valid ChoiceList values, so we can return null
         // right away
         if ('' === $value || null === $value) {
-            return null;
+            return;
         }
 
         $choice = $this->choiceList->getChoiceForValue($value);
