@@ -135,7 +135,7 @@ class TransformFormatter implements FormatterInterface
             $valuesBag->addError(
                 new ValuesError(
                     $propertyPath,
-                    null,
+                    $e->getMessage(),
                     $config->getOption('invalid_message', $e->getMessage()),
                     $config->getOption('invalid_message_parameters', array())
                 )
