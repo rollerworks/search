@@ -66,7 +66,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      */
     public function isEqual($value, $nextValue, $options)
     {
-        return $value === $nextValue;
+        return $value == $nextValue;
     }
 
     /**

@@ -32,10 +32,12 @@ class DateValueComparisonSpec extends ObjectBehavior
     {
         $date1 = new \DateTime('2013-09-21 12:46:00');
         $date2 = new \DateTime('2013-09-22 12:46:00');
+
         $this->isEqual($date1, $date2, array())->shouldReturn(false);
 
         $date1 = new \DateTime('2013-09-21 12:46:00');
         $date2 = new \DateTime('2013-09-21 12:40:00');
+
         $this->isEqual($date1, $date2, array())->shouldReturn(false);
     }
 
