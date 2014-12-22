@@ -76,7 +76,7 @@ class TimeTypeTest extends FieldTypeTestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
      */
     public function testThrowExceptionIfHoursIsInvalid()
     {
@@ -86,7 +86,7 @@ class TimeTypeTest extends FieldTypeTestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
      */
     public function testThrowExceptionIfMinutesIsInvalid()
     {
@@ -96,7 +96,7 @@ class TimeTypeTest extends FieldTypeTestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
      */
     public function testThrowExceptionIfSecondsIsInvalid()
     {

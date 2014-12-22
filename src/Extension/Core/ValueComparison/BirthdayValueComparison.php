@@ -69,7 +69,7 @@ class BirthdayValueComparison implements ValueIncrementerInterface
             return false;
         }
 
-        return $value === $nextValue;
+        return $value == $nextValue;
     }
 
     /**

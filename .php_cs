@@ -6,7 +6,7 @@ return Symfony\CS\Config\Config::create()
     // and extra fixers:
     ->fixers(array(
         'ordered_use',
-        'strict',
+        //'strict',
         'strict_param',
     ))
     ->finder(
