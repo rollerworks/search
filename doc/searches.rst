@@ -137,19 +137,15 @@ This example uses the :doc:`input/filter_query` with the FieldSet shown above.
 .. code-block:: php
     :linenos:
 
-    use Symfony\Component\Validator\Validation;
     use Rollerworks\Component\Search\Input\FilterQueryInput;
-    use Rollerworks\Component\Search\Extension\Validator\ValidatorExtension;
-    use Rollerworks\Component\Search\Extension\Validator\ValidationFormatter;
-    use Rollerworks\Component\Search\Formatter\ChainFormatter;
-    use Rollerworks\Component\Search\Formatter\DuplicateRemover;
-    use Rollerworks\Component\Search\Formatter\ValuesToRange;
-    use Rollerworks\Component\Search\Formatter\RangeOptimizer;
+    use Rollerworks\Component\Search\Input\ProcessorConfig;
+    use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
+    use Rollerworks\Component\Search\ConditionOptimizer\DuplicateRemover;
+    use Rollerworks\Component\Search\ConditionOptimizer\ValuesToRange;
+    use Rollerworks\Component\Search\ConditionOptimizer\RangeOptimizer;
     use Rollerworks\Component\Search\Searches;
 
-    $validator = Validation::createValidator();
     $searchFactory = new Searches::createSearchFactoryBuilder()
-        ->addExtension(new ValidatorExtension())
         ->getSearchFactory();
 
     /* ... */
@@ -168,14 +164,13 @@ This example uses the :doc:`input/filter_query` with the FieldSet shown above.
     $searchCondition = $inputProcessor->process($config, $query);
 
     // Because the search condition may have duplicate or redundant
-    // values we run them trough a list of formatters.
+    // values we run them trough a list of optimizers.
 
-    $formatter = new ChainFormatter();
-    $formatter->addFormatter(new ValidationFormatter($validator));
+    $formatter = new ChainOptimizer();
     $formatter->addFormatter(new DuplicateRemover());
-    $formatter->addFormatter(new ValuesToRange()); // add this before RangeOptimizer to ensure new overlaps are removed later on
+    $formatter->addFormatter(new ValuesToRange());
     $formatter->addFormatter(new RangeOptimizer());
-    $formatter->format($searchCondition);
+    $formatter->process($searchCondition);
 
     // Now the $searchCondition is already for applying on any supported storage engine
 

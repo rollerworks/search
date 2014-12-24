@@ -155,35 +155,34 @@ The input component process user-input to a ``SearchConditionInterface`` object.
 Input can be provided as a PHP Array, JSON, XML, or using the
 special :doc:`FilterQuery </input/filter_query>` format.
 
-Formatter
-~~~~~~~~~
+Condition Optimizer
+~~~~~~~~~~~~~~~~~~~
 
-A formatter formats the given SearchCondition,
-this can include validating, transforming, optimizing, etc.
+SearchCondition optimizers optimize SearchConditions,
+removing duplicate, overlapping and redundant values and conditions.
 
-The following formatters are provided with the library.
+The following optimizers are provided out of the box.
 
 .. note::
 
-    Formatters are listed in order of usage.
-    Transformation should take place before validating, and validating before optimizing.
+    For the best result optimizers should be performed in correct order,
+    therefor each optimizer has a priority between -10 and 10.
 
-+--------------------------+---------------------------------------------------------------------------+
-| Name                     | Description                                                               |
-+==========================+===========================================================================+
-| ``Chain``                | Performs the registered formatters in the sequence they were registered.  |
-+--------------------------+---------------------------------------------------------------------------+
-| ``TransformerFormatter`` | Transforms the values to a normalized format and view format.             |
-+--------------------------+---------------------------------------------------------------------------+
-| ``ValidatorFormatter``   | Validates values using the configured validation constraints.             |
-|                          | This formatter is provided by the Validator extension.                    |
-+--------------------------+---------------------------------------------------------------------------+
-| ``DuplicateRemove``      | Removes duplicated values inside group.                                   |
-+--------------------------+---------------------------------------------------------------------------+
-| ``ValuesToRange``        | Converts incremented values to inclusive ranges.                          |
-+--------------------------+---------------------------------------------------------------------------+
-| ``RangeOptimizer``       | Removes overlapping ranges/values and merges connected ranges.            |
-+--------------------------+---------------------------------------------------------------------------+
+    The ``ChainOptimizer`` automatically performs the optimizers in
+    correct order.
+
++--------------------------+------------------------------------------------------------------------+----------+
+| Name                     | Description                                                            | Priority |
++==========================+========================================================================+==========+
+| ``ChainOptimizer``       | Runs the registered optimizers in the sequence with correct priority.  | 0        |
++--------------------------+------------------------------------------------------------------------+----------+
+| ``DuplicateRemove``      | Removes duplicated values inside group.                                | 5        |
++--------------------------+------------------------------------------------------------------------+----------+
+| ``ValuesToRange``        | Converts incremented values to inclusive ranges.                       | 4        |
+|                          | Example values 1,2,3,4,5 are converted to range 1-5                    |          |
++--------------------------+------------------------------------------------------------------------+----------+
+| ``RangeOptimizer``       | Removes overlapping ranges/values and merges connected ranges.         | -5       |
++--------------------------+------------------------------------------------------------------------+----------+
 
 Type
 ~~~~

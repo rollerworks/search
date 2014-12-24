@@ -9,11 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Formatter;
+namespace Rollerworks\Component\Search\ConditionOptimizer;
 
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\FormatterInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
@@ -24,16 +24,14 @@ use Rollerworks\Component\Search\ValuesGroup;
 /**
  * Removes overlapping ranges/values and merges connected ranges.
  *
- * This should be run after validation and transformation.
- *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class RangeOptimizer implements FormatterInterface
+class RangeOptimizer implements SearchConditionOptimizerInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function format(SearchConditionInterface $condition)
+    public function process(SearchConditionInterface $condition)
     {
         $fieldSet = $condition->getFieldSet();
         $valuesGroup = $condition->getValuesGroup();
@@ -238,7 +236,8 @@ class RangeOptimizer implements FormatterInterface
                 }
 
                 if ($range->isLowerInclusive() !== $value->isLowerInclusive() ||
-                    $range->isUpperInclusive() !== $value->isUpperInclusive()) {
+                    $range->isUpperInclusive() !== $value->isUpperInclusive()
+                ) {
                     continue;
                 }
 
@@ -374,5 +373,13 @@ class RangeOptimizer implements FormatterInterface
         }
 
         return $overlap;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPriority()
+    {
+        return -5;
     }
 }

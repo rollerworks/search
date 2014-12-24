@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search\Test;
 
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\FormatterInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 
 abstract class FormatterTestCase extends SearchIntegrationTestCase
 {
@@ -22,9 +22,9 @@ abstract class FormatterTestCase extends SearchIntegrationTestCase
     protected $fieldSet;
 
     /**
-     * @var FormatterInterface
+     * @var SearchConditionOptimizerInterface
      */
-    protected $formatter;
+    protected $optimizer;
 
     protected function setUp()
     {

@@ -9,11 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Formatter;
+namespace Rollerworks\Component\Search\ConditionOptimizer;
 
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\FormatterInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
@@ -24,22 +24,22 @@ use Rollerworks\Component\Search\ValuesGroup;
 /**
  * Removes duplicated values.
  *
- * Duplicated values are only scanned at single-level, so if a subgroup
+ * Duplicated values are only scanned per level, so if a subgroup
  * has a value also present at a higher level its not removed.
  *
- *  Doing so would require to keep track of all the previous-values per-type.
+ *  Doing so would require to keep track of all the previous values per type.
  *  Which can get very complicated very easily.
  *
  * Values are compared using the {@see \Rollerworks\Component\Search\ValueComparisonInterface}.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DuplicateRemover implements FormatterInterface
+class DuplicateRemover implements SearchConditionOptimizerInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function format(SearchConditionInterface $condition)
+    public function process(SearchConditionInterface $condition)
     {
         $fieldSet = $condition->getFieldSet();
         $valuesGroup = $condition->getValuesGroup();
@@ -54,10 +54,6 @@ class DuplicateRemover implements FormatterInterface
     private function removeDuplicatesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
-            if (!$fieldSet->has($fieldName)) {
-                continue;
-            }
-
             $config = $fieldSet->get($fieldName);
             $this->removeDuplicatesInValuesBag($config, $values);
         }
@@ -167,11 +163,8 @@ class DuplicateRemover implements FormatterInterface
      * @param ValueComparisonInterface $comparison
      * @param array                    $options
      */
-    private function removeDuplicateComparisons(
-        ValuesBag $valuesBag,
-        ValueComparisonInterface $comparison,
-        array $options
-    ) {
+    private function removeDuplicateComparisons(ValuesBag $valuesBag, ValueComparisonInterface $comparison, array $options)
+    {
         $comparisons = $valuesBag->getComparisons();
 
         foreach ($comparisons as $i => $value) {
@@ -195,11 +188,8 @@ class DuplicateRemover implements FormatterInterface
      * @param ValueComparisonInterface $comparison
      * @param array                    $options
      */
-    private function removeDuplicateMatchers(
-        ValuesBag $valuesBag,
-        ValueComparisonInterface $comparison,
-        array $options
-    ) {
+    private function removeDuplicateMatchers(ValuesBag $valuesBag, ValueComparisonInterface $comparison, array $options)
+    {
         $matchers = $valuesBag->getPatternMatchers();
 
         foreach ($matchers as $i => $value) {
@@ -217,5 +207,13 @@ class DuplicateRemover implements FormatterInterface
                 }
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPriority()
+    {
+        return 5;
     }
 }

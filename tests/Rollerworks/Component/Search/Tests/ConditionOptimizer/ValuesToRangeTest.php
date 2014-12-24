@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Formatter;
+namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 
-use Rollerworks\Component\Search\Formatter\ValuesToRange;
+use Rollerworks\Component\Search\ConditionOptimizer\ValuesToRange;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\FormatterTestCase;
 use Rollerworks\Component\Search\Value\Range;
@@ -24,7 +24,7 @@ final class ValuesToRangeTest extends FormatterTestCase
     {
         parent::setUp();
 
-        $this->formatter = new ValuesToRange();
+        $this->optimizer = new ValuesToRange();
     }
 
     /**
@@ -45,7 +45,7 @@ final class ValuesToRangeTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -73,7 +73,7 @@ final class ValuesToRangeTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();

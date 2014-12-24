@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Formatter;
+namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 
-use Rollerworks\Component\Search\Formatter\RangeOptimizer;
+use Rollerworks\Component\Search\ConditionOptimizer\RangeOptimizer;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\FormatterTestCase;
 use Rollerworks\Component\Search\Value\Range;
@@ -24,7 +24,7 @@ final class RangeOptimizerTest extends FormatterTestCase
     {
         parent::setUp();
 
-        $this->formatter = new RangeOptimizer();
+        $this->optimizer = new RangeOptimizer();
     }
 
     /**
@@ -49,7 +49,7 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -89,7 +89,7 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -126,7 +126,7 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -167,7 +167,7 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -198,7 +198,7 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -227,7 +227,7 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
