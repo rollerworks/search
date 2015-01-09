@@ -54,16 +54,20 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getPriority()
+    {
+        return -5;
+    }
+
+    /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
      */
     private function normalizeRangesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
-            if (!$fieldSet->has($fieldName)) {
-                continue;
-            }
-
             $config = $fieldSet->get($fieldName);
 
             if ($config->acceptRanges() && ($values->hasRanges() || $values->hasExcludedRanges())) {
@@ -280,39 +284,23 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
      */
     private function isValInRange(SingleValue $singeValue, Range $range, ValueComparisonInterface $comparison, $options)
     {
-        $overlap = false;
-        $isLower = false;
+        $value = $singeValue->getValue();
 
-        // This has been made very verbose to not make a complete spaghetti mess of it
+        // Test if its not overlapping, when this fails then its save to assert there is an overlap
 
-        if ($range->isLowerInclusive() &&
-            ($comparison->isEqual($singeValue->getValue(), $range->getLower(), $options) ||
-             $comparison->isHigher($singeValue->getValue(), $range->getLower(), $options))
+        if (!$comparison->isHigher($value, $range->getLower(), $options) &&
+            (!$range->isLowerInclusive() xor !$comparison->isEqual($value, $range->getLower(), $options))
         ) {
-            $isLower = true;
-        } elseif (!$range->isLowerInclusive() &&
-            $comparison->isHigher($singeValue->getValue(), $range->getLower(), $options)
-        ) {
-            $isLower = true;
+            return false;
         }
 
-        // value is higher (or equal) then lower bound, so now check the lower bound
-        if ($isLower) {
-            if ($range->isUpperInclusive() &&
-                (
-                    $comparison->isEqual($singeValue->getValue(), $range->getUpper(), $options) ||
-                    $comparison->isLower($singeValue->getValue(), $range->getUpper(), $options)
-                )
-            ) {
-                $overlap = true;
-            } elseif (!$range->isUpperInclusive() &&
-                $comparison->isLower($singeValue->getValue(), $range->getUpper(), $options)
-            ) {
-                $overlap = true;
-            }
+        if (!$comparison->isLower($value, $range->getUpper(), $options) &&
+            (!$range->isUpperInclusive() xor !$comparison->isEqual($value, $range->getUpper(), $options))
+        ) {
+            return false;
         }
 
-        return $overlap;
+        return true;
     }
 
     /**
@@ -327,59 +315,51 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
      */
     private function isRangeInRange(Range $range1, Range $range, ValueComparisonInterface $comparison, $options)
     {
-        $overlap = false;
-        $isLower = false;
-
-        // This has been made very verbose to not make a complete spaghetti mess of it
-        // Ranges are more difficult as each can be inclusive and exclusive
-
-        if ($range->isLowerInclusive()) {
-            if ($range1->isLowerInclusive() &&
-                (
-                    $comparison->isEqual($range1->getLower(), $range->getLower(), $options) ||
-                    $comparison->isHigher($range1->getLower(), $range->getLower(), $options)
-                )
-            ) {
-                $isLower = true;
-            } elseif (!$range1->isLowerInclusive() &&
-                $comparison->isHigher($range1->getLower(), $range->getLower(), $options)
-            ) {
-                $isLower = true;
-            }
-        } elseif ($comparison->isHigher($range1->getLower(), $range->getLower(), $options)) {
-            // If the first range is exclusive it makes no sense to equal-check the second
-            $isLower = true;
+        if (!$comparison->isHigher($range1->getLower(), $range->getLower(), $options) &&
+            !$this->isBoundEqual(
+                $comparison,
+                $options,
+                $range1->getLower(),
+                $range->getLower(),
+                $range->isLowerInclusive(),
+                $range1->isLowerInclusive()
+            )
+        ) {
+            return false;
         }
 
-        // value is higher (or equal) then lower bound, so now check the lower bound
-        if ($isLower) {
-            if ($range->isUpperInclusive()) {
-                if ($range1->isUpperInclusive() &&
-                    (
-                        $comparison->isEqual($range1->getUpper(), $range->getUpper(), $options) ||
-                        $comparison->isLower($range1->getUpper(), $range->getUpper(), $options)
-                    )
-                ) {
-                    $overlap = true;
-                } elseif (!$range1->isUpperInclusive() &&
-                    $comparison->isLower($range->getUpper(), $range1->getUpper(), $options)
-                ) {
-                    // Because the second upper-bound is exclusive we check the
-                    $overlap = true;
-                }
-            } elseif ($comparison->isLower($range1->getUpper(), $range->getUpper(), $options)) {
-                $overlap = true;
-            }
+        if (!$comparison->isLower($range1->getUpper(), $range->getUpper(), $options) &&
+            !$this->isBoundEqual(
+                $comparison,
+                $options,
+                $range1->getUpper(),
+                $range->getUpper(),
+                $range->isUpperInclusive(),
+                $range1->isUpperInclusive()
+            )
+        ) {
+            return false;
         }
 
-        return $overlap;
+        return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPriority()
-    {
-        return -5;
+    private function isBoundEqual(
+        ValueComparisonInterface $comparison,
+        $options,
+        $value1,
+        $value2,
+        $value1Inclusive,
+        $value2Inclusive
+    ) {
+        if (!$comparison->isEqual($value1, $value2, $options)) {
+            return false;
+        }
+
+        if ($value1Inclusive === $value2Inclusive) {
+            return true;
+        }
+
+        return true === $value1Inclusive;
     }
 }
