@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
@@ -29,6 +30,11 @@ class FieldSet implements \Countable, \IteratorAggregate
      * @var string
      */
     private $name;
+
+    /**
+     * @var bool
+     */
+    private $locked = false;
 
     /**
      * Constructor.
@@ -77,6 +83,10 @@ class FieldSet implements \Countable, \IteratorAggregate
      */
     public function set($name, FieldConfigInterface $config)
     {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
         self::validateName($name);
 
         $this->fields[$name] = $config;
@@ -98,6 +108,10 @@ class FieldSet implements \Countable, \IteratorAggregate
      */
     public function replace($name, FieldConfigInterface $config)
     {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
         if (!isset($this->fields[$name])) {
             throw new \RuntimeException(
                 sprintf('Unable to replace none existent field: %s', $name)
@@ -118,6 +132,10 @@ class FieldSet implements \Countable, \IteratorAggregate
      */
     public function remove($name)
     {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
         if (isset($this->fields[$name])) {
             unset($this->fields[$name]);
         }
@@ -200,7 +218,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     public static function validateName($name)
     {
         if (null !== $name && !is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string, integer or null');
+            throw new UnexpectedTypeException($name, 'string or null');
         }
 
         if (!self::isValidName($name)) {
@@ -231,5 +249,41 @@ class FieldSet implements \Countable, \IteratorAggregate
     final public static function isValidName($name)
     {
         return '' === $name || null === $name || preg_match('/^[a-zA-Z0-9_][a-zA-Z0-9_\-:]*$/D', $name);
+    }
+
+    /**
+     * Marks the FieldSet's data is locked.
+     *
+     * After calling this method, setter methods can be no longer called.
+     *
+     * @throws BadMethodCallException when the data is locked
+     */
+    public function lockConfig()
+    {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
+        $this->locked = true;
+    }
+
+    /**
+     * Returns whether the FieldSet's data is locked.
+     *
+     * A FieldSet with locked data is restricted to the data passed in
+     * this configuration.
+     *
+     * @return bool Whether the data is locked.
+     */
+    public function isConfigLocked()
+    {
+        return $this->locked;
+    }
+
+    private function throwLocked()
+    {
+        throw new BadMethodCallException(
+            'FieldSet setter methods cannot be accessed anymore once the data is locked.'
+        );
     }
 }
