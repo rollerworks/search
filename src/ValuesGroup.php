@@ -36,17 +36,19 @@ class ValuesGroup implements \Serializable
     private $fields = array();
 
     /**
-     * @var bool
-     */
-    private $errors = false;
-
-    /**
      * @var string
      */
     private $groupLogical;
 
     /**
+     * @var bool
+     */
+    private $locked = false;
+
+    /**
      * Constructor.
+     *
+     * @param string $groupLogical
      */
     public function __construct($groupLogical = self::GROUP_LOGICAL_AND)
     {
@@ -177,34 +179,34 @@ class ValuesGroup implements \Serializable
     }
 
     /**
+     * @param bool $deeper
+     *
      * @return bool
      */
-    public function hasErrors()
+    public function hasErrors($deeper = false)
     {
-        return $this->errors;
+        foreach ($this->fields as $field) {
+            if ($field->hasErrors()) {
+                return true;
+            }
     }
 
-    /**
-     * Set whether this group has nested-values with errors.
-     *
-     * Actual errors are set on the {@see ValuesBag} object.
-     *
-     * @param bool $errors
-     *
-     * @return self
-     */
-    public function setHasErrors($errors = true)
-    {
-        $this->errors = $errors;
+        if ($deeper) {
+            foreach ($this->groups as $group) {
+                if ($group->hasErrors(true)) {
+                    return true;
+                }
+            }
+        }
 
-        return $this;
+        return false;
     }
 
     /**
      * Get the logical case of the field.
      *
      * This is either one of the following class constants value:
-     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
      * @return string
      */
@@ -217,13 +219,17 @@ class ValuesGroup implements \Serializable
      * Set the logical case of the field.
      *
      * This is either one of the following class constants value:
-     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
      * @param int
+     *
+     * @return self
      */
     public function setGroupLogical($groupLogical)
     {
         $this->groupLogical = $groupLogical;
+
+        return $this;
     }
 
     /**
@@ -231,7 +237,8 @@ class ValuesGroup implements \Serializable
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize(
+            array(
             $this->groupLogical,
             $this->groups,
             $this->fields,
@@ -250,7 +257,7 @@ class ValuesGroup implements \Serializable
             $this->groupLogical,
             $this->groups,
             $this->fields,
-            $this->errors
+            $this->locked
         ) = $data;
     }
 }

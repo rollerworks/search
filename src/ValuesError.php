@@ -31,21 +31,26 @@ class ValuesError
      *
      * @var string
      */
-    protected $messageTemplate;
+    private $messageTemplate;
 
     /**
      * The parameters that should be substituted in the message template.
      *
      * @var array
      */
-    protected $messageParameters;
+    private $messageParameters;
 
     /**
      * The value for error message pluralization.
      *
      * @var integer|null
      */
-    protected $messagePluralization;
+    private $messagePluralization;
+
+    /**
+     * @var mixed|null
+     */
+    private $cause;
 
     /**
      * Constructor
@@ -60,16 +65,18 @@ class ValuesError
      * @param array       $messageParameters    The parameters that should be
      *                                          substituted in the message template.
      * @param int|null    $messagePluralization The value for error message pluralization
+     * @param mixed $cause                      The cause of the error
      *
      * @see \Symfony\Component\Translation\Translator
      */
-    public function __construct($subPath, $message, $messageTemplate = null, array $messageParameters = array(), $messagePluralization = null)
+    public function __construct($subPath, $message, $messageTemplate = null, array $messageParameters = array(), $messagePluralization = null, $cause = null)
     {
         $this->subPath = $subPath;
         $this->message = $message;
         $this->messageTemplate = $messageTemplate ?: $message;
         $this->messageParameters = $messageParameters;
         $this->messagePluralization = $messagePluralization;
+        $this->cause = $cause;
     }
 
     /**
@@ -128,5 +135,28 @@ class ValuesError
     public function __toString()
     {
         return (string) $this->getMessage();
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getCause()
+    {
+        return $this->cause;
+    }
+
+    /**
+     * Returns the hash that identifies this error.
+     *
+     * Caution: This will only use the subPath + messageTemplate + messageParameters + messagePluralization as SHA1.
+     * So an error with the same information but different cause will produce the same hash!
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return sha1(
+            $this->subPath.$this->messageTemplate.serialize($this->getMessageParameters()).$this->messagePluralization
+        );
     }
 }

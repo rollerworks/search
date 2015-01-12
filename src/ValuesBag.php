@@ -313,7 +313,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addError(ValuesError $error)
     {
-        $this->errors[] = $error;
+        $this->errors[$error->getHash()] = $error;
 
         return $this;
     }
@@ -332,6 +332,30 @@ class ValuesBag implements \Countable, \Serializable
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * @param ValuesError $error
+     *
+     * @return bool
+     */
+    public function hasError(ValuesError $error)
+    {
+        return isset($this->errors[$error->getHash()]);
+    }
+
+    /**
+     * @param ValuesError $error
+     *
+     * @return static
+     */
+    public function removeError(ValuesError $error)
+    {
+        if (isset($this->errors[$error->getHash()])) {
+            unset($this->errors[$error->getHash()]);
+        }
+
+        return $this;
     }
 
     /**
