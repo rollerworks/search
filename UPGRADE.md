@@ -38,6 +38,17 @@ is now done by asking each field in the group for there errors-state.
 pass `true` to `ValuesGroup::hasErrors()` to traverse the deeper
 error-state of all nested groups.
 
+### Values
+  
+* Value objects `Compare`, `SingleValue`, `Range`, `PatternMatch` are now marked as
+  final and made immutable. To change a value, remove the original at the index and
+  add the new value object to the ValuesBag.
+  
+* `PatternMatch::getViewValue()` was removed as this value-type has no view version.
+  
+* All view-values are casted to strings now;
+  When no view value is provided the "normalized" value must support casting to a string!
+
 ## Upgrade from 1.0.0-beta2 to 1.0.0-beta3
 
 RollerworksSearch is split to multiple smaller packages,

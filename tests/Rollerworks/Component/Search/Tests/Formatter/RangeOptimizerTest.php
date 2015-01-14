@@ -203,9 +203,9 @@ final class RangeOptimizerTest extends FormatterTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addRange(new Range(10, 26))
             ->addRange(new Range(30, 40))
             ->addRange(new Range(20, 28, false)) // this should not be changed as the bounds do not equal 1
+            ->addRange(new Range(10, 26))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
@@ -232,9 +232,9 @@ final class RangeOptimizerTest extends FormatterTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addExcludedRange(new Range(10, 26))
             ->addExcludedRange(new Range(30, 40))
             ->addExcludedRange(new Range(20, 28, false)) // this should not be changed as the bounds do not equal 1
+            ->addExcludedRange(new Range(10, 26))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));

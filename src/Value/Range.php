@@ -14,33 +14,38 @@ namespace Rollerworks\Component\Search\Value;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Range
+final class Range
 {
-    protected $viewLower;
-    protected $viewUpper;
-
-    protected $lower;
-    protected $upper;
-    protected $inclusiveLower;
-    protected $inclusiveUpper;
+    private $viewLower;
+    private $viewUpper;
+    private $lower;
+    private $upper;
+    private $inclusiveLower;
+    private $inclusiveUpper;
 
     /**
      * Constructor.
      *
      * @param mixed  $lower
      * @param mixed  $upper
-     * @param bool   $inclusiveLower
-     * @param bool   $inclusiveUpper
      * @param string $viewLower
      * @param string $viewUpper
+     * @param bool   $inclusiveLower
+     * @param bool   $inclusiveUpper
      */
-    public function __construct($lower, $upper, $inclusiveLower = true, $inclusiveUpper = true, $viewLower = null, $viewUpper = null)
-    {
+    public function __construct(
+        $lower,
+        $upper,
+        $inclusiveLower = true,
+        $inclusiveUpper = true,
+        $viewLower = null,
+        $viewUpper = null
+    ) {
         $this->lower = $lower;
         $this->upper = $upper;
 
-        $this->viewLower = null !== $viewLower ? $viewLower : $lower;
-        $this->viewUpper = null !== $viewUpper ? $viewUpper : $upper;
+        $this->viewLower = (string) (null !== $viewLower ? $viewLower : $lower);
+        $this->viewUpper = (string) (null !== $viewUpper ? $viewUpper : $upper);
 
         $this->inclusiveLower = (bool) $inclusiveLower;
         $this->inclusiveUpper = (bool) $inclusiveUpper;
@@ -84,42 +89,6 @@ class Range
     public function isUpperInclusive()
     {
         return $this->inclusiveUpper;
-    }
-
-    /**
-     * Set the lower value of the range.
-     *
-     * @param mixed $value
-     */
-    public function setLower($value)
-    {
-        $this->lower = $value;
-    }
-
-    /**
-     * Set the upper value of the range.
-     *
-     * @param mixed $value
-     */
-    public function setUpper($value)
-    {
-        $this->upper = $value;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setViewLower($value)
-    {
-        $this->viewLower = $value;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setViewUpper($value)
-    {
-        $this->viewUpper = $value;
     }
 
     /**

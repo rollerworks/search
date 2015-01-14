@@ -220,7 +220,7 @@ class XmlExporter extends AbstractExporter
                 $element->setAttribute('case-insensitive', $value->isCaseInsensitive() ? 'true' : 'false');
                 $element->appendChild(
                     $this->document->createTextNode(
-                        $value->getViewValue()
+                        $value->getValue()
                     )
                 );
 

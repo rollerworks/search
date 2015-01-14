@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Value;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class PatternMatch
+final class PatternMatch
 {
     const PATTERN_CONTAINS = 1;
     const PATTERN_STARTS_WITH = 2;
@@ -26,26 +26,21 @@ class PatternMatch
     const PATTERN_NOT_REGEX = 8;
 
     /**
-     * @var mixed
+     * @var string
      */
-    protected $value;
-
-    /**
-     * @var mixed
-     */
-    protected $viewValue;
+    private $value;
 
     /**
      * Comparison operator.
      *
      * @var string
      */
-    protected $patternType;
+    private $patternType;
 
     /**
      * @var bool
      */
-    protected $caseInsensitive;
+    private $caseInsensitive;
 
     /**
      * Constructor.
@@ -77,41 +72,14 @@ class PatternMatch
         }
 
         $this->patternType = $patternType;
-        $this->value = $value;
-        $this->viewValue = $value;
+        $this->value = (string) $value;
         $this->caseInsensitive = $caseInsensitive;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
     }
 
     /**
      * @return string
      */
     public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
-    public function setViewValue($value)
-    {
-        $this->viewValue = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getViewValue()
     {
         return $this->value;
     }
@@ -124,14 +92,6 @@ class PatternMatch
     public function getType()
     {
         return $this->patternType;
-    }
-
-    /**
-     * @param bool $caseInsensitive
-     */
-    public function setCaseInsensitive($caseInsensitive = true)
-    {
-        $this->caseInsensitive = $caseInsensitive;
     }
 
     /**

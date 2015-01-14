@@ -95,7 +95,7 @@ class FilterQueryExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->getPatternMatchers() as $value) {
-            $exportedValues .= $this->getPatternMatchOperator($value).$this->exportValuePart($value->getViewValue()).', ';
+            $exportedValues .= $this->getPatternMatchOperator($value).$this->exportValuePart($value->getValue()).', ';
         }
 
         return rtrim($exportedValues, ', ');

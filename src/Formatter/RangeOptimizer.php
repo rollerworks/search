@@ -243,17 +243,27 @@ class RangeOptimizer implements FormatterInterface
                 }
 
                 if ($comparison->isEqual($range->getUpper(), $value->getLower(), $options)) {
-                    $range->setUpper($value->getUpper());
-                    $range->setViewUpper($value->getViewUpper());
+                    $newRange = new Range(
+                        $range->getLower(),
+                        $value->getUpper(),
+                        $range->isLowerInclusive(),
+                        $range->isUpperInclusive(),
+                        $range->getViewLower(),
+                        $value->getViewUpper()
+                    );
 
-                    // remove the second range as its merged now
+                    // Remove original ranges and add new merged range
                     if ($exclude) {
+                        $valuesBag->removeExcludedRange($i);
                         $valuesBag->removeExcludedRange($c);
+                        $valuesBag->addExcludedRange($newRange);
                     } else {
+                        $valuesBag->removeRange($i);
                         $valuesBag->removeRange($c);
+                        $valuesBag->addRange($newRange);
                     }
 
-                    unset($ranges[$c]);
+                    unset($ranges[$i], $ranges[$c]);
                 }
             }
         }
