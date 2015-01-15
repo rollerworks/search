@@ -14,14 +14,24 @@ namespace Rollerworks\Component\Search\Value;
 /**
  * Compare value structure.
  */
-class Compare extends SingleValue
+final class Compare
 {
     /**
      * Comparison operator.
      *
      * @var string
      */
-    protected $operator;
+    private $operator;
+
+    /**
+     * @var mixed
+     */
+    private $value;
+
+    /**
+     * @var string
+     */
+    private $viewValue;
 
     /**
      * Constructor.
@@ -34,14 +44,14 @@ class Compare extends SingleValue
      */
     public function __construct($value, $operator, $viewValue = null)
     {
-        parent::__construct($value, $viewValue);
-
         if (!in_array($operator, array('>=', '<=', '<>', '<', '>'), true)) {
             throw new \InvalidArgumentException(
                 sprintf('Unknown operator "%s".', $operator)
             );
         }
 
+        $this->value = $value;
+        $this->viewValue = (string) (null !== $viewValue ? $viewValue : $value);
         $this->operator = $operator;
     }
 
@@ -53,5 +63,21 @@ class Compare extends SingleValue
     public function getOperator()
     {
         return $this->operator;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewValue()
+    {
+        return $this->viewValue;
     }
 }

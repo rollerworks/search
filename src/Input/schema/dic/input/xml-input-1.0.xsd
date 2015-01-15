@@ -11,8 +11,8 @@
 
     <xsd:complexType name="group-struct">
         <xsd:sequence maxOccurs="1" minOccurs="1">
-            <xsd:element name="groups" type="group" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="fields" type="field" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="groups" type="group" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
         <xsd:attribute name="logical" default="AND">
             <xsd:simpleType>

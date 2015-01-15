@@ -11,6 +11,8 @@
 
 namespace Rollerworks\Component\Search\Input\FilterQuery;
 
+use Doctrine\Common\Lexer\AbstractLexer;
+
 /**
  * Scans a Query for tokens.
  *
@@ -63,15 +65,50 @@ class Lexer extends AbstractLexer
     }
 
     /**
+     * @param array|int|string $tokens
+     *
+     * @return int|null
+     */
+    public function matchAndMoveNext($tokens)
+    {
+        $tokens = (array) $tokens;
+
+        if (null === $this->lookahead) {
+            return;
+        }
+
+        $index = array_search($this->lookahead['type'], $tokens, true);
+
+        if (false !== $index) {
+            $this->moveNext();
+
+            return $tokens[$index];
+        }
+
+        return;
+    }
+
+    /**
+     * @param $token
+     *
+     * @return bool
+     */
+    public function isGlimpse($token)
+    {
+        $peekToken = $this->glimpse();
+
+        return null !== $peekToken && $token === $peekToken['type'];
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getCatchablePatterns()
     {
         return array(
-            '\p{L}[\p{L}\p{N}_-]*:', // field-name, unicode
-            '\p{L}+\p{N}*', // string literal
-            '(?:\p{N}+(?:[\.]\p{N}+)*)', // numbers (no negatives)
-            '"(?:[^"]|"")*"', // quoted string
+            '(?:\p{L}[\p{L}\p{N}_-]*:)', // field-name, unicode
+            '[\p{L}\p{N}]+', // string literal
+            '(?:"(?:[^"]|"")*")', // quoted string
         );
     }
 
@@ -84,6 +121,16 @@ class Lexer extends AbstractLexer
     }
 
     /**
+     * Regex modifiers
+     *
+     * @return string
+     */
+    protected function getModifiers()
+    {
+        return 'iu';
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getType(&$value)
@@ -91,14 +138,6 @@ class Lexer extends AbstractLexer
         $type = self::T_NONE;
 
         switch (true) {
-            // Recognize numeric values
-            case (is_numeric($value)):
-                if (strpos($value, '.') !== false) {
-                    return self::T_FLOAT;
-                }
-
-                return self::T_INTEGER;
-
             // Recognize quoted strings
             case ($value[0] === '"'):
                 $value = str_replace('""', '"', substr($value, 1, strlen($value) - 2));
@@ -107,13 +146,13 @@ class Lexer extends AbstractLexer
 
             // Recognize identifiers
             // identifiers are suffixed with ':' to distinct them from strings literals
-            case (preg_match('/^\p{L}[\p{L}\p{N}_-]*:$/ui', $value)):
+            case (':' === substr($value, -1, 1)):
                 $value = substr($value, 0, strlen($value) -1);
 
                 return self::T_IDENTIFIER;
 
             // Recognize strings literals
-            case (preg_match('/^\p{L}+\p{N}*$/ui', $value) > 0):
+            case (preg_match('/^([\p{L}\p{N}]+)$/ui', $value) > 0):
                 return self::T_STRING;
 
             // Recognize symbols

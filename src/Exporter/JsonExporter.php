@@ -43,8 +43,7 @@ class JsonExporter extends ArrayExporter
                 $condition->getFieldSet(),
                 $useFieldAlias,
                 true
-            ),
-            JSON_FORCE_OBJECT
+            )
         );
     }
 }

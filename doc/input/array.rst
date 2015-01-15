@@ -3,16 +3,18 @@ ArrayInput
 
 Processes input provided as a PHP Array.
 
-The provided input must be structured as follow.
+The provided input must be structured as follow;
 
 Each entry must contain an array with either 'fields' and/or groups.
-Optionally the array can contain logical-case => 'AND' to make it AND-cased.
+Optionally the array can contain ``'logical-case' => 'AND'`` to make it AND-cased.
 
-The groups array contains numeric groups with and the value as described
+The "groups" array contains numeric groups with the structure as described
 above (fields and/or groups).
 
 The fields array is an associative array where each key is the field-name
-and the value as follow. All the keys are optional, but at least one must exists.
+and the values as follow.
+
+All the keys are optional, but at least one must exists.
 
 .. code:: php
 
@@ -36,7 +38,7 @@ The type of 'pattern-matchers' must either one of the following:
 * NOT_ENDS_WITH
 * NOT_REGEX
 
-Full example.
+Full example:
 
 .. code:: php
 
@@ -46,7 +48,6 @@ Full example.
                 'ranges' => array(
                     array('lower' => 10, 'upper' => 20),
                     array('lower' => 30, 'upper' => 40),
-
                     array('lower' => 50, 'upper' => 60, 'inclusive-lower' => false),
                     array('lower' => 70, 'upper' => 80, 'inclusive-upper' => false),
                 )
@@ -54,6 +55,7 @@ Full example.
         ),
         'groups' => array(
             array(
+                'logical-case' => 'AND'
                 'fields' => array(
                     'field1' => array(
                         'single-values' => array('value', 'value2', 'value3', 'value4', 'value5')

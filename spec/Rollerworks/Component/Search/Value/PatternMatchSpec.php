@@ -26,34 +26,34 @@ class PatternMatchSpec extends ObjectBehavior
         $this->shouldHaveType('Rollerworks\Component\Search\Value\PatternMatch');
     }
 
-    public function it_should_return_the_value()
+    public function it_has_a_value()
     {
         $this->getValue()->shouldReturn('foo');
     }
 
-    public function it_should_return_the_patternType()
+    public function it_has_a_patternType()
     {
         $this->getType()->shouldReturn(PatternMatch::PATTERN_CONTAINS);
     }
 
-    public function its_case_sensitive_by_default()
+    public function it_is_case_sensitive_by_default()
     {
         $this->isCaseInsensitive()->shouldReturn(false);
     }
 
     public function it_allows_case_insensitive()
     {
-        $this->setCaseInsensitive(true);
+        $this->beConstructedWith('foo', PatternMatch::PATTERN_CONTAINS, true);
         $this->isCaseInsensitive()->shouldReturn(true);
     }
 
-    public function it_should_complain_when_setting_an_object_as_value()
+    public function it_throws_when_setting_an_invalid_value()
     {
         $this->shouldThrow(new \InvalidArgumentException('Value of PatternMatch must be a scalar value.'));
         $this->beConstructedWith(new \stdClass, PatternMatch::PATTERN_CONTAINS);
     }
 
-    public function it_should_convert_a_patternType_as_text_to_an_integer()
+    public function it_accepts_a_patternType_as_string()
     {
         $this->beConstructedWith('foo', 'CONTAINS');
         $this->getType()->shouldReturn(PatternMatch::PATTERN_CONTAINS);

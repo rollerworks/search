@@ -143,11 +143,16 @@ class ArrayExporter extends AbstractExporter
             $exportedPatternMatchers = array();
 
             foreach ($valuesBag->getPatternMatchers() as $value) {
-                $exportedPatternMatchers[] = array(
+                $matcher = array(
                     'type' => $this->getPatternMatchType($value),
-                    'value' => $value->getViewValue(),
-                    'case-insensitive' => $value->isCaseInsensitive(),
+                    'value' => $value->getValue(),
                 );
+
+                if ($value->isCaseInsensitive()) {
+                    $matcher['case-insensitive'] = $value->isCaseInsensitive();
+                }
+
+                $exportedPatternMatchers[] = $matcher;
             }
 
             if (count($exportedPatternMatchers)) {

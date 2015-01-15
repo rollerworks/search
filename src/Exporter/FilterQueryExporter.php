@@ -70,7 +70,7 @@ class FilterQueryExporter extends AbstractExporter
      *
      * @return string
      */
-    protected function exportValues(ValuesBag $valuesBag)
+    private function exportValues(ValuesBag $valuesBag)
     {
         $exportedValues = '';
 
@@ -95,7 +95,7 @@ class FilterQueryExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->getPatternMatchers() as $value) {
-            $exportedValues .= $this->getPatternMatchOperator($value).$this->exportValuePart($value->getViewValue()).', ';
+            $exportedValues .= $this->getPatternMatchOperator($value).$this->exportValuePart($value->getValue()).', ';
         }
 
         return rtrim($exportedValues, ', ');
@@ -108,7 +108,7 @@ class FilterQueryExporter extends AbstractExporter
      *
      * @throws \RuntimeException When an unsupported pattern-match type is found.
      */
-    protected function getPatternMatchOperator(PatternMatch $patternMatch)
+    private function getPatternMatchOperator(PatternMatch $patternMatch)
     {
         $operator = $patternMatch->isCaseInsensitive() ? '~i' : '~';
 
@@ -154,7 +154,7 @@ class FilterQueryExporter extends AbstractExporter
      *
      * @return string
      */
-    protected function exportRangeValue(Range $range)
+    private function exportRangeValue(Range $range)
     {
         $result = !$range->isLowerInclusive() ? ']' : '';
         $result .= $this->exportValuePart($range->getViewLower());
@@ -176,23 +176,15 @@ class FilterQueryExporter extends AbstractExporter
      *
      * @throws \InvalidArgumentException When the passed value is null or none scalar.
      */
-    protected function exportValuePart($value)
+    private function exportValuePart($value)
     {
-        if (null === $value) {
+        if ('' === $value) {
             throw new \InvalidArgumentException(
-                'Unable to export empty view-value. '.
-                'Please make sure there is a view-value set.'
+                'Unable to export empty view-value. Please make sure there is a view-value set.'
             );
         }
 
-        if (!is_scalar($value)) {
-            throw new \InvalidArgumentException(
-                'Unable to export none-scalar view-value. '.
-                'Please use a formatter to transform the value before exporting.'
-            );
-        }
-
-        if (!is_numeric($value) && !preg_match('/^(?:(?:[\p{L}+\p{N}]+)|(?:\p{N}+(?:[.]\p{N}+)*))$/siu', $value)) {
+        if (!preg_match('/^([\p{L}\p{N}]+)$/siu', $value)) {
             return '"'.str_replace('"', '""', $value).'"';
         }
 

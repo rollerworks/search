@@ -25,33 +25,27 @@ class RangeSpec extends ObjectBehavior
         $this->shouldHaveType('Rollerworks\Component\Search\Value\Range');
     }
 
-    public function it_should_have_a_lower_value()
+    public function it_has_a_lower_value()
     {
         $this->getLower()->shouldReturn(10);
     }
 
-    public function it_should_have_an_upper_value()
+    public function it_has_an_upper_value()
     {
         $this->getUpper()->shouldReturn(20);
     }
 
-    public function it_should_allow_changing_the_lower_value()
+    public function it_has_a_lower_viewValue()
     {
-        $this->setLower(5);
-
-        $this->getLower()->shouldReturn(5);
-        $this->getUpper()->shouldReturn(20);
+        $this->getViewLower()->shouldReturn('10');
     }
 
-    public function it_should_allow_changing_the_upper_value()
+    public function it_has_an_upper_viewValue()
     {
-        $this->setUpper(30);
-
-        $this->getLower()->shouldReturn(10);
-        $this->getUpper()->shouldReturn(30);
+        $this->getViewUpper()->shouldReturn('20');
     }
 
-    public function its_lower_value_should_be_inclusive_by_default()
+    public function its_lower_value_is_inclusive_by_default()
     {
         $this->isLowerInclusive()->shouldReturn(true);
     }
@@ -61,13 +55,13 @@ class RangeSpec extends ObjectBehavior
         $this->isUpperInclusive()->shouldReturn(true);
     }
 
-    public function it_should_allow_exclusive_lower_value()
+    public function it_allows_exclusive_lower_value()
     {
         $this->beConstructedWith(10, 20, false);
         $this->isLowerInclusive()->shouldReturn(false);
     }
 
-    public function it_should_allow_exclusive_upper_value()
+    public function it_allows_exclusive_upper_value()
     {
         $this->beConstructedWith(10, 20, true, false);
         $this->isUpperInclusive()->shouldReturn(false);

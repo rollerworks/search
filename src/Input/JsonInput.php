@@ -12,16 +12,17 @@
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\InputProcessorException;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
 
 /**
  * JsonInput processes input provided as an JSON object.
  *
- * The required input structure is the same as the {@link ArrayInput].
+ * The required input structure is the same as the {@see \Rollerworks\Component\Search\Input\ArrayInput].
  *
  * The main advantage of using this Class rather then decoding the JSON object yourself
- * is that this class lints if the provided JSON object.
+ * is that this class lints the provided JSON object.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -30,48 +31,25 @@ class JsonInput extends ArrayInput
     /**
      * {@inheritdoc}
      */
-    public function process($input)
+    public function process(ProcessorConfig $config, $input)
     {
+        if (!is_string($input)) {
+            throw new UnexpectedTypeException($input, 'string');
+        }
+
+        $input = trim($input);
+
+        if (empty($input)) {
+            return;
+        }
+
         try {
-            $this->validateSyntax($input);
+            $parser = new JsonParser();
+            $array = $parser->parse($input, JsonParser::PARSE_TO_ASSOC);
         } catch (ParsingException $e) {
-            throw new InputProcessorException('Provided input is invalid.', 0, $e);
+            throw new InputProcessorException('Input does not contain valid JSON: '."\n".$e->getMessage(), 0, $e);
         }
 
-        $array = json_decode($input, true, $this->maxNestingLevel+10);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new InputProcessorException(
-                'Provided input is invalid, JSON contains an error or the maximum stack depth has been exceeded.',
-                json_last_error()
-            );
-        }
-
-        return parent::process($array);
-    }
-
-    /**
-     * @param string $json
-     *
-     * @return bool true on success
-     *
-     * @throws ParsingException
-     */
-    private static function validateSyntax($json)
-    {
-        $parser = new JsonParser();
-        $result = $parser->lint($json);
-        if (null === $result) {
-            if (defined('JSON_ERROR_UTF8') && JSON_ERROR_UTF8 === json_last_error()) {
-                throw new ParsingException('Input is not UTF-8, could not parse as JSON');
-            }
-
-            return true;
-        }
-
-        throw new ParsingException(
-            'Input does not contain valid JSON: '."\n".$result->getMessage(),
-            $result->getDetails()
-        );
+        return parent::process($config, $array);
     }
 }

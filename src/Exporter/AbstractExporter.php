@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\ExporterInterface;
+use Rollerworks\Component\Search\FieldAliasResolverInterface;
 use Rollerworks\Component\Search\FieldLabelResolverInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
@@ -26,32 +27,16 @@ use Rollerworks\Component\Search\ValuesGroup;
 abstract class AbstractExporter implements ExporterInterface
 {
     /**
-     * @var FieldLabelResolverInterface|null
+     * @var FieldLabelResolverInterface
      */
     protected $labelResolver;
 
     /**
-     * Set the label resolver for resolving name to localized-alias.
-     *
-     * @param FieldLabelResolverInterface $resolver
-     *
-     * @return self
+     * @param FieldAliasResolverInterface $aliasResolver
      */
-    public function setLabelResolver(FieldLabelResolverInterface $resolver = null)
+    public function __construct(FieldAliasResolverInterface $aliasResolver)
     {
-        $this->labelResolver = $resolver;
-
-        return $this;
-    }
-
-    /**
-     * Get the label resolver.
-     *
-     * @return FieldLabelResolverInterface|null Returns null when none is set
-     */
-    public function getLabelResolver()
-    {
-        return $this->labelResolver;
+        $this->aliasResolver = $aliasResolver;
     }
 
     /**
@@ -67,10 +52,6 @@ abstract class AbstractExporter implements ExporterInterface
      */
     public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false)
     {
-        if ($useFieldAlias && null === $this->labelResolver) {
-            throw new \RuntimeException('Unable resolve field-name to alias because no labelResolver is configured.');
-        }
-
         return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), $useFieldAlias, true);
     }
 

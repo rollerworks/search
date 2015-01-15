@@ -13,6 +13,7 @@ namespace spec\Rollerworks\Component\Search;
 
 use PhpSpec\ObjectBehavior;
 use Rollerworks\Component\Search\ValuesBag;
+use Rollerworks\Component\Search\ValuesError;
 use Rollerworks\Component\Search\ValuesGroup;
 
 class ValuesGroupSpec extends ObjectBehavior
@@ -89,11 +90,29 @@ class ValuesGroupSpec extends ObjectBehavior
     public function it_should_have_no_errors_by_default()
     {
         $this->hasErrors()->shouldReturn(false);
+        $this->hasErrors(true)->shouldReturn(false);
     }
 
-    public function it_should_allow_setting_violations()
+    function it_has_only_errors_when_field_has_errors()
     {
-        $this->setHasErrors(true);
+        $field = new ValuesBag();
+        $field->addError(new ValuesError('value', 'whoops'));
+        $this->addField('user', $field);
+
         $this->hasErrors()->shouldReturn(true);
+        $this->hasErrors(true)->shouldReturn(true);
+    }
+
+    function it_supports_finding_errors_in_nested_groups()
+    {
+        $field = new ValuesBag();
+        $field->addError(new ValuesError('value', 'whoops'));
+
+        $group = new ValuesGroup();
+        $group->addField('user', $field);
+        $this->addGroup($group);
+
+        $this->hasErrors()->shouldReturn(false); // current level has no errors
+        $this->hasErrors(true)->shouldReturn(true); // deeper level with errors
     }
 }

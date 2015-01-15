@@ -211,7 +211,6 @@ class ValidationFormatter implements FormatterInterface
 
         if ($range->isLowerInclusive() && $range->isUpperInclusive()) {
             if (!$field->getValueComparison()->isLower($range->getLower(), $range->getUpper(), $options)) {
-                $valuesGroup->setHasErrors(true);
                 $valuesBag->addError(
                     new ValuesError(
                         $subPath,
@@ -274,8 +273,6 @@ class ValidationFormatter implements FormatterInterface
         }
 
         if (count($violations) > 0) {
-            $valuesGroup->setHasErrors(true);
-
             foreach ($violations as $violation) {
                 $valuesBag->addError(
                     new ValuesError(

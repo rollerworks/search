@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Formatter;
+namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 
-use Rollerworks\Component\Search\Formatter\DuplicateRemover;
+use Rollerworks\Component\Search\ConditionOptimizer\DuplicateRemover;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\FormatterTestCase;
 use Rollerworks\Component\Search\Value\Compare;
@@ -26,7 +26,7 @@ final class DuplicateRemoverTest extends FormatterTestCase
     {
         parent::setUp();
 
-        $this->formatter = new DuplicateRemover();
+        $this->optimizer = new DuplicateRemover();
     }
 
     /**
@@ -44,7 +44,7 @@ final class DuplicateRemoverTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -70,7 +70,7 @@ final class DuplicateRemoverTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -105,7 +105,7 @@ final class DuplicateRemoverTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -143,7 +143,7 @@ final class DuplicateRemoverTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -177,7 +177,7 @@ final class DuplicateRemoverTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -209,7 +209,7 @@ final class DuplicateRemoverTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();

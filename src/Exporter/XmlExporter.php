@@ -50,11 +50,7 @@ class XmlExporter extends AbstractExporter
         $this->document = new \DOMDocument('1.0', 'utf-8');
         $this->document->formatOutput = $formatOutput;
 
-        $searchRoot = $this->document->createElementNS(
-            'http://rollerworks.github.io/search/schema/dic/search',
-            'search'
-        );
-
+        $searchRoot = $this->document->createElement('search');
         $searchRoot->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $searchRoot->setAttribute(
             'xsi:schemaLocation',
@@ -216,11 +212,11 @@ class XmlExporter extends AbstractExporter
 
             foreach ($valuesBag->getPatternMatchers() as $value) {
                 $element = $this->document->createElement('pattern-matcher');
-                $element->setAttribute('type', $this->getPatternMatchType($value));
+                $element->setAttribute('type', strtolower($this->getPatternMatchType($value)));
                 $element->setAttribute('case-insensitive', $value->isCaseInsensitive() ? 'true' : 'false');
                 $element->appendChild(
                     $this->document->createTextNode(
-                        $value->getViewValue()
+                        $value->getValue()
                     )
                 );
 

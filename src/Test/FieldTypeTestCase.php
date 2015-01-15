@@ -11,27 +11,11 @@
 
 namespace Rollerworks\Component\Search\Test;
 
+use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\Formatter\TransformFormatter;
-use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Value\SingleValue;
 
 abstract class FieldTypeTestCase extends SearchIntegrationTestCase
 {
-    /**
-     * @var TransformFormatter
-     */
-    protected $transformer;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->transformer = new TransformFormatter();
-    }
-
     public static function assertDateTimeEquals(\DateTime $expected, \DateTime $actual)
     {
         self::assertEquals(
@@ -44,50 +28,101 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
     {
         $values = $this->formatInput($field, $input);
 
-        if ($values->hasErrors()) {
-            $this->fail(implode(', ', $values->getErrors()));
-        }
-
-        $values = $values->getSingleValues();
-
         if ($expectedValue instanceof \DateTime) {
-            $this->assertDateTimeEquals($expectedValue, $values[0]->getValue());
+            $this->assertDateTimeEquals($expectedValue, $values[0]);
         } else {
-            $this->assertEquals($expectedValue, $values[0]->getValue());
+            $this->assertEquals($expectedValue, $values[0]);
         }
 
         if (null !== $expectedView) {
-            $this->assertEquals($expectedView, $values[0]->getViewValue());
+            $this->assertEquals($expectedView, $values[1]);
         }
     }
 
     protected function assertTransformedFails(FieldConfigInterface $field, $input)
     {
-        $this->assertTrue($this->formatInput($field, $input)->hasErrors());
+        $normValue = $this->viewToNorm($input, $field);
+        $this->assertInstanceOf('Rollerworks\Component\Search\Exception\TransformationFailedException', $normValue);
     }
 
     protected function assertTransformedNotEquals(FieldConfigInterface $field, $expectedValue, $input)
     {
-        $this->assertNotEquals($expectedValue, $this->formatInput($field, $input));
+        $value = $this->formatInput($field, $input);
+
+        $this->assertNotEquals($expectedValue, $value[0]);
     }
 
     protected function formatInput(FieldConfigInterface $field, $input)
     {
-        $fieldSet = new FieldSet('testSet');
-        $fieldSet->set($field->getName(), $field);
+        $normValue = $this->viewToNorm($input, $field);
+        if ($normValue instanceof TransformationFailedException) {
+            $this->fail('Norm: '.$normValue->getMessage());
+        }
 
-        $condition = new SearchConditionBuilder();
-        $condition->field($field->getName())->addSingleValue(new SingleValue($input));
+        $viewValue = $this->normToView($normValue, $field);
+        if ($viewValue instanceof TransformationFailedException) {
+            $this->fail('Norm: '.$viewValue->getMessage());
+        }
 
-        $searchCondition = new SearchCondition($fieldSet, $condition->getGroup());
-
-        $this->transformer->format($searchCondition);
-
-        return $searchCondition->getValuesGroup()->getField($field->getName());
+        return array($normValue, $viewValue);
     }
 
     /**
      * @return string
      */
     abstract protected function getTestedType();
+
+    /**
+     * Transforms the value if a value transformer is set.
+     *
+     * @param mixed                $value The value to transform
+     * @param FieldConfigInterface $config
+     *
+     * @return string|null Returns null when the value is empty or invalid
+     */
+    protected function normToView($value, FieldConfigInterface $config)
+    {
+        // Scalar values should be converted to strings to
+        // facilitate differentiation between empty ("") and zero (0).
+        if (!$config->getViewTransformers()) {
+            return null === $value || is_scalar($value) ? (string) $value : $value;
+        }
+
+        try {
+            foreach ($config->getViewTransformers() as $transformer) {
+                $value = $transformer->transform($value);
+            }
+
+            return $value;
+        } catch (TransformationFailedException $e) {
+            return $e;
+        }
+    }
+
+    /**
+     * Reverse transforms a value if a value transformer is set.
+     *
+     * @param string               $value  The value to reverse transform
+     * @param FieldConfigInterface $config
+     *
+     * @return mixed Returns null when the value is empty or invalid
+     */
+    protected function viewToNorm($value, FieldConfigInterface $config)
+    {
+        $transformers = $config->getViewTransformers();
+
+        if (!$transformers) {
+            return '' === $value ? null : $value;
+        }
+
+        try {
+            for ($i = count($transformers) - 1; $i >= 0; --$i) {
+                $value = $transformers[$i]->reverseTransform($value);
+            }
+
+            return $value;
+        } catch (TransformationFailedException $e) {
+            return $e;
+        }
+    }
 }

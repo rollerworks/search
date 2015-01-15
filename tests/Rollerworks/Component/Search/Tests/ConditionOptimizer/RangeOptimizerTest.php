@@ -9,9 +9,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Formatter;
+namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 
-use Rollerworks\Component\Search\Formatter\RangeOptimizer;
+use Rollerworks\Component\Search\ConditionOptimizer\RangeOptimizer;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\FormatterTestCase;
 use Rollerworks\Component\Search\Value\Range;
@@ -24,7 +24,7 @@ final class RangeOptimizerTest extends FormatterTestCase
     {
         parent::setUp();
 
-        $this->formatter = new RangeOptimizer();
+        $this->optimizer = new RangeOptimizer();
     }
 
     /**
@@ -40,6 +40,7 @@ final class RangeOptimizerTest extends FormatterTestCase
                 ->addSingleValue(new SingleValue(65)) // overlapping in ranges[2]
                 ->addSingleValue(new SingleValue(40))
                 ->addSingleValue(new SingleValue(1)) // this is overlapping, but the range lower-bound is exclusive
+                ->addSingleValue(new SingleValue(2)) // overlapping in ranges[3]
 
                 ->addRange(new Range(11, 20))
                 ->addRange(new Range(25, 30))
@@ -49,7 +50,7 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -82,14 +83,20 @@ final class RangeOptimizerTest extends FormatterTestCase
                 ->addRange(new Range(51, 71, true, false))  // overlapping with bounds
                 ->addRange(new Range(51, 69)) // overlapping in 4
                 ->addRange(new Range(52, 69)) // overlapping in 4
-                ->addRange(new Range(51, 71))
-                ->addRange(new Range(49, 71, false, false)) // overlapping in 8
-                ->addRange(new Range(51, 71, false)) // overlapping but lower-bound is exclusive
+                ->addRange(new Range(51, 71)) // 8
+                ->addRange(new Range(50, 71, false, false))
+                ->addRange(new Range(51, 71, false)) // overlapping in 8
+
+                // exclusive bounds overlapping
+                ->addRange(new Range(100, 150, false)) // overlapping in 14
+                ->addRange(new Range(101, 149)) // overlapping
+                ->addRange(new Range(105, 148, false, false)) // overlapping
+                ->addRange(new Range(99, 151, false, false))
             ->end()
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -98,7 +105,8 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->addRange(new Range(20, 30))
             ->addRange(new Range(50, 70))
             ->addRange(new Range(51, 71))
-            ->addRange(new Range(51, 71, false)) // overlapping but lower-bound is exclusive
+            ->addRange(new Range(50, 71, false, false))
+            ->addRange(new Range(99, 151, false, false))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
@@ -126,7 +134,7 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -157,17 +165,23 @@ final class RangeOptimizerTest extends FormatterTestCase
                 ->addExcludedRange(new Range(2, 5)) // overlapping in 0
                 ->addExcludedRange(new Range(3, 7)) // overlapping in 0
                 ->addExcludedRange(new Range(50, 70))
-                ->addExcludedRange(new Range(51, 71, true, false)) // overlapping with bounds
-                ->addExcludedRange(new Range(51, 69))
-                ->addExcludedRange(new Range(52, 69))
-                ->addExcludedRange(new Range(51, 71))
-                ->addExcludedRange(new Range(49, 71, false, false)) // overlapping in 8
-                ->addExcludedRange(new Range(51, 71, false)) // overlapping but lower-bound is exclusive
+                ->addExcludedRange(new Range(51, 71, true, false))  // overlapping with bounds
+                ->addExcludedRange(new Range(51, 69)) // overlapping in 4
+                ->addExcludedRange(new Range(52, 69)) // overlapping in 4
+                ->addExcludedRange(new Range(51, 71)) // 8
+                ->addExcludedRange(new Range(50, 71, false, false))
+                ->addExcludedRange(new Range(51, 71, false)) // overlapping in 8
+
+                // exclusive bounds overlapping
+                ->addExcludedRange(new Range(100, 150, false)) // overlapping in 14
+                ->addExcludedRange(new Range(101, 149)) // overlapping
+                ->addExcludedRange(new Range(105, 148, false, false)) // overlapping
+                ->addExcludedRange(new Range(99, 151, false, false))
             ->end()
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
@@ -176,7 +190,8 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->addExcludedRange(new Range(20, 30))
             ->addExcludedRange(new Range(50, 70))
             ->addExcludedRange(new Range(51, 71))
-            ->addExcludedRange(new Range(51, 71, false))  // overlapping but lower-bound is exclusive
+            ->addExcludedRange(new Range(50, 71, false, false))
+            ->addExcludedRange(new Range(99, 151, false, false))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
@@ -198,14 +213,14 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addRange(new Range(10, 26))
             ->addRange(new Range(30, 40))
             ->addRange(new Range(20, 28, false)) // this should not be changed as the bounds do not equal 1
+            ->addRange(new Range(10, 26))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
@@ -227,14 +242,14 @@ final class RangeOptimizerTest extends FormatterTestCase
             ->getSearchCondition()
         ;
 
-        $this->formatter->format($condition);
+        $this->optimizer->process($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addExcludedRange(new Range(10, 26))
             ->addExcludedRange(new Range(30, 40))
             ->addExcludedRange(new Range(20, 28, false)) // this should not be changed as the bounds do not equal 1
+            ->addExcludedRange(new Range(10, 26))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));

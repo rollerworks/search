@@ -9,11 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Formatter;
+namespace Rollerworks\Component\Search\ConditionOptimizer;
 
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\FormatterInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
@@ -26,12 +26,12 @@ use Rollerworks\Component\Search\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesToRange implements FormatterInterface
+class ValuesToRange implements SearchConditionOptimizerInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function format(SearchConditionInterface $condition)
+    public function process(SearchConditionInterface $condition)
     {
         $fieldSet = $condition->getFieldSet();
         $valuesGroup = $condition->getValuesGroup();
@@ -199,5 +199,14 @@ class ValuesToRange implements FormatterInterface
                 }
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPriority()
+    {
+        // run before range optimizer
+        return 4;
     }
 }

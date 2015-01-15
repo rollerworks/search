@@ -23,11 +23,13 @@ class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
 {
     public function testSerializeUnSerialize()
     {
+        $date = new \DateTime();
+
         $fieldSet = new FieldSet('foobar');
 
         $fieldId = new ValuesBag();
         $fieldId->addSingleValue(new SingleValue(10));
-        $fieldId->addSingleValue(new SingleValue(new \DateTime()));
+        $fieldId->addSingleValue(new SingleValue($date, $date->format('m/d/Y')));
 
         $valuesGroup0 = new ValuesGroup();
         $valuesGroup0->addField('id', $fieldId);
@@ -35,10 +37,9 @@ class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         $fieldName = new ValuesBag();
         $fieldName->addError(new ValuesError('singleValue[0]', 'system error'));
         $fieldName->addSingleValue(new SingleValue(10));
-        $fieldName->addSingleValue(new SingleValue(new \DateTime()));
+        $fieldName->addSingleValue(new SingleValue($date, $date->format('m/d/Y')));
 
         $valuesGroup1 = new ValuesGroup();
-        $valuesGroup1->setHasErrors();
 
         $valuesGroup1->addField('name', $fieldName);
         $valuesGroup0->addGroup($valuesGroup1);

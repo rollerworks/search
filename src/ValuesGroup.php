@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
 /**
@@ -36,17 +37,19 @@ class ValuesGroup implements \Serializable
     private $fields = array();
 
     /**
-     * @var bool
-     */
-    private $errors = false;
-
-    /**
      * @var string
      */
     private $groupLogical;
 
     /**
+     * @var bool
+     */
+    private $locked = false;
+
+    /**
      * Constructor.
+     *
+     * @param string $groupLogical
      */
     public function __construct($groupLogical = self::GROUP_LOGICAL_AND)
     {
@@ -60,6 +63,10 @@ class ValuesGroup implements \Serializable
      */
     public function addGroup(ValuesGroup $group)
     {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
         $this->groups[] = $group;
 
         return $this;
@@ -106,6 +113,10 @@ class ValuesGroup implements \Serializable
      */
     public function removeGroup($index)
     {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
         if (isset($this->groups[$index])) {
             unset($this->groups[$index]);
         }
@@ -121,6 +132,10 @@ class ValuesGroup implements \Serializable
      */
     public function addField($name, ValuesBag $values)
     {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
         $this->fields[$name] = $values;
 
         return $this;
@@ -169,6 +184,10 @@ class ValuesGroup implements \Serializable
      */
     public function removeField($name)
     {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
         if (isset($this->fields[$name])) {
             unset($this->fields[$name]);
         }
@@ -177,34 +196,34 @@ class ValuesGroup implements \Serializable
     }
 
     /**
+     * @param bool $deeper
+     *
      * @return bool
      */
-    public function hasErrors()
+    public function hasErrors($deeper = false)
     {
-        return $this->errors;
-    }
+        foreach ($this->fields as $field) {
+            if ($field->hasErrors()) {
+                return true;
+            }
+        }
 
-    /**
-     * Set whether this group has nested-values with errors.
-     *
-     * Actual errors are set on the {@see ValuesBag} object.
-     *
-     * @param bool $errors
-     *
-     * @return self
-     */
-    public function setHasErrors($errors = true)
-    {
-        $this->errors = $errors;
+        if ($deeper) {
+            foreach ($this->groups as $group) {
+                if ($group->hasErrors(true)) {
+                    return true;
+                }
+            }
+        }
 
-        return $this;
+        return false;
     }
 
     /**
      * Get the logical case of the field.
      *
      * This is either one of the following class constants value:
-     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
      * @return string
      */
@@ -217,13 +236,21 @@ class ValuesGroup implements \Serializable
      * Set the logical case of the field.
      *
      * This is either one of the following class constants value:
-     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
      * @param int
+     *
+     * @return self
      */
     public function setGroupLogical($groupLogical)
     {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
         $this->groupLogical = $groupLogical;
+
+        return $this;
     }
 
     /**
@@ -231,12 +258,14 @@ class ValuesGroup implements \Serializable
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize(
+            array(
             $this->groupLogical,
             $this->groups,
             $this->fields,
-            $this->errors,
-        ));
+                $this->locked
+            )
+        );
     }
 
     /**
@@ -250,7 +279,57 @@ class ValuesGroup implements \Serializable
             $this->groupLogical,
             $this->groups,
             $this->fields,
-            $this->errors
+            $this->locked
         ) = $data;
+    }
+
+    /**
+     * Sets the ValuesGroup graph data is locked.
+     *
+     * After calling this method, setter methods can be no longer called.
+     *
+     * @param bool $locked
+     *
+     * @return self
+     *
+     * @throws BadMethodCallException when the data is locked
+     */
+    public function setDataLocked($locked = true)
+    {
+        if ($this->locked) {
+            $this->throwLocked();
+        }
+
+        $this->locked = $locked;
+
+        foreach ($this->fields as $field) {
+            $field->setDataLocked();
+        }
+
+        foreach ($this->groups as $group) {
+            $group->setDataLocked();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns whether the field's data is locked.
+     *
+     * A field with locked data is restricted to the data passed in
+     * this configuration.
+     *
+     * @return bool Whether the data is locked.
+     */
+    public function isDataLocked()
+    {
+        return $this->locked;
+    }
+
+    protected function throwLocked()
+    {
+        throw new BadMethodCallException(
+            'ValuesGroup setter methods cannot be accessed anymore once the data is locked.'
+        );
     }
 }

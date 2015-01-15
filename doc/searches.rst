@@ -62,12 +62,12 @@ allows us adding new values and calling `end()` to get back to the ConditionBuil
 
 .. note::
 
-    When you don't use any formatter, the values must be normalized.
+    Each value-type (except pattern-match) has a normalized value
+    and a view value. Unless you pass a view value, the normalized value
+    is used (as string).
 
-    In practice this means using real integers and floats,
-    and DateTime for date/time/datetime.
-
-    But using Choice or Money will require a special value.
+    When a normalized value can not be casted to a string, this will
+    give an PHP error.
 
 .. code-block:: php
     :linenos:
@@ -130,57 +130,47 @@ Processing input
 ----------------
 
 The most common case is processing the input to a SearchCondition,
-for which the system provides you with a wide range of accepted formats.
+the system can process a wide range of supported formats.
 
-This example uses the :doc:`input/filter_query` with the FieldSet shown above
-and a modified SearchFactoryBuilder.
-
-.. note::
-
-    The ValidationFormatter requires that that the ``ValidatorExtension``
-    is enabled in the factory.
+This example uses the :doc:`input/filter_query` with the FieldSet shown above.
 
 .. code-block:: php
     :linenos:
 
-    use Symfony\Component\Validator\Validation;
     use Rollerworks\Component\Search\Input\FilterQueryInput;
-    use Rollerworks\Component\Search\Extension\Validator\ValidatorExtension;
-    use Rollerworks\Component\Search\Extension\Validator\ValidationFormatter;
-    use Rollerworks\Component\Search\Formatter\ChainFormatter;
-    use Rollerworks\Component\Search\Formatter\TransformFormatter;
-    use Rollerworks\Component\Search\Formatter\DuplicateRemover;
-    use Rollerworks\Component\Search\Formatter\ValuesToRange;
-    use Rollerworks\Component\Search\Formatter\RangeOptimizer;
+    use Rollerworks\Component\Search\Input\ProcessorConfig;
+    use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
+    use Rollerworks\Component\Search\ConditionOptimizer\DuplicateRemover;
+    use Rollerworks\Component\Search\ConditionOptimizer\ValuesToRange;
+    use Rollerworks\Component\Search\ConditionOptimizer\RangeOptimizer;
     use Rollerworks\Component\Search\Searches;
 
-    $validator = Validation::createValidator();
     $searchFactory = new Searches::createSearchFactoryBuilder()
-        ->addExtension(new ValidatorExtension())
         ->getSearchFactory();
 
     /* ... */
 
+    // Each input processor is reusable.
+    // So its possible to use use FilterQueryInput instance multiple times.
     $inputProcessor = new FilterQueryInput();
-    $inputProcessor->setFieldSet($fieldSet);
 
-    // The query can from anything, like $_GET or $_POST
+    // The query can come from anything, like $_GET or $_POST
     $query = ... ;
 
-    $searchCondition = $inputProcessor->process($query);
+    // The ProcessorConfig allows configuring value limits
+    // group nesting and maximum group count.
+    $config = new ProcessorConfig($fieldSet);
 
-    // Because using user-input as-is isn't possible it passed trough a list of formatters
-    // The order of formatters doesn't really mather, but its important to first transform and then validate
-    // as the validator only validates the constraints, but not the format!
+    $searchCondition = $inputProcessor->process($config, $query);
 
-    $formatter = new ChainFormatter();
-    $formatter->addFormatter(new TransformFormatter());
-    $formatter->addFormatter(new ValidationFormatter($validator));
+    // Because the search condition may have duplicate or redundant
+    // values we run them trough a list of optimizers.
+
+    $formatter = new ChainOptimizer();
     $formatter->addFormatter(new DuplicateRemover());
-    $formatter->addFormatter(new ValuesToRange()); // add this before RangeOptimizer to ensure new overlaps are removed later on
+    $formatter->addFormatter(new ValuesToRange());
     $formatter->addFormatter(new RangeOptimizer());
-    $formatter->format($searchCondition);
+    $formatter->process($searchCondition);
 
-    // Now the $searchCondition is already for applying on the storage engine
-    // See the chapters about the desired storage engine for more information
+    // Now the $searchCondition is already for applying on any supported storage engine
 

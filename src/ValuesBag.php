@@ -11,6 +11,8 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\Exception\ValuesStructureIsLocked;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -23,18 +25,15 @@ use Rollerworks\Component\Search\Value\SingleValue;
  */
 class ValuesBag implements \Countable, \Serializable
 {
-    protected $excludedValues = array();
-    protected $ranges = array();
-    protected $excludedRanges = array();
-    protected $comparisons = array();
-    protected $singleValues = array();
-    protected $patternMatchers = array();
-    protected $valuesCount = 0;
-
-    /**
-     * @var ValuesError[]
-     */
-    protected $errors = array();
+    private $excludedValues = array();
+    private $ranges = array();
+    private $excludedRanges = array();
+    private $comparisons = array();
+    private $singleValues = array();
+    private $patternMatchers = array();
+    private $valuesCount = 0;
+    private $errors = array();
+    private $locked = false;
 
     /**
      * @return SingleValue[]
@@ -51,6 +50,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addSingleValue(SingleValue $value)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         $this->singleValues[] = $value;
         $this->valuesCount++;
 
@@ -72,6 +75,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function removeSingleValue($index)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         if (isset($this->singleValues[$index])) {
             unset($this->singleValues[$index]);
 
@@ -88,6 +95,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addExcludedValue(SingleValue $value)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         $this->excludedValues[] = $value;
         $this->valuesCount++;
 
@@ -117,6 +128,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function removeExcludedValue($index)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         if (isset($this->excludedValues[$index])) {
             unset($this->excludedValues[$index]);
 
@@ -133,6 +148,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addRange(Range $range)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         $this->ranges[] = $range;
         $this->valuesCount++;
 
@@ -162,6 +181,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function removeRange($index)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         if (isset($this->ranges[$index])) {
             unset($this->ranges[$index]);
 
@@ -178,6 +201,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addExcludedRange(Range $range)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         $this->excludedRanges[] = $range;
         $this->valuesCount++;
 
@@ -207,6 +234,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function removeExcludedRange($index)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         if (isset($this->excludedRanges[$index])) {
             unset($this->excludedRanges[$index]);
 
@@ -223,6 +254,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addComparison(Compare $value)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         $this->comparisons[] = $value;
         $this->valuesCount++;
 
@@ -252,6 +287,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function removeComparison($index)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         if (isset($this->comparisons[$index])) {
             unset($this->comparisons[$index]);
 
@@ -276,6 +315,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addPatternMatch(PatternMatch $value)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         $this->patternMatchers[] = $value;
         $this->valuesCount++;
 
@@ -297,6 +340,10 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function removePatternMatch($index)
     {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
         if (isset($this->patternMatchers[$index])) {
             unset($this->patternMatchers[$index]);
 
@@ -313,7 +360,11 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addError(ValuesError $error)
     {
-        $this->errors[] = $error;
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
+        $this->errors[$error->getHash()] = $error;
 
         return $this;
     }
@@ -332,6 +383,30 @@ class ValuesBag implements \Countable, \Serializable
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * @param ValuesError $error
+     *
+     * @return bool
+     */
+    public function hasError(ValuesError $error)
+    {
+        return isset($this->errors[$error->getHash()]);
+    }
+
+    /**
+     * @param ValuesError $error
+     *
+     * @return static
+     */
+    public function removeError(ValuesError $error)
+    {
+        if (isset($this->errors[$error->getHash()])) {
+            unset($this->errors[$error->getHash()]);
+        }
+
+        return $this;
     }
 
     /**
@@ -356,6 +431,7 @@ class ValuesBag implements \Countable, \Serializable
             $this->patternMatchers,
             $this->valuesCount,
             $this->errors,
+            $this->locked
         ));
     }
 
@@ -374,7 +450,39 @@ class ValuesBag implements \Countable, \Serializable
             $this->singleValues,
             $this->patternMatchers,
             $this->valuesCount,
-            $this->errors
+            $this->errors,
+            $this->locked
         ) = $data;
+    }
+
+    /**
+     * Sets the values data is locked.
+     *
+     * After calling this method, setter methods can be no longer called.
+     *
+     * @param bool $locked
+     *
+     * @throws BadMethodCallException when the data is locked
+     */
+    public function setDataLocked($locked = true)
+    {
+        if ($this->locked) {
+            throw new ValuesStructureIsLocked();
+        }
+
+        $this->locked = $locked;
+    }
+
+    /**
+     * Returns whether the field's data is locked.
+     *
+     * A field with locked data is restricted to the data passed in
+     * this configuration.
+     *
+     * @return bool Whether the data is locked.
+     */
+    public function isDataLocked()
+    {
+        return $this->locked;
     }
 }
