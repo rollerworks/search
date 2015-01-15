@@ -1,0 +1,34 @@
+---------------------------------------------------------------------------
+
+by sstok at 2015-01-05 10:37
+
+Move to back Doctrine lexer. https://github.com/doctrine/lexer/pull/6 now that modifiers are configurable.
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-01-08 13:57
+
+Missing tests for InputProcessor:
+* [x] with invalid ranges (and make sure values are properly quoted) (was in fact broken)
+* [x] with invalid value (failed transformation) (was in fact broken for comparisons (wrong path))
+* [x] values merging/counting with alias-field
+* [x] root-group logical OR (was missing for FilterQuery)
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-01-10 13:29
+
+All this refactoring decreased the scrutinizer score, I need to look into making these parts better again.
+But on the positive side, some code was actually improved :+1:
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-01-14 15:34
+
+I cleaned the commits up to be more precise and not contain unrelated changes.
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2015-01-15 15:25
+
+The [inspection](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/inspections/19bd1cd4-2008-4c08-9026-efc34c7245ed) completed: **12 new issues, 105 updated code elements**
