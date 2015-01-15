@@ -19,10 +19,6 @@ use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Util\XmlUtils;
-use Rollerworks\Component\Search\Value\Compare;
-use Rollerworks\Component\Search\Value\PatternMatch;
-use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
@@ -195,12 +191,14 @@ class XmlInput extends AbstractInput
         $count = $valuesBag->count();
         $fieldName = $fieldConfig->getName();
 
+        $factory = new FieldValuesFactory($fieldConfig, $valuesBag);
+
         if (isset($values->{'single-values'})) {
             foreach ($values->{'single-values'}->children() as $value) {
                 $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addSingleValue($this->createSingleValue($value, $fieldConfig, $valuesBag));
+                $factory->addSingleValue($value);
             }
         }
 
@@ -209,7 +207,7 @@ class XmlInput extends AbstractInput
                 $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addExcludedValue($this->createSingleValue($value, $fieldConfig, $valuesBag, true));
+                $factory->addExcludedValue($value);
             }
         }
 
@@ -218,7 +216,7 @@ class XmlInput extends AbstractInput
                 $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addComparison($this->createComparisonValue($comparison, $fieldConfig, $valuesBag));
+                $factory->addComparisonValue((string) $comparison['operator'], (string) $comparison);
             }
         }
 
@@ -227,9 +225,7 @@ class XmlInput extends AbstractInput
                 $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addRange(
-                    $this->createRange($range, $fieldConfig, $valuesBag)
-                );
+                $this->processRange($range, $factory);
             }
         }
 
@@ -238,9 +234,7 @@ class XmlInput extends AbstractInput
                 $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addExcludedRange(
-                    $this->createRange($range, $fieldConfig, $valuesBag, true)
-                );
+                $this->processRange($range, $factory, true);
             }
         }
 
@@ -249,12 +243,10 @@ class XmlInput extends AbstractInput
                 $this->validateValuesCount($fieldName, $count, $groupIdx, $level);
                 $count++;
 
-                $valuesBag->addPatternMatch(
-                    new PatternMatch(
-                        (string) $patternMatch,
-                        (string) $patternMatch['type'],
-                        'true' === strtolower($patternMatch['case-insensitive'])
-                    )
+                $factory->addPatterMatch(
+                    (string) $patternMatch['type'],
+                    (string) $patternMatch,
+                    'true' === strtolower($patternMatch['case-insensitive'])
                 );
             }
         }
@@ -266,30 +258,7 @@ class XmlInput extends AbstractInput
         return $valuesBag;
     }
 
-    private function createSingleValue(
-        $value,
-        FieldConfigInterface $fieldConfig,
-        ValuesBag $valuesBag,
-        $negative = false
-    ) {
-        $path = $negative ? "excludedValues[".count($valuesBag->getExcludedValues())."]" :
-            "singleValues[".count($valuesBag->getSingleValues())."]";
-
-        $value = (string) $value;
-
-        $normValue = $this->viewToNorm($value, $fieldConfig, $path, $valuesBag);
-        $viewValue = $this->normToView($normValue, $fieldConfig, $path, $valuesBag);
-
-        if (null === $normValue || null === $viewValue) {
-            $singleValue = new SingleValue($value);
-        } else {
-            $singleValue = new SingleValue($normValue, $viewValue);
-        }
-
-        return $singleValue;
-    }
-
-    private function createRange($range, FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $negative = false)
+    private function processRange($range, FieldValuesFactory $factory, $negative = false)
     {
         $lowerInclusive = 'false' !== strtolower($range->lower['inclusive']);
         $upperInclusive = 'false' !== strtolower($range->upper['inclusive']);
@@ -297,44 +266,10 @@ class XmlInput extends AbstractInput
         $lowerBound = (string) $range->lower;
         $upperBound = (string) $range->upper;
 
-        $path = $negative ? "excludedRanges[".count($valuesBag->getExcludedRanges())."]" :
-            "ranges[".count($valuesBag->getRanges())."]";
-
-        $lowerNormValue = $this->viewToNorm($lowerBound, $fieldConfig, $path.'.lower', $valuesBag);
-        $lowerViewValue = $this->normToView($lowerNormValue, $fieldConfig, $path.'.lower', $valuesBag);
-
-        $upperNormValue = $this->viewToNorm($upperBound, $fieldConfig, $path.'.upper', $valuesBag);
-        $upperViewValue = $this->normToView($upperNormValue, $fieldConfig, $path.'.upper', $valuesBag);
-
-        if (null === $lowerNormValue || null === $lowerViewValue || null === $upperNormValue || null === $upperViewValue) {
-            $range = new Range($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
+        if ($negative) {
+            $factory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
         } else {
-            $range = new Range(
-                $lowerNormValue, $upperNormValue, $lowerInclusive, $upperInclusive, $lowerViewValue, $upperViewValue
-            );
-
-            $this->validateRangeBounds($range, $fieldConfig, $valuesBag, $path);
+            $factory->addRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
         }
-
-        return $range;
-    }
-
-    private function createComparisonValue($comparison, FieldConfigInterface $fieldConfig, ValuesBag $valuesBag)
-    {
-        $operator = (string) $comparison['operator'];
-        $value = (string) $comparison;
-
-        $path = "comparisons[".count($valuesBag->getComparisons())."].value";
-
-        $normValue = $this->viewToNorm($value, $fieldConfig, $path, $valuesBag);
-        $viewValue = $this->normToView($normValue, $fieldConfig, $path, $valuesBag);
-
-        if (null === $normValue || null === $viewValue) {
-            $comparison = new Compare($value, $operator);
-        } else {
-            $comparison = new Compare($normValue, $operator, $viewValue);
-        }
-
-        return $comparison;
     }
 }

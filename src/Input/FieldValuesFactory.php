@@ -36,8 +36,8 @@ final class FieldValuesFactory
         $path = "singleValues[".count($this->valuesBag->getSingleValues())."]";
         $value = (string) $value;
 
-        $normValue = $this->viewToNorm($value, $path, $this->valuesBag);
-        $viewValue = $this->normToView($normValue, $path, $this->valuesBag);
+        $normValue = $this->viewToNorm($value, $path);
+        $viewValue = $this->normToView($normValue, $path);
 
         if (null === $normValue || null === $viewValue) {
             $singleValue = new SingleValue($value);
@@ -86,6 +86,7 @@ final class FieldValuesFactory
     public function addComparisonValue($operator, $value)
     {
         $path = "comparisons[".count($this->valuesBag->getComparisons())."].value";
+        $value = (string) $value;
 
         $normValue = $this->viewToNorm($value, $path);
         $viewValue = $this->normToView($normValue, $path);
@@ -102,7 +103,7 @@ final class FieldValuesFactory
     public function addPatterMatch($type, $patternMatch, $caseInsensitive)
     {
         $this->valuesBag->addPatternMatch(
-            new PatternMatch($type, (string) $patternMatch, $caseInsensitive)
+            new PatternMatch((string) $patternMatch, $type, $caseInsensitive)
         );
     }
 

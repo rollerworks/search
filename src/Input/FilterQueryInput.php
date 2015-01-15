@@ -379,6 +379,7 @@ class FilterQueryInput extends AbstractInput
     private function fieldValues(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $level = 0, $groupIdx = 0)
     {
         $hasValues = false;
+        $factory = new FieldValuesFactory($fieldConfig, $valuesBag);
 
         while (null !== $this->lexer->lookahead) {
             $valuesCount = $valuesBag->count();
@@ -394,26 +395,26 @@ class FilterQueryInput extends AbstractInput
 
             switch ($this->lexer->lookahead['type']) {
                 case Lexer::T_STRING:
-                    $this->singleValueOrRange($fieldConfig, $valuesBag);
+                    $this->singleValueOrRange($fieldConfig, $factory);
                     break;
 
                 case Lexer::T_OPEN_BRACE:
                 case Lexer::T_CLOSE_BRACE:
-                    $this->processRangeValue($fieldConfig, $valuesBag);
+                    $this->processRangeValue($fieldConfig, $factory);
                     break;
 
                 case Lexer::T_NEGATE:
                     $this->match(Lexer::T_NEGATE);
-                    $this->singleValueOrRange($fieldConfig, $valuesBag, true);
+                    $this->singleValueOrRange($fieldConfig, $factory, true);
                     break;
 
                 case Lexer::T_LOWER_THAN:
                 case Lexer::T_GREATER_THAN:
-                    $this->processComparison($fieldConfig, $valuesBag);
+                    $this->processComparison($fieldConfig, $factory);
                     break;
 
                 case Lexer::T_TILDE:
-                    $this->processMatcher($fieldConfig, $valuesBag);
+                    $this->processMatcher($fieldConfig, $factory);
                     break;
 
                 default:
@@ -442,25 +443,12 @@ class FilterQueryInput extends AbstractInput
         return $valuesBag;
     }
 
-    private function processSingleValue(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $negative = false)
+    private function processSingleValue(FieldValuesFactory $factory, $negative = false)
     {
-        $value = $this->logicalValue();
-        $path = $negative ? "excludedValues[".count($valuesBag->getExcludedValues())."]" :
-            "singleValues[".count($valuesBag->getSingleValues())."]";
-
-        $normValue = $this->viewToNorm($value, $fieldConfig, $path, $valuesBag);
-        $viewValue = $this->normToView($normValue, $fieldConfig, $path, $valuesBag);
-
-        if (null === $normValue || null === $viewValue) {
-            $singleValue = new Value\SingleValue($value);
-        } else {
-            $singleValue = new Value\SingleValue($normValue, $viewValue);
-        }
-
         if ($negative) {
-            $valuesBag->addExcludedValue($singleValue);
+            $factory->addExcludedValue($this->logicalValue());
         } else {
-            $valuesBag->addSingleValue($singleValue);
+            $factory->addSingleValue($this->logicalValue());
         }
     }
 
@@ -468,10 +456,10 @@ class FilterQueryInput extends AbstractInput
      * RangeValue ::= [ "[" | "]" ] StringValue "-" StringValue [ "[" | "]" ]
      *
      * @param FieldConfigInterface $fieldConfig
-     * @param ValuesBag            $valuesBag
+     * @param FieldValuesFactory   $factory
      * @param bool                 $negative
      */
-    private function processRangeValue(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $negative = false)
+    private function processRangeValue(FieldConfigInterface $fieldConfig, FieldValuesFactory $factory, $negative = false)
     {
         $this->assertAcceptsType($fieldConfig, 'range');
 
@@ -483,78 +471,47 @@ class FilterQueryInput extends AbstractInput
 
         $upperInclusive = Lexer::T_OPEN_BRACE !== $this->lexer->matchAndMoveNext(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE));
 
-        $path = $negative ? "excludedRanges[".count($valuesBag->getExcludedRanges())."]" :
-            "ranges[".count($valuesBag->getRanges())."]";
-
-        $lowerNormValue = $this->viewToNorm($lowerBound, $fieldConfig, $path.'.lower', $valuesBag);
-        $lowerViewValue = $this->normToView($lowerNormValue, $fieldConfig, $path.'.lower', $valuesBag);
-
-        $upperNormValue = $this->viewToNorm($upperBound, $fieldConfig, $path.'.upper', $valuesBag);
-        $upperViewValue = $this->normToView($upperNormValue, $fieldConfig, $path.'.upper', $valuesBag);
-
-        if (null === $lowerNormValue || null === $lowerViewValue || null === $upperNormValue || null === $upperViewValue) {
-            $range = new Value\Range($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
-        } else {
-            $range = new Value\Range(
-                $lowerNormValue, $upperNormValue, $lowerInclusive, $upperInclusive, $lowerViewValue, $upperViewValue
-            );
-
-            $this->validateRangeBounds($range, $fieldConfig, $valuesBag, $path);
-        }
-
         if ($negative) {
-            $valuesBag->addExcludedRange($range);
+            $factory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
         } else {
-            $valuesBag->addRange($range);
+            $factory->addRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
         }
     }
 
-    private function processComparison(FieldConfigInterface $config, ValuesBag $valuesBag)
+    private function processComparison(FieldConfigInterface $config, FieldValuesFactory $factory)
     {
         $this->assertAcceptsType($config, 'comparison');
-
-        $operator = $this->comparisonOperator();
-        $value = $this->logicalValue();
-
-        $path = "comparisons[".count($valuesBag->getComparisons())."].value";
-
-        $normValue = $this->viewToNorm($value, $config, $path, $valuesBag);
-        $viewValue = $this->normToView($normValue, $config, $path, $valuesBag);
-
-        if (null === $normValue || null === $viewValue) {
-            $comparison = new Value\Compare($value, $operator);
-        } else {
-            $comparison = new Value\Compare($normValue, $operator, $viewValue);
-        }
-
-        $valuesBag->addComparison($comparison);
+        $factory->addComparisonValue($this->comparisonOperator(), $this->logicalValue());
     }
 
-    private function processMatcher(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag)
+    private function processMatcher(FieldConfigInterface $fieldConfig, FieldValuesFactory $factory)
     {
         $this->assertAcceptsType($fieldConfig, 'pattern-match');
 
-        $type = $this->patternMatchOperator($caseInsensitive);
+        $this->match(Lexer::T_TILDE);
+
+        $caseInsensitive = false;
+
+        // look for case insensitive
+        if ($this->lexer->isNextToken(Lexer::T_STRING) && 'i' === strtolower($this->lexer->lookahead['value'])) {
+            $caseInsensitive = true;
+            $this->match(Lexer::T_STRING);
+        }
+
+        $type = $this->getPatternMatchOperator();
         $value = $this->logicalValue();
 
-        $valuesBag->addPatternMatch(new Value\PatternMatch($value, $type, $caseInsensitive));
+        $factory->addPatterMatch($type, $value, $caseInsensitive);
     }
 
-    /**
-     * Matches either a SingleValue or Range.
-     *
-     * @param FieldConfigInterface $fieldConfig
-     * @param ValuesBag            $valuesBag
-     * @param bool                 $negative
-     */
-    private function singleValueOrRange(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $negative = false)
+    private function singleValueOrRange(FieldConfigInterface $fieldConfig, FieldValuesFactory $factory, $negative = false)
     {
         if ($this->lexer->isNextTokenAny(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE))
             || ($this->lexer->isGlimpse(Lexer::T_MINUS))
         ) {
-            $this->processRangeValue($fieldConfig, $valuesBag, $negative);
+            $this->processRangeValue($fieldConfig, $factory, $negative);
         } else {
-            $this->processSingleValue($fieldConfig, $valuesBag, $negative);
+            $this->processSingleValue($factory, $negative);
         }
     }
 
@@ -635,29 +592,6 @@ class FilterQueryInput extends AbstractInput
             default:
                 $this->syntaxError('<, <=, <>, >, >=');
         }
-    }
-
-    /**
-     * PatternMatchOperator ::= ~* | ~> | ~< | ~? | ~!* | ~!> | ~!< | ~!? | ~i* |
-     *     ~i> | ~i< | ~i? | ~i!* | ~i!> | ~i!< | ~i!?
-     *
-     * @param bool $caseInsensitive Reference case insensitive state
-     *
-     * @return string
-     */
-    private function patternMatchOperator(&$caseInsensitive)
-    {
-        $this->match(Lexer::T_TILDE);
-
-        $caseInsensitive = false;
-
-        // look for case insensitive
-        if ($this->lexer->isNextToken(Lexer::T_STRING) && 'i' === strtolower($this->lexer->lookahead['value'])) {
-            $caseInsensitive = true;
-            $this->match(Lexer::T_STRING);
-        }
-
-        return $this->getPatternMatchOperator();
     }
 
     /**

@@ -78,8 +78,7 @@ class ArrayInput extends AbstractInput
         $this->processGroup($input, $valuesGroup, 0, 0);
 
         $condition = new SearchCondition(
-            $config->getFieldSet(),
-            $valuesGroup
+            $config->getFieldSet(), $valuesGroup
         );
 
         if ($condition->getValuesGroup()->hasErrors()) {
@@ -121,7 +120,7 @@ class ArrayInput extends AbstractInput
             $this->validateGroupsCount($groupIdx, count($values['groups']), $level);
             $this->processGroups($values['groups'], $valuesGroup, $level);
         }
-        }
+    }
 
     private function processFields(array $values, ValuesGroup $valuesGroup, $groupIdx, $level)
     {
@@ -176,12 +175,12 @@ class ArrayInput extends AbstractInput
 
         // Now run trough all the remaining fields and look if there are required
         // Fields that were set without values have already been checked by valuesToBag()
-            foreach ($allFields as $fieldName => $filterConfig) {
-                if ($filterConfig->isRequired()) {
-                    throw new FieldRequiredException($fieldName, $groupIdx, $level);
-                }
+        foreach ($allFields as $fieldName => $filterConfig) {
+            if ($filterConfig->isRequired()) {
+                throw new FieldRequiredException($fieldName, $groupIdx, $level);
             }
         }
+    }
 
     private function processGroups(array $groups, ValuesGroup $valuesGroup, $level)
     {
@@ -220,6 +219,8 @@ class ArrayInput extends AbstractInput
             throw new FieldRequiredException($fieldConfig->getName(), $groupIdx, $level);
         }
 
+        $factory = new FieldValuesFactory($fieldConfig, $valuesBag);
+
         foreach ($values['single-values'] as $index => $value) {
             if (!is_scalar($value)) {
                 throw new InputProcessorException(
@@ -233,7 +234,7 @@ class ArrayInput extends AbstractInput
                 );
             }
 
-            $valuesBag->addSingleValue($this->createSingleValue($value, $fieldConfig, $valuesBag));
+            $factory->addSingleValue($value);
         }
 
         foreach ($values['excluded-values'] as $index => $value) {
@@ -249,53 +250,51 @@ class ArrayInput extends AbstractInput
                 );
             }
 
-            $valuesBag->addExcludedValue($this->createSingleValue($value, $fieldConfig, $valuesBag, true));
+            $factory->addExcludedValue($value);
         }
 
         foreach ($values['ranges'] as $index => $range) {
             $this->assertArrayKeysExists($range, array('lower', 'upper'), $index, $groupIdx, $level);
-            $valuesBag->addRange($this->createRange($range, $fieldConfig, $valuesBag));
+            $this->processRange($range, $factory);
         }
 
         foreach ($values['excluded-ranges'] as $index => $range) {
             $this->assertArrayKeysExists($range, array('lower', 'upper'), $index, $groupIdx, $level);
-            $valuesBag->addExcludedRange($this->createRange($range, $fieldConfig, $valuesBag, true));
-            }
+            $this->processRange($range, $factory, true);
+        }
 
         foreach ($values['comparisons'] as $index => $comparison) {
             $this->assertArrayKeysExists($comparison, array('value', 'operator'), $index, $groupIdx, $level);
-            $valuesBag->addComparison($this->createComparisonValue($comparison, $fieldConfig, $valuesBag));
+            $factory->addComparisonValue($comparison['operator'], $comparison['value']);
         }
 
         foreach ($values['pattern-matchers'] as $index => $matcher) {
             $this->assertArrayKeysExists($matcher, array('value', 'type'), $index, $groupIdx, $level);
 
-            $valuesBag->addPatternMatch(
-                new PatternMatch(
-                    $matcher['value'],
-                    $matcher['type'],
-                    isset($matcher['case-insensitive']) && true === (bool) $matcher['case-insensitive']
-                    )
-                );
-            }
+            $factory->addPatterMatch(
+                $matcher['type'],
+                $matcher['value'],
+                isset($matcher['case-insensitive']) && true === (bool) $matcher['case-insensitive']
+            );
+        }
 
         return $valuesBag;
-        }
+    }
 
     private function assertArrayKeysExists($array, $requiredKeys, $index, $groupIdx, $level = 0)
     {
         if (!is_array($array)) {
-                throw new InputProcessorException(
-                    sprintf(
+            throw new InputProcessorException(
+                sprintf(
                     'Expected value-structure at index %d in group %d at nesting level %d '.
                     'to be an array, got an %s instead.',
-                        $index,
-                        $groupIdx,
-                        $level,
+                    $index,
+                    $groupIdx,
+                    $level,
                     gettype($array)
-                    )
-                );
-            }
+                )
+            );
+        }
 
         $missingKeys = array();
 
@@ -306,8 +305,8 @@ class ArrayInput extends AbstractInput
         }
 
         if ($missingKeys) {
-                throw new InputProcessorException(
-                    sprintf(
+            throw new InputProcessorException(
+                sprintf(
                     'Expected value-structure at path %s to contain the following keys: %s. '.
                     'But the following keys are missing: %s.',
                     implode(', ', $requiredKeys),
@@ -317,80 +316,19 @@ class ArrayInput extends AbstractInput
         }
     }
 
-    private function createSingleValue(
-        $value,
-        FieldConfigInterface $fieldConfig,
-        ValuesBag $valuesBag,
-        $negative = false
-    ) {
-        $path = $negative ? "excludedValues[".count($valuesBag->getExcludedValues())."]" :
-            "singleValues[".count($valuesBag->getSingleValues())."]";
-
-        $value = (string) $value;
-
-        $normValue = $this->viewToNorm($value, $fieldConfig, $path, $valuesBag);
-        $viewValue = $this->normToView($normValue, $fieldConfig, $path, $valuesBag);
-
-        if (null === $normValue || null === $viewValue) {
-            $singleValue = new SingleValue($value);
-        } else {
-            $singleValue = new SingleValue($normValue, $viewValue);
-        }
-
-        return $singleValue;
-    }
-
-    private function createComparisonValue($comparison, FieldConfigInterface $fieldConfig, ValuesBag $valuesBag)
+    private function processRange($range, FieldValuesFactory $factory, $negative = false)
     {
-        $operator = $comparison['operator'];
-        $value = (string) $comparison['value'];
-
-        $path = "comparisons[".count($valuesBag->getComparisons())."].value";
-
-        $normValue = $this->viewToNorm($value, $fieldConfig, $path, $valuesBag);
-        $viewValue = $this->normToView($normValue, $fieldConfig, $path, $valuesBag);
-
-        if (null === $normValue || null === $viewValue) {
-            $comparison = new Compare($value, $operator);
-        } else {
-            $comparison = new Compare($normValue, $operator, $viewValue);
-        }
-
-        return $comparison;
-    }
-
-    private function createRange(
-        array $range,
-        FieldConfigInterface $fieldConfig,
-        ValuesBag $valuesBag,
-        $negative = false
-    ) {
         $lowerInclusive = isset($range['inclusive-lower']) ? (bool) $range['inclusive-lower'] : true;
         $upperInclusive = isset($range['inclusive-upper']) ? (bool) $range['inclusive-upper'] : true;
 
         $lowerBound = (string) $range['lower'];
         $upperBound = (string) $range['upper'];
 
-        $path = $negative ? "excludedRanges[".count($valuesBag->getExcludedRanges())."]" :
-            "ranges[".count($valuesBag->getRanges())."]";
-
-        $lowerNormValue = $this->viewToNorm($lowerBound, $fieldConfig, $path.'.lower', $valuesBag);
-        $lowerViewValue = $this->normToView($lowerNormValue, $fieldConfig, $path.'.lower', $valuesBag);
-
-        $upperNormValue = $this->viewToNorm($upperBound, $fieldConfig, $path.'.upper', $valuesBag);
-        $upperViewValue = $this->normToView($upperNormValue, $fieldConfig, $path.'.upper', $valuesBag);
-
-        if (null === $lowerNormValue || null === $lowerViewValue || null === $upperNormValue || null === $upperViewValue) {
-            $range = new Range($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
+        if ($negative) {
+            $factory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
         } else {
-            $range = new Range(
-                $lowerNormValue, $upperNormValue, $lowerInclusive, $upperInclusive, $lowerViewValue, $upperViewValue
-            );
-
-            $this->validateRangeBounds($range, $fieldConfig, $valuesBag, $path);
+            $factory->addRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
         }
-
-        return $range;
     }
 
     private function countValues(array $values)

@@ -18,8 +18,6 @@ use Doctrine\Common\Lexer\AbstractLexer;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Doctrine-Project <http://www.doctrine-project.org>
- *
- * @internal
  */
 class Lexer extends AbstractLexer
 {
