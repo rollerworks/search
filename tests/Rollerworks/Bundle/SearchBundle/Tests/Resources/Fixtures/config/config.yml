@@ -50,7 +50,3 @@ rollerworks_search:
                         foo: null
                         bar: { foo: null, 0: 100 }
                         doctor: { name: who }
-    doctrine:
-        orm:
-            entity_managers: [default, secure]
-            cache_driver:    null

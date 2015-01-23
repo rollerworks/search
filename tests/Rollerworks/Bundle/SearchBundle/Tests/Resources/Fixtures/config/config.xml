@@ -7,13 +7,6 @@
 
     <rollerworks-search:config>
 
-        <rollerworks-search:doctrine>
-            <rollerworks-search:orm cache-driver="null">
-                <rollerworks-search:entity-manager>default</rollerworks-search:entity-manager>
-                <rollerworks-search:entity-manager>secure</rollerworks-search:entity-manager>
-            </rollerworks-search:orm>
-        </rollerworks-search:doctrine>
-
         <rollerworks-search:metadata cache-dir="none" cache-driver="memory" auto-mapping="false">
             <rollerworks-search:mapping name="AcmeUser" dir="Resource/search/" prefix="Model\" is-bundle="true" />
         </rollerworks-search:metadata>

@@ -190,46 +190,6 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertEquals($fieldSetDef, $customerDef);
     }
 
-    public function testDoctrineOrmEnabledWithDefaults()
-    {
-        $config = array(
-            'doctrine' => array(
-                'orm' => array()
-            )
-        );
-
-        $this->load($config);
-        $this->compile();
-
-        $this->assertEquals(array('default'), $this->container->getParameter('rollerworks_search.doctrine_orm.entity_managers'));
-
-        $this->assertContainerBuilderHasService('rollerworks_search.doctrine_orm.factory', 'Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory');
-        $this->assertContainerBuilderHasService('rollerworks_search.type_extension.doctrine', 'Rollerworks\Component\Search\Extension\Doctrine\Orm\DoctrineOrmExtension');
-    }
-
-    public function testDoctrineOrmEnabledWithCustom()
-    {
-        $config = array(
-            'doctrine' => array(
-                'orm' => array(
-                    'entity_managers' => array(
-                        'default',
-                        'secure',
-                    ),
-                    'cache_driver' => 'acme_test.orm.cache_driver',
-                )
-            )
-        );
-
-        $this->container->setDefinition('acme_test.orm.cache_driver', new Definition('Doctrine\Common\Cache\PhpFileCache'));
-
-        $this->load($config);
-        $this->compile();
-
-        $this->assertEquals(array('default', 'secure'), $this->container->getParameter('rollerworks_search.doctrine_orm.entity_managers'));
-        $this->assertContainerBuilderHasService('rollerworks_search.doctrine_orm.cache_driver', 'Doctrine\Common\Cache\PhpFileCache');
-    }
-
     protected function getContainerExtensions()
     {
         return array(

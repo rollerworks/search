@@ -86,10 +86,4 @@ $container->loadFromExtension('rollerworks_search', array(
             ),
         ),
     ),
-    'doctrine' => array(
-        'orm' => array(
-            'entity_managers' => array('default', 'secure'),
-            'cache_driver' => null,
-        )
-    )
 ));

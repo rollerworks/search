@@ -56,10 +56,6 @@ class RollerworksSearchExtension extends Extension
         if (!empty($config['fieldsets'])) {
             $this->registerFieldSets($container, $config['fieldsets']);
         }
-
-        if (isset($config['doctrine']['orm'])) {
-            $this->registerDoctrineOrm($container, $loader, $config['doctrine']['orm']);
-        }
     }
 
     /**
@@ -127,25 +123,6 @@ class RollerworksSearchExtension extends Extension
 
             $factory->register($fieldSet->getFieldSet());
         }
-    }
-
-    /**
-     * Register the Doctrine ORM component.
-     *
-     * @param ContainerBuilder $container
-     * @param XmlFileLoader    $loader
-     * @param array            $config
-     */
-    private function registerDoctrineOrm(ContainerBuilder $container, XmlFileLoader $loader, array $config)
-    {
-        $loader->load('orm.xml');
-
-        if (empty($config['entity_managers'])) {
-            $config['entity_managers'] = array('default');
-        }
-
-        $container->setAlias('rollerworks_search.doctrine_orm.cache_driver', $config['cache_driver']);
-        $container->setParameter('rollerworks_search.doctrine_orm.entity_managers', $config['entity_managers']);
     }
 
     /**
