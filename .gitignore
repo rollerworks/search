@@ -5,3 +5,8 @@ src/Rollerworks/Bundle/SearchBundle/Resources/doc/_build
 /composer.phar
 /vendor/
 /bin/
+
+# Translations are stored in the core rollerworks/search package
+# and are mirror by the RollerworksSearchExtension
+/src/Rollerworks/Bundle/SearchBundle/Resources/translations
+Resources/translations

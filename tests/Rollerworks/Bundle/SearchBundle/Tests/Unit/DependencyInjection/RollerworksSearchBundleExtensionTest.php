@@ -17,6 +17,7 @@ use Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\UserBundl
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\RollerworksSearchExtension;
 use Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\InvoiceBundle;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 {
@@ -51,18 +52,8 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.invoice', 'Rollerworks\Component\Search\FieldSet');
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
-        $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
-        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => 'customer'));
-        $fieldSetDef->addArgument('customer');
-
-        $fieldDef = new Definition();
-        $fieldDef->setFactoryService('rollerworks_search.factory');
-        $fieldDef->setFactoryMethod('createField');
-        $fieldDef->addArgument('id');
-        $fieldDef->addArgument('integer');
-        $fieldDef->addArgument(array('active' => true));
-        $fieldDef->addArgument(true);
-        $fieldSetDef->addMethodCall('set', array('id', $fieldDef));
+        $fieldSetDef = $this->createFieldSet('customer');
+        $this->addField($fieldSetDef, 'id', 'integer', array('active' => true), true);
 
         $customerDef = $this->container->findDefinition('rollerworks_search.fieldset.customer');
         $this->assertEquals($fieldSetDef, $customerDef);
@@ -103,40 +94,10 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
-        $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
-        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => 'customer'));
-        $fieldSetDef->addArgument('customer');
-
-        $fieldDef = new Definition();
-        $fieldDef->setFactoryService('rollerworks_search.factory');
-        $fieldDef->setFactoryMethod('createFieldForProperty');
-        $fieldDef->addArgument('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model\Customer');
-        $fieldDef->addArgument('id');
-        $fieldDef->addArgument('customer_id');
-        $fieldDef->addArgument('customer_type');
-        $fieldDef->addArgument(array());
-        $fieldDef->addArgument(false);
-        $fieldSetDef->addMethodCall('set', array('customer_id', $fieldDef));
-
-        $fieldDef = new Definition();
-        $fieldDef->setFactoryService('rollerworks_search.factory');
-        $fieldDef->setFactoryMethod('createFieldForProperty');
-        $fieldDef->addArgument('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User');
-        $fieldDef->addArgument('id');
-        $fieldDef->addArgument('user_id');
-        $fieldDef->addArgument('user_type');
-        $fieldDef->addArgument(array());
-        $fieldDef->addArgument(false);
-        $fieldSetDef->addMethodCall('set', array('user_id', $fieldDef));
-
-        $fieldDef = new Definition();
-        $fieldDef->setFactoryService('rollerworks_search.factory');
-        $fieldDef->setFactoryMethod('createField');
-        $fieldDef->addArgument('id');
-        $fieldDef->addArgument('integer');
-        $fieldDef->addArgument(array('active' => true));
-        $fieldDef->addArgument(true);
-        $fieldSetDef->addMethodCall('set', array('id', $fieldDef));
+        $fieldSetDef = $this->createFieldSet('customer');
+        $this->addField($fieldSetDef, 'customer_id', 'customer_type', array(), false, array('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model\Customer', 'id'));
+        $this->addField($fieldSetDef, 'user_id', 'user_type', array(), false, array('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User', 'id'));
+        $this->addField($fieldSetDef, 'id', 'integer', array('active' => true), true);
 
         $customerDef = $this->container->findDefinition('rollerworks_search.fieldset.customer');
         $this->assertEquals($fieldSetDef, $customerDef);
@@ -181,20 +142,8 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
-        $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
-        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => 'customer'));
-        $fieldSetDef->addArgument('customer');
-
-        $fieldDef = new Definition();
-        $fieldDef->setFactoryService('rollerworks_search.factory');
-        $fieldDef->setFactoryMethod('createFieldForProperty');
-        $fieldDef->addArgument('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User');
-        $fieldDef->addArgument('id');
-        $fieldDef->addArgument('user_id');
-        $fieldDef->addArgument('integer');
-        $fieldDef->addArgument(array());
-        $fieldDef->addArgument(false);
-        $fieldSetDef->addMethodCall('set', array('user_id', $fieldDef));
+        $fieldSetDef = $this->createFieldSet('customer');
+        $this->addField($fieldSetDef, 'user_id', 'integer', array(), false, array('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User', 'id'));
 
         $customerDef = $this->container->findDefinition('rollerworks_search.fieldset.customer');
         $this->assertEquals($fieldSetDef, $customerDef);
@@ -234,18 +183,8 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
-        $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
-        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => 'customer'));
-        $fieldSetDef->addArgument('customer');
-
-        $fieldDef = new Definition();
-        $fieldDef->setFactoryService('rollerworks_search.factory');
-        $fieldDef->setFactoryMethod('createField');
-        $fieldDef->addArgument('user_id');
-        $fieldDef->addArgument('integer');
-        $fieldDef->addArgument(array('active' => true));
-        $fieldDef->addArgument(true);
-        $fieldSetDef->addMethodCall('set', array('user_id', $fieldDef));
+        $fieldSetDef = $this->createFieldSet('customer');
+        $this->addField($fieldSetDef, 'user_id', 'integer', array('active' => true), true);
 
         $customerDef = $this->container->findDefinition('rollerworks_search.fieldset.customer');
         $this->assertEquals($fieldSetDef, $customerDef);
@@ -315,5 +254,50 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         }
 
         return $reader;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Definition
+     */
+    private function createFieldSet($name)
+    {
+        $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
+        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => $name));
+        $fieldSetDef->addArgument($name);
+
+        return $fieldSetDef;
+    }
+
+    private function addField(Definition $fieldSetDef, $name, $type, array $options = array(), $required = false, array $property = array())
+    {
+        $fieldDef = new Definition();
+
+        if ($property) {
+            $fieldDef->addArgument($property[0]);
+            $fieldDef->addArgument($property[1]);
+
+            $this->setFactory($fieldDef, 'rollerworks_search.factory', 'createFieldForProperty');
+        } else {
+            $this->setFactory($fieldDef, 'rollerworks_search.factory', 'createField');
+        }
+
+        $fieldDef->addArgument($name);
+        $fieldDef->addArgument($type);
+        $fieldDef->addArgument($options);
+        $fieldDef->addArgument($required);
+
+        $fieldSetDef->addMethodCall('set', array($name, $fieldDef));
+    }
+
+    private function setFactory(Definition $definition, $serviceId, $method)
+    {
+        if (method_exists($definition, 'setFactory')) {
+            $definition->setFactory(array(new Reference($serviceId), $method));
+        } else {
+            $definition->setFactoryService($serviceId);
+            $definition->setFactoryMethod($method);
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Factory\FieldSetFactory;
 use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\ServiceLoader;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -40,7 +42,9 @@ class RollerworksSearchExtension extends Extension
         $serviceLoader->loadFile('type');
         $serviceLoader->loadFile('input_processor');
         $serviceLoader->loadFile('exporter');
-        $serviceLoader->loadFile('formatter');
+        $serviceLoader->loadFile('condition_optimizers');
+
+        $this->mirrorTranslations();
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
@@ -72,6 +76,15 @@ class RollerworksSearchExtension extends Extension
     public function getNamespace()
     {
         return 'http://rollerworks.github.io/schema/dic/rollerworks-search';
+    }
+
+    private function mirrorTranslations()
+    {
+        $r = new \ReflectionClass('Rollerworks\Component\Search\FieldSet');
+        $dir = dirname($r->getFilename()).'/Resources/translations';
+
+        $fs = new Filesystem();
+        $fs->mirror($dir, __DIR__.'/../Resources/translations', null, array('copy_on_windows' => true));
     }
 
     /**
