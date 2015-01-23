@@ -41,7 +41,7 @@ rollerworks_search:
                     include_fields: [id, username]
 ```
 
-Now the FieldSet can be referenced to its service-id `rollerworks_search.fieldset.users`.
+Now the FieldSet can be referenced by its service-id `rollerworks_search.fieldset.users`.
 
     A FieldSet service is shared and not changeable.
 
@@ -49,36 +49,39 @@ Now the FieldSet can be referenced to its service-id `rollerworks_search.fieldse
 $fieldset = $container->get('rollerworks_search.fieldset.users');
 ```
 
+Or by using the `rollerworks_search.fieldset_registry` service, which ensures
+only FieldSets are returned.
+
+```php
+$fieldset = $container->get('rollerworks_search.fieldset_registry')->getFieldSet('users');
+```
+
 Input processors
 ----------------
 
-An new input-processor is generated using the `rollerworks_search.input_factory` service.
-Each processor instance is only meant to be bound to one FieldSet.
+An input-processor is created using the `rollerworks_search.input_factory` service.
+Each input processor can be reused.
 
-    Its also possible to create a new input-processor by revering to
-    `rollerworks_search.input.[processor-name]`, but these services are defined with scope prototype
-    and it require that any service that references them is also defined with scope prototype.
+    Its also possible to create a input-processor by revering to
+    `rollerworks_search.input.[processor-name]`, but this however does not guarantee
+    the requested service is an input-processor, so be careful to validate the
+    requested processor name!
 
 ```php
 $filterQuery = $container->get('rollerworks_search.input_factory')->create('filter_query');
-
-// Now set the FieldSet
-$filterQuery->setFieldSet(/* ... */);
 ```
 
-Formatter
----------
+ConditionOptimizer
+------------------
 
-The 'main' formatter is the `Rollerworks\Component\Search\Formatter\ChainFormatter`
-which performs the registered formatters in order.
+The 'main' condition optimizer is the `Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer`
+which performs the registered optimizers in order.
 
-Formatters can be tagged with `rollerworks_search.formatter`
-and a priority for there position, the search bundle will automatically register them.
+Condition optimizer can be tagged with `rollerworks_search.condition_optimizer`
+after which the search bundle will automatically register them.
 
-**Warning: The `TransformFormatter` is should be run as first, never make your priority higher then 999. **
-
-The chain formatter is available as the `rollerworks_search.chain_formatter` service.
+The ChainOptimizer is available as the `rollerworks_search.chain_condition_optimizer` service.
 
 ```php
-$formatter = $container->get(`rollerworks_search.chain_formatter`);
+$formatter = $container->get(`rollerworks_search.chain_condition_optimizer`);
 ```
