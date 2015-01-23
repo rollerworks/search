@@ -35,4 +35,4 @@ install:
     - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest; fi;
 
 script:
-    - bin/phpunit
+    - vendor/bin/phpunit
