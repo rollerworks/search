@@ -75,7 +75,7 @@ class RollerworksSearchExtension extends Extension
      */
     public function getNamespace()
     {
-        return 'http://rollerworks.github.io/schema/dic/rollerworks-search';
+        return 'http://rollerworks.github.io/schema/search/sf-dic/rollerworks-search';
     }
 
     private function mirrorTranslations()
