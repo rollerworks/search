@@ -27,8 +27,13 @@
         "rollerworks/cache-bundle": "Session based caching for increased performance"
     },
     "autoload": {
-        "psr-0": {
-            "Rollerworks\\Bundle\\SearchBundle": "src/"
+        "psr-4": {
+            "Rollerworks\\Bundle\\SearchBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "dev",

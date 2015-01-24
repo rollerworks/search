@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearchBundle package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -30,7 +30,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                        'prefix' => 'Model\\',
                        'is_bundle' => true,
                        'mapping' => true,
-                   )
+                   ),
                 ),
             ),
             'fieldsets' => array(
@@ -40,7 +40,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                             'class' => 'Model\User',
                             'include_fields' => array('name', 'date'),
                             'exclude_fields' => array(),
-                        )
+                        ),
                     ),
                     'fields' => array(
                         'id' => array(
@@ -48,14 +48,14 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                             'model_class' => 'stdClass',
                             'model_property' => 'id',
                             'required' => false,
-                            'options' => array()
+                            'options' => array(),
                         ),
                         'group' => array(
                             'type' => 'text',
                             'model_class' => 'stdClass',
                             'model_property' => 'group',
                             'required' => false,
-                            'options' => array()
+                            'options' => array(),
                         ),
                     ),
                 ),
@@ -65,7 +65,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                             'class' => 'Model\User',
                             'include_fields' => array('name'),
                             'exclude_fields' => array(),
-                        )
+                        ),
                     ),
                     'fields' => array(
                         'id' => array(
@@ -73,7 +73,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                             'model_class' => 'stdClass',
                             'model_property' => 'id',
                             'required' => false,
-                            'options' => array()
+                            'options' => array(),
                         ),
                         'group' => array(
                             'type' => 'text',
@@ -88,7 +88,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                                 ),
                                 'doctor' => array(
                                     'name' => 'who',
-                                )
+                                ),
                             ),
                             'required' => false,
                         ),
@@ -98,7 +98,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
         );
 
         $formats = array_map(function ($path) {
-            return __DIR__ . '/../../Resources/Fixtures/' . $path;
+            return __DIR__.'/../../Resources/Fixtures/'.$path;
         }, array(
             'config/config.yml',
             'config/config.xml',
