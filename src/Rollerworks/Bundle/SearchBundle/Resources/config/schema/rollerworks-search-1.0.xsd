@@ -9,23 +9,9 @@
 
     <xsd:complexType name="config">
         <xsd:sequence>
-            <xsd:element name="doctrine" type="doctrine" minOccurs="0" maxOccurs="1" />
             <xsd:element name="metadata" type="metadata" minOccurs="0" maxOccurs="1" />
             <xsd:element name="fieldset" type="fieldset" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:complexType name="doctrine">
-        <xsd:sequence>
-            <xsd:element name="orm" type="doctrine_orm" minOccurs="0" maxOccurs="1" />
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:complexType name="doctrine_orm">
-        <xsd:choice minOccurs="0" maxOccurs="unbounded">
-            <xsd:element name="entity-manager" type="xsd:string" maxOccurs="unbounded" minOccurs="0" />
-        </xsd:choice>
-        <xsd:attribute name="cache-driver" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:complexType name="metadata">

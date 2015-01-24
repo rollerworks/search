@@ -33,9 +33,6 @@ class Configuration implements ConfigurationInterface
         $this->addMetadataSection($rootNode);
         $this->addFieldSetsSection($rootNode);
 
-        // Storage drivers
-        $this->addDoctrineSection($rootNode);
-
         return $treeBuilder;
     }
 
@@ -67,26 +64,6 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('prefix')->end()
                                     ->booleanNode('is_bundle')->end()
                                 ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end();
-    }
-
-    private function addDoctrineSection(ArrayNodeDefinition $rootNode)
-    {
-        $rootNode
-            ->children()
-                ->arrayNode('doctrine')
-                    ->children()
-                        ->arrayNode('orm')
-                            ->fixXmlConfig('entity_manager')
-                            ->children()
-                                ->arrayNode('entity_managers')
-                                    ->prototype('scalar')->end()
-                                ->end()
-                                ->scalarNode('cache_driver')->defaultValue('rollerworks_search.cache.array_driver')->end()
                             ->end()
                         ->end()
                     ->end()

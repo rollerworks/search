@@ -112,25 +112,6 @@ class ConfigurationTest extends AbstractConfigurationTestCase
         ), 'When setting the model reference, both "model_class" and "model_property" must have a value.');
     }
 
-    public function testDoctrineOrmEntityManager()
-    {
-        $this->assertProcessedConfigurationEquals(array(
-            array(
-                'doctrine' => array(
-                    'orm' => array()
-                )
-            )
-        ), array(
-            'doctrine' => array(
-                'orm' => array(
-                    'entity_managers' => array(),
-                    'cache_driver' => 'rollerworks_search.cache.array_driver',
-                )
-            ),
-            'fieldsets' => array()
-        ));
-    }
-
     protected function getConfiguration()
     {
         return new Configuration();

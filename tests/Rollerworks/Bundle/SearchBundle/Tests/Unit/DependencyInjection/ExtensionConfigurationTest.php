@@ -95,12 +95,6 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                     ),
                 ),
             ),
-            'doctrine' => array(
-                'orm' => array(
-                    'entity_managers' => array('default', 'secure'),
-                    'cache_driver' => null,
-                )
-            )
         );
 
         $formats = array_map(function ($path) {

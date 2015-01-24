@@ -1,17 +1,22 @@
 RollerworksSearchBundle
 =======================
 
-Main purpose of this bundle is to integrate the [Rollerworks Search Component](https://github.com/rollerworks/RollerworksSearch)
-with any Symfony2 based application.
+Main purpose of this bundle is to integrate [RollerworksSearch](https://github.com/rollerworks/RollerworksSearch)
+with any Symfony based application.
 
-    The Rollerworks Search Component provides an advanced searching system.
+    RollerworksSearch provides a powerful searching system.
 
-[![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksSearchBundle.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksSearchBundle)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/3a327c61-805f-4b58-b5bf-afd4a6e4ab7f/mini.png)](https://insight.sensiolabs.com/projects/3a327c61-805f-4b58-b5bf-afd4a6e4ab7f)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearchBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearchBundle/?branch=master
 
 Requirements
 ------------
 
-You need at least the Symfony FrameworkBundle 2.1 or  and the Composer package manager.
+You need at least the Symfony 2.3 (Symfony FrameworkBundle)
+and the Composer package manager for installing dependencies.
+
+For searching in storage engines you need install the additional search extensions.
+See the documentation in the main package for more information.
 
 Documentation
 -------------
@@ -21,12 +26,21 @@ Documentation
 * [Basic Usage](doc/basic_usage.md)
 * [Extensions](doc/extensions.md)
 
-* [Using doctrine ORM](doc/doctrine/orm.md)
+Storage bundles
+---------------
+
+The following bundles are provided for enabling the described storage
+engines with the RollerworksSearchBundle bundle.
+*These bundles are extensions, you still need the RollerworksSearchBundle!.*
+
+* Doctrine DBAL (coming soon)
+* [Doctrine ORM](https://github.com/rollerworks/rollerworks-search-doctrine-orm-bundle)
 
 License
-=======
+-------
 
-[LICENSE](LICENSE)
+The source of this package is subject to the MIT license that is bundled
+with this source code in the file [LICENSE](LICENSE).
 
 Contributing
 ------------
