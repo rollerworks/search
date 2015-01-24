@@ -26,6 +26,16 @@ Documentation
 * [Basic Usage](doc/basic_usage.md)
 * [Extensions](doc/extensions.md)
 
+Storage bundles
+---------------
+
+The following bundles are provided for enabling the described storage
+engines with the RollerworksSearchBundle bundle.
+*These bundles are extensions, you still need the RollerworksSearchBundle!.*
+
+* Doctrine DBAL (coming soon)
+* [Doctrine ORM](https://github.com/rollerworks/rollerworks-search-doctrine-orm-bundle)
+
 License
 -------
 
