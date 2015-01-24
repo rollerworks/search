@@ -19,13 +19,13 @@
     "require-dev": {
         "rollerworks/search-doctrine-orm": "1.*@dev",
         "rollerworks/search-jms-metadata": "1.*@dev",
-        "doctrine/doctrine-bundle": ">=1.1",
+        "doctrine/doctrine-bundle": "~1.1",
         "rollerworks/cache-bundle": "1.0.*@dev",
         "symfony/class-loader": "~2.1",
-        "jms/metadata": ">=1.1.1",
-        "phpunit/phpunit": "~3.7",
-        "matthiasnoback/symfony-config-test": "0.*",
-        "matthiasnoback/symfony-dependency-injection-test": "0.*"
+        "jms/metadata": "^1.1.1",
+        "phpunit/phpunit": "~4.4",
+        "matthiasnoback/symfony-dependency-injection-test": "^0.7.1",
+        "matthiasnoback/symfony-service-definition-validator": "^1.2.2"
     },
     "suggest": {
         "rollerworks/cache-bundle": "Session based caching for increased performance"
