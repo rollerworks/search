@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearchBundle package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -13,8 +13,8 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 
 error_reporting(E_ALL | E_STRICT);
 
-if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    throw new \RuntimeException('Did not find vendor/autoload.php. Please Install vendors using command: composer.phar install');
+if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
+    throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install"?');
 }
 
 if (version_compare(PHP_VERSION, '5.4', '>=') && gc_enabled()) {
@@ -24,28 +24,9 @@ if (version_compare(PHP_VERSION, '5.4', '>=') && gc_enabled()) {
 }
 
 /**
-* @var \Composer\Autoload\ClassLoader $loader
-*/
-$loader = require __DIR__ . '/../vendor/autoload.php';
+ * @var \Composer\Autoload\ClassLoader $loader
+ */
+$loader = require __DIR__.'/../vendor/autoload.php';
 $loader->add('Rollerworks\\Bundle\\SearchBundle\\Tests\\', __DIR__);
-$loader->add('Doctrine\\Tests\\', realpath(__DIR__ . '/../vendor/doctrine/orm/tests') . '/');
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
-
-// Don't use the system tempdir on Windows as that fails to work!
-call_user_func(function () {
-    if ('' == getenv('TMPDIR')) {
-        if (false !== $pos = strpos(__DIR__, '\\')) {
-            $rootDir = substr(realpath(substr(__DIR__, 0, $pos + 1)), 0, -1);
-        } else {
-            $rootDir = sys_get_temp_dir();
-        }
-
-        $rootDir .= '/.tmp_c';
-        putenv('TMPDIR=' . $rootDir);
-
-        if (!is_dir($rootDir)) {
-            mkdir($rootDir, 0777, true);
-        }
-    }
-});

@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearchBundle package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -13,25 +13,16 @@ namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
 use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Factory\FieldSetFactory;
 use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\ServiceLoader;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\Config\Resource\DirectoryResource;
-use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-/**
- * RollerworksSearchExtension.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 class RollerworksSearchExtension extends Extension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $config, ContainerBuilder $container)
     {
         $configuration = new Configuration();
@@ -58,17 +49,11 @@ class RollerworksSearchExtension extends Extension
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getXsdValidationBasePath()
     {
         return __DIR__.'/../Resources/config/schema';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNamespace()
     {
         return 'http://rollerworks.github.io/schema/search/sf-dic/rollerworks-search';
@@ -247,16 +232,16 @@ class RollerworksSearchExtension extends Extension
         }
     }
 
-     /**
-      * All the missing information can be autodetected by this method.
-      *
-      * Returns false when autodetection failed, or an array of the completed information otherwise.
-      *
-      * @param array            $bundleConfig
-      * @param \ReflectionClass $bundle
-      *
-      * @return array|false
-      */
+    /**
+     * All the missing information can be autodetected by this method.
+     *
+     * Returns false when autodetection failed, or an array of the completed information otherwise.
+     *
+     * @param array            $bundleConfig
+     * @param \ReflectionClass $bundle
+     *
+     * @return array|false
+     */
     private function getMetadataDriverConfigDefaults(array $bundleConfig, \ReflectionClass $bundle)
     {
         $bundleDir = dirname($bundle->getFilename());

@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearchBundle package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -13,9 +13,9 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Unit\DependencyInjection;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
-use Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\UserBundle;
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\RollerworksSearchExtension;
 use Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\InvoiceBundle;
+use Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\UserBundle;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -35,15 +35,15 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
             'fieldsets' => array(
                 'invoice' => array(
                     'fields' => array(
-                        'id' => array('type' => 'integer')
-                    )
+                        'id' => array('type' => 'integer'),
+                    ),
                 ),
                 'customer' => array(
                     'fields' => array(
-                        'id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true))
-                    )
-                )
-            )
+                        'id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true)),
+                    ),
+                ),
+            ),
         );
 
         $this->load($config);
@@ -68,7 +68,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
             'fieldsets' => array(
                 'customer' => array(
                     'fields' => array(
-                        'id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true))
+                        'id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true)),
                     ),
                     'import' => array(
                         'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model\Customer',
@@ -76,9 +76,9 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
                             'class' => 'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User',
                             'include_fields' => array('user_id'),
                         ),
-                    )
-                )
-            )
+                    ),
+                ),
+            ),
         );
 
         $bundles = array(
@@ -113,7 +113,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
                         'is_bundle' => true,
                         'dir' => 'Resources/config/search',
                         'prefix' => 'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model',
-                    )
+                    ),
                 ),
                 'cache_driver' => null,
             ),
@@ -124,9 +124,9 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
                             'class' => 'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User',
                             'include_fields' => array('user_id'),
                         ),
-                    )
-                )
-            )
+                    ),
+                ),
+            ),
         );
 
         $bundles = array(
@@ -158,16 +158,16 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
             'fieldsets' => array(
                 'customer' => array(
                     'fields' => array(
-                        'user_id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true))
+                        'user_id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true)),
                     ),
                     'import' => array(
                         array(
                             'class' => 'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User',
                             'include_fields' => array('user_id'),
                         ),
-                    )
-                )
-            )
+                    ),
+                ),
+            ),
         );
 
         $bundles = array(

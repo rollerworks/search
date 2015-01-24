@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearchBundle package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -11,8 +11,8 @@
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
@@ -22,9 +22,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
@@ -135,7 +132,7 @@ class Configuration implements ConfigurationInterface
                                 ->useAttributeAsKey('name')
                                 ->prototype('array')
                                     ->validate()
-                                        ->ifTrue(function ($v) { return empty($v['model_class']) xor empty($v['model_property']); } )
+                                        ->ifTrue(function ($v) { return empty($v['model_class']) xor empty($v['model_property']); })
                                         ->thenInvalid('When setting the model reference, both "model_class" and "model_property" must have a value.')
                                     ->end()
                                     ->children()
@@ -147,7 +144,7 @@ class Configuration implements ConfigurationInterface
                                     ->fixXmlConfig('option')
                                     ->children()
                                         ->arrayNode('options')
-                                            ->beforeNormalization()->ifTrue(function ($v) { return isset($v[0]); } )->then($optionsNormalizer)->end()
+                                            ->beforeNormalization()->ifTrue(function ($v) { return isset($v[0]); })->then($optionsNormalizer)->end()
                                             ->prototype('variable')->end()
                                         ->end()
                                     ->end()

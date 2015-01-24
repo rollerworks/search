@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearchBundle package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -21,7 +21,7 @@ $container->loadFromExtension('rollerworks_search', array(
                'prefix' => 'Model\\',
                'is_bundle' => true,
                'mapping' => true,
-           )
+           ),
         ),
     ),
     'fieldsets' => array(
@@ -31,7 +31,7 @@ $container->loadFromExtension('rollerworks_search', array(
                     'class' => 'Model\User',
                     'include_fields' => array('name', 'date'),
                     'exclude_fields' => array(),
-                )
+                ),
             ),
             'fields' => array(
                 'id' => array(
@@ -39,14 +39,14 @@ $container->loadFromExtension('rollerworks_search', array(
                     'model_class' => 'stdClass',
                     'model_property' => 'id',
                     'required' => false,
-                    'options' => array()
+                    'options' => array(),
                 ),
                 'group' => array(
                     'type' => 'text',
                     'model_class' => 'stdClass',
                     'model_property' => 'group',
                     'required' => false,
-                    'options' => array()
+                    'options' => array(),
                 ),
             ),
         ),
@@ -56,7 +56,7 @@ $container->loadFromExtension('rollerworks_search', array(
                     'class' => 'Model\User',
                     'include_fields' => array('name'),
                     'exclude_fields' => array(),
-                )
+                ),
             ),
             'fields' => array(
                 'id' => array(
@@ -64,7 +64,7 @@ $container->loadFromExtension('rollerworks_search', array(
                     'model_class' => 'stdClass',
                     'model_property' => 'id',
                     'required' => false,
-                    'options' => array()
+                    'options' => array(),
                 ),
                 'group' => array(
                     'type' => 'text',
@@ -79,7 +79,7 @@ $container->loadFromExtension('rollerworks_search', array(
                         ),
                         'doctor' => array(
                             'name' => 'who',
-                        )
+                        ),
                     ),
                     'required' => false,
                 ),
