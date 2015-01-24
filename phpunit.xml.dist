@@ -12,16 +12,16 @@
          bootstrap="./tests/bootstrap.php"
         >
     <testsuites>
-        <testsuite name="Rollerworks SearchBundle Test Suite">
-            <directory>./tests/Rollerworks/Bundle/SearchBundle/Tests/</directory>
+        <testsuite name="RollerworksSearchBundle Test Suite">
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>./src</directory>
+            <directory>./src/</directory>
             <exclude>
-                <directory>./Resources</directory>
+                <directory>./src/Resources/</directory>
                 <directory>./vendor</directory>
                 <directory>./tests/</directory>
             </exclude>
@@ -29,7 +29,6 @@
     </filter>
 
     <php>
-        <ini name="mbstring.internal_encoding" value="UTF-8"/>
         <ini name="intl.default_locale" value="en"/>
     </php>
 
