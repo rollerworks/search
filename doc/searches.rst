@@ -5,13 +5,13 @@ Using the FactoryBuilder
 ------------------------
 
 The FactoryBuilder helps with setting up the search system.
-It only need to set it up once, and then it can be reuse multiple times.
+You only need to set it up a SearchFactory, and then it can be reuse multiple times.
 
 .. note::
 
     The ``Searches`` class and SearchFactoryBuilder are only meant to be used when
-    you using Rollerworks Search as standalone. When making an integration
-    with a framework plugin, you'd properly want create the SearchFactory and FieldsRegistry
+    you using RollerworksSearch as a standalone. When making a framework plugin,
+    you'd properly want create the SearchFactory and FieldsRegistry
     manually using a Dependency Injection system.
 
 .. code-block:: php
@@ -22,14 +22,15 @@ It only need to set it up once, and then it can be reuse multiple times.
         // Here can optionally add new types or (type) extensions
         ->getSearchFactory();
 
-Creating a fieldset
+Creating a FieldSet
 -------------------
 
 Now, before you can start performing searches, the system first needs a ``FieldSet``
-which will hold our search fields and there configuration.
+which will hold the configuration of your search fields.
 
-You can create as many FieldSets as you want, but make sure
-there names don't clash. Use a descriptive name like: 'customer_invoices' and 'customers'.
+You can create as many FieldSets as you want, but each FieldSet needs a name
+that should not clash with other fieldsets. So use descriptive names like:
+'customer_invoices' and 'customers'.
 
 .. code-block:: php
     :linenos:
@@ -41,24 +42,25 @@ there names don't clash. Use a descriptive name like: 'customer_invoices' and 'c
 
 .. tip::
 
-    We can also use the FieldSetBuilder to import the fields from models
+    You can also use the FieldSetBuilder to import the fields from models
     using the :doc:`metadata` component.
 
 Performing a manual search
 --------------------------
 
 In most cases you'd ask the system to process an input and pass
-it to a list of formatters before applying it on the storage layer.
+it to a list of condition optimizers before applying it on the storage layer.
 But its not uncommon to create a SearchCondition manually.
 
 The ``SearchConditionBuilder`` is just for this, if you already know how
 an XML document is build then this should be pretty straightforward.
 
 Each time you call ``group()`` it will create a new ``SearchConditionBuilder``
-with a new depth. When you can end() it will return to the parent builder.
+with a new depth. When you call ``end()`` it will return to the parent builder.
 
-Calling field() will give us a new ``ValuesBagBuilder`` which
-allows us adding new values and calling `end()` to get back to the ConditionBuilder.
+Calling ``field()`` will give you a new ``ValuesBagBuilder`` which
+allows adding new values, and then calling ``end()`` to get back
+to the ConditionBuilder.
 
 .. note::
 
@@ -123,8 +125,9 @@ Or if you need a more complex condition.
 
 .. note::
 
-    When you call ``field()`` with an existing field the values will
-    be appended. Set the second parameter to true to force a new one.
+    When you call ``field()`` with an existing field, the original field is returned.
+
+    Set the second parameter to true to force a new one, this will remove the old field!
 
 Processing input
 ----------------
@@ -145,6 +148,7 @@ This example uses the :doc:`input/filter_query` with the FieldSet shown above.
     use Rollerworks\Component\Search\ConditionOptimizer\RangeOptimizer;
     use Rollerworks\Component\Search\Searches;
 
+    $validator = Validation::createValidator();
     $searchFactory = new Searches::createSearchFactoryBuilder()
         ->getSearchFactory();
 
@@ -167,6 +171,8 @@ This example uses the :doc:`input/filter_query` with the FieldSet shown above.
     // values we run them trough a list of optimizers.
 
     $formatter = new ChainOptimizer();
+    $formatter->addFormatter(new TransformFormatter());
+    $formatter->addFormatter(new ValidationFormatter($validator));
     $formatter->addFormatter(new DuplicateRemover());
     $formatter->addFormatter(new ValuesToRange());
     $formatter->addFormatter(new RangeOptimizer());

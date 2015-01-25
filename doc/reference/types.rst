@@ -28,7 +28,7 @@ Field Types Reference
    types/birthday
 
 A FieldSet is composed of *fields*, each of which are built with the help of
-a field *type* (e.g. a ``text`` type, ``choice`` type, etc). Rollerworks Search comes
+a field *type* (e.g. a ``text`` type, ``choice`` type, etc). RollerworksSearch comes
 standard with a large list of field types that can be used in your application.
 
 Supported Field Types

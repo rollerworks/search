@@ -7,14 +7,12 @@ date Field Type
 A field to capture date input.
 
 The provided input can be provided localized.
-The underlying data is stored as a ``DateTime`` object.
+The underlying data is stored as a ``DateTime`` object with UTC as timezone.
 
 +----------------------+---------------------------------------------------------------------------+
 | Output Data Type     | ``DateTime``                                                              |
 +----------------------+---------------------------------------------------------------------------+
 | Options              | - `format`_                                                               |
-|                      | - `model_timezone`                                                        |
-|                      | - `input_timezone`_                                                       |
 +----------------------+---------------------------------------------------------------------------+
 | Inherited options    | - `invalid_message`_                                                      |
 |                      | - `invalid_message_parameters`_                                           |
@@ -30,10 +28,6 @@ Field Options
 .. _reference-fields-type-date-format:
 
 .. include:: /reference/types/options/date_format.rst.inc
-
-.. include:: /reference/types/options/model_timezone.rst.inc
-
-.. include:: /reference/types/options/input_timezone.rst.inc
 
 Inherited options
 -----------------

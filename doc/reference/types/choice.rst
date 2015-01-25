@@ -5,7 +5,6 @@ choice Field Type
 =================
 
 A multi-purpose field used to allow the user to "choose" one or more options.
-It can be rendered as a ``select`` tag, radio buttons, or checkboxes.
 
 To use this field, you must specify *either* the ``choice_list`` or ``choices``
 option.
@@ -15,6 +14,7 @@ option.
 +--------------------+-------------------------------------------------------------------------------+
 | Options            | - `choices`_                                                                  |
 |                    | - `choice_list`_                                                              |
+|                    | - `label_as_value`_                                                           |
 +--------------------+-------------------------------------------------------------------------------+
 | Inherited options  | - `invalid_message`_                                                          |
 |                    | - `invalid_message_parameters`_                                               |
@@ -36,7 +36,6 @@ user choices/types on the input (e.g. ``Male``).
 
     $builder->add('gender', 'choice', array(
         'choices'   => array('m' => 'Male', 'f' => 'Female'),
-        'required'  => false,
     ));
 
 You can also use the ``choice_list`` option, which takes an object that can
@@ -52,7 +51,9 @@ choices
 
 This is the most basic way to specify the choices that should be used
 by this field. The ``choices`` option is an array, where the array key
-is the item value and the array value is the item's label::
+is the item value and the array value is the item's label:
+
+.. code-block:: php
 
     $builder->add('gender', 'choice', array(
         'choices' => array('m' => 'Male', 'f' => 'Female')
@@ -67,6 +68,16 @@ This is one way of specifying the options to be used for this field.
 The ``choice_list`` option must be an instance of the ``ChoiceListInterface``.
 For more advanced cases, a custom class that implements the interface
 can be created to supply the choices.
+
+label_as_value
+~~~~~~~~~~~~~~
+
+**type**: ``bool`` **default**: ``false``
+
+Each choice has a label and value, by default the value is used for transforming
+from view to the choice.
+
+To use the label as value set this to ``true``.
 
 Inherited options
 -----------------
