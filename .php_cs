@@ -1,6 +1,7 @@
 <?php
 
 return Symfony\CS\Config\Config::create()
+    ->setUsingLinter(false)
     // use SYMFONY_LEVEL:
     ->level(Symfony\CS\FixerInterface::SYMFONY_LEVEL)
     // and extra fixers:
