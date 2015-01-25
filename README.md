@@ -6,20 +6,19 @@ README
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/?branch=master)
 
 What is RollerworksSearch?
----------------------------
+--------------------------
 
-RollerworksSearch is an advanced search-engine framework.
+RollerworksSearch provides you with a powerful system for integrating a search system
+in your PHP application.
 
-RollerworksSearch provides you with a powerful system for building your own search-engine.
-Input processing, normalizing, validating and every else. Save, fast and easy.
-
-This system was designed to be as flexible as possible.
-You are free to use your extensions, field-types etc.
+The system has a modular design and can work with any PHP framework,
+user locale, data format or storage system.
 
 Features
 --------
 
-RollerworksSearch works using SearchConditions.
+Searches are performed using SearchConditions
+which can be easily exported to any format.
 
 A SearchConditions is build-up of fields and condition-groups.
 Each field can hold any type of value including ranges, comparisons
@@ -27,35 +26,33 @@ and pattern matchers (starts/ends with contains and basic regex).
 
 Condition-groups can be nested for more advanced and complex conditions.
 
-Also, SearchConditions are easily exportable to any supported format.
+## Input processors
 
-## Input
+Input processing is provided for the most common formats.
 
-Input processing is provided for the following formats.
-But building your own input processor is also possible.
+Including a special format called FilterQuery which provides
+a user-friendly syntax for creating simple and complex conditions.
+
+Each input processor transforms the input a normalized format,
+and ensures that no malformed data is passed to the storage layer.
 
 * Array
 * JSON
 * XML
-* FilterQuery (an easy to learn and use condition based syntax).
+* FilterQuery
 
-## Formatter
+## Optimizers
 
-A formatter is used for normalizing and validating values in a SearchCondition.
-The bundles formatters are designed for the most common use-cases,
-building your own is also possible.
+Optimizers help you with optimizing the SearchCondition for a better
+and faster search-condition, including removing duplicated values and
+normalizing redundant values.
 
-* Validation (using the Symfony Validator component)
-* Transformation (localized representation to a normalized format and reverse)
-* Removing of duplicated values
-* Optimizing of ranges: detecting and removing overlapping ranges
-* Connected values to ranges (1,2,3,4,5 gets converted to 1-5)
+## FieldTypes
 
-## Types
+The following types are provided out of the box, building your is also
+possible and very straightforward.
 
-The following types are packaged with this release (but can be replaced when needed).
-
-> **Note: Each type listed below supports localization.
+> **Note: All types listed below support localization.
 
 * Birthday (with optional support for Age conversion)
 * Choice (array, entity list, custom implementation)
@@ -71,10 +68,10 @@ The following types are packaged with this release (but can be replaced when nee
 * Text
 * Timezone choice
 
-## Storage/Index engines
+## Storage/Index engines (condition processor)
 
-> **Note: The listed engines are supported out of the box, but you are noted limited
-> to these engines. Using something like a Webservice is also possible.
+Storage engines for searching (or condition processors) are provided
+as separate packages. Building your own condition processor is also possible.
 
 * [Doctrine2 DBAL](https://github.com/rollerworks/rollerworks-search-doctrine-dbal)
 * [Doctrine2 ORM](https://github.com/rollerworks/rollerworks-search-doctrine-orm)
@@ -84,10 +81,9 @@ The following types are packaged with this release (but can be replaced when nee
 Requirements
 ------------
 
-You need at least PHP 5.3.3, and preferable the Intl extension
-for international support.
+You need at least PHP 5.3.3, and Intl extension for international support.
 
-For framework integration you use the following;
+For framework integration you may use the following;
 
 * [Symfony2 Bundle](https://github.com/rollerworks/RollerworksSearchBundle)
 * [Symfony2 DependencyInjection](https://github.com/rollerworks/rollerworks-search-symfony-di)
@@ -97,7 +93,8 @@ For framework integration you use the following;
 Installation
 ------------
 
-For installing RollerworksSearch, you can find all the details about installing in the manual.
+For installing and integrating RollerworksSearch, you can find all the
+details in the manual.
 
 [doc/installing](doc/installing.rst)
 
@@ -123,7 +120,7 @@ Versioning
 ----------
 
 For transparency and insight into the release cycle, and for striving to maintain backward compatibility,
-RollerworksSearch will be maintained under the Semantic Versioning guidelines as much as possible.
+RollerworksSearch is maintained under the Semantic Versioning guidelines as much as possible.
 
 Releases will be numbered with the following format:
 
@@ -140,14 +137,16 @@ For more information on SemVer, please visit <http://semver.org/>.
 Credits
 -------
 
-The field-type extensions are largely inspired on the Symfony2 form
-component, and contain a good amount code originally developed by the amazing
-Symfony2 community.
+The field-type extensions are largely inspired on the Symfony Form
+Component, and contain a good amount code originally developed by the amazing
+Symfony developers.
 
-Documentation for types is also borrowed from the Symfony2 project.
+Documentation for types is also borrowed from the Symfony project.
 
 License
 -------
+
+RollerworksSearch is provided under the none-restrictive MIT license.
 
 [LICENSE](LICENSE)
 
