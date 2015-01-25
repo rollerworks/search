@@ -7,7 +7,7 @@ with any Symfony based application.
     RollerworksSearch provides a powerful searching system.
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/3a327c61-805f-4b58-b5bf-afd4a6e4ab7f/mini.png)](https://insight.sensiolabs.com/projects/3a327c61-805f-4b58-b5bf-afd4a6e4ab7f)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearchBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearchBundle/?branch=master
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearchBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearchBundle/?branch=master)
 
 Requirements
 ------------
