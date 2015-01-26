@@ -61,7 +61,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
 
         namespace Acme\Store\Model;
 
-        use Rollerworks\Component\Search\Metadata as Search;
+        use Rollerworks\Component\Search\Mapping as Search;
 
         class Product
         {
