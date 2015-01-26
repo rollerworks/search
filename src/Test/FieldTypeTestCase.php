@@ -75,7 +75,7 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
     /**
      * Transforms the value if a value transformer is set.
      *
-     * @param mixed                $value The value to transform
+     * @param mixed                $value  The value to transform
      * @param FieldConfigInterface $config
      *
      * @return string|null Returns null when the value is empty or invalid

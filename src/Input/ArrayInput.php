@@ -17,10 +17,7 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value\Compare;
-use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 

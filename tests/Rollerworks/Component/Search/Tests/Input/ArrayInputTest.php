@@ -204,7 +204,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                         ),
                     ),
                 ),
-                ValuesGroup::GROUP_LOGICAL_OR
+                ValuesGroup::GROUP_LOGICAL_OR,
             ),
         );
     }

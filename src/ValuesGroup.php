@@ -263,7 +263,7 @@ class ValuesGroup implements \Serializable
             $this->groupLogical,
             $this->groups,
             $this->fields,
-                $this->locked
+                $this->locked,
             )
         );
     }

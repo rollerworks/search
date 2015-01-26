@@ -205,7 +205,7 @@ final class FieldValuesFactory
     /**
      * Reverse transforms a value if a value transformer is set.
      *
-     * @param string               $value  The value to reverse transform
+     * @param string $value The value to reverse transform
      * @param string $path
      *
      * @return mixed Returns null when the value is empty or invalid

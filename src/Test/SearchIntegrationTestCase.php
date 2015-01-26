@@ -14,8 +14,8 @@ namespace Rollerworks\Component\Search\Test;
 use Prophecy\Prophet;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\Searches;
-use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\SearchFactory;
+use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\ValuesBag;
 
 abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase

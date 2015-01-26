@@ -109,28 +109,28 @@ class XmlInput extends AbstractInput
     {
         $allFields = $this->config->getFieldSet()->all();
 
-            foreach ($values->fields->children() as $element) {
-                /** @var \SimpleXMLElement $element */
+        foreach ($values->fields->children() as $element) {
+            /** @var \SimpleXMLElement $element */
                 $fieldName = $this->getFieldName((string) $element['name']);
-                $fieldConfig = $this->config->getFieldSet()->get($fieldName);
+            $fieldConfig = $this->config->getFieldSet()->get($fieldName);
 
-                if ($valuesGroup->hasField($fieldName)) {
-                    $this->valuesToBag(
+            if ($valuesGroup->hasField($fieldName)) {
+                $this->valuesToBag(
                         $fieldConfig,
                         $element,
                         $valuesGroup->getField($fieldName),
                         $groupIdx,
                         $level
                     );
-                } else {
-                    $valuesGroup->addField(
+            } else {
+                $valuesGroup->addField(
                         $fieldName,
                         $this->valuesToBag($fieldConfig, $element, new ValuesBag(), $groupIdx, $level)
                     );
-                }
-
-                unset($allFields[$fieldName]);
             }
+
+            unset($allFields[$fieldName]);
+        }
 
         // Now run trough all the remaining fields and look if there are required
         // Fields that were set without values have already been checked by valuesToBag()
@@ -146,28 +146,28 @@ class XmlInput extends AbstractInput
 
     private function processGroups(\SimpleXMLElement $values, ValuesGroup $valuesGroup, $groupIdx, $level)
     {
-            $this->validateGroupsCount($groupIdx, $values->groups->children()->count(), $level);
+        $this->validateGroupsCount($groupIdx, $values->groups->children()->count(), $level);
 
-            $index = 0;
+        $index = 0;
 
-            foreach ($values->groups->children() as $element) {
-                $subValuesGroup = new ValuesGroup();
+        foreach ($values->groups->children() as $element) {
+            $subValuesGroup = new ValuesGroup();
 
-                if (isset($element['logical']) && 'OR' === strtoupper($element['logical'])) {
-                    $subValuesGroup->setGroupLogical(ValuesGroup::GROUP_LOGICAL_OR);
-                }
+            if (isset($element['logical']) && 'OR' === strtoupper($element['logical'])) {
+                $subValuesGroup->setGroupLogical(ValuesGroup::GROUP_LOGICAL_OR);
+            }
 
-                $this->processGroup(
+            $this->processGroup(
                     $element,
                     $subValuesGroup,
                     $index,
                     $level+1
                 );
 
-                $valuesGroup->addGroup($subValuesGroup);
-                $index++;
-            }
+            $valuesGroup->addGroup($subValuesGroup);
+            $index++;
         }
+    }
 
     private function valuesToBag(
         FieldConfigInterface $fieldConfig,

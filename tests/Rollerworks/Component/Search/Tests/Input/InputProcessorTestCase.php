@@ -312,7 +312,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideGroupTests();
 
     /**
-     * @param mixed $input
+     * @param mixed  $input
      * @param string $logical
      *
      * @test
@@ -450,11 +450,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
             $processor->process($config, $input);
 
             $this->fail('Condition should be invalid.');
-        } catch (\Exception $e ) {
+        } catch (\Exception $e) {
             $this->detectSystemException($e);
 
             if (!$e instanceof ValuesOverflowException) {
-                $this->fail('Expected a ValuesOverflowException but got: '. get_class($e));
+                $this->fail('Expected a ValuesOverflowException but got: '.get_class($e));
             }
 
             $this->assertEquals($fieldName, $e->getFieldName());
@@ -471,11 +471,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideValueOverflowTests();
 
     /**
-     * @param mixed  $input
-     * @param int    $max
-     * @param int    $count
-     * @param int    $groupIdx
-     * @param int    $nestingLevel
+     * @param mixed $input
+     * @param int   $max
+     * @param int   $count
+     * @param int   $groupIdx
+     * @param int   $nestingLevel
      *
      * @test
      * @dataProvider provideGroupsOverflowTests

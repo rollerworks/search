@@ -431,7 +431,7 @@ class ValuesBag implements \Countable, \Serializable
             $this->patternMatchers,
             $this->valuesCount,
             $this->errors,
-            $this->locked
+            $this->locked,
         ));
     }
 

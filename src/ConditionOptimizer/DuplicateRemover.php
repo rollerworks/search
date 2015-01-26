@@ -13,8 +13,8 @@ namespace Rollerworks\Component\Search\ConditionOptimizer;
 
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValueComparisonInterface;

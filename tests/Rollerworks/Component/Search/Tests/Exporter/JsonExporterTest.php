@@ -91,7 +91,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
                     'id' => array(
                         'comparisons' => array(
                             array('operator' => '>', 'value' => '1'),
-                            array('operator' => '<', 'value' => '2',),
+                            array('operator' => '<', 'value' => '2'),
                             array('operator' => '<=', 'value' => '5'),
                             array('operator' => '>=', 'value' => '8'),
                         ),

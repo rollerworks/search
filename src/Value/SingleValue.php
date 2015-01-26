@@ -29,7 +29,7 @@ final class SingleValue
     /**
      * Constructor.
      *
-     * @param mixed $value
+     * @param mixed  $value
      * @param string $viewValue
      */
     public function __construct($value, $viewValue = null)

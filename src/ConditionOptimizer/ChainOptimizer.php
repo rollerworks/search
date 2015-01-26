@@ -11,8 +11,8 @@
 
 namespace Rollerworks\Component\Search\ConditionOptimizer;
 
-use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 
 /**
  * ChainOptimizer performs the registered optimizers in order of priority.
@@ -59,7 +59,6 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
         if ($condition->getValuesGroup()->hasErrors(true)) {
             return;
         }
-
 
         krsort($this->optimizers, SORT_NUMERIC);
 

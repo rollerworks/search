@@ -406,7 +406,7 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-                ValuesGroup::GROUP_LOGICAL_OR
+                ValuesGroup::GROUP_LOGICAL_OR,
             ),
         );
     }
