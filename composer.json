@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.9",
         "symfony/options-resolver": "~2.3",
         "symfony/property-access": "~2.3",
         "symfony/intl": "~2.3",
