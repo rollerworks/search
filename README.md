@@ -96,7 +96,7 @@ Installation
 For installing and integrating RollerworksSearch, you can find all the
 details in the manual.
 
-[doc/installing](doc/installing.rst)
+[Installing](doc/installing.rst)
 
 Documentation
 -------------
