@@ -8,26 +8,43 @@ A :doc:`date </reference/types/date>` field that specializes in handling
 birthday or age data. Can accept both birthdate or age.
 
 This type is essentially the same as the :doc:`date </reference/types/date>`
-type, but with a special option for handling age in years.
+type, but with a special option for handling an age in years.
 
 +----------------------+------------------------------------------------------------------------------+
 | Output Data Type     | can be ``DateTime`` or ``integer``                                           |
 +----------------------+------------------------------------------------------------------------------+
-| Overridden Options   | - `constraints`_                                                             |
+| Options              | - `allow_future_date`_                                                       |
 +----------------------+------------------------------------------------------------------------------+
 | Inherited Options    | - `format`_                                                                  |
-|                      | - `model_timezone`_                                                          |
-|                      | - `input_timezone`_                                                          |
+|                      | - `allow_age`_                                                               |
+|                      | - `allow_future_date`_                                                        |
 +----------------------+------------------------------------------------------------------------------+
 | Parent type          | :doc:`date </reference/types/date>`                                          |
 +----------------------+------------------------------------------------------------------------------+
 | Class                | :class:`Rollerworks\\Component\\Search\\Extension\\Core\\Type\\BirthdayType` |
 +----------------------+------------------------------------------------------------------------------+
 
-Overridden Options
-------------------
+Field Options
+-------------
 
-.. include:: /reference/types/options/constraints.rst.inc
+allow_age
+~~~~~~~~~
+
+**type**: ``bool`` **default**: ``true``
+
+Allow age (in years) as accepted format.
+
+.. caution::
+
+   This will be produce a mixed result for the field values, as some maybe integer
+   while other are ``\DateTime`` objects.
+
+allow_future_date
+~~~~~~~~~~~~~~~~~
+
+**type**: ``bool`` **default**: ``true``
+
+Allow dates that are in the future.
 
 Inherited options
 -----------------
@@ -35,10 +52,6 @@ Inherited options
 These options inherit from the :doc:`date </reference/types/date>` type:
 
 .. include:: /reference/types/options/date_format.rst.inc
-
-.. include:: /reference/types/options/model_timezone.rst.inc
-
-.. include:: /reference/types/options/input_timezone.rst.inc
 
 These options inherit from the :doc:`field </reference/types/field>` type:
 

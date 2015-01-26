@@ -46,12 +46,12 @@ class BirthdayType extends AbstractFieldType
     {
         $config->setValueComparison($this->valueComparison);
 
-        if ($options['allow_age']) {
             $viewTransformers = $config->getViewTransformers();
 
             $config->resetViewTransformers();
-            $config->addViewTransformer(new BirthdayTransformer($viewTransformers));
-        }
+        $config->addViewTransformer(
+            new BirthdayTransformer($viewTransformers, $options['allow_age'], $options['allow_future_date'])
+        );
     }
 
     /**
@@ -61,13 +61,19 @@ class BirthdayType extends AbstractFieldType
     {
         $resolver->setDefaults(array(
             'allow_age' => true,
-            'constraints' => function (Options $options) {
-                return new ConstraintBirthday(array('allowAge' => $options['allow_age']));
+            'allow_future_date' => false,
+            'invalid_message' => function (Options $options) {
+                if ($options['allow_age']) {
+                    return 'This value is not a valid birthday or age.';
+                }
+
+                return 'This value is not a valid birthday.';
             },
         ));
 
         $resolver->setAllowedTypes(array(
             'allow_age' => array('bool'),
+            'allow_future_date' => array('bool'),
         ));
     }
 

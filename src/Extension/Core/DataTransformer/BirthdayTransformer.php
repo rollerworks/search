@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
 /**
  * Transforms between a date string and a DateTime object
@@ -25,11 +26,25 @@ class BirthdayTransformer implements DataTransformerInterface
     private $transformers;
 
     /**
-     * @param DataTransformerInterface[] $transformers
+     * @var bool
      */
-    public function __construct($transformers)
+    private $allowAge;
+
+    /**
+     * @var bool
+     */
+    private $allowFutureDate;
+
+    /**
+     * @param DataTransformerInterface[] $transformers
+     * @param bool                       $allowAge
+     * @param bool                       $allowFutureDate
+     */
+    public function __construct($transformers, $allowAge, $allowFutureDate)
     {
         $this->transformers = $transformers;
+        $this->allowFutureDate = $allowFutureDate;
+        $this->allowAge = $allowAge;
     }
 
     /**
@@ -37,7 +52,7 @@ class BirthdayTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        if (ctype_digit($value)) {
+        if (is_int($value)) {
             return $this->getNumberFormatter()->format($value, \NumberFormatter::DECIMAL);
         }
 
@@ -53,10 +68,14 @@ class BirthdayTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        if (ctype_digit($value)) {
+        $value = $this->transformWhenInteger($value);
+
+        if (is_int($value)) {
+            if (!$this->allowAge) {
+                throw new TransformationFailedException('Age is not supported.');
+            }
+
             return $value;
-        } elseif (preg_match('/^\p{N}+$/', $value)) {
-            return $this->getNumberFormatter()->parse($value, \NumberFormatter::DECIMAL);
         }
 
         $transformers = $this->transformers;
@@ -65,15 +84,60 @@ class BirthdayTransformer implements DataTransformerInterface
             $value = $transformers[$i]->reverseTransform($value);
         }
 
+        // Force the UTC timezone with 00:00:00 for correct comparison
+        $value = clone $value;
+        $value->setTimezone(new \DateTimeZone('UTC'));
+        $value->setTime(0, 0, 0);
+
+        if (!$this->allowFutureDate) {
+            $this->validateDate($value);
+        }
+
+        return $value;
+    }
+
+    private function transformWhenInteger($value)
+    {
+        if (ctype_digit($value)) {
+            return (int) $value;
+        }
+
+        if (preg_match('/^\p{N}+$/', $value)) {
+            return $this->getNumberFormatter()->parse($value, \NumberFormatter::DECIMAL);
+        }
+
         return $value;
     }
 
     /**
-     * Returns a preconfigured \NumberFormatter instance
+     * @param \DateTime|\DateTimeInterface $value
+     */
+    private function validateDate($value)
+    {
+        static $currentDate;
+
+        if (!$currentDate) {
+            $currentDate = new \DateTime('now', new \DateTimeZone('UTC'));
+            $currentDate->setTime(0, 0, 0);
+        }
+
+        if ($value > $currentDate) {
+            throw new TransformationFailedException(
+                sprintf(
+                    'Date "%s" is higher then current date "%s". Are you a time traveler?',
+                    $value->format('Y-m-d'),
+                    $currentDate->format('Y-m-d')
+                )
+            );
+        }
+    }
+
+    /**
+     * Returns a pre-configured \NumberFormatter instance.
      *
      * @return \NumberFormatter
      */
-    protected function getNumberFormatter()
+    private function getNumberFormatter()
     {
         /** @var \NumberFormatter $formatter */
         static $formatter;

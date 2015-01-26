@@ -18,7 +18,10 @@ class BirthdayTypeTest extends FieldTypeTestCase
 {
     public function testCreate()
     {
-        $this->getFactory()->createField('birthday', 'birthday');
+        $this->assertInstanceOf(
+            'Rollerworks\Component\Search\FieldConfigInterface',
+            $this->getFactory()->createField('birthday', 'birthday')
+        );
     }
 
     public function testDateOnlyInput()
@@ -54,6 +57,30 @@ class BirthdayTypeTest extends FieldTypeTestCase
         $this->assertTransformedFails($field, 'twenty');
         $this->assertTransformedFails($field, '-21');
         $this->assertTransformedFails($field, '+21');
+    }
+
+    public function testAgeInTheFutureFails()
+    {
+        $field = $this->getFactory()->createField('birthday', 'birthday', array(
+            'format' => 'yyyy-MM-dd',
+        ));
+
+        $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
+
+        $this->assertTransformedFails($field, $currentDate->format('Y-m-d'));
+    }
+
+    public function testAgeInWorksWhenAllowed()
+    {
+        $field = $this->getFactory()->createField('birthday', 'birthday', array(
+            'format' => 'yyyy-MM-dd',
+            'allow_future_date' => true,
+        ));
+
+        $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
+        $currentDate->setTime(0, 0, 0);
+
+        $this->assertTransformedEquals($field, $currentDate, $currentDate->format('Y-m-d'), $currentDate->format('Y-m-d'));
     }
 
     protected function setUp()
