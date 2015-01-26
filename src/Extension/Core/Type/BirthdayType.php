@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
-use Rollerworks\Component\Search\Extension\Core\Constraints\Birthday as ConstraintBirthday;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
@@ -46,9 +45,9 @@ class BirthdayType extends AbstractFieldType
     {
         $config->setValueComparison($this->valueComparison);
 
-            $viewTransformers = $config->getViewTransformers();
+        $viewTransformers = $config->getViewTransformers();
 
-            $config->resetViewTransformers();
+        $config->resetViewTransformers();
         $config->addViewTransformer(
             new BirthdayTransformer($viewTransformers, $options['allow_age'], $options['allow_future_date'])
         );

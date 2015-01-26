@@ -17,9 +17,7 @@ use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\FieldAliasResolverInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\InputProcessorInterface;
-use Rollerworks\Component\Search\Value\Range;
 
 /**
  * AbstractInput provides the shared logic for the InputProcessors.
