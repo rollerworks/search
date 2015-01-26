@@ -12,19 +12,23 @@
 namespace Rollerworks\Component\Search\Test;
 
 use Prophecy\Prophet;
-use Rollerworks\Component\Search\Extension\Core\CoreExtension;
-use Rollerworks\Component\Search\FieldRegistry;
 use Rollerworks\Component\Search\FieldSetBuilder;
-use Rollerworks\Component\Search\ResolvedFieldTypeFactory;
+use Rollerworks\Component\Search\Searches;
+use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\ValuesBag;
 
 abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @var SearchFactoryBuilder
+     */
+    protected $factoryBuilder;
+
+    /**
      * @var SearchFactory
      */
-    protected $factory;
+    private $searchFactory;
 
     /**
      * @var Prophet
@@ -36,14 +40,23 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->prophet = new Prophet();
+        $this->factoryBuilder = Searches::createSearchFactoryBuilder();
+    }
 
-        $resolvedTypeFactory = new ResolvedFieldTypeFactory();
+    /**
+     * @return SearchFactory
+     */
+    protected function getFactory()
+    {
+        if (null === $this->searchFactory) {
+            $this->factoryBuilder->addExtensions($this->getExtensions());
+            $this->factoryBuilder->addTypes($this->getTypes());
+            $this->factoryBuilder->addTypeExtensions($this->getTypeExtensions());
 
-        $extensions = array(new CoreExtension());
-        $extensions = array_merge($extensions, $this->getExtensions());
+            $this->searchFactory = $this->factoryBuilder->getSearchFactory();
+        }
 
-        $typesRegistry = new FieldRegistry($extensions, $resolvedTypeFactory);
-        $this->factory = new SearchFactory($typesRegistry, $resolvedTypeFactory, null);
+        return $this->searchFactory;
     }
 
     protected function tearDown()
@@ -60,6 +73,16 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
         return array();
     }
 
+    protected function getTypes()
+    {
+        return array();
+    }
+
+    protected function getTypeExtensions()
+    {
+        return array();
+    }
+
     /**
      * @param bool $build
      *
@@ -67,8 +90,8 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getFieldSet($build = true)
     {
-        $fieldSet = new FieldSetBuilder('test', $this->factory);
-        $fieldSet->add($this->factory->createField('id', 'integer')->setAcceptRange(true));
+        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
+        $fieldSet->add($this->getFactory()->createField('id', 'integer')->setAcceptRange(true));
         $fieldSet->add('name', 'text');
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;

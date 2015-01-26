@@ -18,12 +18,12 @@ class IntegerTypeTest extends FieldTypeTestCase
 {
     public function testCreate()
     {
-        $this->factory->createField('integer', 'integer');
+        $this->getFactory()->createField('integer', 'integer');
     }
 
     public function testCastsToInteger()
     {
-        $field = $this->factory->createField('integer', 'integer');
+        $field = $this->getFactory()->createField('integer', 'integer');
 
         $this->assertTransformedEquals($field, 1, '1.678', '1');
         $this->assertTransformedEquals($field, 1, '1', '1');
@@ -32,7 +32,7 @@ class IntegerTypeTest extends FieldTypeTestCase
 
     public function testWrongInputFails()
     {
-        $field = $this->factory->createField('integer', 'integer');
+        $field = $this->getFactory()->createField('integer', 'integer');
 
         $this->assertTransformedFails($field, 'foo');
         $this->assertTransformedFails($field, '+1');

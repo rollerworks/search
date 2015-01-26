@@ -66,15 +66,15 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      */
     protected function getFieldSet($build = true)
     {
-        $fieldSet = new FieldSetBuilder('test', $this->factory);
-        $fieldSet->add($this->factory->createField('id', 'integer')->setAcceptRange(true)->setAcceptCompares(true));
-        $fieldSet->add($this->factory->createField('name', 'text')->setAcceptPatternMatch(true));
-        $fieldSet->add($this->factory->createField('lastname', 'text'));
-        $fieldSet->add($this->factory->createField('no-range-field', 'integer')->setAcceptRange(false));
-        $fieldSet->add($this->factory->createField('no-compares-field', 'integer')->setAcceptCompares(false));
-        $fieldSet->add($this->factory->createField('no-matchers-field', 'integer')->setAcceptPatternMatch(false));
+        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
+        $fieldSet->add($this->getFactory()->createField('id', 'integer')->setAcceptRange(true)->setAcceptCompares(true));
+        $fieldSet->add($this->getFactory()->createField('name', 'text')->setAcceptPatternMatch(true));
+        $fieldSet->add($this->getFactory()->createField('lastname', 'text'));
+        $fieldSet->add($this->getFactory()->createField('no-range-field', 'integer')->setAcceptRange(false));
+        $fieldSet->add($this->getFactory()->createField('no-compares-field', 'integer')->setAcceptCompares(false));
+        $fieldSet->add($this->getFactory()->createField('no-matchers-field', 'integer')->setAcceptPatternMatch(false));
         $fieldSet->add(
-            $this->factory->createField('date', 'date', array('format' => 'MM-dd-yyyy'))
+            $this->getFactory()->createField('date', 'date', array('format' => 'MM-dd-yyyy'))
               ->setAcceptRange(true)
               ->setAcceptCompares(true)
         );
@@ -628,8 +628,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     public function it_errors_when_a_field_is_required_but_not_set($input, $fieldName, $groupIdx, $nestingLevel)
     {
         $fieldSet = $this->getFieldSet(false)
-            ->add($this->factory->createField('field1', 'text'))
-            ->add($this->factory->createField($fieldName, 'text')->setRequired(true))
+            ->add($this->getFactory()->createField('field1', 'text'))
+            ->add($this->getFactory()->createField($fieldName, 'text')->setRequired(true))
             ->getFieldSet()
         ;
 

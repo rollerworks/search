@@ -19,12 +19,12 @@ class DateTimeTypeTest extends FieldTypeTestCase
 {
     public function testCreate()
     {
-        $this->factory->createField('datetime', 'datetime');
+        $this->getFactory()->createField('datetime', 'datetime');
     }
 
     public function testDifferentTimezonesDateTime()
     {
-        $field = $this->factory->createField('datetime', 'datetime', array(
+        $field = $this->getFactory()->createField('datetime', 'datetime', array(
             'model_timezone' => 'America/New_York',
             'view_timezone' => 'Pacific/Tahiti',
         ));
@@ -37,7 +37,7 @@ class DateTimeTypeTest extends FieldTypeTestCase
 
     public function testWithSeconds()
     {
-        $field = $this->factory->createField('datetime', 'datetime', array(
+        $field = $this->getFactory()->createField('datetime', 'datetime', array(
             'model_timezone' => 'UTC',
             'view_timezone' => 'UTC',
             'with_seconds' => true,
@@ -49,7 +49,7 @@ class DateTimeTypeTest extends FieldTypeTestCase
 
     public function testDifferentPattern()
     {
-        $field = $this->factory->createField('datetime', 'datetime', array(
+        $field = $this->getFactory()->createField('datetime', 'datetime', array(
             'format' => "MM*yyyy*dd",
         ));
 
@@ -59,7 +59,7 @@ class DateTimeTypeTest extends FieldTypeTestCase
 
     public function testHtml5Pattern()
     {
-        $field = $this->factory->createField('datetime', 'datetime', array(
+        $field = $this->getFactory()->createField('datetime', 'datetime', array(
             'format' => DateTimeType::HTML5_FORMAT,
         ));
 
@@ -69,7 +69,7 @@ class DateTimeTypeTest extends FieldTypeTestCase
 
     public function testWrongInputFails()
     {
-        $field = $this->factory->createField('datetime', 'datetime', array(
+        $field = $this->getFactory()->createField('datetime', 'datetime', array(
             'format' => "MM-yyyy-dd",
         ));
 

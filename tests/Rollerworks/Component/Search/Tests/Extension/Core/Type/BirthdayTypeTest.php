@@ -18,12 +18,12 @@ class BirthdayTypeTest extends FieldTypeTestCase
 {
     public function testCreate()
     {
-        $this->factory->createField('birthday', 'birthday');
+        $this->getFactory()->createField('birthday', 'birthday');
     }
 
     public function testDateOnlyInput()
     {
-        $field = $this->factory->createField('birthday', 'birthday', array(
+        $field = $this->getFactory()->createField('birthday', 'birthday', array(
             'format' => 'yyyy-MM-dd',
             'allow_age' => false,
         ));
@@ -35,7 +35,7 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testAllowAgeInput()
     {
-        $field = $this->factory->createField('birthday', 'birthday', array(
+        $field = $this->getFactory()->createField('birthday', 'birthday', array(
             'format' => 'yyyy-MM-dd',
         ));
 
@@ -47,7 +47,7 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testWrongInputFails()
     {
-        $field = $this->factory->createField('birthday', 'birthday', array(
+        $field = $this->getFactory()->createField('birthday', 'birthday', array(
             'allow_age' => true,
         ));
 
