@@ -1,6 +1,6 @@
 {
     "name": "rollerworks/search",
-    "description": "Advanced search-building framework",
+    "description": "RollerworksSearch provides you with a light yet powerful search system",
     "keywords": ["rollerworks", "filter", "search"],
     "type": "library",
     "license": "MIT",
@@ -16,17 +16,17 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/options-resolver": "~2.1",
-        "symfony/property-access": "~2.2",
+        "symfony/options-resolver": "~2.3",
+        "symfony/property-access": "~2.3",
         "symfony/intl": "~2.3",
-        "symfony/yaml": "~2.1",
+        "symfony/yaml": "~2.3",
         "symfony/validator": "~2.1",
-        "seld/jsonlint": "1.*",
-        "doctrine/lexer": "~1.0,>=1.0.1"
+        "seld/jsonlint": "^1.3.1",
+        "doctrine/lexer": "^1.0.1"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2.1@dev",
-        "phpspec/prophecy": "~1.1@dev",
+        "phpspec/phpspec": "^2.1.1",
+        "phpspec/prophecy": "^1.3.1",
         "rollerworks/search-jms-metadata": "1.*@dev"
     },
     "autoload": {
