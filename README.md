@@ -8,8 +8,8 @@ README
 What is RollerworksSearch?
 --------------------------
 
-RollerworksSearch provides you with a powerful system for integrating a search system
-in your PHP application.
+RollerworksSearch provides you with a light yet powerful search system
+to easily integrate into your PHP application.
 
 The system has a modular design and can work with any PHP framework,
 user locale, data format or storage system.
