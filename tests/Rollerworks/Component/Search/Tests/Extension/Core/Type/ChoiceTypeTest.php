@@ -59,7 +59,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
      */
     public function testChoicesOptionExpectsArray()
     {
-        $this->factory->createField('choice', 'choice', array(
+        $this->getFactory()->createField('choice', 'choice', array(
             'choices' => new \ArrayObject(),
         ));
     }
@@ -69,26 +69,26 @@ class ChoiceTypeTest extends FieldTypeTestCase
      */
     public function testChoiceListOptionExpectsChoiceListInterface()
     {
-        $this->factory->createField('choice', 'choice', array(
+        $this->getFactory()->createField('choice', 'choice', array(
             'choice_list' => array('foo' => 'foo'),
         ));
     }
 
     public function testChoiceListAndChoicesCanBeEmpty()
     {
-        $this->factory->createField('choice', 'choice');
+        $this->getFactory()->createField('choice', 'choice');
     }
 
     public function testSubmitSingleNonExpandedInvalidChoice()
     {
-        $this->factory->createField('choice', 'choice', array(
+        $this->getFactory()->createField('choice', 'choice', array(
             'choices' => $this->choices,
         ));
     }
 
     public function testObjectChoices()
     {
-        $field = $this->factory->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', array(
             'choice_list' => new ObjectChoiceList(
                 $this->objectChoices,
                 // label path
@@ -108,7 +108,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testObjectChoicesByLabel()
     {
-        $field = $this->factory->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', array(
             'label_as_value' => true,
             'choice_list' => new ObjectChoiceList(
                 $this->objectChoices,
@@ -129,7 +129,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testArrayChoices()
     {
-        $field = $this->factory->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', array(
             'choices' => $this->choices,
         ));
 
@@ -138,7 +138,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testNumericChoices()
     {
-        $field = $this->factory->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', array(
             'choices' => $this->numericChoices,
         ));
 
@@ -147,7 +147,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testNumericChoicesByLabel()
     {
-        $field = $this->factory->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', array(
             'label_as_value' => true,
             'choices' => $this->numericChoices,
         ));
@@ -158,7 +158,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
     // https://github.com/symfony/symfony/issues/10409
     public function testReuseNonUtf8ChoiceLists()
     {
-        $field = $this->factory->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', array(
             'choices' => array(
                 'meter' => 'm',
                 'millimeter' => 'mm',
@@ -166,7 +166,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
             ),
         ));
 
-        $field2 = $this->factory->createField('choice', 'choice', array(
+        $field2 = $this->getFactory()->createField('choice', 'choice', array(
             'choices' => array(
                 'meter' => 'm',
                 'millimeter' => 'mm',
@@ -174,7 +174,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
             ),
         ));
 
-        $field3 = $this->factory->createField('choice', 'choice', array(
+        $field3 = $this->getFactory()->createField('choice', 'choice', array(
             'choices' => array(
                 'meter' => 'm',
                 'millimeter' => 'mm',

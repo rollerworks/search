@@ -18,7 +18,7 @@ class TimeTypeTest extends FieldTypeTestCase
 {
     public function testCreate()
     {
-        $this->factory->createField('time', 'time');
+        $this->getFactory()->createField('time', 'time');
     }
 
     private $defaultTimezone;
@@ -39,7 +39,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testTime()
     {
-        $field = $this->factory->createField('time', 'time');
+        $field = $this->getFactory()->createField('time', 'time');
 
         $outputTime = new \DateTime('1970-01-01 03:04:00 UTC');
 
@@ -48,7 +48,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testTimeWithoutMinutes()
     {
-        $field = $this->factory->createField('time', 'time', array('with_minutes' => false));
+        $field = $this->getFactory()->createField('time', 'time', array('with_minutes' => false));
 
         $outputTime = new \DateTime('1970-01-01 03:00:00 UTC');
 
@@ -57,7 +57,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testTimeWithSeconds()
     {
-        $field = $this->factory->createField('time', 'time', array('with_seconds' => true));
+        $field = $this->getFactory()->createField('time', 'time', array('with_seconds' => true));
 
         $outputTime = new \DateTime('1970-01-01 03:04:05 UTC');
 
@@ -69,7 +69,7 @@ class TimeTypeTest extends FieldTypeTestCase
      */
     public function testInitializeWithSecondsAndWithoutMinutes()
     {
-        $this->factory->createField('time', 'time', array(
+        $this->getFactory()->createField('time', 'time', array(
             'with_minutes' => false,
             'with_seconds' => true,
         ));
@@ -80,7 +80,7 @@ class TimeTypeTest extends FieldTypeTestCase
      */
     public function testThrowExceptionIfHoursIsInvalid()
     {
-        $this->factory->createField('time', 'time', array(
+        $this->getFactory()->createField('time', 'time', array(
             'hours' => 'bad value',
         ));
     }
@@ -90,7 +90,7 @@ class TimeTypeTest extends FieldTypeTestCase
      */
     public function testThrowExceptionIfMinutesIsInvalid()
     {
-        $this->factory->createField('time', 'time', array(
+        $this->getFactory()->createField('time', 'time', array(
             'minutes' => 'bad value',
         ));
     }
@@ -100,7 +100,7 @@ class TimeTypeTest extends FieldTypeTestCase
      */
     public function testThrowExceptionIfSecondsIsInvalid()
     {
-        $this->factory->createField('time', 'time', array(
+        $this->getFactory()->createField('time', 'time', array(
             'seconds' => 'bad value',
         ));
     }

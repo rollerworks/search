@@ -28,14 +28,14 @@ class MoneyTypeTest extends FieldTypeTestCase
 
     public function testCreate()
     {
-        $this->factory->createField('money', 'money');
+        $this->getFactory()->createField('money', 'money');
     }
 
     public function testPassMoneyNL()
     {
         \Locale::setDefault('nl_NL');
 
-        $field = $this->factory->createField('money', 'money');
+        $field = $this->getFactory()->createField('money', 'money');
 
         $this->assertTransformedEquals($field, new MoneyValue('EUR', '12.00'), '€ 12,00');
         $this->assertTransformedEquals($field, new MoneyValue('EUR', '12.00'), '12,00');
@@ -45,7 +45,7 @@ class MoneyTypeTest extends FieldTypeTestCase
     {
         \Locale::setDefault('de_DE');
 
-        $field = $this->factory->createField('money', 'money');
+        $field = $this->getFactory()->createField('money', 'money');
 
         $this->assertTransformedEquals($field, new MoneyValue('EUR', '12.00'), '12,00 €');
         $this->assertTransformedEquals($field, new MoneyValue('EUR', '12.00'), '12,00');
@@ -55,7 +55,7 @@ class MoneyTypeTest extends FieldTypeTestCase
     {
         \Locale::setDefault('en_US');
 
-        $field = $this->factory->createField('money', 'money', array('default_currency' => 'JPY'));
+        $field = $this->getFactory()->createField('money', 'money', array('default_currency' => 'JPY'));
 
         $this->assertTransformedEquals($field, new MoneyValue('JPY', '12.00'), '¥12');
         $this->assertTransformedEquals($field, new MoneyValue('JPY', '12.00'), '12.00');

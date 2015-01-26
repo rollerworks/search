@@ -17,7 +17,7 @@ class TextTypeTest extends FieldTypeTestCase
 {
     public function testCreate()
     {
-        $this->factory->createField('name', 'text');
+        $this->getFactory()->createField('name', 'text');
     }
 
     protected function getTestedType()
