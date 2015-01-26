@@ -5,7 +5,7 @@ Most features for searching are provided by the library
 using object-oriented PHP code as the interface.
 
 In this chapter we will take a short tour of the various components, which put
-together form the RollerworksSearch Component as a whole. You will learn key
+together form RollerworksSearch as a whole. You will learn key
 terminology used throughout the rest of this book and will gain an
 understanding of the classes you will work with as you integrate
 RollerworksSearch into your application.
@@ -16,15 +16,16 @@ subsequent chapters of this book.
 Information flow
 ----------------
 
-Normally you'd accept the input, optimize it and then pass it to the search storage layer.
-Transforming view values to a normalized version is done when processing the input.
-
-The optimizing process tries to produce the smallest search-condition possible.
-
-But its also possible to construct the search-condition yourself,
+In most cases you accept and process the input, optimize it and then pass it to the
+search storage layer. But its also possible to construct the search-condition yourself,
 and pass it directly to the storage layer without any optimizing.
 
-The only thing the system is mainly concerned with is the search condition and
+Note the following:
+
+* Transforming view values to a normalized version is done when processing the input.
+* The optimizing process tries to produce the smallest search-condition possible.
+
+The only thing the system is mainly concerned with is the SearchCondition and
 configuration of the search fields.
 
 System Requirements
@@ -36,7 +37,6 @@ The basic requirements to use RollerworksSearch are:
 * `Multibyte string extension <http://www.php.net/manual/en/mbstring.setup.php>`_, for multibyte text handling.
 * `International <http://www.php.net/manual/en/book.intl.php>`_ support for transforming date-time values.
 
-
 And a list 3rd party libraries (which you can find the installation chapter).
 
 .. note::
@@ -47,7 +47,7 @@ And a list 3rd party libraries (which you can find the installation chapter).
 Component Breakdown
 -------------------
 
-The RollerworksSearch is made up of many classes. Each of these classes can be grouped
+RollerworksSearch is made up of many classes. Each of these classes can be grouped
 into a general "component group" which describes the task it is designed to
 perform.
 
@@ -58,7 +58,7 @@ SearchCondition
 ~~~~~~~~~~~~~~~
 
 Each search operation starts with a SearchCondition (``SearchConditionInterface``)
-consisting of a ValuesGroup and FieldSet object.
+consisting of a ``ValuesGroup`` and ``FieldSet`` object.
 
 At the root of each SearchCondition is a ``ValuesGroup`` object, containing
 the values (as ``ValuesBag`` object) per field name and *optionally** subgroups
@@ -88,7 +88,7 @@ Supported value-types are:
 * PatternMatch (text based pattern matching, starts with, contains, ends with, regex) (and an excluding version)
 
 Values are stored as a normalized model and view format.
-The actual transformation is handled by the DataTransformers registered on the Search field configuration.
+The actual transformation is handled by the DataTransformers registered on the search field configuration.
 
 .. note::
 
@@ -98,17 +98,26 @@ The actual transformation is handled by the DataTransformers registered on the S
     In practice this is the same as using ``>20 AND <30``.
     But much easier to optimize.
 
+Normally the a SearchCondition is created when processing input.
+But its also possible to build the SearchCondition manually using the
+``SearchConditionBuilder`` see "Performing a manual search"
+in :doc:`Performing searches </searches>` for more information.
+
 FieldSet
 ~~~~~~~~
 
-A ``FieldSet`` object holds the search configuration of
+A ``FieldSet`` object holds the configuration of
 one or multiple ``FieldConfigInterface`` instances.
 
-Each search field is decoupled from a FieldSet and may be reused in multiple FieldSets.
+.. tip::
+
+    A ``FieldSet`` can also be created by using the ``FieldSetBuilder``,
+    which provides a much simpler interface.
+
+Each search field works independent from a FieldSet and may be reused in multiple FieldSets.
 But the field name must be unique within the FieldSet.
 
 Normally you`d create a FieldSet based on a subject-relationship.
-
 For example invoice search, order search, news items search, etc.
 
 .. note::
@@ -116,13 +125,16 @@ For example invoice search, order search, news items search, etc.
     The ``FieldConfigInterface`` is an interface for your own implementation.
     The default implementation is a ``SearchField`` object.
 
+SearchField
+~~~~~~~~~~~
+
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
 | Property             | Description                                                                        | Value-type                      |
 +======================+====================================================================================+=================================+
-| Name                 | Name of the search-field. must be unique inside the FieldSet.                      | ``string``                      |
+| Name                 | Name of the search field.                                                          | ``string``                      |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| Type             | An object implementing the ``ResolvedFieldTypeInterface``.                            | ``ResolvedFieldTypeInterface``  |
-|                  | Provides type-class for building the fields configuration.                            |                                 |
+| Type                 | An object implementing the ``ResolvedFieldTypeInterface``.                         | ``ResolvedFieldTypeInterface``  |
+|                      | Provides a field type class for building the fields configuration.                 |                                 |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
 | RangeSupport         | Indication if range values are accepted by the field.                              | ``boolean``                     |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
@@ -130,64 +142,88 @@ For example invoice search, order search, news items search, etc.
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
 | PatternMatchSupport  | Indication if pattern matcher values are supported by the field.                   | ``boolean``                     |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| Required         | Indicates if the field must have at least one value.                                  | ``boolean``                     |
+| Required             | Indicates if the field must have at least one value.                               | ``boolean``                     |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| ModelRefClass    | Model's fully qualified class-name reference.                                         | ``string``                      |
-|                  | This is required for some storage engines like Doctrine2                              |                                 |
+| ModelRefClass        | Model's fully qualified class-name reference.                                      | ``string``                      |
+|                      | This is required for certain storage engines like Doctrine ORM.                    |                                 |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| ModelRefProperty | Model's property name reference.                                                      | ``string``                      |
-|                  | This is used in combination with ModelRefClass                                        |                                 |
+| ModelRefProperty     | Model's property name reference.                                                   | ``string``                      |
+|                      | This is used in combination with ModelRefClass                                     |                                 |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| ValueComparison  | ValuesComparison object used for validating and optimizing.                           | ``ValueComparisonInterface``    |
+| ValueComparison      | ValuesComparison object used for range validating and optimizing.                  | ``ValueComparisonInterface``    |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| ViewTransformers | A list of transformers for transforming from view to normalized, and reverse.         | ``DataTransformerInterface[]``  |
+| ViewTransformers     | A list of transformers for transforming from view to normalized, and reverse.      | ``DataTransformerInterface[]``  |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| Options          | Configured options of the field. The options handled using the Type configuration.    | ``array``                       |
+| Options              | Configured options of the field. The options handled using the Type configuration. | ``array``                       |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-
-.. tip::
-
-    A ``FieldSet`` can also be created by using the ``FieldSetBuilder``,
-    which provides a much simpler interface.
 
 Input
 ~~~~~
 
-The input component processes user input to a
+The input component processes user-input to a
 ``SearchConditionInterface`` object.
 
 Input can be provided as a PHP Array, JSON, XML document, or with the easy to use
 :doc:`FilterQuery </input/filter_query>` format.
 
+Exporters
+~~~~~~~~~
+
+While the input component processes user-input to a ``SearchConditionInterface`` object.
+The exporters do the opposite, transforming a SearchCondition to an exported
+format. Ready to be reused for input processing.
+
+Exporting a SearchCondition is very handy if you want to store the condition
+on the client-side in either a cookie, URI query-parameter or hidden form input field.
+
+Or if you need to perform a search operation on an external system that uses RollerworksSearch.
+Build-up your SearchCondition using the :doc:`SearchConditionBuilder </searches>` and export it for usage!
+
+FieldAliasResolver
+~~~~~~~~~~~~~~~~~~
+
+Sometimes you want to use a localized field-name rather then
+the actual field-name.
+
+For example: "factuur-nummer" (in Dutch) for "invoice-number" (original name).
+
+For this you can use the FieldAliasResolver (``FieldAliasResolverInterface``)
+which tries to resolve a field-alias to a real field-name.
+
+RollerworksSearch comes bundled with three alias-resolver implementations:
+
+* Noop: This resolver does nothing and simple returns the original input.
+* Chain: This allows to chain multiple alias-resolvers, the first resolver that returns
+  something else the original input is considered the matching resolver.
+* Array: This resolver uses a simple PHP array for keeping track of aliases.
+
 .. note::
 
-    Field names can be aliased to accept an localized version like
-    factuur-nummer (in Dutch) for invoice-number (original name).
+    If the resolving process fails the originally provided field-name is used.
 
-    Field alias-resolving is done using a ``FieldAliasResolver``.
+Condition Optimizers
+~~~~~~~~~~~~~~~~~~~~
 
-Condition Optimizer
-~~~~~~~~~~~~~~~~~~~
+Condition optimizers optimize SearchConditions,
+by removing duplicated values, normalizing overlapping
+and redundant values/conditions.
 
-SearchCondition optimizers optimize SearchConditions,
-removing duplicate, overlapping and redundant values and conditions.
-
-The following optimizers are provided out of the box.
+The following optimizers come already pre-bundles with RollerworksSearch.
 
 .. note::
 
     For the best result optimizers should be performed in correct order,
-    therefor each optimizer has a priority between -10 and 10.
+    therefore each optimizer has a priority between -10 and 10.
 
     The ``ChainOptimizer`` automatically performs the optimizers in
-    correct order.
+    there correct order.
 
 +--------------------------+------------------------------------------------------------------------+----------+
 | Name                     | Description                                                            | Priority |
 +==========================+========================================================================+==========+
-| ``ChainOptimizer``       | Runs the registered optimizers in the sequence with correct priority.  | 0        |
+| ``ChainOptimizer``       | Runs the registered optimizers in sequence with correct the priority.  | 0        |
 +--------------------------+------------------------------------------------------------------------+----------+
-| ``DuplicateRemove``      | Removes duplicated values inside group.                                | 5        |
+| ``DuplicateRemove``      | Removes duplicated values inside a condition group.                    | 5        |
 +--------------------------+------------------------------------------------------------------------+----------+
 | ``ValuesToRange``        | Converts incremented values to inclusive ranges.                       | 4        |
 |                          | Example values 1,2,3,4,5 are converted to range 1-5                    |          |
@@ -195,16 +231,17 @@ The following optimizers are provided out of the box.
 | ``RangeOptimizer``       | Removes overlapping ranges/values and merges connected ranges.         | -5       |
 +--------------------------+------------------------------------------------------------------------+----------+
 
-FieldType
-~~~~~~~~~
+Field Type
+~~~~~~~~~~
 
-FieldTypes are used for configuring search fields value comparison, ViewTransformers and accepted value-types.
+Field types are used for configuring a search field's value comparison,
+ViewTransformers and accepted value-types.
 
-For more information on using the Type component see :doc:`type/index`
+For more information on using field types see :doc:`type/index`
 
 .. note::
 
-    Build-in types are provided as extension by the Core extension.
-    You are free to extend them for more advanced support.
+    Build-in types are provided by the Core extension.
+    You are free to extend them for more advanced use-cases.
 
     Extending a type if described in :doc:`type/extending`

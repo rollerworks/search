@@ -2,14 +2,14 @@ Metadata
 ========
 
 Class metadata is used by the ``FieldSetBuilder`` to populate a ``FieldSet`` instance
-field-configuration with the metadata of a Model class.
+field configuration with the metadata of a Model class.
 
 The information can be stored directly with the class using `PHP Annotations`_,
 or as a separate file using either YAML or XML.
 
 .. note::
 
-    To actually use the metadata component you first a compatible
+    To actually use the metadata component you first need a compatible
     metadata loader.
 
     One of the supported loaders is the `RollerworksSearch JmsMetadata loader`_

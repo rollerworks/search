@@ -1,7 +1,7 @@
 Installing the Library
 ======================
 
-Installing Rollerworks Search is trivial. Usually it's just a case of uploading the
+Installing RollerworksSearch is trivial. Usually it's just a case of uploading the
 extracted source files to your web server.
 
 Installing with Composer
@@ -37,7 +37,7 @@ for searching a storage engine (like Doctrine or ElasticSearch).
 To search in a storage engine you need to install additional packages
 or build your own SearchCondition processor.
 
-To get you started we provide a number of additional packages for searching;
+To get you started we already provide a number of additional packages for searching;
 
 Doctrine
 ^^^^^^^^

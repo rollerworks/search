@@ -1,20 +1,13 @@
 Introduction
 ============
 
-Rollerworks Search is a PHP library for building your own
-advanced search system.
+RollerworksSearch provides you with a powerful system for integrating a search system
+in your PHP application.
 
-The system works primarily with conditions, but the 'old' way of using terms/keywords
-is also possible, in the following chapters will get to that, for now lets stick with
-the introduction.
+Search operations are performed with search conditions to allow for very complex
+search operations with minimum effort.
 
-This system was designed to be useful for any kind of storage (DB/ODM and even web services),
-input (FilterQuery, JSON, XML, etc.) and any locale (English, French, Arabian, etc.).
-
-.. note::
-
-    Arabian support includes the handling of none latin numerals and characters.
-    This requires both Mbstring and Intl to be installed.
+This system was designed to be useful for any storage, input and locale.
 
 Organization of this Book
 -------------------------

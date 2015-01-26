@@ -45,8 +45,8 @@ that should not clash with other fieldsets. So use descriptive names like:
     You can also use the FieldSetBuilder to import the fields from models
     using the :doc:`metadata` component.
 
-Performing a manual search
---------------------------
+Performing a manual search (SearchConditionBuilder)
+---------------------------------------------------
 
 In most cases you'd ask the system to process an input and pass
 it to a list of condition optimizers before applying it on the storage layer.
