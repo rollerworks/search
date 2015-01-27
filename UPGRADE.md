@@ -4,7 +4,7 @@ UPGRADE
 ## Upgrade FROM 1.0.0-beta4 to 1.0.0-beta5
 
 There has been been some major refactoring to make the system more robust
-easier to use. 
+easier to use.
 
 * The `Rollerworks\Component\Search\Formatter\TransformFormatter` is removed,
   transforming is now performed in the InputProcessor.
@@ -48,6 +48,15 @@ error-state of all nested groups.
   
 * All view-values are casted to strings now;
   When no view value is provided the "normalized" value must support casting to a string!
+  
+### SearchConditionSerializer
+
+The `SearchConditionSerializer` no longer uses the static methods
+but requires a `Rollerworks\Component\Search\FieldSetRegistryInterface` implementation
+for loading FieldSets when unserializing.
+
+**Note:** The FieldSet must be registered when serializing, this ensures the FieldSet is
+known to the system and lessens the change of breakage when unserialize.
 
 ## Upgrade from 1.0.0-beta2 to 1.0.0-beta3
 
