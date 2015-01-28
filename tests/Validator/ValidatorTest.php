@@ -26,7 +26,7 @@ use Rollerworks\Component\Search\ValuesError;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
 
-final class ValidationFormatterTest extends SearchIntegrationTestCase
+final class ValidatorTest extends SearchIntegrationTestCase
 {
     private $sfValidator;
 
@@ -51,7 +51,7 @@ final class ValidationFormatterTest extends SearchIntegrationTestCase
 
     protected function getFieldSet($build = true)
     {
-        $fieldSet = new FieldSetBuilder('test', $this->factory);
+        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
         $fieldSet->add('id', 'integer', array('constraints' => new Assert\Range(array('min' => 5))));
         $fieldSet->add(
             'date',
@@ -157,7 +157,7 @@ final class ValidationFormatterTest extends SearchIntegrationTestCase
             ->getSearchCondition()
         ;
 
-        $this->validator->format($condition);
+        $this->validator->validate($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
@@ -177,7 +177,7 @@ final class ValidationFormatterTest extends SearchIntegrationTestCase
      */
     public function it_validates_matchers()
     {
-        $fieldSet = new FieldSetBuilder('test', $this->factory);
+        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
         $fieldSet->add('username', 'text', array('constraints' => new Assert\NotBlank()));
 
         $this->fieldSet = $fieldSet->getFieldSet();
@@ -191,7 +191,7 @@ final class ValidationFormatterTest extends SearchIntegrationTestCase
             ->getSearchCondition()
         ;
 
-        $this->validator->format($condition);
+        $this->validator->validate($condition);
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
