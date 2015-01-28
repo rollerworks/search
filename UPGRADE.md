@@ -8,6 +8,9 @@ easier to use.
 
 * The `Rollerworks\Component\Search\Formatter\TransformFormatter` is removed,
   transforming is now performed in the InputProcessor.
+  
+* `Rollerworks\Component\Search\Metadata\Field` is removed,
+  use `Rollerworks\Component\Search\Mapping\SearchField` instead.
 
 ### Input
 
