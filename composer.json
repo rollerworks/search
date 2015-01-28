@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "rollerworks/search": ">=1.0.0-beta4@dev",
+        "rollerworks/search": ">1.0.0-beta4@dev",
         "symfony/validator": "~2.3"
     },
     "require-dev": {
