@@ -16,8 +16,9 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "rollerworks/search": ">=1.0.0-beta4@dev",
-        "symfony/validator": "~2.3"
+        "rollerworks/search": ">1.0.0-beta4@dev",
+        "symfony/validator": "^2.3.3",
+        "symfony/translation": "^2.3.3"
     },
     "require-dev": {
         "phpspec/prophecy": "^1.3.1"

@@ -143,6 +143,8 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $endTime3 = clone $startTime3;
         $endTime3->modify('+1 day');
 
+        $dateLimit = $this->formatDateTime(new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC')));
+
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('date')
                 ->addSingleValue(new SingleValue($date3, $date3->format('m/d/Y')))
@@ -161,12 +163,12 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date->format('m/d/Y'), '{{ limit }}' => 'Dec 20, 2014, 2:35 PM'));
-        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date2->format('m/d/Y'), '{{ limit }}' => 'Dec 20, 2014, 2:35 PM'));
-        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => $startTime->format('m/d/Y'), '{{ limit }}' => 'Dec 20, 2014, 2:35 PM'));
-        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].upper', 'This value should be {{ limit }} or more.', array('{{ value }}' => $endTime->format('m/d/Y'), '{{ limit }}' => 'Dec 20, 2014, 2:35 PM'));
-        $this->assertSearchError($valuesGroup->getField('date'), 'excludedRanges[0].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => $startTime2->format('m/d/Y'), '{{ limit }}' => 'Dec 20, 2014, 2:35 PM'));
-        $this->assertSearchError($valuesGroup->getField('date'), 'comparisons[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date4->format('m/d/Y'), '{{ limit }}' => 'Dec 20, 2014, 2:35 PM'));
+        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date->format('m/d/Y'), '{{ limit }}' => $dateLimit));
+        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date2->format('m/d/Y'), '{{ limit }}' => $dateLimit));
+        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => $startTime->format('m/d/Y'), '{{ limit }}' => $dateLimit));
+        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].upper', 'This value should be {{ limit }} or more.', array('{{ value }}' => $endTime->format('m/d/Y'), '{{ limit }}' => $dateLimit));
+        $this->assertSearchError($valuesGroup->getField('date'), 'excludedRanges[0].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => $startTime2->format('m/d/Y'), '{{ limit }}' => $dateLimit));
+        $this->assertSearchError($valuesGroup->getField('date'), 'comparisons[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date4->format('m/d/Y'), '{{ limit }}' => $dateLimit));
 
         // No more errors then asserted
         $this->assertCount(6, $valuesGroup->getField('date')->getErrors());
@@ -281,5 +283,31 @@ final class ValidatorTest extends SearchIntegrationTestCase
         }
 
         return false;
+    }
+
+    /**
+     * @param \DateTime|\DateTimeInterface $value
+     *
+     * @return string
+     */
+    private function formatDateTime($value)
+    {
+        if (class_exists('IntlDateFormatter')) {
+            $locale = \Locale::getDefault();
+            $formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::SHORT);
+
+            // neither the native nor the stub IntlDateFormatter support
+            // DateTimeImmutable as of yet
+            if (!$value instanceof \DateTime) {
+                $value = new \DateTime(
+                    $value->format('Y-m-d H:i:s.u e'),
+                    $value->getTimezone()
+                );
+            }
+
+            return $formatter->format($value);
+        }
+
+        return $value->format('Y-m-d H:i:s');
     }
 }
