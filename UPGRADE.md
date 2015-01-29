@@ -41,6 +41,14 @@ is now done by asking each field in the group for there errors-state.
 pass `true` to `ValuesGroup::hasErrors()` to traverse the deeper
 error-state of all nested groups.
 
+### Validation
+
+The default validator (Validator extension) is moved to `rollerworks/search-symfony-validator`, 
+and no longer implements the old Formatter interface.
+
+**Caution:** To prevent clashes with other validators the namespace of the validator
+is changed to: `Rollerworks\Component\Search\Extension\Symfony\Validator`.
+
 ### Values
   
 * Value objects `Compare`, `SingleValue`, `Range`, `PatternMatch` are now marked as
@@ -69,7 +77,6 @@ each providing an extension for the RollerworksSearch 'core' package.
 * rollerworks-search-doctrine-dbal: Doctrine DBAL Searching support
 * rollerworks-search-doctrine-orm:  Doctrine ORM Searching support
 
-* rollerworks-search-symfony-validator: Symfony validator extension
 * rollerworks-search-symfony-di: Symfony DependencyInjection extension (lazy loading)
 * rollerworks-search-jms-metadata: JMS Metadata adapter extension
 
