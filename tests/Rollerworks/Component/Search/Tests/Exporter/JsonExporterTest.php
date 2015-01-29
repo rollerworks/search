@@ -41,6 +41,22 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
         );
     }
 
+    public function provideFieldAliasTest()
+    {
+        return json_encode(
+            array(
+                'fields' => array(
+                    'firstname' => array(
+                        'single-values' => array(
+                            'value',
+                            'value2',
+                        ),
+                    ),
+                ),
+            )
+        );
+    }
+
     public function provideMultipleValuesTest()
     {
         return json_encode(
@@ -206,7 +222,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
      */
     protected function getExporter()
     {
-        return new JsonExporter($this->fieldAliasResolver->reveal());
+        return new JsonExporter($this->fieldLabelResolver->reveal());
     }
 
     /**
