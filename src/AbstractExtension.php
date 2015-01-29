@@ -22,14 +22,17 @@ abstract class AbstractExtension implements SearchExtensionInterface
     /**
      * The types provided by this extension.
      *
-     * @var FieldTypeInterface[] An array of FieldTypeInterface
+     * @var FieldTypeInterface[]
      */
     private $types;
 
     /**
      * The type extensions provided by this extension.
      *
-     * @var FieldTypeExtensionInterface[] An array of FieldTypeExtensionInterface
+     * Keeps an array of FieldTypeExtensionInterface objects per type-name.
+     * type-name => FieldTypeExtensionInterface[]
+     *
+     * @var array<FieldTypeExtensionInterface[]>
      */
     private $typeExtensions;
 
@@ -90,7 +93,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
     /**
      * Registers the types.
      *
-     * @return FieldTypeInterface[] An array of FormTypeInterface instances
+     * @return FieldTypeInterface[] an array of FormTypeInterface instances
      */
     protected function loadTypes()
     {
@@ -100,7 +103,8 @@ abstract class AbstractExtension implements SearchExtensionInterface
     /**
      * Registers the type extensions.
      *
-     * @return FieldTypeExtensionInterface[] An array of FieldTypeExtensionInterface instances
+     * @return array<FieldTypeExtensionInterface[]> an array of FieldTypeExtensionInterface instances
+     *                                              per type name
      */
     protected function loadTypeExtensions()
     {
