@@ -189,6 +189,16 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         );
     }
 
+    public function provideAliasedFieldsTests()
+    {
+        return array(
+            array('name: value; name: value2;'),
+            array('name: value; firstname: value2;'),
+            array('firstname: value; name: value2;'),
+            array('firstname: value, value2;'),
+        );
+    }
+
     public function provideValueOverflowTests()
     {
         return array(

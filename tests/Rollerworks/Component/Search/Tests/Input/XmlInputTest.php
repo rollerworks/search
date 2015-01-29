@@ -472,6 +472,46 @@ final class XmlInputTest extends InputProcessorTestCase
         );
     }
 
+    public function provideAliasedFieldsTests()
+    {
+        return array(
+            array(
+                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
+                <search>
+                    <fields>
+                        <field name="name">
+                            <single-values>
+                                <value>value</value>
+                            </single-values>
+                        </field>
+                        <field name="firstname">
+                            <single-values>
+                                <value>value2</value>
+                            </single-values>
+                        </field>
+                    </fields>
+                </search>',
+            ),
+            array(
+                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
+                <search>
+                    <fields>
+                        <field name="firstname">
+                            <single-values>
+                                <value>value</value>
+                            </single-values>
+                        </field>
+                        <field name="name">
+                            <single-values>
+                                <value>value2</value>
+                            </single-values>
+                        </field>
+                    </fields>
+                </search>',
+            ),
+        );
+    }
+
     public function provideValueOverflowTests()
     {
         return array(

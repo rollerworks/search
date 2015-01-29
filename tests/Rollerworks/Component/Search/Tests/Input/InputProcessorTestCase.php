@@ -411,6 +411,38 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideNestedGroupTests();
 
     /**
+     * @param mixed $input
+     *
+     * @test
+     * @dataProvider provideAliasedFieldsTests
+     */
+    public function it_processes_aliased_fields($input)
+    {
+        $this->fieldAliasResolver->resolveFieldName(
+            Prophecy\Argument::any(),
+            Prophecy\Argument::exact('firstname')
+        )->willReturn('name');
+
+        $processor = $this->getProcessor();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $values = new ValuesBag();
+        $values->addSingleValue(new SingleValue('value'));
+        $values->addSingleValue(new SingleValue('value2'));
+        $expectedGroup->addField('name', $values);
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertEquals($condition, $processor->process($config, $input));
+    }
+
+    /**
+     * @return array[]
+     */
+    abstract public function provideAliasedFieldsTests();
+
+    /**
      * @param mixed  $input
      * @param string $fieldName
      * @param int    $max

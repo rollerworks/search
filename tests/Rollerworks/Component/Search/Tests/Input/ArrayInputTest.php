@@ -259,6 +259,36 @@ final class ArrayInputTest extends InputProcessorTestCase
         );
     }
 
+    public function provideAliasedFieldsTests()
+    {
+        return array(
+            array(
+                array(
+                    'fields' => array(
+                        'name' => array(
+                            'single-values' => array('value'),
+                        ),
+                        'firstname' => array(
+                            'single-values' => array('value2'),
+                        ),
+                    ),
+                ),
+            ),
+            array(
+                array(
+                    'fields' => array(
+                        'firstname' => array(
+                            'single-values' => array('value'),
+                        ),
+                        'name' => array(
+                            'single-values' => array('value2'),
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
     public function provideValueOverflowTests()
     {
         return array(

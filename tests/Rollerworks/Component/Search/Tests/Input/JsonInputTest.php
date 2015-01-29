@@ -296,6 +296,40 @@ final class JsonInputTest extends InputProcessorTestCase
         );
     }
 
+    public function provideAliasedFieldsTests()
+    {
+        return array(
+            array(
+                json_encode(
+                    array(
+                        'fields' => array(
+                            'name' => array(
+                                'single-values' => array('value'),
+                            ),
+                            'firstname' => array(
+                                'single-values' => array('value2'),
+                            ),
+                        ),
+                    )
+                )
+            ),
+            array(
+                json_encode(
+                    array(
+                        'fields' => array(
+                            'firstname' => array(
+                                'single-values' => array('value'),
+                            ),
+                            'name' => array(
+                                'single-values' => array('value2'),
+                            ),
+                        ),
+                    )
+                )
+            ),
+        );
+    }
+
     public function provideValueOverflowTests()
     {
         return array(
