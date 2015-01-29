@@ -60,11 +60,8 @@ class ValuesToRange implements SearchConditionOptimizerInterface
     private function optimizeValuesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
-            if (!$fieldSet->has($fieldName)) {
-                continue;
-            }
-
             $config = $fieldSet->get($fieldName);
+
             if ($config->acceptRanges() && ($values->hasSingleValues() || $values->hasExcludedValues())) {
                 $this->optimizeValuesInValuesBag($config, $values);
             }
