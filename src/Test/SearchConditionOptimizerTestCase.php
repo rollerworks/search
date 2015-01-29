@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Test;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 
-abstract class FormatterTestCase extends SearchIntegrationTestCase
+abstract class SearchConditionOptimizerTestCase extends SearchIntegrationTestCase
 {
     /**
      * @var FieldSet

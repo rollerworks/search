@@ -13,14 +13,14 @@ namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 
 use Rollerworks\Component\Search\ConditionOptimizer\DuplicateRemover;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Test\FormatterTestCase;
+use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 
-final class DuplicateRemoverTest extends FormatterTestCase
+final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
 {
     protected function setUp()
     {

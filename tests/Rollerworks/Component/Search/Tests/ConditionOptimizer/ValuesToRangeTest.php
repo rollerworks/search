@@ -13,12 +13,12 @@ namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 
 use Rollerworks\Component\Search\ConditionOptimizer\ValuesToRange;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Test\FormatterTestCase;
+use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 
-final class ValuesToRangeTest extends FormatterTestCase
+final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
 {
     protected function setUp()
     {
