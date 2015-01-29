@@ -220,6 +220,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $values->addComparison(new Compare(2, '<'));
         $values->addComparison(new Compare(5, '<='));
         $values->addComparison(new Compare(8, '>='));
+        $values->addComparison(new Compare(20, '<>'));
         $expectedGroup->addField('id', $values);
 
         $date = new \DateTime('2014-12-16 00:00:00 UTC');

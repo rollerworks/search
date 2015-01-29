@@ -253,6 +253,7 @@ final class XmlInputTest extends InputProcessorTestCase
                                 <compare operator="&lt;">2</compare>
                                 <compare operator="&lt;=">5</compare>
                                 <compare operator="&gt;=">8</compare>
+                                <compare operator="&lt;&gt;">20</compare>
                             </comparisons>
                         </field>
                         <field name="date">

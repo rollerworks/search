@@ -106,6 +106,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                                 array('value' => 2, 'operator' => '<'),
                                 array('value' => 5, 'operator' => '<='),
                                 array('value' => 8, 'operator' => '>='),
+                                array('value' => 20, 'operator' => '<>'),
                             ),
                         ),
                         'date' => array(

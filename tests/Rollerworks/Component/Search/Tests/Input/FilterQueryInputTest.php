@@ -144,7 +144,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideComparisonValues()
     {
         return array(
-            array('id: >1, <2, <=5, >=8; date:>="12-16-2014";'),
+            array('id: >1, <2, <=5, >=8, <>20; date:>="12-16-2014";'),
         );
     }
 
