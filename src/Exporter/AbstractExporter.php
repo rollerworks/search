@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\ExporterInterface;
-use Rollerworks\Component\Search\FieldAliasResolverInterface;
 use Rollerworks\Component\Search\FieldLabelResolverInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
@@ -32,11 +31,11 @@ abstract class AbstractExporter implements ExporterInterface
     protected $labelResolver;
 
     /**
-     * @param FieldAliasResolverInterface $aliasResolver
+     * @param FieldLabelResolverInterface $labelResolver
      */
-    public function __construct(FieldAliasResolverInterface $aliasResolver)
+    public function __construct(FieldLabelResolverInterface $labelResolver)
     {
-        $this->aliasResolver = $aliasResolver;
+        $this->labelResolver = $labelResolver;
     }
 
     /**

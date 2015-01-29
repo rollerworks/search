@@ -23,6 +23,11 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
         return 'name: "value ", "-value2", "value2-", "10.00", "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3;';
     }
 
+    public function provideFieldAliasTest()
+    {
+        return 'firstname: value, value2;';
+    }
+
     public function provideMultipleValuesTest()
     {
         return 'name: value, value2; date: "12-16-2014";';
@@ -63,7 +68,7 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
      */
     protected function getExporter()
     {
-        return new FilterQueryExporter($this->fieldAliasResolver->reveal());
+        return new FilterQueryExporter($this->fieldLabelResolver->reveal());
     }
 
     /**
