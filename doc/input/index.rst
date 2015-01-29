@@ -28,7 +28,7 @@ Configuring happens using a ``Rollerworks\Component\Search\Input\ProcessorConfig
 object instance.
 
 By default the input is limited to 10000 values per group and 100 groups in total,
-with nesting level of 100 levels deep.
+with a nesting level of 100 levels deep.
 
 Changing these limits can be done by calling ``setLimitValues()``, ``setMaxGroups``
 and ``setMaxNestingLevel()`` respectively.
@@ -41,7 +41,7 @@ set these values too high.
     Allowing users to pass a large number of values can result
     in a massive performance hit or even crashing of the application.
 
-    Setting the nesting level to high may requires you to increase
+    Setting the nesting level to high may require you to increase
     the ``xdebug.max_nesting_level`` value.
 
 .. toctree::
