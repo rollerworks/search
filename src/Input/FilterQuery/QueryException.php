@@ -11,19 +11,73 @@
 
 namespace Rollerworks\Component\Search\Input\FilterQuery;
 
-/**
- * QueryException.
- */
-class QueryException extends \Exception
+final class QueryException extends \Exception
 {
+    private $input;
+    private $col;
+    private $syntaxLine;
+    private $expected;
+    private $got;
+
     /**
-     * @param string          $message
-     * @param \Exception|null $previous
+     * @param string         $message
+     * @param string         $input
+     * @param int            $col
+     * @param int            $line
+     * @param array|string[] $expected
+     * @param string         $got
      *
      * @return QueryException
      */
-    public static function syntaxError($message, $previous = null)
+    public static function syntaxError($message, $input, $col, $line, $expected, $got)
     {
-        return new self('[Syntax Error] '.$message, 0, $previous);
+        $exp = new self('[Syntax Error] '.$message);
+        $exp->input = $input;
+        $exp->col = $col;
+        $exp->syntaxLine = $line;
+        $exp->expected = $expected;
+        $exp->got = $got;
+
+        return $exp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCol()
+    {
+        return $this->col;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSyntaxLine()
+    {
+        return $this->syntaxLine;
+    }
+
+    /**
+     * @return string|string[]
+     */
+    public function getExpected()
+    {
+        return $this->expected;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInstead()
+    {
+        return $this->got;
     }
 }
