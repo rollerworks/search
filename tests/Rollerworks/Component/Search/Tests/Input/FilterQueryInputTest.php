@@ -75,13 +75,17 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     }
 
     /**
-     * @param string $input
-     * @param string $message
+     * @param string         $message
+     * @param string         $input
+     * @param int            $col
+     * @param int            $line
+     * @param array|string[] $expected
+     * @param string         $got
      *
      * @test
      * @dataProvider provideQueryExceptionTests
      */
-    public function it_errors_when_the_syntax_is_invalid($input, $message)
+    public function it_errors_when_the_syntax_is_invalid($input, $message, $col, $line, $expected, $got)
     {
         $fieldSet = $this->getFieldSet(false)->add('field1', 'text')->getFieldSet();
 
@@ -92,10 +96,14 @@ final class FilterQueryInputTest extends InputProcessorTestCase
             $processor->process($config, $input);
         } catch (\Exception $e) {
             if (!$e instanceof QueryException) {
-                $this->fail('Expected a QueryException but got: '.get_class($e));
+                throw $e;
             }
 
             $this->assertEquals($message, $e->getMessage());
+            $this->assertEquals($col, $e->getCol());
+            $this->assertEquals($line, $e->getSyntaxLine());
+            $this->assertEquals($expected, $e->getExpected());
+            $this->assertEquals($got, $e->getInstead());
         }
     }
 
@@ -104,9 +112,20 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         return array(
             array(
                 'field1: value, value2, value3, value4, value5;)',
-                '[Syntax Error] line 0, col 46: Error: Expected \'"(" or FieldIdentification\', got \')\'',
+                "[Syntax Error] line 0, col 46: Error: Expected '(' | FieldIdentification, got ')'",
+                46,
+                0,
+                array('(', 'FieldIdentification'),
+                ')',
             ),
-            array('field1: value value2)', "[Syntax Error] line 0, col 14: Error: Expected '; | , | )', got 'value2'"),
+            array(
+                'field1: value value2)',
+                "[Syntax Error] line 0, col 14: Error: Expected ';' | '|' | ',' | '|' | ')', got 'value2'",
+                14,
+                0,
+                array(';', '|', ',', '|', ')'),
+                'value2',
+            ),
         );
     }
 

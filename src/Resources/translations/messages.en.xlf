@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" datatype="plaintext" original="messages.xliff">
+        <body>
+            <trans-unit id="1">
+                <source>search.filter_query.token.FieldIdentification</source>
+                <target>Field identification</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>search.filter_query.token.String</source>
+                <target>String</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>search.filter_query.token.QuotedString</source>
+                <target>Quoted string</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>search.filter_query.token.Range</source>
+                <target>Range</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>search.filter_query.token.ExcludedValue</source>
+                <target>Excluded value</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>search.filter_query.token.ExcludedRange</source>
+                <target>Excluded range</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>search.filter_query.token.Comparison</source>
+                <target>Comparison</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>search.filter_query.token.PatternMatch</source>
+                <target>PatternMatcher</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
