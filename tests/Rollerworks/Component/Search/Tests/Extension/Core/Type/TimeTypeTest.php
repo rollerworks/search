@@ -34,6 +34,8 @@ class TimeTypeTest extends FieldTypeTestCase
 
     protected function tearDown()
     {
+        parent::tearDown();
+
         date_default_timezone_set($this->defaultTimezone);
     }
 
