@@ -12,7 +12,7 @@ or as a separate file using either YAML or XML.
     To actually use the metadata component you first need a compatible
     metadata loader.
 
-    One of the supported loaders is the `RollerworksSearch JmsMetadata loader`_
+    One of the supported loaders is the `RollerworksSearch Jms-Metadata loader`_
     which you need to install yourself.
 
     See the 'JmsMetadata' subsection in :doc:`/installing/` for more information.
@@ -146,3 +146,4 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
     annotated PHP class definitions.
 
 .. _`PHP Annotations`: http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html
+.. _`RollerworksSearch Jms-Metadata loader`: https://github.com/rollerworks/rollerworks-search-jms-metadata

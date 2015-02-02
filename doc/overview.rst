@@ -237,7 +237,7 @@ Field Type
 Field types are used for configuring a search field's value comparison,
 ViewTransformers and accepted value-types.
 
-For more information on using field types see :doc:`type/index`
+For more information on using field types see :doc:`type`
 
 .. note::
 
