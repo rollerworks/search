@@ -68,7 +68,7 @@ final class PatternMatch
         }
 
         if ($patternType < 1 || $patternType > 8) {
-            throw new \InvalidArgumentException('Unknown pattern-match type.');
+            throw new \InvalidArgumentException(sprintf('Unknown pattern-match type "%s".', $patternType));
         }
 
         $this->patternType = $patternType;
