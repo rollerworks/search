@@ -21,6 +21,11 @@ easier to use.
   will be thrown (after processing).
   
 * Validation of ranges (correct bounds) is now performed when processing the Input (not after).
+
+### Optimizers (former formatters)
+
+Formatters are renamed to optimizers; The `Rollerworks\Component\Search\FormatterInterface` is removed in favor 
+of the new `Rollerworks\Component\Search\SearchConditionOptimizerInterface`.
   
 ### User error handling
 
