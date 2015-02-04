@@ -25,8 +25,8 @@ Note the following:
 * Transforming view values to a normalized version is done when processing the input.
 * The optimizing process tries to produce the smallest search-condition possible.
 
-The only thing the system is mainly concerned with is the SearchCondition and
-configuration of the search fields.
+The system is mainly concerned with the SearchCondition and configuration
+of the search fields.
 
 System Requirements
 -------------------
@@ -39,7 +39,7 @@ The basic requirements to use RollerworksSearch are:
 
 And a list 3rd party libraries (which you can find the installation chapter).
 
-.. note::
+.. tip::
 
     When you use Composer to install and update dependencies the
     installation of these libraries will be handled for your.
@@ -58,23 +58,62 @@ SearchCondition
 ~~~~~~~~~~~~~~~
 
 Each search operation starts with a SearchCondition (``SearchConditionInterface``)
-consisting of a ``ValuesGroup`` and ``FieldSet`` object.
+consisting of a ``ValuesGroup`` and ``FieldSet``.
 
-At the root of each SearchCondition is a ``ValuesGroup`` object, containing
-the values (as ``ValuesBag`` object) per field name and *optionally** subgroups
-(each one being a ``ValuesGroup`` object).
+.. code-block:: php
 
-A ``ValuesGroup`` is 'logically' marked as AND by default meaning that the search
-condition will only be true if: from each field inside the group at least one value
-is true (matching). But its also possible to mark a group as OR, which means that at
-least one field must match and other fields are considered optional.
+    use Rollerworks\Component\Search\FieldSet;
+    use Rollerworks\Component\Search\ValuesGroup;
+    use Rollerworks\Component\Search\ValuesBag;
+    use Rollerworks\Component\Search\Value\SingleValue;
+
+    $fieldSet = new FieldSet('my_field_set');
+    // FieldSet configuration...
+
+    $rootValuesGroup = new ValuesGroup();
+
+    $fieldId = new ValuesBag();
+    $fieldId->addSingleValue(new SingleValue(10));
+    $fieldId->addSingleValue(new SingleValue(20));
+    $rootValuesGroup->addField('id', $fieldId);
+
+    $fieldDate = new ValuesBag();
+    $fieldDate->addSingleValue(
+        new SingleValue(
+            new \DateTime('2015-02-04 00:00:00', new \DateTimezone('UTC')) // normalized value
+            '2015/04/24' // View in US date notation
+        )
+    );
+
+    $subValuesGroup = new ValuesGroup();
+
+    $fieldId = new ValuesBag();
+    $fieldId->addSingleValue(new SingleValue(10));
+    $fieldId->addSingleValue(new SingleValue(20));
+
+    $subValuesGroup->addField('id', $fieldId);
+    $rootValuesGroup->addGroup($subValuesGroup);
+
+    $searchCondition = new SearchCondition($fieldSet, $rootValuesGroup);
+
+At the root of each SearchCondition is a ``ValuesGroup``, containing
+the values (as ``ValuesBag``) per field name and *optionally* subgroups
+(each one being a ``ValuesGroup``).
+
+A ``ValuesGroup`` is set defined with ``ValuesGroup::GROUP_LOGICAL_AND`` by default
+meaning that the search condition will only match a result if: from each field inside
+the group at least one of the field's values evaluate to true (is matching).
+
+But it's also possible to set a group with ``ValuesGroup::GROUP_LOGICAL_AND``,
+which means that at least one field must match and the other fields are
+considered optional.
 
 .. note::
 
-    Subgroups are always threaded as AND to the head group they there in,
-    but multiple groups within a group are OR cased to each other.
+    Subgroups are always treated as logical AND to the parent (sub)group they
+    there in, but multiple subgroups within a group are OR'ed to each other.
 
-    Meaning that that at least one group must match.
+    Meaning that that at least one subgroup must match.
 
 A ``ValuesBag`` object holds all the values of a field per type.
 
@@ -82,26 +121,26 @@ Supported value-types are:
 
 * Single value (any type of value)
 * Excluded single value (any type of value which should not provide a positive match)
-* Ranges (from - to, eg 10 - 100)
-* Excluded ranges (from - to, eg 10 - 100 which is should not provide a positive match)
+* Ranges (from - to, e.g. 10 - 100)
+* Excluded ranges (from - to, e.g. 10 - 100 which is should not provide a positive match)
 * Comparison value (mathematical comparison: <, >, >=, <=)
-* PatternMatch (text based pattern matching, starts with, contains, ends with, regex) (and an excluding version)
+* PatternMatch (text based pattern matching, starts with, contains, ends with, regex),
+  and supports excluding (e.g. not starts with) and case optional insensitive.
 
-Values are stored as a normalized model and view format.
-The actual transformation is handled by the DataTransformers registered on the search field configuration.
+Values are stored in a normalized and view format. The actual transformation is
+handled by the DataTransformers registered on the search field configuration.
 
-.. note::
+.. tip::
 
     Either side of a Range value can be marked as exclusive.
-    Meaning anything between the values except the value it self.
+    Meaning anything between the values except the values them self.
 
     In practice this is the same as using ``>20 AND <30``.
     But much easier to optimize.
 
-Normally the a SearchCondition is created when processing input.
-But its also possible to build the SearchCondition manually using the
-``SearchConditionBuilder`` see "Performing a manual search"
-in :doc:`Performing searches </searches>` for more information.
+Normally a ``SearchCondition`` is created when processing input. But you can also build
+the ``SearchCondition`` manually using the :class:``Rollerworks\\Component\\Search\\SearchConditionBuilder``
+see "Performing a manual search" in :doc:`searches` for more information.
 
 FieldSet
 ~~~~~~~~
@@ -117,12 +156,12 @@ one or multiple ``FieldConfigInterface`` instances.
 Each search field works independent from a FieldSet and may be reused in multiple FieldSets.
 But the field name must be unique within the FieldSet.
 
-Normally you`d create a FieldSet based on a subject-relationship.
+Normally you would create a FieldSet based on a subject-relationship.
 For example invoice search, order search, news items search, etc.
 
 .. note::
 
-    The ``FieldConfigInterface`` is an interface for your own implementation.
+    The ``FieldConfigInterface`` is a public interface for your own implementation.
     The default implementation is a ``SearchField`` object.
 
 SearchField
@@ -160,16 +199,15 @@ SearchField
 Input
 ~~~~~
 
-The input component processes user-input to a
-``SearchConditionInterface`` object.
+The input component processes user-input to a SearchCondition.
 
-Input can be provided as a PHP Array, JSON, XML document, or with the easy to use
+Input can be provided as a PHP Array, JSON, XML document, or using the
 :doc:`FilterQuery </input/filter_query>` format.
 
 Exporters
 ~~~~~~~~~
 
-While the input component processes user-input to a ``SearchConditionInterface`` object.
+While the input component processes user-input to a SearchCondition.
 The exporters do the opposite, transforming a SearchCondition to an exported
 format. Ready to be reused for input processing.
 
@@ -177,7 +215,8 @@ Exporting a SearchCondition is very handy if you want to store the condition
 on the client-side in either a cookie, URI query-parameter or hidden form input field.
 
 Or if you need to perform a search operation on an external system that uses RollerworksSearch.
-Build-up your SearchCondition using the :doc:`SearchConditionBuilder </searches>` and export it for usage!
+Build-up your SearchCondition using the :doc:`SearchConditionBuilder </searches>` and export
+it for usage!
 
 FieldAliasResolver
 ~~~~~~~~~~~~~~~~~~
@@ -190,11 +229,11 @@ For example: "factuur-nummer" (in Dutch) for "invoice-number" (original name).
 For this you can use the FieldAliasResolver (``FieldAliasResolverInterface``)
 which tries to resolve a field-alias to a real field-name.
 
-RollerworksSearch comes bundled with three alias-resolver implementations:
+RollerworksSearch comes bundled with three alias-resolvers:
 
 * Noop: This resolver does nothing and simple returns the original input.
 * Chain: This allows to chain multiple alias-resolvers, the first resolver that returns
-  something else the original input is considered the matching resolver.
+  something else than the original input is considered the matching resolver.
 * Array: This resolver uses a simple PHP array for keeping track of aliases.
 
 .. note::

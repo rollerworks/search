@@ -12,13 +12,14 @@ Using the FactoryBuilder
 ------------------------
 
 The FactoryBuilder helps with setting up the search system.
-You only need to set it up a SearchFactory once, and then it can be reuse multiple times.
+You only need to set a SearchFactory up once, and then it can be reused
+multiple times.
 
 .. note::
 
     The ``Searches`` class and SearchFactoryBuilder are only meant to be used when
     you using RollerworksSearch as a standalone. When making a framework plugin,
-    you'd properly want create the SearchFactory and FieldsRegistry
+    you want to properly create the SearchFactory and FieldsRegistry
     manually using a Dependency Injection system.
 
 .. code-block:: php
@@ -32,12 +33,12 @@ You only need to set it up a SearchFactory once, and then it can be reuse multip
 Creating a FieldSet
 -------------------
 
-Now, before you can start performing searches, the system first needs a ``FieldSet``
-which will hold the configuration of your search fields.
+Now, before you can start performing searches, the system first needs a
+``FieldSet`` which will hold the configuration of your search fields.
 
 You can create as many FieldSets as you want, but each FieldSet needs a name
-that should not clash with other FieldSets. So its best to use descriptive names like:
-'customer_invoices' and 'customers'.
+that should not clash with other FieldSets. So it's best to use descriptive
+names like: 'customer_invoices' and 'customers'.
 
 .. code-block:: php
     :linenos:
@@ -52,13 +53,16 @@ that should not clash with other FieldSets. So its best to use descriptive names
     You can also use the FieldSetBuilder to import the fields from models
     using the :doc:`Metadata <metadata>` component.
 
+    Loading a Fields configuration using metadata reduces the duplication
+    between FieldSets. You only configure the field once and can reuse it
+    multiple times throughout the application.
+
 Performing a manual search (SearchConditionBuilder)
 ---------------------------------------------------
 
-In most cases you'd ask the system to process an input and pass
-it to a list of condition optimizers before applying it on the storage layer.
-
-But it is also possible to create a SearchCondition manually.
+In most cases you would ask the system to process an input and pass
+it to a list of condition optimizers before applying it on the storage
+layer. But it's also possible to create a SearchCondition manually.
 
 The ``SearchConditionBuilder`` is just for this, if you already know how
 an XML document is build then this should be pretty straightforward.
@@ -66,7 +70,7 @@ an XML document is build then this should be pretty straightforward.
 Each time you call ``group()`` it will create a new ``SearchConditionBuilder``
 with a new depth. When you call ``end()`` it will return to the parent builder.
 
-Calling ``field()`` will give you a new ``ValuesBagBuilder`` which
+Calling ``field()`` will get you a new ``ValuesBagBuilder`` which
 allows adding new values, and then calling ``end()`` to get back
 to the ConditionBuilder.
 
@@ -131,12 +135,12 @@ Or if you need a more complex condition.
         ->end()
         ->getSearchCondition();
 
-.. note::
+.. tip::
 
     When you call ``field()`` with an existing field, the original field is returned.
 
     Set the second parameter to true to force a new one,
-    note this will remove the old field!
+    note that this will remove the old field!
 
 Processing input
 ----------------
@@ -176,7 +180,7 @@ shown above.
     $config = new ProcessorConfig($fieldSet);
 
     // The input processor will transform all values to the normalized value
-    // and validates that range bounds are valid.
+    // and validate that range bounds are valid.
 
     try {
         $searchCondition = $inputProcessor->process($config, $query);
@@ -191,7 +195,7 @@ shown above.
     } catch (QueryException $e) {
         // This exception is specific for the FilterQueryInput
         // and is thrown when there is a syntax error in the input.
-        // The message will exactly whats wrong to the user.
+        // The message will point exactly what is wrong with the user input
         echo $e->getMessage();
     } catch (InputProcessorException $e) {
         // Generic processing error
@@ -199,7 +203,7 @@ shown above.
     }
 
     // Note: processing errors is much more advanced
-    // then you'd expect. See the next section for more information
+    // than you would expect. See the next section for more information.
 
     // Because the search condition may have duplicate or redundant
     // values we run them trough a list of optimizers.
@@ -219,16 +223,17 @@ shown above.
 Handling processing errors
 --------------------------
 
-When processing input its possible the input is invalid eg. a syntax/structure
+When processing input its possible the input is invalid e.g. a syntax/structure
 error, passing an unsupported value-type to a field or missing a required field.
 
 To not leave these situations unnoticed each processor will throw an exception
-in case of an error. The exception itself provides more information on what is wrong.
+in case of an error. The exception itself provides more information on what is
+wrong.
 
 Please keep note of the following:
 
-* the field-name is the resolved field name and not the alias that was used
-* group and nesting level start at index 0 which is the root of the condition
+* The field-name is the resolved field name and not the alias that was used.
+* The group and nesting level start at index 0 which is the root of the condition.
 
 .. tip::
 
@@ -490,7 +495,7 @@ The following part shows an example for storing a search-condition.
 
     // Use an mad5 hash to generate a unique caching-key
     // md5 is the fastest hashing method and provides enough uniqueness for this situation
-    // normally you'd use something stronger like sha1 or even sha265
+    // normally you would use something stronger like sha1 or even sha265
     $searchHash = 'search_'.md5($query);
 
     if (isset($_SESSION[$searchHash])) {

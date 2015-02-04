@@ -15,6 +15,6 @@ Normal (business logic) validation (such as when setting a minimum length for
 a field) should be set using validation messages with your validation rules.
 
 Validation is provided by eg the `rollerworks/search-symfony-validator`_ or any other
-support SearchCondition validator.
+supported SearchCondition validator.
 
 .. _`rollerworks/search-symfony-validator`: https://github.com/rollerworks/rollerworks-search-symfony-validator
