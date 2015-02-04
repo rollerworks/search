@@ -22,8 +22,8 @@ Defining the Field Type
 
 In order to create the custom field type, first you have to create the class representing the type.
 In this situation the class holding the field type will be called ClientIdType and the file will be
-stored in the default location for search field types, which is ``<VendorName>\Search\Type``.
-Make sure the field extends :class:`Rollerworks\Component\Search\AbstractFieldType`:
+stored in the default location for search field types, which is ``<VendorName>\\Search\\Type``.
+Make sure the field extends :class:`Rollerworks\\Component\\Search\\AbstractFieldType`:
 
 .. code-block:: php
     :linenos:
@@ -69,7 +69,7 @@ Make sure the field extends :class:`Rollerworks\Component\Search\AbstractFieldTy
 
 .. tip::
 
-    The location of this file is not important - the ``Search\Type`` directory
+    The location of this file is not important - the ``Search\\Type`` directory
     is just a convention.
 
 Here, the return value of the ``getParent`` function indicates that you're
@@ -213,3 +213,6 @@ Creating a field type is fun and easy, but did you know there is more possible
 then is shown here? Learn more at: :doc:`data_transformers` and
 :doc:`value_comparison` and its also a good idea to test your types:
 :doc:`unit_testing`
+
+.. _`IntegerType`: https://github.com/rollerworks/RollerworksSearch/blob/master/src/Extension/Core/Type/IntegerType.php
+.. _`FieldType`: https://github.com/rollerworks/RollerworksSearch/blob/master/src/Extension/Core/Type/FieldType.php

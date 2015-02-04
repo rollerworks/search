@@ -10,5 +10,6 @@ Rollerworks Search
     searches
     metadata
     type
+    cookbook/index
     reference/types
     input/index

@@ -242,6 +242,6 @@ For more information on using field types see :doc:`type`
 .. note::
 
     Build-in types are provided by the Core extension.
-    You are free to extend them for more advanced use-cases.
 
-    Extending a type if described in :doc:`type/extending`
+    You are free create your own field types for more advanced use-cases.
+    See :doc:`cookbook/type/create_custom_field_type` for more information.
