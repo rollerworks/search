@@ -472,20 +472,27 @@ using the PHP session system.
     use Rollerworks\Component\Search\Input\FilterQueryInput;
     use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
     use Rollerworks\Component\Search\Input\ProcessorConfig;
+    use Rollerworks\Component\Search\FieldSetRegistry;
     use Rollerworks\Component\Search\Searches;
 
     // This example uses a PHP session, but you can actually use anything.
-    // Just mare you NEVER store a PHP serialized object on the client-side
-    // as this makes possible inject arbitrary code!
+    // Just remember to NEVER store a PHP serialized object on the client-side
+    // as this makes it possible to inject arbitrary code!
     session_start();
 
     $searchFactory = new Searches::createSearchFactoryBuilder()
         ->getSearchFactory();
 
+    $fieldSetRegistry = new FieldSetRegistry();
+
     $fieldset = $searchFactory->createFieldSetBuilder()
         ->add('id', 'integer')
         ->add('name', 'text')
         ->getFieldSet();
+
+    // It's important the FieldSet is registered in the FieldSetRegistry
+    // before serializing. Else you will get an exception thrown.
+    $fieldSetRegistry->add($fieldset);
 
     // The provided query can come from anything, like $_GET or $_POST
     $query = ... ;
@@ -499,10 +506,10 @@ using the PHP session system.
     // normally you would use something stronger like sha1 or even sha265
     $searchHash = 'search_'.md5($query);
 
+    $searchConditionSerializer = new SearchConditionSerializer($fieldSetRegistry);
+
     if (isset($_SESSION[$searchHash])) {
-        // Its important that the $fieldset name is equal to that of the serialized condition.
-        // Else an exception will be thrown.
-        $searchCondition = SearchConditionSerializer::unserialize($fieldset, $_SESSION[$searchHash]);
+        $searchCondition = $searchConditionSerializer->unserialize($_SESSION[$searchHash]);
     } else {
         $inputProcessor = new FilterQueryInput();
         $config = new ProcessorConfig($fieldSet);
@@ -511,10 +518,10 @@ using the PHP session system.
             $searchCondition = $inputProcessor->process($config, $query);
         } catch (ExceptionInterface $e) {
             // Note: The Rollerworks\Component\Search\Exception\ExceptionInterface
-            // is implemented by all the exceptions thrown by RollerworksSearch
+            // is implemented by all the exceptions thrown by RollerworksSearch,
             // its possible (just not likely) that these messages expose sensitive
             // information about your application. See the section about error handling
-            // for a better alternative
+            // for a better alternative.
 
             echo $e->getMessage();
         }
@@ -528,7 +535,7 @@ using the PHP session system.
         $searchCondition->getValuesGroup()->setDataLocked();
 
         // Store the condition for feature usage
-        $_SESSION[$searchHash] = SearchConditionSerializer::serialize($searchCondition);
+        $_SESSION[$searchHash] = $searchConditionSerializer->serialize($searchCondition);
     }
 
 .. note::
