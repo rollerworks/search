@@ -5,12 +5,11 @@ How to Create a Custom Search Field Type
 ========================================
 
 RollerworksSearch comes with a bunch of core field types available for
-building FieldSets.
-However there are situations where you may want to create a custom field type for
-a specific purpose. This recipe assumes you need a field definition that holds a
-specially formatted Client ID, based on the existing integer field.
-This section explains how the field is defined, and how you can register it
-for usage in your application.
+building FieldSets. However there are situations where you may want to
+create a custom field type for a specific purpose. This recipe assumes
+you need a field definition which holds specially formatted Client ID's,
+based on the existing integer field. This section explains how the field
+is defined, and how you can register it for usage in your application.
 
 The Client ID begins with a 'C' prefix, and is prepended with zeros until it's
 at least 4 digits.

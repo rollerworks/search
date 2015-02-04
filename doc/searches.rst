@@ -140,7 +140,7 @@ Or if you need a more complex condition.
     When you call ``field()`` with an existing field, the original field is returned.
 
     Set the second parameter to true to force a new one,
-    note that this will remove the old field!
+    note this will remove the old field!
 
 Processing input
 ----------------
@@ -180,14 +180,14 @@ shown above.
     $config = new ProcessorConfig($fieldSet);
 
     // The input processor will transform all values to the normalized value
-    // and validate that range bounds are valid.
+    // and validates range bounds are valid.
 
     try {
         $searchCondition = $inputProcessor->process($config, $query);
     } catch (InvalidSearchConditionException $e) {
         // The SearchCondition contains errors.
         // This is good moment to tell the user the condition
-        // has errors that should be resolved.
+        // has errors which should be resolved.
 
         // The errors are stored on the SearchCondition.
         // See the section about handling processing errors
@@ -249,9 +249,9 @@ is thrown when a required field is missing in the condition.
 
 This exception provides the following properties:
 
-* fieldName: Name of the field that is missing in the condition
-* groupIdx: the group index that in which the field is missing
-* nestingLevel: the nesting level at the with the field is missing
+* fieldName: Name of the field which is missing in the condition
+* groupIdx: the group index in which the field is missing
+* nestingLevel: the nesting level at which the field is missing
 
 GroupsNestingException
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -262,8 +262,8 @@ is thrown when the maximum nesting level is exceeded.
 This exception provides the following properties:
 
 * maxNesting: Maximum nesting level
-* groupIdx: index of the nested-group that exceeds the maximum nesting level
-* nestingLevel: the nesting level at the which the group is declared
+* groupIdx: index of the nested-group exceeding the maximum nesting level
+* nestingLevel: the nesting level at which the group is declared
 
 ValuesOverflowException
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -291,34 +291,34 @@ GroupsOverflowException
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``Rollerworks\Component\Search\Exception\GroupsOverflowException``
-is thrown when the maximum number of group at nesting level is exceeded.
+is thrown when the maximum number of groups at a nesting level is exceeded.
 
 This exception provides the following properties:
 
 * max: Maximum number of subgroups within a (sub)group
 * count: Number of groups in the (sub)group
-* groupIdx: index of the group that exceeds the maximum count
+* groupIdx: index of the group exceeding the maximum count
 * nestingLevel: the nesting level at which the group was declared
 
 .. note::
 
-    Not all processors will give the exact number of values.
+    Not all processors will give the exact number of groups.
 
     FilterQuery will stop further processing when the maximum amount
-    of values is exceeded. But XML, JSON and Array will return the exact
+    of groups is exceeded. But XML, JSON and Array will return the exact
     number of values.
 
 UnsupportedValueTypeException
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``Rollerworks\Component\Search\Exception\UnsupportedValueTypeException``
-is thrown when you pass value-type to a field that does not support
+is thrown when you pass a value-type into a field which doesn't support
 that value-type.
 
 This exception provides the following properties:
 
 * fieldName: Name of the field at which the value was declared
-* valueType: Type of the value that is not accepted, eg: range, comparison or pattern-match
+* valueType: Type of the value which was not accepted, e.g. range, comparison or pattern-match
 
 InvalidSearchConditionException
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -387,7 +387,7 @@ The following example shows you can render these errors into a display for the u
 
     // Caching of other exceptions has been deliberately omitted
 
-You'd properly want build something that's more advanced,
+You would properly want build something that is more advanced,
 this is just a simple verbose example to show how you get the errors.
 
 InputProcessorException
@@ -403,41 +403,41 @@ QueryException
 ~~~~~~~~~~~~~~
 
 The ``Rollerworks\Component\Search\Input\FilterQuery\QueryException``
-is an exception that is only used by the FilterQuery input processor.
+is only used by the FilterQuery input processor.
 
 This exception is thrown when the provided input has a syntax error.
 
-Example: [Syntax Error] line 0, col 46: Error: Expected '"(" or FieldIdentification', got ')'
+Example: ``[Syntax Error] line 0, col 46: Error: Expected '"(" or FieldIdentification', got ')'``
 
-The error tells that at column (or character position) 46 an group opening or
+The error tells that at column 46 a group opening or
 field-name was expected but something else was found instead.
 
 This exception provides the following properties:
 
 * line: Line-number at which the error occurred
-* col: Character position  at which the error occurred (relative to the line number)
-* expected: An array of tokens that was expected
+* col: Column position at which the error occurred (starting from 0)
+* expected: An array of tokens that were expected
 * got: A Token-id, value or character that was found instead
 
 For clarity the following token-ids are used:
 
-* String: none quoted string value like ``foo`` or ``12``
+* String: a unquoted string like ``foo`` or ``12``
 * QuotedString: a quoted string like ``"foo"``, ``"12"`` or ``"12.00"``
-* Range: A range value with lower and upper-bounds like ``12-15``
-* ExcludedValue: An excluded range value with lower and upper-bounds like ``!12-15``
+* Range: A range with lower and upper-bounds like ``12-15`` or ``]12-15[``
+* ExcludedValue: An excluded range with lower and upper-bounds like ``!12-15``
+  or ``!]12-15[``
 * Comparison: Mathematical comparison like ``>12``, ``<15`` or ``>="foo-bar"``
 * PatternMatch: A text based pattern matcher like ``~*foo``, ``~!*foo``
 
-If the "got" or "expected" property is anything else, its a literal character.
-
-For example ```>`` and ``(`` are literal characters.
+If the "got" or "expected" property is anything else then shown above,
+its a literal character. For example ```>`` and ``(`` are literal characters.
 
 .. note::
 
-    QuotedString values don't actually contain the quotes when processing.
-    *The internal Lexer already normalizes these.*
+    QuotedString values don't actually contain the leading and trailing quotes
+    when processing. *The processor already normalizes these.*
 
-    This is just to indicate that a QuotedString could be used at the position.
+    This is just to indicate a QuotedString could be used at the position.
 
 Improving performance
 ---------------------
@@ -449,16 +449,17 @@ But you properly don't want to display all 500 found records
 on a single page. You paginate them to display a limited subset
 per page. And each page uses the same search-condition.
 
-However processing a user-input to a SearchCondition
+However processing a user-input to a ``SearchCondition``
 and optimizing it can be very slow (depending on the number of fields,
 values and groups). And as the condition has not changed between page requests
 there is no point in repeating these steps!
 
-Fortunately SearchCondition are serializable, meaning you export
+Fortunately SearchConditions are serializable, meaning you can export
 (not to be confused with the exporter component) the condition to a
 storage friendly format for faster loading.
 
-The following part shows an example for storing a search-condition.
+The following part shows an example for storing a search-condition
+using the PHP session system.
 
 .. code-block:: php
     :linenos:

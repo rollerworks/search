@@ -17,7 +17,7 @@ Passing this value to the system it a bit troubling, because the system
 has no idea how to handle this format. It looks like a number but it's not.
 
 It would be better if this value was in an InvoiceNumber value object,
-so that the system can work with. This is where Data Transformers come into play.
+so the system can work with. This is where Data Transformers come into play.
 
 The InvoiceNumber object is known as a normalized value.
 
@@ -123,7 +123,7 @@ invoice field type.
 
 Cool, you're done! Your user will be able to enter an invoice number into the
 field and it will be transformed back into an InvoiceNumber object. This means
-that, after a successful transformation, the system will pass an InvoiceNumber
+after a successful transformation, the system will pass an ``InvoiceNumber``
 object instead of a string value.
 
 And when exporting the value the original format is shown.
