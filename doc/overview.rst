@@ -57,8 +57,11 @@ in this section of the book.
 SearchCondition
 ~~~~~~~~~~~~~~~
 
-Each search operation starts with a SearchCondition (``SearchConditionInterface``)
-consisting of a ``ValuesGroup`` and ``FieldSet``.
+Each search operation starts with a SearchCondition (``SearchConditionInterface``).
+A SearchCondition defines a set of requirements (conditions) for one or
+more fields. And holds the configuration of these fields within in a ``FieldSet``.
+
+A field (search field) can be compared to a form field or database column.
 
 .. code-block:: php
 
@@ -100,20 +103,31 @@ At the root of each SearchCondition is a ``ValuesGroup``, containing
 the values (as ``ValuesBag``) per field name and *optionally* subgroups
 (each one being a ``ValuesGroup``).
 
-A ``ValuesGroup`` is set defined with ``ValuesGroup::GROUP_LOGICAL_AND`` by default
-meaning that the search condition will only match a result if: from each field inside
-the group at least one of the field's values evaluate to true (is matching).
+A ``ValuesGroup`` is defined with a ``ValuesGroup::GROUP_LOGICAL_AND`` by default
+which requires from each field inside a (sub)group that at least one of the field's
+values evaluate to true (is matching).
 
-But it's also possible to set a group with ``ValuesGroup::GROUP_LOGICAL_AND``,
-which means that at least one field must match and the other fields are
-considered optional.
+A record is intended as a database record with one or fields. A single User with
+an id, registration-date and username is considered one record.
+
+Taken you will only get a result when the id is e.g. 10 or 20 **and** the
+date is "2015-02-04". If date is anything else then "2015-02-04" the record
+is not matching.
+
+But it's also possible to set a group with ``ValuesGroup::GROUP_LOGICAL_OR``,
+which removes the requirement that *all** fields must match. If any of the fields
+matches the record is considered matching.
 
 .. note::
 
-    Subgroups are always treated as logical AND to the parent (sub)group they
-    there in, but multiple subgroups within a group are OR'ed to each other.
+    Subgroups function as a list of fields with ``ValuesGroup::GROUP_LOGICAL_AND``
+    even when the parent group is set with  ``ValuesGroup::GROUP_LOGICAL_OR``.
 
-    Meaning that that at least one subgroup must match.
+    Only when fields within the parent group gave a positive match the subgroup
+    will be evaluated.
+
+    When there are multiple subgroups these are OR'ed to each other,
+    Meaning at least one (or more) subgroup(s) in the group must match.
 
 A ``ValuesBag`` object holds all the values of a field per type.
 
@@ -232,8 +246,9 @@ which tries to resolve a field-alias to a real field-name.
 RollerworksSearch comes bundled with three alias-resolvers:
 
 * Noop: This resolver does nothing and simple returns the original input.
-* Chain: This allows to chain multiple alias-resolvers, the first resolver that returns
-  something else than the original input is considered the matching resolver.
+* Chain: This allows to chain multiple alias-resolvers, the first resolver
+  which returns something else than the original input is considered the
+  matching resolver.
 * Array: This resolver uses a simple PHP array for keeping track of aliases.
 
 .. note::
