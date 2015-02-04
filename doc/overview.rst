@@ -154,7 +154,7 @@ handled by the DataTransformers registered on the search field configuration.
 
 Normally a ``SearchCondition`` is created when processing input. But you can also build
 the ``SearchCondition`` manually using the :class:``Rollerworks\\Component\\Search\\SearchConditionBuilder``
-see "Performing a manual search" in :doc:`searches` for more information.
+see :ref:`Performing a manual search <do_manual_search>` for more information.
 
 FieldSet
 ~~~~~~~~

@@ -57,6 +57,8 @@ names like: 'customer_invoices' and 'customers'.
     between FieldSets. You only configure the field once and can reuse it
     multiple times throughout the application.
 
+.. _do_manual_search:
+
 Performing a manual search (SearchConditionBuilder)
 ---------------------------------------------------
 
