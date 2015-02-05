@@ -10,24 +10,26 @@ What is RollerworksSearch?
 --------------------------
 
 RollerworksSearch provides you with a powerful search system
-for your PHP application.
+for your PHP applications.
 
 The system has a modular design and can work with any PHP framework,
 user locale, data format or storage system.
 
-Whether you want to simply search for users in your SQL database or want to
+Whether you want to simply search for users in your SQL database, want to
 provide a powerful search system for searching products using an ElasticSearch
-back-end, everything is possible.
+back-end or are looking for an easy way to abstract filtering for a reporter,
+everything is possible.
 
-Say your customer data is stored in the "customer" table while the "invoice"
-data is stored in it's own table. And invoice rows also have there own table.
+And a complex data is structure is no problem, say your customer data is stored
+in the "customer" table, the "invoices" data is stored in it's own table, and
+the details of the invoice also have there own table.
 
 Searching (using the FilterQuery syntax) can be as simple as:
-`invoice_price: >"$20.00" invoice_row: ~*"my cool product"; customer_type: !consumer.`
+`invoice_price: >"$20.00" invoice_row_label: ~*"my cool product"; customer_type: !consumer.`
 
-You just searched in three relational tables! using a single condition with a
+You just searched in three relational tables using a single condition with a
 user-friendly syntax. And that is just the start, checkout all the cool and
-powerful features RollerworksSearch has to offer you.
+powerful features RollerworksSearch has to offer.
 
 **Note:** FilterQuery is just one of the supported input formats, you can use XML,
 JSON, PHP Array or simply build your own.
@@ -43,6 +45,12 @@ extended for your own use-cases and needs.
 Search conditions can be as simple or complex as you need them to be.
 Including grouping and nesting for the best possible result.
 
+And to keep performance at a high rate, each search condition can be easily stored
+in a persist or session-based cache. On top of that each condition processor provides
+it's own specialized caching mechanise to further reduce overhead.
+
+*In practice this means that the generated (SQL) query for the DB or index is cached.*
+
 And finally executing the search operation on the storage engine,
 whether you use an SQL database system or using a lucene search back-end like
 ElasticSearch or Apache Solr.
@@ -51,7 +59,7 @@ ElasticSearch or Apache Solr.
 
 Input processing is provided for the most common formats.
 Including a special format called FilterQuery which provides
-a user-friendly syntax for creating any type condition.
+a user-friendly syntax for creating any type of condition.
 
 Each input processor transforms the input a normalized format,
 and ensures that no malformed data is passed to the storage layer.
