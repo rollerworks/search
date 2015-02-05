@@ -1,14 +1,14 @@
 Installing the Library
 ======================
 
-Installing RollerworksSearch is trivial. Usually it's just a case of uploading the
-extracted source files to your web server.
+Installing RollerworksSearch is trivial. Usually it's just a case of
+uploading the extracted source files to your web server.
 
 Installing with Composer
 ------------------------
 
 `Composer`_ is a dependency management library for PHP, which you can use
-to download the RollerworksSearch component.
+to download the RollerworksSearch system.
 
 Start by `downloading Composer`_ anywhere onto your local computer. If you
 have curl installed, it's as easy as:

@@ -1,13 +1,15 @@
 Introduction
 ============
 
-RollerworksSearch provides you with a powerful system for integrating a search system
-in your PHP application.
+RollerworksSearch provides you with a powerful search system
+for your PHP applications.
 
-Search operations are performed with search conditions to allow for very complex
-search operations with minimum effort.
+Search operations are performed using search conditions which allow
+for any type of condition, all with minimum effort, whether you need
+to search in one database table or multiple.
 
-This system was designed to be useful for any storage, input and locale.
+This system was designed to be useful for any storage back-end, user input
+and locale.
 
 Organization of this Book
 -------------------------
@@ -16,8 +18,9 @@ This book has been written so that those who need information quickly are able
 to find what they need, and those who wish to learn more advanced topics can
 read deeper into each chapter.
 
-The book begins with an overview of the Search component,
-discussing what's included in the package and preparing you for the remainder of the book.
+The book begins with an overview of the Search system,
+discussing what's included in the package and preparing you for the remainder
+of the book.
 
 It is possible to read this user guide just like any other book (from
 beginning to end). Each chapter begins with a discussion of the contents it
@@ -27,7 +30,7 @@ capabilities, but often you will be able to head directly to the topic you
 wish to learn about.
 
 Throughout this book you will be presented with code samples, which most
-people should find ample to implement the Search component appropriately
+people should find ample to implement the Search system appropriately
 in their own projects.
 
 Code Samples

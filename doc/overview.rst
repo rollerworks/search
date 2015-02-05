@@ -16,14 +16,16 @@ subsequent chapters of this book.
 Information flow
 ----------------
 
-In most cases you accept and process the input, optimize it and then pass it to the
-search storage layer. But its also possible to construct the search-condition yourself,
-and pass it directly to the storage layer without any optimizing.
+In most cases you accept and process the input, optimize it and then pass it to
+a condition processor in the search storage layer. But its also possible to
+construct the search-condition yourself, and pass it directly to the condition
+processor without any optimizing.
 
 Note the following:
 
 * Transforming view values to a normalized version is done when processing the input.
-* The optimizing process tries to produce the smallest search-condition possible.
+* The optimizing process tries to produce the smallest search-condition possible,
+  but is only able to do this when the system is properly configured.
 
 The system is mainly concerned with the SearchCondition and configuration
 of the search fields.
@@ -129,7 +131,9 @@ matches the record is considered matching.
     When there are multiple subgroups these are OR'ed to each other,
     Meaning at least one (or more) subgroup(s) in the group must match.
 
-A ``ValuesBag`` object holds all the values of a field per type.
+Learn more about creating conditions at :doc:`searching_in_practice`.
+
+A ``ValuesBag`` holds all the values of a field per type.
 
 Supported value-types are:
 
@@ -159,8 +163,9 @@ see :ref:`Performing a manual search <do_manual_search>` for more information.
 FieldSet
 ~~~~~~~~
 
-A ``FieldSet`` object holds the configuration of
-one or multiple ``FieldConfigInterface`` instances.
+A :class:``Rollerworks\\Component\\Search\\FieldSet`` holds the configuration
+of one or multiple ``FieldConfigInterface`` instances, each field is called a
+search field.
 
 .. tip::
 
@@ -168,7 +173,7 @@ one or multiple ``FieldConfigInterface`` instances.
     which provides a much simpler interface.
 
 Each search field works independent from a FieldSet and may be reused in multiple FieldSets.
-But the field name must be unique within the FieldSet.
+But the field's name must be unique within the FieldSet.
 
 Normally you would create a FieldSet based on a subject-relationship.
 For example invoice search, order search, news items search, etc.
@@ -213,7 +218,7 @@ SearchField
 Input
 ~~~~~
 
-The input component processes user-input to a SearchCondition.
+The input component processes user-input to a ``SearchCondition``.
 
 Input can be provided as a PHP Array, JSON, XML document, or using the
 :doc:`FilterQuery </input/filter_query>` format.
@@ -299,3 +304,37 @@ For more information on using field types see :doc:`type`
 
     You are free create your own field types for more advanced use-cases.
     See :doc:`cookbook/type/create_custom_field_type` for more information.
+
+SearchFactory
+~~~~~~~~~~~~~
+
+The SearchFactory forms the heart of the search system, it provides
+easy access to builders and keeps track of field types.
+
+But you would rather want to use the :class:``Rollerworks\\Component\\Search\\Searches`
+class which takes care of all the boilerplate of setting up a SearchFactory.
+See :doc:`searches` for information and usage.
+
+SearchConditionSerializer
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :class:`Rollerworks\\Component\\Search\\SearchConditionSerializer`
+class functions as a helper for serializing a ``SearchCondition``.
+
+A SearchCondition holds a ValuesGroup (with nested ValuesBags and optionally
+other nested ValuesGroup objects). But also FieldSet.
+
+The ValuesGroup and values can be easily serialized, but the FieldSet is
+a bit harder. So instead of serializing the FieldSet it stores only the
+FieldSet's name, and when unserializing it loads the FieldSet using the
+:class:`Rollerworks\\Component\\Search\\FieldSetRegistryInterface`.
+
+FieldSetRegistry
+~~~~~~~~~~~~~~~~
+
+A FieldSetRegistry (:class:`Rollerworks\\Component\\Search\\FieldSetRegistryInterface`)
+keeps track of all the FieldSets that you have created and registered.
+
+The FieldSetRegistry is used when unserializing a serialized SearchCondition,
+so that don't have to inject the FieldSet explicitly. But you are free to use
+it whenever you find it useful.

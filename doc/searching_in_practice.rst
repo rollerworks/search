@@ -1,5 +1,5 @@
-SearchCondition in action
-=========================
+SearchConditions in action
+==========================
 
 This chapter explains how you can use search conditions in practice,
 what kind of results you can expect with a search condition and
