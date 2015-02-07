@@ -767,7 +767,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
             array(
                 SearchConditionBuilder::create(static::getFieldSet('user'))
                     ->field('user_birthday')
-                        ->addSingleValue(new SingleValue(new \DateTime('1990-05-30')))
+                        ->addSingleValue(new SingleValue(new \DateTime('1990-05-30'), '1990-05-30'))
                     ->end()
                 ->getSearchCondition(),
                 array(
@@ -787,7 +787,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 SearchConditionBuilder::create(static::getFieldSet('user'))
                     ->field('user_birthday')
                         ->addSingleValue(new SingleValue(2))
-                        ->addSingleValue(new SingleValue(new \DateTime('1990-05-30')))
+                        ->addSingleValue(new SingleValue(new \DateTime('1990-05-30'), '1990-05-30'))
                     ->end()
                 ->getSearchCondition(),
                 array(
@@ -808,7 +808,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 SearchConditionBuilder::create(static::getFieldSet('user'))
                     ->field('user_birthday')
                         ->addSingleValue(new SingleValue(2))
-                        ->addSingleValue(new SingleValue(new \DateTime('1990-05-30')))
+                        ->addSingleValue(new SingleValue(new \DateTime('1990-05-30'), '1990-05-30'))
                     ->end()
                 ->getSearchCondition(),
                 array(
@@ -829,7 +829,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 SearchConditionBuilder::create(static::getFieldSet('user'))
                     ->field('user_birthday')
                         ->addSingleValue(new SingleValue(2))
-                        ->addSingleValue(new SingleValue(new \DateTime('1990-05-30')))
+                        ->addSingleValue(new SingleValue(new \DateTime('1990-05-30'), '1990-05-30'))
                     ->end()
                 ->getSearchCondition(),
                 array(
