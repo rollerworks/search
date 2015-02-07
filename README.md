@@ -1,7 +1,7 @@
 RollerworksSearch Doctrine DBAL extension
 =========================================
 
-[![Build Status](https://secure.travis-ci.org/rollerworks/rollerworks-search-doctrine-dbal.png?branch=master)](http://travis-ci.org/rollerworks/rollerworks-search-doctrine-dbal)
+[![Build Status](https://secure.travis-ci.org/rollerworks/rollerworks-search-doctrine-dbal.svg?branch=master)](http://travis-ci.org/rollerworks/rollerworks-search-doctrine-dbal)
 
 Doctrine DBAL extension for [RollerworksSearch][1].
 
