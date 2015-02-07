@@ -1,7 +1,7 @@
 .. index::
    single: Type; Field type extension
 
-How to Create a Form Type Extension
-===================================
+How to Create a Field Type Extension
+====================================
 
 ...
