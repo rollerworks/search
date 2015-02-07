@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -30,7 +30,7 @@ class OrmTestCase extends DbalTestCase
         $this->em = $this->_getTestEntityManager();
 
         // Don't remember cache between runs
-        $this->em->getConfiguration()->setQueryCacheImpl(new ArrayCache);
+        $this->em->getConfiguration()->setQueryCacheImpl(new ArrayCache());
 
         $this->em->getConfiguration()->addCustomStringFunction('RW_SEARCH_FIELD_CONVERSION', 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion');
         $this->em->getConfiguration()->addCustomStringFunction('RW_SEARCH_VALUE_CONVERSION', 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion');
@@ -45,7 +45,7 @@ class OrmTestCase extends DbalTestCase
     {
         foreach ($expected as $name => $param) {
             if (is_array($param)) {
-                list(, $value)=$param;
+                list(, $value) = $param;
             } else {
                 $value = $param;
             }
@@ -92,7 +92,6 @@ class OrmTestCase extends DbalTestCase
         if (!self::$doctrineAnnotationsDir) {
             $r = new \ReflectionClass('Doctrine\ORM\Mapping\Driver\AnnotationDriver');
             self::$doctrineAnnotationsDir = dirname($r->getFileName());
-
         }
 
         \Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
@@ -120,7 +119,7 @@ class OrmTestCase extends DbalTestCase
     {
         $metadataCache = $withSharedMetadata
             ? self::getSharedMetadataCacheImpl()
-            : new ArrayCache;
+            : new ArrayCache();
 
         $config = new \Doctrine\ORM\Configuration();
 
@@ -135,7 +134,7 @@ class OrmTestCase extends DbalTestCase
                 'driverClass'  => 'Doctrine\Tests\Mocks\DriverMock',
                 'wrapperClass' => 'Doctrine\Tests\Mocks\ConnectionMock',
                 'user'         => 'john',
-                'password'     => 'wayne'
+                'password'     => 'wayne',
             );
         }
 

@@ -1,13 +1,19 @@
 <?php
 
-$finder = Symfony\CS\Finder\DefaultFinder::create()
-    ->name('*.php')
-    ->ignoreDotFiles(true)
-    ->ignoreVCS(true)
-    ->exclude(array('bin', 'docs'))
-    ->in(__DIR__ . '/src')
-;
-
 return Symfony\CS\Config\Config::create()
-    ->finder($finder)
+    ->setUsingLinter(false)
+    // use SYMFONY_LEVEL:
+    ->level(Symfony\CS\FixerInterface::SYMFONY_LEVEL)
+    // and extra fixers:
+    ->fixers(array(
+        'ordered_use',
+        //'strict',
+        'strict_param',
+        '-prs0'
+    ))
+    ->finder(
+        Symfony\CS\Finder\DefaultFinder::create()
+            ->exclude(array('bin', 'doc'))
+            ->in(__DIR__)
+    )
 ;

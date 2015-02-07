@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
- * (c) 2012-2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -15,9 +15,9 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder;
-use Rollerworks\Component\Search\Tests\Fixtures\CustomerId;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\Tests\Fixtures\CustomerId;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesGroup;
 
@@ -40,7 +40,7 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $condition);
         $whereBuilder->setEntityMappings(array(
             'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C', )
         );
 
         $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
@@ -78,7 +78,7 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $condition);
         $whereBuilder->setEntityMappings(array(
             'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C', )
         );
 
         $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
@@ -105,8 +105,8 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $searchCondition);
         $whereBuilder->setEntityMappings(array(
             'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C',
+        ));
 
         $whereCase = $whereBuilder->getWhereClause();
         $this->assertEquals('', $whereCase);
@@ -126,8 +126,8 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $searchCondition);
         $whereBuilder->setEntityMappings(array(
             'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C',
+        ));
 
         $whereBuilder->updateQuery(' WHERE ');
         $whereCase = $whereBuilder->getWhereClause();
@@ -160,8 +160,8 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $searchCondition);
         $whereBuilder->setEntityMappings(array(
             'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C',
+        ));
 
         $whereBuilder->updateQuery();
         $whereCase = $whereBuilder->getWhereClause();
@@ -190,8 +190,8 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $searchCondition);
         $whereBuilder->setEntityMappings(array(
             'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C',
+        ));
 
         $whereBuilder->updateQuery();
         $whereCase = $whereBuilder->getWhereClause();
@@ -210,8 +210,8 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $searchCondition);
         $whereBuilder->setEntityMappings(array(
             'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C',
+        ));
 
         $whereCase = $whereBuilder->getWhereClause();
         $this->assertEquals('', $whereCase);
@@ -237,8 +237,8 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder = new WhereBuilder($query, $condition);
         $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C',
+        ));
 
         $test = $this;
         $optionsForCustomer = isset($extra['options_for_customer']) ? $extra['options_for_customer'] : array();
@@ -294,8 +294,8 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $condition);
         $whereBuilder->setEntityMappings(array(
             'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice' => 'I',
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C',
+        ));
 
         $test = $this;
         $optionsForCustomer = isset($extra['options_for_customer']) ? $extra['options_for_customer'] : array();
@@ -344,8 +344,8 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder = new WhereBuilder($query, $condition);
         $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer' => 'C',
+        ));
 
         $test = $this;
 
@@ -362,7 +362,7 @@ class WhereBuilderTest extends OrmTestCase
                 $test->assertEquals($optionsForCustomer, $options);
 
                 if ($options) {
-                    return "get_customer_type($input, '" . json_encode($options) . "')";
+                    return "get_customer_type($input, '".json_encode($options)."')";
                 }
 
                 return "get_customer_type($input)";
@@ -420,8 +420,8 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder = new WhereBuilder($query, $condition);
         $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\User' => 'u')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\User' => 'u',
+        ));
 
         $test = $this;
 
@@ -546,8 +546,8 @@ class WhereBuilderTest extends OrmTestCase
 
         $whereBuilder = new WhereBuilder($query, $condition);
         $whereBuilder->setEntityMappings(array(
-            'Rollerworks\Component\Search\Tests\Fixtures\Entity\User' => 'u')
-        );
+            'Rollerworks\Component\Search\Tests\Fixtures\Entity\User' => 'u',
+        ));
 
         $test = $this;
 
@@ -623,8 +623,8 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = new WhereBuilder($query, $searchCondition);
         $whereBuilder->setEntityMappings(array(
             'ECommerce:ECommerceInvoice' => 'I',
-            'ECommerce:ECommerceCustomer' => 'C')
-        );
+            'ECommerce:ECommerceCustomer' => 'C',
+        ));
 
         $whereCase = $whereBuilder->getWhereClause();
 

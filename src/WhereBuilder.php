@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -341,7 +341,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      */
     public function getFieldConversionSql($fieldName, $column, FieldConfigInterface $field = null, $strategy = null)
     {
-        $field = $field ? : $this->fieldset->get($fieldName);
+        $field = $field ?: $this->fieldset->get($fieldName);
 
         if ($this->queryGenerator) {
             return $this->queryGenerator->getFieldConversionSql(
@@ -375,7 +375,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      */
     public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field = null, $strategy = null, $valueEmbedded = false)
     {
-        $field = $field ? : $this->fieldset->get($fieldName);
+        $field = $field ?: $this->fieldset->get($fieldName);
 
         if ($this->queryGenerator) {
             return $this->queryGenerator->getValueConversionSql(
