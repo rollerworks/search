@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -42,25 +42,39 @@ class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
     }
 
     /** @override */
-    public function getBooleanTypeDeclarationSQL(array $field) {}
+    public function getBooleanTypeDeclarationSQL(array $field)
+    {
+    }
 
     /** @override */
-    public function getIntegerTypeDeclarationSQL(array $field) {}
+    public function getIntegerTypeDeclarationSQL(array $field)
+    {
+    }
 
     /** @override */
-    public function getBigIntTypeDeclarationSQL(array $field) {}
+    public function getBigIntTypeDeclarationSQL(array $field)
+    {
+    }
 
     /** @override */
-    public function getSmallIntTypeDeclarationSQL(array $field) {}
+    public function getSmallIntTypeDeclarationSQL(array $field)
+    {
+    }
 
     /** @override */
-    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef) {}
+    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef)
+    {
+    }
 
     /** @override */
-    public function getVarcharTypeDeclarationSQL(array $field) {}
+    public function getVarcharTypeDeclarationSQL(array $field)
+    {
+    }
 
     /** @override */
-    public function getClobTypeDeclarationSQL(array $field) {}
+    public function getClobTypeDeclarationSQL(array $field)
+    {
+    }
 
     /* MOCK API */
 
@@ -88,7 +102,6 @@ class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
     }
     protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed)
     {
-
     }
     /**
      * Gets the SQL Snippet used to declare a BLOB column type.

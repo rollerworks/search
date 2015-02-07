@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -40,7 +40,7 @@ class WhereBuilderTest extends DbalTestCase
 
         if (!isset($extra['dbal_mapping'])) {
             $extra['dbal_mapping'] = array(
-                'invoice_customer' => array('customer', 'integer', 'I')
+                'invoice_customer' => array('customer', 'integer', 'I'),
             );
         }
 
@@ -101,7 +101,7 @@ class WhereBuilderTest extends DbalTestCase
 
         if (!isset($extra['dbal_mapping'])) {
             $extra['dbal_mapping'] = array(
-                'customer_id' => array('id', 'integer', 'C')
+                'customer_id' => array('id', 'integer', 'C'),
             );
         }
 
@@ -170,7 +170,7 @@ class WhereBuilderTest extends DbalTestCase
 
         if (!isset($extra['dbal_mapping'])) {
             $extra['dbal_mapping'] = array(
-                'invoice_customer' => array('customer', 'integer', 'I')
+                'invoice_customer' => array('customer', 'integer', 'I'),
             );
         }
 
@@ -233,7 +233,7 @@ class WhereBuilderTest extends DbalTestCase
 
         if (!isset($extra['dbal_mapping'])) {
             $extra['dbal_mapping'] = array(
-                'customer_id' => array('id', 'integer', 'C')
+                'customer_id' => array('id', 'integer', 'C'),
             );
         }
 
@@ -255,7 +255,7 @@ class WhereBuilderTest extends DbalTestCase
                 $test->assertEquals($optionsForCustomer, $options);
 
                 if ($options) {
-                    return "get_customer_type($input, '" . json_encode($options) . "')";
+                    return "get_customer_type($input, '".json_encode($options)."')";
                 }
 
                 return "get_customer_type($input)";
@@ -324,7 +324,7 @@ class WhereBuilderTest extends DbalTestCase
         if (!isset($extra['dbal_mapping'])) {
             $extra['dbal_mapping'] = array(
                 // this is actually not recommended, but field conversion is tested later
-                'user_birthday' => array('birthday', 'integer', 'u')
+                'user_birthday' => array('birthday', 'integer', 'u'),
             );
         }
 
@@ -465,7 +465,7 @@ class WhereBuilderTest extends DbalTestCase
         if (!isset($extra['dbal_mapping'])) {
             $extra['dbal_mapping'] = array(
                 // this is actually not recommended, but field conversion is tested later
-                'user_birthday' => array('birthday', 'integer', 'u')
+                'user_birthday' => array('birthday', 'integer', 'u'),
             );
         }
 

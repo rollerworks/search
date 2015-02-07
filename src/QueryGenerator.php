@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -359,7 +359,7 @@ class QueryGenerator
             $value,
             $field->getOptions(),
             $this->getConversionHints($fieldName, $column, $strategy) + array(
-                'value_embedded' => $valueEmbedded ? : $this->embedValues
+                'value_embedded' => $valueEmbedded ?: $this->embedValues,
             )
         );
     }
@@ -653,7 +653,7 @@ class QueryGenerator
             );
         }
 
-        return null;
+        return;
     }
 
     /**

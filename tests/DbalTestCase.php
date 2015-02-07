@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*
  * This file is part of the RollerworksSearch Component package.
  *
- * (c) 2014 Sebastiaan Stok <s.stok@rollerscapes.net>
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -41,11 +41,11 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
-                    'invoice_customer_1' => array('integer', 5)
+                    'invoice_customer_1' => array('integer', 5),
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id IN (?, ?))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -60,11 +60,11 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
-                    'invoice_customer_1' => array('integer', 5)
+                    'invoice_customer_1' => array('integer', 5),
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id IN (?, ?))))',
                 true,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -72,12 +72,12 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '(((I.customer > :invoice_customer_0)))',
-                    '(((C.id > :invoice_customer_0)))'
+                    '(((C.id > :invoice_customer_0)))',
                 ),
                 array('invoice_customer_0' => array('integer', 2)),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id > ?)))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -89,12 +89,12 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '(((I.customer IN(:invoice_customer_0) OR (I.customer > :invoice_customer_1 AND I.customer < :invoice_customer_2))))',
-                    '(((C.id IN(:invoice_customer_0) OR (C.id > :invoice_customer_1 AND C.id < :invoice_customer_2))))'
+                    '(((C.id IN(:invoice_customer_0) OR (C.id > :invoice_customer_1 AND C.id < :invoice_customer_2))))',
                 ),
                 array('invoice_customer_0' => array('integer', 20), 'invoice_customer_1' => array('integer', 2), 'invoice_customer_2' => array('integer', 10)),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id > ? AND c1_.id < ?)))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -106,12 +106,12 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '(((I.customer NOT IN(:invoice_customer_0) AND I.customer <> :invoice_customer_1 AND I.customer <> :invoice_customer_2)))',
-                    '(((C.id NOT IN(:invoice_customer_0) AND C.id <> :invoice_customer_1 AND C.id <> :invoice_customer_2)))'
+                    '(((C.id NOT IN(:invoice_customer_0) AND C.id <> :invoice_customer_1 AND C.id <> :invoice_customer_2)))',
                 ),
                 array('invoice_customer_0' => array('integer', 20), 'invoice_customer_1' => array('integer', 2), 'invoice_customer_2' => array('integer', 10)),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id NOT IN(?) AND c1_.id AND ? OR c1_.id <> ?)))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -123,12 +123,12 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '(((I.customer > :invoice_customer_0) AND (I.customer <> :invoice_customer_1 AND I.customer <> :invoice_customer_2)))',
-                    '(((C.id > :invoice_customer_0) AND (C.id <> :invoice_customer_1 AND C.id <> :invoice_customer_2)))'
+                    '(((C.id > :invoice_customer_0) AND (C.id <> :invoice_customer_1 AND C.id <> :invoice_customer_2)))',
                 ),
                 array('invoice_customer_0' => array('integer', 20), 'invoice_customer_1' => array('integer', 2), 'invoice_customer_2' => array('integer', 10)),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id > ?) AND (c1_.id <> ? AND c1_.id <> ?)))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -141,7 +141,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 array('invoice_customer_0' => array('integer', 2)),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id NOT IN (?))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -149,7 +149,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '((((I.customer >= :invoice_customer_0 AND I.customer <= :invoice_customer_1))))',
-                    '((((C.id >= :invoice_customer_0 AND C.id <= :invoice_customer_1))))'
+                    '((((C.id >= :invoice_customer_0 AND C.id <= :invoice_customer_1))))',
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
@@ -157,7 +157,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((c1_.id >= ? AND c1_.id <= ?))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -168,7 +168,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '((((I.customer >= :invoice_customer_0 AND I.customer <= :invoice_customer_1) OR (I.customer >= :invoice_customer_2 AND I.customer <= :invoice_customer_3))))',
-                    '((((C.id >= :invoice_customer_0 AND C.id <= :invoice_customer_1) OR (C.id >= :invoice_customer_2 AND C.id <= :invoice_customer_3))))'
+                    '((((C.id >= :invoice_customer_0 AND C.id <= :invoice_customer_1) OR (C.id >= :invoice_customer_2 AND C.id <= :invoice_customer_3))))',
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
@@ -178,7 +178,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((c1_.id >= ? AND c1_.id <= ?) OR (c1_.id >= ? AND c1_.id <= ?))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -189,7 +189,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '((((I.customer <= :invoice_customer_0 OR I.customer >= :invoice_customer_1) AND (I.customer <= :invoice_customer_2 OR I.customer >= :invoice_customer_3))))',
-                    '((((C.id <= :invoice_customer_0 OR C.id >= :invoice_customer_1) AND (C.id <= :invoice_customer_2 OR C.id >= :invoice_customer_3))))'
+                    '((((C.id <= :invoice_customer_0 OR C.id >= :invoice_customer_1) AND (C.id <= :invoice_customer_2 OR C.id >= :invoice_customer_3))))',
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
@@ -199,7 +199,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((c1_.id <= ? OR c1_.id >= ?) AND (c1_.id <= ? OR c1_.id >= ?))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -210,7 +210,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '((((I.customer >= :invoice_customer_0 AND I.customer <= :invoice_customer_1)) AND ((I.customer <= :invoice_customer_2 OR I.customer >= :invoice_customer_3))))',
-                    '((((C.id >= :invoice_customer_0 AND C.id <= :invoice_customer_1)) AND ((C.id <= :invoice_customer_2 OR C.id >= :invoice_customer_3))))'
+                    '((((C.id >= :invoice_customer_0 AND C.id <= :invoice_customer_1)) AND ((C.id <= :invoice_customer_2 OR C.id >= :invoice_customer_3))))',
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
@@ -220,7 +220,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((c1_.id >= ? AND c1_.id <= ?)) AND ((c1_.id <= ? OR c1_.id >= ?))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -231,7 +231,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '((((I.customer > :invoice_customer_0 AND I.customer <= :invoice_customer_1)) AND ((I.customer < :invoice_customer_2 OR I.customer >= :invoice_customer_3))))',
-                    '((((C.id > :invoice_customer_0 AND C.id <= :invoice_customer_1)) AND ((C.id < :invoice_customer_2 OR C.id >= :invoice_customer_3))))'
+                    '((((C.id > :invoice_customer_0 AND C.id <= :invoice_customer_1)) AND ((C.id < :invoice_customer_2 OR C.id >= :invoice_customer_3))))',
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
@@ -241,7 +241,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((c1_.id > ? AND c1_.id <= ?)) AND ((c1_.id < ? OR c1_.id >= ?))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -252,7 +252,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '((((I.customer >= :invoice_customer_0 AND I.customer < :invoice_customer_1)) AND ((I.customer <= :invoice_customer_2 OR I.customer > :invoice_customer_3))))',
-                    '((((C.id >= :invoice_customer_0 AND C.id < :invoice_customer_1)) AND ((C.id <= :invoice_customer_2 OR C.id > :invoice_customer_3))))'
+                    '((((C.id >= :invoice_customer_0 AND C.id < :invoice_customer_1)) AND ((C.id <= :invoice_customer_2 OR C.id > :invoice_customer_3))))',
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
@@ -262,7 +262,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((c1_.id >= ? AND c1_.id < ?)) AND ((c1_.id <= ? OR c1_.id > ?))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice_with_customer'))
@@ -276,7 +276,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     "(((I.label LIKE :invoice_label_0 ESCAPE '\\\\' OR I.label LIKE :invoice_label_1 ESCAPE '\\\\' OR RW_REGEXP(:invoice_label_2, I.label, '') = 0 OR RW_REGEXP(:invoice_label_3, I.label, 'ui') = 0) AND (LOWER(I.label) NOT LIKE LOWER(:invoice_label_4) ESCAPE '\\\\')))",
-                    "(((RW_SEARCH_MATCH(I.label, :invoice_label_0, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(I.label, :invoice_label_1, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(I.label, :invoice_label_2, 'regex', false) = 1 OR RW_SEARCH_MATCH(I.label, :invoice_label_3, 'regex', true) = 1) AND (RW_SEARCH_MATCH(I.label, :invoice_label_4, 'ends_with', true) <> 1)))"
+                    "(((RW_SEARCH_MATCH(I.label, :invoice_label_0, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(I.label, :invoice_label_1, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(I.label, :invoice_label_2, 'regex', false) = 1 OR RW_SEARCH_MATCH(I.label, :invoice_label_3, 'regex', true) = 1) AND (RW_SEARCH_MATCH(I.label, :invoice_label_4, 'ends_with', true) <> 1)))",
                 ),
                 array(
                     'invoice_label_0' => array('string', 'foo'),
@@ -290,9 +290,9 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 array(
                     'query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ',
                     'dbal_mapping' => array(
-                        'invoice_label' => array('label', 'string', 'I')
-                    )
-                )
+                        'invoice_label' => array('label', 'string', 'I'),
+                    ),
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -305,7 +305,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '((((I.customer IN(:invoice_customer_0)))) OR (((I.customer IN(:invoice_customer_1)))))',
-                    '((((C.id IN(:invoice_customer_0)))) OR (((C.id IN(:invoice_customer_1)))))'
+                    '((((C.id IN(:invoice_customer_0)))) OR (((C.id IN(:invoice_customer_1)))))',
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
@@ -313,7 +313,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((c1_.id IN (?)))) OR (((c1_.id IN (?)))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -327,7 +327,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '((((I.customer IN(:invoice_customer_0)))) AND ((((I.customer IN(:invoice_customer_1)))) OR (((I.customer IN(:invoice_customer_2))))))',
-                    '((((C.id IN(:invoice_customer_0)))) AND ((((C.id IN(:invoice_customer_1)))) OR (((C.id IN(:invoice_customer_2))))))'
+                    '((((C.id IN(:invoice_customer_0)))) AND ((((C.id IN(:invoice_customer_1)))) OR (((C.id IN(:invoice_customer_2))))))',
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 5),
@@ -336,7 +336,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((c1_.id IN (?)))) AND ((((c1_.id IN (?)))) OR (((c1_.id IN (?))))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -359,7 +359,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((((c1_.id IN (?)))) OR (((c1_.id IN (?))))))',
                 false,
-                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE '),
             ),
         );
     }
@@ -377,7 +377,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE (((c0_.id IN (?))))',
                 false,
-                array('query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ')
+                array('query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -389,7 +389,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE (((c0_.id IN (?))))',
                 true,
-                array('query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ')
+                array('query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE '),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -406,7 +406,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     "(((C.id IN(2))) AND ((C.name LIKE 'foo' ESCAPE '\\\\' OR C.name LIKE 'fo\'o' ESCAPE '\\\\' OR RW_REGEXP('(foo|bar)', C.name, '') = 0 OR RW_REGEXP('(doctor|who)', C.name, 'ui') = 0) AND (LOWER(C.name) NOT LIKE LOWER('bar') ESCAPE '\\\\')))",
-                    "(((C.id IN(:customer_id_0))) AND ((RW_SEARCH_MATCH(C.name, :customer_name_0, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(C.name, :customer_name_1, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(C.name, :customer_name_2, 'regex', false) = 1 OR RW_SEARCH_MATCH(C.name, :customer_name_3, 'regex', true) = 1) AND (RW_SEARCH_MATCH(C.name, :customer_name_4, 'ends_with', true) <> 1)))"
+                    "(((C.id IN(:customer_id_0))) AND ((RW_SEARCH_MATCH(C.name, :customer_name_0, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(C.name, :customer_name_1, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(C.name, :customer_name_2, 'regex', false) = 1 OR RW_SEARCH_MATCH(C.name, :customer_name_3, 'regex', true) = 1) AND (RW_SEARCH_MATCH(C.name, :customer_name_4, 'ends_with', true) <> 1)))",
                 ),
                 array(
                     'customer_id_0' => array('integer', 2),
@@ -418,8 +418,8 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     'dbal_mapping' => array(
                         'customer_id' => array('id', 'integer', 'C'),
                         'customer_name' => array('name', 'string', 'C'),
-                    )
-                )
+                    ),
+                ),
             ),
         );
     }
@@ -435,16 +435,16 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     "(((CAST(I.customer AS customer_type) IN(:invoice_customer_0))))",
-                    "(((RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null) IN(:invoice_customer_0))))"
+                    "(((RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null) IN(:invoice_customer_0))))",
                 ),
                 array(
-                    'invoice_customer_0' => array('integer', 2)
+                    'invoice_customer_0' => array('integer', 2),
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((CAST(c1_.id AS customer_type) IN (?))))',
                 false,
                 array(
                     'query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ',
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -454,7 +454,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '(((I.label IN(:invoice_label_0))))',
-                    '(((I.label IN(:invoice_label_0))))'
+                    '(((I.label IN(:invoice_label_0))))',
                 ),
                 array('invoice_label_0' => array('string', 'F2012-4242')),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((i0_.label IN (?))))',
@@ -464,8 +464,8 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     'dbal_mapping' => array(
                         'invoice_customer' => array('id', 'integer', 'I'),
                         'invoice_label' => array('label', 'string', 'I'),
-                    )
-                )
+                    ),
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -475,17 +475,17 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     "((((CAST(I.customer AS customer_type) >= :invoice_customer_0 AND CAST(I.customer AS customer_type) <= :invoice_customer_1))))",
-                    "((((RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null) >= :invoice_customer_0 AND RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null) <= :invoice_customer_1))))"
+                    "((((RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null) >= :invoice_customer_0 AND RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null) <= :invoice_customer_1))))",
                 ),
                 array(
                     'invoice_customer_0' => array('integer', 2),
-                    'invoice_customer_1' => array('integer', 5)
+                    'invoice_customer_1' => array('integer', 5),
                 ),
                 'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((((CAST(c1_.id AS customer_type) >= ? AND CAST(c1_.id AS customer_type) <= ?))))',
                 false,
                 array(
                     'query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ',
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -499,7 +499,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     "(((CAST(I.customer AS customer_type) LIKE :invoice_customer_0 ESCAPE '\\\\' OR CAST(I.customer AS customer_type) LIKE :invoice_customer_1 ESCAPE '\\\\' OR RW_REGEXP(:invoice_customer_2, CAST(I.customer AS customer_type), '') = 0 OR RW_REGEXP(:invoice_customer_3, CAST(I.customer AS customer_type), 'ui') = 0) AND (LOWER(CAST(I.customer AS customer_type)) NOT LIKE LOWER(:invoice_customer_4) ESCAPE '\\\\')))",
-                    "(((RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_0, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_1, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_2, 'regex', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_3, 'regex', true) = 1) AND (RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_4, 'ends_with', true) <> 1)))"
+                    "(((RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_0, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_1, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_2, 'regex', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_3, 'regex', true) = 1) AND (RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_4, 'ends_with', true) <> 1)))",
                 ),
                 array(
                     'invoice_customer_0' => array('string', 'foo'),
@@ -514,8 +514,8 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     'query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ',
                     'dbal_mapping' => array(
                         'invoice_customer' => array('customer', 'string', 'I'),
-                    )
-                )
+                    ),
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
@@ -529,7 +529,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     "(((CAST(I.customer AS customer_type) LIKE 'foo' ESCAPE '\\\\' OR CAST(I.customer AS customer_type) LIKE 'fo\'o' ESCAPE '\\\\' OR RW_REGEXP('(foo|bar)', CAST(I.customer AS customer_type), '') = 0 OR RW_REGEXP('(doctor|who)', CAST(I.customer AS customer_type), 'ui') = 0) AND (LOWER(CAST(I.customer AS customer_type)) NOT LIKE LOWER('bar') ESCAPE '\\\\')))",
-                    "(((RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_0, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_1, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_2, 'regex', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_3, 'regex', true) = 1) AND (RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_4, 'ends_with', true) <> 1)))"
+                    "(((RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_0, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_1, 'starts_with', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_2, 'regex', false) = 1 OR RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_3, 'regex', true) = 1) AND (RW_SEARCH_MATCH(RW_SEARCH_FIELD_CONVERSION('invoice_customer', C.id, null), :invoice_customer_4, 'ends_with', true) <> 1)))",
                 ),
                 array(
                     'invoice_customer_0' => array('string', 'foo'),
@@ -544,8 +544,8 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     'query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ',
                     'dbal_mapping' => array(
                         'invoice_customer' => array('customer', 'string', 'I'),
-                    )
-                )
+                    ),
+                ),
             ),
         );
 
@@ -566,13 +566,13 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     "(((C.id = RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, false))))",
                 ),
                 array(
-                    'customer_id_0' => array('integer', 2)
+                    'customer_id_0' => array('integer', 2),
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE (((c0_.id = get_customer_type(?))))',
                 false,
                 array(
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -582,10 +582,10 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     "(((C.id = get_customer_type(2))))",
-                    "(((C.id = RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, true))))"
+                    "(((C.id = RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, true))))",
                 ),
                 array(
-                    'customer_id_0' => array('integer', 2)
+                    'customer_id_0' => array('integer', 2),
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE (((c0_.id = get_customer_type(2))))',
                 false,
@@ -593,7 +593,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
                     'ignore_parameters_dbal' => array('customer_id_0'),
                     'value_embedding' => true,
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -603,16 +603,16 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     "(((C.id = get_customer_type(2))))",
-                    "(((C.id = RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, false))))"
+                    "(((C.id = RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, false))))",
                 ),
                 array(
-                    'customer_id_0' => array('integer', 2)
+                    'customer_id_0' => array('integer', 2),
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE (((c0_.id = get_customer_type(?))))',
                 true,
                 array(
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer', array('foo' => 'bar')))
@@ -625,14 +625,14 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     "(((C.id = RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, false))))",
                 ),
                 array(
-                    'customer_id_0' => array('integer', 2)
+                    'customer_id_0' => array('integer', 2),
                 ),
                 "SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE (((c0_.id = get_customer_type(?, '{\"foo\":\"bar\"}'))))",
                 false,
                 array(
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
                     'options_for_customer' => array('foo' => 'bar'),
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -642,14 +642,14 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '(((C.id <> get_customer_type(:customer_id_0))))',
-                    "(((C.id <> RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, false))))"
+                    "(((C.id <> RW_SEARCH_VALUE_CONVERSION('customer_id', C.id, :customer_id_0, null, false))))",
                 ),
                 array('customer_id_0' => array('integer', 2)),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE (((c0_.id <> get_customer_type(?))))',
                 false,
                 array(
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -663,13 +663,13 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 array(
                     'customer_id_0' => array('integer', 2),
-                    'customer_id_1' => array('integer', 5)
+                    'customer_id_1' => array('integer', 5),
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE ((((c0_.id >= get_customer_type(?) AND c0_.id <= get_customer_type(?)))))',
                 false,
                 array(
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -683,13 +683,13 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 array(
                     'customer_id_0' => array('integer', 2),
-                    'customer_id_1' => array('integer', 5)
+                    'customer_id_1' => array('integer', 5),
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE ((((c0_.id <= get_customer_type(?) OR c0_.id >= get_customer_type(?)))))',
                 false,
                 array(
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -703,7 +703,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 array(
                     'customer_id_0' => array('integer', 2),
-                    'customer_id_1' => array('integer', 5)
+                    'customer_id_1' => array('integer', 5),
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE ((((c0_.id <= get_customer_type(2) OR c0_.id >= get_customer_type(5)))))',
                 false,
@@ -711,7 +711,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
                     'ignore_parameters_dbal' => array('customer_id_0', 'customer_id_1'),
                     'value_embedding' => true,
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -725,13 +725,13 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ),
                 array(
                     'customer_id_0' => array('integer', 2),
-                    'customer_id_1' => array('integer', 5)
+                    'customer_id_1' => array('integer', 5),
                 ),
                 'SELECT c0_.id AS id0, c0_.name AS name1 FROM customers c0_ WHERE ((((c0_.id <= get_customer_type(?) OR c0_.id >= get_customer_type(?)))))',
                 true,
                 array(
                     'query' => 'SELECT C FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceCustomer C WHERE ',
-                )
+                ),
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('customer'))
@@ -807,7 +807,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     "(((u.birthday = RW_SEARCH_VALUE_CONVERSION('user_birthday', u.birthday, :user_birthday_0, 1, false))))",
                 ),
                 array(
-                    'user_birthday_0' => array('integer', 2)
+                    'user_birthday_0' => array('integer', 2),
                 ),
                 "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (((c0_.birthday = ?)))",
                 false,
@@ -826,7 +826,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     "(((u.birthday = RW_SEARCH_VALUE_CONVERSION('user_birthday', u.birthday, :user_birthday_0, 2, false))))",
                 ),
                 array(
-                    'user_birthday_0' => array('integer', new \DateTime('1990-05-30'))
+                    'user_birthday_0' => array('integer', new \DateTime('1990-05-30')),
                 ),
                 "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (((c0_.birthday = CAST(? AS DATE))))",
                 false,
@@ -896,7 +896,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 array(
                     'query' => 'SELECT u FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\User u WHERE ',
                     'value_embedding' => true,
-                    'ignore_parameters_dbal' => array('user_birthday_0', 'user_birthday_1')
+                    'ignore_parameters_dbal' => array('user_birthday_0', 'user_birthday_1'),
                 ),
             ),
         );
@@ -916,7 +916,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                     "(((RW_SEARCH_FIELD_CONVERSION('user_birthday', u.birthday, 2) = :user_birthday_0)))",
                 ),
                 array(
-                    'user_birthday_0' => array('integer', 2)
+                    'user_birthday_0' => array('integer', 2),
                 ),
                 "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (((search_conversion_age(c0_.birthday) = ?)))",
                 false,
@@ -932,10 +932,10 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
                 ->getSearchCondition(),
                 array(
                     '(((u.birthday = :user_birthday_0)))',
-                    "(((RW_SEARCH_FIELD_CONVERSION('user_birthday', u.birthday, 1) = :user_birthday_0)))"
+                    "(((RW_SEARCH_FIELD_CONVERSION('user_birthday', u.birthday, 1) = :user_birthday_0)))",
                 ),
                 array(
-                    'user_birthday_0' => array('integer', '1990-05-30')
+                    'user_birthday_0' => array('integer', '1990-05-30'),
                 ),
                 "SELECT c0_.id AS id0, c0_.birthday AS birthday1 FROM customers c0_ WHERE (((c0_.birthday = ?)))",
                 false,
@@ -1079,11 +1079,11 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
     protected function assertParamsEquals(array $expected, $whereBuilder, array $ignoreFields = array())
     {
         foreach ($expected as $name => $param) {
-            if (in_array($name, $ignoreFields)) {
+            if (in_array($name, $ignoreFields, true)) {
                 continue;
             }
 
-            list($type, $value)=$param;
+            list($type, $value) = $param;
 
             $this->assertInstanceOf('Doctrine\DBAL\Types\Type', $whereBuilder->getParametersType($name));
             $this->assertEquals($type, $whereBuilder->getParametersType($name)->getName());
