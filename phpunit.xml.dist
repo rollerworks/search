@@ -26,7 +26,6 @@
                 <directory>./tests/</directory>
                 <directory>./doc/</directory>
                 <directory>./bin/</directory>
-                <directory>./build/</directory>
             </exclude>
         </whitelist>
     </filter>
