@@ -28,8 +28,14 @@ class WhereBuilderTest extends DbalTestCase
      * @param boolean         $valuesEmbedding
      * @param array           $extra           Extra options like dbal_mapping, query
      */
-    public function testSimpleQuery($condition, $expectWhereCase, array $queryParams = array(), $expectSql = null, $valuesEmbedding = false, array $extra = array())
-    {
+    public function testSimpleQuery(
+        SearchCondition $condition,
+        $expectWhereCase,
+        array $queryParams = array(),
+        $expectSql = null,
+        $valuesEmbedding = false,
+        array $extra = array()
+    ) {
         $connection = $this->getConnectionMock();
 
         if (!isset($extra['dbal_mapping'])) {
@@ -53,7 +59,7 @@ class WhereBuilderTest extends DbalTestCase
         }
 
         if (!$valuesEmbedding) {
-            $this->asserParamsEquals($queryParams, $whereBuilder);
+            $this->assertParamsEquals($queryParams, $whereBuilder);
         } else {
             $this->assertCount(0, $whereBuilder->getParameters());
             $this->assertCount(0, $whereBuilder->getParameterTypes());
@@ -136,7 +142,7 @@ class WhereBuilderTest extends DbalTestCase
         }
 
         if (!$valuesEmbedding) {
-            $this->asserParamsEquals($queryParams, $whereBuilder);
+            $this->assertParamsEquals($queryParams, $whereBuilder);
         } else {
             $this->assertCount(0, $whereBuilder->getParameters());
             $this->assertCount(0, $whereBuilder->getParameterTypes());
@@ -199,7 +205,7 @@ class WhereBuilderTest extends DbalTestCase
         }
 
         if (!$valuesEmbedding) {
-            $this->asserParamsEquals($queryParams, $whereBuilder);
+            $this->assertParamsEquals($queryParams, $whereBuilder);
         } else {
             $this->assertCount(0, $whereBuilder->getParameters());
             $this->assertCount(0, $whereBuilder->getParameterTypes());
@@ -289,7 +295,7 @@ class WhereBuilderTest extends DbalTestCase
         }
 
         if (!$valuesEmbedding) {
-            $this->asserParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
+            $this->assertParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
         } else {
             $this->assertCount(0, $whereBuilder->getParameters());
             $this->assertCount(0, $whereBuilder->getParameterTypes());
@@ -430,7 +436,7 @@ class WhereBuilderTest extends DbalTestCase
         }
 
         if (!$valuesEmbedding) {
-            $this->asserParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
+            $this->assertParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
         } else {
             $this->assertCount(0, $whereBuilder->getParameters());
             $this->assertCount(0, $whereBuilder->getParameterTypes());
@@ -522,7 +528,7 @@ class WhereBuilderTest extends DbalTestCase
         }
 
         if (!$valuesEmbedding) {
-            $this->asserParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
+            $this->assertParamsEquals($queryParams, $whereBuilder, $ignoreParameters);
         } else {
             $this->assertCount(0, $whereBuilder->getParameters());
             $this->assertCount(0, $whereBuilder->getParameterTypes());

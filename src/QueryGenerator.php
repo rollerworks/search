@@ -252,6 +252,13 @@ class QueryGenerator
                 true
             );
 
+            $this->processCompares(
+                $values->getComparisons(),
+                $fieldName,
+                $exclusiveSqlGroup,
+                true
+            );
+
             if ($exclusiveSqlGroup) {
                 $groupSql[] = '('.implode(' AND ', $exclusiveSqlGroup).')';
             }
@@ -525,11 +532,17 @@ class QueryGenerator
      * @param string    $fieldName
      * @param array     $query
      */
-    protected function processCompares(array $compares, $fieldName, array &$query)
+    protected function processCompares(array $compares, $fieldName, array &$query, $exclude = false)
     {
         $valuesQuery = array();
 
         foreach ($compares as $comparison) {
+            $isExclusive = '<>' === $comparison->getOperator();
+
+            if ((!$exclude && $isExclusive) || ($exclude && !$isExclusive)) {
+                continue;
+            }
+
             $strategy = $this->getConversionStrategy($fieldName, $comparison->getValue());
             $column = $this->getFieldColumn($fieldName, $strategy);
 
@@ -542,7 +555,13 @@ class QueryGenerator
         }
 
         if ($valuesQuery) {
-            $query[] = implode(' OR ', $valuesQuery);
+            $comparisonsQuery = implode(' AND ', $valuesQuery);
+
+            if (count($valuesQuery) > 1 && !$exclude) {
+                $query[] = '('.$comparisonsQuery.')';
+            } else {
+                $query[] = $comparisonsQuery;
+            }
         }
     }
 
