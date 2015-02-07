@@ -81,6 +81,57 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
             ),
             array(
                 SearchConditionBuilder::create(static::getFieldSet('invoice'))
+                    ->field('invoice_customer')
+                        ->addSingleValue(new SingleValue(20))
+                        ->addComparison(new Compare(2, '>'))
+                        ->addComparison(new Compare(10, '<'))
+                    ->end()
+                ->getSearchCondition(),
+                array(
+                    '(((I.customer IN(:invoice_customer_0) OR (I.customer > :invoice_customer_1 AND I.customer < :invoice_customer_2))))',
+                    '(((C.id IN(:invoice_customer_0) OR (C.id > :invoice_customer_1 AND C.id < :invoice_customer_2))))'
+                ),
+                array('invoice_customer_0' => array('integer', 20), 'invoice_customer_1' => array('integer', 2), 'invoice_customer_2' => array('integer', 10)),
+                'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id > ? AND c1_.id < ?)))',
+                false,
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+            ),
+            array(
+                SearchConditionBuilder::create(static::getFieldSet('invoice'))
+                    ->field('invoice_customer')
+                        ->addExcludedValue(new SingleValue(20))
+                        ->addComparison(new Compare(2, '<>'))
+                        ->addComparison(new Compare(10, '<>'))
+                    ->end()
+                ->getSearchCondition(),
+                array(
+                    '(((I.customer NOT IN(:invoice_customer_0) AND I.customer <> :invoice_customer_1 AND I.customer <> :invoice_customer_2)))',
+                    '(((C.id NOT IN(:invoice_customer_0) AND C.id <> :invoice_customer_1 AND C.id <> :invoice_customer_2)))'
+                ),
+                array('invoice_customer_0' => array('integer', 20), 'invoice_customer_1' => array('integer', 2), 'invoice_customer_2' => array('integer', 10)),
+                'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id NOT IN(?) AND c1_.id AND ? OR c1_.id <> ?)))',
+                false,
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+            ),
+            array(
+                SearchConditionBuilder::create(static::getFieldSet('invoice'))
+                    ->field('invoice_customer')
+                        ->addComparison(new Compare(20, '>'))
+                        ->addComparison(new Compare(2, '<>'))
+                        ->addComparison(new Compare(10, '<>'))
+                    ->end()
+                ->getSearchCondition(),
+                array(
+                    '(((I.customer > :invoice_customer_0) AND (I.customer <> :invoice_customer_1 AND I.customer <> :invoice_customer_2)))',
+                    '(((C.id > :invoice_customer_0) AND (C.id <> :invoice_customer_1 AND C.id <> :invoice_customer_2)))'
+                ),
+                array('invoice_customer_0' => array('integer', 20), 'invoice_customer_1' => array('integer', 2), 'invoice_customer_2' => array('integer', 10)),
+                'SELECT i0_.id AS id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.id > ?) AND (c1_.id <> ? AND c1_.id <> ?)))',
+                false,
+                array('query' => 'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ')
+            ),
+            array(
+                SearchConditionBuilder::create(static::getFieldSet('invoice'))
                     ->field('invoice_customer')->addExcludedValue(new SingleValue(2))->end()
                 ->getSearchCondition(),
                 array(
@@ -1025,7 +1076,7 @@ abstract class DbalTestCase extends \PHPUnit_Framework_TestCase
      * @param WhereBuilder $whereBuilder
      * @param array        $ignoreFields
      */
-    protected function asserParamsEquals(array $expected, $whereBuilder, array $ignoreFields = array())
+    protected function assertParamsEquals(array $expected, $whereBuilder, array $ignoreFields = array())
     {
         foreach ($expected as $name => $param) {
             if (in_array($name, $ignoreFields)) {
