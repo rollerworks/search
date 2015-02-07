@@ -1,21 +1,32 @@
 language: php
 
 php:
-  - 5.3
-  - 5.4
-  - 5.5
-  - 5.6
-  - hhvm
-  - hhvm-nightly
+    - 5.3
+    - 5.4
+    - 5.5
+    - 5.6
+    - hhvm
+    - hhvm-nightly
 
-before_script:
-    - composer install --dev
+matrix:
+    include:
+        - php: 5.3
+          env: DEPENDENCIES='low'
+        - php: 5.6
+          env: DEPENDENCIES='dev'
+    allow_failures:
+        - php: hhvm-nightly
+        - env: DEPENDENCIES='dev'
+    fast_finish: true
+
+before_install:
+    - composer selfupdate
+
+install:
+    - export COMPOSER_ROOT_VERSION=dev-master
+    - if [ "$DEPENDENCIES" == "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
+    - if [ "$DEPENDENCIES" != "low" ]; then travis_retry composer update; fi;
+    - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest; fi;
 
 script:
     - phpunit --configuration phpunit.xml.dist
-
-matrix:
-    allow_failures:
-        - php: 5.6
-        - php: hhvm # expirimental
-        - php: hhvm-nightly
