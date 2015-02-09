@@ -58,7 +58,7 @@ mapping fields that need to be used.
 
     namespace Acme\Search\Input;
 
-    use Rollerworks\Component\Search\Input\InputProcessorInterface;
+    use Rollerworks\Component\Search\InputProcessorInterface;
     use Rollerworks\Component\Search\Value\SingleValue;
     use Rollerworks\Component\Search\ValuesBag;
     use Rollerworks\Component\Search\ValuesGroup;
@@ -125,7 +125,7 @@ Need more inspiration? Take a look at one of the already provided `input process
 
 .. tip::
 
-    For this example we are using the :class:`Rollerworks\\Component\\Search\\Input\\InputProcessorInterface`
+    For this example we are using the :class:`Rollerworks\\Component\\Search\\InputProcessorInterface`
     but it's also possible to use the :class:`Rollerworks\\Component\\Search\\Input\\AbstractInput`
     which provides some helper methods for field alias resolving and type
     support validating.
