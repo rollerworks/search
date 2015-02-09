@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractFieldTypeExtension implements FieldTypeExtensionInterface
 {
@@ -32,7 +32,7 @@ abstract class AbstractFieldTypeExtension implements FieldTypeExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
     }
 }
