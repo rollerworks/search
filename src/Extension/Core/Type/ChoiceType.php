@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTra
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -55,7 +55,7 @@ class ChoiceType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $choiceListCache = &$this->choiceListCache;
 

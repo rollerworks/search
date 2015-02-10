@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -35,11 +35,11 @@ interface FieldTypeInterface
     /**
      * Sets the default options for this type.
      *
-     * @param OptionsResolverInterface $resolver The resolver for the options.
+     * @param OptionsResolver $resolver The resolver for the options.
      *
-     * @return void
+     * @return
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver);
+    public function configureOptions(OptionsResolver $resolver);
 
     /**
      * This configures the {@link FieldConfigInterface}.
@@ -50,7 +50,7 @@ interface FieldTypeInterface
      * @param FieldConfigInterface $config
      * @param array                $options
      *
-     * @return void
+     * @return null
      */
     public function buildType(FieldConfigInterface $config, array $options);
 
@@ -61,7 +61,7 @@ interface FieldTypeInterface
      * @param FieldConfigInterface $config
      * @param array                $options
      *
-     * @return void
+     * @return null
      */
     public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options);
 

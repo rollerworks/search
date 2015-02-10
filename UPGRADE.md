@@ -11,6 +11,45 @@ easier to use.
   
 * `Rollerworks\Component\Search\Metadata\Field` is removed,
   use `Rollerworks\Component\Search\Mapping\SearchField` instead.
+  
+### Type
+
+* The options configuring of type has been changed to replace the deprecated
+  OptionsResolverInterface. Second the method is renamed to "configureOptions".
+
+  Before:
+  
+  ```php
+      use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+      
+      class TaskType extends AbstractFieldType
+      {
+          // ...
+          public function setDefaultOptions(OptionsResolverInterface $resolver)
+          {
+              $resolver->setDefaults(array(
+                  'data_class' => 'App\Entity\Task',
+              ));
+          }
+      }
+  ```
+  
+  After:
+  
+  ```php
+      use Symfony\Component\OptionsResolver\OptionsResolver;
+      
+      class TaskType extends AbstractFieldType
+      {
+          // ...
+          public function configureOptions(OptionsResolver $resolver)
+          {
+              $resolver->setDefaults(array(
+                  'data_class' => 'App\Entity\Task',
+              ));
+          }
+      }
+  ```
 
 ### Input
 

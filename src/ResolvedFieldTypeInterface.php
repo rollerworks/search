@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * A wrapper for a field type and its extensions.

@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -29,7 +29,7 @@ class TimezoneType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array('choices' => self::getTimezones())

@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -46,11 +46,11 @@ interface FieldTypeExtensionInterface
     /**
      * Overrides the default options from the extended type.
      *
-     * @param OptionsResolverInterface $resolver The resolver for the options.
+     * @param OptionsResolver|OptionsResolverInterface $resolver The resolver for the options.
      *
-     * @return void
+     * @return
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver);
+    public function configureOptions(OptionsResolver $resolver);
 
     /**
      * Returns the name of the type being extended.

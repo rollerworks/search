@@ -14,7 +14,6 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -192,10 +191,10 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
                 $this->optionsResolver = new OptionsResolver();
             }
 
-            $this->innerType->setDefaultOptions($this->optionsResolver);
+            $this->innerType->configureOptions($this->optionsResolver);
 
             foreach ($this->typeExtensions as $extension) {
-                $extension->setDefaultOptions($this->optionsResolver);
+                $extension->configureOptions($this->optionsResolver);
             }
         }
 

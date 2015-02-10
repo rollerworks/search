@@ -16,7 +16,7 @@ use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -98,7 +98,7 @@ class DateType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array(
