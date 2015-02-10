@@ -33,12 +33,12 @@ for comparing values for equality and lower/higher ``InvoiceNumber`` objects:
 .. code-block:: php
     :linenos:
 
-    // src/Acme/Invoice/Search/Extension/Invoice/ValueComparison/InvoiceNumberComparison.php
+    // src/Acme/Invoice/Search/ValueComparison/InvoiceNumberComparison.php
 
-    namespace Acme\Invoice\Search\Extension\Invoice\ValueComparison;
+    namespace Acme\Invoice\Search\ValueComparison;
 
-    use Rollerworks\Component\Search\ValueComparisonInterface;
     use Acme\Invoice\InvoiceNumber;
+    use Rollerworks\Component\Search\ValueComparisonInterface;
 
     class InvoiceNumberComparison implements ValueComparisonInterface
     {
@@ -80,15 +80,15 @@ invoice field type.
 .. code-block:: php
     :linenos:
 
-    // src/Acme/Invoice/Search/Extension/Invoice/Type/InvoiceNumberType.php
+    // src/Acme/Invoice/Search/Type/InvoiceNumberType.php
 
-    namespace Acme\Invoice\Search\Extension\Invoice\Type;
+    namespace Acme\Invoice\Search\Type;
 
+    use Acme\Invoice\Search\DataTransformer\InvoiceNumberTransformer;
     use Rollerworks\Component\Search\AbstractFieldType;
     use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
     use Rollerworks\Component\Search\FieldConfigInterface;
     use Rollerworks\Component\Search\ValueComparisonInterface;
-    use Acme\Invoice\Search\Extension\Invoice\DataTransformer\InvoiceNumberTransformer;
 
     class InvoiceNumberType extends AbstractFieldType
     {
@@ -136,7 +136,8 @@ the size of the search condition and speed-up the search operation.
 
 .. note::
 
-    Optimizing incremented values is done by the ``Rollerworks\Component\Search\ConditionOptimizer\ValuesToRange``
+    Optimizing incremented values is done by the
+    :class:``Rollerworks\\Component\\Search\\ConditionOptimizer\\ValuesToRange``
     optimizer. So make sure its enabled.
 
 Instead of implementing the ``ValueComparisonInterface`` implement the
@@ -146,12 +147,12 @@ and adds the ``getIncrementedValue`` method for calculating increments.
 .. code-block:: php
     :linenos:
 
-    // src/Acme/Invoice/Search/Extension/Invoice/ValueComparison/InvoiceNumberComparison.php
+    // src/Acme/Invoice/Search/ValueComparison/InvoiceNumberComparison.php
 
-    namespace Acme\Invoice\Search\Extension\Invoice\ValueComparison;
+    namespace Acme\Invoice\Search\ValueComparison;
 
-    use Rollerworks\Component\Search\ValueIncrementerInterface;
     use Acme\Invoice\InvoiceNumber;
+    use Rollerworks\Component\Search\ValueIncrementerInterface;
 
     class InvoiceNumberComparison implements ValueIncrementerInterface
     {

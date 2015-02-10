@@ -32,14 +32,14 @@ for converting to and from the invoice number and the ``InvoiceNumber`` object:
 .. code-block:: php
     :linenos:
 
-    // src/Acme/Invoice/Search/Extension/Invoice/DataTransformer/InvoiceNumberTransformer.php
+    // src/Acme/Invoice/Search/DataTransformer/InvoiceNumberTransformer.php
 
-    namespace Acme\Invoice\Search\Extension\Invoice\DataTransformer;
+    namespace Acme\Invoice\Search\DataTransformer;
 
+    use Acme\Invoice\InvoiceNumber;
     use Rollerworks\Component\Search\DataTransformerInterface;
     use Rollerworks\Component\Search\Exception\TransformationFailedException;
     use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-    use Acme\Invoice\InvoiceNumber;
 
     class InvoiceNumberTransformer implements DataTransformerInterface
     {
@@ -89,14 +89,14 @@ invoice field type.
 .. code-block:: php
     :linenos:
 
-    // src/Acme/Invoice/Search/Extension/Invoice/Type/InvoiceNumberType.php
+    // src/Acme/Invoice/Search/Type/InvoiceNumberType.php
 
-    namespace Acme\Invoice\Search\Extension\Invoice\Type;
+    namespace Acme\Invoice\Search\Type;
 
+    use Acme\Invoice\Search\DataTransformer\InvoiceNumberTransformer;
     use Rollerworks\Component\Search\AbstractFieldType;
     use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
     use Rollerworks\Component\Search\FieldConfigInterface;
-    use Acme\Invoice\Search\Extension\Invoice\DataTransformer\InvoiceNumberTransformer;
 
     class InvoiceNumberType extends AbstractFieldType
     {

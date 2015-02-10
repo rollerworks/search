@@ -27,12 +27,12 @@ Make sure the field extends :class:`Rollerworks\\Component\\Search\\AbstractFiel
 .. code-block:: php
     :linenos:
 
-    // src/Acme/Search/Extension/Client/Type/ClientIdType.php
+    // src/Acme/Client/Search/Type/ClientIdType.php
 
-    namespace Acme\Client\Search\Extension\Client\Type;
+    namespace Acme\Client\Search\Type;
 
+    use Acme\Client\Search\DataTransformer\ClientIdTransformer;
     use Rollerworks\Component\Search\AbstractFieldType;
-    use Acme\Search\Extension\Client\DataTransformer\ClientIdTransformer;
     use Symfony\Component\OptionsResolver\OptionsResolver;
 
     class ClientIdType extends AbstractFieldType
@@ -103,9 +103,9 @@ into a regular integer.
 .. code-block:: php
     :linenos:
 
-    // src/Acme/Search/Extension/Client/DataTransformer/ClientIdTransformer.php
+    // src/Acme/Client/Search/DataTransformer/ClientIdTransformer.php
 
-    namespace Acme\Client\Search\Extension\Client\DataTransformer;
+    namespace Acme\Client\Search\DataTransformer;
 
     use Rollerworks\Component\Search\DataTransformerInterface;
     use Rollerworks\Component\Search\Exception\TransformationFailedException;
@@ -140,7 +140,7 @@ new instance of the type in one of your FieldSets:
 .. code-block:: php
     :linenos:
 
-    use Acme\Client\Search\Extension\Client\Type\ClientIdType;
+    use Acme\Client\Search\Type\ClientIdType;
     use Rollerworks\Component\Search\Searches;
 
     $searchFactory = new Searches::createSearchFactoryBuilder()->getSearchFactory();
@@ -162,9 +162,9 @@ Or the by registering the type in a ``SearchExtension``.
 .. code-block:: php
     :linenos:
 
-    // src/Acme/Client/Search/Extension/Client/ClientExtension.php
+    // src/Acme/Client/Search/ClientExtension.php
 
-    namespace Acme\Client\Search\Extension\Client;
+    namespace Acme\Client\Search;
 
     use Rollerworks\Component\Search\AbstractExtension;
 
@@ -192,9 +192,7 @@ Now the type can be used for any type by type name the corresponds with the valu
 returned by the ``getName`` method defined earlier.
 
 .. code-block:: php
-    :linenos:
 
-    use Acme\Client\Search\Extension\Client\Type\ClientIdType;
     use Rollerworks\Component\Search\Searches;
 
     $searchFactory = new Searches::createSearchFactoryBuilder()->getSearchFactory();
