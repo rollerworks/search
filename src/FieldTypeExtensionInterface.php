@@ -46,9 +46,9 @@ interface FieldTypeExtensionInterface
     /**
      * Overrides the default options from the extended type.
      *
-     * @param OptionsResolver|OptionsResolverInterface $resolver The resolver for the options.
+     * @param OptionsResolver $resolver The resolver for the options.
      *
-     * @return
+     * @return null
      */
     public function configureOptions(OptionsResolver $resolver);
 
