@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="false"
-         bootstrap="./tests/bootstrap.php"
-         strict="true"
-        >
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+    backupGlobals="false"
+    colors="true"
+    strict="true"
+    bootstrap="./tests/bootstrap.php"
+>
+    <php>
+        <ini name="intl.default_locale" value="en"/>
+        <ini name="intl.error_level" value="0"/>
+        <ini name="memory_limit" value="-1"/>
+    </php>
+
     <testsuites>
         <testsuite name="RollerworksSearch Test Suite">
             <directory>./tests/</directory>
@@ -26,14 +27,7 @@
                 <directory>./tests/</directory>
                 <directory>./doc/</directory>
                 <directory>./bin/</directory>
-                <directory>./build/</directory>
             </exclude>
         </whitelist>
     </filter>
-
-    <php>
-        <ini name="mbstring.internal_encoding" value="UTF-8"/>
-        <ini name="intl.default_locale" value="en"/>
-    </php>
-
 </phpunit>
