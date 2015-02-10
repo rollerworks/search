@@ -36,12 +36,15 @@ interface FieldTypeExtensionInterface
     /**
      * Builds the SearchFieldView.
      *
+     * This method is called after the extended type has built the view to
+     * further modify it.
+     *
      * @param FieldConfigInterface $config
      * @param SearchFieldView      $view
      *
-     * @return void
+     * @return null
      */
-    public function buildFieldView(FieldConfigInterface $config, SearchFieldView $view);
+    public function buildView(FieldConfigInterface $config, SearchFieldView $view);
 
     /**
      * Overrides the default options from the extended type.

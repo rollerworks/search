@@ -25,7 +25,7 @@ abstract class AbstractFieldTypeExtension implements FieldTypeExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function buildFieldView(FieldConfigInterface $config, SearchFieldView $view)
+    public function buildView(FieldConfigInterface $config, SearchFieldView $view)
     {
     }
 
