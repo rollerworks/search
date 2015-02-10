@@ -13,7 +13,7 @@ namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
 use Rollerworks\Component\Search\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\AgeDateConversion;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Configures the AgeConversion for Doctrine ORM.
@@ -38,7 +38,7 @@ class BirthdayTypeExtension extends AbstractFieldTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array('doctrine_dbal_conversion' => $this->conversion)

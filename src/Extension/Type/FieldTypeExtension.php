@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
 use Rollerworks\Component\Search\AbstractFieldTypeExtension;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Allow to configure Doctrine ORM conversions.
@@ -24,7 +24,7 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array('doctrine_dbal_conversion' => null)
