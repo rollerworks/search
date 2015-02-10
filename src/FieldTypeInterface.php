@@ -57,13 +57,18 @@ interface FieldTypeInterface
     /**
      * Configures the SearchFieldView instance.
      *
+     * This method is called for each type in the hierarchy starting from the
+     * top most type. Type extensions can further modify the view.
+     *
+     * @see FieldTypeExtensionInterface::buildView()
+     *
      * @param SearchFieldView      $view
      * @param FieldConfigInterface $config
      * @param array                $options
      *
      * @return null
      */
-    public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options);
+    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options);
 
     /**
      * Returns whether ranges are supported by this type.

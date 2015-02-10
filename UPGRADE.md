@@ -50,6 +50,10 @@ easier to use.
           }
       }
   ```
+  
+* Method `buildFieldView` has been renamed to `buildView` in both
+  `Rollerworks\Component\Search\FieldTypeInterface` and
+  `Rollerworks\Component\Search\FieldTypeExtensionInterface`.
 
 ### Input
 
@@ -59,12 +63,13 @@ easier to use.
 * When the created search-condition has errors an `InvalidSearchValuesException`
   will be thrown (after processing).
   
-* Validation of ranges (correct bounds) is now performed when processing the Input (not after).
+* Validation of ranges (correct bounds) is now performed when processing
+  the Input (not after).
 
 ### Optimizers (former formatters)
 
-Formatters are renamed to optimizers; The `Rollerworks\Component\Search\FormatterInterface` is removed in favor 
-of the new `Rollerworks\Component\Search\SearchConditionOptimizerInterface`.
+Formatters are renamed to optimizers; The `Rollerworks\Component\Search\FormatterInterface`
+is removed in favor of the new `Rollerworks\Component\Search\SearchConditionOptimizerInterface`.
   
 ### User error handling
 
@@ -76,7 +81,8 @@ The `InvalidSearchValuesException` provides access to the search-condition,
 but the condition will contain some values that are invalid.
   
 **Note:** The `InvalidSearchValuesException` is thrown *after* processing,
-so it contains all invalid values (and not just the first violation) in a field values list.
+so it contains all invalid values (and not just the first violation) in a field
+values list.
 
 A `ValuesGroup` object no longer keeps track of errors, getting the errors
 is now done by asking each field in the group for there errors-state.

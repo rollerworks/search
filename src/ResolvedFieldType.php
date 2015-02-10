@@ -170,10 +170,10 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
             $this->parent->buildFieldView($view, $config, $options);
         }
 
-        $this->innerType->buildFieldView($view, $config, $options);
+        $this->innerType->buildView($view, $config, $options);
 
         foreach ($this->typeExtensions as $extension) {
-            $extension->buildFieldView($config, $view);
+            $extension->buildView($config, $view);
         }
     }
 
