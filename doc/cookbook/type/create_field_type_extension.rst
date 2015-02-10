@@ -204,7 +204,7 @@ And then register it at system using the FactoryBuilder.
         ->addExtension(new ClientExtension())
         ->getSearchFactory();
 
-Now the type can be used for any type by type name the corresponds with the value
+Now that type can be used for any field by type name the corresponds with the value
 returned by the ``getName`` method defined earlier.
 
 From now on, when adding a field of type ``number`` in your field, you can

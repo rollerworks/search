@@ -311,7 +311,7 @@ SearchFactory
 The SearchFactory forms the heart of the search system, it provides
 easy access to builders and keeps track of field types.
 
-But you would rather want to use the :class:``Rollerworks\\Component\\Search\\Searches`
+But you would rather want to use the :class:`Rollerworks\\Component\\Search\\Searches`
 class which takes care of all the boilerplate of setting up a SearchFactory.
 See :doc:`searches` for information and usage.
 

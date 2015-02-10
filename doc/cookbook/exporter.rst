@@ -8,12 +8,12 @@ The main reason you need an exporter is to export a search condition to
 a format that can later be processed by an input processor.
 
 Same as the input processor an exporter follows a simple principle,
-export a search condition to a processable output.
+it exports a search condition to a processable output.
 
 .. note::
 
-    It's possible that an exporter is not able to export all search
-    conditions it receives. Sometimes the condition is just to complex
+    It's possible that an exporter is us unable to export all search
+    conditions it receives. Sometimes the condition is just too complex
     to be exported. *So don't force yourself to support all conditions.*
 
 
@@ -76,11 +76,11 @@ Need more inspiration? Take a look at one of the already provided `exporters`_.
 .. tip::
 
     For this example we are using the :class:`Rollerworks\\Component\\Search\\ExporterInterface`
-    but it's also possible to use the :class:`Rollerworks\\Component\\Search\\Exporter\\AbstractExporter`
+    but it's also possible to leverage the :class:`Rollerworks\\Component\\Search\\Exporter\\AbstractExporter`
     which provides some helper methods for field label resolving and PatternMatchType
     exporting.
 
-    Note that the ``AbstractExporter`` requires to implement the ``exportGroup``
-    method rather then ``exportCondition``.
+    Note that the ``AbstractExporter`` requires you to implement the ``exportGroup``
+    method rather than ``exportCondition``.
 
 .. _`exporters`: https://github.com/rollerworks/RollerworksSearch/tree/master/src/Exporter

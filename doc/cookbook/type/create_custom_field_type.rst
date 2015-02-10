@@ -39,8 +39,11 @@ Make sure the field extends :class:`Rollerworks\\Component\\Search\\AbstractFiel
     {
         public function buildType(FieldConfigInterface $config, array $options)
         {
-            // The integer-type sets a special transformer for localized integers
-            // This type doesn't need this so remove the transformers
+            // The integer-type configures the field by setting a DataTransformer
+            // to transformer localized input to an integer.
+            //
+            // Our custom type only accepts input in a special format,
+            // so DataTransformers set by integer are no longer needed here.
             $config->resetViewTransformers();
 
             $config->addViewTransformer(new ClientIdTransformer());
@@ -78,8 +81,8 @@ check out the `IntegerType`_ class. There are three methods that are particularl
 important:
 
 ``buildType()``
-    Each field type has a ``buildType`` method, which is where
-    you configure and build any field(s).
+    Each field type has a ``buildType`` method, which is where you configure
+    and build any field(s).
 
 ``buildView()``
     This method is used to set any extra variables you'll
@@ -88,10 +91,10 @@ important:
     the ``precision`` attribute on the ``input`` field.
 
 ``configureOptions()``
-    This defines options for your field type that
-    can be used in ``buildType()`` and ``buildView()``. There are a lot of
-    options common to all fields (see :doc:`/reference/types/field`),
-    but you can create any others that you need here.
+    This defines options for your field type that can be used in ``buildType()``
+    and ``buildView()``. There are a lot of options common to all fields
+    (see :doc:`/reference/types/field`), but you can create as any others
+    as needed.
 
 Creating the ClientIdTransformer
 --------------------------------
@@ -130,7 +133,7 @@ into a regular integer.
 Using the Field Type
 --------------------
 
-Now the type is created, the Search system needs a way to find it.
+Now that the type is created, the Search system needs a way to find it.
 
 This can be done in to ways;
 
@@ -151,7 +154,7 @@ new instance of the type in one of your FieldSets:
         ->getFieldSet()
     ;
 
-Or the by registering the type in a ``SearchExtension``.
+Or the by registering your field type in a ``SearchExtension``.
 
 .. tip::
 
@@ -182,13 +185,13 @@ And then register it at system using the FactoryBuilder.
 
 .. code-block:: php
 
-    /* ... */
+    ...
 
     $searchFactory = new Searches::createSearchFactoryBuilder()
         ->addExtension(new ClientExtension())
         ->getSearchFactory();
 
-Now the type can be used for any type by type name the corresponds with the value
+Now that type can be used for any field by type name the corresponds with the value
 returned by the ``getName`` method defined earlier.
 
 .. code-block:: php
@@ -206,9 +209,9 @@ returned by the ``getName`` method defined earlier.
 Further reading
 ---------------
 
-Creating a field type is fun and easy, but did you know there is more possible
-then is shown here? Learn more at: :doc:`data_transformers` and
-:doc:`value_comparison` and its also a good idea to test your types:
+Creating a field type is fun and easy, but did you know much more is possible
+than what is shown here? Learn more at: :doc:`data_transformers` and
+:doc:`value_comparison` and it is also a good idea to test your types:
 :doc:`unit_testing`
 
 .. _`IntegerType`: https://github.com/rollerworks/RollerworksSearch/blob/master/src/Extension/Core/Type/IntegerType.php

@@ -1,7 +1,7 @@
 .. index::
    single: Input; Custom input processor
 
-How to Create a custom Input processor
+How to Create a Custom Input processor
 ======================================
 
 RollerworksSearch already provides input processors for a wide range of
@@ -12,21 +12,34 @@ a simple string processor, use a binary file or fixed-length string syntax
 or anything you can think of, everything is possible.
 
 Each processor follows a very simple principle, accept a user-input and
-transform this to SearchCondition. That's it. You don't have to enforce groups
-field-names or even support ranges!
+transform this to SearchCondition object. That's it. You don't have to enforce
+groups field-names or even support ranges!
 
 This example shows a simple processor which will accept any
-value and places it in a list of configured fields, no support for ranges,
-comparisons or whatsoever.
+value and will place it in a list of configured fields, no support for ranges,
+comparisons or pattern-matchers.
 
 .. tip::
 
-    In future we hope to add support for an input processor
-    that will work similar to what we are building here.
-    Find out more at: `SmartQuery - GitHub issue tracker`_
+    In the future we hope to add support for an input processor that will
+    work similar to what we are building here. Find out more at:
+    `SmartQuery - GitHub issue tracker`_
 
-For example we provide the following input: ``foobar, 2012-12-05``.
-The values will be as single-values on the configured fields.
+For example we provide the following input: ``foobar, 2012-12-05, "bar"``.
+The values will be placed as single-values on the configured fields.
+
+Say we have two fields that will be used for condition: field1 and field2.
+The created SearchCondition ``ValuesGroup`` will look like::
+
+    $valuesGroup = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR);
+
+    $valuesBag = ValuesBag();
+    $valuesBag->addSingleValue(new SingleValue('foobar'));
+    $valuesBag->addSingleValue(new SingleValue('2012-12-05'));
+    $valuesBag->addSingleValue(new SingleValue('bar'));
+
+    $valuesGroup->addField('field1', $valuesBag);
+    $valuesGroup->addField('field2', $valuesBag);
 
 First lets create a custom ``ProcessorConfig`` class for configuring the
 mapping fields that need to be used.
@@ -118,20 +131,19 @@ mapping fields that need to be used.
     }
 
 That's it, a very simple straightforward input processor, you can extent
-this functionality by also detecting ranges and such. But that's up to
-you to come-up with something powerful.
+this functionality by also detecting ranges and other operands.
 
 Need more inspiration? Take a look at one of the already provided `input processors`_.
 
 .. tip::
 
     For this example we are using the :class:`Rollerworks\\Component\\Search\\InputProcessorInterface`
-    but it's also possible to use the :class:`Rollerworks\\Component\\Search\\Input\\AbstractInput`
+    but it's also possible to leverage the :class:`Rollerworks\\Component\\Search\\Input\\AbstractInput`
     which provides some helper methods for field alias resolving and type
     support validating.
 
-Now that we have an input processor It may be a good idea to an exporter
-that can export search conditions into this custom input format.
+Now that we have an input processor, it may be a good idea to create an
+exporter that can deal with search conditions within the input format.
 
 See more at: :doc:`exporter`
 
