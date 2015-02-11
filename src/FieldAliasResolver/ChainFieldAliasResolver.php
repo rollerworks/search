@@ -31,7 +31,7 @@ class ChainFieldAliasResolver implements FieldAliasResolverInterface
     {
         foreach ($resolvers as $resolver) {
             if (!$resolver instanceof FieldAliasResolverInterface) {
-                throw new UnexpectedTypeException($resolver, 'Rollerworks\Component\Search\Exception\UnexpectedTypeException');
+                throw new UnexpectedTypeException($resolver, 'Rollerworks\Component\Search\FieldAliasResolverInterface');
             }
         }
 
