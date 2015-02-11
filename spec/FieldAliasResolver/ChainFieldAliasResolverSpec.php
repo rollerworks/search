@@ -56,8 +56,10 @@ class ChainFieldAliasResolverSpec extends ObjectBehavior
 
         $resolver->resolveFieldName($fieldSet, 'user')->willReturn('user_id');
         $resolver->resolveFieldName($fieldSet, 'id')->willReturn('id');
-        $resolver2->resolveFieldName($fieldSet, 'id')->willReturn('my_id');
         $resolver->resolveFieldName($fieldSet, 'name')->willReturn(null);
+
+        $resolver2->resolveFieldName($fieldSet, 'id')->willReturn('my_id');
+        $resolver2->resolveFieldName($fieldSet, 'name')->willReturn(null);
 
         $this->resolveFieldName($fieldSet, 'user')->shouldReturn('user_id');
         $this->resolveFieldName($fieldSet, 'id')->shouldReturn('my_id');
