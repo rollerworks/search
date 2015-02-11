@@ -47,7 +47,7 @@ class ChainFieldAliasResolver implements FieldAliasResolverInterface
             $fieldName = $resolver->resolveFieldName($fieldSet, $fieldAlias);
 
             if (null === $fieldName) {
-                return $fieldAlias;
+                continue;
             }
 
             if ($fieldName !== $fieldAlias) {
