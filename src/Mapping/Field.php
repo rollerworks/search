@@ -69,7 +69,7 @@ class Field
 
             if (!method_exists($this, $method)) {
                 throw new BadMethodCallException(
-                    sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this))
+                    sprintf('Unknown property "%s" on annotation "%s".', $key, get_class($this))
                 );
             }
 
@@ -78,13 +78,13 @@ class Field
 
         if (null === $this->name) {
             throw new InvalidArgumentException(
-                sprintf("Property '%s' on annotation '%s' is required.", 'name', get_class($this))
+                sprintf('Property "%s" on annotation "%s" is required.', 'name', get_class($this))
             );
         }
 
         if (null === $this->type) {
             throw new InvalidArgumentException(
-                sprintf("Property '%s' on annotation '%s' is required.", 'type', get_class($this))
+                sprintf('Property "%s" on annotation "%s" is required.', 'type', get_class($this))
             );
         }
     }
