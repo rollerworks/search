@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by sstok at 2015-02-02 10:37
+
+closes #34
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-02-09 10:03
+
+I don't think documentation for creating a custom "Condition optimizer" is a high priority, so I'm skipping that one for now.
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-02-10 12:16
+
+OK, everything is finally done :relieved:
+
+@cordoval can you do a last review before I merge?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2015-02-10 12:16
+
+@sstok of course, i am a step away from your doorstep :older_man:
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-02-14 13:10
+
+I'm merging this one, any fixes can be be done using follow-up PR's :+1: Thanks for the review.
+
+---------------------------------------------------------------------------
+
+by scrutinizer-notifier at 2015-02-14 13:15
+
+The [inspection](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/inspections/9aab3241-d379-488d-935b-96ccc2a06527) completed: **No new issues**
