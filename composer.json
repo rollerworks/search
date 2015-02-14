@@ -24,6 +24,7 @@
         "doctrine/lexer": "^1.0.1"
     },
     "require-dev": {
+        "phpunit/phpunit": "~4.4",
         "phpspec/phpspec": "^2.1.1",
         "phpspec/prophecy": "^1.3.1",
         "rollerworks/search-jms-metadata": "1.*@dev"
@@ -32,7 +33,7 @@
         "psr-4": { "Rollerworks\\Component\\Search\\": "src/" }
     },
     "autoload-dev": {
-        "psr-0": { "Rollerworks\\Component\\Search\\Tests\\": "tests/" }
+        "psr-4": { "Rollerworks\\Component\\Search\\Tests\\": "tests/" }
     },
     "config": {
         "bin-dir": "bin"
