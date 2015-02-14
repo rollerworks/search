@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\ExporterInterface;
+use Rollerworks\Component\Search\FieldLabelResolver\NoopLabelResolver;
 use Rollerworks\Component\Search\FieldLabelResolverInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
@@ -51,7 +52,18 @@ abstract class AbstractExporter implements ExporterInterface
      */
     public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false)
     {
-        return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), $useFieldAlias, true);
+        $labelResolver = $this->labelResolver;
+
+        if (!$useFieldAlias && $this->labelResolver instanceof NoopLabelResolver) {
+            $this->labelResolver = new NoopLabelResolver();
+        }
+
+        $result = $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), $useFieldAlias, true);
+
+        // Restore original resolver
+        $this->labelResolver = $labelResolver;
+
+        return $result;
     }
 
     /**
