@@ -2,20 +2,22 @@ Metadata
 ========
 
 Class metadata is used by the ``FieldSetBuilder`` to populate a ``FieldSet`` instance
-based on the metadata of a Model class.
+field configuration with the metadata of a Model class.
 
 The information can be stored directly with the class using `PHP Annotations`_,
 or as a separate file using either YAML or XML.
 
 .. note::
 
-    To actually use the metadata component you first need to
-    install the ``jms/metadata`` package.
+    To actually use the metadata component you first need a compatible
+    metadata loader.
 
-    And for XML and YAML support you need to configure
-    the file-locator.
+    One of the supported loaders is the `RollerworksSearch Jms-Metadata loader`_
+    which you need to install yourself.
 
-    See the 'Metadata' subsection in :doc:`/installing/` for more information.
+    See the 'JmsMetadata' subsection in :doc:`/installing/` for more information.
+
+    For this example the JmsMetadata loader is used.
 
 The ``FileLocator`` will try to guess the the mapping config-dir by
 matching the namespace prefix to the given Model class-name.
@@ -23,7 +25,7 @@ matching the namespace prefix to the given Model class-name.
 In the example below the Model class ``Acme\Store\Model\Product``
 will be mapped to the ``src/Acme/Store/Resources/Rollerworks/Search/`` directory-namespace
 and tries to find the corresponding class-name ``Product`` as either ``Product.yml`` or
-``Product.xml``
+``Product.xml``.
 
 .. code-block:: php
 
@@ -31,6 +33,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
     use Metadata\Driver\DriverChain;
     use Metadata\MetadataFactory;
     use Doctrine\Common\Annotations\Reader;
+    use Rollerworks\Component\Search\Metadata\JmsMetadataReader;
     use Rollerworks\Component\Search\Metadata\Driver as MappingDriver;
 
     $locator = new FileLocator(array(
@@ -47,7 +50,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
         new MappingDriver\YamlFileDriver($locator),
     ));
 
-    $metadataFactory = new MetadataFactory($driver);
+    $metadataFactory = new JmsMetadataReader(new MetadataFactory($driver));
     $searchFactory = new SearchFactory(..., $metadataFactory);
 
 .. configuration-block::
@@ -58,7 +61,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
 
         namespace Acme\Store\Model;
 
-        use Rollerworks\Component\Search\Metadata as Search;
+        use Rollerworks\Component\Search\Mapping as Search;
 
         class Product
         {
@@ -122,7 +125,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
             <property id="price" name="product_price" accept-ranges="true" accept-compares="true">
                 <type name="text">
                     <param key="min" type="float">0.01</param>
-                    <!-- An array-value is build as follow. Key and type are optional for, type is required for collection -->
+                    <!-- An array-value is build as follow. Key and type are optional, type is required for collections -->
                     <!--
                     <option key="key" type="collection">
                         <option type="string">value</option>
@@ -143,3 +146,4 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
     annotated PHP class definitions.
 
 .. _`PHP Annotations`: http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html
+.. _`RollerworksSearch Jms-Metadata loader`: https://github.com/rollerworks/rollerworks-search-jms-metadata

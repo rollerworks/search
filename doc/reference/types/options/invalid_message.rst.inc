@@ -12,5 +12,9 @@ into a real time or if the user enters a string (e.g. ``apple``) into a
 number field.
 
 Normal (business logic) validation (such as when setting a minimum length for
-a field) should be set using validation messages with your validation rules
-(:ref:`reference<book-validation-constraint-configuration>`).
+a field) should be set using validation messages with your validation rules.
+
+Validation is provided by eg the `rollerworks/search-symfony-validator`_ or any other
+supported SearchCondition validator.
+
+.. _`rollerworks/search-symfony-validator`: https://github.com/rollerworks/rollerworks-search-symfony-validator

@@ -8,7 +8,9 @@ Rollerworks Search
     overview
     installing
     searches
+    searching_in_practice
     metadata
     type
+    cookbook/index
     reference/types
     input/index

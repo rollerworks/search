@@ -4,7 +4,7 @@
 country Field Type
 ==================
 
-The ``currency`` type is a subset of the :doc:`choice type </reference/types/choice>`
+The ``country`` type is a subset of the :doc:`choice type </reference/types/choice>`
 that allows the user to select from a large list of countries of the world.
 
 The "value" for each country is the two-letter country code.
