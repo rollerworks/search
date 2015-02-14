@@ -180,7 +180,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * Returns the configured options resolver used for this type.
      *
-     * @return OptionsResolverInterface The options resolver
+     * @return OptionsResolver The options resolver
      */
     public function getOptionsResolver()
     {
