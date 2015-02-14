@@ -1,6 +1,6 @@
 with_minutes
 ~~~~~~~~~~~~
 
-**type**: ``Boolean`` **default**: ``false``
+**type**: ``bool`` **default**: ``false``
 
 Whether or not to include minutes in the input.

@@ -7,7 +7,7 @@ time Field Type
 A field to capture time input.
 
 The provided input can be provided localized.
-The underlying data is stored as a ``DateTime`` object.
+The underlying data is stored as a ``DateTime`` object with UTC as time zone.
 
 +----------------------+-----------------------------------------------------------------------------+
 | Output Data Type     | ``DateTime``                                                                |

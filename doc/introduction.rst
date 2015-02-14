@@ -1,20 +1,15 @@
 Introduction
 ============
 
-Rollerworks Search is a PHP library for building your own
-advanced search system.
+RollerworksSearch provides you with a powerful search system
+for your PHP applications.
 
-The system works primarily with conditions, but the 'old' way of using terms/keywords
-is also possible, in the following chapters will get to that, for now lets stick with
-the introduction.
+Search operations are performed using search conditions which allow
+for any type of condition, all with minimum effort, whether you need
+to search in one database table or multiple.
 
-This system was designed to be useful for any kind of storage (DB/ODM and even web services),
-input (FilterQuery, JSON, XML, etc.) and any locale (English, French, Arabian, etc.).
-
-.. note::
-
-    Arabian support includes the handling of none latin numerals and characters.
-    This requires both Mbstring and Intl to be installed.
+This system was designed to be useful for any storage back-end, user input
+and locale.
 
 Organization of this Book
 -------------------------
@@ -23,8 +18,9 @@ This book has been written so that those who need information quickly are able
 to find what they need, and those who wish to learn more advanced topics can
 read deeper into each chapter.
 
-The book begins with an overview of the Search component,
-discussing what's included in the package and preparing you for the remainder of the book.
+The book begins with an overview of the Search system,
+discussing what's included in the package and preparing you for the remainder
+of the book.
 
 It is possible to read this user guide just like any other book (from
 beginning to end). Each chapter begins with a discussion of the contents it
@@ -34,7 +30,7 @@ capabilities, but often you will be able to head directly to the topic you
 wish to learn about.
 
 Throughout this book you will be presented with code samples, which most
-people should find ample to implement the Search component appropriately
+people should find ample to implement the Search system appropriately
 in their own projects.
 
 Code Samples

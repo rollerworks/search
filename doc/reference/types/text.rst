@@ -17,6 +17,12 @@ The text field handles the most basic input text field.
 | Class       | :class:`Rollerworks\\Component\\Search\\Extension\\Core\\Type\\TextType`   |
 +-------------+----------------------------------------------------------------------------+
 
+
+Field Options
+-------------
+
+.. include:: /reference/types/options/trim.rst.inc
+
 Inherited Options
 -----------------
 
