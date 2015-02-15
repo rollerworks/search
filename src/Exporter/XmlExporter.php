@@ -57,7 +57,7 @@ class XmlExporter extends AbstractExporter
         $searchRoot->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $searchRoot->setAttribute(
             'xsi:schemaLocation',
-            'http://rollerworks.github.io/search/schema/dic/search http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd'
+            'http://rollerworks.github.io/search/input/schema/search http://rollerworks.github.io/schema/search/xml-input-1.0.xsd'
         );
 
         $searchRoot->setAttribute('logical', $condition->getValuesGroup()->getGroupLogical());

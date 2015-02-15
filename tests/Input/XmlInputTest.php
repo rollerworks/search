@@ -141,8 +141,8 @@ final class XmlInputTest extends InputProcessorTestCase
             array(
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-                ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-                'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+                ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+                'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                     <fields>
                         <field name="name">
                             <single-values>

@@ -23,8 +23,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <fields>
                     <field name="name">
                         <single-values>
@@ -51,8 +51,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <fields>
                     <field name="firstname">
                         <single-values>
@@ -70,8 +70,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <fields>
                     <field name="name">
                         <single-values>
@@ -94,8 +94,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <fields>
                     <field name="id">
                         <ranges>
@@ -141,8 +141,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <fields>
                     <field name="id">
                         <comparisons>
@@ -167,8 +167,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <fields>
                 <field name="name">
                     <pattern-matchers>
@@ -190,8 +190,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <fields>
                     <field name="name">
                         <single-values>
@@ -231,8 +231,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <groups>
                     <group logical="AND">
                         <fields>
@@ -264,8 +264,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <groups>
                     <group logical="AND">
                         <groups>
@@ -299,8 +299,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
     {
         return '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND"/>'
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND"/>'
         ;
     }
 
@@ -308,8 +308,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
     {
         return '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
-            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
+            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                 <groups>
                     <group logical="AND"/>
                 </groups>
