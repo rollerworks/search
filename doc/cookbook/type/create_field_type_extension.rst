@@ -84,7 +84,7 @@ to override one of the following methods:
 * ``configureOptions()``
 
 For more information on what those methods do, you can refer to the
-:doc:`Creating Custom Field Types </cookbook/field/create_custom_field_type>`
+:doc:`Creating Custom Field Types <create_custom_field_type>`
 cookbook article.
 
 Adding the extension Business Logic
