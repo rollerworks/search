@@ -27,40 +27,42 @@ class FilterQueryExporter extends AbstractExporter
     /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
-     * @param bool        $useFieldAlias
      * @param bool        $isRoot
      *
      * @return string
      */
-    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $useFieldAlias = false, $isRoot = false)
+    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false)
     {
         $result = '';
-        $exportedFields = '';
         $exportedGroups = '';
 
-        foreach ($valuesGroup->getFields() as $name => $values) {
-            $exportedValue = $this->exportValues($values, $fieldSet->get($name));
+        if ($isRoot &&
+            $valuesGroup->countValues() > 0 &&
+            ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()
+        ) {
+            $result .= '*';
+        }
 
-            // Only export fields with actual values
-            if (!empty($exportedValue)) {
-                $exportedFields .= ($useFieldAlias ? $this->labelResolver->resolveFieldLabel($fieldSet, $name) : $name);
-                $exportedFields .= ': '.$exportedValue.'; ';
+        foreach ($valuesGroup->getFields() as $name => $values) {
+            if (0 === $values->count()) {
+                continue;
             }
+
+            $result .= $this->labelResolver->resolveFieldLabel($fieldSet, $name);
+            $result .= ': '.$this->exportValues($values, $fieldSet->get($name)).'; ';
         }
 
         foreach ($valuesGroup->getGroups() as $group) {
-            $exportedGroups .= $this->exportGroup($group, $fieldSet, $useFieldAlias, false);
-        }
+            $exportedGroup = '('.trim($this->exportGroup($group, $fieldSet), ' ;').'); ';
 
-        if (!empty($exportedFields) || !empty($exportedGroups)) {
-            // When the head group is OR-cased force to wrap it inside a group
-            if (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()) {
-                $isRoot = false;
-                $result = '*';
+            if (!empty($exportedGroup) && ValuesGroup::GROUP_LOGICAL_OR === $group->getGroupLogical()) {
+                $exportedGroups .= '*';
             }
 
-            $result .= (!$isRoot ? '(' : '').$exportedFields.$exportedGroups.(!$isRoot ? ');' : '');
+            $exportedGroups .= $exportedGroup;
         }
+
+        $result .= $exportedGroups;
 
         return trim($result);
     }

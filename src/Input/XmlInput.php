@@ -90,12 +90,6 @@ class XmlInput extends AbstractInput
     {
         $this->validateGroupNesting($groupIdx, $level);
 
-        if (!isset($values->fields) && !isset($values->groups)) {
-            throw new InputProcessorException(
-                sprintf('Empty group found in group %d at nesting level %d', $groupIdx, $level)
-            );
-        }
-
         if (isset($values->fields)) {
             $this->processFields($values, $valuesGroup, $groupIdx, $level);
         }

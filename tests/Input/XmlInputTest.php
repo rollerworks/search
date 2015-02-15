@@ -30,14 +30,14 @@ final class XmlInputTest extends InputProcessorTestCase
      * @test
      * @dataProvider provideInvalidInputTests
      */
-    public function it_errors_when_the_syntax_is_invalid($input, $message, $exceptionClass = null)
+    public function it_errors_when_the_syntax_is_invalid($input, $message)
     {
         $fieldSet = $this->getFieldSet(false)->add('field1', 'text')->getFieldSet();
 
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($fieldSet);
 
-        $this->setExpectedException($exceptionClass ?: '\InvalidArgumentException', $message);
+        $this->setExpectedException('\InvalidArgumentException', $message);
 
         $processor->process($config, $input);
     }
@@ -52,13 +52,6 @@ final class XmlInputTest extends InputProcessorTestCase
             array(
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>',
                 "[ERROR 4] Start tag expected, '<' not found (in n/a - line 1, column 37)",
-            ),
-            array(
-                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
-                <search>
-                </search>',
-                'Empty group found in group 0 at nesting level 0',
-                'Rollerworks\Component\Search\Exception\InputProcessorException',
             ),
             array(
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>

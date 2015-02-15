@@ -50,17 +50,27 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
 
     public function provideGroupTest()
     {
-        return 'name: value, value2; (name: value3, value4; );*(name: value8, value10; );';
+        return 'name: value, value2; (name: value3, value4); *(name: value8, value10);';
     }
 
     public function provideMultipleSubGroupTest()
     {
-        return '(name: value, value2; );(name: value3, value4; );';
+        return '(name: value, value2); (name: value3, value4);';
     }
 
     public function provideNestedGroupTest()
     {
-        return '((name: value, value2; ););';
+        return '((name: value, value2));';
+    }
+
+    public function provideEmptyValuesTest()
+    {
+        return '';
+    }
+
+    public function provideEmptyGroupTest()
+    {
+        return '();';
     }
 
     /**

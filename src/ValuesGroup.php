@@ -47,6 +47,11 @@ class ValuesGroup implements \Serializable
     private $locked = false;
 
     /**
+     * @var int|null
+     */
+    private $count = null;
+
+    /**
      * Constructor.
      *
      * @param string $groupLogical
@@ -220,6 +225,30 @@ class ValuesGroup implements \Serializable
     }
 
     /**
+     * Get the total number of values in fields list structure.
+     *
+     * @return int
+     */
+    public function countValues()
+    {
+        $count = 0;
+
+        if (null !== $this->count) {
+            return $this->count;
+        }
+
+        foreach ($this->fields as $field) {
+            $count += $field->count();
+        }
+
+        if ($this->locked) {
+            $this->count = $count;
+        }
+
+        return $count;
+    }
+
+    /**
      * Get the logical case of the field.
      *
      * This is either one of the following class constants value:
@@ -260,10 +289,11 @@ class ValuesGroup implements \Serializable
     {
         return serialize(
             array(
-            $this->groupLogical,
-            $this->groups,
-            $this->fields,
+                $this->groupLogical,
+                $this->groups,
+                $this->fields,
                 $this->locked,
+                $this->count
             )
         );
     }
@@ -279,7 +309,8 @@ class ValuesGroup implements \Serializable
             $this->groupLogical,
             $this->groups,
             $this->fields,
-            $this->locked
+            $this->locked,
+            $this->count
         ) = $data;
     }
 

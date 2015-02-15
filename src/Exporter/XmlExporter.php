@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Exporter;
 
+use Rollerworks\Component\Search\FieldLabelResolver\NoopLabelResolver;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Range;
@@ -43,8 +44,10 @@ class XmlExporter extends AbstractExporter
      */
     public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false, $formatOutput = true)
     {
-        if ($useFieldAlias && null === $this->labelResolver) {
-            throw new \RuntimeException('Unable resolve field-name to alias because no labelResolver is configured.');
+        $labelResolver = $this->labelResolver;
+
+        if (!$useFieldAlias && $this->labelResolver instanceof NoopLabelResolver) {
+            $this->labelResolver = new NoopLabelResolver();
         }
 
         $this->document = new \DOMDocument('1.0', 'utf-8');
@@ -59,11 +62,14 @@ class XmlExporter extends AbstractExporter
 
         $searchRoot->setAttribute('logical', $condition->getValuesGroup()->getGroupLogical());
 
-        $this->exportGroupNode($searchRoot, $condition->getValuesGroup(), $condition->getFieldSet(), $useFieldAlias);
+        $this->exportGroupNode($searchRoot, $condition->getValuesGroup(), $condition->getFieldSet());
 
         $this->document->appendChild($searchRoot);
         $xml = $this->document->saveXML();
         $this->document = null;
+
+        // Restore original resolver
+        $this->labelResolver = $labelResolver;
 
         return $xml;
     }
@@ -71,7 +77,7 @@ class XmlExporter extends AbstractExporter
     /**
      * @ignore
      */
-    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $useFieldAlias = false, $isRoot = false)
+    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false)
     {
         // no-op
     }
@@ -80,13 +86,12 @@ class XmlExporter extends AbstractExporter
      * @param \DOMNode    $parent
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
-     * @param bool        $useFieldAlias
      */
-    protected function exportGroupNode(\DOMNode $parent, ValuesGroup $valuesGroup, FieldSet $fieldSet, $useFieldAlias = false)
+    protected function exportGroupNode(\DOMNode $parent, ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         $fields = $valuesGroup->getFields();
 
-        if (!empty($fields)) {
+        if ($valuesGroup->countValues() > 0) {
             $fieldsNode = $this->document->createElement('fields');
 
             foreach ($fields as $name => $values) {
@@ -94,7 +99,7 @@ class XmlExporter extends AbstractExporter
                     continue;
                 }
 
-                $fieldLabel = ($useFieldAlias ? $this->labelResolver->resolveFieldLabel($fieldSet, $name) : $name);
+                $fieldLabel = $this->labelResolver->resolveFieldLabel($fieldSet, $name);
                 $fieldNode = $this->document->createElement('field');
                 $fieldNode->setAttribute('name', $fieldLabel);
 
@@ -102,9 +107,7 @@ class XmlExporter extends AbstractExporter
                 $fieldsNode->appendChild($fieldNode);
             }
 
-            if ($fieldsNode->hasChildNodes()) {
-                $parent->appendChild($fieldsNode);
-            }
+            $parent->appendChild($fieldsNode);
         }
 
         if ($valuesGroup->hasGroups()) {
@@ -114,16 +117,12 @@ class XmlExporter extends AbstractExporter
                 $groupNode = $this->document->createElement('group');
                 $groupNode->setAttribute('logical', $group->getGroupLogical());
 
-                $this->exportGroupNode($groupNode, $group, $fieldSet, $useFieldAlias, false);
+                $this->exportGroupNode($groupNode, $group, $fieldSet);
 
-                if ($groupNode->hasChildNodes()) {
-                    $groupsNode->appendChild($groupNode);
-                }
+                $groupsNode->appendChild($groupNode);
             }
 
-            if ($groupsNode->hasChildNodes()) {
-                $parent->appendChild($groupsNode);
-            }
+            $parent->appendChild($groupsNode);
         }
     }
 
@@ -196,9 +195,7 @@ class XmlExporter extends AbstractExporter
                 $element = $this->document->createElement('compare');
                 $element->setAttribute('operator', $value->getOperator());
                 $element->appendChild(
-                    $this->document->createTextNode(
-                        $value->getViewValue()
-                    )
+                    $this->document->createTextNode($value->getViewValue())
                 );
 
                 $valuesNode->appendChild($element);
@@ -215,9 +212,7 @@ class XmlExporter extends AbstractExporter
                 $element->setAttribute('type', strtolower($this->getPatternMatchType($value)));
                 $element->setAttribute('case-insensitive', $value->isCaseInsensitive() ? 'true' : 'false');
                 $element->appendChild(
-                    $this->document->createTextNode(
-                        $value->getValue()
-                    )
+                    $this->document->createTextNode($value->getValue())
                 );
 
                 $valuesNode->appendChild($element);
@@ -239,9 +234,7 @@ class XmlExporter extends AbstractExporter
 
         $element = $this->document->createElement('lower');
         $element->appendChild(
-            $this->document->createTextNode(
-                $range->getViewLower()
-            )
+            $this->document->createTextNode($range->getViewLower())
         );
 
         if (!$range->isLowerInclusive()) {
@@ -252,9 +245,7 @@ class XmlExporter extends AbstractExporter
 
         $element = $this->document->createElement('upper');
         $element->appendChild(
-            $this->document->createTextNode(
-                $range->getViewUpper()
-            )
+            $this->document->createTextNode($range->getViewUpper())
         );
 
         if (!$range->isUpperInclusive()) {

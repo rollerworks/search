@@ -199,6 +199,16 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
         );
     }
 
+    public function provideEmptyValuesTest()
+    {
+        return array();
+    }
+
+    public function provideEmptyGroupTest()
+    {
+        return array('groups' => array(array()));
+    }
+
     /**
      * @return ExporterInterface
      */
