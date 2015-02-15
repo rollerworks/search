@@ -102,12 +102,6 @@ class ArrayInput extends AbstractInput
     ) {
         $this->validateGroupNesting($groupIdx, $level);
 
-        if (empty($values['fields']) && empty($values['groups'])) {
-            throw new InputProcessorException(
-                sprintf('Empty group found in group %d at nesting level %d', $groupIdx, $level)
-            );
-        }
-
         if (isset($values['fields'])) {
             $this->processFields($values['fields'], $valuesGroup, $groupIdx, $level);
         }
