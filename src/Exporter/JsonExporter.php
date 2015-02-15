@@ -33,17 +33,6 @@ class JsonExporter extends ArrayExporter
      */
     public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false)
     {
-        if ($useFieldAlias && null === $this->labelResolver) {
-            throw new \RuntimeException('Unable resolve field-name to alias because no labelResolver is configured.');
-        }
-
-        return json_encode(
-            $this->exportGroup(
-                $condition->getValuesGroup(),
-                $condition->getFieldSet(),
-                $useFieldAlias,
-                true
-            )
-        );
+        return json_encode(parent::exportCondition($condition, $useFieldAlias));
     }
 }

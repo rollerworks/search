@@ -26,41 +26,34 @@ class ArrayExporter extends AbstractExporter
     /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
-     * @param bool        $useFieldAlias
      * @param bool        $isRoot
      *
      * @return array
      */
-    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $useFieldAlias = false, $isRoot = false)
+    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false)
     {
         $result = array();
         $fields = $valuesGroup->getFields();
 
-        if (!empty($fields)) {
-            $result['fields'] = array();
+        foreach ($fields as $name => $values) {
+            if (0 === $values->count()) {
+                continue;
+            }
 
-            foreach ($fields as $name => $values) {
-                $exportedValue = $this->exportValues($values, $fieldSet->get($name));
+            $exportedValue = $this->exportValues($values, $fieldSet->get($name));
 
-                // Only export fields with actual values
-                if (!empty($exportedValue)) {
-                    $fieldLabel = ($useFieldAlias ? $this->labelResolver->resolveFieldLabel($fieldSet, $name) : $name);
-                    $result['fields'][$fieldLabel] = $exportedValue;
-                }
+            // Only export fields with actual values
+            if (!empty($exportedValue)) {
+                $fieldLabel = $this->labelResolver->resolveFieldLabel($fieldSet, $name);
+                $result['fields'][$fieldLabel] = $exportedValue;
             }
         }
 
-        if ($valuesGroup->hasGroups()) {
-            $result['groups'] = array();
-
-            foreach ($valuesGroup->getGroups() as $group) {
-                $result['groups'][] = $this->exportGroup($group, $fieldSet, $useFieldAlias, false);
-            }
+        foreach ($valuesGroup->getGroups() as $group) {
+            $result['groups'][] = $this->exportGroup($group, $fieldSet, false);
         }
 
-        if (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() &&
-            (isset($result['groups']) || isset($result['fields']))
-        ) {
+        if (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() && (isset($result['fields']))) {
             $result['logical-case'] = 'OR';
         }
 
@@ -76,88 +69,40 @@ class ArrayExporter extends AbstractExporter
     {
         $exportedValues = array();
 
-        if ($valuesBag->hasSingleValues()) {
-            $singleValues = array();
-
-            foreach ($valuesBag->getSingleValues() as $value) {
-                $singleValues[] = $value->getViewValue();
-            }
-
-            if (count($singleValues)) {
-                $exportedValues['single-values'] = $singleValues;
-            }
+        foreach ($valuesBag->getSingleValues() as $value) {
+            $exportedValues['single-values'][] = $value->getViewValue();
         }
 
-        if ($valuesBag->hasExcludedValues()) {
-            $excludedValues = array();
-
-            foreach ($valuesBag->getExcludedValues() as $value) {
-                $excludedValues[] = $value->getViewValue();
-            }
-
-            if (count($excludedValues)) {
-                $exportedValues['excluded-values'] = $excludedValues;
-            }
+        foreach ($valuesBag->getExcludedValues() as $value) {
+            $exportedValues['excluded-values'][] = $value->getViewValue();
         }
 
-        if ($valuesBag->hasRanges()) {
-            $exportedRanges = array();
-
-            foreach ($valuesBag->getRanges() as $value) {
-                $exportedRanges[] = $this->exportRangeValue($value);
-            }
-
-            if (count($exportedRanges)) {
-                $exportedValues['ranges'] = $exportedRanges;
-            }
+        foreach ($valuesBag->getRanges() as $value) {
+            $exportedValues['ranges'][] = $this->exportRangeValue($value);
         }
 
-        if ($valuesBag->hasExcludedRanges()) {
-            $exportedExcludedRanges = array();
-
-            foreach ($valuesBag->getExcludedRanges() as $value) {
-                $exportedExcludedRanges[] = $this->exportRangeValue($value);
-            }
-
-            if (count($exportedExcludedRanges)) {
-                $exportedValues['excluded-ranges'] = $exportedExcludedRanges;
-            }
+        foreach ($valuesBag->getExcludedRanges() as $value) {
+            $exportedValues['excluded-ranges'][] = $this->exportRangeValue($value);
         }
 
-        if ($valuesBag->hasComparisons()) {
-            $exportedComparisons = array();
-
-            foreach ($valuesBag->getComparisons() as $value) {
-                $exportedComparisons[] = array(
-                    'operator' => $value->getOperator(),
-                    'value' => $value->getViewValue(),
-                );
-            }
-
-            if (count($exportedComparisons)) {
-                $exportedValues['comparisons'] = $exportedComparisons;
-            }
+        foreach ($valuesBag->getComparisons() as $value) {
+            $exportedValues['comparisons'][] = array(
+                'operator' => $value->getOperator(),
+                'value' => $value->getViewValue(),
+            );
         }
 
-        if ($valuesBag->hasPatternMatchers()) {
-            $exportedPatternMatchers = array();
+        foreach ($valuesBag->getPatternMatchers() as $value) {
+            $matcher = array(
+                'type' => $this->getPatternMatchType($value),
+                'value' => $value->getValue(),
+            );
 
-            foreach ($valuesBag->getPatternMatchers() as $value) {
-                $matcher = array(
-                    'type' => $this->getPatternMatchType($value),
-                    'value' => $value->getValue(),
-                );
-
-                if ($value->isCaseInsensitive()) {
-                    $matcher['case-insensitive'] = $value->isCaseInsensitive();
-                }
-
-                $exportedPatternMatchers[] = $matcher;
+            if ($value->isCaseInsensitive()) {
+                $matcher['case-insensitive'] = $value->isCaseInsensitive();
             }
 
-            if (count($exportedPatternMatchers)) {
-                $exportedValues['pattern-matchers'] = $exportedPatternMatchers;
-            }
+            $exportedValues['pattern-matchers'][] = $matcher;
         }
 
         return $exportedValues;

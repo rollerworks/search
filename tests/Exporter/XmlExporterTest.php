@@ -288,7 +288,33 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
 
     protected function assertExportEquals($expected, $actual)
     {
-        $this->assertXmlStringEqualsXmlString($expected, $actual);
+        if (!empty($expected) xor !empty($actual)) {
+            $this->assertEquals($expected, $actual);
+        } else {
+            $this->assertXmlStringEqualsXmlString($expected, $actual);
+        }
+    }
+
+    public function provideEmptyValuesTest()
+    {
+        return '<?xml version="1.0" encoding="UTF-8"?'.'>
+            <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
+            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND"/>'
+        ;
+    }
+
+    public function provideEmptyGroupTest()
+    {
+        return '<?xml version="1.0" encoding="UTF-8"?'.'>
+            <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
+            ' xsi:schemaLocation="http://rollerworks.github.io/search/schema/dic/search '.
+            'http://rollerworks.github.io/search/schema/dic/search/input-1.0.xsd" logical="AND">
+                <groups>
+                    <group logical="AND"/>
+                </groups>
+            </search>'
+        ;
     }
 
     /**

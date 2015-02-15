@@ -27,12 +27,11 @@ class FilterQueryExporter extends AbstractExporter
     /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
-     * @param bool        $useFieldAlias
      * @param bool        $isRoot
      *
      * @return string
      */
-    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $useFieldAlias = false, $isRoot = false)
+    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false)
     {
         $result = '';
         $exportedGroups = '';

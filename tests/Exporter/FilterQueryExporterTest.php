@@ -63,6 +63,16 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
         return '((name: value, value2));';
     }
 
+    public function provideEmptyValuesTest()
+    {
+        return '';
+    }
+
+    public function provideEmptyGroupTest()
+    {
+        return '();';
+    }
+
     /**
      * @return ExporterInterface
      */

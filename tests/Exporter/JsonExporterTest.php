@@ -217,6 +217,16 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
         );
     }
 
+    public function provideEmptyValuesTest()
+    {
+        return json_encode(array());
+    }
+
+    public function provideEmptyGroupTest()
+    {
+        return json_encode(array('groups' => array(array())));
+    }
+
     /**
      * @return ExporterInterface
      */

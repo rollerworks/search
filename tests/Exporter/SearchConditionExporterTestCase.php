@@ -26,6 +26,7 @@ use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
+// TODO Add some tests with empty fields and groups (and they should be able to process)
 abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 {
     /**
@@ -409,6 +410,54 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
      * @return mixed
      */
     abstract public function provideNestedGroupTest();
+
+    /**
+     * @test
+     */
+    public function it_exporters_with_empty_fields()
+    {
+        $exporter = $this->getExporter();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $values = new ValuesBag();
+        $expectedGroup->addField('name', $values);
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertExportEquals($this->provideEmptyValuesTest(), $exporter->exportCondition($condition));
+
+        $processor = $this->getInputProcessor();
+        $processor->process($config, $this->provideEmptyValuesTest());
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract public function provideEmptyValuesTest();
+
+    /**
+     * @test
+     */
+    public function it_exporters_with_empty_group()
+    {
+        $exporter = $this->getExporter();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+        $expectedGroup->addGroup(new ValuesGroup());
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertExportEquals($this->provideEmptyGroupTest(), $exporter->exportCondition($condition));
+
+        $processor = $this->getInputProcessor();
+        $processor->process($config, $this->provideEmptyGroupTest());
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract public function provideEmptyGroupTest();
 
     protected function assertExportEquals($expected, $actual)
     {

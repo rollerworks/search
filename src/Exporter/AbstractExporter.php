@@ -58,7 +58,7 @@ abstract class AbstractExporter implements ExporterInterface
             $this->labelResolver = new NoopLabelResolver();
         }
 
-        $result = $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), $useFieldAlias, true);
+        $result = $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
 
         // Restore original resolver
         $this->labelResolver = $labelResolver;
@@ -127,10 +127,9 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
-     * @param bool        $useFieldAlias
      * @param bool        $isRoot
      *
      * @return mixed
      */
-    abstract protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $useFieldAlias = false, $isRoot = false);
+    abstract protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false);
 }
