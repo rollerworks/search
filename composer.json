@@ -32,8 +32,8 @@
     "autoload-dev": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Tests\\Mocks\\": "tests/Mocks/",
-            "Rollerworks\\Component\\Search\\Tests\\Fixtures\\": "tests/Fixtures/",
-            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "tests/"
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "tests/",
+            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
     },
     "config": {
