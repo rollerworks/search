@@ -68,7 +68,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
 
         switch ($connection->getDatabasePlatform()->getName()) {
             case 'postgresql':
-                return "to_char('YYYY', age($column))";
+                return "to_char(age($column), 'YYYY'::text)::integer";
 
             case 'mysql':
             case 'drizzle':
