@@ -139,7 +139,7 @@ class SearchMatch
                 return sprintf(
                     '%s%s%s REGEXP %s',
                     $column,
-                    ($caseInsensitive ? 'BINARY ' : ''),
+                    ($caseInsensitive ? ' BINARY' : ''),
                     ($negative ? ' NOT' : ''),
                     $value
                 );
