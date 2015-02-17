@@ -83,12 +83,16 @@ class SearchMatch
     public static function getMatchSqlLike($column, $value, $caseInsensitive, $negative, Connection $connection)
     {
         if (!$caseInsensitive) {
+            if ('postgresql' === $connection->getDatabasePlatform()->getName()) {
+                return $column.($negative ? ' NOT' : '')." LIKE $value ESCAPE E'\\\\'";
+            }
+
             return $column.($negative ? ' NOT' : '')." LIKE $value ESCAPE '\\\\'";
         }
 
         switch ($connection->getDatabasePlatform()->getName()) {
             case 'postgresql':
-                return $column.($negative ? ' NOT' : '')."ILIKE $value ESCAPE '\\\\'";
+                return $column.($negative ? ' NOT' : '')." ILIKE $value ESCAPE E'\\\\'";
 
             case 'mysql':
             case 'drizzle':
