@@ -137,10 +137,10 @@ class SearchMatch
             case 'mysql':
             case 'drizzle':
                 return sprintf(
-                    '%s%s%s REGEXP %s',
+                    '%s%s REGEXP%s %s',
                     $column,
-                    ($caseInsensitive ? ' BINARY' : ''),
                     ($negative ? ' NOT' : ''),
+                    ($caseInsensitive ? ' BINARY' : ''),
                     $value
                 );
 

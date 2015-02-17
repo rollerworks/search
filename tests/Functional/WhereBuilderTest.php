@@ -317,13 +317,14 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
+        $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
         $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface');
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
-            ->will($this->returnCallback(function ($column) {
-                return "CAST($column AS integer)";
+            ->will($this->returnCallback(function ($column) use ($type) {
+                return "CAST($column AS $type)";
             }))
         ;
 
@@ -347,13 +348,14 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
+        $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
         $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface');
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlValue')
-            ->will($this->returnCallback(function ($input) {
-                return "CAST($input AS integer)";
+            ->will($this->returnCallback(function ($input) use ($type) {
+                return "CAST($input AS $type)";
             }))
         ;
 
