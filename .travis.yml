@@ -37,7 +37,8 @@ matrix:
 install:
     - export COMPOSER_ROOT_VERSION=dev-master
     - if [ "$DEPENDENCIES" == "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
-    - if [ "$DEPENDENCIES" != "low" ]; then travis_retry composer update; fi;
+    - if [ "$DB" != "" ] ; then travis_retry composer update --prefer-source; fi;
+    - if [ "$DEPENDENCIES" != "low" ] && [ "$DB" == "" ] ; then travis_retry composer update; fi;
     - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest; fi;
 
 script:

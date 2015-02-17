@@ -323,7 +323,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
             ->will($this->returnCallback(function ($column) {
-                return "CAST($column AS customer_type)";
+                return "CAST($column AS integer)";
             }))
         ;
 

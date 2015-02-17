@@ -87,7 +87,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
                         if (is_object($p)) {
                             return get_class($p);
                         } else {
-                            return "'".$p."'";
+                            return "'".var_export($p, true)."'";
                         }
                     },
                     $query['params'] ?: array()
