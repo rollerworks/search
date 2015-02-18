@@ -12,8 +12,8 @@
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\DBAL\Driver\Connection;
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
@@ -41,7 +41,7 @@ class QueryGenerator
     protected $parameterPrefix;
 
     /**
-     * @var array
+     * @var QueryField[]
      */
     protected $fields = array();
 
@@ -83,10 +83,9 @@ class QueryGenerator
     /**
      * Constructor.
      *
-     * @param Connection               $connection      Doctrine DBAL Connection object
-     * @param SearchConditionInterface $searchCondition SearchCondition object
-     * @param array                    $fields          Array containing the: field(FieldConfigInterface)
-     *                                                  column (including alias), db_type, conversion; per field-name
+     * @param Connection               $connection
+     * @param SearchConditionInterface $searchCondition
+     * @param QueryField[]             $fields
      * @param string                   $parameterPrefix
      * @param bool                     $embedValues
      */
@@ -94,47 +93,9 @@ class QueryGenerator
     {
         $this->searchCondition = $searchCondition;
         $this->connection = $connection;
-        $this->configureFields($fields);
+        $this->fields = $fields;
         $this->parameterPrefix = $parameterPrefix;
         $this->embedValues = $embedValues;
-    }
-
-    /**
-     * @param array $fields
-     *
-     * @throws InvalidArgumentException
-     */
-    protected function configureFields(array $fields)
-    {
-        foreach ($fields as $fieldName => $fieldConfig) {
-            if (empty($fieldConfig['column'])) {
-                throw new InvalidArgumentException(
-                    sprintf('The keys "column" should not be empty for field "%s"', $fieldName)
-                );
-            }
-
-            if (empty($fieldConfig['field'])) {
-                throw new InvalidArgumentException(
-                    sprintf('The keys "field" should not be empty for field "%s"', $fieldName)
-                );
-            }
-
-            if (empty($fieldConfig['db_type'])) {
-                throw new InvalidArgumentException(
-                    sprintf('The keys "db_type" should not be empty for field "%s"', $fieldName)
-                );
-            }
-
-            if (empty($fieldConfig['field_convertor'])) {
-                $fieldConfig['field_convertor'] = null;
-            }
-
-            if (empty($fieldConfig['value_convertor'])) {
-                $fieldConfig['value_convertor'] = null;
-            }
-        }
-
-        $this->fields = $fields;
     }
 
     /**
@@ -198,6 +159,8 @@ class QueryGenerator
             if (!$this->acceptsField($field)) {
                 continue;
             }
+
+            //$queryField = $this->fields[$fieldName];
 
             $groupSql = array();
             $inclusiveSqlGroup = array();
@@ -319,10 +282,7 @@ class QueryGenerator
             return $this->fieldConversionCache[$fieldName][$strategy];
         }
 
-        /** @var SqlFieldConversionInterface $converter */
-        $converter = $this->fields[$fieldName]['field_convertor'];
-
-        return $this->fieldConversionCache[$fieldName][$strategy] = $converter->convertSqlField(
+        return $this->fieldConversionCache[$fieldName][$strategy] = $this->fields[$fieldName]->getFieldConversion()->convertSqlField(
             $column,
             $field->getOptions(),
             $this->getConversionHints($fieldName, $column, $strategy)
@@ -355,7 +315,7 @@ class QueryGenerator
             $value = $this->parameters[$value];
         }
 
-        return $this->fields[$fieldName]['value_convertor']->convertSqlValue(
+        return $this->fields[$fieldName]->getValueConversion()->convertSqlValue(
             $value,
             $field->getOptions(),
             $this->getConversionHints($fieldName, $column, $strategy) + array(
@@ -387,9 +347,9 @@ class QueryGenerator
     protected function getConversionHints($fieldName, $column, $strategy = null)
     {
         return array(
-            'search_field' => $this->fields[$fieldName]['field'],
+            'search_field' => $this->fields[$fieldName]->getFieldConfig(),
             'connection' => $this->connection,
-            'db_type' => $this->fields[$fieldName]['db_type'],
+            'db_type' => $this->fields[$fieldName]->getDbType(),
             'column' => $column,
             'conversion_strategy' => $strategy,
         );
@@ -433,8 +393,8 @@ class QueryGenerator
      */
     protected function processSingleValues(array $values, $fieldName, array &$query, $exclude = false)
     {
-        if (!$this->fields[$fieldName]['field_convertor'] instanceof ConversionStrategyInterface &&
-            !$this->fields[$fieldName]['value_convertor'] instanceof SqlValueConversionInterface
+        if (!$this->fields[$fieldName]->hasConversionStrategy() &&
+            !$this->fields[$fieldName]->getValueConversion() instanceof SqlValueConversionInterface
         ) {
             // Don't use IN() with a custom SQL-statement for better compatibility
             // Always using OR seems to decrease the performance on some DB engines
@@ -633,22 +593,22 @@ class QueryGenerator
      */
     protected function getConversionStrategy($fieldName, $value)
     {
-        if ($this->fields[$fieldName]['value_convertor'] instanceof ConversionStrategyInterface) {
-            $hints = $this->getConversionHints($fieldName, $this->fields[$fieldName]['column']);
+        if ($this->fields[$fieldName]->getValueConversion() instanceof ConversionStrategyInterface) {
+            $hints = $this->getConversionHints($fieldName, $this->fields[$fieldName]->getColumn());
 
-            return $this->fields[$fieldName]['value_convertor']->getConversionStrategy(
+            return $this->fields[$fieldName]->getValueConversion()->getConversionStrategy(
                 $value,
-                $this->fields[$fieldName]['field']->getOptions(),
+                $this->fields[$fieldName]->getFieldConfig()->getOptions(),
                 $hints
             );
         }
 
-        if ($this->fields[$fieldName]['field_convertor'] instanceof ConversionStrategyInterface) {
-            $hints = $this->getConversionHints($fieldName, $this->fields[$fieldName]['column']);
+        if ($this->fields[$fieldName]->getFieldConversion() instanceof ConversionStrategyInterface) {
+            $hints = $this->getConversionHints($fieldName, $this->fields[$fieldName]->getColumn());
 
-            return $this->fields[$fieldName]['field_convertor']->getConversionStrategy(
+            return $this->fields[$fieldName]->getFieldConversion()->getConversionStrategy(
                 $value,
-                $this->fields[$fieldName]['field']->getOptions(),
+                $this->fields[$fieldName]->getFieldConfig()->getOptions(),
                 $hints
             );
         }
@@ -675,20 +635,18 @@ class QueryGenerator
     protected function getValueAsSql($value, $inputValue, $fieldName, $column, $strategy = null, $noSqlConversion = false)
     {
         // No conversions so set the value as query-parameter
-        if (!$this->embedValues && !$this->fields[$fieldName]['value_convertor'] instanceof ValueConversionInterface) {
+        if (!$this->embedValues && !$this->fields[$fieldName]->getValueConversion() instanceof ValueConversionInterface) {
             $paramName = $this->getUniqueParameterName($fieldName);
+
             $this->parameters[$paramName] = $value;
-            $this->parametersType[$paramName] = $this->fields[$fieldName]['db_type'];
+            $this->parametersType[$paramName] = $this->fields[$fieldName]->getDbType();
 
             return ':'.$paramName;
         }
 
-        /** @var \Doctrine\DBAL\Types\Type $type */
-        $type = $this->fields[$fieldName]['db_type'];
-        /** @var ValueConversionInterface|SqlValueConversionInterface $converter */
-        $converter = $this->fields[$fieldName]['value_convertor'];
-        /** @var FieldConfigInterface $field */
-        $field = $this->fields[$fieldName]['field'];
+        $type = $this->fields[$fieldName]->getDbType();
+        $converter = $this->fields[$fieldName]->getValueConversion();
+        $field = $this->fields[$fieldName]->getFieldConfig();
 
         if ($this->embedValues && !$converter) {
             return $this->connection->quote(
@@ -728,6 +686,7 @@ class QueryGenerator
         }
 
         $paramName = $this->getUniqueParameterName($fieldName);
+
         $this->parameters[$paramName] = $convertedValue;
         $this->parametersType[$paramName] = $type;
 
@@ -750,8 +709,9 @@ class QueryGenerator
     {
         if (!$this->embedValues && !$converter->valueRequiresEmbedding($value, $field->getOptions(), $hints)) {
             $paramName = $this->getUniqueParameterName($fieldName);
+
             $this->parameters[$paramName] = $convertedValue;
-            $this->parametersType[$paramName] = $this->fields[$fieldName]['db_type'];
+            $this->parametersType[$paramName] = $this->fields[$fieldName]->getDbType();
 
             $convertedValue = ':'.$paramName;
         }
@@ -794,15 +754,15 @@ class QueryGenerator
             return $this->fieldsMappingCache[$fieldName][$strategy];
         }
 
-        if ($this->fields[$fieldName]['field_convertor'] instanceof SqlFieldConversionInterface) {
+        if ($this->fields[$fieldName]->getFieldConversion() instanceof SqlFieldConversionInterface) {
             $this->fieldsMappingCache[$fieldName][$strategy] = $this->getFieldConversionSql(
                 $fieldName,
-                $this->fields[$fieldName]['column'],
-                $this->fields[$fieldName]['field'],
+                $this->fields[$fieldName]->getColumn(),
+                $this->fields[$fieldName]->getFieldConfig(),
                 $strategy
             );
         } else {
-            $this->fieldsMappingCache[$fieldName][$strategy] = $this->fields[$fieldName]['column'];
+            $this->fieldsMappingCache[$fieldName][$strategy] = $this->fields[$fieldName]->getColumn();
         }
 
         return $this->fieldsMappingCache[$fieldName][$strategy];
