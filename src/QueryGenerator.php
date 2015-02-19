@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\FieldConfigInterface;
