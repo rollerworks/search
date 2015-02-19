@@ -89,7 +89,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
             $condition
         );
 
-        $whereBuilder->setField('birthday', 'birthday', 'string', 'u'); // don't use date as this breaks the binding
+        $whereBuilder->setField('birthday', 'birthday', 'date', 'u');
 
         return $whereBuilder;
     }
@@ -99,9 +99,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
         $whereClause = $whereBuilder->getWhereClause();
 
-        $statement = $this->conn->prepare("SELECT id FROM site_user AS u WHERE ".$whereClause);
-        $whereBuilder->bindParameters($statement);
-
+        $statement = $this->conn->prepare("SELECT * FROM site_user AS u WHERE ".$whereClause);
         $statement->execute();
 
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);

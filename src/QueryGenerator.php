@@ -36,19 +36,9 @@ class QueryGenerator
     protected $searchCondition;
 
     /**
-     * @var string
-     */
-    protected $parameterPrefix;
-
-    /**
      * @var QueryField[]
      */
     protected $fields = array();
-
-    /**
-     * @var array
-     */
-    protected $parameters = array();
 
     /**
      * @var array
@@ -61,24 +51,9 @@ class QueryGenerator
     protected $fieldConversionCache = array();
 
     /**
-     * @var array
-     */
-    protected $paramPosition = array();
-
-    /**
      * @var Connection
      */
     protected $connection;
-
-    /**
-     * @var array
-     */
-    protected $parametersType = array();
-
-    /**
-     * @var bool
-     */
-    protected $embedValues;
 
     /**
      * Constructor.
@@ -86,60 +61,12 @@ class QueryGenerator
      * @param Connection               $connection
      * @param SearchConditionInterface $searchCondition
      * @param QueryField[]             $fields
-     * @param string                   $parameterPrefix
-     * @param bool                     $embedValues
      */
-    public function __construct(Connection $connection, SearchConditionInterface $searchCondition, array $fields, $parameterPrefix = '', $embedValues = false)
+    public function __construct(Connection $connection, SearchConditionInterface $searchCondition, array $fields)
     {
         $this->searchCondition = $searchCondition;
         $this->connection = $connection;
         $this->fields = $fields;
-        $this->parameterPrefix = $parameterPrefix;
-        $this->embedValues = $embedValues;
-    }
-
-    /**
-     * Returns the parameters that where set during the generation process.
-     *
-     * @return array
-     */
-    public function getParameters()
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * Returns the parameter-value that where set during the generation process.
-     *
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getParameter($name)
-    {
-        return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
-    }
-
-    /**
-     * Returns the parameter-type that where set during the generation process.
-     *
-     * @param string $name
-     *
-     * @return \Doctrine\DBAL\Types\Type
-     */
-    public function getParameterType($name)
-    {
-        return isset($this->parametersType[$name]) ? $this->parametersType[$name] : null;
-    }
-
-    /**
-     * Returns the parameters-type that where set during the generation process.
-     *
-     * @return array
-     */
-    public function getParameterTypes()
-    {
-        return $this->parametersType;
     }
 
     /**
@@ -297,30 +224,17 @@ class QueryGenerator
      * @param string               $value
      * @param FieldConfigInterface $field
      * @param null|int             $strategy
-     * @param bool                 $valueEmbedded
      *
      * @return string
      *
      * @throws BadMethodCallException
      */
-    public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field, $strategy = null, $valueEmbedded = false)
+    public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field, $strategy = null)
     {
-        if ($valueEmbedded) {
-            if (!array_key_exists($value, $this->parameters)) {
-                throw new BadMethodCallException(
-                    sprintf('Unable to find query-parameter "%s", requested for embedding by ValueConversion.', $value)
-                );
-            }
-
-            $value = $this->parameters[$value];
-        }
-
         return $this->fields[$fieldName]->getValueConversion()->convertSqlValue(
             $value,
             $field->getOptions(),
-            $this->getConversionHints($fieldName, $column, $strategy) + array(
-                'value_embedded' => $valueEmbedded ?: $this->embedValues,
-            )
+            $this->getConversionHints($fieldName, $column, $strategy)
         );
     }
 
@@ -333,7 +247,6 @@ class QueryGenerator
      */
     protected function acceptsField(FieldConfigInterface $field)
     {
-        // dummy implementation to prevent removal suggestion
         return isset($this->fields[$field->getName()]);
     }
 
@@ -617,12 +530,8 @@ class QueryGenerator
     }
 
     /**
-     * Returns either a parameter-name or converted value.
-     *
-     * When there is a conversion and the conversion returns SQL the value is threaded as-is.
-     * But if DQL is used the value is wrapped inside a FILTER_VALUE_CONVERSION() DQL function,
-     * and replaced when the SQL is created.
-     *
+     * Returns either the converted value.
+
      * @param string   $value
      * @param object   $inputValue
      * @param string   $fieldName
@@ -634,21 +543,11 @@ class QueryGenerator
      */
     protected function getValueAsSql($value, $inputValue, $fieldName, $column, $strategy = null, $noSqlConversion = false)
     {
-        // No conversions so set the value as query-parameter
-        if (!$this->embedValues && !$this->fields[$fieldName]->getValueConversion() instanceof ValueConversionInterface) {
-            $paramName = $this->getUniqueParameterName($fieldName);
-
-            $this->parameters[$paramName] = $value;
-            $this->parametersType[$paramName] = $this->fields[$fieldName]->getDbType();
-
-            return ':'.$paramName;
-        }
-
-        $type = $this->fields[$fieldName]->getDbType();
         $converter = $this->fields[$fieldName]->getValueConversion();
         $field = $this->fields[$fieldName]->getFieldConfig();
+        $type = $this->fields[$fieldName]->getDbType();
 
-        if ($this->embedValues && !$converter) {
+        if (!$converter) {
             return $this->connection->quote(
                 $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
                 $type->getBindingType()
@@ -659,7 +558,6 @@ class QueryGenerator
         $hints = $this->getConversionHints($fieldName, $column, $strategy) + array(
             'original_value' => $value,
             'value_object' => $inputValue,
-            'value_embedded' => $this->embedValues,
         );
 
         if ($converter->requiresBaseConversion($value, $field->getOptions(), $hints)) {
@@ -669,73 +567,15 @@ class QueryGenerator
         $convertedValue = $converter->convertValue($convertedValue, $field->getOptions(), $hints);
 
         if (!$noSqlConversion && $converter instanceof SqlValueConversionInterface) {
-            return $this->convertSqlValue(
-                $converter,
-                $fieldName,
-                $column,
-                $value,
-                $convertedValue,
-                $field,
-                $hints,
-                $strategy
-            );
+            return $this->getValueConversionSql($fieldName, $column, $convertedValue, $field, $strategy);
         }
 
-        if ($this->embedValues) {
-            return $this->connection->quote($convertedValue, $type->getBindingType());
+        // Don't quote numbers as SQLite doesn't follow standards for casting
+        if (!ctype_digit((string) $convertedValue)) {
+            $convertedValue = $this->connection->quote($convertedValue, $type->getBindingType());
         }
 
-        $paramName = $this->getUniqueParameterName($fieldName);
-
-        $this->parameters[$paramName] = $convertedValue;
-        $this->parametersType[$paramName] = $type;
-
-        return ':'.$paramName;
-    }
-
-    /**
-     * @param SqlValueConversionInterface $converter
-     * @param string                      $fieldName
-     * @param string                      $column
-     * @param mixed                       $value
-     * @param string                      $convertedValue
-     * @param FieldConfigInterface        $field
-     * @param array                       $hints
-     * @param int|null                    $strategy
-     *
-     * @return string
-     */
-    protected function convertSqlValue(SqlValueConversionInterface $converter, $fieldName, $column, $value, $convertedValue, FieldConfigInterface $field, array $hints, $strategy)
-    {
-        if (!$this->embedValues && !$converter->valueRequiresEmbedding($value, $field->getOptions(), $hints)) {
-            $paramName = $this->getUniqueParameterName($fieldName);
-
-            $this->parameters[$paramName] = $convertedValue;
-            $this->parametersType[$paramName] = $this->fields[$fieldName]->getDbType();
-
-            $convertedValue = ':'.$paramName;
-        }
-
-        return $this->getValueConversionSql($fieldName, $column, $convertedValue, $field, $strategy);
-    }
-
-    /**
-     * @param string $fieldName
-     *
-     * @return string
-     */
-    protected function getUniqueParameterName($fieldName)
-    {
-        if (!isset($this->paramPosition[$fieldName])) {
-            $this->paramPosition[$fieldName] = -1;
-        }
-
-        $this->paramPosition[$fieldName] += 1;
-
-        $param = (null !== $this->parameterPrefix ? $this->parameterPrefix.'_' : '');
-        $param .= $fieldName.'_'.$this->paramPosition[$fieldName];
-
-        return $param;
+        return $convertedValue;
     }
 
     /**

@@ -58,40 +58,6 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
     }
 
     /**
-     * @param array        $expected
-     * @param WhereBuilder $whereBuilder
-     */
-    protected function assertParamsEquals(array $expected, $whereBuilder)
-    {
-        foreach ($expected as $name => $param) {
-            list($type, $value) = $param;
-
-            $message = sprintf('Key "%s" did not match.', $name);
-
-            $this->assertInstanceOf('Doctrine\DBAL\Types\Type', $whereBuilder->getParametersType($name), $message);
-            $this->assertEquals($type, $whereBuilder->getParametersType($name)->getName(), $message);
-            $this->assertEquals($value, $whereBuilder->getParameter($name), $message);
-        }
-
-        $params = $whereBuilder->getParameters();
-
-        foreach ($params as $name => $param) {
-            if (!array_key_exists($name, $expected)) {
-                $this->fail(sprintf('Key "%s" is present in the WhereBuilder but was not expected.', $name));
-            }
-        }
-    }
-
-    /**
-     * @param WhereBuilder $whereBuilder
-     */
-    protected function assertParamsEmpty($whereBuilder)
-    {
-        $this->assertCount(0, $whereBuilder->getParameters());
-        $this->assertCount(0, $whereBuilder->getParameterTypes());
-    }
-
-    /**
      * @return ConnectionMock
      */
     protected function getConnectionMock()

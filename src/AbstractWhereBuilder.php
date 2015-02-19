@@ -45,15 +45,10 @@ abstract class AbstractWhereBuilder
     /**
      * @var string
      */
-    protected $parameterPrefix;
-
-    /**
-     * @var string
-     */
     protected $whereClause;
 
     /**
-     * @var array
+     * @var array[]
      */
     protected $fields = array();
 
@@ -94,55 +89,6 @@ abstract class AbstractWhereBuilder
         }
 
         return $this;
-    }
-
-    /**
-     * Set the prefix to prefix the query-parameters with.
-     *
-     * This will be applied as: prefix + fieldname + group + value-index.
-     * Example: user_id_0_1
-     *
-     * @param string $prefix
-     *
-     * @return self
-     *
-     * @throws BadMethodCallException when the where-clause is already generated
-     */
-    public function setParameterPrefix($prefix)
-    {
-        if ($this->whereClause) {
-            throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
-        }
-
-        $this->parameterPrefix = $prefix;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameters()
-    {
-        if ($this->queryGenerator) {
-            return $this->queryGenerator->getParameters();
-        }
-
-        return array();
-    }
-
-    /**
-     * Returns the parameter-value that where set during the generation process.
-     *
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getParameter($name)
-    {
-        if ($this->queryGenerator) {
-            return $this->queryGenerator->getParameter($name);
-        }
-
-        return;
     }
 
     /**

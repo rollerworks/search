@@ -50,14 +50,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals('(((I.customer IN(:customer_0, :customer_1))))', $whereBuilder->getWhereClause());
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 5),
-            ),
-            $whereBuilder
-        );
+        $this->assertEquals('(((I.customer IN(2, 5))))', $whereBuilder->getWhereClause());
     }
 
     public function testEmptyResult()
@@ -67,23 +60,6 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition, $connection);
 
         $this->assertEquals('', $whereBuilder->getWhereClause());
-        $this->assertCount(0, $whereBuilder->getParameters());
-        $this->assertCount(0, $whereBuilder->getParameterTypes());
-    }
-
-    public function testQueryWithEmbeddedValues()
-    {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('customer')
-                ->addSingleValue(new SingleValue(2))
-                ->addSingleValue(new SingleValue(5))
-            ->end()
-        ->getSearchCondition();
-
-        $whereBuilder = $this->getWhereBuilder($condition);
-
-        $this->assertEquals('(((I.customer IN(2, 5))))', $whereBuilder->getWhereClause(true));
-        $this->assertParamsEmpty($whereBuilder);
     }
 
     public function testExcludes()
@@ -97,14 +73,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals('(((I.customer NOT IN(:customer_0, :customer_1))))', $whereBuilder->getWhereClause());
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 5),
-            ),
-            $whereBuilder
-        );
+        $this->assertEquals('(((I.customer NOT IN(2, 5))))', $whereBuilder->getWhereClause());
     }
 
     public function testIncludesAndExcludes()
@@ -118,14 +87,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals('(((I.customer IN(:customer_0)) AND (I.customer NOT IN(:customer_1))))', $whereBuilder->getWhereClause());
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 5),
-            ),
-            $whereBuilder
-        );
+        $this->assertEquals('(((I.customer IN(2)) AND (I.customer NOT IN(5))))', $whereBuilder->getWhereClause());
     }
 
     public function testRanges()
@@ -142,24 +104,9 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '((((I.customer >= :customer_0 AND I.customer <= :customer_1) OR (I.customer >= :customer_2 AND '.
-            'I.customer <= :customer_3) OR (I.customer > :customer_4 AND I.customer <= :customer_5) OR '.
-            '(I.customer >= :customer_6 AND I.customer < :customer_7))))',
+            '((((I.customer >= 2 AND I.customer <= 5) OR (I.customer >= 10 AND I.customer <= 20) '.
+            'OR (I.customer > 60 AND I.customer <= 70) OR (I.customer >= 100 AND I.customer < 150))))',
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 5),
-                'customer_2' => array('integer', 10),
-                'customer_3' => array('integer', 20),
-                'customer_4' => array('integer', 60),
-                'customer_5' => array('integer', 70),
-                'customer_6' => array('integer', 100),
-                'customer_7' => array('integer', 150),
-            ),
-            $whereBuilder
         );
     }
 
@@ -177,24 +124,9 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '((((I.customer <= :customer_0 OR I.customer >= :customer_1) AND (I.customer <= :customer_2 OR '.
-            'I.customer >= :customer_3) AND (I.customer < :customer_4 OR I.customer >= :customer_5) AND '.
-            '(I.customer <= :customer_6 OR I.customer > :customer_7))))',
+            '((((I.customer <= 2 OR I.customer >= 5) AND (I.customer <= 10 OR I.customer >= 20) AND '.
+            '(I.customer < 60 OR I.customer >= 70) AND (I.customer <= 100 OR I.customer > 150))))',
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 5),
-                'customer_2' => array('integer', 10),
-                'customer_3' => array('integer', 20),
-                'customer_4' => array('integer', 60),
-                'customer_5' => array('integer', 70),
-                'customer_6' => array('integer', 100),
-                'customer_7' => array('integer', 150),
-            ),
-            $whereBuilder
         );
     }
 
@@ -208,13 +140,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals('(((I.customer > :customer_0)))', $whereBuilder->getWhereClause());
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-            ),
-            $whereBuilder
-        );
+        $this->assertEquals('(((I.customer > 2)))', $whereBuilder->getWhereClause());
     }
 
     public function testMultipleComparisons()
@@ -229,16 +155,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '((((I.customer > :customer_0 AND I.customer < :customer_1))))',
+            '((((I.customer > 2 AND I.customer < 10))))',
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 10),
-            ),
-            $whereBuilder
         );
     }
 
@@ -263,17 +181,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '(((((I.customer > :customer_0 AND I.customer < :customer_1)))) OR (((I.customer > :customer_2))))',
+            '(((((I.customer > 2 AND I.customer < 10)))) OR (((I.customer > 30))))',
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 10),
-                'customer_2' => array('integer', 30),
-            ),
-            $whereBuilder
         );
     }
 
@@ -289,16 +198,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '(((I.customer <> :customer_0 AND I.customer <> :customer_1)))',
+            '(((I.customer <> 2 AND I.customer <> 5)))',
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 5),
-            ),
-            $whereBuilder
         );
     }
 
@@ -315,17 +216,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '(((I.customer > :customer_0) AND (I.customer <> :customer_1 AND I.customer <> :customer_2)))',
+            '(((I.customer > 30) AND (I.customer <> 2 AND I.customer <> 5)))',
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 30),
-                'customer_1' => array('integer', 2),
-                'customer_2' => array('integer', 5),
-            ),
-            $whereBuilder
         );
     }
 
@@ -344,21 +236,10 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((C.name LIKE :customer_name_0 ESCAPE '\\\\' OR C.name LIKE :customer_name_1 ESCAPE '\\\\' OR ".
-            "RW_REGEXP(:customer_name_2, C.name, '') = 0 OR RW_REGEXP(:customer_name_3, C.name, 'ui') = 0) AND ".
-            "(LOWER(C.name) NOT LIKE LOWER(:customer_name_4) ESCAPE '\\\\')))",
+            "(((C.name LIKE 'foo' ESCAPE '\\\\' OR C.name LIKE 'fo\\'o' ESCAPE '\\\\' OR ".
+            "RW_REGEXP('(foo|bar)', C.name, '') = 0 OR RW_REGEXP('(doctor|who)', C.name, 'ui') = 0) AND ".
+            "(LOWER(C.name) NOT LIKE LOWER('bar') ESCAPE '\\\\')))",
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_name_0' => array('string', 'foo'),
-                'customer_name_1' => array('string', 'fo\\\'o'),
-                'customer_name_2' => array('string', '(foo|bar)'),
-                'customer_name_3' => array('string', '(doctor|who)'),
-                'customer_name_4' => array('string', 'bar'),
-            ),
-            $whereBuilder
         );
     }
 
@@ -376,16 +257,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '((((I.customer IN(:customer_0)))) OR (((I.customer IN(:customer_1)))))',
+            '((((I.customer IN(2)))) OR (((I.customer IN(3)))))',
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_1' => array('integer', 3),
-            ),
-            $whereBuilder
         );
     }
 
@@ -405,16 +278,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "((((I.customer IN(:customer_0)))) AND ((((C.name LIKE :customer_name_0 ESCAPE '\\\\')))))",
+            "((((I.customer IN(2)))) AND ((((C.name LIKE 'foo' ESCAPE '\\\\')))))",
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_name_0' => array('string', 'foo'),
-            ),
-            $whereBuilder
         );
     }
 
@@ -432,16 +297,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((I.customer IN(:customer_0))) OR ((C.name LIKE :customer_name_0 ESCAPE '\\\\')))",
+            "(((I.customer IN(2))) OR ((C.name LIKE 'foo' ESCAPE '\\\\')))",
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_name_0' => array('string', 'foo'),
-            ),
-            $whereBuilder
         );
     }
 
@@ -463,16 +320,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((((I.customer IN(:customer_0))) OR ((C.name LIKE :customer_name_0 ESCAPE '\\\\')))))",
+            "(((((I.customer IN(2))) OR ((C.name LIKE 'foo' ESCAPE '\\\\')))))",
             $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'customer_0' => array('integer', 2),
-                'customer_name_0' => array('string', 'foo'),
-            ),
-            $whereBuilder
         );
     }
 
@@ -487,28 +336,16 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals(
-            "(((I.label IN(:label_0, :label_1))))",
-            $whereBuilder->getWhereClause()
-        );
-
-        $this->assertParamsEquals(
-            array(
-                'label_0' => array('string', '2015-0001'),
-                'label_1' => array('string', '2015-0005'),
-            ),
-            $whereBuilder
-        );
+        $this->assertEquals("(((I.label IN('2015-0001', '2015-0005'))))", $whereBuilder->getWhereClause());
     }
 
     /**
      * @dataProvider provideFieldConversionTests
      *
      * @param string  $expectWhereCase
-     * @param boolean $valuesEmbedding
      * @param array   $options
      */
-    public function testFieldConversion($expectWhereCase, $valuesEmbedding = false, array $options = array())
+    public function testFieldConversion($expectWhereCase, array $options = array())
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -532,25 +369,10 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder->setConverter('customer', $converter);
 
-        $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
-
-        $this->assertEquals($expectWhereCase, $whereCase);
-
-        if (!$valuesEmbedding) {
-            $this->assertParamsEquals(array('customer_0' => array('integer', 2),), $whereBuilder);
-        } else {
-            $this->assertParamsEmpty($whereBuilder);
-        }
+        $this->assertEquals($expectWhereCase, $whereBuilder->getWhereClause());
     }
 
-    /**
-     * @dataProvider provideSqlValueConversionTests
-     *
-     * @param string  $expectWhereCase
-     * @param boolean $valuesEmbedding
-     * @param boolean $valueReqEmbedding
-     */
-    public function testSqlValueConversion($expectWhereCase, $valuesEmbedding = false, $valueReqEmbedding = false)
+    public function testSqlValueConversion()
     {
         $fieldSet = $this->getFieldSet();
         $condition = SearchConditionBuilder::create($fieldSet)
@@ -575,12 +397,6 @@ final class WhereBuilderTest extends DbalTestCase
         ;
 
         $converter
-            ->expects(!$valuesEmbedding ? $this->atLeastOnce() : $this->any())
-            ->method('valueRequiresEmbedding')
-            ->will($this->returnValue($valueReqEmbedding))
-        ;
-
-        $converter
             ->expects($this->atLeastOnce())
             ->method('requiresBaseConversion')
             ->will($this->returnValue(false))
@@ -593,25 +409,11 @@ final class WhereBuilderTest extends DbalTestCase
         ;
 
         $whereBuilder->setConverter('customer', $converter);
-        $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
 
-        $this->assertEquals($expectWhereCase, $whereCase);
-
-        if (!$valuesEmbedding && !$valueReqEmbedding) {
-            $this->assertParamsEquals(array('customer_0' => array('integer', 2)), $whereBuilder);
-        } else {
-            $this->assertParamsEmpty($whereBuilder);
-        }
+        $this->assertEquals("(((I.customer = get_customer_type(2))))", $whereBuilder->getWhereClause());
     }
 
-    /**
-     * @dataProvider provideConversionStrategyTests
-     *
-     * @param string  $expectWhereCase
-     * @param boolean $valuesEmbedding
-     * @param boolean $valueReqEmbedding
-     */
-    public function testConversionStrategy($expectWhereCase, $valuesEmbedding = false, $valueReqEmbedding = false)
+    public function testConversionStrategy()
     {
         $date = new \DateTime('2001-01-15', new \DateTimeZone('UTC'));
 
@@ -653,7 +455,7 @@ final class WhereBuilderTest extends DbalTestCase
             ->method('convertSqlField')
             ->will(
                 $this->returnCallback(
-                    function ($column, array $passedOptions, array $hints) use ($test, $options, $valueReqEmbedding) {
+                    function ($column, array $passedOptions, array $hints) use ($test, $options) {
                         $test->assertArrayHasKey('conversion_strategy', $hints);
                         $test->assertArrayHasKey('connection', $hints);
                         $test->assertEquals($options, $passedOptions);
@@ -675,17 +477,13 @@ final class WhereBuilderTest extends DbalTestCase
             ->method('convertSqlValue')
             ->will(
                 $this->returnCallback(
-                    function ($input, array $passedOptions, array $hints) use ($test, $options, $valueReqEmbedding) {
+                    function ($input, array $passedOptions, array $hints) use ($test, $options) {
                         $test->assertArrayHasKey('conversion_strategy', $hints);
                         $test->assertArrayHasKey('connection', $hints);
                         $test->assertEquals($options, $passedOptions);
 
                         if (2 === $hints['conversion_strategy']) {
-                            if ($hints['value_embedded'] || $valueReqEmbedding) {
-                                return "CAST(".$hints['connection']->quote($input)." AS DATE)";
-                            }
-
-                            return "CAST($input AS DATE)";
+                            return "CAST(".$hints['connection']->quote($input)." AS DATE)";
                         }
 
                         $test->assertEquals(1, $hints['conversion_strategy']);
@@ -701,9 +499,8 @@ final class WhereBuilderTest extends DbalTestCase
             ->method('convertValue')
             ->will(
                 $this->returnCallback(
-                    function ($input, array $passedOptions, array $hints) use ($test, $options, $valueReqEmbedding) {
+                    function ($input, array $passedOptions, array $hints) use ($test, $options) {
                         $test->assertArrayHasKey('conversion_strategy', $hints);
-                        $test->assertArrayHasKey('value_embedded', $hints);
                         $test->assertEquals($options, $passedOptions);
 
                         if ($input instanceof \DateTime) {
@@ -712,32 +509,11 @@ final class WhereBuilderTest extends DbalTestCase
                             $test->assertEquals(1, $hints['conversion_strategy']);
                         }
 
-                        if ($input instanceof \DateTime && ($hints['value_embedded'] || $valueReqEmbedding)) {
+                        if ($input instanceof \DateTime) {
                             $input = $input->format('Y-m-d');
                         }
 
                         return $input;
-                    }
-                )
-            )
-        ;
-
-        $converter
-            ->expects(!$valuesEmbedding ? $this->atLeastOnce() : $this->any())
-            ->method('valueRequiresEmbedding')
-            ->will(
-                $this->returnCallback(
-                    function ($input, array $passedOptions, array $hints) use ($test, $options, $valueReqEmbedding) {
-                        $test->assertArrayHasKey('conversion_strategy', $hints);
-                        $test->assertEquals($options, $passedOptions);
-
-                        if ($input instanceof \DateTime || !is_integer($input)) {
-                            $test->assertEquals(2, $hints['conversion_strategy']);
-                        } else {
-                            $test->assertEquals(1, $hints['conversion_strategy']);
-                        }
-
-                        return $valueReqEmbedding;
                     }
                 )
             )
@@ -751,77 +527,21 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder->setConverter('customer_birthday', $converter);
 
-        $whereCase = $whereBuilder->getWhereClause($valuesEmbedding);
-        $this->assertEquals($expectWhereCase, $whereCase);
-
-        if (!$valuesEmbedding && !$valueReqEmbedding) {
-            $this->assertParamsEquals(
-                array(
-                    'customer_birthday_0' => array('date', '18'),
-                    'customer_birthday_1' => array('date', $date),
-                ),
-                $whereBuilder
-            );
-        } else {
-            $this->assertParamsEmpty($whereBuilder);
-        }
+        $this->assertEquals(
+            "(((C.birthday = 18 OR search_conversion_age(C.birthday) = CAST('2001-01-15' AS DATE))))",
+            $whereBuilder->getWhereClause()
+        );
     }
 
     public static function provideFieldConversionTests()
     {
         return array(
             array(
-                "(((CAST(I.customer AS customer_type) IN(:customer_0))))",
+                "(((CAST(I.customer AS customer_type) IN(2))))",
             ),
             array(
                 "(((CAST(I.customer AS customer_type) IN(2))))",
-                true
-            ),
-            array(
-                "(((CAST(I.customer AS customer_type) IN(:customer_0))))",
-                false,
                 array('active' => true)
-            ),
-        );
-    }
-
-    public static function provideSqlValueConversionTests()
-    {
-        return array(
-            array(
-                "(((I.customer = get_customer_type(:customer_0))))",
-            ),
-            array(
-                "(((I.customer = get_customer_type(2))))",
-                false,
-                true,
-            ),
-            array(
-                "(((I.customer = get_customer_type(2))))",
-                true,
-            ),
-            array(
-                "(((I.customer = get_customer_type(2))))",
-                true,
-                true,
-            ),
-        );
-    }
-
-    public static function provideConversionStrategyTests()
-    {
-        return array(
-            array(
-                "(((C.birthday = :customer_birthday_0 OR search_conversion_age(C.birthday) = CAST(:customer_birthday_1 AS DATE))))",
-            ),
-            array(
-                "(((C.birthday = 18 OR search_conversion_age(C.birthday) = CAST('2001-01-15' AS DATE))))",
-                true,
-            ),
-            array(
-                "(((C.birthday = 18 OR search_conversion_age(C.birthday) = CAST('2001-01-15' AS DATE))))",
-                false,
-                true,
             ),
         );
     }

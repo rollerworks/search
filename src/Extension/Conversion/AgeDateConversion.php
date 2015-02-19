@@ -14,6 +14,7 @@ namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 use Doctrine\DBAL\Types\Type as DBALType;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
@@ -29,6 +30,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  */
 class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversionInterface, ValueConversionInterface
 {
+
     /**
      * Keep track of the connection state (SQLite only).
      *
@@ -48,7 +50,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
         }
 
         if ($value instanceof \DateTime) {
-            return 2;
+            return $hints['db_type']->getName() !== 'date' ? 2 : 3;
         }
 
         return 1;
@@ -59,6 +61,10 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
      */
     public function convertSqlField($column, array $options, array $hints)
     {
+        if (3 === $hints['conversion_strategy']) {
+            return $column;
+        }
+
         if (2 === $hints['conversion_strategy']) {
             return "CAST($column AS DATE)";
         }
@@ -86,9 +92,13 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
                 $conn = $connection->getWrappedConnection();
                 $objHash = spl_object_hash($conn);
                 if (!isset(self::$connectionState[$objHash])) {
-                    $conn->sqliteCreateFunction('search_conversion_age', function ($date) {
-                        return date_create($date)->diff(new \DateTime())->y;
-                    }, 1);
+                    $conn->sqliteCreateFunction(
+                        'search_conversion_age',
+                        function ($date) {
+                            return date_create($date)->diff(new \DateTime())->y;
+                        },
+                        1
+                    );
 
                     self::$connectionState[$objHash] = true;
                 }
@@ -118,7 +128,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
      */
     public function convertValue($value, array $options, array $hints)
     {
-        if (2 === $hints['conversion_strategy']) {
+        if (2 === $hints['conversion_strategy'] || 3 === $hints['conversion_strategy']) {
             return DBALType::getType('date')->convertToDatabaseValue(
                 $value,
                 $hints['connection']->getDatabasePlatform()

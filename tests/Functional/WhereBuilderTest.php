@@ -46,7 +46,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         return $whereBuilder;
     }
 
-    private function assertQueryIsExecutable($conditionOrWhere, $valuesEmbedded = false)
+    private function assertQueryIsExecutable($conditionOrWhere)
     {
         if ($conditionOrWhere instanceof SearchCondition) {
             $whereBuilder = $this->getWhereBuilder($conditionOrWhere);
@@ -54,18 +54,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             $whereBuilder = $conditionOrWhere;
         }
 
-        $whereClause = $whereBuilder->getWhereClause($valuesEmbedded);
-
+        $whereClause = $whereBuilder->getWhereClause();
         $query = "SELECT i.*, c.* FROM invoice AS i JOIN customer AS c ON (c.id = i.customer) WHERE ".$whereClause;
 
-        if (!$valuesEmbedded) {
-            $prepare = $this->conn->prepare($query);
-            $whereBuilder->bindParameters($prepare);
-
-            $this->assertNotNull($prepare->execute());
-        } else {
-            $this->assertNotNull($this->conn->query($query));
-        }
+        $this->assertNotNull($this->conn->query($query));
     }
 
     public function testSimpleQuery()
@@ -303,12 +295,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->assertQueryIsExecutable($condition);
     }
 
-    /**
-     * @dataProvider provideFieldConversionTests
-     *
-     * @param boolean $valuesEmbedding
-     */
-    public function testFieldConversion($valuesEmbedding = false)
+    public function testFieldConversion()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -329,16 +316,15 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         ;
 
         $whereBuilder->setConverter('customer', $converter);
-        $this->assertQueryIsExecutable($whereBuilder, $valuesEmbedding);
+        $this->assertQueryIsExecutable($whereBuilder);
     }
 
     /**
      * @dataProvider provideSqlValueConversionTests
      *
-     * @param boolean $valuesEmbedding
      * @param boolean $valueReqEmbedding
      */
-    public function testSqlValueConversion($valuesEmbedding = false, $valueReqEmbedding = false)
+    public function testSqlValueConversion($valueReqEmbedding = false)
     {
         $fieldSet = $this->getFieldSet();
         $condition = SearchConditionBuilder::create($fieldSet)
@@ -360,12 +346,6 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         ;
 
         $converter
-            ->expects(!$valuesEmbedding ? $this->atLeastOnce() : $this->any())
-            ->method('valueRequiresEmbedding')
-            ->will($this->returnValue($valueReqEmbedding))
-        ;
-
-        $converter
             ->expects($this->atLeastOnce())
             ->method('requiresBaseConversion')
             ->will($this->returnValue(false))
@@ -378,15 +358,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         ;
 
         $whereBuilder->setConverter('customer', $converter);
-        $this->assertQueryIsExecutable($whereBuilder, $valuesEmbedding);
+        $this->assertQueryIsExecutable($whereBuilder);
     }
 
-    /**
-     * @dataProvider provideConversionStrategyTests
-     *
-     * @param boolean $valuesEmbedding
-     */
-    public function testConversionStrategy($valuesEmbedding = false)
+    public function testConversionStrategy()
     {
         $date = new \DateTime('2001-01-15', new \DateTimeZone('UTC'));
 
@@ -403,28 +378,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
-        $this->assertQueryIsExecutable($whereBuilder, $valuesEmbedding);
-    }
-
-    public static function provideFieldConversionTests()
-    {
-        return array(
-            array(false),
-            array(true),
-        );
+        $this->assertQueryIsExecutable($whereBuilder);
     }
 
     public static function provideSqlValueConversionTests()
-    {
-        return array(
-            array(false),
-            array(false, true),
-            array(true),
-            array(true, true),
-        );
-    }
-
-    public static function provideConversionStrategyTests()
     {
         return array(
             array(false),
