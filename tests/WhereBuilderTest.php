@@ -50,7 +50,25 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals('(((I.customer IN(2, 5))))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer IN(2, 5)))', $whereBuilder->getWhereClause());
+    }
+
+    public function testQueryWithMultipleFields()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSingleValue(new SingleValue(2))
+                ->addSingleValue(new SingleValue(5))
+            ->end()
+            ->field('status')
+                ->addSingleValue(new SingleValue(2))
+                ->addSingleValue(new SingleValue(5))
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+
+        $this->assertEquals('((I.customer IN(2, 5)) AND (I.status IN(2, 5)))', $whereBuilder->getWhereClause());
     }
 
     public function testEmptyResult()
@@ -73,7 +91,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals('(((I.customer NOT IN(2, 5))))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer NOT IN(2, 5)))', $whereBuilder->getWhereClause());
     }
 
     public function testIncludesAndExcludes()
@@ -87,7 +105,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals('(((I.customer IN(2)) AND (I.customer NOT IN(5))))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer IN(2) AND I.customer NOT IN(5)))', $whereBuilder->getWhereClause());
     }
 
     public function testRanges()
@@ -104,8 +122,8 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '((((I.customer >= 2 AND I.customer <= 5) OR (I.customer >= 10 AND I.customer <= 20) '.
-            'OR (I.customer > 60 AND I.customer <= 70) OR (I.customer >= 100 AND I.customer < 150))))',
+            '((((I.customer >= 2 AND I.customer <= 5) OR (I.customer >= 10 AND I.customer <= 20) OR '.
+            '(I.customer > 60 AND I.customer <= 70) OR (I.customer >= 100 AND I.customer < 150))))',
             $whereBuilder->getWhereClause()
         );
     }
@@ -140,7 +158,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals('(((I.customer > 2)))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer > 2))', $whereBuilder->getWhereClause());
     }
 
     public function testMultipleComparisons()
@@ -155,7 +173,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '((((I.customer > 2 AND I.customer < 10))))',
+            '(((I.customer > 2 AND I.customer < 10)))',
             $whereBuilder->getWhereClause()
         );
     }
@@ -169,6 +187,7 @@ final class WhereBuilderTest extends DbalTestCase
                 ->field('customer')
                     ->addComparison(new Compare(2, '>'))
                     ->addComparison(new Compare(10, '<'))
+                    ->addSingleValue(new SingleValue(20))
                 ->end()
             ->end()
             ->group()
@@ -181,7 +200,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '(((((I.customer > 2 AND I.customer < 10)))) OR (((I.customer > 30))))',
+            '((((I.customer IN(20) OR (I.customer > 2 AND I.customer < 10)))) OR ((I.customer > 30)))',
             $whereBuilder->getWhereClause()
         );
     }
@@ -198,7 +217,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '(((I.customer <> 2 AND I.customer <> 5)))',
+            '((I.customer <> 2 AND I.customer <> 5))',
             $whereBuilder->getWhereClause()
         );
     }
@@ -207,16 +226,17 @@ final class WhereBuilderTest extends DbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(2, '<>'))
-                ->addComparison(new Compare(5, '<>'))
+                ->addComparison(new Compare(35, '<>'))
+                ->addComparison(new Compare(45, '<>'))
                 ->addComparison(new Compare(30, '>'))
+                ->addComparison(new Compare(50, '<'))
             ->end()
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '(((I.customer > 30) AND (I.customer <> 2 AND I.customer <> 5)))',
+            '(((I.customer > 30 AND I.customer < 50) AND I.customer <> 35 AND I.customer <> 45))',
             $whereBuilder->getWhereClause()
         );
     }
@@ -238,7 +258,7 @@ final class WhereBuilderTest extends DbalTestCase
         $this->assertEquals(
             "(((C.name LIKE 'foo' ESCAPE '\\\\' OR C.name LIKE 'fo\\'o' ESCAPE '\\\\' OR ".
             "RW_REGEXP('(foo|bar)', C.name, '') = 0 OR RW_REGEXP('(doctor|who)', C.name, 'ui') = 0) AND ".
-            "(LOWER(C.name) NOT LIKE LOWER('bar') ESCAPE '\\\\')))",
+            "LOWER(C.name) NOT LIKE LOWER('bar') ESCAPE '\\\\'))",
             $whereBuilder->getWhereClause()
         );
     }
@@ -257,7 +277,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            '((((I.customer IN(2)))) OR (((I.customer IN(3)))))',
+            '(((I.customer IN(2))) OR ((I.customer IN(3))))',
             $whereBuilder->getWhereClause()
         );
     }
@@ -278,7 +298,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "((((I.customer IN(2)))) AND ((((C.name LIKE 'foo' ESCAPE '\\\\')))))",
+            "(((I.customer IN(2))) AND (((C.name LIKE 'foo' ESCAPE '\\\\'))))",
             $whereBuilder->getWhereClause()
         );
     }
@@ -297,7 +317,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((I.customer IN(2))) OR ((C.name LIKE 'foo' ESCAPE '\\\\')))",
+            "((I.customer IN(2)) OR (C.name LIKE 'foo' ESCAPE '\\\\'))",
             $whereBuilder->getWhereClause()
         );
     }
@@ -320,7 +340,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((((I.customer IN(2))) OR ((C.name LIKE 'foo' ESCAPE '\\\\')))))",
+            "((((I.customer IN(2)) OR (C.name LIKE 'foo' ESCAPE '\\\\'))))",
             $whereBuilder->getWhereClause()
         );
     }
@@ -336,7 +356,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
-        $this->assertEquals("(((I.label IN('2015-0001', '2015-0005'))))", $whereBuilder->getWhereClause());
+        $this->assertEquals("((I.label IN('2015-0001', '2015-0005')))", $whereBuilder->getWhereClause());
     }
 
     /**
@@ -410,7 +430,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder->setConverter('customer', $converter);
 
-        $this->assertEquals("(((I.customer = get_customer_type(2))))", $whereBuilder->getWhereClause());
+        $this->assertEquals("((I.customer = get_customer_type(2)))", $whereBuilder->getWhereClause());
     }
 
     public function testConversionStrategy()
@@ -537,10 +557,10 @@ final class WhereBuilderTest extends DbalTestCase
     {
         return array(
             array(
-                "(((CAST(I.customer AS customer_type) IN(2))))",
+                "((CAST(I.customer AS customer_type) IN(2)))",
             ),
             array(
-                "(((CAST(I.customer AS customer_type) IN(2))))",
+                "((CAST(I.customer AS customer_type) IN(2)))",
                 array('active' => true)
             ),
         );

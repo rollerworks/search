@@ -87,8 +87,6 @@ class QueryGenerator
                 continue;
             }
 
-            //$queryField = $this->fields[$fieldName];
-
             $groupSql = array();
             $inclusiveSqlGroup = array();
             $exclusiveSqlGroup = array();
@@ -116,10 +114,6 @@ class QueryGenerator
                 $fieldName,
                 $inclusiveSqlGroup
             );
-
-            if ($inclusiveSqlGroup) {
-                $groupSql[] = '('.implode(' OR ', $inclusiveSqlGroup).')';
-            }
 
             $this->processSingleValues(
                 $values->getExcludedValues(),
@@ -149,46 +143,30 @@ class QueryGenerator
                 true
             );
 
-            if ($exclusiveSqlGroup) {
-                $groupSql[] = '('.implode(' AND ', $exclusiveSqlGroup).')';
-            }
-
-            if ($groupSql) {
-                $query[] = '('.implode(' AND ', $groupSql).')';
-            }
+            $groupSql[] = static::implodeWithValue(' OR ', $inclusiveSqlGroup, array('(', ')'));
+            $groupSql[] = static::implodeWithValue(' AND ', $exclusiveSqlGroup, array('(', ')'));
+            $query[] = static::implodeWithValue(' AND ', $groupSql, array('(', ')', true));
         }
 
+        $groupSql = array();
         $finalQuery = array();
 
         // Wrap all the fields as a group
-        if ($query) {
-            $finalQuery[] = '('.implode(
-                (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() ? ' OR ' : ' AND '),
-                $query
-            ).')';
-        }
+        $finalQuery[] = static::implodeWithValue(
+            (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() ? ' OR ' : ' AND '),
+            $query,
+            array('(', ')', true)
+        );
 
         if ($valuesGroup->hasGroups()) {
-            $groupSql = array();
-
             foreach ($valuesGroup->getGroups() as $group) {
                 $groupSql[] = $this->getGroupQuery($group);
             }
 
-            if ($groupSql) {
-                $finalQuery[] = '('.implode(' OR ', $groupSql).')';
-            }
-
-            if ($query) {
-                return '('.implode(' AND ', $finalQuery).')';
-            }
+            $finalQuery[] = static::implodeWithValue(' OR ', $groupSql, array('(', ')', true));
         }
 
-        if ($finalQuery) {
-            return implode(' AND ', $finalQuery);
-        }
-
-        return '';
+        return static::implodeWithValue(' AND ', $finalQuery, array('(', ')'));
     }
 
     /**
@@ -219,21 +197,20 @@ class QueryGenerator
     /**
      * Returns the SQL for the SQL wrapped-value conversion.
      *
-     * @param string               $fieldName
-     * @param string               $column
-     * @param string               $value
-     * @param FieldConfigInterface $field
-     * @param null|int             $strategy
+     * @param string   $fieldName
+     * @param string   $column
+     * @param string   $value
+     * @param null|int $strategy
      *
      * @return string
      *
      * @throws BadMethodCallException
      */
-    public function getValueConversionSql($fieldName, $column, $value, FieldConfigInterface $field, $strategy = null)
+    public function getValueConversionSql($fieldName, $column, $value, $strategy = null)
     {
         return $this->fields[$fieldName]->getValueConversion()->convertSqlValue(
             $value,
-            $field->getOptions(),
+            $this->fields[$fieldName]->getFieldConfig()->getOptions(),
             $this->getConversionHints($fieldName, $column, $strategy)
         );
     }
@@ -287,7 +264,7 @@ class QueryGenerator
             $valuesQuery[] = $this->getValueAsSql($value->getValue(), $value, $fieldName, $column);
         }
 
-        if ($valuesQuery) {
+        if (!empty($valuesQuery)) {
             $query[] = sprintf(
                 ($exclude ? '%s NOT IN(%s)' : '%s IN(%s)'),
                 $column,
@@ -316,32 +293,23 @@ class QueryGenerator
             return;
         }
 
-        $valuesQuery = array();
-
         foreach ($values as $value) {
             $strategy = $this->getConversionStrategy($fieldName, $value->getValue());
             $column = $this->getFieldColumn($fieldName, $strategy);
 
             if ($exclude) {
-                $valuesQuery[] = sprintf(
+                $query[] = sprintf(
                     '%s <> %s',
                     $this->getFieldColumn($fieldName, $strategy),
                     $this->getValueAsSql($value->getValue(), $value, $fieldName, $column, $strategy)
                 );
             } else {
-                $valuesQuery[] = sprintf(
+                $query[] = sprintf(
                     '%s = %s',
                     $this->getFieldColumn($fieldName, $strategy),
                     $this->getValueAsSql($value->getValue(), $value, $fieldName, $column, $strategy)
                 );
             }
-        }
-
-        if ($valuesQuery) {
-            $query[] = implode(
-                ($exclude ? ' AND ' : ' OR '),
-                $valuesQuery
-            );
         }
     }
 
@@ -353,23 +321,17 @@ class QueryGenerator
      */
     protected function processRanges(array $ranges, $fieldName, array &$query, $exclude = false)
     {
-        $valuesQuery = array();
-
         foreach ($ranges as $range) {
             $strategy = $this->getConversionStrategy($fieldName, $range->getLower());
             $column = $this->getFieldColumn($fieldName, $strategy);
 
-            $valuesQuery[] = sprintf(
+            $query[] = sprintf(
                 $this->getRangePattern($range, $exclude),
                 $column,
                 $this->getValueAsSql($range->getLower(), $range, $fieldName, $column, $strategy),
                 $column,
                 $this->getValueAsSql($range->getUpper(), $range, $fieldName, $column, $strategy)
             );
-        }
-
-        if ($valuesQuery) {
-            $query[] = implode(($exclude ? ' AND ' : ' OR '), $valuesQuery);
         }
     }
 
@@ -410,9 +372,7 @@ class QueryGenerator
         $valuesQuery = array();
 
         foreach ($compares as $comparison) {
-            $isExclusive = '<>' === $comparison->getOperator();
-
-            if ((!$exclude && $isExclusive) || ($exclude && !$isExclusive)) {
+            if ($exclude !== ('<>' === $comparison->getOperator())) {
                 continue;
             }
 
@@ -427,15 +387,11 @@ class QueryGenerator
             );
         }
 
-        if ($valuesQuery) {
-            $comparisonsQuery = implode(' AND ', $valuesQuery);
-
-            if (count($valuesQuery) > 1 && !$exclude) {
-                $query[] = '('.$comparisonsQuery.')';
-            } else {
-                $query[] = $comparisonsQuery;
-            }
-        }
+        $query[] = static::implodeWithValue(
+            ' AND ',
+            $valuesQuery,
+            count($valuesQuery) > 1 && !$exclude ? array('(', ')') : array()
+        );
     }
 
     /**
@@ -446,27 +402,19 @@ class QueryGenerator
      */
     protected function processPatternMatchers(array $patternMatchers, $fieldName, array &$query, $exclude = false)
     {
-        $valuesQuery = array();
-
         foreach ($patternMatchers as $patternMatch) {
-            $isExclusive = $patternMatch->isExclusive();
-
-            if ((!$exclude && $isExclusive) || ($exclude && !$isExclusive)) {
+            if ($exclude !== $patternMatch->isExclusive()) {
                 continue;
             }
 
             $strategy = $this->getConversionStrategy($fieldName, $patternMatch->getValue());
             $column = $this->getFieldColumn($fieldName, $strategy);
 
-            $valuesQuery[] = $this->getPatternMatcher(
+            $query[] = $this->getPatternMatcher(
                 $patternMatch,
                 $column,
                 $this->getValueAsSql($patternMatch->getValue(), $patternMatch, $fieldName, $column, $strategy, true)
             );
-        }
-
-        if ($valuesQuery) {
-            $query[] = implode(($exclude ? ' AND ' : ' OR '), $valuesQuery);
         }
     }
 
@@ -507,22 +455,18 @@ class QueryGenerator
     protected function getConversionStrategy($fieldName, $value)
     {
         if ($this->fields[$fieldName]->getValueConversion() instanceof ConversionStrategyInterface) {
-            $hints = $this->getConversionHints($fieldName, $this->fields[$fieldName]->getColumn());
-
             return $this->fields[$fieldName]->getValueConversion()->getConversionStrategy(
                 $value,
                 $this->fields[$fieldName]->getFieldConfig()->getOptions(),
-                $hints
+                $this->getConversionHints($fieldName, $this->fields[$fieldName]->getColumn())
             );
         }
 
         if ($this->fields[$fieldName]->getFieldConversion() instanceof ConversionStrategyInterface) {
-            $hints = $this->getConversionHints($fieldName, $this->fields[$fieldName]->getColumn());
-
             return $this->fields[$fieldName]->getFieldConversion()->getConversionStrategy(
                 $value,
                 $this->fields[$fieldName]->getFieldConfig()->getOptions(),
-                $hints
+                $this->getConversionHints($fieldName, $this->fields[$fieldName]->getColumn())
             );
         }
 
@@ -547,7 +491,7 @@ class QueryGenerator
         $field = $this->fields[$fieldName]->getFieldConfig();
         $type = $this->fields[$fieldName]->getDbType();
 
-        if (!$converter) {
+        if (null === $converter) {
             return $this->connection->quote(
                 $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
                 $type->getBindingType()
@@ -567,7 +511,7 @@ class QueryGenerator
         $convertedValue = $converter->convertValue($convertedValue, $field->getOptions(), $hints);
 
         if (!$noSqlConversion && $converter instanceof SqlValueConversionInterface) {
-            return $this->getValueConversionSql($fieldName, $column, $convertedValue, $field, $strategy);
+            return $this->getValueConversionSql($fieldName, $column, $convertedValue, $strategy);
         }
 
         // Don't quote numbers as SQLite doesn't follow standards for casting
@@ -606,5 +550,23 @@ class QueryGenerator
         }
 
         return $this->fieldsMappingCache[$fieldName][$strategy];
+    }
+
+    protected static function implodeWithValue($glue, array $values, array $wrap = array())
+    {
+        // Remove the empty values
+        $values = array_filter($values, 'strlen');
+
+        if (empty($values)) {
+            return;
+        }
+
+        $value = implode($glue, $values);
+
+        if (!empty($wrap) && (isset($wrap[2]) || count($values) > 1)) {
+            return $wrap[0].$value.$wrap[1];
+        }
+
+        return $value;
     }
 }
