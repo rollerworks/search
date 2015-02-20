@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Dbal;
+namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\DBAL\Connection;
 
@@ -82,31 +82,21 @@ class SearchMatch
      */
     public static function getMatchSqlLike($column, $value, $caseInsensitive, $negative, Connection $connection)
     {
-        if (!$caseInsensitive) {
-            if ('postgresql' === $connection->getDatabasePlatform()->getName()) {
-                return $column.($negative ? ' NOT' : '')." LIKE $value ESCAPE E'\\\\'";
+        $excluding = ($negative ? ' NOT' : '');
+
+        if ('postgresql' === $connection->getDatabasePlatform()->getName()) {
+            if ($caseInsensitive) {
+                return $column.$excluding." ILIKE $value ESCAPE E'\\\\'";
             }
 
-            return $column.($negative ? ' NOT' : '')." LIKE $value ESCAPE '\\\\'";
+            return $column.$excluding." LIKE $value ESCAPE E'\\\\'";
         }
 
-        switch ($connection->getDatabasePlatform()->getName()) {
-            case 'postgresql':
-                return $column.($negative ? ' NOT' : '')." ILIKE $value ESCAPE E'\\\\'";
-
-            case 'mysql':
-            case 'drizzle':
-            case 'oracle':
-            case 'mssql':
-            case 'sqlite':
-            case 'mock':
-                return "LOWER($column) ".($negative ? 'NOT ' : '')."LIKE LOWER($value) ESCAPE '\\\\'";
-
-            default:
-                throw new \RuntimeException(
-                    sprintf('Unsupported platform "%s".', $connection->getDatabasePlatform()->getName())
-                );
+        if ($caseInsensitive) {
+            return "LOWER($column)".$excluding." LIKE LOWER($value) ESCAPE '\\\\'";
         }
+
+        return $column.$excluding." LIKE $value ESCAPE '\\\\'";
     }
 
     /**
