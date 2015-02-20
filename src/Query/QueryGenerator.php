@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\DBAL\Connection;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
@@ -192,7 +193,7 @@ class QueryGenerator
         return $this->fieldConversionCache[$fieldName][$strategy] = $this->fields[$fieldName]->getFieldConversion()->convertSqlField(
             $column,
             $field->getOptions(),
-            $this->getConversionHints($fieldName, $column, $strategy)
+            $this->getConversionHints($fieldName, $strategy, $column)
         );
     }
 
@@ -213,7 +214,7 @@ class QueryGenerator
         return $this->fields[$fieldName]->getValueConversion()->convertSqlValue(
             $value,
             $this->fields[$fieldName]->getFieldConfig()->getOptions(),
-            $this->getConversionHints($fieldName, $column, $strategy)
+            $this->getConversionHints($fieldName, $strategy, $column)
         );
     }
 
@@ -231,20 +232,20 @@ class QueryGenerator
 
     /**
      * @param string   $fieldName
-     * @param string   $column
      * @param null|int $strategy
      *
-     * @return array
+     * @return ConversionHints
+     * @internal param mixed $value
      */
-    protected function getConversionHints($fieldName, $column, $strategy = null)
+    protected function getConversionHints($fieldName, $strategy = null, $column = null)
     {
-        return array(
-            'search_field' => $this->fields[$fieldName]->getFieldConfig(),
-            'connection' => $this->connection,
-            'db_type' => $this->fields[$fieldName]->getDbType(),
-            'column' => $column,
-            'conversion_strategy' => $strategy,
-        );
+        $hints = new ConversionHints();
+        $hints->field = $this->fields[$fieldName];
+        $hints->value = $column;
+        $hints->connection = $this->connection;
+        $hints->conversionStrategy = $strategy;
+
+        return $hints;
     }
 
     /**
@@ -263,7 +264,7 @@ class QueryGenerator
         $column = $this->getFieldColumn($fieldName);
 
         foreach ($values as $value) {
-            $valuesQuery[] = $this->getValueAsSql($value->getValue(), $value, $fieldName, $column);
+            $valuesQuery[] = $this->getValueAsSql($value->getValue(), $fieldName, $column);
         }
 
         if (!empty($valuesQuery)) {
@@ -303,13 +304,13 @@ class QueryGenerator
                 $query[] = sprintf(
                     '%s <> %s',
                     $this->getFieldColumn($fieldName, $strategy),
-                    $this->getValueAsSql($value->getValue(), $value, $fieldName, $column, $strategy)
+                    $this->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
                 );
             } else {
                 $query[] = sprintf(
                     '%s = %s',
                     $this->getFieldColumn($fieldName, $strategy),
-                    $this->getValueAsSql($value->getValue(), $value, $fieldName, $column, $strategy)
+                    $this->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
                 );
             }
         }
@@ -330,9 +331,9 @@ class QueryGenerator
             $query[] = sprintf(
                 $this->getRangePattern($range, $exclude),
                 $column,
-                $this->getValueAsSql($range->getLower(), $range, $fieldName, $column, $strategy),
+                $this->getValueAsSql($range->getLower(), $fieldName, $column, $strategy),
                 $column,
-                $this->getValueAsSql($range->getUpper(), $range, $fieldName, $column, $strategy)
+                $this->getValueAsSql($range->getUpper(), $fieldName, $column, $strategy)
             );
         }
     }
@@ -385,7 +386,7 @@ class QueryGenerator
                 '%s %s %s',
                 $column,
                 $comparison->getOperator(),
-                $this->getValueAsSql($comparison->getValue(), $comparison, $fieldName, $column, $strategy)
+                $this->getValueAsSql($comparison->getValue(), $fieldName, $column, $strategy)
             );
         }
 
@@ -415,7 +416,7 @@ class QueryGenerator
             $query[] = $this->getPatternMatcher(
                 $patternMatch,
                 $column,
-                $this->getValueAsSql($patternMatch->getValue(), $patternMatch, $fieldName, $column, $strategy, true)
+                $this->getValueAsSql($patternMatch->getValue(), $fieldName, $column, $strategy, true)
             );
         }
     }
@@ -460,7 +461,7 @@ class QueryGenerator
             return $this->fields[$fieldName]->getValueConversion()->getConversionStrategy(
                 $value,
                 $this->fields[$fieldName]->getFieldConfig()->getOptions(),
-                $this->getConversionHints($fieldName, $this->fields[$fieldName]->getColumn())
+                $this->getConversionHints($fieldName)
             );
         }
 
@@ -468,7 +469,7 @@ class QueryGenerator
             return $this->fields[$fieldName]->getFieldConversion()->getConversionStrategy(
                 $value,
                 $this->fields[$fieldName]->getFieldConfig()->getOptions(),
-                $this->getConversionHints($fieldName, $this->fields[$fieldName]->getColumn())
+                $this->getConversionHints($fieldName)
             );
         }
 
@@ -477,17 +478,17 @@ class QueryGenerator
 
     /**
      * Returns either the converted value.
-
+     *
      * @param string   $value
-     * @param object   $inputValue
      * @param string   $fieldName
      * @param string   $column
      * @param int|null $strategy
      * @param bool     $noSqlConversion
      *
      * @return string
+     * @internal param object $inputValue
      */
-    protected function getValueAsSql($value, $inputValue, $fieldName, $column, $strategy = null, $noSqlConversion = false)
+    protected function getValueAsSql($value, $fieldName, $column, $strategy = null, $noSqlConversion = false)
     {
         $converter = $this->fields[$fieldName]->getValueConversion();
         $field = $this->fields[$fieldName]->getFieldConfig();
@@ -501,10 +502,7 @@ class QueryGenerator
         }
 
         $convertedValue = $value;
-        $hints = $this->getConversionHints($fieldName, $column, $strategy) + array(
-            'original_value' => $value,
-            'value_object' => $inputValue,
-        );
+        $hints = $this->getConversionHints($fieldName, $strategy, $column);
 
         if ($converter->requiresBaseConversion($value, $field->getOptions(), $hints)) {
             $convertedValue = $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform());

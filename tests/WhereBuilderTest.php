@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\InvoiceNumber;
@@ -475,16 +476,14 @@ final class WhereBuilderTest extends DbalTestCase
             ->method('convertSqlField')
             ->will(
                 $this->returnCallback(
-                    function ($column, array $passedOptions, array $hints) use ($test, $options) {
-                        $test->assertArrayHasKey('conversion_strategy', $hints);
-                        $test->assertArrayHasKey('connection', $hints);
+                    function ($column, array $passedOptions, ConversionHints $hints) use ($test, $options) {
                         $test->assertEquals($options, $passedOptions);
 
-                        if (2 === $hints['conversion_strategy']) {
+                        if (2 === $hints->conversionStrategy) {
                             return "search_conversion_age($column)";
                         }
 
-                        $test->assertEquals(1, $hints['conversion_strategy']);
+                        $test->assertEquals(1, $hints->conversionStrategy);
 
                         return $column;
                     }
@@ -497,16 +496,14 @@ final class WhereBuilderTest extends DbalTestCase
             ->method('convertSqlValue')
             ->will(
                 $this->returnCallback(
-                    function ($input, array $passedOptions, array $hints) use ($test, $options) {
-                        $test->assertArrayHasKey('conversion_strategy', $hints);
-                        $test->assertArrayHasKey('connection', $hints);
+                    function ($input, array $passedOptions, ConversionHints $hints) use ($test, $options) {
                         $test->assertEquals($options, $passedOptions);
 
-                        if (2 === $hints['conversion_strategy']) {
-                            return "CAST(".$hints['connection']->quote($input)." AS DATE)";
+                        if (2 === $hints->conversionStrategy) {
+                            return "CAST(".$hints->connection->quote($input)." AS DATE)";
                         }
 
-                        $test->assertEquals(1, $hints['conversion_strategy']);
+                        $test->assertEquals(1, $hints->conversionStrategy);
 
                         return $input;
                     }
@@ -519,14 +516,13 @@ final class WhereBuilderTest extends DbalTestCase
             ->method('convertValue')
             ->will(
                 $this->returnCallback(
-                    function ($input, array $passedOptions, array $hints) use ($test, $options) {
-                        $test->assertArrayHasKey('conversion_strategy', $hints);
+                    function ($input, array $passedOptions, ConversionHints $hints) use ($test, $options) {
                         $test->assertEquals($options, $passedOptions);
 
                         if ($input instanceof \DateTime) {
-                            $test->assertEquals(2, $hints['conversion_strategy']);
+                            $test->assertEquals(2, $hints->conversionStrategy);
                         } else {
-                            $test->assertEquals(1, $hints['conversion_strategy']);
+                            $test->assertEquals(1, $hints->conversionStrategy);
                         }
 
                         if ($input instanceof \DateTime) {

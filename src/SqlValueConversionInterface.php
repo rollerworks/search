@@ -30,11 +30,11 @@ interface SqlValueConversionInterface extends ValueConversionInterface
      * Caution: The result of this method is used as-is,
      * so its important to escape any values used in the returned statement.
      *
-     * @param mixed $input   Query-parameter reference or real input depending on requiresRealValue()
-     * @param array $options Options of the Field configuration
-     * @param array $hints   Special information for the conversion process (search_field, connection, db_type)
+     * @param mixed           $input   Query-parameter reference or real input depending on requiresRealValue()
+     * @param array           $options Options of the Field configuration
+     * @param ConversionHints $hints   Special information for the conversion process
      *
      * @return string
      */
-    public function convertSqlValue($input, array $options, array $hints);
+    public function convertSqlValue($input, array $options, ConversionHints $hints);
 }
