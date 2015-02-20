@@ -11,8 +11,8 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
-use Doctrine\DBAL\Connection;
-use Rollerworks\Component\Search\SearchCondition;
+use Doctrine\DBAL\Schema\Schema as DbSchema;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\InvoiceNumber;
 use Rollerworks\Component\Search\Value\Compare;
@@ -30,34 +30,39 @@ use Rollerworks\Component\Search\ValuesGroup;
  */
 final class WhereBuilderTest extends FunctionalDbalTestCase
 {
-    private function getWhereBuilder(SearchCondition $condition, Connection $connection = null)
+    protected function setUpDbSchema(DbSchema $schema)
     {
-        $whereBuilder = $this->getDbalFactory()->createWhereBuilder(
-            $connection ?: $this->conn,
-            $condition
-        );
+        $invoiceTable = $schema->createTable('invoice');
+        $invoiceTable->addColumn('id', 'integer');
+        $invoiceTable->addColumn('status', 'integer');
+        $invoiceTable->addColumn('label', 'string');
+        $invoiceTable->addColumn('customer', 'integer');
+        $invoiceTable->setPrimaryKey(array('id'));
 
+        $customerTable = $schema->createTable('customer');
+        $customerTable->addColumn('id', 'integer');
+        $customerTable->addColumn('name', 'string');
+        $customerTable->addColumn('birthday', 'date');
+        $customerTable->setPrimaryKey(array('id'));
+    }
+
+    protected function getQuery()
+    {
+        return "SELECT i.*, c.* FROM invoice AS i JOIN customer AS c ON (c.id = i.customer) WHERE ";
+    }
+
+    /**
+     * Configure fields of the WhereBuilder.
+     *
+     * @param WhereBuilder $whereBuilder
+     */
+    protected function configureWhereBuilder(WhereBuilder $whereBuilder)
+    {
         $whereBuilder->setField('customer', 'customer', 'integer', 'i');
         $whereBuilder->setField('customer_name', 'name', 'string', 'c');
         $whereBuilder->setField('customer_birthday', 'birthday', 'string', 'c'); // don't use date as this breaks the binding
         $whereBuilder->setField('status', 'status', 'integer', 'i');
         $whereBuilder->setField('label', 'label', 'string', 'i');
-
-        return $whereBuilder;
-    }
-
-    private function assertQueryIsExecutable($conditionOrWhere)
-    {
-        if ($conditionOrWhere instanceof SearchCondition) {
-            $whereBuilder = $this->getWhereBuilder($conditionOrWhere);
-        } else {
-            $whereBuilder = $conditionOrWhere;
-        }
-
-        $whereClause = $whereBuilder->getWhereClause();
-        $query = "SELECT i.*, c.* FROM invoice AS i JOIN customer AS c ON (c.id = i.customer) WHERE ".$whereClause;
-
-        $this->assertNotNull($this->conn->query($query));
     }
 
     public function testSimpleQuery()
@@ -303,7 +308,8 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $whereBuilder = $this->getDbalFactory()->createWhereBuilder($this->conn, $condition);
+        $this->configureWhereBuilder($whereBuilder);
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
         $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface');
@@ -319,12 +325,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->assertQueryIsExecutable($whereBuilder);
     }
 
-    /**
-     * @dataProvider provideSqlValueConversionTests
-     *
-     * @param boolean $valueReqEmbedding
-     */
-    public function testSqlValueConversion($valueReqEmbedding = false)
+    public function testSqlValueConversion()
     {
         $fieldSet = $this->getFieldSet();
         $condition = SearchConditionBuilder::create($fieldSet)
@@ -333,7 +334,9 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $whereBuilder = $this->getDbalFactory()->createWhereBuilder($this->conn, $condition);
+        $this->configureWhereBuilder($whereBuilder);
+
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
         $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface');
@@ -377,15 +380,6 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
-        $this->assertQueryIsExecutable($whereBuilder);
-    }
-
-    public static function provideSqlValueConversionTests()
-    {
-        return array(
-            array(false),
-            array(true),
-        );
+        $this->assertQueryIsExecutable($condition);
     }
 }

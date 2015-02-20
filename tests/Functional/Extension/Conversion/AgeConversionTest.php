@@ -11,10 +11,11 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\Extension\Conversion;
 
-use Doctrine\DBAL\Connection;
-use Rollerworks\Component\Search\SearchCondition;
+use Doctrine\DBAL\Schema\Schema as DbSchema;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\FunctionalDbalTestCase;
+use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 use Rollerworks\Component\Search\Value\SingleValue;
 
 /**
@@ -22,55 +23,36 @@ use Rollerworks\Component\Search\Value\SingleValue;
  */
 final class AgeConversionTest extends FunctionalDbalTestCase
 {
-    protected function setUp()
+    protected function setUpDbSchema(DbSchema $schema)
     {
-        $this->resetSharedConn();
-        parent::setUp();
-
-        $schema = new \Doctrine\DBAL\Schema\Schema();
-
         $invoiceTable = $schema->createTable('site_user');
         $invoiceTable->addColumn('id', 'integer');
         $invoiceTable->addColumn('birthday', 'date');
+    }
 
-        $platform = $this->conn->getDatabasePlatform();
-        $queries = $schema->toSql($platform);
-
-        foreach ($queries as $query) {
-            $this->conn->exec($query);
-        }
-
-        $this->conn->insert(
-            'site_user',
-            array('id' => 1, 'birthday' => new \DateTime('2001-01-15', new \DateTimeZone('UTC'))),
-            array(
-                'id' => 'integer', 'birthday' => 'date'
-            )
+    /**
+     * @return SchemaRecord[]
+     */
+    protected function getDbRecords()
+    {
+        return array(
+            SchemaRecord::create('site_user', array('id' => 'integer', 'birthday' => 'date'))
+                ->add(array(1, new \DateTime('2001-01-15', new \DateTimeZone('UTC'))))
+                ->add(array(2, new \DateTime('2001-05-15', new \DateTimeZone('UTC'))))
+                ->add(array(3, new \DateTime('2001-10-15', new \DateTimeZone('UTC'))))
+                ->add(array(4, new \DateTime('-5 years', new \DateTimeZone('UTC'))))
+            ->end(),
         );
+    }
 
-        $this->conn->insert(
-            'site_user',
-            array('id' => 2, 'birthday' => new \DateTime('2001-05-15', new \DateTimeZone('UTC'))),
-            array(
-                'id' => 'integer', 'birthday' => 'date'
-            )
-        );
+    protected function getQuery()
+    {
+        return "SELECT id FROM site_user AS u WHERE ";
+    }
 
-        $this->conn->insert(
-            'site_user',
-            array('id' => 3, 'birthday' => new \DateTime('2001-10-15', new \DateTimeZone('UTC'))),
-            array(
-                'id' => 'integer', 'birthday' => 'date'
-            )
-        );
-
-        $this->conn->insert(
-            'site_user',
-            array('id' => 4, 'birthday' => new \DateTime('-5 years', new \DateTimeZone('UTC'))),
-            array(
-                'id' => 'integer', 'birthday' => 'date'
-            )
-        );
+    protected function configureWhereBuilder(WhereBuilder $whereBuilder)
+    {
+        $whereBuilder->setField('birthday', 'birthday', 'date', 'u');
     }
 
     protected function getFieldSet($build = true)
@@ -80,30 +62,6 @@ final class AgeConversionTest extends FunctionalDbalTestCase
         $fieldSet->add('birthday', 'birthday');
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
-    }
-
-    private function getWhereBuilder(SearchCondition $condition, Connection $connection = null)
-    {
-        $whereBuilder = $this->getDbalFactory()->createWhereBuilder(
-            $connection ?: $this->conn,
-            $condition
-        );
-
-        $whereBuilder->setField('birthday', 'birthday', 'date', 'u');
-
-        return $whereBuilder;
-    }
-
-    private function assertRecordsAreFound(SearchCondition $condition, array $ids)
-    {
-        $whereBuilder = $this->getWhereBuilder($condition);
-        $whereClause = $whereBuilder->getWhereClause();
-
-        $statement = $this->conn->query("SELECT * FROM site_user AS u WHERE ".$whereClause);
-        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $rows = array_map(function ($value) { return $value['id']; }, $rows);
-
-        $this->assertEquals($ids, $rows);
     }
 
     public function testWithDate()
