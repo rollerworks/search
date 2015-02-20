@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\SearchConditionInterface;

@@ -14,6 +14,7 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as ORMType;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\SearchConditionInterface;

@@ -9,11 +9,12 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Dbal;
+namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\DBAL\Connection;
-use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
-use Rollerworks\Component\Search\Doctrine\Dbal\Query\SearchMatch;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
