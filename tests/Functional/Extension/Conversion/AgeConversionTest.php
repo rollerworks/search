@@ -99,9 +99,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
         $whereClause = $whereBuilder->getWhereClause();
 
-        $statement = $this->conn->prepare("SELECT * FROM site_user AS u WHERE ".$whereClause);
-        $statement->execute();
-
+        $statement = $this->conn->query("SELECT * FROM site_user AS u WHERE ".$whereClause);
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $rows = array_map(function ($value) { return $value['id']; }, $rows);
 
