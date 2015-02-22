@@ -18,7 +18,7 @@ meaning its internal values can't be changed.
         private $year;
         private $number;
 
-        public static function __construct($year, $number)
+        private function __construct($year, $number)
         {
             $this->year = $year;
             $this->number = $number;
@@ -33,16 +33,6 @@ meaning its internal values can't be changed.
             return new InvoiceNumber((int) $matches['year'], (int) ltrim($matches['number'], '0'));
         }
 
-        public static function __construct($year, $number)
-        {
-            // You'd properly want to validate both are integers
-            // For this example this omitted
-
-            $value = new self();
-            $value->year = $year;
-            $value->number = $number;
-        }
-
         public function equals(InvoiceNumber $input)
         {
             return $input == $this;
@@ -54,7 +44,7 @@ meaning its internal values can't be changed.
                 return true;
             }
 
-            if ($input->getYear === $this->getYear && $this->getNumber > $input->number) {
+            if ($input->year === $this->year && $this->number > $input->number) {
                 return true;
             }
 
@@ -67,7 +57,7 @@ meaning its internal values can't be changed.
                 return true;
             }
 
-            if ($input->year === $this->year && $this->getNumber < $input->number) {
+            if ($input->year === $this->year && $this->number < $input->number) {
                 return true;
             }
 
