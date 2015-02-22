@@ -4,67 +4,67 @@ UPGRADE
 ## Upgrade FROM 1.0.0-beta4 to 1.0.0-beta5
 
 There has been been some major refactoring to make the system more robust
-easier to use.
+and easier to use.
 
-* The `Rollerworks\Component\Search\Formatter\TransformFormatter` is removed,
-  transforming is now performed in the InputProcessor.
+ * The `Rollerworks\Component\Search\Formatter\TransformFormatter` is removed,
+   transforming is now performed in the InputProcessor.
   
-* `Rollerworks\Component\Search\Metadata\Field` is removed,
-  use `Rollerworks\Component\Search\Mapping\SearchField` instead.
-  
+ * `Rollerworks\Component\Search\Metadata\Field` is removed,
+   use `Rollerworks\Component\Search\Mapping\SearchField` instead.
+
 ### Type
 
-* The options configuring of type has been changed to replace the deprecated
-  OptionsResolverInterface. Second the method is renamed to "configureOptions".
+ * The options configuring of type has been changed to replace the deprecated
+   OptionsResolverInterface. Second the method is renamed to "configureOptions".
 
-  Before:
+   Before:
+   
+   ```php
+   use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+   
+   class TaskType extends AbstractFieldType
+   {
+       // ...
+       public function setDefaultOptions(OptionsResolverInterface $resolver)
+       {
+           $resolver->setDefaults(array(
+               'data_class' => 'App\Entity\Task',
+           ));
+       }
+   }
+   ```
+   
+   After:
+   
+   ```php
+   use Symfony\Component\OptionsResolver\OptionsResolver;
+   
+   class TaskType extends AbstractFieldType
+   {
+       // ...
+       public function configureOptions(OptionsResolver $resolver)
+       {
+           $resolver->setDefaults(array(
+               'data_class' => 'App\Entity\Task',
+           ));
+       }
+   }
+   ```
   
-  ```php
-      use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-      
-      class TaskType extends AbstractFieldType
-      {
-          // ...
-          public function setDefaultOptions(OptionsResolverInterface $resolver)
-          {
-              $resolver->setDefaults(array(
-                  'data_class' => 'App\Entity\Task',
-              ));
-          }
-      }
-  ```
-  
-  After:
-  
-  ```php
-      use Symfony\Component\OptionsResolver\OptionsResolver;
-      
-      class TaskType extends AbstractFieldType
-      {
-          // ...
-          public function configureOptions(OptionsResolver $resolver)
-          {
-              $resolver->setDefaults(array(
-                  'data_class' => 'App\Entity\Task',
-              ));
-          }
-      }
-  ```
-  
-* Method `buildFieldView` has been renamed to `buildView` in both
+ * Method `buildFieldView` has been renamed to `buildView` in both
   `Rollerworks\Component\Search\FieldTypeInterface` and
   `Rollerworks\Component\Search\FieldTypeExtensionInterface`.
 
 ### Input
 
-* Input processors are made reusable, configuration (limiting) must be passed as the
-  first parameter of `Rollerworks\Component\Search\Input\InputProcessorInterface::process()`.
+ * Input processors are made reusable, configuration (limiting) must be passed as the
+   first parameter of `Rollerworks\Component\Search\Input\InputProcessorInterface::process()`.
   
-* When the created search-condition has errors an `InvalidSearchValuesException`
-  will be thrown (after processing).
+ * When the created search-condition has errors an `InvalidSearchValuesException`
+   will be thrown (after processing).
   
-* Validation of ranges (correct bounds) is now performed when processing
-  the Input (not after).
+ * Validation of ranges (correct bounds) is now performed when processing
+   the Input (not after).
 
 ### Optimizers (former formatters)
 
@@ -101,14 +101,14 @@ is changed to: `Rollerworks\Component\Search\Extension\Symfony\Validator`.
 
 ### Values
   
-* Value objects `Compare`, `SingleValue`, `Range`, `PatternMatch` are now marked as
-  final and made immutable. To change a value, remove the original at the index and
-  add the new value object to the ValuesBag.
+ * Value objects `Compare`, `SingleValue`, `Range`, `PatternMatch` are now marked as
+   final and made immutable. To change a value, remove the original at the index and
+   add the new value object to the ValuesBag.
   
-* `PatternMatch::getViewValue()` was removed as this value-type has no view version.
+ * `PatternMatch::getViewValue()` was removed as this value-type has no view version.
   
-* All view-values are casted to strings now;
-  When no view value is provided the "normalized" value must support casting to a string!
+ * All view-values are casted to strings now;
+   When no view value is provided the "normalized" value must support casting to a string!
   
 ### SearchConditionSerializer
 
