@@ -105,16 +105,6 @@ invoice field type.
             $config->addViewTransformer(new InvoiceNumberTransformer());
         }
 
-        public function hasRangeSupport()
-        {
-            return true;
-        }
-
-        public function hasCompareSupport()
-        {
-            return true;
-        }
-
         public function getName()
         {
             return 'invoice_number';

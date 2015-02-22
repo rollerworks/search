@@ -12,6 +12,15 @@ and easier to use.
  * `Rollerworks\Component\Search\Metadata\Field` is removed,
    use `Rollerworks\Component\Search\Mapping\SearchField` instead.
 
+ * The methods `supportValueType()` and `setValueTypeSupport()` were added
+   to `Rollerworks\Component\Search\FieldConfigInterface`. If you implemented
+   this interface in your own code, you should add these two methods.
+   
+ * The methods `hasRangeSupport()` and `hasCompareSupport()` were removed
+   from the `Rollerworks\Component\Search\FieldConfigInterface`. If you
+   relied upon these methods you need to change your code.
+   See description below for more details.
+
 ### Type
 
  * The options configuring of type has been changed to replace the deprecated
@@ -54,6 +63,40 @@ and easier to use.
  * Method `buildFieldView` has been renamed to `buildView` in both
   `Rollerworks\Component\Search\FieldTypeInterface` and
   `Rollerworks\Component\Search\FieldTypeExtensionInterface`.
+  
+* Configuring whether a type supports ranges/comparisons and/or pattern-matchers
+  now needs to be configured in the `buildType()` method.
+  
+  **Note:** The parent type may already have enabled support for the
+  values-type, so you don't have to always enable this explicitly.
+  
+  Before:
+  
+  ```php
+  use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+    
+  class TaskType extends AbstractFieldType
+  {
+      public function hasRangeSupport()
+      {
+          return true;
+      }
+  }
+  ```
+  
+  After:
+  
+  ```php
+  use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+  
+  class TaskType extends AbstractFieldType
+  {
+      public function buildType(FieldConfigInterface $config, array $options)
+      {
+          $config->setAcceptRange(true);
+      }
+  }
+  ```
 
 ### Input
 

@@ -16,6 +16,7 @@ use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValuesBag;
 
 class SearchFieldSpec extends ObjectBehavior
 {
@@ -77,37 +78,22 @@ class SearchFieldSpec extends ObjectBehavior
         $this->isRequired()->shouldReturn(true);
     }
 
-    public function it_should_disable_range_acceptance_by_default()
+    public function it_supports_no_special_value_types_by_default()
     {
-        $this->acceptRanges()->shouldReturn(false);
+        $this->supportValueType(ValuesBag::VALUE_TYPE_RANGE)->shouldReturn(false);
+        $this->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON)->shouldReturn(false);
+        $this->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH)->shouldReturn(false);
     }
 
-    public function it_should_allow_enabling_range_acceptance()
+    public function it_allows_configuring_value_support()
     {
-        $this->setAcceptRange();
-        $this->acceptRanges()->shouldReturn(true);
-    }
+        $this->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
+        $this->supportValueType(ValuesBag::VALUE_TYPE_RANGE)->shouldReturn(true);
+        $this->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON)->shouldReturn(false);
 
-    public function it_should_disable_comparison_acceptance_by_default()
-    {
-        $this->acceptCompares()->shouldReturn(false);
-    }
-
-    public function it_should_allow_enabling_comparison_acceptance()
-    {
-        $this->setAcceptCompares();
-        $this->acceptCompares()->shouldReturn(true);
-    }
-
-    public function it_should_disable_patternMatch_acceptance_by_default()
-    {
-        $this->acceptPatternMatch()->shouldReturn(false);
-    }
-
-    public function it_should_allow_enabling_patternMatch_acceptance()
-    {
-        $this->setAcceptPatternMatch();
-        $this->acceptPatternMatch()->shouldReturn(true);
+        // And now disable it
+        $this->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false);
+        $this->supportValueType(ValuesBag::VALUE_TYPE_RANGE)->shouldReturn(false);
     }
 
     public function it_should_have_no_model_reference_by_default()

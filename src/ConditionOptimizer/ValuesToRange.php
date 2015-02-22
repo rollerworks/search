@@ -38,7 +38,9 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         $optimize = false;
 
         foreach ($fieldSet->all() as $field) {
-            if ($field->acceptRanges() && $field->getValueComparison() instanceof ValueIncrementerInterface) {
+            if ($field->supportValueType(ValuesBag::VALUE_TYPE_RANGE) &&
+                $field->getValueComparison() instanceof ValueIncrementerInterface
+            ) {
                 $optimize = true;
 
                 break;
@@ -62,7 +64,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
             $config = $fieldSet->get($fieldName);
 
-            if ($config->acceptRanges() && ($values->hasSingleValues() || $values->hasExcludedValues())) {
+            if ($values->hasSingleValues() || $values->hasExcludedValues()) {
                 $this->optimizeValuesInValuesBag($config, $values);
             }
         }

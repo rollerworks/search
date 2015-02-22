@@ -153,8 +153,9 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
         $view->vars = array_merge($view->vars, array(
             'name' => $config->getName(),
             'type' => $config->getType()->getName(),
-            'accept_ranges' => $config->acceptRanges(),
-            'accept_compares' => $config->acceptCompares(),
+            'accept_ranges' => $config->supportValueType(ValuesBag::VALUE_TYPE_RANGE),
+            'accept_compares' => $config->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON),
+            'accept_pattern_matchers' => $config->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH),
             'required' => $config->isRequired(),
         ));
 

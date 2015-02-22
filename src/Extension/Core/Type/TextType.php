@@ -12,6 +12,8 @@
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
+use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\ValuesBag;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -21,16 +23,16 @@ class TextType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function buildType(FieldConfigInterface $config, array $options)
     {
-        return 'text';
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_PATTERN_MATCH, true);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasPatternMatchSupport()
+    public function getName()
     {
-        return true;
+        return 'text';
     }
 }
