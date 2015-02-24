@@ -38,11 +38,6 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
 {
     /**
-     * @var array
-     */
-    private $parameterTypes = array();
-
-    /**
      * Constructor.
      *
      * @param WhereBuilderInterface $whereBuilder The WhereBuilder to use for generating and updating the query
@@ -67,7 +62,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      *
      * @return string
      */
-    public function getWhereClause($embedValues = false)
+    public function getWhereClause()
     {
         if ($this->whereClause) {
             return $this->whereClause;
@@ -78,72 +73,17 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
         if ($this->cacheDriver->contains($cacheKey)) {
             $data = $this->cacheDriver->fetch($cacheKey);
 
-            $this->whereClause = $data[0];
-            $this->parameters = $data[1];
-            $this->parameterTypes = $data[2];
-
-            $this->resolveParametersType();
+            $this->whereClause = $data;
         } else {
-            $this->whereClause = $this->whereBuilder->getWhereClause($embedValues);
-            $this->parameters = $this->whereBuilder->getParameterS();
-            $this->parameterTypes = $this->whereBuilder->getParameterTypes();
+            $this->whereClause = $this->whereBuilder->getWhereClause();
 
             $this->cacheDriver->save(
                 $cacheKey,
-                array(
-                    $this->whereClause,
-                    $this->whereBuilder->getParameters(),
-                    $this->serializeParameterTypes($this->whereBuilder->getParameterTypes()),
-                ),
+                $this->whereClause,
                 $this->cacheLifeTime
             );
         }
 
         return $this->whereClause;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameterTypes()
-    {
-        return $this->parameterTypes;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function bindParameters(Statement $statement)
-    {
-        if (!$this->whereClause) {
-            throw new BadMethodCallException('No Parameters available, call getWhereClause() first.');
-        }
-
-        foreach ($this->parameters as $paramName => $paramValue) {
-            $statement->bindValue($paramName, $paramValue, $this->parameterTypes[$paramName]);
-        }
-    }
-
-    /**
-     * @param Type[] $types
-     *
-     * @return string[]
-     */
-    private function serializeParameterTypes(array $types)
-    {
-        $typesArray = array();
-
-        foreach ($types as $name => $type) {
-            $typesArray[$name] = $type->getName();
-        }
-
-        return $typesArray;
-    }
-
-    private function resolveParametersType()
-    {
-        foreach ($this->parameterTypes as $name => $type) {
-            $this->parameterTypes[$name] = Type::getType($type);
-        }
     }
 }

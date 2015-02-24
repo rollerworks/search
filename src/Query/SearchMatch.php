@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Dbal;
+namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\DBAL\Connection;
 
@@ -82,27 +82,14 @@ class SearchMatch
      */
     public static function getMatchSqlLike($column, $value, $caseInsensitive, $negative, Connection $connection)
     {
-        if (!$caseInsensitive) {
-            return $column.($negative ? ' NOT' : '')." LIKE $value ESCAPE '\\\\'";
+        $excluding = ($negative ? ' NOT' : '');
+        $escape = $connection->quote('\\');
+
+        if ($caseInsensitive) {
+            return "LOWER($column)".$excluding." LIKE LOWER($value) ESCAPE $escape";
         }
 
-        switch ($connection->getDatabasePlatform()->getName()) {
-            case 'postgresql':
-                return $column.($negative ? ' NOT' : '')."ILIKE $value ESCAPE '\\\\'";
-
-            case 'mysql':
-            case 'drizzle':
-            case 'oracle':
-            case 'mssql':
-            case 'sqlite':
-            case 'mock':
-                return "LOWER($column) ".($negative ? 'NOT ' : '')."LIKE LOWER($value) ESCAPE '\\\\'";
-
-            default:
-                throw new \RuntimeException(
-                    sprintf('Unsupported platform "%s".', $connection->getDatabasePlatform()->getName())
-                );
-        }
+        return $column.$excluding." LIKE $value ESCAPE $escape";
     }
 
     /**
@@ -133,10 +120,10 @@ class SearchMatch
             case 'mysql':
             case 'drizzle':
                 return sprintf(
-                    '%s%s%s REGEXP %s',
+                    '%s%s REGEXP%s %s',
                     $column,
-                    ($caseInsensitive ? 'BINARY ' : ''),
                     ($negative ? ' NOT' : ''),
+                    ($caseInsensitive ? ' BINARY' : ''),
                     $value
                 );
 

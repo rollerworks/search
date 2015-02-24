@@ -20,7 +20,8 @@
         "doctrine/dbal": "~2.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.4"
+        "phpunit/phpunit": "~4.4",
+        "phpspec/prophecy": "^1.3.1"
     },
     "autoload": {
         "psr-4": {
@@ -31,8 +32,8 @@
     "autoload-dev": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Tests\\Mocks\\": "tests/Mocks/",
-            "Rollerworks\\Component\\Search\\Tests\\Fixtures\\": "tests/Fixtures/",
-            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "tests/"
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "tests/",
+            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
     },
     "config": {

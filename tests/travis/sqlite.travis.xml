@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+    strict="true"
+    bootstrap="../bootstrap.php"
+>
+
+    <testsuites>
+        <testsuite name="RollerworksSearch Test Suite">
+            <directory>../</directory>
+        </testsuite>
+    </testsuites>
+
+    <groups>
+        <include>
+            <group>functional</group>
+        </include>
+    </groups>
+</phpunit>

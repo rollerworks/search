@@ -30,27 +30,4 @@ interface WhereBuilderInterface
      * @return SearchConditionInterface
      */
     public function getSearchCondition();
-
-    /**
-     * Returns the parameters that where set during the generation process.
-     *
-     * @return array
-     */
-    public function getParameters();
-
-    /**
-     * Returns the parameters that where set during the generation process.
-     *
-     * @return array
-     */
-    public function getParameterTypes();
-
-    /**
-     * Binds the parameters to the statement.
-     *
-     * @param Statement $statement
-     *
-     * @return null
-     */
-    public function bindParameters(Statement $statement);
 }

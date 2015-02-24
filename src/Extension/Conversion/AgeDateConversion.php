@@ -12,8 +12,10 @@
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 
 use Doctrine\DBAL\Types\Type as DBALType;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
@@ -36,19 +38,19 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
      *
      * @var array
      */
-    protected static $connectionState = array();
+    private static $connectionState = array();
 
     /**
      * {@inheritdoc}
      */
-    public function getConversionStrategy($value, array $options, array $hints)
+    public function getConversionStrategy($value, array $options, ConversionHints $hints)
     {
         if (!$value instanceof \DateTime && !ctype_digit((string) $value)) {
             throw new UnexpectedTypeException($value, '\DateTime object or integer');
         }
 
         if ($value instanceof \DateTime) {
-            return 2;
+            return $hints->field->getDbType()->getName() !== 'date' ? 2 : 3;
         }
 
         return 1;
@@ -57,18 +59,21 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     /**
      * {@inheritdoc}
      */
-    public function convertSqlField($column, array $options, array $hints)
+    public function convertSqlField($column, array $options, ConversionHints $hints)
     {
-        if (2 === $hints['conversion_strategy']) {
+        if (3 === $hints->conversionStrategy) {
+            return $column;
+        }
+
+        if (2 === $hints->conversionStrategy) {
             return "CAST($column AS DATE)";
         }
 
-        /** @var \Doctrine\DBAL\Connection $connection */
-        $connection = $hints['connection'];
+        $connection = $hints->connection;
 
         switch ($connection->getDatabasePlatform()->getName()) {
             case 'postgresql':
-                return "to_char('YYYY', age($column))";
+                return "to_char(age($column), 'YYYY'::text)::integer";
 
             case 'mysql':
             case 'drizzle':
@@ -85,10 +90,15 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
             case 'sqlite':
                 $conn = $connection->getWrappedConnection();
                 $objHash = spl_object_hash($conn);
+
                 if (!isset(self::$connectionState[$objHash])) {
-                    $conn->sqliteCreateFunction('search_conversion_age', function ($date) {
-                        return date_create($date)->diff(new \DateTime())->y;
-                    }, 1);
+                    $conn->sqliteCreateFunction(
+                        'search_conversion_age',
+                        function ($date) {
+                            return date_create($date)->diff(new \DateTime())->y;
+                        },
+                        1
+                    );
 
                     self::$connectionState[$objHash] = true;
                 }
@@ -108,7 +118,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     /**
      * {@inheritdoc}
      */
-    public function requiresBaseConversion($input, array $options, array $hints)
+    public function requiresBaseConversion($input, array $options, ConversionHints $hints)
     {
         return false;
     }
@@ -116,12 +126,12 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     /**
      * {@inheritdoc}
      */
-    public function convertValue($value, array $options, array $hints)
+    public function convertValue($value, array $options, ConversionHints $hints)
     {
-        if (2 === $hints['conversion_strategy']) {
+        if (2 === $hints->conversionStrategy || 3 === $hints->conversionStrategy) {
             return DBALType::getType('date')->convertToDatabaseValue(
                 $value,
-                $hints['connection']->getDatabasePlatform()
+                $hints->connection->getDatabasePlatform()
             );
         }
 

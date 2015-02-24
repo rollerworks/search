@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\DBAL\Driver\Connection;
-use Doctrine\DBAL\Statement;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as ORMType;
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\SearchConditionInterface;
@@ -29,6 +30,7 @@ use Rollerworks\Component\Search\SearchConditionInterface;
  *  * Conversions are performed per field and must be stateless,
  *    they receive the type and connection information for the conversion process.
  *  * Conversions apply at the SQL level, meaning they must be platform specific.
+ *  * SQL conversions must be properly escaped to prevent SQL injections.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -88,7 +90,8 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         $this->fields[$fieldName] = array();
         $this->fields[$fieldName]['field']   = $this->searchCondition->getFieldSet()->get($fieldName);
         $this->fields[$fieldName]['db_type'] = is_object($type) ? $type : ORMType::getType($type);
-        $this->fields[$fieldName]['column']  = $alias ? $alias.'.'.$column : $column;
+        $this->fields[$fieldName]['alias']   = $alias;
+        $this->fields[$fieldName]['column']  = $column;
     }
 
     /**
@@ -97,24 +100,20 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * The Where-clause is wrapped inside a group so it
      * can be safely used with other conditions.
      *
-     * @param bool $embedValues Whether to embed the values, default is to assign as parameters
+     * Values are embedded with in the Query.
      *
      * @return string
      */
-    public function getWhereClause($embedValues = false)
+    public function getWhereClause()
     {
         if (null !== $this->whereClause) {
             return $this->whereClause;
         }
 
-        $this->processFields();
-
         $this->queryGenerator = new QueryGenerator(
             $this->connection,
             $this->searchCondition,
-            $this->fields,
-            $this->parameterPrefix,
-            $embedValues
+            $this->processFields()
         );
 
         $this->whereClause = $this->queryGenerator->getGroupQuery(
@@ -124,66 +123,21 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         return $this->whereClause;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function bindParameters(Statement $statement)
-    {
-        if (!$this->queryGenerator) {
-            throw new BadMethodCallException('No Parameters available, call getWhereClause() first.');
-        }
-
-        foreach ($this->queryGenerator->getParameters() as $paramName => $paramValue) {
-            $statement->bindValue(
-                $paramName,
-                $paramValue,
-                $this->queryGenerator->getParameterType($paramName)
-            );
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameterTypes()
-    {
-        if ($this->queryGenerator) {
-            return $this->queryGenerator->getParameterTypes();
-        }
-
-        return array();
-    }
-
-    /**
-     * Returns the parameters-type that where set during the generation process.
-     *
-     * @param string $name
-     *
-     * @return \Doctrine\DBAL\Types\Type|null
-     */
-    public function getParametersType($name)
-    {
-        if ($this->queryGenerator) {
-            return $this->queryGenerator->getParameterType($name);
-        }
-
-        return;
-    }
-
     private function processFields()
     {
-        foreach (array_keys($this->fields) as $fieldName) {
-            if (isset($this->fieldConversions[$fieldName])) {
-                $this->fields[$fieldName]['field_convertor'] = $this->fieldConversions[$fieldName];
-            } else {
-                $this->fields[$fieldName]['field_convertor'] = null;
-            }
+        $fields = array();
 
-            if (isset($this->valueConversions[$fieldName])) {
-                $this->fields[$fieldName]['value_convertor'] = $this->valueConversions[$fieldName];
-            } else {
-                $this->fields[$fieldName]['value_convertor'] = null;
-            }
+        foreach ($this->fields as $fieldName => $field) {
+            $fields[$fieldName] = new QueryField(
+                $this->searchCondition->getFieldSet()->get($fieldName),
+                $field['db_type'],
+                $field['alias'],
+                $field['column'],
+                isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null,
+                isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null
+            );
         }
+
+        return $fields;
     }
 }

@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal;
 
 use Rollerworks\Component\Search\AbstractExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\AgeDateConversion;
+use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\MoneyValueConversion;
 
 /**
  * Represents the doctrine dbal extension,
@@ -30,6 +31,7 @@ class DoctrineDbalExtension extends AbstractExtension
         return array(
             new Type\FieldTypeExtension(),
             new Type\BirthdayTypeExtension(new AgeDateConversion()),
+            new Type\MoneyTypeExtension(new MoneyValueConversion()),
         );
     }
 }
