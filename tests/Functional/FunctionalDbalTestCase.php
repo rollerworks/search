@@ -154,7 +154,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
         $this->assertEquals(
             $ids,
-            $idRows,
+            array_merge(array(), array_unique($idRows)),
             sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s", print_r($rows, true), $whereClause)
         );
     }

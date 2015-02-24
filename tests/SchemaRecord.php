@@ -74,6 +74,16 @@ final class SchemaRecord
         return $this;
     }
 
+    /**
+     * Semantic method for chaining.
+     *
+     * @return $this
+     */
+    public function records()
+    {
+        return $this;
+    }
+
     public function getColumns()
     {
         return $this->columns;
