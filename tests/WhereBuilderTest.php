@@ -257,9 +257,9 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((C.name LIKE 'foo' ESCAPE '\\\\' OR C.name LIKE 'fo\\'o' ESCAPE '\\\\' OR ".
+            "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\'o' ESCAPE '\\' OR ".
             "RW_REGEXP('(foo|bar)', C.name, '') = 0 OR RW_REGEXP('(doctor|who)', C.name, 'ui') = 0) AND ".
-            "LOWER(C.name) NOT LIKE LOWER('bar') ESCAPE '\\\\'))",
+            "LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))",
             $whereBuilder->getWhereClause()
         );
     }
@@ -299,7 +299,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((I.customer IN(2))) AND (((C.name LIKE 'foo' ESCAPE '\\\\'))))",
+            "(((I.customer IN(2))) AND (((C.name LIKE '%foo' ESCAPE '\\'))))",
             $whereBuilder->getWhereClause()
         );
     }
@@ -318,7 +318,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "((I.customer IN(2)) OR (C.name LIKE 'foo' ESCAPE '\\\\'))",
+            "((I.customer IN(2)) OR (C.name LIKE '%foo' ESCAPE '\\'))",
             $whereBuilder->getWhereClause()
         );
     }
@@ -341,7 +341,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "((((I.customer IN(2)) OR (C.name LIKE 'foo' ESCAPE '\\\\'))))",
+            "((((I.customer IN(2)) OR (C.name LIKE '%foo' ESCAPE '\\'))))",
             $whereBuilder->getWhereClause()
         );
     }

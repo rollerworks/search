@@ -413,11 +413,7 @@ class QueryGenerator
             $strategy = $this->getConversionStrategy($fieldName, $patternMatch->getValue());
             $column = $this->getFieldColumn($fieldName, $strategy);
 
-            $query[] = $this->getPatternMatcher(
-                $patternMatch,
-                $column,
-                $this->getValueAsSql($patternMatch->getValue(), $fieldName, $column, $strategy, true)
-            );
+            $query[] = $this->getPatternMatcher($patternMatch, $column, $patternMatch->getValue());
         }
     }
 
@@ -433,16 +429,25 @@ class QueryGenerator
         if ($patternMatch->isRegex()) {
             return SearchMatch::getMatchSqlRegex(
                 $column,
-                $value,
+                $this->connection->quote($value),
                 $patternMatch->isCaseInsensitive(),
                 $patternMatch->isExclusive(),
                 $this->connection
             );
         }
 
+        $patternMap = array(
+            PatternMatch::PATTERN_STARTS_WITH => '%%%s',
+            PatternMatch::PATTERN_NOT_STARTS_WITH => '%%%s',
+            PatternMatch::PATTERN_CONTAINS => '%%%s%%',
+            PatternMatch::PATTERN_NOT_CONTAINS => '%%%s%%',
+            PatternMatch::PATTERN_ENDS_WITH => '%s%%',
+            PatternMatch::PATTERN_NOT_ENDS_WITH => '%s%%',
+        );
+
         return SearchMatch::getMatchSqlLike(
             $column,
-            $value,
+            $this->connection->quote(sprintf($patternMap[$patternMatch->getType()], $value)),
             $patternMatch->isCaseInsensitive(),
             $patternMatch->isExclusive(),
             $this->connection
@@ -483,18 +488,21 @@ class QueryGenerator
      * @param string   $fieldName
      * @param string   $column
      * @param int|null $strategy
-     * @param bool     $noSqlConversion
      *
      * @return string
-     * @internal param object $inputValue
      */
-    protected function getValueAsSql($value, $fieldName, $column, $strategy = null, $noSqlConversion = false)
+    protected function getValueAsSql($value, $fieldName, $column, $strategy = null)
     {
         $converter = $this->fields[$fieldName]->getValueConversion();
         $field = $this->fields[$fieldName]->getFieldConfig();
         $type = $this->fields[$fieldName]->getDbType();
 
         if (null === $converter) {
+            // Don't quote numbers as SQLite doesn't follow standards for casting
+            if (is_scalar($value) && ctype_digit((string) $value)) {
+                return $value;
+            }
+
             return $this->connection->quote(
                 $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
                 $type->getBindingType()
@@ -510,7 +518,7 @@ class QueryGenerator
 
         $convertedValue = $converter->convertValue($convertedValue, $field->getOptions(), $hints);
 
-        if (!$noSqlConversion && $converter instanceof SqlValueConversionInterface) {
+        if ($converter instanceof SqlValueConversionInterface) {
             return $this->getValueConversionSql($fieldName, $column, $convertedValue, $strategy);
         }
 

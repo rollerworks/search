@@ -83,20 +83,13 @@ class SearchMatch
     public static function getMatchSqlLike($column, $value, $caseInsensitive, $negative, Connection $connection)
     {
         $excluding = ($negative ? ' NOT' : '');
-
-        if ('postgresql' === $connection->getDatabasePlatform()->getName()) {
-            if ($caseInsensitive) {
-                return $column.$excluding." ILIKE $value ESCAPE E'\\\\'";
-            }
-
-            return $column.$excluding." LIKE $value ESCAPE E'\\\\'";
-        }
+        $escape = $connection->quote('\\');
 
         if ($caseInsensitive) {
-            return "LOWER($column)".$excluding." LIKE LOWER($value) ESCAPE '\\\\'";
+            return "LOWER($column)".$excluding." LIKE LOWER($value) ESCAPE $escape";
         }
 
-        return $column.$excluding." LIKE $value ESCAPE '\\\\'";
+        return $column.$excluding." LIKE $value ESCAPE $escape";
     }
 
     /**
