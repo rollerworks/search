@@ -67,16 +67,27 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add($this->getFactory()->createField('id', 'integer')->setAcceptRange(true)->setAcceptCompares(true));
-        $fieldSet->add($this->getFactory()->createField('name', 'text')->setAcceptPatternMatch(true));
+        $fieldSet->add($this->getFactory()->createField('id', 'integer'));
+        $fieldSet->add($this->getFactory()->createField('name', 'text'));
         $fieldSet->add($this->getFactory()->createField('lastname', 'text'));
-        $fieldSet->add($this->getFactory()->createField('no-range-field', 'integer')->setAcceptRange(false));
-        $fieldSet->add($this->getFactory()->createField('no-compares-field', 'integer')->setAcceptCompares(false));
-        $fieldSet->add($this->getFactory()->createField('no-matchers-field', 'integer')->setAcceptPatternMatch(false));
+        $fieldSet->add($this->getFactory()->createField('date', 'date', array('format' => 'MM-dd-yyyy')));
         $fieldSet->add(
-            $this->getFactory()->createField('date', 'date', array('format' => 'MM-dd-yyyy'))
-              ->setAcceptRange(true)
-              ->setAcceptCompares(true)
+            $this->getFactory()->createField('no-range-field', 'integer')
+                ->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false)
+        );
+
+        $fieldSet->add(
+            $this->getFactory()->createField('no-compares-field', 'integer')->setValueTypeSupport(
+                ValuesBag::VALUE_TYPE_COMPARISON,
+                false
+            )
+        );
+
+        $fieldSet->add(
+            $this->getFactory()->createField('no-matchers-field', 'integer')->setValueTypeSupport(
+                ValuesBag::VALUE_TYPE_PATTERN_MATCH,
+                false
+            )
         );
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;

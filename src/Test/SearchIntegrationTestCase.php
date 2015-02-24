@@ -91,7 +91,7 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
     protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add($this->getFactory()->createField('id', 'integer')->setAcceptRange(true));
+        $fieldSet->add($this->getFactory()->createField('id', 'integer'));
         $fieldSet->add('name', 'text');
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;

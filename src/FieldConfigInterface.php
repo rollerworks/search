@@ -33,18 +33,31 @@ interface FieldConfigInterface
     public function getType();
 
     /**
-     * Returns whether ranges are accepted.
+     * Returns whether value-type $type is accepted.
+     *
+     * Value must be a constant of:
+     *
+     * * ValuesBag::VALUE_TYPE_RANGE
+     * * ValuesBag::VALUE_TYPE_COMPARISON
+     * * ValuesBag::VALUE_TYPE_PATTERN_MATCH
+     *
+     * @param string $type
      *
      * @return bool
      */
-    public function acceptRanges();
+    public function supportValueType($type);
 
     /**
-     * Returns whether comparisons are accepted.
+     * Set whether value-type $type is accepted.
      *
-     * @return bool
+     * * ValuesBag::VALUE_TYPE_RANGE
+     * * ValuesBag::VALUE_TYPE_COMPARISON
+     * * ValuesBag::VALUE_TYPE_PATTERN_MATCH
+     *
+     * @param string $type
+     * @param bool   $enabled
      */
-    public function acceptCompares();
+    public function setValueTypeSupport($type, $enabled);
 
     /**
      * Returns whether the field is required to have values.

@@ -89,6 +89,7 @@ invoice field type.
     use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
     use Rollerworks\Component\Search\FieldConfigInterface;
     use Rollerworks\Component\Search\ValueComparisonInterface;
+    use Rollerworks\Component\Search\ValuesBag;
 
     class InvoiceNumberType extends AbstractFieldType
     {
@@ -102,17 +103,10 @@ invoice field type.
         public function buildType(FieldConfigInterface $config, array $options)
         {
             $config->setValueComparison($this->valueComparison);
+            $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
+            $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
+
             $config->addViewTransformer(new InvoiceNumberTransformer());
-        }
-
-        public function hasRangeSupport()
-        {
-            return true;
-        }
-
-        public function hasCompareSupport()
-        {
-            return true;
         }
 
         public function getName()
@@ -180,7 +174,7 @@ and adds the ``getIncrementedValue`` method for calculating increments.
 .. note::
 
     Technically it's possible to optimize ``"2015-099", "2015-100", "2015-0001"``
-    to ``"2015-099"-"2015-0001"``, but only when we know if "2015-100" is last
+    to ``"2015-099"-"2015-0001"``, but only when we know if "2015-100" is the last
     invoice for the year 2015.
 
 Cool, you're done! The new ``InvoiceNumberComparison`` can be registered

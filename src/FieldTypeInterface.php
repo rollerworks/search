@@ -69,25 +69,4 @@ interface FieldTypeInterface
      * @return null
      */
     public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options);
-
-    /**
-     * Returns whether ranges are supported by this type.
-     *
-     * @return bool
-     */
-    public function hasRangeSupport();
-
-    /**
-     * Returns whether comparisons are supported by this type.
-     *
-     * @return bool
-     */
-    public function hasCompareSupport();
-
-    /**
-     * Returns whether pattern-matchers are supported by this type.
-     *
-     * @return bool
-     */
-    public function hasPatternMatchSupport();
 }

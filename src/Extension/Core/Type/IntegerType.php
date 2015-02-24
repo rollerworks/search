@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -43,6 +44,8 @@ class IntegerType extends AbstractFieldType
     public function buildType(FieldConfigInterface $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
         $config->addViewTransformer(
             new IntegerToLocalizedStringTransformer(
                 $options['precision'],
@@ -80,22 +83,6 @@ class IntegerType extends AbstractFieldType
                 ),
             )
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasRangeSupport()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasCompareSupport()
-    {
-        return true;
     }
 
     /**

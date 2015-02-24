@@ -36,19 +36,13 @@ class SearchField implements FieldConfigInterface
     private $options;
 
     /**
-     * @var bool
+     * @var bool[]
      */
-    private $acceptRanges = false;
-
-    /**
-     * @var bool
-     */
-    private $acceptCompares = false;
-
-    /**
-     * @var bool
-     */
-    private $acceptPatternMatch = false;
+    private $supportedValueTypes = array(
+        ValuesBag::VALUE_TYPE_RANGE => false,
+        ValuesBag::VALUE_TYPE_COMPARISON => false,
+        ValuesBag::VALUE_TYPE_PATTERN_MATCH => false,
+    );
 
     /**
      * @var bool
@@ -128,29 +122,28 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * @param bool $acceptRanges
-     *
-     * @throws BadMethodCallException
+     * {@inheritdoc}
      */
-    public function setAcceptRange($acceptRanges = true)
+    public function supportValueType($type)
     {
-        if ($this->locked) {
+        if (!isset($this->supportedValueTypes[$type])) {
             throw new BadMethodCallException(
-                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+                sprintf(
+                    'Unable to find configured-support for unknown value type "%s".',
+                    $type
+                )
             );
         }
 
-        $this->acceptRanges = $acceptRanges;
-
-        return $this;
+        return $this->supportedValueTypes[$type];
     }
 
     /**
-     * @param bool $acceptCompares
+     * {@inheritdoc}
      *
      * @throws BadMethodCallException
      */
-    public function setAcceptCompares($acceptCompares = true)
+    public function setValueTypeSupport($type, $enabled)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -158,25 +151,16 @@ class SearchField implements FieldConfigInterface
             );
         }
 
-        $this->acceptCompares = $acceptCompares;
-
-        return $this;
-    }
-
-    /**
-     * @param bool $acceptPatternMatch
-     *
-     * @throws BadMethodCallException
-     */
-    public function setAcceptPatternMatch($acceptPatternMatch = true)
-    {
-        if ($this->locked) {
+        if (!isset($this->supportedValueTypes[$type])) {
             throw new BadMethodCallException(
-                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+                sprintf(
+                    'Unable to configure support for unknown value type "%s".',
+                    $type
+                )
             );
         }
 
-        $this->acceptPatternMatch = $acceptPatternMatch;
+        $this->supportedValueTypes[$type] = (bool) $enabled;
 
         return $this;
     }
@@ -199,34 +183,6 @@ class SearchField implements FieldConfigInterface
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Returns whether ranges are accepted.
-     *
-     * @return bool
-     */
-    public function acceptRanges()
-    {
-        return $this->acceptRanges;
-    }
-
-    /**
-     * Returns whether comparisons are accepted.
-     *
-     * @return bool
-     */
-    public function acceptCompares()
-    {
-        return $this->acceptCompares;
-    }
-
-    /**
-     * @return bool
-     */
-    public function acceptPatternMatch()
-    {
-        return $this->acceptPatternMatch;
     }
 
     /**

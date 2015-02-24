@@ -186,6 +186,8 @@ For example invoice search, order search, news items search, etc.
 SearchField
 ~~~~~~~~~~~
 
+...
+
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
 | Property             | Description                                                                        | Value-type                      |
 +======================+====================================================================================+=================================+
@@ -194,11 +196,7 @@ SearchField
 | Type                 | An object implementing the ``ResolvedFieldTypeInterface``.                         | ``ResolvedFieldTypeInterface``  |
 |                      | Provides a field type class for building the fields configuration.                 |                                 |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| RangeSupport         | Indication if range values are accepted by the field.                              | ``boolean``                     |
-+----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| CompareSupport       | Indication if comparison values are accepted by the field.                         | ``boolean``                     |
-+----------------------+------------------------------------------------------------------------------------+---------------------------------+
-| PatternMatchSupport  | Indication if pattern matcher values are supported by the field.                   | ``boolean``                     |
+| SupportValueType     | Indication which value-types are accepted by the field.                            | ``boolean``                     |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+
 | Required             | Indicates if the field must have at least one value.                               | ``boolean``                     |
 +----------------------+------------------------------------------------------------------------------------+---------------------------------+

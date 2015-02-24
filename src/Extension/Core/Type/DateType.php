@@ -16,6 +16,7 @@ use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -59,6 +60,8 @@ class DateType extends AbstractFieldType
     public function buildType(FieldConfigInterface $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
 
         $dateFormat = is_int($options['format']) ? $options['format'] : self::DEFAULT_FORMAT;
         $timeFormat = \IntlDateFormatter::NONE;
@@ -109,22 +112,6 @@ class DateType extends AbstractFieldType
         $resolver->setAllowedTypes(
             array('format' => array('int', 'string'))
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasRangeSupport()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasCompareSupport()
-    {
-        return true;
     }
 
     /**

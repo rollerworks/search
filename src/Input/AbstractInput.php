@@ -113,24 +113,8 @@ abstract class AbstractInput implements InputProcessorInterface
      */
     protected function assertAcceptsType(FieldConfigInterface $fieldConfig, $type)
     {
-        switch ($type) {
-            case 'range':
-                if (!$fieldConfig->acceptRanges()) {
-                    throw new UnsupportedValueTypeException($fieldConfig->getName(), $type);
-                }
-                break;
-
-            case 'comparison':
-                if (!$fieldConfig->acceptCompares()) {
-                    throw new UnsupportedValueTypeException($fieldConfig->getName(), $type);
-                }
-                break;
-
-            case 'pattern-match':
-                if (!$fieldConfig->acceptPatternMatch()) {
-                    throw new UnsupportedValueTypeException($fieldConfig->getName(), $type);
-                }
-                break;
+        if (!$fieldConfig->supportValueType($type)) {
+            throw new UnsupportedValueTypeException($fieldConfig->getName(), $type);
         }
     }
 }

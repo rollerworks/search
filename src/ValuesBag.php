@@ -25,6 +25,10 @@ use Rollerworks\Component\Search\Value\SingleValue;
  */
 class ValuesBag implements \Countable, \Serializable
 {
+    const VALUE_TYPE_RANGE = 'range';
+    const VALUE_TYPE_COMPARISON = 'comparison';
+    const VALUE_TYPE_PATTERN_MATCH = 'pattern-match';
+
     private $excludedValues = array();
     private $ranges = array();
     private $excludedRanges = array();

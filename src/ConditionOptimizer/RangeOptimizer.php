@@ -38,7 +38,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
         $supportsRanges = false;
 
         foreach ($fieldSet->all() as $field) {
-            if ($field->acceptRanges()) {
+            if ($field->supportValueType(ValuesBag::VALUE_TYPE_RANGE)) {
                 $supportsRanges = true;
 
                 break;
@@ -70,7 +70,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
             $config = $fieldSet->get($fieldName);
 
-            if ($config->acceptRanges() && ($values->hasRanges() || $values->hasExcludedRanges())) {
+            if ($values->hasRanges() || $values->hasExcludedRanges()) {
                 $this->normalizeRangesInValuesBag($config, $values);
             }
         }

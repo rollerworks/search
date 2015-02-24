@@ -42,30 +42,6 @@ abstract class AbstractFieldType implements FieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function hasRangeSupport()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasCompareSupport()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasPatternMatchSupport()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getParent()
     {
         return 'field';

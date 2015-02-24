@@ -16,6 +16,7 @@ use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -57,6 +58,8 @@ class TimeType extends AbstractFieldType
             $format .= ':s';
         }
 
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
         $config->setValueComparison($this->valueComparison);
         $config->addViewTransformer(
             new DateTimeToStringTransformer(
@@ -78,22 +81,6 @@ class TimeType extends AbstractFieldType
                 'with_seconds' => false,
             )
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasRangeSupport()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasCompareSupport()
-    {
-        return true;
     }
 
     /**

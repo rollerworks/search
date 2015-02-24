@@ -17,6 +17,7 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocali
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -84,6 +85,8 @@ class DateTimeType extends AbstractFieldType
     public function buildType(FieldConfigInterface $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
 
         $dateFormat = is_int($options['date_format']) ? $options['date_format'] : self::DEFAULT_DATE_FORMAT;
         $timeFormat = self::DEFAULT_TIME_FORMAT;
@@ -133,22 +136,6 @@ class DateTimeType extends AbstractFieldType
                 'with_seconds' => false,
             )
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasRangeSupport()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasCompareSupport()
-    {
-        return true;
     }
 
     /**

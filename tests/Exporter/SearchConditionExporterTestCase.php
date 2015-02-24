@@ -77,14 +77,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
     protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add($this->getFactory()->createField('id', 'integer')->setAcceptRange(true)->setAcceptCompares(true));
-        $fieldSet->add($this->getFactory()->createField('name', 'text')->setAcceptPatternMatch(true));
+        $fieldSet->add($this->getFactory()->createField('id', 'integer'));
+        $fieldSet->add($this->getFactory()->createField('name', 'text'));
         $fieldSet->add($this->getFactory()->createField('lastname', 'text'));
-        $fieldSet->add(
-            $this->getFactory()->createField('date', 'date', array('format' => 'MM-dd-yyyy'))
-              ->setAcceptRange(true)
-              ->setAcceptCompares(true)
-        );
+        $fieldSet->add($this->getFactory()->createField('date', 'date', array('format' => 'MM-dd-yyyy')));
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }

@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -44,6 +45,8 @@ class BirthdayType extends AbstractFieldType
     public function buildType(FieldConfigInterface $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
+        $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
 
         $viewTransformers = $config->getViewTransformers();
 
@@ -74,22 +77,6 @@ class BirthdayType extends AbstractFieldType
             'allow_age' => array('bool'),
             'allow_future_date' => array('bool'),
         ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasRangeSupport()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasCompareSupport()
-    {
-        return true;
     }
 
     /**
