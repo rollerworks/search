@@ -25,6 +25,8 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  *
  * * 1: When the provided value is an integer, the DB-value is converted to an age.
  * * 2: When the provided value is an DateTime the input-value is converted to an date string.
+ * * 3: When the provided value is an DateTime and the mapping-type is not a date
+ *      the input-value is converted to an date string and the DB-value is converted to a date.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
