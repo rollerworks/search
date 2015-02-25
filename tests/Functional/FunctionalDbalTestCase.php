@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 abstract class FunctionalDbalTestCase extends DbalTestCase
 {
     /**
-     * Shared connection when a TestCase is run alone (outside of it's functional suite)
+     * Shared connection when a TestCase is run alone (outside of it's functional suite).
      *
      * @var \Doctrine\DBAL\Connection
      */
@@ -112,7 +112,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     }
 
     /**
-     * Returns the string for the WhereBuilder
+     * Returns the string for the WhereBuilder.
      *
      * @return string
      */
@@ -181,7 +181,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             throw $e;
         }
 
-        if(isset($this->sqlLoggerStack->queries) && count($this->sqlLoggerStack->queries)) {
+        if (isset($this->sqlLoggerStack->queries) && count($this->sqlLoggerStack->queries)) {
             $queries = "";
             $i = count($this->sqlLoggerStack->queries);
 
@@ -204,9 +204,9 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             $trace = $e->getTrace();
             $traceMsg = '';
 
-            foreach($trace as $part) {
-                if(isset($part['file'])) {
-                    if(strpos($part['file'], "PHPUnit/") !== false) {
+            foreach ($trace as $part) {
+                if (isset($part['file'])) {
+                    if (strpos($part['file'], "PHPUnit/") !== false) {
                         // Beginning with PHPUnit files we don't print the trace anymore.
                         break;
                     }

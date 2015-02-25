@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
-use Doctrine\DBAL\Types\Type as DBALType;
 use Rollerworks\Component\Search\Doctrine\Dbal\CacheWhereBuilder;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;

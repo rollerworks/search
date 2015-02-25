@@ -77,7 +77,6 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->assertQueryIsExecutable($condition);
     }
 
-
     public function testQueryWithEmbeddedValues()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())

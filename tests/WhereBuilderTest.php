@@ -363,8 +363,8 @@ final class WhereBuilderTest extends DbalTestCase
     /**
      * @dataProvider provideFieldConversionTests
      *
-     * @param string  $expectWhereCase
-     * @param array   $options
+     * @param string $expectWhereCase
+     * @param array  $options
      */
     public function testFieldConversion($expectWhereCase, array $options = array())
     {
@@ -557,7 +557,7 @@ final class WhereBuilderTest extends DbalTestCase
             ),
             array(
                 "((CAST(I.customer AS customer_type) IN(2)))",
-                array('active' => true)
+                array('active' => true),
             ),
         );
     }

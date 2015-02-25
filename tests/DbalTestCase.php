@@ -13,7 +13,6 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as PDOSqlite;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\DoctrineDbalExtension;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type\InvoiceLabelType;
@@ -46,7 +45,7 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
     {
         return array(
             new InvoiceLabelType(),
-            new InvoiceStatusType()
+            new InvoiceStatusType(),
         );
     }
 

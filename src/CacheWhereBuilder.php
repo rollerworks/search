@@ -12,9 +12,6 @@
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\DBAL\Statement;
-use Doctrine\DBAL\Types\Type;
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /***

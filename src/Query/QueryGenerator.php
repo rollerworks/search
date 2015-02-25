@@ -235,6 +235,7 @@ class QueryGenerator
      * @param null|int $strategy
      *
      * @return ConversionHints
+     *
      * @internal param mixed $value
      */
     protected function getConversionHints($fieldName, $strategy = null, $column = null)

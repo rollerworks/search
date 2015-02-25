@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\DBAL\Statement;
 use Rollerworks\Component\Search\SearchConditionInterface;
 
 /**
