@@ -9,7 +9,7 @@ return Symfony\CS\Config\Config::create()
         'ordered_use',
         //'strict',
         'strict_param',
-        '-prs0'
+        '-psr0'
     ))
     ->finder(
         Symfony\CS\Finder\DefaultFinder::create()
