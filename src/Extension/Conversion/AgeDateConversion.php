@@ -32,15 +32,6 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversionInterface, ValueConversionInterface
 {
     /**
-     * Keep track of the connection state (SQLite only).
-     *
-     * This is used for SQLite to only register the custom function once.
-     *
-     * @var array
-     */
-    private static $connectionState = array();
-
-    /**
      * {@inheritdoc}
      */
     public function getConversionStrategy($value, array $options, ConversionHints $hints)
@@ -69,9 +60,9 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
             return "CAST($column AS DATE)";
         }
 
-        $connection = $hints->connection;
+        $platform = $hints->connection->getDatabasePlatform()->getName();
 
-        switch ($connection->getDatabasePlatform()->getName()) {
+        switch ($platform) {
             case 'postgresql':
                 return "to_char(age($column), 'YYYY'::text)::integer";
 
@@ -85,32 +76,13 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
             case 'oracle':
                 return "trunc((months_between(sysdate, (sysdate - $column)))/12)";
 
-            // SQLite is a bit difficult, we must use a custom function
-            // But we can only register this once.
             case 'sqlite':
-                $conn = $connection->getWrappedConnection();
-                $objHash = spl_object_hash($conn);
-
-                if (!isset(self::$connectionState[$objHash])) {
-                    $conn->sqliteCreateFunction(
-                        'search_conversion_age',
-                        function ($date) {
-                            return date_create($date)->diff(new \DateTime())->y;
-                        },
-                        1
-                    );
-
-                    self::$connectionState[$objHash] = true;
-                }
-
+            case 'mock':
                 return "search_conversion_age($column)";
 
             default:
                 throw new \RuntimeException(
-                    sprintf(
-                        'Unsupported platform "%s" for AgeDateConversion.',
-                        $connection->getDatabasePlatform()->getName()
-                    )
+                    sprintf('Unsupported platform "%s" for AgeDateConversion.', $platform)
                 );
         }
     }

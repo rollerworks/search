@@ -55,6 +55,8 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         parent::setUp();
 
         if (!isset(self::$sharedConn)) {
+            $GLOBALS['db_event_subscribers'] = 'Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber';
+
             self::$sharedConn = TestUtil::getConnection();
 
             $schema = new DbSchema();

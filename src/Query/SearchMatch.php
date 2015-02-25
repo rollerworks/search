@@ -17,18 +17,11 @@ use Doctrine\DBAL\Connection;
  * SearchMatch is utility class for pattern-matcher searching with Doctrine DBAL.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @internal
  */
-class SearchMatch
+final class SearchMatch
 {
-    /**
-     * Keep track of the connection state (SQLite only).
-     *
-     * This is used for SQLite to only register the custom function once.
-     *
-     * @var array
-     */
-    protected static $connectionState = array();
-
     /**
      * Escapes the value for usage in a LIKE statement.
      *
@@ -54,13 +47,13 @@ class SearchMatch
     /**
      * Returns the list of characters to escape (by driver-name).
      *
-     * @param string $driver
+     * @param string $platform
      *
      * @return string
      */
-    public static function getEscapeChars($driver)
+    public static function getEscapeChars($platform)
     {
-        if ('mssql' === $driver) {
+        if ('mssql' === $platform) {
             return '%_[\\';
         }
 
@@ -140,43 +133,14 @@ class SearchMatch
                     'MSSQL currently does not support regex matching without the usage of a custom extension.'
                 );
 
+            case 'sqlite':
             case 'mock':
                 return sprintf(
                     "RW_REGEXP(%s, %s, '%s') = %d",
                     $value,
                     $column,
-                    ($caseInsensitive ? 'ui' : ''),
-                    ($negative ? '1' : '0')
-                );
-
-            // SQLite is a bit difficult, we must use a custom function.
-            // But we can only register this once.
-            case 'sqlite':
-                $conn = $connection->getWrappedConnection();
-                $objHash = spl_object_hash($conn);
-
-                if (!isset(self::$connectionState[$objHash])) {
-                    $conn->sqliteCreateFunction(
-                        'RW_REGEXP',
-                        function ($pattern, $string, $flags) {
-                            if (preg_match('{'.$pattern.'}'.$flags, $string)) {
-                                return 1;
-                            }
-
-                            return 0;
-                        },
-                        3
-                    );
-
-                    self::$connectionState[$objHash] = true;
-                }
-
-                return sprintf(
-                    "RW_REGEXP(%s, %s, '%s') = %d",
-                    $value,
-                    $column,
                     ($caseInsensitive ? 'ui' : 'u'),
-                    ($negative ? 1 : 0)
+                    ($negative ? '1' : '0')
                 );
 
             default:
