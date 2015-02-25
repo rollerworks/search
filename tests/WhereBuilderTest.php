@@ -258,7 +258,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $this->assertEquals(
             "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\'o' ESCAPE '\\' OR ".
-            "RW_REGEXP('(foo|bar)', C.name, '') = 0 OR RW_REGEXP('(doctor|who)', C.name, 'ui') = 0) AND ".
+            "RW_REGEXP('(foo|bar)', C.name, 'u') = 0 OR RW_REGEXP('(doctor|who)', C.name, 'ui') = 0) AND ".
             "LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))",
             $whereBuilder->getWhereClause()
         );
