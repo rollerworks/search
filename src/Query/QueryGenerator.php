@@ -233,6 +233,7 @@ class QueryGenerator
     /**
      * @param string   $fieldName
      * @param null|int $strategy
+     * @param string $column
      *
      * @return ConversionHints
      *
