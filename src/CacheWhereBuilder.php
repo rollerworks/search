@@ -58,7 +58,6 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      *
      * @see WhereBuilder::getWhereClause()
      *
-     * @param bool $embedValues Whether to embed the values, default is to assign as parameters.
      *
      * @return string
      */
