@@ -34,6 +34,6 @@ standard with a large list of field types that can be used.
 Supported Field Types
 ---------------------
 
-The following field types are natively available in Rollerworks Search:
+The following field types are natively available in RollerworksSearch:
 
 .. include:: /reference/types/map.rst.inc
