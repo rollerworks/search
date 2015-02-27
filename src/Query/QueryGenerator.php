@@ -236,14 +236,12 @@ class QueryGenerator
      * @param string $column
      *
      * @return ConversionHints
-     *
-     * @internal param mixed $value
      */
     protected function getConversionHints($fieldName, $strategy = null, $column = null)
     {
         $hints = new ConversionHints();
         $hints->field = $this->fields[$fieldName];
-        $hints->value = $column;
+        $hints->column = $column;
         $hints->connection = $this->connection;
         $hints->conversionStrategy = $strategy;
 
@@ -491,7 +489,7 @@ class QueryGenerator
      * @param string   $column
      * @param int|null $strategy
      *
-     * @return string
+     * @return string|integer
      */
     protected function getValueAsSql($value, $fieldName, $column, $strategy = null)
     {
