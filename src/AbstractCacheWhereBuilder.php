@@ -33,7 +33,7 @@ abstract class AbstractCacheWhereBuilder
     protected $cacheLifeTime;
 
     /**
-     * @var object
+     * @var WhereBuilderInterface
      */
     protected $whereBuilder;
 

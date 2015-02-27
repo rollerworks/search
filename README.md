@@ -37,4 +37,4 @@ with this source code in the file [LICENSE](LICENSE).
 
 [1]: https://github.com/rollerworks/RollerworksSearch
 [2]: https://github.com/rollerworks/RollerworksSearch#contributing
-[3]: https://github.com/rollerworks/rollerworks-search-doctrine-dbal/blob/master/doc/index.md
+[3]: http://rollerworks-search-doctrine-dbal.readthedocs.org/en/latest/
