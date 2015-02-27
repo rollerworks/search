@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\SearchConditionInterface;
 
 /**
