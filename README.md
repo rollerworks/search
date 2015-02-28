@@ -109,7 +109,7 @@ as separate packages. Building your own condition processor is also possible.
 Requirements
 ------------
 
-You need at least PHP 5.3.3, and Intl extension for international support.
+You need at least PHP 5.3.9, and Intl extension for international support.
 
 For framework integration you may use the following;
 
@@ -125,10 +125,12 @@ Installation
 For installing and integrating RollerworksSearch, you can find all the
 details in the manual.
 
-[Installing](doc/installing.rst)
+[Installing](http://rollerworkssearch.readthedocs.org/en/latest/installing.html)
 
 Documentation
 -------------
+
+[Read the Documentation for master][6]
 
 The documentation for RollerworksSearch is written in [reStructuredText][3] and can be built
 into standard HTML using [Sphinx][4].
@@ -196,3 +198,4 @@ a pull request, please follow the guidelines in the [Submitting a Patch][2] sect
 [3]: http://docutils.sourceforge.net/rst.html
 [4]: http://sphinx-doc.org/
 [5]: http://symfony.com/doc/current/contributing/documentation/format.html
+[6]: http://rollerworkssearch.readthedocs.org/en/latest/
