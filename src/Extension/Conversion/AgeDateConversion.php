@@ -65,7 +65,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
 
         $convertMap = array();
         $convertMap['postgresql'] = "to_char(age(%1\$s), 'YYYY'::text)::integer";
-        $convertMap['mysql'] = "(DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(%1\$s, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(%1\$s, '00-%m-%d')))";
+        $convertMap['mysql'] = "(DATE_FORMAT(NOW(), '%%Y') - DATE_FORMAT(%1\$s, '%%Y') - (DATE_FORMAT(NOW(), '00-%%m-%%d') < DATE_FORMAT(%1\$s, '00-%%m-%%d')))";
         $convertMap['drizzle'] = $convertMap['mysql'];
         $convertMap['mssql'] = "DATEDIFF(hour, %1\$s, GETDATE())/8766";
         $convertMap['oracle'] = "trunc((months_between(sysdate, (sysdate - %1\$s)))/12)";
