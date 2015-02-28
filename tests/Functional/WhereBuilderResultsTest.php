@@ -311,6 +311,14 @@ SQL;
         $this->makeTest('status: published; *(row-quantity: 5; row-label: ~*"repair"; (row-price: "50.00"));', array(4));
     }
 
+    /**
+     * @test
+     */
+    public function it_finds_by_excluding_regex_pattern()
+    {
+        $this->makeTest('status: published; row-label: ~*"repair", ~!?"Armor";', array(6));
+    }
+
     private function makeTest($input, array $expectedRows)
     {
         $config = new ProcessorConfig($this->getFieldSet());

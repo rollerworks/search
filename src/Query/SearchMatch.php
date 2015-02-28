@@ -100,53 +100,26 @@ final class SearchMatch
      */
     public static function getMatchSqlRegex($column, $value, $caseInsensitive, $negative, Connection $connection)
     {
-        switch ($connection->getDatabasePlatform()->getName()) {
-            case 'postgresql':
-                return sprintf(
-                    '%s %s~%s %s',
-                    $column,
-                    ($negative ? '!' : ''),
-                    ($caseInsensitive ? '*' : ''),
-                    $value
-                );
+        $platform = $connection->getDatabasePlatform()->getName();
 
-            case 'mysql':
-            case 'drizzle':
-                return sprintf(
-                    '%s%s REGEXP%s %s',
-                    $column,
-                    ($negative ? ' NOT' : ''),
-                    ($caseInsensitive ? ' BINARY' : ''),
-                    $value
-                );
+        $formatMap = array();
+        $formatMap['postgresql'] = array('%s ~ %s', '%s ~* %s');
+        $formatMap['mysql'] = array('%s REGEXP %s', '%s REGEXP BINARY %s');
+        $formatMap['drizzle'] = $formatMap['mysql'];
+        $formatMap['oracle'] = array("REGEXP_LIKE(%s, %s, 'c')", "REGEXP_LIKE(%s, %s, 'i')");
+        $formatMap['sqlite'] = array("RW_REGEXP(%2\$s, %1\$s, 'u')", "RW_REGEXP(%2\$s, %1\$s, 'ui')");
+        $formatMap['mock'] = $formatMap['sqlite'];
 
-            case 'oracle':
-                return sprintf(
-                    "REGEXP_LIKE(%s, %s, '%s')",
-                    $column,
-                    $value,
-                    ($caseInsensitive ? 'i' : 'c')
-                );
-
-            case 'mssql':
-                throw new \RuntimeException(
-                    'MSSQL currently does not support regex matching without the usage of a custom extension.'
-                );
-
-            case 'sqlite':
-            case 'mock':
-                return sprintf(
-                    "RW_REGEXP(%s, %s, '%s') = %d",
-                    $value,
-                    $column,
-                    ($caseInsensitive ? 'ui' : 'u'),
-                    ($negative ? '1' : '0')
-                );
-
-            default:
-                throw new \RuntimeException(
-                    sprintf('Unsupported platform "%s".', $connection->getDatabasePlatform()->getName())
-                );
+        if (isset($formatMap[$platform])) {
+            return ($negative ? 'NOT ' : '').sprintf(
+                $formatMap[$platform][(int) $caseInsensitive],
+                $column,
+                $value
+            );
         }
+
+        throw new \RuntimeException(
+            sprintf('Unsupported platform "%s" for Regex pattern.', $platform)
+        );
     }
 }
