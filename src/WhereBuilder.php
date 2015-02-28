@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Types\Type as ORMType;
+use Doctrine\DBAL\Types\Type as MappingType;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
@@ -65,10 +65,10 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     /**
      * Set Field configuration for the query-generation.
      *
-     * @param string         $fieldName Name of the Search-field
-     * @param string         $column    DB column-name
-     * @param string|ORMType $type      DB-type string or object
-     * @param string         $alias     alias to use with the column
+     * @param string             $fieldName Name of the Search-field
+     * @param string             $column    DB column-name
+     * @param string|MappingType $type      DB mapping-type
+     * @param string             $alias     alias to use with the column
      *
      * @return self
      *
@@ -89,7 +89,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
 
         $this->fields[$fieldName] = array();
         $this->fields[$fieldName]['field']   = $this->searchCondition->getFieldSet()->get($fieldName);
-        $this->fields[$fieldName]['db_type'] = is_object($type) ? $type : ORMType::getType($type);
+        $this->fields[$fieldName]['db_type'] = is_object($type) ? $type : MappingType::getType($type);
         $this->fields[$fieldName]['alias']   = $alias;
         $this->fields[$fieldName]['column']  = $column;
     }

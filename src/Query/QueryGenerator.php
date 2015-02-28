@@ -74,14 +74,13 @@ class QueryGenerator
 
     /**
      * @param ValuesGroup $valuesGroup
-     * @param FieldSet    $fieldSet
      *
      * @return string
      */
-    public function getGroupQuery(ValuesGroup $valuesGroup, FieldSet $fieldSet = null)
+    public function getGroupQuery(ValuesGroup $valuesGroup)
     {
         $query = array();
-        $fieldSet = $fieldSet ?: $this->searchCondition->getFieldSet();
+        $fieldSet = $this->searchCondition->getFieldSet();
 
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
             $field = $fieldSet->get($fieldName);
@@ -161,13 +160,11 @@ class QueryGenerator
             array('(', ')', true)
         );
 
-        if ($valuesGroup->hasGroups()) {
-            foreach ($valuesGroup->getGroups() as $group) {
-                $groupSql[] = $this->getGroupQuery($group);
-            }
-
-            $finalQuery[] = static::implodeWithValue(' OR ', $groupSql, array('(', ')', true));
+        foreach ($valuesGroup->getGroups() as $group) {
+            $groupSql[] = $this->getGroupQuery($group);
         }
+
+        $finalQuery[] = static::implodeWithValue(' OR ', $groupSql, array('(', ')', true));
 
         return static::implodeWithValue(' AND ', $finalQuery, array('(', ')'));
     }
