@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -43,7 +43,7 @@ class ValuesError
     /**
      * The value for error message pluralization.
      *
-     * @var integer|null
+     * @var int|null
      */
     private $messagePluralization;
 
@@ -53,7 +53,7 @@ class ValuesError
     private $cause;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * Any array key in $messageParameters will be used as a placeholder in
      * $messageTemplate.

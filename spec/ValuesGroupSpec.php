@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -18,18 +18,18 @@ use Rollerworks\Component\Search\ValuesGroup;
 
 class ValuesGroupSpec extends ObjectBehavior
 {
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\\Component\\Search\\ValuesGroup');
     }
 
-    public function it_should_have_values()
+    function it_should_have_values()
     {
         $this->getFields()->shouldReturn(array());
         $this->hasField('user')->shouldReturn(false);
     }
 
-    public function it_should_allow_adding_values()
+    function it_should_allow_adding_values()
     {
         $field = new ValuesBag();
         $field2 = new ValuesBag();
@@ -42,7 +42,7 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->hasField('foo')->shouldReturn(false);
     }
 
-    public function it_should_allow_removing_values()
+    function it_should_allow_removing_values()
     {
         $field = new ValuesBag();
         $field2 = new ValuesBag();
@@ -55,13 +55,13 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->getFields()->shouldReturn(array('date' => $field2));
     }
 
-    public function it_should_have_subgroups()
+    function it_should_have_subgroups()
     {
         $this->hasGroups()->shouldReturn(false);
         $this->getGroups()->shouldReturn(array());
     }
 
-    public function it_should_allow_adding_subgroups()
+    function it_should_allow_adding_subgroups()
     {
         $group = new ValuesGroup();
         $group2 = new ValuesGroup();
@@ -73,7 +73,7 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->getGroups()->shouldReturn(array($group, $group2));
     }
 
-    public function it_should_allow_removing_subgroups()
+    function it_should_allow_removing_subgroups()
     {
         $group = new ValuesGroup();
         $group2 = new ValuesGroup();
@@ -87,7 +87,7 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->getGroups()->shouldReturn(array(1 => $group2));
     }
 
-    public function it_should_have_no_errors_by_default()
+    function it_should_have_no_errors_by_default()
     {
         $this->hasErrors()->shouldReturn(false);
         $this->hasErrors(true)->shouldReturn(false);

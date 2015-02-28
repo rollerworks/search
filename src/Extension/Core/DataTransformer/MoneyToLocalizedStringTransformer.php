@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -24,7 +24,7 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
 {
     /**
-     * @var integer|null
+     * @var int|null
      */
     private $divisor;
 
@@ -65,10 +65,10 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
      *
      * @param MoneyValue $value Normalized number
      *
-     * @return string Localized money string.
-     *
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed.
+     *
+     * @return string Localized money string.
      */
     public function transform($value)
     {
@@ -105,10 +105,10 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
      *
      * @param string $value Localized money string
      *
-     * @return MoneyValue Normalized number
-     *
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed.
+     *
+     * @return MoneyValue Normalized number
      */
     public function reverseTransform($value)
     {

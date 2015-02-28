@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -28,8 +28,6 @@ interface FieldTypeExtensionInterface
      *
      * @param FieldConfigInterface $builder The config builder
      * @param array                $options The options
-     *
-     * @return void
      */
     public function buildType(FieldConfigInterface $builder, array $options);
 
@@ -41,8 +39,6 @@ interface FieldTypeExtensionInterface
      *
      * @param FieldConfigInterface $config
      * @param SearchFieldView      $view
-     *
-     * @return null
      */
     public function buildView(FieldConfigInterface $config, SearchFieldView $view);
 
@@ -50,8 +46,6 @@ interface FieldTypeExtensionInterface
      * Overrides the default options from the extended type.
      *
      * @param OptionsResolver $resolver The resolver for the options.
-     *
-     * @return null
      */
     public function configureOptions(OptionsResolver $resolver);
 

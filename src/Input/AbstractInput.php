@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -51,10 +51,10 @@ abstract class AbstractInput implements InputProcessorInterface
      *
      * @param string $name
      *
-     * @return string
-     *
      * @throws UnknownFieldException When there is no field found.
      * @throws \LogicException       When there is no FieldSet configured.
+     *
+     * @return string
      */
     protected function getFieldName($name)
     {

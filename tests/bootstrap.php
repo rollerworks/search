@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -23,7 +23,4 @@ if (version_compare(PHP_VERSION, '5.4', '>=') && gc_enabled()) {
 
 date_default_timezone_set('UTC');
 
-/**
- * @var \Composer\Autoload\ClassLoader $loader
- */
-$loader = require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';

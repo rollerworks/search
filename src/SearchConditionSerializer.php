@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -69,10 +69,10 @@ class SearchConditionSerializer
      *
      * @param array $searchCondition [fieldSet-name, ValuesGroup]
      *
-     * @return SearchCondition
-     *
      * @throws InvalidArgumentException when serialized SearchCondition is invalid
      *                                  (invalid structure or failed to unserialize)
+     *
+     * @return SearchCondition
      */
     public function unserialize($searchCondition)
     {

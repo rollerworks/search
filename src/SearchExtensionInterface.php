@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -21,9 +21,9 @@ interface SearchExtensionInterface
      *
      * @param string $name The name of the type
      *
-     * @return FieldTypeInterface The type
-     *
      * @throws Exception\InvalidArgumentException if the given type is not supported by this extension
+     *
+     * @return FieldTypeInterface The type
      */
     public function getType($name);
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -88,8 +88,6 @@ interface FieldConfigInterface
      * Set the {@link ValueComparisonInterface} instance.
      *
      * @param ValueComparisonInterface $comparisonObj
-     *
-     * @return void
      */
     public function setValueComparison(ValueComparisonInterface $comparisonObj);
 

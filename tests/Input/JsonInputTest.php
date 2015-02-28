@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -311,7 +311,7 @@ final class JsonInputTest extends InputProcessorTestCase
                             ),
                         ),
                     )
-                )
+                ),
             ),
             array(
                 json_encode(
@@ -325,7 +325,7 @@ final class JsonInputTest extends InputProcessorTestCase
                             ),
                         ),
                     )
-                )
+                ),
             ),
         );
     }

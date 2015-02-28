@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -30,7 +30,7 @@ class MoneyValue
      * Constructor.
      *
      * @param string $currency
-     * @param float $value
+     * @param float  $value
      */
     public function __construct($currency, $value)
     {

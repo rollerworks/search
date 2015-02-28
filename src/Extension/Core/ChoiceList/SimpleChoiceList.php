@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -107,7 +107,7 @@ class SimpleChoiceList extends ChoiceList
      *
      * @param mixed $choice The choice
      *
-     * @return string|integer A valid PHP array key
+     * @return string|int A valid PHP array key
      */
     protected function fixChoice($choice)
     {

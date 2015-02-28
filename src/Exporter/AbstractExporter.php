@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -46,9 +46,9 @@ abstract class AbstractExporter implements ExporterInterface
      * @param bool                     $useFieldAlias Use the localized field-alias
      *                                                instead of the actual name (default false)
      *
-     * @return mixed
-     *
      * @throws \RuntimeException
+     *
+     * @return mixed
      */
     public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false)
     {
@@ -69,9 +69,9 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * @param PatternMatch $patternMatch
      *
-     * @return string
-     *
      * @throws \RuntimeException When an unsupported pattern-match type is found.
+     *
+     * @return string
      */
     protected function getPatternMatchType(PatternMatch $patternMatch)
     {

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -106,9 +106,9 @@ class FilterQueryExporter extends AbstractExporter
     /**
      * @param PatternMatch $patternMatch
      *
-     * @return string
-     *
      * @throws \RuntimeException When an unsupported pattern-match type is found.
+     *
+     * @return string
      */
     private function getPatternMatchOperator(PatternMatch $patternMatch)
     {
@@ -174,9 +174,9 @@ class FilterQueryExporter extends AbstractExporter
      *
      * @param string $value
      *
-     * @return string
-     *
      * @throws \InvalidArgumentException When the passed value is null or none scalar.
+     *
+     * @return string
      */
     private function exportValuePart($value)
     {

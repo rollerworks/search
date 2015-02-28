@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -15,7 +15,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
- * Transforms between a date string and a DateTime object
+ * Transforms between a date string and a DateTime object.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
@@ -23,13 +23,14 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 class DateTimeToStringTransformer extends BaseDateTimeTransformer
 {
     /**
-     * Format used for generating strings
+     * Format used for generating strings.
+     *
      * @var string
      */
     private $generateFormat;
 
     /**
-     * Format used for parsing strings
+     * Format used for parsing strings.
      *
      * Different than the {@link $generateFormat} because formats for parsing
      * support additional characters in PHP that are not supported for
@@ -49,7 +50,7 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
     private $parseUsingPipe;
 
     /**
-     * Transforms a \DateTime instance to a string
+     * Transforms a \DateTime instance to a string.
      *
      * @see \DateTime::format() for supported formats
      *
@@ -87,15 +88,15 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
 
     /**
      * Transforms a DateTime object into a date string with the configured format
-     * and timezone
+     * and timezone.
      *
      * @param \DateTime $value A DateTime object
-     *
-     * @return string A value as produced by PHP's date() function
      *
      * @throws TransformationFailedException If the given value is not a \DateTime
      *                                       instance or if the output timezone
      *                                       is not supported.
+     *
+     * @return string A value as produced by PHP's date() function
      */
     public function transform($value)
     {
@@ -122,11 +123,11 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @param string $value A value as produced by PHP's date() function
      *
-     * @return \DateTime An instance of \DateTime
-     *
      * @throws TransformationFailedException If the given value is not a string,
      *                                       if the date could not be parsed or
      *                                       if the input timezone is not supported.
+     *
+     * @return \DateTime An instance of \DateTime
      */
     public function reverseTransform($value)
     {

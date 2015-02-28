@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -29,10 +29,10 @@ interface FieldSetRegistryInterface
      *
      * @param string $name
      *
-     * @return FieldSet
-     *
      * @throws InvalidArgumentException when the requested FieldSet
      *                                  is not registered
+     *
+     * @return FieldSet
      */
     public function get($name);
 

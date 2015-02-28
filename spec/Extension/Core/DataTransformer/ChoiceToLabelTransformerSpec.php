@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -16,18 +16,18 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface;
 
 class ChoiceToLabelTransformerSpec extends ObjectBehavior
 {
-    public function let(ChoiceListInterface $choices)
+    function let(ChoiceListInterface $choices)
     {
         $this->beConstructedWith($choices);
     }
 
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer');
         $this->shouldImplement('Rollerworks\Component\Search\DataTransformerInterface');
     }
 
-    public function it_transformers_label_to_choice(ChoiceListInterface $choices)
+    function it_transformers_label_to_choice(ChoiceListInterface $choices)
     {
         $this->beConstructedWith($choices);
 
@@ -38,7 +38,7 @@ class ChoiceToLabelTransformerSpec extends ObjectBehavior
         $this->transform('removed')->shouldReturn('2');
     }
 
-    public function it_reverse_transformers_choice_to_label(ChoiceListInterface $choices)
+    function it_reverse_transformers_choice_to_label(ChoiceListInterface $choices)
     {
         $this->beConstructedWith($choices);
 

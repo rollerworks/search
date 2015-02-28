@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -112,9 +112,9 @@ class SearchFactory implements SearchFactoryInterface
      * @param string|FieldTypeInterface $type
      * @param array                     $options
      *
-     * @return SearchField
-     *
      * @throws UnexpectedTypeException
+     *
+     * @return SearchField
      */
     private function createFieldBuilder($name, $type = 'field', array $options = array())
     {

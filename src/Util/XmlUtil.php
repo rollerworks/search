@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -29,9 +29,9 @@ final class XmlUtil
      * @param string          $file             An XML file path
      * @param string|callable $schemaOrCallable An XSD schema file path or callable
      *
-     * @return \DOMDocument
-     *
      * @throws \InvalidArgumentException When loading of XML file returns error
+     *
+     * @return \DOMDocument
      */
     public static function loadFile($file, $schemaOrCallable = null)
     {
@@ -49,9 +49,9 @@ final class XmlUtil
      * @param string|callable $schemaOrCallable An XSD schema file path or callable
      * @param string          $defaultMessage
      *
-     * @return \DOMDocument
-     *
      * @throws \InvalidArgumentException When loading of XML document returns an error
+     *
+     * @return \DOMDocument
      */
     public static function parseXml($content, $schemaOrCallable = null, $defaultMessage = 'The XML file is not valid.')
     {
@@ -106,7 +106,7 @@ final class XmlUtil
             if (!$valid) {
                 $messages = static::getXmlErrors($internalErrors);
 
-                if (0 ===count($messages)) {
+                if (0 === count($messages)) {
                     $messages = array($defaultMessage);
                 }
 
@@ -269,7 +269,7 @@ final class XmlUtil
     }
 
     /**
-     * This class should not be instantiated
+     * This class should not be instantiated.
      */
     private function __construct()
     {

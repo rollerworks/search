@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -26,22 +26,22 @@ require_once __DIR__.'/Fixtures/Entity/Group.php';
 
 class FieldSetBuilderSpec extends ObjectBehavior
 {
-    public function let(SearchFactoryInterface $searchFactory)
+    function let(SearchFactoryInterface $searchFactory)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject());
     }
 
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\FieldSetBuilder');
     }
 
-    public function it_has_a_name()
+    function it_has_a_name()
     {
         $this->getName()->shouldReturn('test');
     }
 
-    public function it_allows_adding_fields()
+    function it_allows_adding_fields()
     {
         $this->add('id', 'integer');
         $this->has('id')->shouldReturn(true);
@@ -53,7 +53,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         ));
     }
 
-    public function it_allows_adding_preconfigured_fields()
+    function it_allows_adding_preconfigured_fields()
     {
         $this->add('id', 'integer');
 
@@ -66,7 +66,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         ));
     }
 
-    public function it_allows_removing_fields()
+    function it_allows_removing_fields()
     {
         $this->add('id', 'integer');
         $this->has('id')->shouldReturn(true);
@@ -75,7 +75,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $this->has('id')->shouldReturn(false);
     }
 
-    public function it_supports_importing_fields_from_metadata(SearchFactoryInterface $searchFactory, MetadataReaderInterface $mappingReader)
+    function it_supports_importing_fields_from_metadata(SearchFactoryInterface $searchFactory, MetadataReaderInterface $mappingReader)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject(), $mappingReader);
 
@@ -106,7 +106,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'options' => array(
                 'min' => 1,
                 'model_class' => 'User',
-                'model_property' => 'id'
+                'model_property' => 'id',
             ),
             'required' => true,
         ));
@@ -115,7 +115,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'text',
             'options' => array(
                 'model_class' => 'User',
-                'model_property' => 'name'
+                'model_property' => 'name',
             ),
             'required' => false,
         ));
@@ -124,7 +124,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'integer',
             'options' => array(
                 'model_class' => 'Group',
-                'model_property' => 'id'
+                'model_property' => 'id',
             ),
             'required' => false,
         ));
@@ -133,13 +133,13 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'text',
             'options' => array(
                 'model_class' => 'Group',
-                'model_property' => 'name'
+                'model_property' => 'name',
             ),
             'required' => false,
         ));
     }
 
-    public function it_builds_the_fieldset(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType)
+    function it_builds_the_fieldset(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject());
 
@@ -157,7 +157,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'integer',
             array(
                 'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
-                'model_property' => 'name'
+                'model_property' => 'name',
             ),
             false
         )->willReturn($field2);
@@ -168,7 +168,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'integer',
             array(
                 'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
-                'model_property' => 'name'
+                'model_property' => 'name',
             ),
             false
         );
@@ -186,7 +186,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $this->getFieldSet()->shouldBeLike($expectedFieldSet);
     }
 
-    public function it_errors_when_calling_methods_after_building(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType)
+    function it_errors_when_calling_methods_after_building(SearchFactoryInterface $searchFactory, ResolvedFieldTypeInterface $resolvedType)
     {
         $this->beConstructedWith('test', $searchFactory->getWrappedObject());
 
@@ -204,7 +204,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'integer',
             array(
                 'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
-                'model_property' => 'name'
+                'model_property' => 'name',
             ),
             false
         )->willReturn($field2);
@@ -215,7 +215,7 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'integer',
             array(
                 'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
-                'model_property' => 'name'
+                'model_property' => 'name',
             ),
             false
         );

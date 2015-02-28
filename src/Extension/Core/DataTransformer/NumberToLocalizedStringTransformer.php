@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -74,7 +74,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
     const ROUND_HALF_DOWN = \NumberFormatter::ROUND_HALFDOWN;
 
     /**
-     * @var integer|null
+     * @var int|null
      */
     protected $precision;
 
@@ -84,12 +84,12 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
     protected $grouping;
 
     /**
-     * @var integer|null
+     * @var int|null
      */
     protected $roundingMode;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $type;
 
@@ -120,10 +120,10 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
      *
      * @param int|float $value Number value.
      *
-     * @return string Localized value.
-     *
      * @throws TransformationFailedException If the given value is not numeric
      *                                       or if the value can not be transformed.
+     *
+     * @return string Localized value.
      */
     public function transform($value)
     {
@@ -149,15 +149,15 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms a localized number into an integer or float
+     * Transforms a localized number into an integer or float.
      *
      * @param string $value    The localized value
      * @param string $currency The parsed currency value
      *
-     * @return int|float The numeric value
-     *
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed.
+     *
+     * @return int|float The numeric value
      */
     public function reverseTransform($value, &$currency = null)
     {
@@ -233,7 +233,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
     }
 
     /**
-     * Returns a preconfigured \NumberFormatter instance
+     * Returns a preconfigured \NumberFormatter instance.
      *
      * @param int $type
      *
@@ -295,7 +295,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
                     break;
             }
 
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+            /* @noinspection CallableParameterUseCaseInTypeContextInspection */
             $number /= $roundingCoef;
         }
 

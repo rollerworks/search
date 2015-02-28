@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -49,8 +49,6 @@ interface FieldTypeInterface
      *
      * @param FieldConfigInterface $config
      * @param array                $options
-     *
-     * @return null
      */
     public function buildType(FieldConfigInterface $config, array $options);
 
@@ -65,8 +63,6 @@ interface FieldTypeInterface
      * @param SearchFieldView      $view
      * @param FieldConfigInterface $config
      * @param array                $options
-     *
-     * @return null
      */
     public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options);
 }

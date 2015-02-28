@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -23,10 +23,10 @@ interface ResolvedFieldTypeFactoryInterface
      * @param array                      $typeExtensions
      * @param ResolvedFieldTypeInterface $parent
      *
-     * @return ResolvedFieldTypeInterface
-     *
      * @throws Exception\UnexpectedTypeException  if the types parent {@link FormTypeInterface::getParent()} is not a string
      * @throws Exception\InvalidArgumentException if the types parent can not be retrieved from any extension
+     *
+     * @return ResolvedFieldTypeInterface
      */
     public function createResolvedType(FieldTypeInterface $type, array $typeExtensions, ResolvedFieldTypeInterface $parent = null);
 }

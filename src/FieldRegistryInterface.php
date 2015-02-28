@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -23,10 +23,10 @@ interface FieldRegistryInterface
      *
      * @param string $name The name of the type
      *
-     * @return ResolvedFieldTypeInterface The type
-     *
      * @throws Exception\UnexpectedTypeException  if the passed name is not a string
      * @throws Exception\InvalidArgumentException if the type can not be retrieved from any extension
+     *
+     * @return ResolvedFieldTypeInterface The type
      */
     public function getType($name);
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -29,21 +29,21 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
 interface ChoiceListInterface
 {
     /**
-     * Returns the list of choices
+     * Returns the list of choices.
      *
      * @return array The choices with their indices as keys
      */
     public function getChoices();
 
     /**
-     * Returns the values for the choices
+     * Returns the values for the choices.
      *
      * @return array The values with the corresponding choice indices as keys
      */
     public function getValues();
 
     /**
-     * Returns the labels for the choices
+     * Returns the labels for the choices.
      *
      * @return array The labels with the corresponding choice indices as keys
      */

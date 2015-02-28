@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\FieldRequiredException;
-use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
@@ -100,24 +99,24 @@ class XmlInput extends AbstractInput
     {
         $allFields = $this->config->getFieldSet()->all();
 
+        /** @var \SimpleXMLElement $element */
         foreach ($values->fields->children() as $element) {
-            /** @var \SimpleXMLElement $element */
-                $fieldName = $this->getFieldName((string) $element['name']);
+            $fieldName = $this->getFieldName((string) $element['name']);
             $fieldConfig = $this->config->getFieldSet()->get($fieldName);
 
             if ($valuesGroup->hasField($fieldName)) {
                 $this->valuesToBag(
-                        $fieldConfig,
-                        $element,
-                        $valuesGroup->getField($fieldName),
-                        $groupIdx,
-                        $level
-                    );
+                    $fieldConfig,
+                    $element,
+                    $valuesGroup->getField($fieldName),
+                    $groupIdx,
+                    $level
+                );
             } else {
                 $valuesGroup->addField(
-                        $fieldName,
-                        $this->valuesToBag($fieldConfig, $element, new ValuesBag(), $groupIdx, $level)
-                    );
+                    $fieldName,
+                    $this->valuesToBag($fieldConfig, $element, new ValuesBag(), $groupIdx, $level)
+                );
             }
 
             unset($allFields[$fieldName]);
@@ -149,11 +148,11 @@ class XmlInput extends AbstractInput
             }
 
             $this->processGroup(
-                    $element,
-                    $subValuesGroup,
-                    $index,
-                    $level+1
-                );
+                $element,
+                $subValuesGroup,
+                $index,
+                $level+1
+            );
 
             $valuesGroup->addGroup($subValuesGroup);
             $index++;
