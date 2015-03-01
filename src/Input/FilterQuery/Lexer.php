@@ -84,8 +84,6 @@ class Lexer extends AbstractLexer
 
             return $tokens[$index];
         }
-
-        return;
     }
 
     /**

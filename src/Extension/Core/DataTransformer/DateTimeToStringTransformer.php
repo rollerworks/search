@@ -130,7 +130,7 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
      */
     public function reverseTransform($value)
     {
-        if (empty($value)) {
+        if ('' === $value || null === $value) {
             return;
         }
 

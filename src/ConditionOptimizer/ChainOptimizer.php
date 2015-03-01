@@ -63,6 +63,7 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
         krsort($this->optimizers, SORT_NUMERIC);
 
         foreach ($this->optimizers as $optimizers) {
+            /** @var SearchConditionOptimizerInterface[] $optimizers */
             foreach ($optimizers as $optimizer) {
                 $optimizer->process($condition);
             }

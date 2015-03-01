@@ -53,8 +53,6 @@ class SimpleChoiceList extends ChoiceList
         if (array_key_exists($value, $values)) {
             return $value;
         }
-
-        return;
     }
 
     /**
@@ -70,8 +68,6 @@ class SimpleChoiceList extends ChoiceList
         if (array_key_exists($choice, $values)) {
             return $choice;
         }
-
-        return;
     }
 
     /**
@@ -87,8 +83,6 @@ class SimpleChoiceList extends ChoiceList
         if (array_key_exists($choice, $labels)) {
             return $labels[$choice];
         }
-
-        return;
     }
 
     /**

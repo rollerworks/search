@@ -81,7 +81,7 @@ class ObjectChoiceList extends ChoiceList
      */
     public function getValueForChoice($choice)
     {
-        if (!$this->valuePath || !is_object($choice) && !is_array($choice)) {
+        if (!$this->valuePath || (!is_object($choice) && !is_array($choice))) {
             return parent::getValueForChoice($choice);
         }
 
@@ -91,8 +91,6 @@ class ObjectChoiceList extends ChoiceList
         if (array_key_exists($givenValue, $this->values)) {
             return $givenValue;
         }
-
-        return;
     }
 
     /**
@@ -100,7 +98,7 @@ class ObjectChoiceList extends ChoiceList
      */
     public function getLabelForChoice($choice)
     {
-        if (!$this->labelPath || !is_object($choice) && !is_array($choice)) {
+        if (!$this->labelPath || (!is_object($choice) && !is_array($choice))) {
             return parent::getLabelForChoice($choice);
         }
 
@@ -112,8 +110,6 @@ class ObjectChoiceList extends ChoiceList
                 return $this->labels[$i];
             }
         }
-
-        return;
     }
 
     /**

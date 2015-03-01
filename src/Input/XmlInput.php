@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Util\XmlUtils;
+use Rollerworks\Component\Search\Util\XmlUtil;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
@@ -34,9 +34,6 @@ class XmlInput extends AbstractInput
 {
     /**
      * {@inheritdoc}
-     *
-     * @param ProcessorConfig $config
-     * @param string          $input
      */
     public function process(ProcessorConfig $config, $input)
     {
@@ -50,7 +47,7 @@ class XmlInput extends AbstractInput
             return;
         }
 
-        $document = simplexml_import_dom(XmlUtils::parseXml($input, __DIR__.'/schema/dic/input/xml-input-1.0.xsd'));
+        $document = simplexml_import_dom(XmlUtil::parseXml($input, __DIR__.'/schema/dic/input/xml-input-1.0.xsd'));
 
         $this->config = $config;
 

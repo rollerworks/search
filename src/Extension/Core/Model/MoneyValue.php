@@ -16,14 +16,21 @@ namespace Rollerworks\Component\Search\Extension\Core\Model;
  */
 class MoneyValue
 {
+    /**
+     * @var string
+     */
     public $currency;
+
+    /**
+     * @var float
+     */
     public $value;
 
     /**
      * Constructor.
      *
      * @param string $currency
-     * @param string $value
+     * @param float $value
      */
     public function __construct($currency, $value)
     {

@@ -55,7 +55,7 @@ class FilterQueryExporter extends AbstractExporter
         foreach ($valuesGroup->getGroups() as $group) {
             $exportedGroup = '('.trim($this->exportGroup($group, $fieldSet), ' ;').'); ';
 
-            if (!empty($exportedGroup) && ValuesGroup::GROUP_LOGICAL_OR === $group->getGroupLogical()) {
+            if ('(); ' !== $exportedGroup && ValuesGroup::GROUP_LOGICAL_OR === $group->getGroupLogical()) {
                 $exportedGroups .= '*';
             }
 

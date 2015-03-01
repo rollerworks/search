@@ -198,9 +198,9 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
                     continue;
                 }
 
-                if ($value->getType() === $value2->getType() &&
-                    $comparison->isEqual($value->getValue(), $value2->getValue(), $options) &&
-                    $value->isCaseInsensitive() === $value2->isCaseInsensitive()
+                if ($value->isCaseInsensitive() === $value2->isCaseInsensitive() &&
+                    $value->getType() === $value2->getType() &&
+                    $comparison->isEqual($value->getValue(), $value2->getValue(), $options)
                 ) {
                     $valuesBag->removePatternMatch($i);
                     unset($matchers[$i]);

@@ -21,9 +21,9 @@ class BirthdayValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value is higher then the second value.
      *
-     * @param \DateTime $higher
-     * @param \DateTime $lower
-     * @param array     $options
+     * @param \DateTime|integer $higher
+     * @param \DateTime|integer $lower
+     * @param array             $options
      *
      * @return bool
      */
@@ -39,9 +39,9 @@ class BirthdayValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value is lower then the second value.
      *
-     * @param \DateTime $lower
-     * @param \DateTime $higher
-     * @param array     $options
+     * @param \DateTime|integer $lower
+     * @param \DateTime|integer $higher
+     * @param array             $options
      *
      * @return bool
      */
@@ -57,9 +57,9 @@ class BirthdayValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value equals the second value.
      *
-     * @param \DateTime $value
-     * @param \DateTime $nextValue
-     * @param array     $options
+     * @param \DateTime|integer $value
+     * @param \DateTime|integer $nextValue
+     * @param array             $options
      *
      * @return bool
      */
@@ -77,9 +77,9 @@ class BirthdayValueComparison implements ValueIncrementerInterface
      *
      * The value should returned in the normalized format.
      *
-     * @param \DateTime $value      The value to increment.
-     * @param array     $options    Array of options passed with the field
-     * @param int       $increments Number of increments
+     * @param \DateTime|integer $value      The value to increment.
+     * @param array             $options    Array of options passed with the field
+     * @param int               $increments Number of increments
      *
      * @return \DateTime
      */

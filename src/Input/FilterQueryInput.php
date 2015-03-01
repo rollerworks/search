@@ -141,7 +141,8 @@ class FilterQueryInput extends AbstractInput
      */
     public function __construct(FieldAliasResolverInterface $aliasResolver)
     {
-        $this->aliasResolver = $aliasResolver;
+        parent::__construct($aliasResolver);
+
         $this->lexer = new Lexer();
     }
 
@@ -163,7 +164,7 @@ class FilterQueryInput extends AbstractInput
 
         $input = trim($input);
 
-        if (empty($input)) {
+        if ('' === $input) {
             return;
         }
 

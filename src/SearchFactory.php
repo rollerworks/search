@@ -108,9 +108,9 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * Creates a new {@link SearchField} instance.
      *
-     * @param string $name
-     * @param string $type
-     * @param array  $options
+     * @param string                    $name
+     * @param string|FieldTypeInterface $type
+     * @param array                     $options
      *
      * @return SearchField
      *

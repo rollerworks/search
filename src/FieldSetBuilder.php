@@ -96,7 +96,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             );
         }
 
-        if (!is_string($field) && !$field instanceof FieldConfigInterface) {
+        if (!$field instanceof FieldConfigInterface && !is_string($field)) {
             throw new UnexpectedTypeException($field, 'string or Rollerworks\Component\Search\FieldConfigInterface');
         }
 
@@ -107,7 +107,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             return $this;
         }
 
-        if (!is_string($type) && !$type instanceof FieldTypeInterface) {
+        if (!$type instanceof FieldTypeInterface && !is_string($type)) {
             throw new UnexpectedTypeException($type, 'string or Rollerworks\Component\Search\FieldTypeInterface');
         }
 
@@ -145,8 +145,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             );
         }
 
-        unset($this->fields[$name]);
-        unset($this->unresolvedFields[$name]);
+        unset($this->fields[$name], $this->unresolvedFields[$name]);
 
         return $this;
     }

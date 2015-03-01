@@ -38,8 +38,8 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         $optimize = false;
 
         foreach ($fieldSet->all() as $field) {
-            if ($field->supportValueType(ValuesBag::VALUE_TYPE_RANGE) &&
-                $field->getValueComparison() instanceof ValueIncrementerInterface
+            if ($field->getValueComparison() instanceof ValueIncrementerInterface &&
+                $field->supportValueType(ValuesBag::VALUE_TYPE_RANGE)
             ) {
                 $optimize = true;
 
@@ -159,7 +159,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
             if (null !== $rangeUpper) {
                 $unsetIndex = $prevIndex;
 
-                if (!$comparison->isEqual($value->getValue(), $increasedValue, $options) || $curCount === $valuesCount) {
+                if ($curCount === $valuesCount || !$comparison->isEqual($value->getValue(), $increasedValue, $options)) {
                     $range = new Range(
                         $rangeLower->getValue(),
                         $rangeUpper->getValue(),
@@ -177,9 +177,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
 
                     $unsetIndex = $prevIndex;
 
-                    if ($comparison->isEqual($value->getValue(), $increasedValue, $options) &&
-                        $curCount === $valuesCount
-                    ) {
+                    if ($curCount === $valuesCount) {
                         $unsetIndex = $valIndex;
                     }
 

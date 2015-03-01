@@ -74,7 +74,7 @@ class NumberValueComparison implements ValueIncrementerInterface
     public function getIncrementedValue($value, array $options, $increments = 1)
     {
         if (isset($options['increase_by_decimal'])) {
-            return $value + floatval("0.$increments");
+            return $value + (float) ("0.$increments");
         }
 
         return $value + $increments;

@@ -186,7 +186,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
             $value = str_replace(',', $decSep, $value);
         }
 
-        if (\NumberFormatter::TYPE_CURRENCY === $this->type && false !== $currency) {
+        if (false !== $currency && \NumberFormatter::TYPE_CURRENCY === $this->type) {
             $result = $formatter->parseCurrency($value, $currency, $position);
         } else {
             $result = $formatter->parse($value, \NumberFormatter::TYPE_DOUBLE, $position);
@@ -241,7 +241,10 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
      */
     protected function getNumberFormatter($type = null)
     {
-        $type = $type ?: (\NumberFormatter::TYPE_CURRENCY === $this->type ? \NumberFormatter::CURRENCY : \NumberFormatter::DECIMAL);
+        if (null === $type) {
+            $type = \NumberFormatter::TYPE_CURRENCY === $this->type ? \NumberFormatter::CURRENCY : \NumberFormatter::DECIMAL;
+        }
+
         $formatter = new \NumberFormatter(\Locale::getDefault(), $type);
 
         if (null !== $this->precision) {
@@ -292,6 +295,7 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
                     break;
             }
 
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $number /= $roundingCoef;
         }
 

@@ -49,7 +49,7 @@ class ValuesGroup implements \Serializable
     /**
      * @var int|null
      */
-    private $count = null;
+    private $count;
 
     /**
      * Constructor.
@@ -82,7 +82,7 @@ class ValuesGroup implements \Serializable
      */
     public function hasGroups()
     {
-        return !empty($this->groups);
+        return count($this->groups) > 0;
     }
 
     /**

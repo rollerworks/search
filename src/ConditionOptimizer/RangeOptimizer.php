@@ -294,13 +294,10 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
             return false;
         }
 
-        if (!$comparison->isLower($value, $range->getUpper(), $options) &&
-            (!$range->isUpperInclusive() xor !$comparison->isEqual($value, $range->getUpper(), $options))
-        ) {
-            return false;
-        }
-
-        return true;
+        // XXX This needs to be rewritten
+        return !(
+            !$comparison->isLower($value, $range->getUpper(), $options) &&
+            (!$range->isUpperInclusive() xor !$comparison->isEqual($value, $range->getUpper(), $options)));
     }
 
     /**
@@ -328,7 +325,8 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
             return false;
         }
 
-        if (!$comparison->isLower($range1->getUpper(), $range->getUpper(), $options) &&
+        // XXX This needs to be rewritten
+        return !(!$comparison->isLower($range1->getUpper(), $range->getUpper(), $options) &&
             !$this->isBoundEqual(
                 $comparison,
                 $options,
@@ -337,11 +335,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
                 $range->isUpperInclusive(),
                 $range1->isUpperInclusive()
             )
-        ) {
-            return false;
-        }
-
-        return true;
+        );
     }
 
     private function isBoundEqual(

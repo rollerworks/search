@@ -57,7 +57,7 @@ class DateValueComparison implements ValueIncrementerInterface
      */
     public function isEqual($value, $nextValue, $options)
     {
-        return $value == $nextValue;
+        return $value->getTimestamp() === $nextValue->getTimestamp();
     }
 
     /**

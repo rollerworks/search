@@ -49,7 +49,7 @@ class FieldType extends AbstractFieldType
      */
     public function getParent()
     {
-        return;
+        // noop
     }
 
     /**

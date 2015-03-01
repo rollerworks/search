@@ -85,7 +85,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
         $newValue = clone $value;
 
         if (isset($options['increase_by_decimal'])) {
-            $newValue->value += floatval("0.$increments");
+            $newValue->value += (float) ("0.$increments");
         } else {
             $newValue->value += $increments;
         }

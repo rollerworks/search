@@ -97,6 +97,8 @@ class SearchField implements FieldConfigInterface
      * @param bool $required
      *
      * @throws BadMethodCallException
+     *
+     * @return self
      */
     public function setRequired($required = true)
     {
@@ -189,6 +191,8 @@ class SearchField implements FieldConfigInterface
      * @param string $class
      * @param string $property
      *
+     * @return self
+     *
      * @throws BadMethodCallException when the data is locked
      *
      * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
@@ -236,6 +240,8 @@ class SearchField implements FieldConfigInterface
      * Set the {@link ValueComparisonInterface} instance.
      *
      * @param ValueComparisonInterface $comparisonObj
+     *
+     * @return self
      *
      * @throws BadMethodCallException when the data is locked
      */
