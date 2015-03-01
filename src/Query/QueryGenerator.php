@@ -18,7 +18,6 @@ use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -264,7 +263,7 @@ class QueryGenerator
             $valuesQuery[] = $this->getValueAsSql($value->getValue(), $fieldName, $column);
         }
 
-        if (!empty($valuesQuery)) {
+        if (count($valuesQuery) > 0) {
             $query[] = sprintf(
                 ($exclude ? '%s NOT IN(%s)' : '%s IN(%s)'),
                 $column,
@@ -366,6 +365,7 @@ class QueryGenerator
      * @param Compare[] $compares
      * @param string    $fieldName
      * @param array     $query
+     * @param bool      $exclude
      */
     protected function processCompares(array $compares, $fieldName, array &$query, $exclude = false)
     {
@@ -474,8 +474,6 @@ class QueryGenerator
                 $this->getConversionHints($fieldName)
             );
         }
-
-        return;
     }
 
     /**
@@ -562,13 +560,13 @@ class QueryGenerator
         // Remove the empty values
         $values = array_filter($values, 'strlen');
 
-        if (empty($values)) {
+        if (0 === count($values)) {
             return;
         }
 
         $value = implode($glue, $values);
 
-        if (!empty($wrap) && (isset($wrap[2]) || count($values) > 1)) {
+        if (count($wrap) > 0 && (isset($wrap[2]) || count($values) > 1)) {
             return $wrap[0].$value.$wrap[1];
         }
 
