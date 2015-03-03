@@ -14,9 +14,8 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Compare;
@@ -28,46 +27,50 @@ use Rollerworks\Component\Search\ValuesGroup;
 /**
  * Doctrine QueryGenerator.
  *
+ * This class is only to be used by packages of RollerworksSearch
+ * and is considered internal.
+ *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class QueryGenerator
+final class QueryGenerator
 {
     /**
      * @var SearchConditionInterface
      */
-    protected $searchCondition;
+    private $searchCondition;
 
     /**
      * @var QueryField[]
      */
-    protected $fields = array();
-
-    /**
-     * @var array
-     */
-    protected $fieldsMappingCache = array();
-
-    /**
-     * @var array
-     */
-    protected $fieldConversionCache = array();
+    private $fields = array();
 
     /**
      * @var Connection
      */
-    protected $connection;
+    private $connection;
+
+    /**
+     * @var QueryPlatformInterface
+     */
+    private $queryPlatform;
 
     /**
      * Constructor.
      *
      * @param Connection               $connection
+     * @param QueryPlatformInterface   $queryPlatform
      * @param SearchConditionInterface $searchCondition
      * @param QueryField[]             $fields
      */
-    public function __construct(Connection $connection, SearchConditionInterface $searchCondition, array $fields)
-    {
+    public function __construct(
+        Connection $connection,
+        QueryPlatformInterface $queryPlatform,
+        SearchConditionInterface $searchCondition,
+        array $fields
+    ) {
         $this->searchCondition = $searchCondition;
         $this->connection = $connection;
+        $this->queryPlatform = $queryPlatform;
         $this->fields = $fields;
     }
 
@@ -144,16 +147,16 @@ class QueryGenerator
                 true
             );
 
-            $groupSql[] = static::implodeWithValue(' OR ', $inclusiveSqlGroup, array('(', ')'));
-            $groupSql[] = static::implodeWithValue(' AND ', $exclusiveSqlGroup, array('(', ')'));
-            $query[] = static::implodeWithValue(' AND ', $groupSql, array('(', ')', true));
+            $groupSql[] = self::implodeWithValue(' OR ', $inclusiveSqlGroup, array('(', ')'));
+            $groupSql[] = self::implodeWithValue(' AND ', $exclusiveSqlGroup, array('(', ')'));
+            $query[] = self::implodeWithValue(' AND ', $groupSql, array('(', ')', true));
         }
 
         $groupSql = array();
         $finalQuery = array();
 
         // Wrap all the fields as a group
-        $finalQuery[] = static::implodeWithValue(
+        $finalQuery[] = self::implodeWithValue(
             (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() ? ' OR ' : ' AND '),
             $query,
             array('(', ')', true)
@@ -163,55 +166,9 @@ class QueryGenerator
             $groupSql[] = $this->getGroupQuery($group);
         }
 
-        $finalQuery[] = static::implodeWithValue(' OR ', $groupSql, array('(', ')', true));
+        $finalQuery[] = self::implodeWithValue(' OR ', $groupSql, array('(', ')', true));
 
-        return static::implodeWithValue(' AND ', $finalQuery, array('(', ')'));
-    }
-
-    /**
-     * Returns the SQL for the Field conversion.
-     *
-     * @param string               $fieldName
-     * @param string               $column
-     * @param FieldConfigInterface $field
-     * @param null|int             $strategy
-     *
-     * @return string
-     */
-    public function getFieldConversionSql($fieldName, $column, FieldConfigInterface $field, $strategy = null)
-    {
-        if (isset($this->fieldConversionCache[$fieldName]) &&
-            array_key_exists($strategy, $this->fieldConversionCache[$fieldName])
-        ) {
-            return $this->fieldConversionCache[$fieldName][$strategy];
-        }
-
-        return $this->fieldConversionCache[$fieldName][$strategy] = $this->fields[$fieldName]->getFieldConversion()->convertSqlField(
-            $column,
-            $field->getOptions(),
-            $this->getConversionHints($fieldName, $strategy, $column)
-        );
-    }
-
-    /**
-     * Returns the SQL for the SQL wrapped-value conversion.
-     *
-     * @param string   $fieldName
-     * @param string   $column
-     * @param string   $value
-     * @param null|int $strategy
-     *
-     * @return string
-     *
-     * @throws BadMethodCallException
-     */
-    public function getValueConversionSql($fieldName, $column, $value, $strategy = null)
-    {
-        return $this->fields[$fieldName]->getValueConversion()->convertSqlValue(
-            $value,
-            $this->fields[$fieldName]->getFieldConfig()->getOptions(),
-            $this->getConversionHints($fieldName, $strategy, $column)
-        );
+        return self::implodeWithValue(' AND ', $finalQuery, array('(', ')'));
     }
 
     /**
@@ -221,27 +178,9 @@ class QueryGenerator
      *
      * @return bool
      */
-    protected function acceptsField(FieldConfigInterface $field)
+    private function acceptsField(FieldConfigInterface $field)
     {
         return isset($this->fields[$field->getName()]);
-    }
-
-    /**
-     * @param string   $fieldName
-     * @param null|int $strategy
-     * @param string $column
-     *
-     * @return ConversionHints
-     */
-    protected function getConversionHints($fieldName, $strategy = null, $column = null)
-    {
-        $hints = new ConversionHints();
-        $hints->field = $this->fields[$fieldName];
-        $hints->column = $column;
-        $hints->connection = $this->connection;
-        $hints->conversionStrategy = $strategy;
-
-        return $hints;
     }
 
     /**
@@ -254,13 +193,13 @@ class QueryGenerator
      *
      * @return string
      */
-    protected function processSingleValuesInList(array $values, $fieldName, array &$query, $exclude = false)
+    private function processSingleValuesInList(array $values, $fieldName, array &$query, $exclude = false)
     {
         $valuesQuery = array();
-        $column = $this->getFieldColumn($fieldName);
+        $column = $this->queryPlatform->getFieldColumn($fieldName);
 
         foreach ($values as $value) {
-            $valuesQuery[] = $this->getValueAsSql($value->getValue(), $fieldName, $column);
+            $valuesQuery[] = $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column);
         }
 
         if (count($valuesQuery) > 0) {
@@ -280,7 +219,7 @@ class QueryGenerator
      * @param array         $query
      * @param bool          $exclude
      */
-    protected function processSingleValues(array $values, $fieldName, array &$query, $exclude = false)
+    private function processSingleValues(array $values, $fieldName, array &$query, $exclude = false)
     {
         if (!$this->fields[$fieldName]->hasConversionStrategy() &&
             !$this->fields[$fieldName]->getValueConversion() instanceof SqlValueConversionInterface
@@ -294,19 +233,19 @@ class QueryGenerator
 
         foreach ($values as $value) {
             $strategy = $this->getConversionStrategy($fieldName, $value->getValue());
-            $column = $this->getFieldColumn($fieldName, $strategy);
+            $column = $this->queryPlatform->getFieldColumn($fieldName, $strategy);
 
             if ($exclude) {
                 $query[] = sprintf(
                     '%s <> %s',
-                    $this->getFieldColumn($fieldName, $strategy),
-                    $this->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
+                    $column,
+                    $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
                 );
             } else {
                 $query[] = sprintf(
                     '%s = %s',
-                    $this->getFieldColumn($fieldName, $strategy),
-                    $this->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
+                    $column,
+                    $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
                 );
             }
         }
@@ -318,18 +257,18 @@ class QueryGenerator
      * @param array   $query
      * @param bool    $exclude
      */
-    protected function processRanges(array $ranges, $fieldName, array &$query, $exclude = false)
+    private function processRanges(array $ranges, $fieldName, array &$query, $exclude = false)
     {
         foreach ($ranges as $range) {
             $strategy = $this->getConversionStrategy($fieldName, $range->getLower());
-            $column = $this->getFieldColumn($fieldName, $strategy);
+            $column = $this->queryPlatform->getFieldColumn($fieldName, $strategy);
 
             $query[] = sprintf(
                 $this->getRangePattern($range, $exclude),
                 $column,
-                $this->getValueAsSql($range->getLower(), $fieldName, $column, $strategy),
+                $this->queryPlatform->getValueAsSql($range->getLower(), $fieldName, $column, $strategy),
                 $column,
-                $this->getValueAsSql($range->getUpper(), $fieldName, $column, $strategy)
+                $this->queryPlatform->getValueAsSql($range->getUpper(), $fieldName, $column, $strategy)
             );
         }
     }
@@ -340,7 +279,7 @@ class QueryGenerator
      *
      * @return string eg. "(%s >= %s AND %s <= %s)"
      */
-    protected function getRangePattern(Range $range, $exclude = false)
+    private function getRangePattern(Range $range, $exclude = false)
     {
         $pattern = '(%s ';
 
@@ -367,7 +306,7 @@ class QueryGenerator
      * @param array     $query
      * @param bool      $exclude
      */
-    protected function processCompares(array $compares, $fieldName, array &$query, $exclude = false)
+    private function processCompares(array $compares, $fieldName, array &$query, $exclude = false)
     {
         $valuesQuery = array();
 
@@ -377,17 +316,17 @@ class QueryGenerator
             }
 
             $strategy = $this->getConversionStrategy($fieldName, $comparison->getValue());
-            $column = $this->getFieldColumn($fieldName, $strategy);
+            $column = $this->queryPlatform->getFieldColumn($fieldName, $strategy);
 
             $valuesQuery[] = sprintf(
                 '%s %s %s',
                 $column,
                 $comparison->getOperator(),
-                $this->getValueAsSql($comparison->getValue(), $fieldName, $column, $strategy)
+                $this->queryPlatform->getValueAsSql($comparison->getValue(), $fieldName, $column, $strategy)
             );
         }
 
-        $query[] = static::implodeWithValue(
+        $query[] = self::implodeWithValue(
             ' AND ',
             $valuesQuery,
             count($valuesQuery) > 1 && !$exclude ? array('(', ')') : array()
@@ -400,64 +339,27 @@ class QueryGenerator
      * @param array          $query
      * @param bool           $exclude
      */
-    protected function processPatternMatchers(array $patternMatchers, $fieldName, array &$query, $exclude = false)
+    private function processPatternMatchers(array $patternMatchers, $fieldName, array &$query, $exclude = false)
     {
         foreach ($patternMatchers as $patternMatch) {
             if ($exclude !== $patternMatch->isExclusive()) {
                 continue;
             }
 
-            $strategy = $this->getConversionStrategy($fieldName, $patternMatch->getValue());
-            $column = $this->getFieldColumn($fieldName, $strategy);
-
-            $query[] = $this->getPatternMatcher($patternMatch, $column, $patternMatch->getValue());
-        }
-    }
-
-    /**
-     * @param PatternMatch $patternMatch
-     * @param string       $column
-     * @param string       $value
-     *
-     * @return string
-     */
-    protected function getPatternMatcher(PatternMatch $patternMatch, $column, $value)
-    {
-        if ($patternMatch->isRegex()) {
-            return SearchMatch::getMatchSqlRegex(
-                $column,
-                $this->connection->quote($value),
-                $patternMatch->isCaseInsensitive(),
-                $patternMatch->isExclusive(),
-                $this->connection
+            $query[] = $this->queryPlatform->getPatternMatcher(
+                $patternMatch,
+                $this->queryPlatform->getFieldColumn($fieldName)
             );
         }
-
-        $patternMap = array(
-            PatternMatch::PATTERN_STARTS_WITH => '%%%s',
-            PatternMatch::PATTERN_NOT_STARTS_WITH => '%%%s',
-            PatternMatch::PATTERN_CONTAINS => '%%%s%%',
-            PatternMatch::PATTERN_NOT_CONTAINS => '%%%s%%',
-            PatternMatch::PATTERN_ENDS_WITH => '%s%%',
-            PatternMatch::PATTERN_NOT_ENDS_WITH => '%s%%',
-        );
-
-        return SearchMatch::getMatchSqlLike(
-            $column,
-            $this->connection->quote(sprintf($patternMap[$patternMatch->getType()], $value)),
-            $patternMatch->isCaseInsensitive(),
-            $patternMatch->isExclusive(),
-            $this->connection
-        );
     }
 
     /**
      * @param string $fieldName
      * @param mixed  $value
      *
-     * @return null|int
+     * @return int
      */
-    protected function getConversionStrategy($fieldName, $value)
+    private function getConversionStrategy($fieldName, $value)
     {
         if ($this->fields[$fieldName]->getValueConversion() instanceof ConversionStrategyInterface) {
             return $this->fields[$fieldName]->getValueConversion()->getConversionStrategy(
@@ -477,85 +379,22 @@ class QueryGenerator
     }
 
     /**
-     * Returns either the converted value.
+     * @param string $fieldName
+     * @param string $column
      *
-     * @param string   $value
-     * @param string   $fieldName
-     * @param string   $column
-     * @param int|null $strategy
-     *
-     * @return string|integer
+     * @return ConversionHints
      */
-    protected function getValueAsSql($value, $fieldName, $column, $strategy = null)
+    private function getConversionHints($fieldName, $column = null)
     {
-        $converter = $this->fields[$fieldName]->getValueConversion();
-        $field = $this->fields[$fieldName]->getFieldConfig();
-        $type = $this->fields[$fieldName]->getDbType();
+        $hints = new ConversionHints();
+        $hints->field = $this->fields[$fieldName];
+        $hints->column = $column;
+        $hints->connection = $this->connection;
 
-        if (null === $converter) {
-            // Don't quote numbers as SQLite doesn't follow standards for casting
-            if (is_scalar($value) && ctype_digit((string) $value)) {
-                return $value;
-            }
-
-            return $this->connection->quote(
-                $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
-                $type->getBindingType()
-            );
-        }
-
-        $convertedValue = $value;
-        $hints = $this->getConversionHints($fieldName, $strategy, $column);
-
-        if ($converter->requiresBaseConversion($value, $field->getOptions(), $hints)) {
-            $convertedValue = $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform());
-        }
-
-        $convertedValue = $converter->convertValue($convertedValue, $field->getOptions(), $hints);
-
-        if ($converter instanceof SqlValueConversionInterface) {
-            return $this->getValueConversionSql($fieldName, $column, $convertedValue, $strategy);
-        }
-
-        // Don't quote numbers as SQLite doesn't follow standards for casting
-        if (!ctype_digit((string) $convertedValue)) {
-            $convertedValue = $this->connection->quote($convertedValue, $type->getBindingType());
-        }
-
-        return $convertedValue;
+        return $hints;
     }
 
-    /**
-     * Returns the correct column (with SQLField conversions applied).
-     *
-     * @param string   $fieldName
-     * @param null|int $strategy
-     *
-     * @return string
-     */
-    protected function getFieldColumn($fieldName, $strategy = null)
-    {
-        if (isset($this->fieldsMappingCache[$fieldName])
-            && array_key_exists($strategy, $this->fieldsMappingCache[$fieldName])
-        ) {
-            return $this->fieldsMappingCache[$fieldName][$strategy];
-        }
-
-        if ($this->fields[$fieldName]->getFieldConversion() instanceof SqlFieldConversionInterface) {
-            $this->fieldsMappingCache[$fieldName][$strategy] = $this->getFieldConversionSql(
-                $fieldName,
-                $this->fields[$fieldName]->getColumn(),
-                $this->fields[$fieldName]->getFieldConfig(),
-                $strategy
-            );
-        } else {
-            $this->fieldsMappingCache[$fieldName][$strategy] = $this->fields[$fieldName]->getColumn();
-        }
-
-        return $this->fieldsMappingCache[$fieldName][$strategy];
-    }
-
-    protected static function implodeWithValue($glue, array $values, array $wrap = array())
+    private static function implodeWithValue($glue, array $values, array $wrap = array())
     {
         // Remove the empty values
         $values = array_filter($values, 'strlen');
