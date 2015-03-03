@@ -27,9 +27,9 @@ class ConversionHints
     public $connection;
 
     /**
-     * @var null|int
+     * @var int
      */
-    public $conversionStrategy;
+    public $conversionStrategy = 0;
 
     /**
      * @var string

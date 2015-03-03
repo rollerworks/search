@@ -110,10 +110,13 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
             return $this->whereClause;
         }
 
+        $fields = $this->processFields();
+
         $this->queryGenerator = new QueryGenerator(
             $this->connection,
+            $this->getQueryPlatform($fields),
             $this->searchCondition,
-            $this->processFields()
+            $fields
         );
 
         $this->whereClause = $this->queryGenerator->getGroupQuery(
@@ -139,5 +142,17 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         }
 
         return $fields;
+    }
+
+    private function getQueryPlatform(array $fields)
+    {
+        $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
+        $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';
+
+        if (class_exists($platformClass)) {
+            return new $platformClass($this->connection, $fields);
+        }
+
+        throw new \RuntimeException(sprintf('No supported class found for database-platform "%s".', $dbPlatform));
     }
 }
