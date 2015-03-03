@@ -14,7 +14,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 error_reporting(E_ALL | E_STRICT);
 
 if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
-    throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --prefer-source --dev"?');
+    throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install"?');
 }
 
 if (version_compare(PHP_VERSION, '5.4', '>=') && gc_enabled()) {

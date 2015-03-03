@@ -8,6 +8,12 @@ php:
     - hhvm
     - hhvm-nightly
 
+sudo: false
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
 matrix:
     include:
         - php: 5.3
@@ -18,9 +24,6 @@ matrix:
         - php: hhvm-nightly
         - env: DEPENDENCIES='dev'
     fast_finish: true
-
-before_install:
-    - composer selfupdate
 
 install:
     - export COMPOSER_ROOT_VERSION=dev-master
