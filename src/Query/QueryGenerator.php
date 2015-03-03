@@ -16,8 +16,6 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
-use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -34,11 +32,6 @@ use Rollerworks\Component\Search\ValuesGroup;
  */
 final class QueryGenerator
 {
-    /**
-     * @var SearchConditionInterface
-     */
-    private $searchCondition;
-
     /**
      * @var QueryField[]
      */
@@ -57,18 +50,12 @@ final class QueryGenerator
     /**
      * Constructor.
      *
-     * @param Connection               $connection
-     * @param QueryPlatformInterface   $queryPlatform
-     * @param SearchConditionInterface $searchCondition
-     * @param QueryField[]             $fields
+     * @param Connection             $connection
+     * @param QueryPlatformInterface $queryPlatform
+     * @param QueryField[]           $fields
      */
-    public function __construct(
-        Connection $connection,
-        QueryPlatformInterface $queryPlatform,
-        SearchConditionInterface $searchCondition,
-        array $fields
-    ) {
-        $this->searchCondition = $searchCondition;
+    public function __construct(Connection $connection, QueryPlatformInterface $queryPlatform, array $fields)
+    {
         $this->connection = $connection;
         $this->queryPlatform = $queryPlatform;
         $this->fields = $fields;
@@ -82,12 +69,9 @@ final class QueryGenerator
     public function getGroupQuery(ValuesGroup $valuesGroup)
     {
         $query = array();
-        $fieldSet = $this->searchCondition->getFieldSet();
 
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
-            $field = $fieldSet->get($fieldName);
-
-            if (!$this->acceptsField($field)) {
+            if (!isset($this->fields[$fieldName])) {
                 continue;
             }
 
@@ -152,35 +136,33 @@ final class QueryGenerator
             $query[] = self::implodeWithValue(' AND ', $groupSql, array('(', ')', true));
         }
 
-        $groupSql = array();
         $finalQuery = array();
 
         // Wrap all the fields as a group
         $finalQuery[] = self::implodeWithValue(
-            (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() ? ' OR ' : ' AND '),
+            ' '.strtoupper($valuesGroup->getGroupLogical()).' ',
             $query,
             array('(', ')', true)
         );
 
-        foreach ($valuesGroup->getGroups() as $group) {
-            $groupSql[] = $this->getGroupQuery($group);
-        }
-
-        $finalQuery[] = self::implodeWithValue(' OR ', $groupSql, array('(', ')', true));
+        $this->processGroups($valuesGroup->getGroups(), $finalQuery);
 
         return self::implodeWithValue(' AND ', $finalQuery, array('(', ')'));
     }
 
     /**
-     * Returns whether the field is accepted for processing.
-     *
-     * @param FieldConfigInterface $field
-     *
-     * @return bool
+     * @param ValuesGroup[] $groups
+     * @param array         $query
      */
-    private function acceptsField(FieldConfigInterface $field)
+    private function processGroups(array $groups, array &$query)
     {
-        return isset($this->fields[$field->getName()]);
+        $groupSql = array();
+
+        foreach ($groups as $group) {
+            $groupSql[] = $this->getGroupQuery($group);
+        }
+
+        $query[] = self::implodeWithValue(' OR ', $groupSql, array('(', ')', true));
     }
 
     /**
@@ -202,9 +184,11 @@ final class QueryGenerator
             $valuesQuery[] = $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column);
         }
 
+        $patterns = array('%s IN(%s)', '%s NOT IN(%s)');
+
         if (count($valuesQuery) > 0) {
             $query[] = sprintf(
-                ($exclude ? '%s NOT IN(%s)' : '%s IN(%s)'),
+                $patterns[(int) $exclude],
                 $column,
                 implode(', ', $valuesQuery)
             );
@@ -231,23 +215,17 @@ final class QueryGenerator
             return;
         }
 
+        $patterns = array('%s = %s', '%s <> %s');
+
         foreach ($values as $value) {
             $strategy = $this->getConversionStrategy($fieldName, $value->getValue());
             $column = $this->queryPlatform->getFieldColumn($fieldName, $strategy);
 
-            if ($exclude) {
-                $query[] = sprintf(
-                    '%s <> %s',
-                    $column,
-                    $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
-                );
-            } else {
-                $query[] = sprintf(
-                    '%s = %s',
-                    $column,
-                    $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
-                );
-            }
+            $query[] = sprintf(
+                $patterns[(int) $exclude],
+                $column,
+                $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
+            );
         }
     }
 

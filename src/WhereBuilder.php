@@ -115,7 +115,6 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
         $this->queryGenerator = new QueryGenerator(
             $this->connection,
             $this->getQueryPlatform($fields),
-            $this->searchCondition,
             $fields
         );
 
