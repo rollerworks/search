@@ -14,10 +14,11 @@ interface QueryPlatformInterface
      *
      * @param string $fieldName
      * @param int    $strategy
+     * @param string $column
      *
      * @return string
      */
-    public function getFieldColumn($fieldName, $strategy = 0);
+    public function getFieldColumn($fieldName, $strategy = 0, $column = '');
 
     /**
      * Returns either the converted value.
@@ -40,4 +41,26 @@ interface QueryPlatformInterface
      * @return string Some like: u.name LIKE '%foo%'
      */
     public function getPatternMatcher(PatternMatch $patternMatch, $column);
+
+    /**
+     * @param mixed  $value
+     * @param string $fieldName
+     * @param string $column
+     * @param int    $strategy
+     *
+     * @return string
+     */
+    public function convertSqlValue($value, $fieldName, $column, $strategy = 0);
+
+    /**
+     * Returns the SQL for the match (regexp).
+     *
+     * @param string $column
+     * @param string $value           Fully escaped value or parameter-name
+     * @param bool   $caseInsensitive Is the match case insensitive
+     * @param bool   $negative        Is the match negative (exclude)
+     *
+     * @return string
+     */
+    public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative);
 }

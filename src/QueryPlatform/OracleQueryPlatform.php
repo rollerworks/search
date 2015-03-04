@@ -11,7 +11,7 @@ class OracleQueryPlatform extends AbstractQueryPlatform
     /**
      * {@inheritdoc}
      */
-    protected function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
+    public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
     {
         return ($negative ? 'NOT ' : '').sprintf(
             "REGEXP_LIKE(%s, %s, '%s')",

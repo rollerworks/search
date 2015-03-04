@@ -11,7 +11,7 @@ final class PostgresqlQueryPlatform extends AbstractQueryPlatform
     /**
      * {@inheritdoc}
      */
-    protected function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
+    public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
     {
         return sprintf(
             '%s %s~%s %s',

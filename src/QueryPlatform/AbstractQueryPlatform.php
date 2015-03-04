@@ -70,14 +70,17 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function getFieldColumn($fieldName, $strategy = 0)
+    public function getFieldColumn($fieldName, $strategy = 0, $column = '')
     {
         if (isset($this->fieldsMappingCache[$fieldName][$strategy])) {
             return $this->fieldsMappingCache[$fieldName][$strategy];
         }
 
         $field = $this->fields[$fieldName];
-        $column = $field->getColumn();
+
+        if ('' === $column) {
+            $column = $field->getColumn();
+        }
 
         $this->fieldsMappingCache[$fieldName][$strategy] = $column;
 
@@ -125,6 +128,20 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
         }
 
         return $column.($patternMatch->isExclusive() ? ' NOT' : '')." LIKE $value ESCAPE $escape";
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertSqlValue($value, $fieldName, $column, $strategy = 0)
+    {
+        $field = $this->fields[$fieldName];
+
+        return $field->getValueConversion()->convertSqlValue(
+            $value,
+            $field->getFieldConfig()->getOptions(),
+            $this->getConversionHints($fieldName, $column, $strategy)
+        );
     }
 
     /**
@@ -198,25 +215,9 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
         $convertedValue = $converter->convertValue($convertedValue, $options, $hints);
 
         if ($converter instanceof SqlValueConversionInterface) {
-            return $field->getValueConversion()->convertSqlValue(
-                $convertedValue,
-                $field->getFieldConfig()->getOptions(),
-                $this->getConversionHints($fieldName, $column, $strategy)
-            );
+            return $this->convertSqlValue($convertedValue, $fieldName, $column, $strategy);
         }
 
         return $this->quoteValue($convertedValue, $type);
     }
-
-    /**
-     * Returns the SQL for the match (regexp).
-     *
-     * @param string $column
-     * @param string $value           Fully escaped value or parameter-name
-     * @param bool   $caseInsensitive Is the match case insensitive
-     * @param bool   $negative        Is the match negative (exclude)
-     *
-     * @return string
-     */
-    abstract protected function getMatchSqlRegex($column, $value, $caseInsensitive, $negative);
 }
