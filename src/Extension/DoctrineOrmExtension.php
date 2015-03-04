@@ -26,11 +26,12 @@ class DoctrineOrmExtension extends AbstractExtension
      * @param ManagerRegistry $registry
      * @param array           $managerNames
      */
-    public function __construct(ManagerRegistry $registry, $managerNames = array('default'))
+    public function __construct(ManagerRegistry $registry, array $managerNames = ['default'])
     {
-        foreach ((array) $managerNames as $managerName) {
-            $emConfig = $registry->getManager($managerName)->getConfiguration();
+        foreach ($managerNames as $managerName) {
             /** @var \Doctrine\ORM\Configuration $emConfig */
+            $emConfig = $registry->getManager($managerName)->getConfiguration();
+
             $emConfig->addCustomStringFunction(
                 'RW_SEARCH_FIELD_CONVERSION',
                 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion'
@@ -53,8 +54,8 @@ class DoctrineOrmExtension extends AbstractExtension
      */
     protected function loadTypes()
     {
-        return array(
+        return [
             new Type\EntityCountType(),
-        );
+        ];
     }
 }

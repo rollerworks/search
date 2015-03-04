@@ -9,23 +9,30 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Fixtures\Entity;
+namespace Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
- * @Table(name="customers")
+ * @ORM\Entity
+ * @ORM\Table(name="customers")
  */
 class ECommerceCustomer
 {
     /**
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue(strategy="AUTO")
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @Column(type="string")
+     * @ORM\Column(type="string")
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $birthday;
 }

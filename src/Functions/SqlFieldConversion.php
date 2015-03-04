@@ -15,12 +15,13 @@ use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 
 /**
- * "RW_SEARCH_FIELD_CONVERSION(FieldName, Column, Strategy)"
+ * "RW_SEARCH_FIELD_CONVERSION(FieldName, Column, Strategy)".
  *
  * SearchFieldConversion ::=
- *     "RW_SEARCH_FIELD_CONVERSION" "(" StringPrimary, StateFieldPathExpression "," [ integer | null ] ")"
+ *     "RW_SEARCH_FIELD_CONVERSION" "(" StringPrimary, StateFieldPathExpression "," [ Integer ] ")"
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -29,36 +30,35 @@ class SqlFieldConversion extends FunctionNode
     /**
      * @var string
      */
-    public $fieldName;
+    private $fieldName;
 
     /**
      * @var \Doctrine\ORM\Query\AST\PathExpression
      */
-    public $columnExpression;
+    private $columnExpression;
 
     /**
      * @var integer|null
      */
-    public $strategy;
+    private $strategy;
 
     /**
      * {@inheritdoc}
      */
     public function getSql(SqlWalker $sqlWalker)
     {
-        /** @var \Closure $whereBuilder */
-        if (!($whereBuilder = $sqlWalker->getQuery()->getHint('rw_where_builder'))) {
-            throw new \LogicException('Missing "rw_where_builder" hint for SearchFieldConversion.');
+        /* @var \Closure $hintsValue */
+        if (!($hintsValue = $sqlWalker->getQuery()->getHint('rw_where_builder'))) {
+            throw new \LogicException('Missing "rw_where_builder" hint for SearchValueConversion.');
         }
 
-        $whereBuilder = $whereBuilder();
-        /** @var \Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder $whereBuilder */
+        /** @var QueryPlatformInterface $platform */
+        list($platform, ) = $hintsValue();
 
-        return $whereBuilder->getFieldConversionSql(
+        return $platform->getFieldColumn(
             $this->fieldName,
-            $this->columnExpression->dispatch($sqlWalker),
-            null,
-            $this->strategy
+            $this->strategy,
+            $this->columnExpression->dispatch($sqlWalker)
         );
     }
 
@@ -71,21 +71,10 @@ class SqlFieldConversion extends FunctionNode
         $parser->match(Lexer::T_OPEN_PARENTHESIS);
 
         $this->fieldName = $parser->Literal()->value;
-
         $parser->match(Lexer::T_COMMA);
-
         $this->columnExpression = $parser->StateFieldPathExpression();
-
-        $lexer = $parser->getLexer();
-
         $parser->match(Lexer::T_COMMA);
-
-        if ($lexer->isNextToken(Lexer::T_NULL)) {
-            $parser->match(Lexer::T_NULL);
-            $this->strategy = null;
-        } else {
-            $this->strategy = (int) $parser->Literal()->value;
-        }
+        $this->strategy = (int) $parser->Literal()->value;
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }

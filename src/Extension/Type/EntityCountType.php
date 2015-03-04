@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Extension\Doctrine\Orm\Type;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Conversion\EntityCountConversion;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * EntityCountType allows a parent/children-reference counting.
@@ -42,18 +42,18 @@ class EntityCountType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $conversion = $this->conversion;
 
         $resolver->setDefaults(
-            array(
-                'table_name' => null,
-                'table_field' => null,
+            [
+                'doctrine_table' => null,
+                'doctrine_column' => null,
                 'doctrine_dbal_conversion' => function () use ($conversion) {
                     return $conversion;
                 },
-            )
+            ]
         );
     }
 

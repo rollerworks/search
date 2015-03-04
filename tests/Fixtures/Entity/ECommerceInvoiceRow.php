@@ -9,33 +9,36 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Tests\Fixtures\Entity;
+namespace Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
- * @Table(name="invoice_rows")
+ * @ORM\Entity
+ * @ORM\Table(name="invoice_rows")
  */
 class ECommerceInvoiceRow
 {
     /**
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue(strategy="AUTO")
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @OneToOne(targetEntity="ECommerceInvoice", inversedBy="ECommerceInvoiceRow")
+     * @ORM\ManyToOne(targetEntity="ECommerceInvoice", inversedBy="rows")
+     * @ORM\JoinColumn(name="invoice", referencedColumnName="invoice_id")
      */
-    private $invoice_id;
+    private $invoice;
 
     /**
-     * @Column(type="string")
+     * @ORM\Column(type="string")
      */
     private $label;
 
     /**
-     * @Column(name="price" type="decimal", precision=0, scale=2)
+     * @ORM\Column(name="price", type="decimal", precision=0, scale=2)
      */
     private $price;
 }

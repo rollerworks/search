@@ -15,13 +15,13 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
-        "rollerworks/search": ">=1.0.0-beta2@dev",
-        "rollerworks/search-doctrine-dbal": "1.0.0-beta3@dev",
+        "php": ">=5.4",
+        "rollerworks/search": ">1.0.0-beta4@dev",
+        "rollerworks/search-doctrine-dbal": ">1.0.0-beta6@dev",
         "doctrine/orm": "~2.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "~3.7"
+        "phpunit/phpunit": "~4.5"
     },
     "autoload": {
         "psr-4": {
@@ -30,19 +30,13 @@
         }
     },
     "autoload-dev": {
-        "psr-0": {
-            "Doctrine\\Tests\\": "vendor/doctrine/orm/tests"
-        },
         "psr-4": {
             "Rollerworks\\Component\\Search\\Tests\\Mocks\\": [
                 "vendor/rollerworks/search-doctrine-dbal/tests/Mocks/"
             ],
-            "Rollerworks\\Component\\Search\\Tests\\Fixtures\\": [
-                "tests/Fixtures/",
-                "vendor/rollerworks/search-doctrine-dbal/tests/Fixtures/"
-            ],
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "vendor/rollerworks/search-doctrine-dbal/tests/",
-            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "tests/"
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "tests/",
+            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
     },
     "config": {

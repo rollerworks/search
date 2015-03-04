@@ -12,13 +12,11 @@
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\ORM\NativeQuery;
-use Doctrine\ORM\Query as DqlQuery;
-use Doctrine\ORM\QueryBuilder;
-use Rollerworks\Component\Search\Doctrine\Dbal\AbstractCacheWhereBuilder;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Doctrine\ORM\Query;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 
-/***
+/**
  * Handles caching of the Doctrine ORM WhereBuilder.
  *
  * Note. For best performance caching of the WhereClause should be done on a
@@ -28,8 +26,11 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  * This checks if there is a cached result, if not it delegates
  * the creating to the parent and caches the result.
  *
- * Instead of calling getWhereClause() on the WhereBuilder class
- * you should call getWhereClause() on this class instead.
+ * Instead of calling getWhereClause()/updateQuery() on the WhereBuilder
+ * class you should call getWhereClause()/updateQuery() on this class instead.
+ *
+ * Caution: You must call the getQueryHintValue() on the this object and not
+ * the WhereBuilder as the WhereBuilder is not executed.
  *
  * WARNING. Any changes to the entities mapping should invalidate the cache
  * the system does not do this automatically.
@@ -38,109 +39,102 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  */
 class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
 {
+    use QueryPlatformTrait;
+
     /**
-     * @var bool
+     * @var array
      */
-    private $queryModified;
+    private $parameters;
+
+    /**
+     * @var Query
+     */
+    private $query;
+
+    /**
+     * @var QueryPlatformInterface
+     */
+    private $nativePlatform;
 
     /**
      * Constructor.
      *
-     * @param WhereBuilderInterface $whereBuilder The WhereBuilder to use for generating and updating the query
-     * @param Cache                 $cacheDriver  Doctrine Cache instance
-     * @param int                   $lifeTime     Lifetime in seconds after which the cache is expired
-     *
-     * @throws UnexpectedTypeException when the whereBuilder is invalid
+     * @param WhereBuilder $whereBuilder The WhereBuilder to use for generating and updating the query
+     * @param Cache        $cacheDriver  Doctrine Cache instance
+     * @param int          $lifeTime     Lifetime in seconds after which the cache is expired
+     *                                   Set this 0 to never expire.
      */
-    public function __construct(WhereBuilderInterface $whereBuilder, Cache $cacheDriver, $lifeTime = 0)
+    public function __construct(WhereBuilder $whereBuilder, Cache $cacheDriver, $lifeTime = 0)
     {
+        parent::__construct($cacheDriver, $lifeTime);
+
         $this->cacheDriver = $cacheDriver;
         $this->cacheLifeTime = (int) $lifeTime;
         $this->whereBuilder = $whereBuilder;
+        $this->query = $whereBuilder->getQuery();
     }
 
     /**
      * Returns the generated/cached where-clause.
      *
-     * @see WhereBuilder::getWhereClause()
+     * @param string $prependQuery Prepends this string to the where-clause
+     *                             ("WHERE" or "AND" for example)
      *
      * @return string
      */
-    public function getWhereClause()
+    public function getWhereClause($prependQuery = '')
     {
-        if ($this->whereClause) {
-            return $this->whereClause;
-        }
+        if (null === $this->whereClause) {
+            $cacheKey = 'rw_search.doctrine.orm.where.dql.'.$this->cacheKey;
 
-        $cacheKey = 'rw_search.doctrine.orm.where.';
-        $query = $this->whereBuilder->getQuery();
-
-        if ($query instanceof NativeQuery) {
-            $cacheKey .= 'nat_';
-        } else {
-            $cacheKey .= 'dql_';
-        }
-
-        $cacheKey .= $this->cacheKey;
-
-        if ('' !== $this->keySuffix) {
-            $cacheKey .= '_'.$this->keySuffix;
-        }
-
-        if ($this->cacheDriver->contains($cacheKey)) {
-            $data = $this->cacheDriver->fetch($cacheKey);
-
-            $this->whereClause = $data[0];
-            $this->applyParameters($query, $data[1]);
-        } else {
-            $this->whereClause = $this->whereBuilder->getWhereClause();
-            $this->applyParameters($query, $this->whereBuilder->getParameters());
-            $this->cacheDriver->save(
-                $cacheKey,
-                array(
-                    $this->whereClause,
-                    $this->whereBuilder->getParameters(),
-                ),
-                $this->cacheLifeTime
+            $this->nativePlatform = $this->getQueryPlatform(
+                $this->whereBuilder->getEntityManager()->getConnection(),
+                $this->whereBuilder->getFieldsConfig()->getFields()
             );
+
+            if ($this->cacheDriver->contains($cacheKey)) {
+                list($this->whereClause, $this->parameters) = $this->cacheDriver->fetch($cacheKey);
+            } else {
+                $this->whereClause = $this->whereBuilder->getWhereClause();
+                $this->parameters = $this->whereBuilder->getParameters();
+
+                $this->cacheDriver->save(
+                    $cacheKey,
+                    [
+                        $this->whereClause,
+                        $this->parameters,
+                    ],
+                    $this->cacheLifeTime
+                );
+            }
         }
 
-        return $this->whereClause;
+        if ('' !== $this->whereClause) {
+            return $prependQuery.$this->whereClause;
+        }
+
+        return '';
     }
 
     /**
      * Updates the configured query object with the where-clause.
      *
-     * @see WhereBuilder::updateQuery()
-     *
-     * @param string $prependQuery Prepends this string to the where-clause ("WHERE" or "AND" for example)
-     * @param bool   $forceUpdate  Force the where-builder to update the query
+     * @param string $prependQuery Prepends this string to the where-clause
+     *                             ("WHERE" or "AND" for example)
      *
      * @return self
      */
-    public function updateQuery($prependQuery = '', $forceUpdate = false)
+    public function updateQuery($prependQuery = ' WHERE ')
     {
-        $whereCase = $this->getWhereClause();
+        $whereCase = $this->getWhereClause($prependQuery);
 
-        if ($whereCase === '' || ($this->queryModified && !$forceUpdate)) {
-            return $this;
-        }
-
-        $query = $this->whereBuilder->getQuery();
-        if ($query instanceof NativeQuery) {
-            $query->setSQL($query->getSQL().$prependQuery.$whereCase);
-        } else {
-            $query->setDQL($query->getDQL().$prependQuery.$whereCase);
-        }
-
-        if ($query instanceof DqlQuery) {
-            $query->setHint(
+        if ($whereCase !== '') {
+            $this->query->setDQL($this->query->getDQL().$whereCase);
+            $this->query->setHint(
                 $this->whereBuilder->getQueryHintName(),
-                $this->whereBuilder->getQueryHintValue()
+                $this->getQueryHintValue()
             );
         }
-
-        $this->queryModified = true;
 
         return $this;
     }
@@ -160,31 +154,21 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
     /**
      * Returns the Query hint value for the final query object.
      *
-     * The Query hint is used for conversions for value-matchers.
+     * The Query hint is used for sql-value-conversions.
      *
      * @return \Closure
      */
     public function getQueryHintValue()
     {
-        return $this->whereBuilder->getQueryHintValue();
-    }
-
-    /**
-     * @return object
-     */
-    public function getQuery()
-    {
-        return $this->whereBuilder->getQuery();
-    }
-
-    /**
-     * @param NativeQuery|DqlQuery|QueryBuilder $query
-     * @param array                             $params
-     */
-    private function applyParameters($query, array $params)
-    {
-        foreach ($params as $name => $value) {
-            $query->setParameter($name, $value);
+        if (null === $this->whereClause) {
+            throw new BadMethodCallException(
+                'Unable to get query-hint value for WhereBuilder. Call getWhereClause() before calling this method.'
+            );
         }
+
+        // Use a closure here to prevent to deep nesting and recursions
+        return function () {
+            return [$this->nativePlatform, $this->parameters];
+        };
     }
 }
