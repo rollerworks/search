@@ -11,7 +11,7 @@ class MssqlQueryPlatform extends AbstractQueryPlatform
     /**
      * {@inheritdoc}
      */
-    protected function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
+    public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
     {
         throw new \RuntimeException(
             "MSSQL doesn't have support for regexes out-of-the box.\n".
