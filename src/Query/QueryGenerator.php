@@ -147,7 +147,7 @@ final class QueryGenerator
 
         $this->processGroups($valuesGroup->getGroups(), $finalQuery);
 
-        return self::implodeWithValue(' AND ', $finalQuery, array('(', ')'));
+        return (string) self::implodeWithValue(' AND ', $finalQuery, array('(', ')'));
     }
 
     /**
