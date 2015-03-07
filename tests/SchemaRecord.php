@@ -21,10 +21,6 @@ final class SchemaRecord
 
     public function __construct($tableName, array $columns)
     {
-        if (!array_key_exists('id', $columns)) {
-            throw new \InvalidArgumentException(sprintf('Missing required "id" column in table "%s".', $tableName));
-        }
-
         $this->table = $tableName;
         $this->columns = $columns;
     }
