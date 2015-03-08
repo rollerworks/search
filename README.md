@@ -24,12 +24,10 @@ $ php composer.phar require rollerworks/search-doctrine-orm
 Documentation
 -------------
 
-**The current documentation is outdated, we are working on getting this resolved.**
-
-~~The bulk of the documentation is stored in the `doc/index.md`
+The bulk of the documentation is stored in the `doc/index.rst`
 file in this package:
 
-[Read the Documentation for master](https://github.com/rollerworks/rollerworks-search-doctrine-orm/blob/master/doc/index.md)~~
+[Read the Documentation for master][3]
 
 License
 -------
@@ -39,3 +37,4 @@ with this source code in the file [LICENSE](LICENSE).
 
 [1]: https://github.com/rollerworks/RollerworksSearch
 [2]: https://github.com/rollerworks/RollerworksSearch#contributing
+[3]: http://rollerworks-search-doctrine-orm.readthedocs.org/en/latest/
