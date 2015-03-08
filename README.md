@@ -1,8 +1,9 @@
 RollerworksSearch Doctrine ORM extension
 ========================================
 
-[![Build Status](https://secure.travis-ci.org/rollerworks/rollerworks-search-doctrine-orm.png?branch=master)](http://travis-ci.org/rollerworks/rollerworks-search-doctrine-orm)
+[![Travis](https://img.shields.io/travis/rollerworks/rollerworks-search-doctrine-orm.svg)](https://travis-ci.org/rollerworks/rollerworks-search-doctrine-orm)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/rollerworks/rollerworks-search-doctrine-orm.svg)](https://scrutinizer-ci.com/g/rollerworks/rollerworks-search-doctrine-orm/)
+[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/4a8aa7d8-4e90-4097-aebb-ec0126f5217b.svg)](https://insight.sensiolabs.com/projects/4a8aa7d8-4e90-4097-aebb-ec0126f5217b)
 
 Doctrine ORM extension for [RollerworksSearch][1].
 
