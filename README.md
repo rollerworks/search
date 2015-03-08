@@ -1,24 +1,24 @@
-RollerworksSearch Doctrine ORM extension
-========================================
+RollerworksSearch Doctrine DBAL extension
+=========================================
 
-[![Travis](https://img.shields.io/travis/rollerworks/rollerworks-search-doctrine-orm.svg)](https://travis-ci.org/rollerworks/rollerworks-search-doctrine-orm)
-[![Scrutinizer](https://img.shields.io/scrutinizer/g/rollerworks/rollerworks-search-doctrine-orm.svg)](https://scrutinizer-ci.com/g/rollerworks/rollerworks-search-doctrine-orm/)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/4a8aa7d8-4e90-4097-aebb-ec0126f5217b.svg)](https://insight.sensiolabs.com/projects/4a8aa7d8-4e90-4097-aebb-ec0126f5217b)
+[![Build Status](https://secure.travis-ci.org/rollerworks/rollerworks-search-doctrine-dbal.svg?branch=master)](http://travis-ci.org/rollerworks/rollerworks-search-doctrine-dbal)
 
-Doctrine ORM extension for [RollerworksSearch][1].
+This package provides the Doctrine DBAL extension for [RollerworksSearch][1].
 
-**Note**: If you are new to RollerworksSearch, please read the main documentation
-of [RollerworksSearch][1] before continuing.
+RollerworksSearch is a powerful open-source Search system, if you are new to
+RollerworksSearch, please read the documentation in the main repository
+of [RollerworksSearch][1].
 
-If you'd like to contribute to this project, please see the [RollerworksSearch contributing guide lines][2].
+If you'd like to contribute to this project, please see the [RollerworksSearch contributing guide lines][2]
+for more information.
 
 Installation
 ------------
 
-To install this extension, add the `search-doctrine-orm` to your composer.json
+To install this extension, add the `search-doctrine-dbal` to your composer.json
 
 ```bash
-$ php composer.phar require rollerworks/search-doctrine-orm
+$ php composer.phar require rollerworks/search-doctrine-dbal
 ```
 
 Documentation
@@ -37,4 +37,4 @@ with this source code in the file [LICENSE](LICENSE).
 
 [1]: https://github.com/rollerworks/RollerworksSearch
 [2]: https://github.com/rollerworks/RollerworksSearch#contributing
-[3]: http://rollerworks-search-doctrine-orm.readthedocs.org/en/latest/
+[3]: http://rollerworks-search-doctrine-dbal.readthedocs.org/en/latest/
