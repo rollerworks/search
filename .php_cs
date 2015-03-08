@@ -1,5 +1,16 @@
 <?php
 
+$header = <<<EOF
+This file is part of the RollerworksSearch package.
+
+(c) Sebastiaan Stok <s.stok@rollerscapes.net>
+
+This source file is subject to the MIT license that is bundled
+with this source code in the file LICENSE.
+EOF;
+
+Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
+
 return Symfony\CS\Config\Config::create()
     ->setUsingLinter(false)
     // use SYMFONY_LEVEL:
@@ -11,6 +22,7 @@ return Symfony\CS\Config\Config::create()
         'strict_param',
         'short_array_syntax',
         'phpdoc_order',
+        'header_comment',
         '-prs0',
         '-phpdoc_to_comment', // disabled till bugs are fixed
     ))
