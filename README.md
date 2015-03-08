@@ -2,6 +2,7 @@ RollerworksSearch Doctrine ORM extension
 ========================================
 
 [![Build Status](https://secure.travis-ci.org/rollerworks/rollerworks-search-doctrine-orm.png?branch=master)](http://travis-ci.org/rollerworks/rollerworks-search-doctrine-orm)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/rollerworks-search-doctrine-orm/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/rollerworks-search-doctrine-orm/?branch=master)
 
 Doctrine ORM extension for [RollerworksSearch][1].
 
@@ -22,10 +23,12 @@ $ php composer.phar require rollerworks/search-doctrine-orm
 Documentation
 -------------
 
-The bulk of the documentation is stored in the `doc/index.md`
+**The current documentation is outdated, we are working on getting this resolved.**
+
+~~The bulk of the documentation is stored in the `doc/index.md`
 file in this package:
 
-[Read the Documentation for master](https://github.com/rollerworks/rollerworks-search-doctrine-orm/blob/master/doc/index.md)
+[Read the Documentation for master](https://github.com/rollerworks/rollerworks-search-doctrine-orm/blob/master/doc/index.md)~~
 
 License
 -------
