@@ -11,17 +11,17 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Rollerworks\Component\Search\Doctrine\Orm\CacheWhereBuilder;
-use Rollerworks\Component\Search\Doctrine\Orm\FieldConfigBuilder;
-use Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Rollerworks\Component\Search\Doctrine\Orm\CacheNativeWhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Orm\NativeWhereBuilder;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\ValuesGroup;
 
-class CacheWhereBuilderTest extends OrmTestCase
+class CacheNativeWhereBuilderTest extends OrmTestCase
 {
     /**
-     * @var CacheWhereBuilder
+     * @var CacheNativeWhereBuilder
      */
     protected $cacheWhereBuilder;
 
@@ -31,7 +31,7 @@ class CacheWhereBuilderTest extends OrmTestCase
     protected $cacheDriver;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|WhereBuilder
+     * @var \PHPUnit_Framework_MockObject_MockObject|NativeWhereBuilder
      */
     protected $whereBuilder;
 
@@ -40,7 +40,7 @@ class CacheWhereBuilderTest extends OrmTestCase
         $this->cacheDriver
             ->expects($this->once())
             ->method('contains')
-            ->with('rw_search.doctrine.orm.where.dql.invoice')
+            ->with('rw_search.doctrine.orm.where.nat.invoice')
             ->will($this->returnValue(false));
 
         $this->cacheDriver
@@ -52,15 +52,10 @@ class CacheWhereBuilderTest extends OrmTestCase
             ->method('getWhereClause')
             ->will($this->returnValue('me = 1'));
 
-        $this->whereBuilder
-            ->expects($this->atLeastOnce())
-            ->method('getParameters')
-            ->will($this->returnValue([1]));
-
         $this->cacheDriver
             ->expects($this->once())
             ->method('save')
-            ->with('rw_search.doctrine.orm.where.dql.invoice', ['me = 1', [1]], 60);
+            ->with('rw_search.doctrine.orm.where.nat.invoice', 'me = 1', 60);
 
         $this->cacheWhereBuilder->setCacheKey('invoice');
         $this->cacheWhereBuilder->getWhereClause();
@@ -71,22 +66,18 @@ class CacheWhereBuilderTest extends OrmTestCase
         $this->cacheDriver
             ->expects($this->once())
             ->method('contains')
-            ->with('rw_search.doctrine.orm.where.dql.invoice')
+            ->with('rw_search.doctrine.orm.where.nat.invoice')
             ->will($this->returnValue(true));
 
         $this->cacheDriver
             ->expects($this->once())
             ->method('fetch')
-            ->with('rw_search.doctrine.orm.where.dql.invoice')
-            ->will($this->returnValue(['me = foo', [0 => 1]]));
+            ->with('rw_search.doctrine.orm.where.nat.invoice')
+            ->will($this->returnValue('me = foo'));
 
         $this->whereBuilder
             ->expects($this->never())
             ->method('getWhereClause');
-
-        $this->whereBuilder
-            ->expects($this->never())
-            ->method('getParameters');
 
         $this->cacheDriver
             ->expects($this->never())
@@ -101,26 +92,21 @@ class CacheWhereBuilderTest extends OrmTestCase
         $this->cacheDriver
             ->expects($this->once())
             ->method('contains')
-            ->with('rw_search.doctrine.orm.where.dql.invoice')
+            ->with('rw_search.doctrine.orm.where.nat.invoice')
             ->will($this->returnValue(true));
 
         $this->cacheDriver
             ->expects($this->once())
             ->method('fetch')
-            ->with('rw_search.doctrine.orm.where.dql.invoice')
-            ->will($this->returnValue(['me = foo', [0 => 1]]));
-
-        $this->whereBuilder
-            ->expects($this->once())
-            ->method('getQueryHintName')
-            ->will($this->returnValue('where_builder'));
+            ->with('rw_search.doctrine.orm.where.nat.invoice')
+            ->will($this->returnValue('me = foo'));
 
         $this->cacheWhereBuilder->setCacheKey('invoice');
 
         $query = $this->whereBuilder->getQuery();
         $this->cacheWhereBuilder->updateQuery();
 
-        $this->assertEquals('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE me = foo', $query->getDQL());
+        $this->assertEquals('SELECT * FROM invoice AS I JOIN customer AS C ON I.customer = C.id WHERE me = foo', $query->getSQL());
     }
 
     protected function setUp()
@@ -130,13 +116,16 @@ class CacheWhereBuilderTest extends OrmTestCase
         $fieldSet = new FieldSet('invoice');
 
         $this->cacheDriver = $this->getMock('Doctrine\Common\Cache\Cache');
-        $this->whereBuilder = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder')
+        $this->whereBuilder = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Orm\NativeWhereBuilder')
            ->disableOriginalConstructor()
            ->getMock()
         ;
 
-        $config = new FieldConfigBuilder($this->em, $fieldSet);
-        $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C');
+        $rsm = new ResultSetMappingBuilder($this->em);
+        $rsm->addRootEntityFromClassMetadata('Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice', 'I', ['id' => 'invoice_id']);
+        $rsm->addJoinedEntityFromClassMetadata('Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer', 'C', 'I', 'customer', ['id' => 'customer_id']);
+
+        $query = $this->em->createNativeQuery('SELECT * FROM invoice AS I JOIN customer AS C ON I.customer = C.id', $rsm);
         $searchCondition = new SearchCondition($fieldSet, new ValuesGroup());
 
         $this->whereBuilder
@@ -159,13 +148,6 @@ class CacheWhereBuilderTest extends OrmTestCase
                 $this->returnValue($searchCondition)
             );
 
-        $this->whereBuilder
-            ->expects($this->any())
-            ->method('getFieldsConfig')
-            ->will(
-                $this->returnValue($config)
-            );
-
-        $this->cacheWhereBuilder = new CacheWhereBuilder($this->whereBuilder, $this->cacheDriver, 60);
+        $this->cacheWhereBuilder = new CacheNativeWhereBuilder($this->whereBuilder, $this->cacheDriver, 60);
     }
 }

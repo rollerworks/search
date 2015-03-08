@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
@@ -25,68 +26,89 @@ class DoctrineOrmFactoryTest extends OrmTestCase
 
     public function testCreateWhereBuilder()
     {
+        $condition = new SearchCondition(new FieldSet('invoice'), new ValuesGroup());
         $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
-        $searchCondition = new SearchCondition(new FieldSet('invoice'), new ValuesGroup());
 
-        $whereBuilder = $this->factory->createWhereBuilder($query, $searchCondition);
-
+        $whereBuilder = $this->factory->createWhereBuilder($query, $condition);
         $this->assertInstanceOf('Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder', $whereBuilder);
+    }
+
+    public function testCreateNativeWhereBuilder()
+    {
+        $rsm = new ResultSetMappingBuilder($this->em);
+        $rsm->addRootEntityFromClassMetadata(
+            'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice',
+            'I',
+            ['id' => 'invoice_id']
+        );
+
+        $rsm->addJoinedEntityFromClassMetadata(
+            'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer',
+            'C',
+            'I',
+            'customer',
+            ['id' => 'customer_id']
+        );
+
+        $condition = new SearchCondition(new FieldSet('invoice'), new ValuesGroup());
+        $query = $this->em->createNativeQuery(
+            'SELECT I FROM Invoice I JOIN customer AS C ON I.customer = C.id',
+            $rsm
+        );
+
+        $whereBuilder = $this->factory->createWhereBuilder($query, $condition);
+        $this->assertInstanceOf('Rollerworks\Component\Search\Doctrine\Orm\NativeWhereBuilder', $whereBuilder);
     }
 
     public function testCreateWhereBuilderWithConversionSetting()
     {
-        $fieldSet = new FieldSet('invoice');
-
+        $invoiceClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice';
         $conversion = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
 
-        $fieldLabel = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
-        $fieldLabel->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(true));
-        $fieldLabel->expects($this->once())->method('getOption')->with('doctrine_dbal_conversion')->will($this->returnValue($conversion));
-        $fieldSet->set('invoice_label', $fieldLabel);
+        $fieldSet = $this->getFieldSet(false);
+        $fieldSet->add('label', 'invoice_label', ['doctrine_dbal_conversion' => $conversion ], false, $invoiceClass, 'label');
+        $fieldSet = $fieldSet->getFieldSet();
 
-        $fieldCustomer = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
-        $fieldCustomer->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(false));
-        $fieldCustomer->expects($this->never())->method('getOption');
-        $fieldSet->set('invoice_customer', $fieldCustomer);
+        $query = $this->em->createQuery(
+            'SELECT I FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C'
+        );
 
-        $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
         $searchCondition = new SearchCondition($fieldSet, new ValuesGroup());
-
         $whereBuilder = $this->factory->createWhereBuilder($query, $searchCondition);
+        $whereBuilder->setEntityMapping('Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice', 'I');
+        $whereBuilder->setEntityMapping('Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer', 'C');
 
         $this->assertInstanceOf('Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder', $whereBuilder);
-        $this->assertEquals(array('invoice_label' => $conversion), $whereBuilder->getValueConversions());
-        $this->assertCount(0, $whereBuilder->getFieldConversions());
+        $this->assertEquals($conversion, $whereBuilder->getFieldsConfig()->getFields()['label']->getValueConversion());
+        $this->assertNull($whereBuilder->getFieldsConfig()->getFields()['id']->getValueConversion());
     }
 
     public function testCreateWhereBuilderWithLazyConversionSetting()
     {
-        $fieldSet = new FieldSet('invoice');
-
-        $test = $this;
-        $conversion = $test->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
+        $conversion = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
         $lazyConversion = function () use ($conversion) {
             return $conversion;
         };
 
-        $fieldLabel = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
-        $fieldLabel->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(true));
-        $fieldLabel->expects($this->once())->method('getOption')->with('doctrine_dbal_conversion')->will($this->returnValue($lazyConversion));
-        $fieldSet->set('invoice_label', $fieldLabel);
+        $invoiceClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice';
+        $conversion = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
 
-        $fieldCustomer = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
-        $fieldCustomer->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(false));
-        $fieldCustomer->expects($this->never())->method('getOption');
-        $fieldSet->set('invoice_customer', $fieldCustomer);
+        $fieldSet = $this->getFieldSet(false);
+        $fieldSet->add('label', 'invoice_label', ['doctrine_dbal_conversion' => $lazyConversion], false, $invoiceClass, 'label');
+        $fieldSet = $fieldSet->getFieldSet();
 
-        $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
+        $query = $this->em->createQuery(
+            'SELECT I FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C'
+        );
+
         $searchCondition = new SearchCondition($fieldSet, new ValuesGroup());
-
         $whereBuilder = $this->factory->createWhereBuilder($query, $searchCondition);
+        $whereBuilder->setEntityMapping('Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice', 'I');
+        $whereBuilder->setEntityMapping('Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer', 'C');
 
         $this->assertInstanceOf('Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder', $whereBuilder);
-        $this->assertEquals(array('invoice_label' => $conversion), $whereBuilder->getValueConversions());
-        $this->assertCount(0, $whereBuilder->getFieldConversions());
+        $this->assertEquals($conversion, $whereBuilder->getFieldsConfig()->getFields()['label']->getValueConversion());
+        $this->assertNull($whereBuilder->getFieldsConfig()->getFields()['id']->getValueConversion());
     }
 
     public function testCreateCacheWhereBuilder()

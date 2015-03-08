@@ -9,7 +9,10 @@ return Symfony\CS\Config\Config::create()
         'ordered_use',
         //'strict',
         'strict_param',
-        '-prs0'
+        'short_array_syntax',
+        'phpdoc_order',
+        '-prs0',
+        '-phpdoc_to_comment', // disabled till bugs are fixed
     ))
     ->finder(
         Symfony\CS\Finder\DefaultFinder::create()

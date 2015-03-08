@@ -15,13 +15,14 @@ use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 
 /**
- * "RW_SEARCH_VALUE_CONVERSION(FieldMame, :parameter, Strategy, IsValueEmbedded)"
+ * "RW_SEARCH_VALUE_CONVERSION(FieldMame, Column, Value, Strategy)".
  *
  * SearchValueConversion ::=
  *     "RW_SEARCH_VALUE_CONVERSION" "(" StringPrimary, StateFieldPathExpression,
- *      InParameter "," [ integer | null ] "," Literal ")"
+ *      Literal "," Literal)"
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -30,53 +31,44 @@ class SqlValueConversion extends FunctionNode
     /**
      * @var string
      */
-    public $fieldName;
+    private $fieldName;
 
     /**
-     * @var \Doctrine\ORM\Query\AST\PathExpression
+     * PathExpression or SqlFieldConversion.
+     *
+     * @var \Doctrine\ORM\Query\AST\Node
      */
-    public $column;
+    private $column;
 
     /**
-     * @var \Doctrine\ORM\Query\AST\InputParameter
+     * @var int
      */
-    public $valueExpression;
+    private $valueIndex;
 
     /**
-     * @var integer|null
+     * @var int
      */
-    public $strategy;
-
-    /**
-     * @var bool
-     */
-    public $isValueEmbedded;
+    private $strategy;
 
     /**
      * {@inheritdoc}
      */
     public function getSql(SqlWalker $sqlWalker)
     {
-        /** @var \Closure $whereBuilder */
-        if (!($whereBuilder = $sqlWalker->getQuery()->getHint('rw_where_builder'))) {
+        /** @var \Closure $hintsValue */
+        if (!$hintsValue = $sqlWalker->getQuery()->getHint('rw_where_builder')) {
             throw new \LogicException('Missing "rw_where_builder" hint for SearchValueConversion.');
         }
 
-        $whereBuilder = $whereBuilder();
-        /** @var \Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder $whereBuilder */
-        if ($this->isValueEmbedded) {
-            $value = $this->valueExpression->name;
-        } else {
-            $value = $this->valueExpression->dispatch($sqlWalker);
-        }
+        /** @var QueryPlatformInterface $platform */
+        /** @var mixed[] $parameters */
+        list($platform, $parameters) = $hintsValue();
 
-        return $whereBuilder->getValueConversionSql(
+        return $platform->convertSqlValue(
+            $parameters[$this->valueIndex],
             $this->fieldName,
-            $sqlWalker->walkPathExpression($this->column),
-            $value,
-            null,
-            $this->strategy,
-            $this->isValueEmbedded
+            $this->column->dispatch($sqlWalker),
+            $this->strategy
         );
     }
 
@@ -89,28 +81,12 @@ class SqlValueConversion extends FunctionNode
         $parser->match(Lexer::T_OPEN_PARENTHESIS);
 
         $this->fieldName = $parser->Literal()->value;
-
         $parser->match(Lexer::T_COMMA);
-
-        $this->column = $parser->StateFieldPathExpression();
-
+        $this->column = $parser->ScalarExpression();
         $parser->match(Lexer::T_COMMA);
-
-        $this->valueExpression = $parser->InParameter();
-
+        $this->valueIndex = (int) $parser->Literal()->value;
         $parser->match(Lexer::T_COMMA);
-        $lexer = $parser->getLexer();
-
-        if ($lexer->isNextToken(Lexer::T_NULL)) {
-            $parser->match(Lexer::T_NULL);
-            $this->strategy = null;
-        } else {
-            $this->strategy = (int) $parser->Literal()->value;
-        }
-
-        $parser->match(Lexer::T_COMMA);
-
-        $this->isValueEmbedded = 'true' === strtolower($parser->Literal()->value) ? true : false;
+        $this->strategy = (int) $parser->Literal()->value;
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }

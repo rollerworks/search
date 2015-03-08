@@ -1,0 +1,11 @@
+preset: symfony
+
+enabled:
+    - short_array_syntax
+    - strict_param
+    - ordered_use
+    - phpdoc_order
+
+disabled:
+    - prs0
+    - phpdoc_to_comment # disabled till bugs are fixed

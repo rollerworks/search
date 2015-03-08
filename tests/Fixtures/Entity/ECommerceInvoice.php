@@ -9,44 +9,57 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Fixtures\Entity;
+namespace Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
- * @Table(name="invoices")
+ * @ORM\Entity
+ * @ORM\Table(name="invoices")
  */
 class ECommerceInvoice
 {
     /**
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue(strategy="AUTO")
+     * @ORM\Id
+     * @ORM\Column(type="integer", name="invoice_id")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @Column(type="string", unique=true)
+     * @ORM\Column(type="string", unique=true, nullable=true)
      */
     private $label;
 
     /**
-     * @Column(name="pubdate", type="date")
+     * @ORM\Column(name="pubdate", type="date", nullable=true)
      */
     private $date;
 
     /**
-     * @ManyToOne(targetEntity="ECommerceCustomer")
-     * @JoinColumn(name="customer", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="ECommerceCustomer")
+     * @ORM\JoinColumn(name="customer", referencedColumnName="id")
      */
     private $customer;
 
     /**
-     * @Column(type="integer")
+     * @ORM\Column(type="integer")
      */
     private $status;
 
     /**
-     * @OneToMany(targetEntity="ECommerceInvoiceRow", mappedBy="ECommerceInvoice", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ECommerceInvoiceRow", mappedBy="invoice", cascade={"persist"})
      */
     private $rows;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="ECommerceInvoice", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="invoice_id")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ECommerceInvoice", mappedBy="parent")
+     */
+    private $children;
 }

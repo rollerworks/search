@@ -11,10 +11,17 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\Tests\TestUtil;
+use Rollerworks\Component\Search\Doctrine\Orm\AbstractWhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
+use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 
 class OrmTestCase extends DbalTestCase
 {
@@ -23,149 +30,233 @@ class OrmTestCase extends DbalTestCase
      */
     protected $em;
 
-    private static $doctrineAnnotationsDir;
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $conn;
+
+    /**
+     * @var \Doctrine\DBAL\Logging\DebugStack
+     */
+    protected $sqlLoggerStack;
+
+    /**
+     * Shared connection when a TestCase is run alone (outside of it's functional suite).
+     *
+     * @var \Doctrine\DBAL\Connection
+     */
+    private static $sharedConn;
+
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private static $sharedEm;
+
+    /**
+     * @var string|null
+     */
+    protected $query;
 
     protected function setUp()
     {
-        $this->em = $this->_getTestEntityManager();
+        parent::setUp();
 
-        // Don't remember cache between runs
-        $this->em->getConfiguration()->setQueryCacheImpl(new ArrayCache());
+        if (!isset(self::$sharedConn)) {
+            $GLOBALS['db_event_subscribers'] = 'Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber';
 
-        $this->em->getConfiguration()->addCustomStringFunction('RW_SEARCH_FIELD_CONVERSION', 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion');
-        $this->em->getConfiguration()->addCustomStringFunction('RW_SEARCH_VALUE_CONVERSION', 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion');
-        $this->em->getConfiguration()->addCustomStringFunction('RW_SEARCH_MATCH', 'Rollerworks\Component\Search\Doctrine\Orm\Functions\ValueMatch');
+            $config = Setup::createAnnotationMetadataConfiguration([__DIR__."/Fixtures/Entity"], true, null, null, false);
+            $config->addCustomStringFunction(
+                'RW_SEARCH_FIELD_CONVERSION',
+                'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion'
+            );
+
+            $config->addCustomStringFunction(
+                'RW_SEARCH_VALUE_CONVERSION',
+                'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion'
+            );
+
+            $config->addCustomStringFunction(
+                'RW_SEARCH_MATCH',
+                'Rollerworks\Component\Search\Doctrine\Orm\Functions\ValueMatch'
+            );
+
+            self::$sharedConn = TestUtil::getConnection();
+            self::$sharedEm = EntityManager::create(self::$sharedConn, $config);
+
+            $schemaTool = new SchemaTool(self::$sharedEm);
+            $schemaTool->updateSchema(self::$sharedEm->getMetadataFactory()->getAllMetadata(), false);
+
+            $recordSets = $this->getDbRecords();
+
+            foreach ($recordSets as $set) {
+                $set->executeRecords(self::$sharedConn);
+            }
+        }
+
+        $this->conn = self::$sharedConn;
+        $this->em = self::$sharedEm;
+
+        // Clear the cache between runs
+        $this->em->getConfiguration()->getQueryCacheImpl()->flushAll();
+
+        $this->sqlLoggerStack = new \Doctrine\DBAL\Logging\DebugStack();
+        $this->conn->getConfiguration()->setSQLLogger($this->sqlLoggerStack);
+    }
+
+    protected static function resetSharedConn()
+    {
+        if (self::$sharedConn) {
+            self::$sharedConn->close();
+            self::$sharedConn = null;
+            self::$sharedEm = null;
+        }
+    }
+
+    public static function tearDownAfterClass()
+    {
+        // Ensure the connection is reset between class-runs
+        self::resetSharedConn();
+    }
+
+    protected function getFieldSet($build = true)
+    {
+        $fieldSet = $this->getFactory()->createFieldSetBuilder('invoice');
+
+        $invoiceClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice';
+        $invoiceRowClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoiceRow';
+        $customerClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer';
+
+        $fieldSet->add('id', 'integer', [], false, $invoiceClass, 'id');
+        $fieldSet->add('label', 'invoice_label', [], false, $invoiceClass, 'label');
+        $fieldSet->add('status', 'integer', [], false, $invoiceClass, 'status');
+        $fieldSet->add('credit_parent', 'integer', [], false, $invoiceClass, 'parent');
+
+        $fieldSet->add('row_label', 'text', [], false, $invoiceRowClass, 'label');
+
+        $fieldSet->add('customer', 'integer', [], false, $customerClass, 'id');
+        $fieldSet->add('customer_name', 'text', [], false, $customerClass, 'name');
+        $fieldSet->add('customer_birthday', 'birthday', ['format' => 'yyyy-MM-dd'], false, $customerClass, 'birthday');
+
+        return $build ? $fieldSet->getFieldSet() : $fieldSet;
+    }
+
+    protected function getOrmFactory()
+    {
+        return new DoctrineOrmFactory($this->getMock('Doctrine\Common\Cache\Cache'));
     }
 
     /**
-     * @param array              $expected
-     * @param Query|QueryBuilder $query
+     * @return SchemaRecord[]
      */
-    protected function assertQueryParamsEquals(array $expected, $query)
+    protected function getDbRecords()
     {
-        foreach ($expected as $name => $param) {
-            if (is_array($param)) {
-                list(, $value) = $param;
-            } else {
-                $value = $param;
+        return [];
+    }
+
+    /**
+     * Returns the string for the WhereBuilder.
+     *
+     * @return Query|NativeQuery
+     */
+    protected function getQuery()
+    {
+    }
+
+    /**
+     * Configure fields of the WhereBuilder.
+     *
+     * @param AbstractWhereBuilder $whereBuilder
+     */
+    protected function configureWhereBuilder(AbstractWhereBuilder $whereBuilder)
+    {
+    }
+
+    /**
+     * @param SearchCondition $condition
+     * @param array           $ids
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    protected function assertRecordsAreFound(SearchCondition $condition, array $ids)
+    {
+        $query = $this->getQuery();
+
+        $whereBuilder = $this->getOrmFactory()->createWhereBuilder($query, $condition);
+        $this->configureWhereBuilder($whereBuilder);
+
+        $whereClause = $whereBuilder->getWhereClause();
+        $whereBuilder->updateQuery();
+
+        $rows = $query->getArrayResult();
+        $idRows = array_map(
+            function ($value) {
+                return $value['id'];
+            },
+            $rows
+        );
+
+        sort($ids);
+        sort($idRows);
+
+        $this->assertEquals(
+            $ids,
+            array_merge([], array_unique($idRows)),
+            sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s", print_r($rows, true), $whereClause)
+        );
+    }
+
+    protected function onNotSuccessfulTest(\Exception $e)
+    {
+        if ($e instanceof \PHPUnit_Framework_AssertionFailedError) {
+            throw $e;
+        }
+
+        if (isset($this->sqlLoggerStack->queries) && count($this->sqlLoggerStack->queries)) {
+            $queries = "";
+            $i = count($this->sqlLoggerStack->queries);
+
+            foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
+                $params = array_map(
+                    function ($p) {
+                        if (is_object($p)) {
+                            return get_class($p);
+                        } else {
+                            return "'".var_export($p, true)."'";
+                        }
+                    },
+                    $query['params'] ?: []
+                );
+
+                $queries .= ($i+1).". SQL: '".$query['sql']."' Params: ".implode(", ", $params).PHP_EOL;
+                $i--;
             }
 
-            $paramVal = $query->getParameter($name);
-            $this->assertInstanceOf('Doctrine\ORM\Query\Parameter', $paramVal);
-            $this->assertEquals($value, $query->getParameter($name)->getValue());
-        }
-    }
+            $trace = $e->getTrace();
+            $traceMsg = '';
 
-    /**
-     * The metadata cache that is shared between all ORM tests (except functional tests).
-     *
-     * @var \Doctrine\Common\Cache\Cache|null
-     */
-    private static $metadataCacheImpl = null;
+            foreach ($trace as $part) {
+                if (isset($part['file'])) {
+                    if (strpos($part['file'], "PHPUnit/") !== false) {
+                        // Beginning with PHPUnit files we don't print the trace anymore.
+                        break;
+                    }
 
-    /**
-     * The query cache that is shared between all ORM tests (except functional tests).
-     *
-     * @var \Doctrine\Common\Cache\Cache|null
-     */
-    private static $queryCacheImpl = null;
+                    $traceMsg .= $part['file'].":".$part['line'].PHP_EOL;
+                }
+            }
 
-    /**
-     * @param array $paths
-     * @param mixed $alias
-     *
-     * @return \Doctrine\ORM\Mapping\Driver\AnnotationDriver
-     */
-    protected function createAnnotationDriver($paths = array(), $alias = null)
-    {
-        if (version_compare(\Doctrine\Common\Version::VERSION, '3.0.0', '>=')) {
-            $reader = new \Doctrine\Common\Annotations\CachedReader(
-                new \Doctrine\Common\Annotations\AnnotationReader(), new ArrayCache()
-            );
-        } else {
-            // Register the ORM Annotations in the AnnotationRegistry
-            $reader = new \Doctrine\Common\Annotations\SimpleAnnotationReader();
-            $reader->addNamespace('Doctrine\ORM\Mapping');
-            $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
+            $message =
+                "[".get_class($e)."] ".
+                $e->getMessage().
+                PHP_EOL.PHP_EOL.
+                "With queries:".PHP_EOL.
+                $queries.PHP_EOL.
+                "Trace:".PHP_EOL.
+                $traceMsg;
+
+            throw new \Exception($message, (int) $e->getCode(), $e);
         }
 
-        if (!self::$doctrineAnnotationsDir) {
-            $r = new \ReflectionClass('Doctrine\ORM\Mapping\Driver\AnnotationDriver');
-            self::$doctrineAnnotationsDir = dirname($r->getFileName());
-        }
-
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
-            self::$doctrineAnnotationsDir."/DoctrineAnnotations.php");
-
-        return new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader, (array) $paths);
-    }
-
-    /**
-     * Creates an EntityManager for testing purposes.
-     *
-     * NOTE: The created EntityManager will have its dependant DBAL parts completely
-     * mocked out using a DriverMock, ConnectionMock, etc. These mocks can then
-     * be configured in the tests to simulate the DBAL behavior that is desired
-     * for a particular test,
-     *
-     * @param \Doctrine\DBAL\Connection|array    $conn
-     * @param mixed                              $conf
-     * @param \Doctrine\Common\EventManager|null $eventManager
-     * @param bool                               $withSharedMetadata
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    protected function _getTestEntityManager($conn = null, $conf = null, $eventManager = null, $withSharedMetadata = true)
-    {
-        $metadataCache = $withSharedMetadata
-            ? self::getSharedMetadataCacheImpl()
-            : new ArrayCache();
-
-        $config = new \Doctrine\ORM\Configuration();
-
-        $config->setMetadataCacheImpl($metadataCache);
-        $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver(array(), true));
-        $config->setQueryCacheImpl(self::getSharedQueryCacheImpl());
-        $config->setProxyDir(__DIR__.'/Proxies');
-        $config->setProxyNamespace('Doctrine\Tests\Proxies');
-
-        if ($conn === null) {
-            $conn = array(
-                'driverClass'  => 'Doctrine\Tests\Mocks\DriverMock',
-                'wrapperClass' => 'Doctrine\Tests\Mocks\ConnectionMock',
-                'user'         => 'john',
-                'password'     => 'wayne',
-            );
-        }
-
-        if (is_array($conn)) {
-            $conn = \Doctrine\DBAL\DriverManager::getConnection($conn, $config, $eventManager);
-        }
-
-        return \Doctrine\Tests\Mocks\EntityManagerMock::create($conn, $config, $eventManager);
-    }
-
-    /**
-     * @return \Doctrine\Common\Cache\Cache
-     */
-    private static function getSharedMetadataCacheImpl()
-    {
-        if (self::$metadataCacheImpl === null) {
-            self::$metadataCacheImpl = new ArrayCache();
-        }
-
-        return self::$metadataCacheImpl;
-    }
-
-    /**
-     * @return \Doctrine\Common\Cache\Cache
-     */
-    private static function getSharedQueryCacheImpl()
-    {
-        if (self::$queryCacheImpl === null) {
-            self::$queryCacheImpl = new ArrayCache();
-        }
-
-        return self::$queryCacheImpl;
+        throw $e;
     }
 }

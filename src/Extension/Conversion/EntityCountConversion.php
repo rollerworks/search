@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Orm\Conversion;
 
+use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
 
@@ -26,7 +27,7 @@ class EntityCountConversion implements SqlFieldConversionInterface
     /**
      * {@inheritdoc}
      */
-    public function convertSqlField($column, array $options, array $hints)
+    public function convertSqlField($column, array $options, ConversionHints $hints)
     {
         /* @var \Doctrine\ORM\EntityManager $em */
         $em = $hints['entity_manager'];
