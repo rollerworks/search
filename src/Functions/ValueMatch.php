@@ -53,7 +53,7 @@ class ValueMatch extends FunctionNode
         }
 
         /** @var QueryPlatformInterface $platform */
-        list($platform, ) = $hintsValue();
+        list($platform) = $hintsValue();
 
         // Because Doctrine always requires an operator we use a sub-query with CASE
         $statement = $platform->getMatchSqlRegex(

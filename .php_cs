@@ -24,7 +24,6 @@ return Symfony\CS\Config\Config::create()
         'phpdoc_order',
         'header_comment',
         '-prs0',
-        '-phpdoc_to_comment', // disabled till bugs are fixed
     ))
     ->finder(
         Symfony\CS\Finder\DefaultFinder::create()

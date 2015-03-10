@@ -38,7 +38,7 @@ class SqlFieldConversion extends FunctionNode
     private $columnExpression;
 
     /**
-     * @var integer|null
+     * @var int|null
      */
     private $strategy;
 
@@ -53,7 +53,7 @@ class SqlFieldConversion extends FunctionNode
         }
 
         /** @var QueryPlatformInterface $platform */
-        list($platform, ) = $hintsValue();
+        list($platform) = $hintsValue();
 
         return $platform->getFieldColumn(
             $this->fieldName,
