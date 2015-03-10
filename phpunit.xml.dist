@@ -10,7 +10,9 @@
          stopOnFailure="false"
          syntaxCheck="false"
          bootstrap="./tests/bootstrap.php"
-         strict="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
         >
     <testsuites>
         <testsuite name="RollerworksSearch Test Suite">
