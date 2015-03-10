@@ -168,25 +168,25 @@ class WhereBuilder implements WhereBuilderInterface
      *
      * @return string
      */
-    public function getWhereClause()
+    public function getWhereClause($prependQuery = '')
     {
-        if (null !== $this->whereClause) {
-            return $this->whereClause;
+        if (null === $this->whereClause) {
+            $fields = $this->processFields();
+
+            $queryGenerator = new QueryGenerator(
+                $this->connection, $this->getQueryPlatform($fields), $fields
+            );
+
+            $this->whereClause = $queryGenerator->getGroupQuery(
+                $this->searchCondition->getValuesGroup()
+            );
         }
 
-        $fields = $this->processFields();
+        if ('' !== $this->whereClause) {
+            return $prependQuery.$this->whereClause;
+        }
 
-        $queryGenerator = new QueryGenerator(
-            $this->connection,
-            $this->getQueryPlatform($fields),
-            $fields
-        );
-
-        $this->whereClause = $queryGenerator->getGroupQuery(
-            $this->searchCondition->getValuesGroup()
-        );
-
-        return $this->whereClause;
+        return '';
     }
 
     /**
