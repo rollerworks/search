@@ -181,11 +181,7 @@ The WhereBuilder will safely embed all values within the generated query.
         $query = 'SELECT u.name AS name, u.id AS id FROM users AS u WHERE id = ?';
         $whereBuilder = ...;
 
-        $whereClause = $whereBuilder->getWhereClause();
-
-        if (!empty($whereClause)) {
-           $query .= ' AND '.$whereClause;
-        }
+        $whereClause = $whereBuilder->getWhereClause(' AND ');
 
         $statement = $connection->prepare($query);
         $statement->bindValue(1, $id);
