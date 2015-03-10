@@ -465,7 +465,7 @@ final class WhereBuilderTest extends DbalTestCase
         $this->assertEquals("((I.customer = get_customer_type(2)))", $whereBuilder->getWhereClause());
     }
 
-    public function testConversionStrategy()
+    public function testConversionStrategyValue()
     {
         $date = new \DateTime('2001-01-15', new \DateTimeZone('UTC'));
 
@@ -576,6 +576,75 @@ final class WhereBuilderTest extends DbalTestCase
 
         $this->assertEquals(
             "(((C.birthday = 18 OR search_conversion_age(C.birthday) = CAST('2001-01-15' AS DATE))))",
+            $whereBuilder->getWhereClause()
+        );
+    }
+
+    public function testConversionStrategyField()
+    {
+        $fieldSet = $this->getFieldSet(false);
+        $fieldSet->add('customer_birthday', 'text');
+        $fieldSet = $fieldSet->getFieldSet();
+
+        $condition = SearchConditionBuilder::create($fieldSet)
+            ->field('customer_birthday')
+                ->addSingleValue(new SingleValue(18))
+                ->addSingleValue(new SingleValue('2001-01-15'))
+            ->end()
+        ->getSearchCondition();
+
+        $options = $fieldSet->get('customer_birthday')->getOptions();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        $whereBuilder->setField('customer_birthday', 'birthday', 'string', 'C');
+
+        $test = $this;
+
+        $converter = $this->getMock('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlFieldConversionStrategyInterface');
+        $converter
+            ->expects($this->atLeastOnce())
+            ->method('getConversionStrategy')
+            ->will(
+                $this->returnCallback(
+                    function ($value) {
+                        if (!is_string($value) && !is_int($value)) {
+                            throw new \InvalidArgumentException('Only integer/string is accepted.');
+                        }
+
+                        if (is_string($value)) {
+                            return 2;
+                        }
+
+                        return 1;
+                    }
+                )
+            )
+        ;
+
+        $converter
+            ->expects($this->atLeastOnce())
+            ->method('convertSqlField')
+            ->will(
+                $this->returnCallback(
+                    function ($column, array $passedOptions, ConversionHints $hints) use ($test, $options) {
+                        $test->assertEquals($options, $passedOptions);
+
+                        if (2 === $hints->conversionStrategy) {
+                            return "search_conversion_age($column)";
+                        }
+
+                        $test->assertEquals(1, $hints->conversionStrategy);
+
+                        return $column;
+                    }
+                )
+            )
+        ;
+
+        $whereBuilder->setConverter('customer_birthday', $converter);
+
+        $this->assertEquals(
+            "(((C.birthday = 18 OR search_conversion_age(C.birthday) = '2001-01-15')))",
             $whereBuilder->getWhereClause()
         );
     }
