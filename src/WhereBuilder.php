@@ -17,6 +17,7 @@ use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
 
 /**
@@ -34,8 +35,38 @@ use Rollerworks\Component\Search\SearchConditionInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
+class WhereBuilder implements WhereBuilderInterface
 {
+    /**
+     * @var SearchConditionInterface
+     */
+    private $searchCondition;
+
+    /**
+     * @var FieldSet
+     */
+    private $fieldset;
+
+    /**
+     * @var ValueConversionInterface[]|SqlValueConversionInterface[]|ConversionStrategyInterface[]
+     */
+    private $valueConversions = array();
+
+    /**
+     * @var SqlFieldConversionInterface[]
+     */
+    private $fieldConversions = array();
+
+    /**
+     * @var string
+     */
+    private $whereClause;
+
+    /**
+     * @var array[]
+     */
+    private $fields = array();
+
     /**
      * @var Connection
      */
@@ -83,15 +114,45 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
             );
         }
 
-        if (!$this->searchCondition->getFieldSet()->has($fieldName)) {
-            throw new UnknownFieldException($fieldName);
-        }
-
         $this->fields[$fieldName] = array();
         $this->fields[$fieldName]['field']   = $this->searchCondition->getFieldSet()->get($fieldName);
         $this->fields[$fieldName]['db_type'] = is_object($type) ? $type : MappingType::getType($type);
         $this->fields[$fieldName]['alias']   = $alias;
         $this->fields[$fieldName]['column']  = $column;
+    }
+
+    /**
+     * Set the converters for a field.
+     *
+     * Setting is done per type (field or value), any existing conversions are overwritten.
+     *
+     * @param string                                               $fieldName
+     * @param ValueConversionInterface|SqlFieldConversionInterface $converter
+     *
+     * @return self
+     *
+     * @throws UnknownFieldException  When the field is not registered in the fieldset.
+     * @throws BadMethodCallException When the where-clause is already generated.
+     */
+    public function setConverter($fieldName, $converter)
+    {
+        if ($this->whereClause) {
+            throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
+        }
+
+        if (!$this->searchCondition->getFieldSet()->has($fieldName)) {
+            throw new UnknownFieldException($fieldName);
+        }
+
+        if ($converter instanceof ValueConversionInterface) {
+            $this->valueConversions[$fieldName] = $converter;
+        }
+
+        if ($converter instanceof SqlFieldConversionInterface) {
+            $this->fieldConversions[$fieldName] = $converter;
+        }
+
+        return $this;
     }
 
     /**
@@ -102,27 +163,54 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      *
      * Values are embedded with in the Query.
      *
+     * @param string $prependQuery Prepends this string to the where-clause
+     *                             (" WHERE " or " AND " for example).
+     *
      * @return string
      */
-    public function getWhereClause()
+    public function getWhereClause($prependQuery = '')
     {
-        if (null !== $this->whereClause) {
-            return $this->whereClause;
+        if (null === $this->whereClause) {
+            $fields = $this->processFields();
+
+            $queryGenerator = new QueryGenerator(
+                $this->connection, $this->getQueryPlatform($fields), $fields
+            );
+
+            $this->whereClause = $queryGenerator->getGroupQuery(
+                $this->searchCondition->getValuesGroup()
+            );
         }
 
-        $fields = $this->processFields();
+        if ('' !== $this->whereClause) {
+            return $prependQuery.$this->whereClause;
+        }
 
-        $this->queryGenerator = new QueryGenerator(
-            $this->connection,
-            $this->getQueryPlatform($fields),
-            $fields
-        );
+        return '';
+    }
 
-        $this->whereClause = $this->queryGenerator->getGroupQuery(
-            $this->searchCondition->getValuesGroup()
-        );
+    /**
+     * @return SearchConditionInterface
+     */
+    public function getSearchCondition()
+    {
+        return $this->searchCondition;
+    }
 
-        return $this->whereClause;
+    /**
+     * @return ConversionStrategyInterface[]|SqlValueConversionInterface[]|ValueConversionInterface[]
+     */
+    public function getValueConversions()
+    {
+        return $this->valueConversions;
+    }
+
+    /**
+     * @return SqlFieldConversionInterface[]|ConversionStrategyInterface[]
+     */
+    public function getFieldConversions()
+    {
+        return $this->fieldConversions;
     }
 
     private function processFields()

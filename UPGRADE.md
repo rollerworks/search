@@ -1,6 +1,12 @@
 UPGRADE
 =======
 
+## Upgrade FROM v1.0.0-beta5 to 1.0.0-beta7
+
+* The `Rollerworks\Component\Search\Doctrine\Dbal\AbstractWhereBuilder`
+  is merged with the `Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder`
+  class, the old `AbstractWhereBuilder` class is removed.
+
 ## Upgrade FROM v1.0.0-beta3 to 1.0.0-beta4
 
 This beta release is compatible with RollerworksSearch v1.0.0-beta5

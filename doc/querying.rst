@@ -158,12 +158,12 @@ The WhereBuilder will safely embed all values within the generated query.
     $whereBuilder->setField('user_name', 'name', 'string', 'u');
     $whereBuilder->setField('contact_name', 'name', 'string', 'c');
 
-    $whereClause = $whereBuilder->getWhereClause();
+    // The ' WHERE ' value is placed before the generated where-clause,
+    // but only when there is actual where-clause, else it returns an empty string.
+    $whereClause = $whereBuilder->getWhereClause(' WHERE ');
 
     // Add the Where-clause
-    if (!empty($whereClause)) {
-       $query .= ' WHERE '.$whereClause;
-    }
+    $query .= $whereClause;
 
     $statement = $connection->query($query);
 
@@ -239,12 +239,12 @@ query.
         return $whereBuilder->getSearchCondition()->getFieldSet()->getSetName();
     });
 
-    $whereClause = $cacheWhereBuilder->getWhereClause();
+    // The ' WHERE ' value is placed before the generated where-clause,
+    // but only when there is actual where-clause, else it returns an empty string.
+    $whereClause = $cacheWhereBuilder->getWhereClause(' WHERE ');
 
     // Add the Where-clause
-    if (!empty($whereClause)) {
-       $query .= ' WHERE '.$whereClause;
-    }
+    $query .= $whereClause;
 
     $statement = $connection->query($query);
 

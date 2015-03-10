@@ -133,29 +133,34 @@ class CacheWhereBuilder implements WhereBuilderInterface
      *
      * @see WhereBuilder::getWhereClause()
      *
+     * @param string $prependQuery Prepends this string to the where-clause
+     *                             (" WHERE " or " AND " for example).
+     *
      * @return string
      */
-    public function getWhereClause()
+    public function getWhereClause($prependQuery = '')
     {
-        if ($this->whereClause) {
-            return $this->whereClause;
+        if (null === $this->whereClause) {
+            $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->cacheKey;
+
+            if ($this->cacheDriver->contains($cacheKey)) {
+                $this->whereClause = $this->cacheDriver->fetch($cacheKey);
+            } else {
+                $this->whereClause = $this->whereBuilder->getWhereClause();
+
+                $this->cacheDriver->save(
+                    $cacheKey,
+                    $this->whereClause,
+                    $this->cacheLifeTime
+                );
+            }
         }
 
-        $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->cacheKey;
-
-        if ($this->cacheDriver->contains($cacheKey)) {
-            $this->whereClause = $this->cacheDriver->fetch($cacheKey);
-        } else {
-            $this->whereClause = $this->whereBuilder->getWhereClause();
-
-            $this->cacheDriver->save(
-                $cacheKey,
-                $this->whereClause,
-                $this->cacheLifeTime
-            );
+        if ('' !== $this->whereClause) {
+            return $prependQuery.$this->whereClause;
         }
 
-        return $this->whereClause;
+        return '';
     }
 
     /**

@@ -106,6 +106,60 @@ class CacheWhereBuilderTest extends DbalTestCase
         $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
     }
 
+    public function testGetWhereWithPrepend()
+    {
+        $this->cacheDriver
+            ->expects($this->once())
+            ->method('contains')
+            ->with('rw_search.doctrine.dbal.where.invoice')
+            ->will($this->returnValue(true));
+
+        $this->cacheDriver
+            ->expects($this->once())
+            ->method('fetch')
+            ->with('rw_search.doctrine.dbal.where.invoice')
+            ->will($this->returnValue("me = 'foo'"));
+
+        $this->whereBuilder
+            ->expects($this->never())
+            ->method('getWhereClause');
+
+        $this->cacheDriver
+            ->expects($this->never())
+            ->method('save');
+
+        $this->cacheWhereBuilder->setCacheKey('invoice');
+
+        $this->assertEquals("WHERE me = 'foo'", $this->cacheWhereBuilder->getWhereClause('WHERE '));
+    }
+
+    public function testGetEmptyWhereWithPrepend()
+    {
+        $this->cacheDriver
+            ->expects($this->once())
+            ->method('contains')
+            ->with('rw_search.doctrine.dbal.where.invoice')
+            ->will($this->returnValue(true));
+
+        $this->cacheDriver
+            ->expects($this->once())
+            ->method('fetch')
+            ->with('rw_search.doctrine.dbal.where.invoice')
+            ->will($this->returnValue(''));
+
+        $this->whereBuilder
+            ->expects($this->never())
+            ->method('getWhereClause');
+
+        $this->cacheDriver
+            ->expects($this->never())
+            ->method('save');
+
+        $this->cacheWhereBuilder->setCacheKey('invoice');
+
+        $this->assertEquals('', $this->cacheWhereBuilder->getWhereClause('WHERE '));
+    }
+
     protected function setUp()
     {
         parent::setUp();

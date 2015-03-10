@@ -54,6 +54,34 @@ final class WhereBuilderTest extends DbalTestCase
         $this->assertEquals('((I.customer IN(2, 5)))', $whereBuilder->getWhereClause());
     }
 
+    public function testQueryWithPrepend()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSingleValue(new SingleValue(2))
+                ->addSingleValue(new SingleValue(5))
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+
+        $this->assertEquals('WHERE ((I.customer IN(2, 5)))', $whereBuilder->getWhereClause('WHERE '));
+    }
+
+    public function testEmptyQueryWithPrepend()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('id')
+                ->addSingleValue(new SingleValue(2))
+                ->addSingleValue(new SingleValue(5))
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+
+        $this->assertEquals('', $whereBuilder->getWhereClause('WHERE '));
+    }
+
     public function testQueryWithMultipleFields()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
@@ -381,8 +409,10 @@ final class WhereBuilderTest extends DbalTestCase
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
-            ->will($this->returnCallback(function ($column, array $options) use ($test, $options) {
+            ->will($this->returnCallback(function ($column, array $options, ConversionHints $hints) use ($test, $options) {
                 $test->assertEquals($options, $options);
+                $test->assertEquals('I', $hints->field->getAlias());
+                $test->assertEquals('I.customer', $hints->column);
 
                 return "CAST($column AS customer_type)";
             }))
