@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -73,9 +73,9 @@ class DoctrineDbalFactory
      * @param WhereBuilderInterface $whereBuilder
      * @param int                   $lifetime
      *
-     * @return CacheWhereBuilder
-     *
      * @throws \RuntimeException when no cache-driver is configured
+     *
+     * @return CacheWhereBuilder
      */
     public function createCacheWhereBuilder(WhereBuilderInterface $whereBuilder, $lifetime = 0)
     {

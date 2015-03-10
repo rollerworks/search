@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -101,10 +101,10 @@ class WhereBuilder implements WhereBuilderInterface
      * @param string|MappingType $type      DB mapping-type
      * @param string             $alias     alias to use with the column
      *
-     * @return self
-     *
      * @throws UnknownFieldException  When the field is not registered in the fieldset.
      * @throws BadMethodCallException When the where-clause is already generated.
+     *
+     * @return self
      */
     public function setField($fieldName, $column, $type = 'string', $alias = null)
     {
@@ -129,10 +129,10 @@ class WhereBuilder implements WhereBuilderInterface
      * @param string                                               $fieldName
      * @param ValueConversionInterface|SqlFieldConversionInterface $converter
      *
-     * @return self
-     *
      * @throws UnknownFieldException  When the field is not registered in the fieldset.
      * @throws BadMethodCallException When the where-clause is already generated.
+     *
+     * @return self
      */
     public function setConverter($fieldName, $converter)
     {

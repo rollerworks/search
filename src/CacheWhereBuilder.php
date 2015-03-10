@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -88,9 +88,9 @@ class CacheWhereBuilder implements WhereBuilderInterface
      * @param string   $key
      * @param callable $callback
      *
-     * @return self
-     *
      * @throws BadMethodCallException
+     *
+     * @return self
      */
     public function setCacheKey($key = null, $callback = null)
     {

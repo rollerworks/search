@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -14,8 +14,8 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -40,8 +40,8 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * Constructor.
      *
-     * @param Connection               $connection
-     * @param QueryField[]             $fields
+     * @param Connection   $connection
+     * @param QueryField[] $fields
      */
     public function __construct(Connection $connection, array $fields)
     {
