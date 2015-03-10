@@ -20,6 +20,7 @@ use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
+use Rollerworks\Component\Search\ValuesError;
 use Rollerworks\Component\Search\ValuesGroup;
 
 final class WhereBuilderTest extends DbalTestCase
@@ -590,5 +591,42 @@ final class WhereBuilderTest extends DbalTestCase
                 array('active' => true),
             ),
         );
+    }
+
+    public function testConditionWithErrors()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addError(new ValuesError('singleValues[0]', 'this value is not valid'))
+            ->end()
+        ->getSearchCondition();
+
+        $this->setExpectedException(
+            'Rollerworks\Component\Search\Exception\BadMethodCallException',
+            'Unable to generate the where-clause with a SearchCondition that contains errors.'
+        );
+
+        $this->getWhereBuilder($condition);
+    }
+
+    public function testConditionWithErrorsOnDeeperLevel()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSingleValue(new SingleValue(2))
+            ->end()
+            ->group()
+                ->field('customer')
+                    ->addError(new ValuesError('singleValues[0]', 'this value is not valid'))
+                ->end()
+            ->end()
+        ->getSearchCondition();
+
+        $this->setExpectedException(
+            'Rollerworks\Component\Search\Exception\BadMethodCallException',
+            'Unable to generate the where-clause with a SearchCondition that contains errors.'
+        );
+
+        $this->getWhereBuilder($condition);
     }
 }
