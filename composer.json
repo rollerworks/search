@@ -17,7 +17,7 @@
     "require": {
         "php": ">=5.4",
         "rollerworks/search": ">1.0.0-beta4@dev",
-        "rollerworks/search-doctrine-dbal": ">1.0.0-beta6@dev",
+        "rollerworks/search-doctrine-dbal": ">=1.0.0-beta7@dev",
         "doctrine/orm": "~2.4"
     },
     "require-dev": {
@@ -31,9 +31,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Tests\\Mocks\\": [
-                "vendor/rollerworks/search-doctrine-dbal/tests/Mocks/"
-            ],
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "vendor/rollerworks/search-doctrine-dbal/tests/",
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "tests/",
             "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
