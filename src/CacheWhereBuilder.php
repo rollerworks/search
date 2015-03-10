@@ -141,7 +141,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
     public function getWhereClause($prependQuery = '')
     {
         if (null === $this->whereClause) {
-            $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->cacheKey;
+            $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->keySuffix.$this->cacheKey;
 
             if ($this->cacheDriver->contains($cacheKey)) {
                 $this->whereClause = $this->cacheDriver->fetch($cacheKey);

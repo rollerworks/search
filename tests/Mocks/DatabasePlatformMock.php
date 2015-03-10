@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Mocks;
+namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks;
 
 use Doctrine\DBAL\DBALException;
 

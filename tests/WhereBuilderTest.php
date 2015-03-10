@@ -20,6 +20,7 @@ use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
+use Rollerworks\Component\Search\ValuesError;
 use Rollerworks\Component\Search\ValuesGroup;
 
 final class WhereBuilderTest extends DbalTestCase
@@ -464,7 +465,7 @@ final class WhereBuilderTest extends DbalTestCase
         $this->assertEquals("((I.customer = get_customer_type(2)))", $whereBuilder->getWhereClause());
     }
 
-    public function testConversionStrategy()
+    public function testConversionStrategyValue()
     {
         $date = new \DateTime('2001-01-15', new \DateTimeZone('UTC'));
 
@@ -579,6 +580,75 @@ final class WhereBuilderTest extends DbalTestCase
         );
     }
 
+    public function testConversionStrategyField()
+    {
+        $fieldSet = $this->getFieldSet(false);
+        $fieldSet->add('customer_birthday', 'text');
+        $fieldSet = $fieldSet->getFieldSet();
+
+        $condition = SearchConditionBuilder::create($fieldSet)
+            ->field('customer_birthday')
+                ->addSingleValue(new SingleValue(18))
+                ->addSingleValue(new SingleValue('2001-01-15'))
+            ->end()
+        ->getSearchCondition();
+
+        $options = $fieldSet->get('customer_birthday')->getOptions();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        $whereBuilder->setField('customer_birthday', 'birthday', 'string', 'C');
+
+        $test = $this;
+
+        $converter = $this->getMock('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlFieldConversionStrategyInterface');
+        $converter
+            ->expects($this->atLeastOnce())
+            ->method('getConversionStrategy')
+            ->will(
+                $this->returnCallback(
+                    function ($value) {
+                        if (!is_string($value) && !is_int($value)) {
+                            throw new \InvalidArgumentException('Only integer/string is accepted.');
+                        }
+
+                        if (is_string($value)) {
+                            return 2;
+                        }
+
+                        return 1;
+                    }
+                )
+            )
+        ;
+
+        $converter
+            ->expects($this->atLeastOnce())
+            ->method('convertSqlField')
+            ->will(
+                $this->returnCallback(
+                    function ($column, array $passedOptions, ConversionHints $hints) use ($test, $options) {
+                        $test->assertEquals($options, $passedOptions);
+
+                        if (2 === $hints->conversionStrategy) {
+                            return "search_conversion_age($column)";
+                        }
+
+                        $test->assertEquals(1, $hints->conversionStrategy);
+
+                        return $column;
+                    }
+                )
+            )
+        ;
+
+        $whereBuilder->setConverter('customer_birthday', $converter);
+
+        $this->assertEquals(
+            "(((C.birthday = 18 OR search_conversion_age(C.birthday) = '2001-01-15')))",
+            $whereBuilder->getWhereClause()
+        );
+    }
+
     public static function provideFieldConversionTests()
     {
         return array(
@@ -590,5 +660,42 @@ final class WhereBuilderTest extends DbalTestCase
                 array('active' => true),
             ),
         );
+    }
+
+    public function testConditionWithErrors()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addError(new ValuesError('singleValues[0]', 'this value is not valid'))
+            ->end()
+        ->getSearchCondition();
+
+        $this->setExpectedException(
+            'Rollerworks\Component\Search\Exception\BadMethodCallException',
+            'Unable to generate the where-clause with a SearchCondition that contains errors.'
+        );
+
+        $this->getWhereBuilder($condition);
+    }
+
+    public function testConditionWithErrorsOnDeeperLevel()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSingleValue(new SingleValue(2))
+            ->end()
+            ->group()
+                ->field('customer')
+                    ->addError(new ValuesError('singleValues[0]', 'this value is not valid'))
+                ->end()
+            ->end()
+        ->getSearchCondition();
+
+        $this->setExpectedException(
+            'Rollerworks\Component\Search\Exception\BadMethodCallException',
+            'Unable to generate the where-clause with a SearchCondition that contains errors.'
+        );
+
+        $this->getWhereBuilder($condition);
     }
 }

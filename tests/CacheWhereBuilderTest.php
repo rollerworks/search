@@ -87,21 +87,70 @@ class CacheWhereBuilderTest extends DbalTestCase
         $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
     }
 
-    public function testBindParametersWithCache()
+    public function testGetWhereClauseWithCallbackKeyProvider()
     {
         $this->cacheDriver
             ->expects($this->once())
             ->method('contains')
-            ->with('rw_search.doctrine.dbal.where.invoice')
+            ->with('rw_search.doctrine.dbal.where.invoice2')
             ->will($this->returnValue(true));
 
         $this->cacheDriver
             ->expects($this->once())
             ->method('fetch')
-            ->with('rw_search.doctrine.dbal.where.invoice')
+            ->with('rw_search.doctrine.dbal.where.invoice2')
             ->will($this->returnValue("me = 'foo'"));
 
+        $this->whereBuilder
+            ->expects($this->never())
+            ->method('getWhereClause');
+
+        $this->cacheDriver
+            ->expects($this->never())
+            ->method('save');
+
+        $test = $this;
+        $mockWhereBuilder = $test->whereBuilder;
+
+        $this->cacheWhereBuilder->setCacheKey(
+            null,
+            function ($whereBuilder) use ($test, $mockWhereBuilder) {
+                $test->assertSame($mockWhereBuilder, $whereBuilder);
+
+                return 'invoice2';
+            }
+        );
+
+        $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
+    }
+
+    /**
+     * @deprecated This needs to be removed in 2.0
+     */
+    public function testGetWhereClauseWithKeySuffix()
+    {
+        $this->cacheDriver
+            ->expects($this->once())
+            ->method('contains')
+            ->with('rw_search.doctrine.dbal.where.new_invoice')
+            ->will($this->returnValue(true));
+
+        $this->cacheDriver
+            ->expects($this->once())
+            ->method('fetch')
+            ->with('rw_search.doctrine.dbal.where.new_invoice')
+            ->will($this->returnValue("me = 'foo'"));
+
+        $this->whereBuilder
+            ->expects($this->never())
+            ->method('getWhereClause');
+
+        $this->cacheDriver
+            ->expects($this->never())
+            ->method('save');
+
         $this->cacheWhereBuilder->setCacheKey('invoice');
+        $this->cacheWhereBuilder->setCacheKeySuffix('new');
 
         $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
     }

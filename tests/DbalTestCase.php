@@ -15,9 +15,9 @@ use Doctrine\DBAL\Driver\PDOSqlite\Driver as PDOSqlite;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\DoctrineDbalExtension;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
+use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks\ConnectionMock;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type\InvoiceLabelType;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type\InvoiceStatusType;
-use Rollerworks\Component\Search\Tests\Mocks\ConnectionMock;
 
 abstract class DbalTestCase extends SearchIntegrationTestCase
 {

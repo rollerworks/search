@@ -82,7 +82,7 @@ class WhereBuilder implements WhereBuilderInterface
      */
     public function __construct(Connection $connection, SearchConditionInterface $searchCondition)
     {
-        if ($searchCondition->getValuesGroup()->hasErrors()) {
+        if ($searchCondition->getValuesGroup()->hasErrors(true)) {
             throw new BadMethodCallException(
                 'Unable to generate the where-clause with a SearchCondition that contains errors.'
             );
