@@ -9,7 +9,7 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="./tests/bootstrap.php"
+         bootstrap="vendor/autoload.php"
          beStrictAboutTestsThatDoNotTestAnything="true"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
@@ -33,7 +33,6 @@
     </filter>
 
     <php>
-        <ini name="mbstring.internal_encoding" value="UTF-8"/>
         <ini name="intl.default_locale" value="en"/>
     </php>
 

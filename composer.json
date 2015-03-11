@@ -21,6 +21,7 @@
         "doctrine/orm": "~2.4"
     },
     "require-dev": {
+        "symfony/phpunit-bridge": "~2.7@dev",
         "phpunit/phpunit": "~4.5"
     },
     "autoload": {
