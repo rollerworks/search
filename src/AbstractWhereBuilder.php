@@ -11,12 +11,8 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
-use Doctrine\DBAL\Types\Type as MappingType;
 use Doctrine\ORM\EntityManagerInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
 
@@ -25,7 +21,7 @@ use Rollerworks\Component\Search\SearchConditionInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-abstract class AbstractWhereBuilder
+abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
 {
     use QueryPlatformTrait;
 
@@ -76,11 +72,7 @@ abstract class AbstractWhereBuilder
     }
 
     /**
-     * Set the entity mapping per class.
-     *
-     * @param string $entityName class or Doctrine alias
-     * @param string $alias      Entity alias as used in the query.
-     *                           Set to the null to remove the mapping
+     * {@inheritdoc}
      *
      * @throws BadMethodCallException When the where-clause is already generated.
      *
@@ -95,13 +87,7 @@ abstract class AbstractWhereBuilder
     }
 
     /**
-     * Set the entity mappings.
-     *
-     * Mapping is set as [class] => in-query-entity-alias.
-     *
-     * Caution. This will overwrite any configured entity-mappings.
-     *
-     * @param array $mapping
+     * {@inheritdoc}
      *
      * @throws BadMethodCallException When the where-clause is already generated.
      *
@@ -116,19 +102,8 @@ abstract class AbstractWhereBuilder
     }
 
     /**
-     * Set Field configuration for the query-generation.
+     * {@inheritdoc}
      *
-     * Note: The property must be owned by the entity (not reference another entity).
-     * If the entity field is used in a many-to-many relation you must to reference the
-     * targetEntity that is set on the ManyToMany mapping and use the entity field of that entity.
-     *
-     * @param string             $fieldName   Name of the Search field
-     * @param string             $alias       Entity alias as used in the query
-     * @param string             $entity      Entity name (FQCN or Doctrine aliased)
-     * @param string             $property    Entity field name
-     * @param string|MappingType $mappingType Doctrine Mapping-type
-     *
-     * @throws UnknownFieldException  When the field is not registered in the fieldset.
      * @throws BadMethodCallException When the where-clause is already generated.
      *
      * @return self
@@ -142,14 +117,8 @@ abstract class AbstractWhereBuilder
     }
 
     /**
-     * Set the converters for a field.
+     * {@inheritdoc}
      *
-     * Setting is done per type (field or value), any existing conversions are overwritten.
-     *
-     * @param string                                               $fieldName
-     * @param ValueConversionInterface|SqlFieldConversionInterface $converter
-     *
-     * @throws UnknownFieldException  When the field is not registered in the fieldset.
      * @throws BadMethodCallException When the where-clause is already generated.
      *
      * @return self
@@ -163,7 +132,7 @@ abstract class AbstractWhereBuilder
     }
 
     /**
-     * @return SearchConditionInterface
+     * {@inheritdoc}
      */
     public function getSearchCondition()
     {
