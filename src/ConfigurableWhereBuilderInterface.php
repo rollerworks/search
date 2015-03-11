@@ -16,6 +16,10 @@ use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 
+/**
+ * The ConfigurableWhereBuilderInterface allows to configure a WhereBuilder's
+ * mapping-data and set conversions.
+ */
 interface ConfigurableWhereBuilderInterface extends WhereBuilderInterface
 {
     /**
