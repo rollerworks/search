@@ -13,7 +13,6 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\NativeQuery;
-use Doctrine\ORM\Query;
 
 class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
 {

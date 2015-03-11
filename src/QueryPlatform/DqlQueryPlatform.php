@@ -21,11 +21,6 @@ use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 final class DqlQueryPlatform extends AbstractQueryPlatform
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * @var array
      */
     private $embeddedValues = [];
@@ -44,8 +39,6 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
     public function __construct(EntityManagerInterface $entityManager, array $fields)
     {
         parent::__construct($entityManager->getConnection(), $fields);
-
-        $this->entityManager = $entityManager;
     }
 
     /**
