@@ -681,6 +681,11 @@ class WhereBuilderTest extends OrmTestCase
             $sql = $whereBuilder->getQuery()->getSQL();
 
             if ('' !== $expectedSql) {
+                // In Doctrine ORM 2.5 the column-alias naming has changed,
+                // as we need to be compatible with older versions we simple remove
+                // the underscore between the name and alias incrementer
+                $sql = preg_replace('/ AS ([\w\d]+)_(\d+)/i', ' AS $1$2', $sql);
+
                 $this->assertEquals($expectedSql, $sql);
             }
         } catch (QueryException $e) {

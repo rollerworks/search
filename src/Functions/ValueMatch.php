@@ -16,6 +16,8 @@ use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Orm\ConversionHintTrait;
+use Rollerworks\Component\Search\Doctrine\Orm\SqlConversionInfo;
 
 /**
  * "RW_SEARCH_MATCH(Column, Pattern, CaseInsensitive)".
@@ -27,6 +29,8 @@ use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
  */
 class ValueMatch extends FunctionNode
 {
+    use ConversionHintTrait;
+
     /**
      * @var \Doctrine\ORM\Query\AST\PathExpression
      */
@@ -47,16 +51,10 @@ class ValueMatch extends FunctionNode
      */
     public function getSql(SqlWalker $sqlWalker)
     {
-        /** @var \Closure $hintsValue */
-        if (!$hintsValue = $sqlWalker->getQuery()->getHint('rw_where_builder')) {
-            throw new \LogicException('Missing "rw_where_builder" hint for SearchValueMatch.');
-        }
-
-        /** @var QueryPlatformInterface $platform */
-        list($platform) = $hintsValue();
+        $this->loadConversionHints($sqlWalker);
 
         // Because Doctrine always requires an operator we use a sub-query with CASE
-        $statement = $platform->getMatchSqlRegex(
+        $statement = $this->nativePlatform->getMatchSqlRegex(
             $sqlWalker->walkArithmeticPrimary($this->column),
             $sqlWalker->getQuery()->getEntityManager()->getConnection()->quote($this->pattern->value),
             $this->caseInsensitive,

@@ -16,6 +16,8 @@ use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Orm\ConversionHintTrait;
+use Rollerworks\Component\Search\Doctrine\Orm\SqlConversionInfo;
 
 /**
  * "RW_SEARCH_FIELD_CONVERSION(FieldName, Column, Strategy)".
@@ -27,6 +29,8 @@ use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
  */
 class SqlFieldConversion extends FunctionNode
 {
+    use ConversionHintTrait;
+
     /**
      * @var string
      */
@@ -47,15 +51,9 @@ class SqlFieldConversion extends FunctionNode
      */
     public function getSql(SqlWalker $sqlWalker)
     {
-        /* @var \Closure $hintsValue */
-        if (!($hintsValue = $sqlWalker->getQuery()->getHint('rw_where_builder'))) {
-            throw new \LogicException('Missing "rw_where_builder" hint for SearchValueConversion.');
-        }
+        $this->loadConversionHints($sqlWalker);
 
-        /** @var QueryPlatformInterface $platform */
-        list($platform) = $hintsValue();
-
-        return $platform->getFieldColumn(
+        return $this->nativePlatform->getFieldColumn(
             $this->fieldName,
             $this->strategy,
             $this->columnExpression->dispatch($sqlWalker)
