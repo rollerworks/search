@@ -8,3 +8,7 @@ core.autocrlf=lf
 .travis.yml export-ignore
 .php_cs export-ignore
 .gush.yml export-ignore
+.styleci.yml export-ignore
+
+tests/* export-ignore
+doc/* export-ignore
