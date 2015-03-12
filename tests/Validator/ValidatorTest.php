@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -61,8 +61,8 @@ final class ValidatorTest extends SearchIntegrationTestCase
                     new Assert\Date(),
                     new Assert\Range(
                         array('min' => new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC')))
-                    )
-                )
+                    ),
+                ),
             )
         );
         $fieldSet->add('type', 'text');
