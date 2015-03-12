@@ -19,6 +19,7 @@ use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesError;
 use Rollerworks\Component\Search\ValuesGroup;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\ValidatorInterface as LegacyValidator;
 
@@ -212,27 +213,51 @@ class Validator
             $violations = $this->validator->validate($value, $constraints, $validationGroups);
         }
 
+        $newApi = null;
+
         foreach ($violations as $violation) {
+            $valuesBag->addError($this->createError($violation, $viewValue, $subPath, $newApi));
+        }
+    }
+
+    /**
+     * @param ConstraintViolation $violation
+     * @param string              $viewValue
+     * @param string              $subPath
+     * @param bool|null           $newApi
+     *
+     * @return ValuesError
+     */
+    private function createError(ConstraintViolation $violation, $viewValue, $subPath, &$newApi)
+    {
+        if (null === $newApi) {
+            $newApi = method_exists($violation, 'getPlural');
+        }
+
+        // Compatibility layer for Symfony 3.0
+        if ($newApi) {
+            $parameters = $violation->getParameters();
+            $plural = $violation->getPlural();
+        } else {
             $parameters = $violation->getMessageParameters();
+            $plural = $violation->getMessagePluralization();
+        }
 
-            if ('' !== $viewValue && isset($parameters['{{ value }}'])) {
-                if ('"' === $parameters['{{ value }}'][0]) {
-                    $viewValue = '"'.$viewValue.'"';
-                }
-
-                $parameters = array_merge($parameters, array('{{ value }}' => $viewValue));
+        if ('' !== $viewValue && isset($parameters['{{ value }}'])) {
+            if ('"' === $parameters['{{ value }}'][0]) {
+                $viewValue = '"'.$viewValue.'"';
             }
 
-            $valuesBag->addError(
-                new ValuesError(
-                    $subPath,
-                    $violation->getMessage(),
-                    $violation->getMessageTemplate(),
-                    $parameters,
-                    $violation->getMessagePluralization(),
-                    $violation
-                )
-            );
+            $parameters = array_merge($parameters, array('{{ value }}' => $viewValue));
         }
+
+        return new ValuesError(
+            $subPath,
+            $violation->getMessage(),
+            $violation->getMessageTemplate(),
+            $parameters,
+            $plural,
+            $violation
+        );
     }
 }
