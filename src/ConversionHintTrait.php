@@ -24,7 +24,7 @@ trait ConversionHintTrait
     /**
      * @var array
      */
-    protected $parameters = array();
+    protected $parameters = [];
 
     /**
      * @param SqlWalker $sqlWalker

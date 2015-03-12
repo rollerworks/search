@@ -15,9 +15,7 @@ use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 use Rollerworks\Component\Search\Doctrine\Orm\ConversionHintTrait;
-use Rollerworks\Component\Search\Doctrine\Orm\SqlConversionInfo;
 
 /**
  * "RW_SEARCH_MATCH(Column, Pattern, CaseInsensitive)".
