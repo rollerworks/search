@@ -44,8 +44,14 @@ final class ValidatorTest extends SearchIntegrationTestCase
     {
         parent::setUp();
 
+        $validatorBuilder = Validation::createValidatorBuilder();
+
+        if (method_exists($validatorBuilder, 'setApiVersion')) {
+            $validatorBuilder->setApiVersion(Validation::API_VERSION_2_5);
+        }
+
         $this->fieldSet = $this->getFieldSet();
-        $this->sfValidator = Validation::createValidator();
+        $this->sfValidator = $validatorBuilder->getValidator();
         $this->validator = new Validator($this->sfValidator);
     }
 
