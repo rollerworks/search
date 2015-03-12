@@ -19,7 +19,6 @@
     </filter>
 
     <php>
-        <ini name="mbstring.internal_encoding" value="UTF-8"/>
         <ini name="intl.default_locale" value="en"/>
     </php>
 
