@@ -24,11 +24,12 @@ sudo: false
 cache:
     directories:
         - $HOME/.composer/cache
-        
+
 before_install:
     - composer selfupdate
 
 install:
+    - export SYMFONY_DEPRECATIONS_HELPER=strict
     - export COMPOSER_ROOT_VERSION=dev-master
     - if [ "$DEPENDENCIES" == "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
     - if [ "$DEPENDENCIES" != "low" ]; then travis_retry composer update; fi;
