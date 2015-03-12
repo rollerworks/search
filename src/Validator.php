@@ -50,8 +50,12 @@ class Validator
      */
     public function validate(SearchConditionInterface $condition)
     {
-        if (true === $condition->getValuesGroup()->hasErrors()) {
+        if ($condition->getValuesGroup()->hasErrors(true)) {
             return;
+        }
+
+        if ($condition->getValuesGroup()->isDataLocked()) {
+            throw new \RuntimeException('Unable to validate locked ValuesGroup.');
         }
 
         $group = $condition->getValuesGroup();

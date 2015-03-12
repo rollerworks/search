@@ -203,6 +203,31 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $this->assertCount(1, $valuesGroup->getField('username')->getErrors());
     }
 
+    /**
+     * @test
+     */
+    public function it_cannot_validate_a_locked_valuesGroup()
+    {
+        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
+        $fieldSet->add('username', 'text', array('constraints' => new Assert\NotBlank()));
+
+        $this->fieldSet = $fieldSet->getFieldSet();
+
+        $condition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('username')
+                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_ENDS_WITH))
+                ->addPatternMatch(new PatternMatch('', PatternMatch::PATTERN_ENDS_WITH))
+            ->end()
+            ->getSearchCondition()
+        ;
+
+        $condition->getValuesGroup()->setDataLocked();
+
+        $this->setExpectedException('\RuntimeException', 'Unable to validate locked ValuesGroup.');
+        $this->validator->validate($condition);
+    }
+
     private function assertSearchError(
         ValuesBag $valuesBag,
         $subPath,
