@@ -69,17 +69,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      * Get the configured name for the FieldSet.
      *
      * @return string
-     *
-     * @throws BadMethodCallException When the FieldSet is already generated.
      */
     public function getName()
     {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
-            );
-        }
-
         return $this->name;
     }
 
@@ -119,12 +111,20 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             throw new UnexpectedTypeException($type, 'string or Rollerworks\Component\Search\FieldTypeInterface');
         }
 
+        if (null !== $modelClass) {
+            $options = array_merge(
+                $options,
+                array(
+                    'model_class' => $modelClass,
+                    'model_property' => $property,
+                )
+            );
+        }
+
         $this->unresolvedFields[$field] = array(
             'type' => $type,
             'options' => $options,
             'required' => $required,
-            'class' => $modelClass,
-            'property' => $property,
         );
 
         return $this;
@@ -232,12 +232,18 @@ class FieldSetBuilder implements FieldSetBuilderInterface
                 continue;
             }
 
+            $field->options = array_merge(
+                $field->options,
+                array(
+                    'model_class' => $field->class,
+                    'model_property' => $field->property,
+                )
+            );
+
             $this->unresolvedFields[$field->fieldName] = array(
                 'type' => $field->type,
                 'options' => $field->options,
                 'required' => $field->required,
-                'class' => $field->class,
-                'property' => $field->property,
             );
         }
 
@@ -258,23 +264,12 @@ class FieldSetBuilder implements FieldSetBuilderInterface
         }
 
         foreach ($this->unresolvedFields as $name => $field) {
-            if (!empty($field['class'])) {
-                $this->fields[$name] = $this->searchFactory->createFieldForProperty(
-                    $field['class'],
-                    $field['property'],
-                    $name,
-                    $field['type'],
-                    $field['options'],
-                    $field['required']
-                );
-            } else {
-                $this->fields[$name] = $this->searchFactory->createField(
-                    $name,
-                    $field['type'],
-                    $field['options'],
-                    $field['required']
-                );
-            }
+            $this->fields[$name] = $this->searchFactory->createField(
+                $name,
+                $field['type'],
+                $field['options'],
+                $field['required']
+            );
 
             unset($this->unresolvedFields[$name]);
         }

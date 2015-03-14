@@ -55,16 +55,6 @@ class SearchField implements FieldConfigInterface
     private $valueComparison;
 
     /**
-     * @var string
-     */
-    private $modelRefClass;
-
-    /**
-     * @var string
-     */
-    private $modelRefField;
-
-    /**
      * @var bool
      */
     private $locked = false;
@@ -200,6 +190,9 @@ class SearchField implements FieldConfigInterface
      * @param string $property
      *
      * @throws BadMethodCallException when the data is locked
+     *
+     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
+     *             Use the 'model_class' and 'model_property' options instead.
      */
     public function setModelRef($class, $property)
     {
@@ -209,8 +202,8 @@ class SearchField implements FieldConfigInterface
             );
         }
 
-        $this->modelRefClass = $class;
-        $this->modelRefField = $property;
+        $this->options['model_class'] = $class;
+        $this->options['model_property'] = $property;
 
         return $this;
     }
@@ -220,11 +213,11 @@ class SearchField implements FieldConfigInterface
      *
      * This is required for certain storage engines.
      *
-     * @return string
+     * @return string|null
      */
     public function getModelRefClass()
     {
-        return $this->modelRefClass;
+        return $this->getOption('model_class');
     }
 
     /**
@@ -232,11 +225,11 @@ class SearchField implements FieldConfigInterface
      *
      * This is required for certain storage engines.
      *
-     * @return string
+     * @return string|null
      */
     public function getModelRefProperty()
     {
-        return $this->modelRefField;
+        return $this->getOption('model_property');
     }
 
     /**

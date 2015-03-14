@@ -69,6 +69,8 @@ class FieldType extends AbstractFieldType
             array(
                 'invalid_message' => 'This value is not valid.',
                 'invalid_message_parameters' => array(),
+                'model_class' => null,
+                'model_property' => null,
             )
         );
 

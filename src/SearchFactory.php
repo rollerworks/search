@@ -77,6 +77,10 @@ class SearchFactory implements SearchFactoryInterface
      * @param bool   $required
      *
      * @return SearchField
+     *
+     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
+     *             Use createField() with the 'model_class' and 'model_property'
+     *             options instead.
      */
     public function createFieldForProperty($class, $property, $name, $type, array $options = array(), $required = false)
     {

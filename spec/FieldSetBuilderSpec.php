@@ -50,8 +50,6 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'integer',
             'options' => array(),
             'required' => false,
-            'class' => null,
-            'property' => null
         ));
     }
 
@@ -65,8 +63,6 @@ class FieldSetBuilderSpec extends ObjectBehavior
             'type' => 'integer',
             'options' => array(),
             'required' => false,
-            'class' => null,
-            'property' => null
         ));
     }
 
@@ -107,34 +103,39 @@ class FieldSetBuilderSpec extends ObjectBehavior
 
         $this->get('uid')->shouldBeLike(array(
             'type' => 'integer',
-            'options' => array('min' => 1),
+            'options' => array(
+                'min' => 1,
+                'model_class' => 'User',
+                'model_property' => 'id'
+            ),
             'required' => true,
-            'class' => 'User',
-            'property' => 'id'
         ));
 
         $this->get('username')->shouldBeLike(array(
             'type' => 'text',
-            'options' => array(),
+            'options' => array(
+                'model_class' => 'User',
+                'model_property' => 'name'
+            ),
             'required' => false,
-            'class' => 'User',
-            'property' => 'name'
         ));
 
         $this->get('gid')->shouldBeLike(array(
             'type' => 'integer',
-            'options' => array(),
+            'options' => array(
+                'model_class' => 'Group',
+                'model_property' => 'id'
+            ),
             'required' => false,
-            'class' => 'Group',
-            'property' => 'id'
         ));
 
         $this->get('group-name')->shouldBeLike(array(
             'type' => 'text',
-            'options' => array(),
+            'options' => array(
+                'model_class' => 'Group',
+                'model_property' => 'name'
+            ),
             'required' => false,
-            'class' => 'Group',
-            'property' => 'name'
         ));
     }
 
@@ -151,10 +152,26 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $field2->setModelRef('Rollerworks\Component\Search\Fixtures\Entity\Group', 'name');
 
         $searchFactory->createField('id', 'integer', array('max' => 5000), true)->willReturn($field1);
-        $searchFactory->createFieldForProperty('Rollerworks\Component\Search\Fixtures\Entity\Group', 'name', 'gid', 'integer', array(), false)->willReturn($field2);
+        $searchFactory->createField(
+            'gid',
+            'integer',
+            array(
+                'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
+                'model_property' => 'name'
+            ),
+            false
+        )->willReturn($field2);
 
         $this->add('id', 'integer', array('max' => 5000), true);
-        $this->add('gid', 'integer', array(), false, 'Rollerworks\Component\Search\Fixtures\Entity\Group', 'name');
+        $this->add(
+            'gid',
+            'integer',
+            array(
+                'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
+                'model_property' => 'name'
+            ),
+            false
+        );
 
         $expectedFieldSet = new FieldSet('test');
 
@@ -182,10 +199,26 @@ class FieldSetBuilderSpec extends ObjectBehavior
         $field2->setModelRef('Rollerworks\Component\Search\Fixtures\Entity\Group', 'name');
 
         $searchFactory->createField('id', 'integer', array('max' => 5000), true)->willReturn($field1);
-        $searchFactory->createFieldForProperty('Rollerworks\Component\Search\Fixtures\Entity\Group', 'name', 'gid', 'integer', array(), false)->willReturn($field2);
+        $searchFactory->createField(
+            'gid',
+            'integer',
+            array(
+                'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
+                'model_property' => 'name'
+            ),
+            false
+        )->willReturn($field2);
 
         $this->add('id', 'integer', array('max' => 5000), true);
-        $this->add('gid', 'integer', array(), false, 'Rollerworks\Component\Search\Fixtures\Entity\Group', 'name');
+        $this->add(
+            'gid',
+            'integer',
+            array(
+                'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
+                'model_property' => 'name'
+            ),
+            false
+        );
 
         $this->getFieldSet();
 

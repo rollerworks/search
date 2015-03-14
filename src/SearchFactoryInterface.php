@@ -29,20 +29,6 @@ interface SearchFactoryInterface
     public function createField($name, $type, array $options = array(), $required = false);
 
     /**
-     * Create a new search field referenced by property.
-     *
-     * @param string $class
-     * @param string $property
-     * @param string $name
-     * @param string $type
-     * @param array  $options
-     * @param bool   $required
-     *
-     * @return FieldConfigInterface
-     */
-    public function createFieldForProperty($class, $property, $name, $type, array $options = array(), $required = false);
-
-    /**
      * Create a new FieldsetBuilderInterface instance.
      *
      * @param string $name
