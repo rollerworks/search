@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -16,17 +16,17 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
 class MoneyToLocalizedStringTransformerSpec extends ObjectBehavior
 {
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer');
     }
 
-    public function let()
+    function let()
     {
         $this->beConstructedWith(2, false, null, 1, 'EUR');
     }
 
-    public function it_should_reverse_transform_to_a_MoneyObject()
+    function it_should_reverse_transform_to_a_MoneyObject()
     {
         \Locale::setDefault('de_AT');
 
@@ -36,7 +36,7 @@ class MoneyToLocalizedStringTransformerSpec extends ObjectBehavior
         $this->reverseTransform('€ 1,23')->shouldBeLike(new MoneyValue('EUR', '1.23'));
     }
 
-    public function it_should_reverse_transform_without_currency_to_a_MoneyObject()
+    function it_should_reverse_transform_without_currency_to_a_MoneyObject()
     {
         \Locale::setDefault('de_AT');
 

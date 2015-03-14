@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -33,7 +33,7 @@ class ChoiceToLabelTransformer implements DataTransformerInterface
     }
 
     /**
-     * {inheritdoc}
+     * {@inheritdoc}
      */
     public function transform($choice)
     {
@@ -41,7 +41,7 @@ class ChoiceToLabelTransformer implements DataTransformerInterface
     }
 
     /**
-     * {inheritdoc}
+     * {@inheritdoc}
      */
     public function reverseTransform($value)
     {

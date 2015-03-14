@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
 /**
- * Transforms between a timestamp and a DateTime object
+ * Transforms between a timestamp and a DateTime object.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
@@ -26,11 +26,11 @@ class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      *
      * @param \DateTime $value A \DateTime object
      *
-     * @return int A timestamp
-     *
      * @throws TransformationFailedException If the given value is not an instance
      *                                       of \DateTime or if the output
      *                                       timezone is not supported.
+     *
+     * @return int A timestamp
      */
     public function transform($value)
     {
@@ -53,14 +53,14 @@ class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
     }
 
     /**
-     * Transforms a timestamp in the configured timezone into a DateTime object
+     * Transforms a timestamp in the configured timezone into a DateTime object.
      *
      * @param string $value A timestamp
      *
-     * @return \DateTime A \DateTime object
-     *
      * @throws TransformationFailedException If the given value is not a timestamp
      *                                       or if the given timestamp is invalid.
+     *
+     * @return \DateTime A \DateTime object
      */
     public function reverseTransform($value)
     {

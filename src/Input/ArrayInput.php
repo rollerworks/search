@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -59,7 +59,7 @@ class ArrayInput extends AbstractInput
             throw new \InvalidArgumentException('Provided in input must be an array.');
         }
 
-        if (empty($input)) {
+        if (0 === count($input)) {
             return;
         }
 
@@ -271,7 +271,7 @@ class ArrayInput extends AbstractInput
         return $valuesBag;
     }
 
-    private function assertArrayKeysExists($array, $requiredKeys, $index, $groupIdx, $level = 0)
+    private function assertArrayKeysExists($array, array $requiredKeys, $index, $groupIdx, $level = 0)
     {
         if (!is_array($array)) {
             throw new InputProcessorException(

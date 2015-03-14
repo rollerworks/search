@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -84,8 +84,6 @@ class Lexer extends AbstractLexer
 
             return $tokens[$index];
         }
-
-        return;
     }
 
     /**
@@ -121,7 +119,7 @@ class Lexer extends AbstractLexer
     }
 
     /**
-     * Regex modifiers
+     * Regex modifiers.
      *
      * @return string
      */

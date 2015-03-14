@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -27,9 +27,9 @@ class JsonExporter extends ArrayExporter
      * @param bool                     $useFieldAlias Use the localized field-alias
      *                                                instead of the actual name (default false)
      *
-     * @return string
-     *
      * @throws \RuntimeException
+     *
+     * @return string
      */
     public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false)
     {

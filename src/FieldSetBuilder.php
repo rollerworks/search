@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -83,10 +83,10 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      * @param string                      $modelClass
      * @param string                      $property
      *
-     * @return self
-     *
      * @throws BadMethodCallException  When the FieldSet is already generated.
      * @throws UnexpectedTypeException
+     *
+     * @return self
      */
     public function add($field, $type = null, array $options = array(), $required = false, $modelClass = null, $property = null)
     {
@@ -96,7 +96,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             );
         }
 
-        if (!is_string($field) && !$field instanceof FieldConfigInterface) {
+        if (!$field instanceof FieldConfigInterface && !is_string($field)) {
             throw new UnexpectedTypeException($field, 'string or Rollerworks\Component\Search\FieldConfigInterface');
         }
 
@@ -107,7 +107,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             return $this;
         }
 
-        if (!is_string($type) && !$type instanceof FieldTypeInterface) {
+        if (!$type instanceof FieldTypeInterface && !is_string($type)) {
             throw new UnexpectedTypeException($type, 'string or Rollerworks\Component\Search\FieldTypeInterface');
         }
 
@@ -133,9 +133,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * @param string $name
      *
-     * @return self
-     *
      * @throws BadMethodCallException
+     *
+     * @return self
      */
     public function remove($name)
     {
@@ -145,8 +145,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             );
         }
 
-        unset($this->fields[$name]);
-        unset($this->unresolvedFields[$name]);
+        unset($this->fields[$name], $this->unresolvedFields[$name]);
 
         return $this;
     }
@@ -154,9 +153,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * @param string $name
      *
-     * @return bool
-     *
      * @throws BadMethodCallException
+     *
+     * @return bool
      */
     public function has($name)
     {
@@ -180,10 +179,10 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * @param string $name
      *
-     * @return FieldConfigInterface|array
-     *
      * @throws BadMethodCallException
      * @throws InvalidArgumentException
+     *
+     * @return FieldConfigInterface|array
      */
     public function get($name)
     {
@@ -209,9 +208,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      * @param array  $include List of field names to use, everything else is excluded
      * @param array  $exclude List of field names to exclude
      *
-     * @return self
-     *
      * @throws BadMethodCallException
+     *
+     * @return self
      */
     public function importFromClass($class, array $include = array(), array $exclude = array())
     {
@@ -251,9 +250,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     }
 
     /**
-     * @return FieldSet
-     *
      * @throws BadMethodCallException
+     *
+     * @return FieldSet
      */
     public function getFieldSet()
     {

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -29,6 +29,6 @@ class NullMetadataReader implements MetadataReaderInterface
      */
     public function getSearchField($class, $field)
     {
-        return;
+        // noop
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -21,7 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ResolvedFieldTypeSpec extends ObjectBehavior
 {
-    public function let(FieldTypeInterface $innerType)
+    function let(FieldTypeInterface $innerType)
     {
         $innerType->getName()->willReturn('date');
         $innerType->configureOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolver'))->willReturn(null);
@@ -29,33 +29,33 @@ class ResolvedFieldTypeSpec extends ObjectBehavior
         $this->beConstructedWith($innerType);
     }
 
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\ResolvedFieldType');
         $this->shouldImplement('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
     }
 
-    public function it_should_have_a_name()
+    function it_should_have_a_name()
     {
         $this->getName()->shouldReturn('date');
     }
 
-    public function it_should_have_a_inner_type()
+    function it_should_have_a_inner_type()
     {
         $this->getInnerType()->shouldImplement('Rollerworks\Component\Search\FieldTypeInterface');
     }
 
-    public function it_should_have_no_parent_by_default()
+    function it_should_have_no_parent_by_default()
     {
         $this->getParent()->shouldReturn(null);
     }
 
-    public function it_should_have_no_typeExtensions_by_default()
+    function it_should_have_no_typeExtensions_by_default()
     {
         $this->getTypeExtensions()->shouldHaveCount(0);
     }
 
-    public function it_should_allow_setting_typeExtensions(FieldTypeInterface $innerType, FieldTypeExtensionInterface $extension1, FieldTypeExtensionInterface $extension2)
+    function it_should_allow_setting_typeExtensions(FieldTypeInterface $innerType, FieldTypeExtensionInterface $extension1, FieldTypeExtensionInterface $extension2)
     {
         $innerType->getName()->willReturn('date');
         $innerType->configureOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolver'))->willReturn(null);
@@ -66,23 +66,23 @@ class ResolvedFieldTypeSpec extends ObjectBehavior
         $this->getTypeExtensions()->shouldReturn($extensions);
     }
 
-    public function it_should_complain_when_given_an_invalid_typeExtension(FieldTypeInterface $innerType)
+    function it_should_complain_when_given_an_invalid_typeExtension(FieldTypeInterface $innerType)
     {
         $innerType->getName()->willReturn('date');
         $innerType->configureOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolver'))->willReturn(null);
 
-        $extensions = array(new \stdClass);
+        $extensions = array(new \stdClass());
 
         $this->shouldThrow(new UnexpectedTypeException($extensions[0], 'Rollerworks\Component\Search\FieldTypeExtensionInterface'));
         $this->beConstructedWith($innerType, $extensions);
     }
 
-    public function it_should_provide_an_optionsResolver()
+    function it_should_provide_an_optionsResolver()
     {
         $this->getOptionsResolver()->shouldReturnAnInstanceOf('Symfony\Component\OptionsResolver\OptionsResolver');
     }
 
-    public function it_should_include_options_of_the_parent_type(FieldTypeInterface $innerType, ResolvedFieldTypeInterface $parentType)
+    function it_should_include_options_of_the_parent_type(FieldTypeInterface $innerType, ResolvedFieldTypeInterface $parentType)
     {
         $optionsResolver = new OptionsResolver();
 

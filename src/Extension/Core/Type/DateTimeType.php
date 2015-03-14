@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -34,7 +34,7 @@ class DateTimeType extends AbstractFieldType
      * This is not quite the HTML5 format yet, because ICU lacks the
      * capability of parsing and generating RFC 3339 dates, which
      * are like the below pattern but with a timezone suffix. The
-     * timezone suffix is
+     * timezone suffix is.
      *
      *  * "Z" for UTC
      *  * "(-|+)HH:mm" for other timezones (note the colon!)

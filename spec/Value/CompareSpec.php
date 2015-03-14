@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -15,27 +15,27 @@ use PhpSpec\ObjectBehavior;
 
 class CompareSpec extends ObjectBehavior
 {
-    public function let()
+    function let()
     {
         $this->beConstructedWith(10, '>', '10');
     }
 
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Value\Compare');
     }
 
-    public function it_has_a_value()
+    function it_has_a_value()
     {
         $this->getValue()->shouldReturn(10);
     }
 
-    public function it_has_an_operator()
+    function it_has_an_operator()
     {
         $this->getOperator()->shouldReturn('>');
     }
 
-    public function it_allows_an_object_as_value()
+    function it_allows_an_object_as_value()
     {
         $value = new \DateTime();
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -30,7 +30,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     }
 
     /**
-     * This is a special case as the dash is also used for ranges
+     * This is a special case as the dash is also used for ranges.
      *
      * @test
      */

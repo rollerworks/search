@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -85,7 +85,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
         $newValue = clone $value;
 
         if (isset($options['increase_by_decimal'])) {
-            $newValue->value += floatval("0.$increments");
+            $newValue->value += (float) ("0.$increments");
         } else {
             $newValue->value += $increments;
         }

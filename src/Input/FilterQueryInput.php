@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -141,7 +141,8 @@ class FilterQueryInput extends AbstractInput
      */
     public function __construct(FieldAliasResolverInterface $aliasResolver)
     {
-        $this->aliasResolver = $aliasResolver;
+        parent::__construct($aliasResolver);
+
         $this->lexer = new Lexer();
     }
 
@@ -151,9 +152,9 @@ class FilterQueryInput extends AbstractInput
      * @param ProcessorConfig $config
      * @param string          $input
      *
-     * @return null|SearchCondition Returns null on empty input
-     *
      * @throws InvalidSearchConditionException
+     *
+     * @return null|SearchCondition Returns null on empty input
      */
     public function process(ProcessorConfig $config, $input)
     {
@@ -163,7 +164,7 @@ class FilterQueryInput extends AbstractInput
 
         $input = trim($input);
 
-        if (empty($input)) {
+        if ('' === $input) {
             return;
         }
 
@@ -271,7 +272,7 @@ class FilterQueryInput extends AbstractInput
 
     /**
      * Group ::= {"(" {Group}* FieldValuesPairs {";" Group}* ")" |
-     *     "(" FieldValuesPairs ";" FieldValuesPairs {";" Group}* ")" [ ";" ] | {Group}+ [ ";" ]}+
+     *     "(" FieldValuesPairs ";" FieldValuesPairs {";" Group}* ")" [ ";" ] | {Group}+ [ ";" ]}+.
      *
      * @param int $level
      * @param int $idx
@@ -305,7 +306,7 @@ class FilterQueryInput extends AbstractInput
     }
 
     /**
-     * {FieldIdentification ":" FieldValues}*
+     * {FieldIdentification ":" FieldValues}*.
      *
      * @param ValuesGroup $valuesGroup
      * @param int         $level
@@ -369,7 +370,7 @@ class FilterQueryInput extends AbstractInput
     }
 
     /**
-     * FieldIdentification ::= String
+     * FieldIdentification ::= String.
      *
      * @return string
      */
@@ -383,16 +384,16 @@ class FilterQueryInput extends AbstractInput
 
     /**
      * FieldValues ::= [ "!" ] String {"," [ "!" ] String |
-     *     [ "!" ] Range | Comparison | PatternMatch}* [ ";" ]
+     *     [ "!" ] Range | Comparison | PatternMatch}* [ ";" ].
      *
      * @param FieldConfigInterface $fieldConfig
      * @param ValuesBag            $valuesBag
      * @param int                  $level
      * @param int                  $groupIdx
      *
-     * @return ValuesBag
-     *
      * @throws ValuesOverflowException
+     *
+     * @return ValuesBag
      */
     private function fieldValues(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag, $level = 0, $groupIdx = 0)
     {
@@ -444,7 +445,7 @@ class FilterQueryInput extends AbstractInput
                             'ExcludedValue',
                             'ExcludedRange',
                             'Comparison',
-                            'PatternMatch'
+                            'PatternMatch',
                         ),
                         $this->lexer->lookahead
                     );
@@ -479,7 +480,7 @@ class FilterQueryInput extends AbstractInput
     }
 
     /**
-     * RangeValue ::= [ "[" | "]" ] StringValue "-" StringValue [ "[" | "]" ]
+     * RangeValue ::= [ "[" | "]" ] StringValue "-" StringValue [ "[" | "]" ].
      *
      * @param FieldConfigInterface $fieldConfig
      * @param FieldValuesFactory   $factory
@@ -566,7 +567,7 @@ class FilterQueryInput extends AbstractInput
     }
 
     /**
-     * StringValue ::= String | QuotedString
+     * StringValue ::= String | QuotedString.
      *
      * @return string
      */
@@ -583,7 +584,7 @@ class FilterQueryInput extends AbstractInput
     }
 
     /**
-     * ComparisonOperator ::= "<" | "<=" | "<>" | ">" | ">="
+     * ComparisonOperator ::= "<" | "<=" | "<>" | ">" | ">=".
      *
      * @return string
      */

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -21,17 +21,17 @@ use Rollerworks\Component\Search\SearchField;
 
 class SearchFactorySpec extends ObjectBehavior
 {
-    public function let(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
+    function let(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
     {
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
     }
 
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\SearchFactory');
     }
 
-    public function it_creates_field_with_type_as_string(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, ResolvedFieldTypeInterface $type)
+    function it_creates_field_with_type_as_string(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, ResolvedFieldTypeInterface $type)
     {
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
 
@@ -46,7 +46,7 @@ class SearchFactorySpec extends ObjectBehavior
         $this->createField('id', 'number')->shouldEqual($expectedField);
     }
 
-    public function it_creates_field_with_type_as_object(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, FieldTypeInterface $type, ResolvedFieldTypeInterface $resolvedType)
+    function it_creates_field_with_type_as_object(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, FieldTypeInterface $type, ResolvedFieldTypeInterface $resolvedType)
     {
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
 
@@ -61,14 +61,14 @@ class SearchFactorySpec extends ObjectBehavior
         $this->createField('id', $type)->shouldEqual($expectedField);
     }
 
-    public function it_creates_field_with_model_ref(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, ResolvedFieldTypeInterface $type)
+    function it_creates_field_with_model_ref(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, ResolvedFieldTypeInterface $type)
     {
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
 
         $expectedField = new SearchField(
             'uid', $type->getWrappedObject(), array(
             'model_class' => 'Entity\User',
-            'model_property' => 'id'
+            'model_property' => 'id',
         )
         );
         $expectedField->setModelRef('Entity\User', 'id');
@@ -78,7 +78,7 @@ class SearchFactorySpec extends ObjectBehavior
             'uid',
             array(
                 'model_class' => 'Entity\User',
-                'model_property' => 'id'
+                'model_property' => 'id',
             )
         )->willReturn($expectedField);
 
@@ -87,7 +87,7 @@ class SearchFactorySpec extends ObjectBehavior
             Argument::exact($expectedField),
             array(
                 'model_class' => 'Entity\User',
-                'model_property' => 'id'
+                'model_property' => 'id',
             )
         )->shouldBeCalled();
 
@@ -96,7 +96,7 @@ class SearchFactorySpec extends ObjectBehavior
             'number',
             array(
                 'model_class' => 'Entity\User',
-                'model_property' => 'id'
+                'model_property' => 'id',
             )
         )->shouldEqual($expectedField);
     }

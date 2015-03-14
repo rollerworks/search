@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -49,7 +49,7 @@ class ValuesGroup implements \Serializable
     /**
      * @var int|null
      */
-    private $count = null;
+    private $count;
 
     /**
      * Constructor.
@@ -82,15 +82,15 @@ class ValuesGroup implements \Serializable
      */
     public function hasGroups()
     {
-        return !empty($this->groups);
+        return count($this->groups) > 0;
     }
 
     /**
      * @param int $index
      *
-     * @return ValuesGroup
-     *
      * @throws InvalidArgumentException on invalid index.
+     *
+     * @return ValuesGroup
      */
     public function getGroup($index)
     {
@@ -167,9 +167,9 @@ class ValuesGroup implements \Serializable
     /**
      * @param string $name
      *
-     * @return ValuesBag
-     *
      * @throws InvalidArgumentException
+     *
+     * @return ValuesBag
      */
     public function getField($name)
     {
@@ -293,7 +293,7 @@ class ValuesGroup implements \Serializable
                 $this->groups,
                 $this->fields,
                 $this->locked,
-                $this->count
+                $this->count,
             )
         );
     }
@@ -321,9 +321,9 @@ class ValuesGroup implements \Serializable
      *
      * @param bool $locked
      *
-     * @return self
-     *
      * @throws BadMethodCallException when the data is locked
+     *
+     * @return self
      */
     public function setDataLocked($locked = true)
     {

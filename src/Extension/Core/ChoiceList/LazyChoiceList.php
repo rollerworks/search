@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
 /**
- * A choice list that is loaded lazily
+ * A choice list that is loaded lazily.
  *
  * This list loads itself as soon as any of the getters is accessed for the
  * first time. You should implement loadChoiceList() in your child classes,
@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 abstract class LazyChoiceList implements ChoiceListInterface
 {
     /**
-     * The loaded choice list
+     * The loaded choice list.
      *
      * @var ChoiceListInterface
      */

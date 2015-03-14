@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -51,11 +51,11 @@ abstract class BaseDateTimeTransformer implements DataTransformerInterface
      */
     public function __construct($inputTimezone = null, $outputTimezone = null)
     {
-        if (!is_string($inputTimezone) && null !== $inputTimezone) {
+        if (null !== $inputTimezone && !is_string($inputTimezone)) {
             throw new UnexpectedTypeException($inputTimezone, 'string');
         }
 
-        if (!is_string($outputTimezone) && null !== $outputTimezone) {
+        if (null !== $outputTimezone && !is_string($outputTimezone)) {
             throw new UnexpectedTypeException($outputTimezone, 'string');
         }
 

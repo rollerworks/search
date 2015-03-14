@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -21,7 +21,7 @@ namespace Rollerworks\Component\Search\Util;
  *
  * @link https://raw.github.com/symfony/symfony/master/src/Symfony/Component/Config/Util/XmlUtils.php
  */
-class XmlUtils
+final class XmlUtil
 {
     /**
      * Loads an XML file.
@@ -29,9 +29,9 @@ class XmlUtils
      * @param string          $file             An XML file path
      * @param string|callable $schemaOrCallable An XSD schema file path or callable
      *
-     * @return \DOMDocument
-     *
      * @throws \InvalidArgumentException When loading of XML file returns error
+     *
+     * @return \DOMDocument
      */
     public static function loadFile($file, $schemaOrCallable = null)
     {
@@ -49,9 +49,9 @@ class XmlUtils
      * @param string|callable $schemaOrCallable An XSD schema file path or callable
      * @param string          $defaultMessage
      *
-     * @return \DOMDocument
-     *
      * @throws \InvalidArgumentException When loading of XML document returns an error
+     *
+     * @return \DOMDocument
      */
     public static function parseXml($content, $schemaOrCallable = null, $defaultMessage = 'The XML file is not valid.')
     {
@@ -105,7 +105,8 @@ class XmlUtils
 
             if (!$valid) {
                 $messages = static::getXmlErrors($internalErrors);
-                if (empty($messages)) {
+
+                if (0 === count($messages)) {
                     $messages = array($defaultMessage);
                 }
 
@@ -211,13 +212,13 @@ class XmlUtils
 
             case ctype_digit($value):
                 $raw = $value;
-                $cast = intval($value);
+                $cast = (int) ($value);
 
                 return '0' === $value[0] ? octdec($value) : (((string) $raw === (string) $cast) ? $cast : $raw);
 
             case isset($value[1]) && '-' === $value[0] && ctype_digit(substr($value, 1)):
                 $raw = $value;
-                $cast = intval($value);
+                $cast = (int) ($value);
 
                 return '0' === $value[1] ? octdec($value) : (((string) $raw === (string) $cast) ? $cast : $raw);
 
@@ -231,10 +232,10 @@ class XmlUtils
                 return bindec($value);
 
             case is_numeric($value):
-                return '0x' === $value[0].$value[1] ? hexdec($value) : floatval($value);
+                return '0x' === $value[0].$value[1] ? hexdec($value) : (float) ($value);
 
             case preg_match('/^(-|\+)?[0-9]+(\.[0-9]+)?$/', $value):
-                return floatval($value);
+                return (float) ($value);
 
             default:
                 return $value;
@@ -255,7 +256,7 @@ class XmlUtils
                 LIBXML_ERR_WARNING === $error->level ? 'WARNING' : 'ERROR',
                 $error->code,
                 trim($error->message),
-                $error->file ? $error->file : 'n/a',
+                $error->file ?: 'n/a',
                 $error->line,
                 $error->column
             );
@@ -268,7 +269,7 @@ class XmlUtils
     }
 
     /**
-     * This class should not be instantiated
+     * This class should not be instantiated.
      */
     private function __construct()
     {

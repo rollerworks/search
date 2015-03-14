@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -53,8 +53,6 @@ class SimpleChoiceList extends ChoiceList
         if (array_key_exists($value, $values)) {
             return $value;
         }
-
-        return;
     }
 
     /**
@@ -70,8 +68,6 @@ class SimpleChoiceList extends ChoiceList
         if (array_key_exists($choice, $values)) {
             return $choice;
         }
-
-        return;
     }
 
     /**
@@ -87,8 +83,6 @@ class SimpleChoiceList extends ChoiceList
         if (array_key_exists($choice, $labels)) {
             return $labels[$choice];
         }
-
-        return;
     }
 
     /**
@@ -113,7 +107,7 @@ class SimpleChoiceList extends ChoiceList
      *
      * @param mixed $choice The choice
      *
-     * @return string|integer A valid PHP array key
+     * @return string|int A valid PHP array key
      */
     protected function fixChoice($choice)
     {

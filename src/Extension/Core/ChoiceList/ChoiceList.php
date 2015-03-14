@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -63,7 +63,7 @@ class ChoiceList implements ChoiceListInterface
      */
     public function __construct($choices, array $labels)
     {
-        if (!is_array($choices) && !$choices instanceof \Traversable) {
+        if (!$choices instanceof \Traversable && !is_array($choices)) {
             throw new UnexpectedTypeException($choices, 'array or \Traversable');
         }
 
@@ -114,8 +114,6 @@ class ChoiceList implements ChoiceListInterface
                 return $this->choices[$i];
             }
         }
-
-        return;
     }
 
     /**
@@ -130,8 +128,6 @@ class ChoiceList implements ChoiceListInterface
                 return $this->values[$i];
             }
         }
-
-        return;
     }
 
     /**
@@ -152,8 +148,6 @@ class ChoiceList implements ChoiceListInterface
                 return $this->choices[$i];
             }
         }
-
-        return;
     }
 
     /**
@@ -168,8 +162,6 @@ class ChoiceList implements ChoiceListInterface
                 return $this->labels[$i];
             }
         }
-
-        return;
     }
 
     /**
@@ -320,8 +312,8 @@ class ChoiceList implements ChoiceListInterface
      */
     protected function fixIndices(array $indices)
     {
-        foreach ($indices as $i => $index) {
-            $indices[$i] = $this->fixIndex($index);
+        foreach ($indices as &$index) {
+            $index = $this->fixIndex($index);
         }
 
         return $indices;

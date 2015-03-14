@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 class FieldRegistry implements FieldRegistryInterface
 {
     /**
-     * Extensions
+     * Extensions.
      *
      * @var SearchExtensionInterface[] An array of FormExtensionInterface
      */

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -15,7 +15,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
- * Transforms between a normalized time and a localized time string
+ * Transforms between a normalized time and a localized time string.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
@@ -78,11 +78,11 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      *
      * @param \DateTime $dateTime Normalized date.
      *
-     * @return string|array Localized date string/array.
-     *
      * @throws TransformationFailedException If the given value is not an instance
      *                                       of \DateTime or if the date could not
      *                                       be transformed.
+     *
+     * @return string|array Localized date string/array.
      */
     public function transform($dateTime)
     {
@@ -118,11 +118,11 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      *
      * @param string|array $value Localized date string/array
      *
-     * @return \DateTime|null Normalized date
-     *
      * @throws TransformationFailedException if the given value is not a string,
      *                                       if the date could not be parsed or
      *                                       if the input timezone is not supported
+     *
+     * @return \DateTime|null Normalized date
      */
     public function reverseTransform($value)
     {
@@ -171,7 +171,7 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     }
 
     /**
-     * Returns a preconfigured IntlDateFormatter instance
+     * Returns a preconfigured IntlDateFormatter instance.
      *
      * @return \IntlDateFormatter
      */

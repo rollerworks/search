@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -102,9 +102,9 @@ class FieldSet implements \Countable, \IteratorAggregate
      * @param string               $name
      * @param FieldConfigInterface $config
      *
-     * @return self
-     *
      * @throws \RuntimeException When the field is not registered at this fieldset.
+     *
+     * @return self
      */
     public function replace($name, FieldConfigInterface $config)
     {
@@ -148,9 +148,9 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @param string $name
      *
-     * @return FieldConfigInterface
-     *
      * @throws \RuntimeException When the field is not registered at this fieldset.
+     *
+     * @return FieldConfigInterface
      */
     public function get($name)
     {

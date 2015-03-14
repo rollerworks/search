@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -97,6 +97,8 @@ class SearchField implements FieldConfigInterface
      * @param bool $required
      *
      * @throws BadMethodCallException
+     *
+     * @return self
      */
     public function setRequired($required = true)
     {
@@ -191,6 +193,8 @@ class SearchField implements FieldConfigInterface
      *
      * @throws BadMethodCallException when the data is locked
      *
+     * @return self
+     *
      * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
      *             Use the 'model_class' and 'model_property' options instead.
      */
@@ -238,6 +242,8 @@ class SearchField implements FieldConfigInterface
      * @param ValueComparisonInterface $comparisonObj
      *
      * @throws BadMethodCallException when the data is locked
+     *
+     * @return self
      */
     public function setValueComparison(ValueComparisonInterface $comparisonObj)
     {
@@ -273,9 +279,9 @@ class SearchField implements FieldConfigInterface
      * @param DataTransformerInterface $viewTransformer
      * @param bool                     $forcePrepend    if set to true, prepend instead of appending
      *
-     * @return self The configuration object.
-     *
      * @throws BadMethodCallException when the data is locked
+     *
+     * @return self The configuration object.
      */
     public function addViewTransformer(DataTransformerInterface $viewTransformer, $forcePrepend = false)
     {
@@ -297,9 +303,9 @@ class SearchField implements FieldConfigInterface
     /**
      * Clears the view transformers.
      *
-     * @return self The configuration object.
-     *
      * @throws BadMethodCallException when the data is locked
+     *
+     * @return self The configuration object.
      */
     public function resetViewTransformers()
     {

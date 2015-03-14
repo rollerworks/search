@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -57,7 +57,7 @@ class DateValueComparison implements ValueIncrementerInterface
      */
     public function isEqual($value, $nextValue, $options)
     {
-        return $value == $nextValue;
+        return $value->getTimestamp() === $nextValue->getTimestamp();
     }
 
     /**

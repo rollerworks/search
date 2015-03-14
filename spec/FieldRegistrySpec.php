@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -21,17 +21,17 @@ use Rollerworks\Component\Search\SearchExtensionInterface;
 
 class FieldRegistrySpec extends ObjectBehavior
 {
-    public function let(ResolvedFieldTypeFactoryInterface $resolvedFieldFactory)
+    function let(ResolvedFieldTypeFactoryInterface $resolvedFieldFactory)
     {
         $this->beConstructedWith(array(), $resolvedFieldFactory);
     }
 
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\FieldRegistry');
     }
 
-    public function it_loads_types_from_extensions(SearchExtensionInterface $extension, FieldTypeInterface $type, ResolvedFieldTypeInterface $resolvedType, ResolvedFieldTypeFactoryInterface $resolvedFieldFactory)
+    function it_loads_types_from_extensions(SearchExtensionInterface $extension, FieldTypeInterface $type, ResolvedFieldTypeInterface $resolvedType, ResolvedFieldTypeFactoryInterface $resolvedFieldFactory)
     {
         $type->getName()->willReturn('integer');
         $type->getParent()->willReturn(null);
@@ -49,7 +49,7 @@ class FieldRegistrySpec extends ObjectBehavior
         $this->getType('integer')->shouldEqual($resolvedType);
     }
 
-    public function it_loads_type_extensions(SearchExtensionInterface $extension, SearchExtensionInterface $extension2, FieldTypeExtensionInterface $fieldExtension, FieldTypeExtensionInterface $fieldExtension2, FieldTypeInterface $type, ResolvedFieldTypeInterface $resolvedType, ResolvedFieldTypeFactoryInterface $resolvedFieldFactory)
+    function it_loads_type_extensions(SearchExtensionInterface $extension, SearchExtensionInterface $extension2, FieldTypeExtensionInterface $fieldExtension, FieldTypeExtensionInterface $fieldExtension2, FieldTypeInterface $type, ResolvedFieldTypeInterface $resolvedType, ResolvedFieldTypeFactoryInterface $resolvedFieldFactory)
     {
         $type->getName()->willReturn('integer');
         $type->getParent()->willReturn(null);

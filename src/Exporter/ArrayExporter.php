@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -43,7 +43,7 @@ class ArrayExporter extends AbstractExporter
             $exportedValue = $this->exportValues($values, $fieldSet->get($name));
 
             // Only export fields with actual values
-            if (!empty($exportedValue)) {
+            if (count($exportedValue) > 0) {
                 $fieldLabel = $this->labelResolver->resolveFieldLabel($fieldSet, $name);
                 $result['fields'][$fieldLabel] = $exportedValue;
             }
@@ -53,7 +53,7 @@ class ArrayExporter extends AbstractExporter
             $result['groups'][] = $this->exportGroup($group, $fieldSet, false);
         }
 
-        if (ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical() && (isset($result['fields']))) {
+        if ((isset($result['fields'])) && ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()) {
             $result['logical-case'] = 'OR';
         }
 

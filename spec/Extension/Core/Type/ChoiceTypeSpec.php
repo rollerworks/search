@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -18,19 +18,19 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 
 class ChoiceTypeSpec extends ObjectBehavior
 {
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Extension\Core\Type\ChoiceType');
     }
 
-    public function it_sets_the_value_transformer_when_configured(FieldConfigInterface $config, ChoiceListInterface $choices)
+    function it_sets_the_value_transformer_when_configured(FieldConfigInterface $config, ChoiceListInterface $choices)
     {
         $config->addViewTransformer(Argument::type('Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTransformer'))->shouldBeCalled();
 
         $this->buildType($config, array('label_as_value' => false, 'choice_list' => $choices));
     }
 
-    public function it_sets_the_label_transformer_when_configured(FieldConfigInterface $config, ChoiceListInterface $choices)
+    function it_sets_the_label_transformer_when_configured(FieldConfigInterface $config, ChoiceListInterface $choices)
     {
         $config->addViewTransformer(Argument::type('Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer'))->shouldBeCalled();
 

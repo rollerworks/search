@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -63,6 +63,7 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
         krsort($this->optimizers, SORT_NUMERIC);
 
         foreach ($this->optimizers as $optimizers) {
+            /** @var SearchConditionOptimizerInterface[] $optimizers */
             foreach ($optimizers as $optimizer) {
                 $optimizer->process($condition);
             }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -33,7 +33,7 @@ final class FieldValuesFactory
 
     public function addSingleValue($value)
     {
-        $path = "singleValues[".count($this->valuesBag->getSingleValues())."]";
+        $path = 'singleValues['.count($this->valuesBag->getSingleValues()).']';
         $value = (string) $value;
 
         $normValue = $this->viewToNorm($value, $path);
@@ -50,7 +50,7 @@ final class FieldValuesFactory
 
     public function addExcludedValue($value)
     {
-        $path = "excludedValues[".count($this->valuesBag->getExcludedValues())."]";
+        $path = 'excludedValues['.count($this->valuesBag->getExcludedValues()).']';
         $value = (string) $value;
 
         $normValue = $this->viewToNorm($value, $path);
@@ -67,7 +67,7 @@ final class FieldValuesFactory
 
     public function addRange($lower, $upper, $lowerInclusive, $upperInclusive)
     {
-        $path = "ranges[".count($this->valuesBag->getRanges())."]";
+        $path = 'ranges['.count($this->valuesBag->getRanges()).']';
 
         $this->valuesBag->addRange(
             $this->createRangeValue($lower, $upper, $lowerInclusive, $upperInclusive, $path)
@@ -76,7 +76,7 @@ final class FieldValuesFactory
 
     public function addExcludedRange($lower, $upper, $lowerInclusive, $upperInclusive)
     {
-        $path = "excludedRanges[".count($this->valuesBag->getExcludedRanges())."]";
+        $path = 'excludedRanges['.count($this->valuesBag->getExcludedRanges()).']';
 
         $this->valuesBag->addExcludedRange(
             $this->createRangeValue($lower, $upper, $lowerInclusive, $upperInclusive, $path)
@@ -85,7 +85,7 @@ final class FieldValuesFactory
 
     public function addComparisonValue($operator, $value)
     {
-        $path = "comparisons[".count($this->valuesBag->getComparisons())."].value";
+        $path = 'comparisons['.count($this->valuesBag->getComparisons()).'].value';
         $value = (string) $value;
 
         $normValue = $this->viewToNorm($value, $path);
@@ -164,7 +164,7 @@ final class FieldValuesFactory
     {
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
-        if (!$this->config->getViewTransformers() || null === $value) {
+        if (null === $value || !$this->config->getViewTransformers()) {
             if (null !== $value && !is_scalar($value)) {
                 throw new \RuntimeException(
                     sprintf(
@@ -198,8 +198,6 @@ final class FieldValuesFactory
                 )
             );
         }
-
-        return;
     }
 
     /**
@@ -236,7 +234,5 @@ final class FieldValuesFactory
                 )
             );
         }
-
-        return;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -37,7 +37,7 @@ class ChoiceType extends AbstractFieldType
      */
     public function buildType(FieldConfigInterface $config, array $options)
     {
-        if (!$options['choice_list'] && !is_array($options['choices']) && !$options['choices'] instanceof \Traversable) {
+        if (!$options['choice_list'] && !$options['choices'] instanceof \Traversable && !is_array($options['choices'])) {
             throw new InvalidConfigurationException('Either the option "choices" or "choice_list" must be set.');
         }
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearch Component package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -69,12 +69,12 @@ class NumberValueComparison implements ValueIncrementerInterface
      * @param array     $options    Array of options passed with the field
      * @param int       $increments Number of increments
      *
-     * @return double
+     * @return float
      */
     public function getIncrementedValue($value, array $options, $increments = 1)
     {
         if (isset($options['increase_by_decimal'])) {
-            return $value + floatval("0.$increments");
+            return $value + (float) ("0.$increments");
         }
 
         return $value + $increments;
