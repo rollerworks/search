@@ -5,8 +5,8 @@ php:
     - 5.4
     - 5.5
     - 5.6
+    - 7.0
     - hhvm
-    - nightly
     - hhvm-nightly
 
 matrix:
@@ -16,7 +16,7 @@ matrix:
         - php: 5.6
           env: DEPENDENCIES='dev'
     allow_failures:
-        - php: nightly
+        - php: 7.0
         - php: hhvm-nightly
         - env: DEPENDENCIES='dev'
     fast_finish: true
@@ -28,11 +28,12 @@ cache:
         - $HOME/.composer/cache
 
 install:
+    - export SYMFONY_DEPRECATIONS_HELPER=weak
     - export COMPOSER_ROOT_VERSION=dev-master
     - if [ "$DEPENDENCIES" == "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
     - if [ "$DEPENDENCIES" != "low" ]; then travis_retry composer update; fi;
     - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest; fi;
 
 script:
-    - phpunit --configuration phpunit.xml.dist
+    - bin/phpunit --configuration phpunit.xml.dist --verbose
     - bin/phpspec run

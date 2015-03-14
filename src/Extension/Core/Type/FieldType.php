@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -74,11 +75,17 @@ class FieldType extends AbstractFieldType
             )
         );
 
-        $resolver->setAllowedTypes(
-            array(
-                'invalid_message' => array('string'),
-                'invalid_message_parameters' => array('array'),
-            )
-        );
+        // BC layer for Symfony 2.7 and 3.0
+        if ($resolver instanceof OptionsResolverInterface) {
+            $resolver->setAllowedTypes(
+                array(
+                    'invalid_message' => array('string'),
+                    'invalid_message_parameters' => array('array'),
+                )
+            );
+        } else {
+            $resolver->setAllowedTypes('invalid_message', array('string'));
+            $resolver->setAllowedTypes('invalid_message_parameters', array('array'));
+        }
     }
 }

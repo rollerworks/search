@@ -18,6 +18,7 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -73,10 +74,18 @@ class BirthdayType extends AbstractFieldType
             },
         ));
 
-        $resolver->setAllowedTypes(array(
-            'allow_age' => array('bool'),
-            'allow_future_date' => array('bool'),
-        ));
+        // BC layer for Symfony 2.7 and 3.0
+        if ($resolver instanceof OptionsResolverInterface) {
+            $resolver->setAllowedTypes(
+                array(
+                    'allow_age' => array('bool'),
+                    'allow_future_date' => array('bool'),
+                )
+            );
+        } else {
+            $resolver->setAllowedTypes('allow_age', array('bool'));
+            $resolver->setAllowedTypes('allow_future_date', array('bool'));
+        }
     }
 
     /**

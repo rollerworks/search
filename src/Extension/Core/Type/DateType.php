@@ -18,6 +18,7 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -109,9 +110,14 @@ class DateType extends AbstractFieldType
             )
         );
 
-        $resolver->setAllowedTypes(
-            array('format' => array('int', 'string'))
-        );
+        // BC layer for Symfony 2.7 and 3.0
+        if ($resolver instanceof OptionsResolverInterface) {
+            $resolver->setAllowedTypes(
+                array('format' => array('int', 'string'))
+            );
+        } else {
+            $resolver->setAllowedTypes('format', array('int', 'string'));
+        }
     }
 
     /**
