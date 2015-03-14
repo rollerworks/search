@@ -65,15 +65,39 @@ class SearchFactorySpec extends ObjectBehavior
     {
         $this->beConstructedWith($registry->getWrappedObject(), $resolvedTypeFactory->getWrappedObject());
 
-        $expectedField = new SearchField('uid', $type->getWrappedObject());
+        $expectedField = new SearchField(
+            'uid', $type->getWrappedObject(), array(
+            'model_class' => 'Entity\User',
+            'model_property' => 'id'
+        )
+        );
         $expectedField->setModelRef('Entity\User', 'id');
 
         $type->getName()->willReturn('number');
-        $type->createField('uid', array())->willReturn($expectedField);
+        $type->createField(
+            'uid',
+            array(
+                'model_class' => 'Entity\User',
+                'model_property' => 'id'
+            )
+        )->willReturn($expectedField);
 
         $registry->getType('number')->willReturn($type->getWrappedObject());
-        $type->buildType(Argument::exact($expectedField), array())->shouldBeCalled();
+        $type->buildType(
+            Argument::exact($expectedField),
+            array(
+                'model_class' => 'Entity\User',
+                'model_property' => 'id'
+            )
+        )->shouldBeCalled();
 
-        $this->createFieldForProperty('Entity\User', 'id', 'uid', 'number')->shouldEqual($expectedField);
+        $this->createField(
+            'uid',
+            'number',
+            array(
+                'model_class' => 'Entity\User',
+                'model_property' => 'id'
+            )
+        )->shouldEqual($expectedField);
     }
 }
