@@ -19,6 +19,7 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTra
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -79,9 +80,25 @@ class ChoiceType extends AbstractFieldType
             'choices' => array(),
         ));
 
-        $resolver->setAllowedTypes(array(
-            'choice_list' => array('null', 'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface'),
-        ));
+        // BC layer for Symfony 2.7 and 3.0
+        if ($resolver instanceof OptionsResolverInterface) {
+            $resolver->setAllowedTypes(
+                array(
+                    'choice_list' => array(
+                        'null',
+                        'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface'
+                    ),
+                )
+            );
+        } else {
+            $resolver->setAllowedTypes(
+                'choice_list',
+                array(
+                    'null',
+                    'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface'
+                )
+            );
+        }
     }
 
     /**

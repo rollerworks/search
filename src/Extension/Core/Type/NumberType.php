@@ -17,6 +17,7 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -69,9 +70,25 @@ class NumberType extends AbstractFieldType
             )
         );
 
-        $resolver->setAllowedValues(
-            array(
-                'rounding_mode' => array(
+        // BC layer for Symfony 2.7 and 3.0
+        if ($resolver instanceof OptionsResolverInterface) {
+            $resolver->setAllowedValues(
+                array(
+                    'rounding_mode' => array(
+                        \NumberFormatter::ROUND_FLOOR,
+                        \NumberFormatter::ROUND_DOWN,
+                        \NumberFormatter::ROUND_HALFDOWN,
+                        \NumberFormatter::ROUND_HALFEVEN,
+                        \NumberFormatter::ROUND_HALFUP,
+                        \NumberFormatter::ROUND_UP,
+                        \NumberFormatter::ROUND_CEILING,
+                    ),
+                )
+            );
+        } else {
+            $resolver->setAllowedValues(
+                'rounding_mode',
+                array(
                     \NumberFormatter::ROUND_FLOOR,
                     \NumberFormatter::ROUND_DOWN,
                     \NumberFormatter::ROUND_HALFDOWN,
@@ -79,9 +96,9 @@ class NumberType extends AbstractFieldType
                     \NumberFormatter::ROUND_HALFUP,
                     \NumberFormatter::ROUND_UP,
                     \NumberFormatter::ROUND_CEILING,
-                ),
-            )
-        );
+                )
+            );
+        }
     }
 
     /**
