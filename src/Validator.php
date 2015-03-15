@@ -83,7 +83,7 @@ class Validator
             }
 
             $config = $fieldSet->get($fieldName);
-            $constraints = $config->getOption('constraints');
+            $constraints = $config->getOption('constraints', array());
 
             // Don't validate values without constraints
             if (!$constraints) {
@@ -96,10 +96,10 @@ class Validator
     }
 
     /**
-     * @param ValuesBag    $valuesBag
-     * @param Constraint[] $constraints
+     * @param ValuesBag               $valuesBag
+     * @param Constraint[]|Constraint $constraints
      */
-    private function validateValuesBag(ValuesBag $valuesBag, array $constraints, $validationGroups = null)
+    private function validateValuesBag(ValuesBag $valuesBag, $constraints, $validationGroups = null)
     {
         foreach ($valuesBag->getSingleValues() as $i => $value) {
             $this->validateValue(
@@ -167,13 +167,13 @@ class Validator
     }
 
     /**
-     * @param Range     $range
-     * @param array     $constraints
-     * @param string    $subPath
-     * @param ValuesBag $valuesBag
-     * @param string[]  $validationGroups
+     * @param Range                   $range
+     * @param Constraint[]|Constraint $constraints
+     * @param string                  $subPath
+     * @param ValuesBag               $valuesBag
+     * @param string[]                $validationGroups
      */
-    private function validateRange(Range $range, array $constraints, $subPath, ValuesBag $valuesBag, $validationGroups = null)
+    private function validateRange(Range $range, $constraints, $subPath, ValuesBag $valuesBag, $validationGroups = null)
     {
         $this->validateValue($range->getLower(), $range->getViewLower(), $constraints, $subPath.'.lower', $valuesBag, $validationGroups);
         $this->validateValue($range->getUpper(), $range->getViewUpper(), $constraints, $subPath.'.upper', $valuesBag, $validationGroups);
@@ -198,14 +198,14 @@ class Validator
     }
 
     /**
-     * @param mixed     $value
-     * @param string    $viewValue
-     * @param array     $constraints
-     * @param string    $subPath
-     * @param ValuesBag $valuesBag
-     * @param string[]  $validationGroups
+     * @param mixed                   $value
+     * @param string                  $viewValue
+     * @param Constraint[]|Constraint $constraints
+     * @param string                  $subPath
+     * @param ValuesBag               $valuesBag
+     * @param string[]                $validationGroups
      */
-    private function validateValue($value, $viewValue, array $constraints, $subPath, ValuesBag $valuesBag, $validationGroups = null)
+    private function validateValue($value, $viewValue, $constraints, $subPath, ValuesBag $valuesBag, $validationGroups = null)
     {
         if ($this->validator instanceof LegacyValidator) {
             $violations = $this->validator->validateValue($value, $constraints, $validationGroups);

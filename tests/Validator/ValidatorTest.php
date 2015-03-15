@@ -128,7 +128,6 @@ final class ValidatorTest extends SearchIntegrationTestCase
             'id',
             'text',
             array(
-                'constraints' => array(),
                 'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
                 'model_property' => 'id',
             )
@@ -169,10 +168,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
             'id',
             'text',
             array(
-                'constraints' => array(
-                    new Assert\Range(
-                        array('min' => 5, 'max' => 10)),
-                    ),
+                'constraints' => new Assert\Range(array('min' => 5, 'max' => 10)),
                 'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
                 'model_property' => 'id',
             )
@@ -216,7 +212,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
             'id',
             'text',
             array(
-                'constraints' => null, // setting null disables autoloading constraints
+                'constraints' => array(),
                 'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
                 'model_property' => 'id',
             )
