@@ -1,5 +1,5 @@
-Rollerworks Search
-==================
+RollerworksSearch
+=================
 
 .. toctree::
     :maxdepth: 2
