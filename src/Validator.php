@@ -62,7 +62,7 @@ class Validator
         $group = $condition->getValuesGroup();
         $this->validateValuesGroup($group, $condition->getFieldSet());
 
-        return $group->hasErrors(true);
+        return !$group->hasErrors(true);
     }
 
     /**

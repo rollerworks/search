@@ -22,11 +22,18 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "~2.7@dev",
-        "phpunit/phpunit": "~4.5"
+        "phpunit/phpunit": "~4.5",
+        "doctrine/annotations": "~1.2",
+        "doctrine/cache": "~1.4"
     },
     "autoload": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Tests\\Extension\\Validator\\Fixtures\\": "tests/Fixtures"
         }
     },
     "config": {

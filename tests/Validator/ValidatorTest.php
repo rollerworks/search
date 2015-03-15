@@ -13,7 +13,6 @@ namespace Rollerworks\Component\Search\Tests\Extension\Validator;
 
 use Rollerworks\Component\Search\Extension\Symfony\Validator\Validator;
 use Rollerworks\Component\Search\Extension\Symfony\Validator\ValidatorExtension;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
@@ -31,11 +30,6 @@ final class ValidatorTest extends SearchIntegrationTestCase
     private $sfValidator;
 
     /**
-     * @var FieldSet
-     */
-    private $fieldSet;
-
-    /**
      * @var Validator
      */
     private $validator;
@@ -45,12 +39,12 @@ final class ValidatorTest extends SearchIntegrationTestCase
         parent::setUp();
 
         $validatorBuilder = Validation::createValidatorBuilder();
+        $validatorBuilder->enableAnnotationMapping();
 
         if (method_exists($validatorBuilder, 'setApiVersion')) {
             $validatorBuilder->setApiVersion(Validation::API_VERSION_2_5);
         }
 
-        $this->fieldSet = $this->getFieldSet();
         $this->sfValidator = $validatorBuilder->getValidator();
         $this->validator = new Validator($this->sfValidator);
     }
@@ -78,7 +72,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
 
     protected function getExtensions()
     {
-        return array(new ValidatorExtension());
+        return array(new ValidatorExtension($this->sfValidator));
     }
 
     /**
@@ -86,7 +80,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
      */
     public function it_validates_fields_with_constraints()
     {
-        $condition = SearchConditionBuilder::create($this->fieldSet)
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('id')
                 ->addSingleValue(new SingleValue(10))
                 ->addSingleValue(new SingleValue(3))
@@ -126,6 +120,129 @@ final class ValidatorTest extends SearchIntegrationTestCase
     /**
      * @test
      */
+    public function it_loads_constraints_from_metadata()
+    {
+        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
+        $fieldSet->add('type', 'text');
+        $fieldSet->add(
+            'id',
+            'text',
+            array(
+                'constraints' => array(),
+                'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
+                'model_property' => 'id',
+            )
+        );
+
+        $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
+            ->field('id')
+                ->addSingleValue(new SingleValue(10))
+                ->addSingleValue(new SingleValue(3))
+                ->addSingleValue(new SingleValue(4))
+            ->end()
+            ->field('type')
+                ->addSingleValue(new SingleValue('foo'))
+            ->end()
+            ->getSearchCondition()
+        ;
+
+        $this->validator->validate($condition);
+        $valuesGroup = $condition->getValuesGroup();
+
+        $this->assertTrue($valuesGroup->hasErrors());
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '3', '{{ limit }}' => 6));
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '4', '{{ limit }}' => 6));
+
+        // No more errors then asserted
+        $this->assertCount(2, $valuesGroup->getField('id')->getErrors());
+        $this->assertCount(0, $valuesGroup->getField('type')->getErrors());
+    }
+
+    /**
+     * @test
+     */
+    public function it_allows_overwritten_constraints_from_metadata()
+    {
+        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
+        $fieldSet->add('type', 'text');
+        $fieldSet->add(
+            'id',
+            'text',
+            array(
+                'constraints' => array(
+                    new Assert\Range(
+                        array('min' => 5, 'max' => 10)),
+                    ),
+                'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
+                'model_property' => 'id',
+            )
+        );
+
+        $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
+            ->field('id')
+                ->addSingleValue(new SingleValue(10))
+                ->addSingleValue(new SingleValue(3))
+                ->addSingleValue(new SingleValue(4))
+                ->addSingleValue(new SingleValue(6))
+                ->addSingleValue(new SingleValue(20))
+            ->end()
+            ->field('type')
+                ->addSingleValue(new SingleValue('foo'))
+            ->end()
+            ->getSearchCondition()
+        ;
+
+        $this->validator->validate($condition);
+        $valuesGroup = $condition->getValuesGroup();
+
+        $this->assertTrue($valuesGroup->hasErrors());
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '3', '{{ limit }}' => 5));
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '4', '{{ limit }}' => 5));
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[4].value', 'This value should be {{ limit }} or less.', array('{{ value }}' => '20', '{{ limit }}' => 10));
+
+        // No more errors then asserted
+        $this->assertCount(3, $valuesGroup->getField('id')->getErrors());
+        $this->assertCount(0, $valuesGroup->getField('type')->getErrors());
+    }
+
+    /**
+     * @test
+     */
+    public function it_allows_disabling_constraints_from_metadata()
+    {
+        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
+        $fieldSet->add('type', 'text');
+        $fieldSet->add(
+            'id',
+            'text',
+            array(
+                'constraints' => null, // setting null disables autoloading constraints
+                'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
+                'model_property' => 'id',
+            )
+        );
+
+        $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
+            ->field('id')
+                ->addSingleValue(new SingleValue(10))
+                ->addSingleValue(new SingleValue(3))
+                ->addSingleValue(new SingleValue(4))
+                ->addSingleValue(new SingleValue(6))
+                ->addSingleValue(new SingleValue(20))
+            ->end()
+            ->field('type')
+                ->addSingleValue(new SingleValue('foo'))
+            ->end()
+            ->getSearchCondition()
+        ;
+
+        $this->assertTrue($this->validator->validate($condition));
+        $this->assertFalse($condition->getValuesGroup()->hasErrors());
+    }
+
+    /**
+     * @test
+     */
     public function it_validates_object_values()
     {
         if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
@@ -151,7 +268,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
 
         $dateLimit = $this->formatDateTime(new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC')));
 
-        $condition = SearchConditionBuilder::create($this->fieldSet)
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('date')
                 ->addSingleValue(new SingleValue($date3, $date3->format('m/d/Y')))
                 ->addSingleValue(new SingleValue($date, $date->format('m/d/Y')))
@@ -188,9 +305,9 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
         $fieldSet->add('username', 'text', array('constraints' => new Assert\NotBlank()));
 
-        $this->fieldSet = $fieldSet->getFieldSet();
+        $fieldSet = $fieldSet->getFieldSet();
 
-        $condition = SearchConditionBuilder::create($this->fieldSet)
+        $condition = SearchConditionBuilder::create($fieldSet)
             ->field('username')
                 ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_ENDS_WITH))
@@ -199,7 +316,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
             ->getSearchCondition()
         ;
 
-        $this->validator->validate($condition);
+        $this->assertFalse($this->validator->validate($condition));
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
@@ -217,9 +334,9 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
         $fieldSet->add('username', 'text', array('constraints' => new Assert\NotBlank()));
 
-        $this->fieldSet = $fieldSet->getFieldSet();
+        $fieldSet = $fieldSet->getFieldSet();
 
-        $condition = SearchConditionBuilder::create($this->fieldSet)
+        $condition = SearchConditionBuilder::create($fieldSet)
             ->field('username')
                 ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_ENDS_WITH))
