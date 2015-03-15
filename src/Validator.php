@@ -47,7 +47,17 @@ class Validator
     }
 
     /**
-     * {@inheritdoc}
+     * Validate the SearchCondition using the configured validation
+     * constraints.
+     *
+     * If the condition has invalid values the constraintViolations
+     * are converted to `Rollerworks\Component\Search\ValuesError` objects
+     * and added to the related ValuesBag object.
+     *
+     * @param SearchConditionInterface $condition
+     *
+     * @return bool Returns true when the condition is valid
+     *              false otherwise
      */
     public function validate(SearchConditionInterface $condition)
     {
