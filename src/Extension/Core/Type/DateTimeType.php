@@ -19,6 +19,7 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -27,7 +28,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DateTimeType extends AbstractFieldType
 {
     const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
-
     const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
 
     /**
@@ -88,19 +88,23 @@ class DateTimeType extends AbstractFieldType
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
 
-        $dateFormat = is_int($options['date_format']) ? $options['date_format'] : self::DEFAULT_DATE_FORMAT;
-        $timeFormat = self::DEFAULT_TIME_FORMAT;
-        $calendar = \IntlDateFormatter::GREGORIAN;
-        $pattern = is_string($options['format']) ? $options['format'] : null;
+        if (null === $options['pattern']) {
+            if (!in_array($options['date_format'], self::$acceptedFormats, true)) {
+                throw new InvalidConfigurationException(
+                    'The "date_format" option must be one of the IntlDateFormatter constants '.
+                    '(FULL, LONG, MEDIUM, SHORT) or the "format" must be a string representing a custom format.'
+                );
+            }
 
-        if (!in_array($dateFormat, self::$acceptedFormats, true)) {
-            throw new InvalidConfigurationException(
-                'The "date_format" option must be one of the IntlDateFormatter constants (FULL, LONG, MEDIUM, SHORT) '.
-                'or a string representing a custom format.'
-            );
+            if (!in_array($options['time_format'], self::$acceptedFormats, true)) {
+                throw new InvalidConfigurationException(
+                    'The "time_format" option must be one of the IntlDateFormatter constants '.
+                    '(FULL, LONG, MEDIUM, SHORT) or the "format" must be a string representing a custom format.'
+                );
+            }
         }
 
-        if (self::HTML5_FORMAT === $pattern) {
+        if (self::HTML5_FORMAT === $options['pattern']) {
             $config->addViewTransformer(
                 new DateTimeToRfc3339Transformer(
                     $options['model_timezone'],
@@ -112,10 +116,10 @@ class DateTimeType extends AbstractFieldType
                 new DateTimeToLocalizedStringTransformer(
                     $options['model_timezone'],
                     $options['view_timezone'],
-                    $dateFormat,
-                    $timeFormat,
-                    $calendar,
-                    $pattern
+                    $options['date_format'],
+                    $options['time_format'],
+                    \IntlDateFormatter::GREGORIAN,
+                    $options['pattern']
                 )
             );
         }
@@ -130,12 +134,26 @@ class DateTimeType extends AbstractFieldType
             array(
                 'model_timezone' => 'UTC',
                 'view_timezone' => null,
-                'format' => self::HTML5_FORMAT,
-                'date_format' => null,
-                'with_minutes' => true,
-                'with_seconds' => false,
+                'pattern' => null,
+                'date_format' => self::DEFAULT_DATE_FORMAT,
+                'time_format' => self::DEFAULT_TIME_FORMAT,
             )
         );
+
+        // BC layer for Symfony 2.7 and 3.0
+        if ($resolver instanceof OptionsResolverInterface) {
+            $resolver->setAllowedTypes(
+                array(
+                    'pattern' => array('string', 'null'),
+                    'date_format' => array('int'),
+                    'time_format' => array('int'),
+                )
+            );
+        } else {
+            $resolver->setAllowedTypes('pattern', array('string', 'null'));
+            $resolver->setAllowedTypes('date_format', array('int'));
+            $resolver->setAllowedTypes('time_format', array('int'));
+        }
     }
 
     /**

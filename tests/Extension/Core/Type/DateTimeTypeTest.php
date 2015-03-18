@@ -17,16 +17,17 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
 
 class DateTimeTypeTest extends FieldTypeTestCase
 {
-    public function testCreate()
+    public function testCanBeCreated()
     {
         $this->getFactory()->createField('datetime', 'datetime');
     }
 
-    public function testDifferentTimezonesDateTime()
+    public function testViewTimezoneCanBeTransformedToModelTimezone()
     {
         $field = $this->getFactory()->createField('datetime', 'datetime', array(
             'model_timezone' => 'America/New_York',
             'view_timezone' => 'Pacific/Tahiti',
+            'pattern' => DateTimeType::HTML5_FORMAT
         ));
 
         $outputTime = new \DateTime('2010-06-02 03:04:00 Pacific/Tahiti');
@@ -35,42 +36,32 @@ class DateTimeTypeTest extends FieldTypeTestCase
         $this->assertTransformedEquals($field, $outputTime, '2010-06-02T03:04:00-10:00');
     }
 
-    public function testWithSeconds()
+    public function testPatternCanBeConfigured()
     {
         $field = $this->getFactory()->createField('datetime', 'datetime', array(
-            'model_timezone' => 'UTC',
-            'view_timezone' => 'UTC',
-            'with_seconds' => true,
-        ));
-
-        $outputTime = new \DateTime('2010-06-02 03:04:05 UTC');
-        $this->assertTransformedEquals($field, $outputTime, '2010-06-02T03:04:05Z');
-    }
-
-    public function testDifferentPattern()
-    {
-        $field = $this->getFactory()->createField('datetime', 'datetime', array(
-            'format' => "MM*yyyy*dd",
+            'pattern' => "MM*yyyy*dd",
         ));
 
         $outputTime = new \DateTime('2010-06-02');
         $this->assertTransformedEquals($field, $outputTime, '06*2010*02');
     }
 
-    public function testHtml5Pattern()
+    public function testTimePatternCanBeConfigurable()
     {
         $field = $this->getFactory()->createField('datetime', 'datetime', array(
-            'format' => DateTimeType::HTML5_FORMAT,
+            'model_timezone' => 'UTC',
+            'view_timezone' => 'UTC',
+            'time_format' => \IntlDateFormatter::SHORT,
         ));
 
-        $outputTime = new \DateTime('2010-06-02T03:04:05-10:00');
-        $this->assertTransformedEquals($field, $outputTime, "2010-06-02T03:04:05-10:00");
+        $outputTime = new \DateTime('2010-06-02 03:04:00 UTC');
+        $this->assertTransformedEquals($field, $outputTime, 'Jun 2, 2010, 3:04 AM');
     }
 
-    public function testWrongInputFails()
+    public function testInvalidInputShouldFailTransformation()
     {
         $field = $this->getFactory()->createField('datetime', 'datetime', array(
-            'format' => "MM-yyyy-dd",
+            'pattern' => "MM-yyyy-dd",
         ));
 
         $this->assertTransformedFails($field, '06*2010*02');
@@ -81,10 +72,5 @@ class DateTimeTypeTest extends FieldTypeTestCase
         IntlTestHelper::requireIntl($this);
 
         parent::setUp();
-    }
-
-    protected function getTestedType()
-    {
-        return 'datetime';
     }
 }
