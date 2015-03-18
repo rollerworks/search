@@ -16,6 +16,7 @@ use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -123,6 +124,27 @@ class DateTimeType extends AbstractFieldType
                 )
             );
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    {
+        $pattern = $options['pattern'];
+
+        if (null === $pattern) {
+            $pattern = \IntlDateFormatter::create(
+                \Locale::getDefault(),
+                $options['date_format'],
+                $options['time_format'],
+                $options['view_timezone'],
+                \IntlDateFormatter::GREGORIAN
+            )->getPattern();
+        }
+
+        $view->vars['timezone'] = $options['view_timezone'] ?: date_default_timezone_get();
+        $view->vars['pattern'] = $pattern;
     }
 
     /**

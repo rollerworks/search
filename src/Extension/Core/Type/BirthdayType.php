@@ -14,6 +14,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\Options;
@@ -55,6 +56,15 @@ class BirthdayType extends AbstractFieldType
         $config->addViewTransformer(
             new BirthdayTransformer($viewTransformers, $options['allow_age'], $options['allow_future_date'])
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    {
+        $view->vars['allow_age'] = $options['allow_age'];
+        $view->vars['allow_future_date'] = $options['allow_future_date'];
     }
 
     /**

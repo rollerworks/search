@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -68,6 +69,26 @@ class TimeType extends AbstractFieldType
                 $format
             )
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    {
+        $pattern = 'H';
+
+        if ($options['with_minutes']) {
+            $pattern .= ':i';
+        }
+
+        if ($options['with_seconds']) {
+            $pattern .= ':s';
+        }
+
+        $view->vars['pattern'] = $pattern;
+        $view->vars['with_minutes'] = $options['with_minutes'];
+        $view->vars['with_seconds'] = $options['with_seconds'];
     }
 
     /**

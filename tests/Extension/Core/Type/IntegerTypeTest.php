@@ -38,10 +38,29 @@ class IntegerTypeTest extends FieldTypeTestCase
         $this->assertTransformedFails($field, '+1');
     }
 
+    public function testViewIsConfiguredProperly()
+    {
+        $field = $this->getFactory()->createField(
+            'integer',
+            'integer',
+            array(
+                'precision' => 2,
+                'grouping' => false,
+            )
+        );
+
+        $field->setDataLocked();
+        $fieldView = $field->createView();
+
+        $this->assertArrayHasKey('precision', $fieldView->vars);
+        $this->assertArrayHasKey('grouping', $fieldView->vars);
+
+        $this->assertEquals(2, $fieldView->vars['precision']);
+        $this->assertFalse($fieldView->vars['grouping']);
+    }
+
     protected function setUp()
     {
-        IntlTestHelper::requireIntl($this);
-
         parent::setUp();
     }
 

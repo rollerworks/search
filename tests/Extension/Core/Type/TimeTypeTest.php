@@ -16,7 +16,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
 
 class TimeTypeTest extends FieldTypeTestCase
 {
-    public function testCreate()
+    public function testCanBeCreated()
     {
         $this->getFactory()->createField('time', 'time');
     }
@@ -25,7 +25,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     protected function setUp()
     {
-        IntlTestHelper::requireIntl($this);
+        //IntlTestHelper::requireIntl($this);
 
         parent::setUp();
 
@@ -39,7 +39,7 @@ class TimeTypeTest extends FieldTypeTestCase
         date_default_timezone_set($this->defaultTimezone);
     }
 
-    public function testTime()
+    public function testCanTransformTimeWithoutSeconds()
     {
         $field = $this->getFactory()->createField('time', 'time');
 
@@ -48,16 +48,7 @@ class TimeTypeTest extends FieldTypeTestCase
         $this->assertTransformedEquals($field, $outputTime, '03:04', '03:04');
     }
 
-    public function testTimeWithoutMinutes()
-    {
-        $field = $this->getFactory()->createField('time', 'time', array('with_minutes' => false));
-
-        $outputTime = new \DateTime('1970-01-01 03:00:00 UTC');
-
-        $this->assertTransformedEquals($field, $outputTime, '03', '03');
-    }
-
-    public function testTimeWithSeconds()
+    public function testCanTransformTimeWithSeconds()
     {
         $field = $this->getFactory()->createField('time', 'time', array('with_seconds' => true));
 
@@ -66,49 +57,65 @@ class TimeTypeTest extends FieldTypeTestCase
         $this->assertTransformedEquals($field, $outputTime, '03:04:05', '03:04:05');
     }
 
+    public function testViewIsConfiguredProperlyWithMinutesAndSeconds()
+    {
+        $field = $this->getFactory()->createField('datetime', 'time', array(
+            'with_minutes' => true,
+            'with_seconds' => true,
+        ));
+
+        $field->setDataLocked();
+        $fieldView = $field->createView();
+
+        $this->assertArrayHasKey('pattern', $fieldView->vars);
+        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+
+        $this->assertEquals('H:i:s', $fieldView->vars['pattern']);
+    }
+
+    public function testViewIsConfiguredProperlyWithMinutesAndNoSeconds()
+    {
+        $field = $this->getFactory()->createField('datetime', 'time', array(
+            'with_minutes' => true,
+            'with_seconds' => false,
+        ));
+
+        $field->setDataLocked();
+        $fieldView = $field->createView();
+
+        $this->assertArrayHasKey('pattern', $fieldView->vars);
+        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+
+        $this->assertEquals('H:i', $fieldView->vars['pattern']);
+    }
+
+    public function testViewIsConfiguredProperlyWithNoMinutesAndNoSeconds()
+    {
+        $field = $this->getFactory()->createField('datetime', 'time', array(
+            'with_minutes' => false,
+            'with_seconds' => false,
+        ));
+
+        $field->setDataLocked();
+        $fieldView = $field->createView();
+
+        $this->assertArrayHasKey('pattern', $fieldView->vars);
+        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+
+        $this->assertEquals('H', $fieldView->vars['pattern']);
+    }
+
     /**
      * @expectedException \Rollerworks\Component\Search\Exception\InvalidConfigurationException
      */
-    public function testInitializeWithSecondsAndWithoutMinutes()
+    public function testCannotInitializeWithSecondsButWithoutMinutes()
     {
         $this->getFactory()->createField('time', 'time', array(
             'with_minutes' => false,
             'with_seconds' => true,
         ));
-    }
-
-    /**
-     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
-     */
-    public function testThrowExceptionIfHoursIsInvalid()
-    {
-        $this->getFactory()->createField('time', 'time', array(
-            'hours' => 'bad value',
-        ));
-    }
-
-    /**
-     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
-     */
-    public function testThrowExceptionIfMinutesIsInvalid()
-    {
-        $this->getFactory()->createField('time', 'time', array(
-            'minutes' => 'bad value',
-        ));
-    }
-
-    /**
-     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
-     */
-    public function testThrowExceptionIfSecondsIsInvalid()
-    {
-        $this->getFactory()->createField('time', 'time', array(
-            'seconds' => 'bad value',
-        ));
-    }
-
-    protected function getTestedType()
-    {
-        return 'time';
     }
 }

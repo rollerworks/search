@@ -74,6 +74,24 @@ class NumberTypeTest extends FieldTypeTestCase
         $this->assertTransformedEquals($field, '12345', '12345', '12345');
     }
 
+    public function testViewIsConfiguredProperly()
+    {
+        $field = $this->getFactory()->createField(
+            'number',
+            'number',
+            array('precision' => 0, 'grouping' => false)
+        );
+
+        $field->setDataLocked();
+        $fieldView = $field->createView();
+
+        $this->assertArrayHasKey('precision', $fieldView->vars);
+        $this->assertArrayHasKey('grouping', $fieldView->vars);
+
+        $this->assertEquals(0, $fieldView->vars['precision']);
+        $this->assertFalse($fieldView->vars['grouping']);
+    }
+
     protected function setUp()
     {
         parent::setUp();

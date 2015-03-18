@@ -85,8 +85,6 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     protected function setUp()
     {
-        IntlTestHelper::requireIntl($this);
-
         parent::setUp();
     }
 

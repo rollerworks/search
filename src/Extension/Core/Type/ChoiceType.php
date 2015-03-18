@@ -17,6 +17,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\SimpleChoiceList;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\SearchFieldView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -51,6 +52,15 @@ class ChoiceType extends AbstractFieldType
                 new ChoiceToValueTransformer($options['choice_list'])
             );
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    {
+        $view->vars['choices'] = $options['choice_list'];
+        $view->vars['label_as_value'] = $options['label_as_value'];
     }
 
     /**

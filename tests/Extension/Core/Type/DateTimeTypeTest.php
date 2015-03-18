@@ -67,6 +67,23 @@ class DateTimeTypeTest extends FieldTypeTestCase
         $this->assertTransformedFails($field, '06*2010*02');
     }
 
+    public function testViewIsConfiguredProperly()
+    {
+        $field = $this->getFactory()->createField('datetime', 'datetime', array(
+            'date_format' => \IntlDateFormatter::SHORT,
+            'time_format' => \IntlDateFormatter::SHORT,
+        ));
+
+        $field->setDataLocked();
+        $fieldView = $field->createView();
+
+        $this->assertArrayHasKey('timezone', $fieldView->vars);
+        $this->assertArrayHasKey('pattern', $fieldView->vars);
+
+        $this->assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
+        $this->assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
+    }
+
     protected function setUp()
     {
         IntlTestHelper::requireIntl($this);
