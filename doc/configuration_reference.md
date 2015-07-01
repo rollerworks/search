@@ -6,10 +6,6 @@ All available configuration options are listed below with their default values.
 ```yaml
 # app/config/config.yml
 rollerworks_search:
-    doctrine:
-        orm:
-            entity_managers: ~                                       # Is defaulted to ['default'] in the RollerworksSearchExtension class when empty
-            cache_driver:    "rollerworks_search.cache.array_driver" # Service-id
     metadata:
         cache_driver:   "rollerworks_search.metadata.cache_driver.file"  # Service-id
         cache_dir:      "%kernel.cache_dir%/rollerworks_search_metadata" # required for the default driver
