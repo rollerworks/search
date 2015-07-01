@@ -162,4 +162,11 @@ interface FieldConfigInterface
      * @return mixed The option value.
      */
     public function getOption($name, $default = null);
+
+    /**
+     * Returns a new SearchFieldView for the SearchField.
+     *
+     * @return SearchFieldView
+     */
+    public function createView();
 }

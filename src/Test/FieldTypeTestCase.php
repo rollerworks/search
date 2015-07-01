@@ -68,11 +68,6 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
     }
 
     /**
-     * @return string
-     */
-    abstract protected function getTestedType();
-
-    /**
      * Transforms the value if a value transformer is set.
      *
      * @param mixed                $value  The value to transform

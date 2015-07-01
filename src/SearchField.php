@@ -401,4 +401,21 @@ class SearchField implements FieldConfigInterface
 
         return $default;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createView()
+    {
+        if (!$this->locked) {
+            throw new BadMethodCallException(
+                'Unable to create SearchFieldView when configuration is not locked.'
+            );
+        }
+
+        $view = new SearchFieldView();
+        $this->type->buildFieldView($view, $this, $this->options);
+
+        return $view;
+    }
 }

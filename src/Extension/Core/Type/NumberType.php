@@ -14,6 +14,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -54,6 +55,15 @@ class NumberType extends AbstractFieldType
                 $options['rounding_mode']
             )
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    {
+        $view->vars['precision'] = $options['precision'];
+        $view->vars['grouping'] = $options['grouping'];
     }
 
     /**

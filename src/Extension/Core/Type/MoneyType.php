@@ -14,6 +14,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -55,6 +56,17 @@ class MoneyType extends AbstractFieldType
                 $options['default_currency']
             )
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    {
+        $view->vars['precision'] = $options['precision'];
+        $view->vars['grouping'] = $options['grouping'];
+        $view->vars['divisor'] = $options['divisor'];
+        $view->vars['default_currency'] = $options['default_currency'];
     }
 
     /**
