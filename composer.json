@@ -19,7 +19,6 @@
     "require-dev": {
         "rollerworks/search-jms-metadata": "~1.0@dev,>=1.0.0-beta2",
         "rollerworks/cache-bundle": "1.0.*@dev",
-        "phpunit/phpunit": "~4.4",
         "matthiasnoback/symfony-dependency-injection-test": "^0.7.1",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.2"
     },
