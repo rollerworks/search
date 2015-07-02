@@ -19,9 +19,12 @@ class RollerworksSearchBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new Compiler\ChainFieldAliasResolverPass());
+        $container->addCompilerPass(new Compiler\ChainFieldLabelResolverPass());
         $container->addCompilerPass(new Compiler\ExtensionPass());
         $container->addCompilerPass(new Compiler\InputProcessorPass());
         $container->addCompilerPass(new Compiler\ExporterPass());
         $container->addCompilerPass(new Compiler\ConditionOptimizerPass());
+        $container->addCompilerPass(new Compiler\FieldSetRegistryPass());
     }
 }
