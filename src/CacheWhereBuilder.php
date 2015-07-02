@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Version as OrmVersion;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 
@@ -166,9 +167,18 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
             );
         }
 
-        // Use a closure here to prevent to deep nesting and recursions
-        return function () {
-            return [$this->nativePlatform, $this->parameters];
-        };
+        // As of Doctrine ORM 2.5 hints as serialized and not exported,
+        // but closures can't serialized, and our object can't be exported
+        // due to recursion. Plus we can't use Version::compare method
+        // as 2.5.0-DEV and 2.4.0-DEV give the same result!
+        //
+        // Our minimum version is 2.4, so anything then else is higher
+        if (0 === strpos(OrmVersion::VERSION, '2.4')) {
+            return function () {
+                return [$this->nativePlatform, $this->parameters];
+            };
+        }
+
+        return new SqlConversionInfo($this->nativePlatform, $this->parameters);
     }
 }
