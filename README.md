@@ -33,7 +33,7 @@ The following bundles are provided for enabling the described storage
 engines with the RollerworksSearchBundle bundle.
 *These bundles are extensions, you still need the RollerworksSearchBundle!.*
 
-* Doctrine DBAL (coming soon)
+* [Doctrine DBAL](https://github.com/rollerworks/rollerworks-search-doctrine-dbal-bundle)
 * [Doctrine ORM](https://github.com/rollerworks/rollerworks-search-doctrine-orm-bundle)
 
 License

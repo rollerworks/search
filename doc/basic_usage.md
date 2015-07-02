@@ -4,7 +4,7 @@ Basic usage
 FieldSets
 ---------
 
-FieldSets can be generated per usage (see the Rollerworks Search documentation for details)
+FieldSets can be generated per usage (see the RollerworksSearch documentation for details)
 Or by registering then as services in the Service Container.
 
 Registering FieldSets is done using the `rollerworks_search.fieldsets.fieldSetName` configuration.
