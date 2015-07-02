@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model;
 
-use Rollerworks\Component\Search\Metadata as Search;
+use Rollerworks\Component\Search\Mapping as Search;
 
 class Customer
 {
