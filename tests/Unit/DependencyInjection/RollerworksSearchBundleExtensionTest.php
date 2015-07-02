@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearchBundle package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -31,20 +31,20 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 
     public function testFieldsSetsGetRegistered()
     {
-        $config = array(
-            'fieldsets' => array(
-                'invoice' => array(
-                    'fields' => array(
-                        'id' => array('type' => 'integer'),
-                    ),
-                ),
-                'customer' => array(
-                    'fields' => array(
-                        'id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true)),
-                    ),
-                ),
-            ),
-        );
+        $config = [
+            'fieldsets' => [
+                'invoice' => [
+                    'fields' => [
+                        'id' => ['type' => 'integer'],
+                    ],
+                ],
+                'customer' => [
+                    'fields' => [
+                        'id' => ['type' => 'integer', 'required' => true, 'options' => ['active' => true]],
+                    ],
+                ],
+            ],
+        ];
 
         $this->load($config);
         $this->compile();
@@ -53,7 +53,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
         $fieldSetDef = $this->createFieldSet('customer');
-        $this->addField($fieldSetDef, 'id', 'integer', array('active' => true), true);
+        $this->addField($fieldSetDef, 'id', 'integer', ['active' => true], true);
 
         $customerDef = $this->container->findDefinition('rollerworks_search.fieldset.customer');
         $this->assertEquals($fieldSetDef, $customerDef);
@@ -61,30 +61,30 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 
     public function testFieldsSetsGetRegisteredFromMetadata()
     {
-        $config = array(
-            'metadata' => array(
+        $config = [
+            'metadata' => [
                 'cache_driver' => null,
-            ),
-            'fieldsets' => array(
-                'customer' => array(
-                    'fields' => array(
-                        'id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true)),
-                    ),
-                    'import' => array(
+            ],
+            'fieldsets' => [
+                'customer' => [
+                    'fields' => [
+                        'id' => ['type' => 'integer', 'required' => true, 'options' => ['active' => true]],
+                    ],
+                    'import' => [
                         'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model\Customer',
-                        array(
+                        [
                             'class' => 'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User',
-                            'include_fields' => array('user_id'),
-                        ),
-                    ),
-                ),
-            ),
-        );
+                            'include_fields' => ['user_id'],
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
-        $bundles = array(
+        $bundles = [
             'UserBundle' => new UserBundle(),
             'InvoiceBundle' => new InvoiceBundle(),
-        );
+        ];
 
         $this->container->setParameter('kernel.bundles', $bundles);
         $this->container->set('annotation_reader', $this->createAnnotationReader());
@@ -95,9 +95,9 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
         $fieldSetDef = $this->createFieldSet('customer');
-        $this->addField($fieldSetDef, 'customer_id', 'customer_type', array(), false, array('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model\Customer', 'id'));
-        $this->addField($fieldSetDef, 'user_id', 'user_type', array(), false, array('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User', 'id'));
-        $this->addField($fieldSetDef, 'id', 'integer', array('active' => true), true);
+        $this->addField($fieldSetDef, 'customer_id', 'customer_type', [], false, ['Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model\Customer', 'id']);
+        $this->addField($fieldSetDef, 'user_id', 'user_type', [], false, ['Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User', 'id']);
+        $this->addField($fieldSetDef, 'id', 'integer', ['active' => true], true);
 
         $customerDef = $this->container->findDefinition('rollerworks_search.fieldset.customer');
         $this->assertEquals($fieldSetDef, $customerDef);
@@ -105,34 +105,34 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 
     public function testFieldsSetsGetRegisteredFromMetadataExplicit()
     {
-        $config = array(
-            'metadata' => array(
+        $config = [
+            'metadata' => [
                 'auto_mapping' => false,
-                'mappings' => array(
-                    'UserBundle' => array(
+                'mappings' => [
+                    'UserBundle' => [
                         'is_bundle' => true,
                         'dir' => 'Resources/config/search',
                         'prefix' => 'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model',
-                    ),
-                ),
+                    ],
+                ],
                 'cache_driver' => null,
-            ),
-            'fieldsets' => array(
-                'customer' => array(
-                    'import' => array(
-                        array(
+            ],
+            'fieldsets' => [
+                'customer' => [
+                    'import' => [
+                        [
                             'class' => 'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User',
-                            'include_fields' => array('user_id'),
-                        ),
-                    ),
-                ),
-            ),
-        );
+                            'include_fields' => ['user_id'],
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
-        $bundles = array(
+        $bundles = [
             'UserBundle' => new UserBundle(),
             'InvoiceBundle' => new InvoiceBundle(),
-        );
+        ];
 
         $this->container->setParameter('kernel.bundles', $bundles);
         $this->container->set('annotation_reader', $this->createAnnotationReader());
@@ -143,7 +143,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
         $fieldSetDef = $this->createFieldSet('customer');
-        $this->addField($fieldSetDef, 'user_id', 'integer', array(), false, array('Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User', 'id'));
+        $this->addField($fieldSetDef, 'user_id', 'integer', [], false, ['Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User', 'id']);
 
         $customerDef = $this->container->findDefinition('rollerworks_search.fieldset.customer');
         $this->assertEquals($fieldSetDef, $customerDef);
@@ -151,29 +151,29 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 
     public function testFieldsSetsGetRegisteredFromMetadataWithOverwrites()
     {
-        $config = array(
-            'metadata' => array(
+        $config = [
+            'metadata' => [
                 'cache_driver' => null,
-            ),
-            'fieldsets' => array(
-                'customer' => array(
-                    'fields' => array(
-                        'user_id' => array('type' => 'integer', 'required' => true, 'options' => array('active' => true)),
-                    ),
-                    'import' => array(
-                        array(
+            ],
+            'fieldsets' => [
+                'customer' => [
+                    'fields' => [
+                        'user_id' => ['type' => 'integer', 'required' => true, 'options' => ['active' => true]],
+                    ],
+                    'import' => [
+                        [
                             'class' => 'Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\UserBundle\Model\User',
-                            'include_fields' => array('user_id'),
-                        ),
-                    ),
-                ),
-            ),
-        );
+                            'include_fields' => ['user_id'],
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
-        $bundles = array(
+        $bundles = [
             'UserBundle' => new UserBundle(),
             'InvoiceBundle' => new InvoiceBundle(),
-        );
+        ];
 
         $this->container->setParameter('kernel.bundles', $bundles);
         $this->container->set('annotation_reader', $this->createAnnotationReader());
@@ -184,7 +184,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('rollerworks_search.fieldset.customer', 'Rollerworks\Component\Search\FieldSet');
 
         $fieldSetDef = $this->createFieldSet('customer');
-        $this->addField($fieldSetDef, 'user_id', 'integer', array('active' => true), true);
+        $this->addField($fieldSetDef, 'user_id', 'integer', ['active' => true], true);
 
         $customerDef = $this->container->findDefinition('rollerworks_search.fieldset.customer');
         $this->assertEquals($fieldSetDef, $customerDef);
@@ -192,9 +192,9 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
 
     protected function getContainerExtensions()
     {
-        return array(
+        return [
             new RollerworksSearchExtension(),
-        );
+        ];
     }
 
     /**
@@ -208,7 +208,7 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
                 new ArrayCache()
             );
         } else {
-            // 2.3 is the minimum required version so need to further check
+            // 2.3 is the minimum required version so no need to further check
             $reader = new \Doctrine\Common\Annotations\AnnotationReader();
             $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
         }
@@ -224,13 +224,13 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
     private function createFieldSet($name)
     {
         $fieldSetDef = new Definition('Rollerworks\Component\Search\FieldSet');
-        $fieldSetDef->addTag('rollerworks_search.fieldset', array('name' => $name));
+        $fieldSetDef->addTag('rollerworks_search.fieldset', ['name' => $name]);
         $fieldSetDef->addArgument($name);
 
         return $fieldSetDef;
     }
 
-    private function addField(Definition $fieldSetDef, $name, $type, array $options = array(), $required = false, array $property = array())
+    private function addField(Definition $fieldSetDef, $name, $type, array $options = [], $required = false, array $property = [])
     {
         $fieldDef = new Definition();
 
@@ -248,13 +248,13 @@ class RollerworksSearchBundleExtensionTest extends AbstractExtensionTestCase
         $fieldDef->addArgument($options);
         $fieldDef->addArgument($required);
 
-        $fieldSetDef->addMethodCall('set', array($name, $fieldDef));
+        $fieldSetDef->addMethodCall('set', [$name, $fieldDef]);
     }
 
     private function setFactory(Definition $definition, $serviceId, $method)
     {
         if (method_exists($definition, 'setFactory')) {
-            $definition->setFactory(array(new Reference($serviceId), $method));
+            $definition->setFactory([new Reference($serviceId), $method]);
         } else {
             $definition->setFactoryService($serviceId);
             $definition->setFactoryMethod($method);

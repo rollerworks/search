@@ -1,8 +1,8 @@
 Extensions
 ==========
 
-For creating search-field a type (extension) class please read the Rollerworks Search Component
-documentation.
+For creating search-field a type (extension) class please read the
+RollerworksSearch documentation.
 
 Registering types with the SearchFactory is done by tagging the service with
 `rollerworks_search.type` or `rollerworks_search.type_extension` respectively.

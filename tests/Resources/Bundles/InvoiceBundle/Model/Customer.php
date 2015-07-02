@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearchBundle package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Resources\Bundles\InvoiceBundle\Model;
 
-use Rollerworks\Component\Search\Metadata as Search;
+use Rollerworks\Component\Search\Mapping as Search;
 
 class Customer
 {

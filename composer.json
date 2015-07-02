@@ -1,6 +1,6 @@
 {
     "name": "rollerworks/search-bundle",
-    "description": "Rollerworks Search Bundle",
+    "description": "RollerworksSearch Bundle",
     "keywords": ["filter", "search", "rollerworks", "symfony", "bundle"],
     "type": "symfony-bundle",
     "license": "MIT",
@@ -11,15 +11,14 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
-        "rollerworks/search-symfony-di": "~1.0@dev,>1.0.0-beta2",
+        "php": ">=5.4",
+        "rollerworks/search-symfony-di": "~1.0@dev,>1.0.0-beta5",
         "symfony/framework-bundle": "~2.3",
         "symfony/finder": "~2.3"
     },
     "require-dev": {
-        "rollerworks/search-jms-metadata": "~1.0@dev,>=1.0.0-beta2",
+        "rollerworks/search-jms-metadata": "~1.0@dev,>=1.0.0-beta3",
         "rollerworks/cache-bundle": "1.0.*@dev",
-        "phpunit/phpunit": "~4.4",
         "matthiasnoback/symfony-dependency-injection-test": "^0.7.1",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.2"
     },

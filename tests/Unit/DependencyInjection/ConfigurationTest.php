@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearchBundle package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -18,98 +18,98 @@ class ConfigurationTest extends AbstractConfigurationTestCase
 {
     public function testDefaultsAreValid()
     {
-        $this->assertProcessedConfigurationEquals(array(
-            array(),
-        ), array(
-            'fieldsets' => array(),
-        ));
+        $this->assertProcessedConfigurationEquals([
+            [],
+        ], [
+            'fieldsets' => [],
+        ]);
     }
 
     public function testEmptyFieldSets()
     {
-        $this->assertProcessedConfigurationEquals(array(
-             array('fieldsets' => array(
-                 'field1' => array(),
-             )),
-        ), array(
-            'fieldsets' => array(
-                'field1' => array(
-                    'imports' => array(),
-                    'fields' => array(),
-                ),
-            ),
-        ));
+        $this->assertProcessedConfigurationEquals([
+             ['fieldsets' => [
+                 'field1' => [],
+             ]],
+        ], [
+            'fieldsets' => [
+                'field1' => [
+                    'imports' => [],
+                    'fields' => [],
+                ],
+            ],
+        ]);
     }
 
     public function testFieldSets()
     {
-        $this->assertProcessedConfigurationEquals(array(
-             array('fieldsets' => array(
-                'field1' => array(
-                    'fields' => array(
-                        'id' => array(
+        $this->assertProcessedConfigurationEquals([
+             ['fieldsets' => [
+                'field1' => [
+                    'fields' => [
+                        'id' => [
                             'type' => 'integer',
-                        ),
-                        'name' => array(
+                        ],
+                        'name' => [
                             'type' => 'text',
                             'model_class' => 'stdClass',
                             'model_property' => 'name',
-                        ),
-                    ),
-                 ),
-             )),
-        ), array(
-             'fieldsets' => array(
-                 'field1' => array(
-                    'imports' => array(),
-                    'fields' => array(
-                        'id' => array(
+                        ],
+                    ],
+                 ],
+             ]],
+        ], [
+             'fieldsets' => [
+                 'field1' => [
+                    'imports' => [],
+                    'fields' => [
+                        'id' => [
                             'type' => 'integer',
                             'required' => false,
                             'model_class' => null,
                             'model_property' => null,
-                            'options' => array(),
-                        ),
-                        'name' => array(
+                            'options' => [],
+                        ],
+                        'name' => [
                             'type' => 'text',
                             'required' => false,
                             'model_class' => 'stdClass',
                             'model_property' => 'name',
-                            'options' => array(),
-                        ),
-                    ),
-                 ),
-             ),
-        ));
+                            'options' => [],
+                        ],
+                    ],
+                 ],
+             ],
+        ]);
     }
 
     public function testInvalidFieldSetWithMissingModelProperty()
     {
-        $this->assertConfigurationIsInvalid(array(
-             array('fieldsets' => array(
-                'field1' => array(
-                    'fields' => array(
-                        'id' => array(
+        $this->assertConfigurationIsInvalid([
+             ['fieldsets' => [
+                'field1' => [
+                    'fields' => [
+                        'id' => [
                             'type' => 'integer',
                             'model_class' => 'stdClass',
-                        ),
-                    ),
-                 ),
-             )),
-        ), 'When setting the model reference, both "model_class" and "model_property" must have a value.');
+                        ],
+                    ],
+                 ],
+             ]],
+        ], 'When setting the model reference, both "model_class" and "model_property" must have a value.');
 
-        $this->assertConfigurationIsInvalid(array(
-             array('fieldsets' => array(
-                'field1' => array(
-                    'fields' => array(
-                        'id' => array(
+        $this->assertConfigurationIsInvalid([
+             ['fieldsets' => [
+                'field1' => [
+                    'fields' => [
+                        'id' => [
                             'type' => 'integer',
                             'model_property' => 'stdClass',
-                        ),
-                    ),
-                 ),
-             )),
-        ), 'When setting the model reference, both "model_class" and "model_property" must have a value.');
+                        ],
+                    ],
+                 ],
+             ]],
+        ], 'When setting the model reference, both "model_class" and "model_property" must have a value.');
     }
 
     protected function getConfiguration()
