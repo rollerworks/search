@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearchBundle package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -19,94 +19,94 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
 {
     public function testSupportsAllConfigFormats()
     {
-        $expectedConfiguration = array(
-            'metadata' => array(
+        $expectedConfiguration = [
+            'metadata' => [
                 'cache_driver' => 'memory',
                 'cache_dir' => 'none',
                 'auto_mapping' => false,
-                'mappings' => array(
-                   'AcmeUser' => array(
+                'mappings' => [
+                   'AcmeUser' => [
                        'dir' => 'Resource/search/',
                        'prefix' => 'Model\\',
                        'is_bundle' => true,
                        'mapping' => true,
-                   ),
-                ),
-            ),
-            'fieldsets' => array(
-                'field1' => array(
-                    'imports' => array(
-                        array(
+                   ],
+                ],
+            ],
+            'fieldsets' => [
+                'field1' => [
+                    'imports' => [
+                        [
                             'class' => 'Model\User',
-                            'include_fields' => array('name', 'date'),
-                            'exclude_fields' => array(),
-                        ),
-                    ),
-                    'fields' => array(
-                        'id' => array(
+                            'include_fields' => ['name', 'date'],
+                            'exclude_fields' => [],
+                        ],
+                    ],
+                    'fields' => [
+                        'id' => [
                             'type' => 'integer',
                             'model_class' => 'stdClass',
                             'model_property' => 'id',
                             'required' => false,
-                            'options' => array(),
-                        ),
-                        'group' => array(
+                            'options' => [],
+                        ],
+                        'group' => [
                             'type' => 'text',
                             'model_class' => 'stdClass',
                             'model_property' => 'group',
                             'required' => false,
-                            'options' => array(),
-                        ),
-                    ),
-                ),
-                'field2' => array(
-                    'imports' => array(
-                        array(
+                            'options' => [],
+                        ],
+                    ],
+                ],
+                'field2' => [
+                    'imports' => [
+                        [
                             'class' => 'Model\User',
-                            'include_fields' => array('name'),
-                            'exclude_fields' => array(),
-                        ),
-                    ),
-                    'fields' => array(
-                        'id' => array(
+                            'include_fields' => ['name'],
+                            'exclude_fields' => [],
+                        ],
+                    ],
+                    'fields' => [
+                        'id' => [
                             'type' => 'integer',
                             'model_class' => 'stdClass',
                             'model_property' => 'id',
                             'required' => false,
-                            'options' => array(),
-                        ),
-                        'group' => array(
+                            'options' => [],
+                        ],
+                        'group' => [
                             'type' => 'text',
                             'model_class' => 'stdClass',
                             'model_property' => 'group',
-                            'options' => array(
+                            'options' => [
                                 'max' => 10,
                                 'foo' => null,
-                                'bar' => array(
+                                'bar' => [
                                     'foo' => null,
                                     '0' => 100,
-                                ),
-                                'doctor' => array(
+                                ],
+                                'doctor' => [
                                     'name' => 'who',
-                                ),
-                            ),
+                                ],
+                            ],
                             'required' => false,
-                        ),
-                    ),
-                ),
-            ),
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
         $formats = array_map(function ($path) {
             return __DIR__.'/../../Resources/Fixtures/'.$path;
-        }, array(
+        }, [
             'config/config.yml',
             'config/config.xml',
             'config/config.php',
-        ));
+        ]);
 
         foreach ($formats as $format) {
-            $this->assertProcessedConfigurationEquals($expectedConfiguration, array($format));
+            $this->assertProcessedConfigurationEquals($expectedConfiguration, [$format]);
         }
     }
 

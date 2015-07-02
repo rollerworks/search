@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearchBundle package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -50,10 +50,10 @@ class Configuration implements ConfigurationInterface
                             ->prototype('array')
                                 ->beforeNormalization()
                                     ->ifString()
-                                    ->then(function ($v) { return array('type' => $v); })
+                                    ->then(function ($v) { return ['type' => $v]; })
                                 ->end()
-                                ->treatNullLike(array())
-                                ->treatFalseLike(array('mapping' => false))
+                                ->treatNullLike([])
+                                ->treatFalseLike(['mapping' => false])
                                 ->performNoDeepMerging()
                                 ->children()
                                     ->scalarNode('mapping')->defaultValue(true)->end()
@@ -71,7 +71,7 @@ class Configuration implements ConfigurationInterface
     private function addFieldSetsSection(ArrayNodeDefinition $rootNode)
     {
         $optionsNormalizer = function ($v) use (&$optionsNormalizer) {
-            $options = array();
+            $options = [];
 
             foreach ($v as $option) {
                 if (!isset($option['type'])) {
@@ -84,7 +84,7 @@ class Configuration implements ConfigurationInterface
                     // Wrap inside array to preserve option-keys
                     // Even if the option-key is 0 its only kept inside 'key'
                     if (!isset($optionValue[0])) {
-                        $optionValue = array($optionValue);
+                        $optionValue = [$optionValue];
                     }
 
                     $optionValue = $optionsNormalizer($optionValue);
@@ -110,17 +110,17 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('imports')
                                 ->performNoDeepMerging()
                                 ->prototype('array')
-                                    ->beforeNormalization()->ifString()->then(function ($v) { return array('class' => $v); })->end()
+                                    ->beforeNormalization()->ifString()->then(function ($v) { return ['class' => $v]; })->end()
                                     ->children()
                                         ->scalarNode('class')->isRequired()->end()
                                     ->end()
                                     ->fixXmlConfig('include_field')
                                     ->children()
-                                        ->arrayNode('include_fields')->prototype('scalar')->defaultValue(array())->end()->end()
+                                        ->arrayNode('include_fields')->prototype('scalar')->defaultValue([])->end()->end()
                                     ->end()
                                     ->fixXmlConfig('exclude_field')
                                     ->children()
-                                        ->arrayNode('exclude_fields')->prototype('scalar')->defaultValue(array())->end()->end()
+                                        ->arrayNode('exclude_fields')->prototype('scalar')->defaultValue([])->end()->end()
                                     ->end()
                                 ->end()
                             ->end()

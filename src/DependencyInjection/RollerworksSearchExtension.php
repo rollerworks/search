@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the RollerworksSearchBundle package.
+ * This file is part of the RollerworksSearch package.
  *
  * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
  *
@@ -63,7 +63,7 @@ class RollerworksSearchExtension extends Extension
         $dir = dirname($r->getFilename()).'/Resources/translations';
 
         $fs = new Filesystem();
-        $fs->mirror($dir, __DIR__.'/../Resources/translations', null, array('copy_on_windows' => true));
+        $fs->mirror($dir, __DIR__.'/../Resources/translations', null, ['copy_on_windows' => true]);
     }
 
     /**
@@ -147,22 +147,22 @@ class RollerworksSearchExtension extends Extension
      * @param array            $config    A configured object manager.
      * @param ContainerBuilder $container A ContainerBuilder instance
      *
-     * @return array
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return array
      */
     private function getMetadataMappingInformation(array $config, ContainerBuilder $container)
     {
-        $mappingDirectories = array();
+        $mappingDirectories = [];
 
         if ($config['auto_mapping']) {
             // automatically register bundle metadata
             foreach (array_keys($container->getParameter('kernel.bundles')) as $bundle) {
                 if (!isset($config['mappings'][$bundle])) {
-                    $config['mappings'][$bundle] = array(
+                    $config['mappings'][$bundle] = [
                         'mapping' => true,
                         'is_bundle' => true,
-                    );
+                    ];
                 }
             }
         }
@@ -172,10 +172,10 @@ class RollerworksSearchExtension extends Extension
                 continue;
             }
 
-            $mappingConfig = array_replace(array(
+            $mappingConfig = array_replace([
                 'dir' => false,
                 'prefix' => false,
-            ), (array) $mappingConfig);
+            ], (array) $mappingConfig);
 
             $mappingConfig['dir'] = $container->getParameterBag()->resolveValue($mappingConfig['dir']);
             // a bundle configuration is detected by realizing that the specified dir is not absolute and existing

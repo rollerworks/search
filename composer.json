@@ -1,6 +1,6 @@
 {
     "name": "rollerworks/search-bundle",
-    "description": "Rollerworks Search Bundle",
+    "description": "RollerworksSearch Bundle",
     "keywords": ["filter", "search", "rollerworks", "symfony", "bundle"],
     "type": "symfony-bundle",
     "license": "MIT",
