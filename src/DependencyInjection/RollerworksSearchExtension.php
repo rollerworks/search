@@ -29,8 +29,6 @@ class RollerworksSearchExtension extends Extension
         $config = $this->processConfiguration($configuration, $config);
 
         $serviceLoader = new ServiceLoader($container);
-        $serviceLoader->loadFile('services');
-        $serviceLoader->loadFile('type');
         $serviceLoader->loadFile('input_processor');
         $serviceLoader->loadFile('exporter');
         $serviceLoader->loadFile('condition_optimizers');
