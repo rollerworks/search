@@ -87,6 +87,18 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->getGroups()->shouldReturn(array(1 => $group2));
     }
 
+    function it_allows_getting_subgroups()
+    {
+        $group = new ValuesGroup();
+        $group2 = new ValuesGroup();
+
+        $this->addGroup($group);
+        $this->addGroup($group2);
+
+        $this->getGroup(0)->shouldReturn($group);
+        $this->getGroup(1)->shouldReturn($group2);
+    }
+
     function it_should_have_no_errors_by_default()
     {
         $this->hasErrors()->shouldReturn(false);
