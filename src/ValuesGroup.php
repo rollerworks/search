@@ -94,7 +94,7 @@ class ValuesGroup implements \Serializable
      */
     public function getGroup($index)
     {
-        if (!isset($this->fields[$index])) {
+        if (!isset($this->groups[$index])) {
             throw new InvalidArgumentException(
                 sprintf('Unable to get none existent group: "%d"', $index)
             );
