@@ -6,5 +6,27 @@
 
     <services>
         <service id="rollerworks_search.cache.array_driver" class="Doctrine\Common\Cache\ArrayCache" public="false" />
+
+        <service class="Rollerworks\Bundle\SearchBundle\Processor\SearchProcessorFactory" id="rollerworks_search.processor.search_processor_factory">
+            <argument id="rollerworks_search.input_factory" type="service"/>
+            <argument id="rollerworks_search.exporter_factory" type="service"/>
+            <argument id="rollerworks_search.condition_optimizer" type="service"/>
+            <argument id="rollerworks_search.condition_serializer" type="service"/>
+            <argument id="rollerworks_search.condition_validator" type="service"/>
+            <argument id="rollerworks_search.uri_encoder" type="service"/>
+            <argument id="rollerworks_cache.driver.session_driver" type="service"/>
+        </service>
+
+        <service class="Rollerworks\Component\Search\Extension\Symfony\Validator\Validator" id="rollerworks_search.condition_validator" public="false">
+            <argument id="validator" type="service" />
+        </service>
+
+        <!-- XXX Add cache driver for CacheAdapterInterface (using Doctrine Cache and rollerworks_cache.driver.session_driver) -->
+        <service class="Rollerworks\Component\UriEncoder\Encoder\GZipCompressionDecorator" id="rollerworks_search.uri_encoder" public="false">
+            <argument type="service">
+                <service class="Rollerworks\Component\UriEncoder\Encoder\Base64UriEncoder" />
+            </argument>
+        </service>
+
     </services>
 </container>

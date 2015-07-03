@@ -13,8 +13,13 @@
     "require": {
         "php": ">=5.4",
         "rollerworks/search-symfony-di": "~1.0@dev,>1.0.0-beta5",
+        "rollerworks/search-symfony-validator": "~1.0@dev",
+        "rollerworks/exception-parser": "~1.0",
+        "rollerworks/uri-encoder": "~1.0",
         "symfony/framework-bundle": "~2.3",
-        "symfony/finder": "~2.3"
+        "symfony/finder": "~2.3",
+        "symfony/form": "~2.3",
+        "rollerworks/exception-parser": "~1.0"
     },
     "require-dev": {
         "rollerworks/search-jms-metadata": "~1.0@dev,>=1.0.0-beta3",
