@@ -13,7 +13,7 @@ namespace Rollerworks\Component\Search\Exception;
 
 use Rollerworks\Component\Search\SearchConditionInterface;
 
-final class InvalidSearchConditionException extends \Exception implements ExceptionInterface
+final class InvalidSearchConditionException extends InputProcessorException
 {
     /**
      * @var SearchConditionInterface

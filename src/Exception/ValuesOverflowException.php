@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Exception;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesOverflowException extends \Exception implements ExceptionInterface
+class ValuesOverflowException extends InputProcessorException
 {
     /**
      * @var string

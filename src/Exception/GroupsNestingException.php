@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Exception;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class GroupsNestingException extends \Exception implements ExceptionInterface
+class GroupsNestingException extends InputProcessorException
 {
     /**
      * @var string
