@@ -3,35 +3,35 @@
     <file source-language="en" datatype="plaintext" original="messages.xliff">
         <body>
             <trans-unit id="1">
-                <source>search.filter_query.token.FieldIdentification</source>
-                <target>Field identification</target>
+                <source>FieldIdentification</source>
+                <target>FieldIdentification</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>search.filter_query.token.String</source>
+                <source>String</source>
                 <target>String</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>search.filter_query.token.QuotedString</source>
-                <target>Quoted string</target>
+                <source>QuotedString</source>
+                <target>QuotedString</target>
             </trans-unit>
             <trans-unit id="4">
-                <source>search.filter_query.token.Range</source>
+                <source>Range</source>
                 <target>Range</target>
             </trans-unit>
             <trans-unit id="5">
-                <source>search.filter_query.token.ExcludedValue</source>
-                <target>Excluded value</target>
+                <source>ExcludedValue</source>
+                <target>ExcludedValue</target>
             </trans-unit>
             <trans-unit id="6">
-                <source>search.filter_query.token.ExcludedRange</source>
-                <target>Excluded range</target>
+                <source>ExcludedRange</source>
+                <target>ExcludedRange</target>
             </trans-unit>
             <trans-unit id="7">
-                <source>search.filter_query.token.Comparison</source>
+                <source>Comparison</source>
                 <target>Comparison</target>
             </trans-unit>
             <trans-unit id="8">
-                <source>search.filter_query.token.PatternMatch</source>
+                <source>PatternMatch</source>
                 <target>PatternMatcher</target>
             </trans-unit>
         </body>

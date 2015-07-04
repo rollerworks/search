@@ -3,35 +3,35 @@
     <file source-language="en" datatype="plaintext" original="messages.xliff">
         <body>
             <trans-unit id="1">
-                <source>search.filter_query.token.FieldIdentification</source>
+                <source>FieldIdentification</source>
                 <target>Veld identificatie</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>search.filter_query.token.String</source>
+                <source>String</source>
                 <target>Simpele waarde</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>search.filter_query.token.QuotedString</source>
+                <source>QuotedString</source>
                 <target>Waarde tussen aanhalingstekens</target>
             </trans-unit>
             <trans-unit id="4">
-                <source>search.filter_query.token.Range</source>
+                <source>Range</source>
                 <target>Bereikwaarde</target>
             </trans-unit>
             <trans-unit id="5">
-                <source>search.filter_query.token.ExcludedValue</source>
-                <target>Uitsluitende waarde (tussen aanhalingstekens)</target>
+                <source>ExcludedValue</source>
+                <target>Uitsluitende waarde</target>
             </trans-unit>
             <trans-unit id="6">
-                <source>search.filter_query.token.ExcludedRange</source>
+                <source>ExcludedRange</source>
                 <target>Uitsluitende Bereikwaarde</target>
             </trans-unit>
             <trans-unit id="7">
-                <source>search.filter_query.token.Comparison</source>
+                <source>Comparison</source>
                 <target>Vergelijking</target>
             </trans-unit>
             <trans-unit id="8">
-                <source>search.filter_query.token.PatternMatch</source>
+                <source>PatternMatch</source>
                 <target>Patroon vergelijking</target>
             </trans-unit>
         </body>
