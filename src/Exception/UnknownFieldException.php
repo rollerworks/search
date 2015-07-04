@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Exception;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class UnknownFieldException extends \InvalidArgumentException implements ExceptionInterface
+class UnknownFieldException extends InputProcessorException
 {
     /**
      * @var string

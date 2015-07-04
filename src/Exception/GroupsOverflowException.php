@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Exception;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class GroupsOverflowException extends \Exception implements ExceptionInterface
+class GroupsOverflowException extends InputProcessorException
 {
     /**
      * @var int
