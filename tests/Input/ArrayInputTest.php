@@ -707,4 +707,34 @@ final class ArrayInputTest extends InputProcessorTestCase
             ),
         );
     }
+
+    public function provideNestedErrorsTests()
+    {
+        return array(
+            array(
+                array(
+                    'groups' => array(
+                        array(
+                            'groups' => array(
+                                array(
+                                    'fields' => array(
+                                        'date' => array(
+                                            'single-values' => array('value'),
+                                        ),
+                                    ),
+                                ),
+                                array(
+                                    'fields' => array(
+                                        'date' => array(
+                                            'single-values' => array('value', 'value2'),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
 }

@@ -77,7 +77,7 @@ class ArrayInput extends AbstractInput
             $config->getFieldSet(), $valuesGroup
         );
 
-        if ($condition->getValuesGroup()->hasErrors()) {
+        if ($condition->getValuesGroup()->hasErrors(true)) {
             throw new InvalidSearchConditionException($condition);
         }
 

@@ -299,4 +299,13 @@ final class FilterQueryInputTest extends InputProcessorTestCase
             ),
         );
     }
+
+    public function provideNestedErrorsTests()
+    {
+        return array(
+            array('date: 1;'),
+            array('(date: 1;)'),
+            array('((((((date: 1;))))))'),
+        );
+    }
 }

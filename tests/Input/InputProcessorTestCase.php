@@ -784,6 +784,27 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      */
     abstract public function provideInvalidValueTests();
 
+    /**
+     * @param mixed $input
+     *
+     * @test
+     * @dataProvider provideNestedErrorsTests
+     */
+    public function it_checks_nested_fields($input)
+    {
+        $processor = $this->getProcessor();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $this->setExpectedException('\Rollerworks\Component\Search\Exception\InvalidSearchConditionException');
+
+        $processor->process($config, $input);
+    }
+
+    /**
+     * @return array[]
+     */
+    abstract public function provideNestedErrorsTests();
+
     protected function detectSystemException(\Exception $exception)
     {
         if (!$exception instanceof ExceptionInterface) {

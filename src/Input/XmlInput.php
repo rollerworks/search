@@ -62,7 +62,7 @@ class XmlInput extends AbstractInput
             $valuesGroup
         );
 
-        if ($condition->getValuesGroup()->hasErrors()) {
+        if ($condition->getValuesGroup()->hasErrors(true)) {
             throw new InvalidSearchConditionException($condition);
         }
 

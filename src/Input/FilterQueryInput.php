@@ -173,7 +173,7 @@ class FilterQueryInput extends AbstractInput
             $this->parse($config, $input)
         );
 
-        if ($condition->getValuesGroup()->hasErrors()) {
+        if ($condition->getValuesGroup()->hasErrors(true)) {
             throw new InvalidSearchConditionException($condition);
         }
 
