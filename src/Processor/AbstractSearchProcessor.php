@@ -84,7 +84,11 @@ abstract class AbstractSearchProcessor implements SearchProcessorInterface
             return false;
         }
 
-        return !($this->searchCondition && $this->searchCondition->getValuesGroup()->hasErrors());
+        if (!$this->searchCondition) {
+            return false;
+        }
+
+        return !$this->searchCondition->getValuesGroup()->hasErrors();
     }
 
     /**
