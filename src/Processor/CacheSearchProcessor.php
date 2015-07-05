@@ -147,8 +147,8 @@ class CacheSearchProcessor extends AbstractSearchProcessor
      */
     public function exportSearchCondition($format)
     {
-        if (null === $this->searchCondition || $this->searchCondition->getValuesGroup()->hasErrors()) {
-            throw new \RuntimeException('Unable to export empty/invalid SearchCondition');
+        if (!$this->isValid()) {
+            return null;
         }
 
         $cacheKey = 'search_export.'.$this->searchCode.'.'.$format;
@@ -179,7 +179,7 @@ class CacheSearchProcessor extends AbstractSearchProcessor
 
     private function storeCondition()
     {
-        if (!$this->searchCondition || $this->searchCondition->getValuesGroup()->hasErrors()) {
+        if (!$this->isValid()) {
             return;
         }
 

@@ -139,8 +139,8 @@ class SearchProcessor extends AbstractSearchProcessor
      */
     public function exportSearchCondition($format)
     {
-        if (null === $this->searchCondition || $this->searchCondition->getValuesGroup()->hasErrors()) {
-            throw new \RuntimeException('Unable to export empty/invalid SearchCondition');
+        if (!$this->isValid()) {
+            return null;
         }
 
         $export = $this->exportFactory->create($format);
@@ -178,7 +178,9 @@ class SearchProcessor extends AbstractSearchProcessor
                 null,
                 $e
             );
+        }
 
+        if (null === $this->searchCondition) {
             return;
         }
 
