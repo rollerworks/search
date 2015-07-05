@@ -1127,7 +1127,7 @@ final class XmlInputTest extends InputProcessorTestCase
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
-                        <field name="field1">
+                        <field name="date">
                             <single-values>
                                 <value>value</value>
                                 <value>value2</value>
