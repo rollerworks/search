@@ -786,4 +786,29 @@ final class JsonInputTest extends InputProcessorTestCase
             ),
         );
     }
+
+    public function provideNestedErrorsTests()
+    {
+        return array(
+            array(
+                json_encode(
+                    array(
+                        'groups' => array(
+                            array(
+                                'groups' => array(
+                                    array(
+                                        'fields' => array(
+                                            'date' => array(
+                                                'single-values' => array('value', 'value2'),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    )
+                ),
+            ),
+        );
+    }
 }

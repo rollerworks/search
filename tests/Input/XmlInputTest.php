@@ -1119,4 +1119,26 @@ final class XmlInputTest extends InputProcessorTestCase
             ),
         );
     }
+
+    public function provideNestedErrorsTests()
+    {
+        return array(
+            array(
+                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
+                <search>
+                    <fields>
+                        <field name="field1">
+                            <single-values>
+                                <value>value</value>
+                                <value>value2</value>
+                                <value>value3</value>
+                                <value>value4</value>
+                                <value>value5</value>
+                            </single-values>
+                        </field>
+                    </fields>
+                </search>',
+            ),
+        );
+    }
 }
