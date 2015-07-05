@@ -19,6 +19,7 @@ use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\SearchConditionSerializer;
 use Rollerworks\Component\UriEncoder\UriEncoderInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class SearchProcessorFactory implements SearchProcessorFactoryInterface
 {
@@ -65,6 +66,7 @@ class SearchProcessorFactory implements SearchProcessorFactoryInterface
      * @param SearchConditionOptimizerInterface $conditionOptimizer
      * @param SearchConditionSerializer         $conditionSerializer
      * @param Validator                         $validator
+     * @param TranslatorInterface               $translator
      * @param UriEncoderInterface               $uirEncoder
      * @param Cache                             $cacheAdapter
      */
@@ -74,7 +76,9 @@ class SearchProcessorFactory implements SearchProcessorFactoryInterface
         SearchConditionOptimizerInterface $conditionOptimizer,
         SearchConditionSerializer $conditionSerializer,
         Validator $validator,
+        TranslatorInterface $translator,
         UriEncoderInterface $uirEncoder,
+
         Cache $cacheAdapter
     ) {
         $this->inputFactory = $inputFactory;
@@ -82,6 +86,7 @@ class SearchProcessorFactory implements SearchProcessorFactoryInterface
         $this->conditionOptimizer = $conditionOptimizer;
         $this->conditionSerializer = $conditionSerializer;
         $this->validator = $validator;
+        $this->translator = $translator;
         $this->uirEncoder = $uirEncoder;
         $this->cacheAdapter = $cacheAdapter;
     }
@@ -89,22 +94,32 @@ class SearchProcessorFactory implements SearchProcessorFactoryInterface
     /**
      * Creates a new SearchProcessor instance.
      *
-     * @param ProcessorConfig $config    Input Processor configuration object
-     * @param string          $uriPrefix URL prefix to allow multiple processors per page
-     * @param bool            $cached    Use cached processor (recommended paged results)
+     * @param ProcessorConfig $config           Input Processor configuration object
+     * @param string          $uriPrefix        URL prefix to allow multiple processors per page
+     * @param bool            $cached           Use cached processor (recommended paged results)
+     * @param string          $formFieldPattern Form-field pattern for getting the value of
+     *                                          a form field like 'rollerworks_search[%s]',
+     *                                          placeholder is replaced with eg. 'filter'
+     *                                          or 'format'
      *
      * @return SearchProcessor|CacheSearchProcessor
      */
-    public function createProcessor(ProcessorConfig $config, $uriPrefix = '', $cached = true)
-    {
+    public function createProcessor(
+        ProcessorConfig $config,
+        $uriPrefix = '',
+        $formFieldPattern = 'rollerworks_search[%s]',
+        $cached = true
+    ) {
         $processor = new SearchProcessor(
             $this->inputFactory,
             $this->exportFactory,
             $this->conditionOptimizer,
             $this->validator,
+            $this->translator,
             $this->uirEncoder,
             $config,
-            $uriPrefix
+            $uriPrefix,
+            $formFieldPattern = 'rollerworks_search[%s]'
         );
 
         if ($cached) {

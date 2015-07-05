@@ -13,6 +13,7 @@
             <argument id="rollerworks_search.condition_optimizer" type="service"/>
             <argument id="rollerworks_search.condition_serializer" type="service"/>
             <argument id="rollerworks_search.condition_validator" type="service"/>
+            <argument id="translator" type="service"/>
             <argument id="rollerworks_search.uri_encoder" type="service"/>
             <argument id="rollerworks_cache.driver.session_driver" type="service"/>
         </service>
