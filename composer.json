@@ -17,9 +17,9 @@
         "rollerworks/exception-parser": "~1.0",
         "rollerworks/uri-encoder": "~1.0",
         "rollerworks/cache-bundle": "~1.1",
-        "symfony/framework-bundle": "~2.3",
-        "symfony/finder": "~2.3",
-        "symfony/form": "~2.3"
+        "symfony/framework-bundle": "^2.3.30",
+        "symfony/finder": "^2.3.24",
+        "symfony/form": "^2.3.24"
     },
     "require-dev": {
         "symfony/browser-kit": "~2.3",
