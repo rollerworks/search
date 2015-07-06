@@ -47,12 +47,6 @@ rollerworks_search:
 
     <rollerworks-search:config>
 
-        <rollerworks-search:doctrine>
-            <rollerworks-search:orm cache-driver="rollerworks_search.cache.array_driver">
-                <rollerworks-search:entity-manager>default</rollerworks-search:entity-manager>
-            </rollerworks-search:orm>
-        </rollerworks-search:doctrine>
-
         <rollerworks-search:metadata cache-dir="rollerworks_search.cache.array_driver" cache-driver="%kernel.cache_dir%/rollerworks_search_metadata" auto-mapping="true">
             <!--<rollerworks-search:mapping name="MappingName" dir="" prefix="" is-bundle="" />-->
         </rollerworks-search:metadata>
