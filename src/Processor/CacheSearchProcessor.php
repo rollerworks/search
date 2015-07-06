@@ -147,7 +147,7 @@ class CacheSearchProcessor extends AbstractSearchProcessor
      */
     public function exportSearchCondition($format)
     {
-        if (!$this->isValid()) {
+        if (!$this->isValid(false)) {
             return null;
         }
 

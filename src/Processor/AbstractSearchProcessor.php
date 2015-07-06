@@ -74,21 +74,35 @@ abstract class AbstractSearchProcessor implements SearchProcessorInterface
     }
 
     /**
-     * Returns whether the processed result is valid.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isValid()
+    public function isValid($allowEmpty = true)
     {
         if (count($this->errors) > 0) {
             return false;
         }
 
         if (!$this->searchCondition) {
-            return false;
+            return $allowEmpty;
         }
 
         return !$this->searchCondition->getValuesGroup()->hasErrors(true);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSubmitted($requireValid = true)
+    {
+        if (!$this->request || !$this->request->isMethod('POST')) {
+            return false;
+        }
+
+        if (!$requireValid) {
+            return true;
+        }
+
+        return $this->isValid();
     }
 
     /**

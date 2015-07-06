@@ -133,9 +133,11 @@ final class CacheSearchProcessorTest extends SearchIntegrationTestCase
         // This should be 'empty' as the filter doesn't apply for the processor
         $processor2 = $this->createProcessor('auth');
         $processor2->processRequest(Request::create('/list?filter=foo'));
+        $this->assertNull($processor->exportSearchCondition('filter_query'));
 
         $this->assertTrue($processor2->isValid());
         $this->assertEquals('', $processor2->getSearchCode());
+        $this->assertNull($processor2->exportSearchCondition('filter_query'));
     }
 
     public function testProcessSearchCodeFromQueryWithNoCache()

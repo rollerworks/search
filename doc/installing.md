@@ -44,10 +44,11 @@ register the new bundle:
 
 ```php
 // in AppKernel::registerBundles()
-$bundles = array(
+$bundles = [
     // ...
+    new Rollerworks\Bundle\CacheBundle\RollerworksCacheBundle(),
     new Rollerworks\Bundle\SearchBundle\RollerworksSearchBundle(),
-);
+];
 ```
 
 [1]: http://getcomposer.org/
