@@ -179,7 +179,7 @@ class CacheSearchProcessor extends AbstractSearchProcessor
 
     private function storeCondition()
     {
-        if (!$this->isValid()) {
+        if (!$this->isValid(false)) {
             return;
         }
 
