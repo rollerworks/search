@@ -113,9 +113,12 @@ final class SearchProcessorTest extends SearchIntegrationTestCase
         // This should be 'empty' as the filter doesn't apply for the processor
         $processor2 = $this->createProcessor('auth');
         $processor2->processRequest(Request::create('/list?filter=foo'));
+        $this->assertNull($processor->exportSearchCondition('filter_query'));
 
         $this->assertTrue($processor2->isValid());
+        $this->assertFalse($processor->isValid(false));
         $this->assertEquals('', $processor2->getSearchCode());
+        $this->assertNull($processor2->exportSearchCondition('filter_query'));
     }
 
     public function testProcessingFilterWithNoneScalarIsEmpty()
@@ -124,6 +127,7 @@ final class SearchProcessorTest extends SearchIntegrationTestCase
         $processor->processRequest(Request::create('/list?filter[foo]=bar'));
 
         $this->assertTrue($processor->isValid());
+        $this->assertFalse($processor->isValid(false));
         $this->assertEquals('', $processor->getSearchCode());
     }
 
@@ -142,6 +146,8 @@ final class SearchProcessorTest extends SearchIntegrationTestCase
         $processor->processRequest(Request::create('/list', 'POST', ['rollerworks_search' => ['filter' => 'name: user;']]));
 
         $this->assertTrue($processor->isValid());
+        $this->assertTrue($processor->isSubmitted());
+        $this->assertTrue($processor->isSubmitted(false));
         $this->assertEquals('bmFtZTogdXNlcjs', $processor->getSearchCode());
     }
 
@@ -159,6 +165,7 @@ final class SearchProcessorTest extends SearchIntegrationTestCase
 
         $this->assertTrue($processor->isValid());
         $this->assertEquals('bmFtZTogdXNlcjs', $processor->getSearchCode());
+        $this->assertNotNull($processor->exportSearchCondition('filter_query'));
     }
 
     public function testProcessMultipleSearchCodesFromQuery()
@@ -187,7 +194,7 @@ final class SearchProcessorTest extends SearchIntegrationTestCase
         $this->assertCount(1, $processor->getErrors());
     }
 
-    public function testSearchCodeWithValidationErrorsIsInvalid()
+    public function testSearchCodeFromQueryWithValidationErrorsIsInvalid()
     {
         $this->validator->validate(Argument::any())->will(
             function ($arg) {
@@ -209,6 +216,34 @@ final class SearchProcessorTest extends SearchIntegrationTestCase
         $processor->processRequest(Request::create('/list?filter='.$this->uirEncoder->encodeUri('name: "crow bar"; ( name: bar; )')));
 
         $this->assertFalse($processor->isValid());
+        $this->assertFalse($processor->isSubmitted());
+        $this->assertCount(1, $processor->getErrors());
+    }
+
+    public function testSearchCodeFromPostWithValidationErrorsIsInvalid()
+    {
+        $this->validator->validate(Argument::any())->will(
+            function ($arg) {
+                /** @var SearchConditionInterface $condition */
+                $condition = $arg[0];
+                $condition->getValuesGroup()->getField('name')->addError(
+                    new ValuesError('singleValues[0].value', 'This ain\'t no crow bar!')
+                );
+
+                $condition->getValuesGroup()->getGroup(0)->getField('name')->addError(
+                    new ValuesError('singleValues[0].value', 'What "bar"?')
+                );
+
+                return false;
+            }
+        );
+
+        $processor = $this->createProcessor();
+        $processor->processRequest(Request::create('/list', 'POST', ['rollerworks_search' => ['filter' => 'name: "crow bar"; ( name: bar; )']]));
+
+        $this->assertFalse($processor->isValid());
+        $this->assertFalse($processor->isSubmitted());
+        $this->assertTrue($processor->isSubmitted(false));
         $this->assertCount(1, $processor->getErrors());
     }
 }

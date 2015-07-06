@@ -68,7 +68,19 @@ interface SearchProcessorInterface
     /**
      * Returns whether the processed result is valid.
      *
+     * @param bool $allowEmpty
+     *
      * @return bool
      */
-    public function isValid();
+    public function isValid($allowEmpty = true);
+
+    /**
+     * Returns whether a new condition was submitted.
+     *
+     * @param bool $requireValid         Require that the processed condition is valid
+     *                                   default is true
+     *
+     * @return bool
+     */
+    public function isSubmitted($requireValid = true);
 }
