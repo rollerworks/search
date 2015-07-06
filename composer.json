@@ -12,23 +12,20 @@
     ],
     "require": {
         "php": ">=5.4",
-        "rollerworks/search-symfony-di": "~1.0@dev,>1.0.0-beta5",
+        "rollerworks/search-symfony-di": "~1.0@dev,>=1.0.0-beta5",
         "rollerworks/search-symfony-validator": "~1.0@dev",
         "rollerworks/exception-parser": "~1.0",
         "rollerworks/uri-encoder": "~1.0",
+        "rollerworks/cache-bundle": "~1.1",
         "symfony/framework-bundle": "~2.3",
         "symfony/finder": "~2.3",
-        "symfony/form": "~2.3",
-        "rollerworks/exception-parser": "~1.0"
+        "symfony/form": "~2.3"
     },
     "require-dev": {
+        "symfony/browser-kit": "~2.3",
         "rollerworks/search-jms-metadata": "~1.0@dev,>=1.0.0-beta3",
-        "rollerworks/cache-bundle": "1.0.*@dev",
         "matthiasnoback/symfony-dependency-injection-test": "^0.7.1",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.2"
-    },
-    "suggest": {
-        "rollerworks/cache-bundle": "Session based caching for increased performance"
     },
     "autoload": {
         "psr-4": {
