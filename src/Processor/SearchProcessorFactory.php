@@ -119,7 +119,7 @@ class SearchProcessorFactory implements SearchProcessorFactoryInterface
             $this->uirEncoder,
             $config,
             $uriPrefix,
-            $formFieldPattern = 'rollerworks_search[%s]'
+            $formFieldPattern
         );
 
         if ($cached) {
