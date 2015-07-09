@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Bundle\SearchBundle\Processor;
 
+use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -64,6 +65,11 @@ interface SearchProcessorInterface
      * @return array[]|\Traversable
      */
     public function getErrors();
+
+    /**
+     * @return ProcessorConfig
+     */
+    public function getConfig();
 
     /**
      * Returns whether the processed result is valid.

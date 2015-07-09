@@ -114,6 +114,14 @@ abstract class AbstractSearchProcessor implements SearchProcessorInterface
     }
 
     /**
+     * @return ProcessorConfig
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * Gets a Request object value from the request.
      *
      * @param string $name    Name of the parameter
