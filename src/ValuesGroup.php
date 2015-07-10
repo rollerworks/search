@@ -47,6 +47,10 @@ class ValuesGroup implements \Serializable
     private $locked = false;
 
     /**
+     * Total number of values.
+     *
+     * This value is lazy initialized.
+     *
      * @var int|null
      */
     private $count;
@@ -88,7 +92,7 @@ class ValuesGroup implements \Serializable
     /**
      * @param int $index
      *
-     * @throws InvalidArgumentException on invalid index.
+     * @throws InvalidArgumentException when no group exists at the given index
      *
      * @return ValuesGroup
      */
@@ -157,7 +161,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @return array|ValuesBag[]
+     * @return ValuesBag[]
      */
     public function getFields()
     {
@@ -225,17 +229,17 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Get the total number of values in fields list structure.
+     * Gets the total number of values in this fields list structure.
      *
      * @return int
      */
     public function countValues()
     {
-        $count = 0;
-
         if (null !== $this->count) {
             return $this->count;
         }
+
+        $count = 0;
 
         foreach ($this->fields as $field) {
             $count += $field->count();
