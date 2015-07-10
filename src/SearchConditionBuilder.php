@@ -70,7 +70,7 @@ class SearchConditionBuilder
     }
 
     /**
-     * Create a new ValuesGroup and return the object instance.
+     * Create a new ValuesGroup and returns the object instance.
      *
      * After creating the group it can be expended with fields or subgroups:
      *
@@ -96,8 +96,8 @@ class SearchConditionBuilder
     /**
      * Add/expend a field on this ValuesGroup and returns the object instance.
      *
-     * The object instance is a ValuesBagBuilder, which allows to add
-     * values to the field:
+     * The object instance is a ValuesBagBuilder (subset of ValuesBag), which
+     * allows to add extra values to the field:
      *
      * ->field('name')
      *   ->addSingleValue(new SingleValue('my value'))

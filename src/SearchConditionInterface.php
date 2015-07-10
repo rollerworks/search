@@ -17,11 +17,15 @@ namespace Rollerworks\Component\Search;
 interface SearchConditionInterface
 {
     /**
+     * Returns the configured FieldSet of the search condition.
+     *
      * @return FieldSet
      */
     public function getFieldSet();
 
     /**
+     * Returns the root ValuesGroup of the search condition.
+     *
      * @return ValuesGroup
      */
     public function getValuesGroup();

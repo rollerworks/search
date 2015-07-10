@@ -47,7 +47,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
             }
         }
 
-        // None of the fields supports ranges or value-increments so don't optimize
+        // None of the fields supports ranges or value-increments so don't optimize.
         if (!$optimize) {
             return;
         }
@@ -69,7 +69,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
             }
         }
 
-        // now traverse the subgroups
+        // Traverse the subgroups.
         foreach ($valuesGroup->getGroups() as $group) {
             $this->optimizeValuesInGroup($group, $fieldSet);
         }

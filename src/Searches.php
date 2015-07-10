@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Extension\Core\CoreExtension;
 
 /**
- * Entry point of the Search component.
+ * Entry point of the Search system.
  *
  * Use this class to conveniently create new search factories:
  *
@@ -48,6 +48,8 @@ use Rollerworks\Component\Search\Extension\Core\CoreExtension;
  * search factory:
  *
  * <code>
+ * use Rollerworks\Component\Search\Searches;
+ *
  * $searchFactory = Searches::createSearchFactoryBuilder();
  *     ->addType(new PersonType())
  *     ->addType(new PhoneNumberType())
@@ -56,13 +58,18 @@ use Rollerworks\Component\Search\Extension\Core\CoreExtension;
  * </code>
  *
  * Support for the Validator component is provided by ValidatorExtension.
- * This extension needs a validator object to function properly:
+ * This extension needs a Validator object to function properly:
  *
  * <code>
+ * use Rollerworks\Component\Search\Searches;
  * use Rollerworks\Component\Search\Extension\Validator\ValidatorExtension;
+ * use Symfony\Component\Validator\Validation;
+ *
+ * $validatorBuilder = Validation::createValidatorBuilder();
+ * $validator = $validatorBuilder->getValidator();
  *
  * $searchFactory = Searches::createSearchFactoryBuilder();
- *     ->addExtension(new ValidatorExtension())
+ *     ->addExtension(new ValidatorExtension($validator))
  *     ->getSearchFactory();
  * </code>
  *

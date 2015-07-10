@@ -14,11 +14,10 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
 /**
- * SearchConditionSerializer, serializes a SearchCondition for storage.
+ * SearchConditionSerializer, serializes a search condition for persistent storage.
  *
- * The returned value is an array, you should serialize it yourself.
- * This is not done because storing it in session would serialize
- * the string again.
+ * In practice this serializes the root ValuesGroup and of the condition
+ * and bundles it with the FieldSet-name for future unserializing.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -29,23 +28,30 @@ class SearchConditionSerializer
      */
     private $fieldSetRegistry;
 
+    /**
+     * Constructor.
+     *
+     * @param FieldSetRegistryInterface $fieldSetRegistry A FieldSet registry for loading
+     *                                                    FieldSet configurations
+     */
     public function __construct(FieldSetRegistryInterface $fieldSetRegistry)
     {
         $this->fieldSetRegistry = $fieldSetRegistry;
     }
 
     /**
-     * Serialize a SearchCondition instance.
+     * Serialize a search condition.
      *
-     * This removes the FieldSet object, and replaces it with
-     * a FieldSet-name to ensure the proper FieldSet when unserializing.
+     * The returned value is an array, you should serialize it yourself.
+     * This is not done already because storing a serialized SearchCondition
+     * in a php session would serialize the serialized result again.
      *
      * @param SearchConditionInterface $searchCondition
      *
-     * @throws InvalidArgumentException when the SearchCondition's FieldSet is not
-     *                                  registered in the FieldSetRegistry
+     * @throws InvalidArgumentException when the FieldSet of the search condition
+     *                                  is not registered in the FieldSetRegistry
      *
-     * @return array [fieldSet-name, ValuesGroup]
+     * @return array [FieldSet-name, serialized ValuesGroup object]
      */
     public function serialize(SearchConditionInterface $searchCondition)
     {
@@ -54,8 +60,8 @@ class SearchConditionSerializer
         if (!$this->fieldSetRegistry->has($setName)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'FieldSet "%s" is not registered in the FieldSetRegistry,'.
-                    ' you should register the FieldSet before serializing the SearchCondition.',
+                    'FieldSet "%s" is not registered in the FieldSetRegistry, '.
+                    'you should register the FieldSet before serializing the search condition.',
                     $setName
                 )
             );
@@ -65,9 +71,9 @@ class SearchConditionSerializer
     }
 
     /**
-     * Unserialize the SearchCondition.
+     * Unserialize a serialized search condition.
      *
-     * @param array $searchCondition [fieldSet-name, ValuesGroup]
+     * @param array $searchCondition [FieldSet-name, serialized ValuesGroup object]
      *
      * @throws InvalidArgumentException when serialized SearchCondition is invalid
      *                                  (invalid structure or failed to unserialize)
@@ -76,9 +82,9 @@ class SearchConditionSerializer
      */
     public function unserialize($searchCondition)
     {
-        if (count($searchCondition) !== 2 || !isset($searchCondition[0], $searchCondition[1])) {
+        if (2 !== count($searchCondition) || !isset($searchCondition[0], $searchCondition[1])) {
             throw new InvalidArgumentException(
-                'Serialized SearchCondition must be exactly two values [fieldSet-name, serialized ValuesGroup].'
+                'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
             );
         }
 

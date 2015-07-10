@@ -24,17 +24,17 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     private $resolvedTypeFactory;
 
     /**
-     * @var array
+     * @var SearchExtensionInterface[]
      */
     private $extensions = array();
 
     /**
-     * @var array
+     * @var FieldTypeInterface[]
      */
     private $types = array();
 
     /**
-     * @var array
+     * @var @var array<FieldTypeExtensionInterface[]>
      */
     private $typeExtensions = array();
 

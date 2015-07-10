@@ -24,7 +24,7 @@ use Rollerworks\Component\Search\ValuesGroup;
 /**
  * Removes duplicated values.
  *
- * Duplicated values are only scanned per level, so if a subgroup
+ * Duplicated values are only scanned per ValuesBag, so if a subgroup
  * has a value also present at a higher level its not removed.
  *
  *  Doing so would require to keep track of all the previous values per type.
@@ -41,33 +41,21 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
      */
     public function process(SearchConditionInterface $condition)
     {
-        $fieldSet = $condition->getFieldSet();
-        $valuesGroup = $condition->getValuesGroup();
-
-        $this->removeDuplicatesInGroup($valuesGroup, $fieldSet);
+        $this->removeDuplicatesInGroup($condition->getValuesGroup(), $condition->getFieldSet());
     }
 
-    /**
-     * @param ValuesGroup $valuesGroup
-     * @param FieldSet    $fieldSet
-     */
     private function removeDuplicatesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
-            $config = $fieldSet->get($fieldName);
-            $this->removeDuplicatesInValuesBag($config, $values);
+            $this->removeDuplicatesInValuesBag($fieldSet->get($fieldName), $values);
         }
 
-        // now traverse the subgroups
+        // Traverse the subgroups.
         foreach ($valuesGroup->getGroups() as $group) {
             $this->removeDuplicatesInGroup($group, $fieldSet);
         }
     }
 
-    /**
-     * @param FieldConfigInterface $config
-     * @param ValuesBag            $valuesBag
-     */
     private function removeDuplicatesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
     {
         $comparison = $config->getValueComparison();
@@ -134,7 +122,7 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
                     continue;
                 }
 
-                // Only compare when both inclusive are equal
+                // Only compare when both inclusive's are equal.
                 if ($value->isLowerInclusive() !== $value2->isLowerInclusive() ||
                     $value->isUpperInclusive() !== $value2->isUpperInclusive()
                 ) {

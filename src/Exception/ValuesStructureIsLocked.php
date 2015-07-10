@@ -16,7 +16,7 @@ final class ValuesStructureIsLocked extends \BadMethodCallException implements E
     public function __construct()
     {
         parent::__construct(
-            'A Values-structure (ValuesGroup and ValuesBag) cannot be changed anymore once the data is locked.'
+            'Unable to change the values of a locked data structure (ValuesGroup and ValuesBag).'
         );
     }
 }

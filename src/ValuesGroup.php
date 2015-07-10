@@ -17,7 +17,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 /**
  * ValuesGroup.
  *
- * The ValuesGroup holds subgroups and values (per-field).
+ * The ValuesGroup holds sub-groups and values (per field).
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -205,7 +205,10 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param bool $deeper
+     * Returns whether one or more fields in this group have errors.
+     *
+     * @param bool $deeper Also check the fields of deeper sub-groups.
+     *                     Default is false
      *
      * @return bool
      */
@@ -229,7 +232,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Gets the total number of values in this fields list structure.
+     * Gets the total number of values in the fields list structure.
      *
      * @return int
      */
@@ -255,7 +258,7 @@ class ValuesGroup implements \Serializable
     /**
      * Get the logical case of the field.
      *
-     * This is either one of the following class constants value:
+     * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
      * @return string
@@ -266,9 +269,9 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Set the logical case of the field.
+     * Set the logical case of the ValuesGroup.
      *
-     * This is either one of the following class constants value:
+     * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
      * @param int
@@ -352,7 +355,7 @@ class ValuesGroup implements \Serializable
      * Returns whether the field's data is locked.
      *
      * A field with locked data is restricted to the data passed in
-     * this configuration.
+     * its configuration.
      *
      * @return bool Whether the data is locked.
      */

@@ -14,6 +14,12 @@ namespace Rollerworks\Component\Search;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
+ * The AbstractFieldType can be used as a base class implementation for FieldTypes.
+ *
+ * An added bonus for extending this class rather then the implementing the the
+ * {@link FieldTypeInterface} is that any new methods added the
+ * FieldTypeInterface will not break existing implementations.
+ *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 abstract class AbstractFieldType implements FieldTypeInterface

@@ -15,6 +15,12 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
+ * The AbstractExtension can be used as a base class for SearchExtensions.
+ *
+ * An added bonus for extending this class rather then the implementing the the
+ * {@link SearchExtensionInterface} is that any new methods added the
+ * SearchExtensionInterface will not break existing implementations.
+ *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 abstract class AbstractExtension implements SearchExtensionInterface

@@ -19,10 +19,11 @@ interface SearchFactoryInterface
     /**
      * Create a new search field.
      *
-     * @param string $name
-     * @param string $type
-     * @param array  $options
-     * @param bool   $required
+     * @param string $name     Name of the field
+     * @param string $type     Type of the field
+     * @param array  $options  Array of options for building the field
+     * @param bool   $required Is the field required in a ValuesGroup and must it
+     *                         always have a value (default is false)
      *
      * @return FieldConfigInterface
      */
@@ -33,7 +34,7 @@ interface SearchFactoryInterface
      *
      * @param string $name
      *
-     * @return FieldsetBuilder Interface
+     * @return FieldsetBuilderInterface
      */
     public function createFieldSetBuilder($name);
 }

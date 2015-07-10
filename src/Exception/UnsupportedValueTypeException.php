@@ -21,12 +21,12 @@ class UnsupportedValueTypeException extends InputProcessorException
     /**
      * @var string
      */
-    protected $fieldName;
+    private $fieldName;
 
     /**
      * @var string
      */
-    protected $valueType;
+    private $valueType;
 
     /**
      * Constructor.
@@ -40,7 +40,7 @@ class UnsupportedValueTypeException extends InputProcessorException
         $this->valueType = $valueType;
 
         parent::__construct(
-            sprintf('Field "%s" does accept %s values.', $fieldName, $valueType)
+            sprintf('Field "%s" does not accept %s values.', $fieldName, $valueType)
         );
     }
 

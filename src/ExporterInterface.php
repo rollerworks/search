@@ -21,6 +21,10 @@ interface ExporterInterface
     /**
      * Exports the SearchCondition to a portable format.
      *
+     * The returned format can be anything, as long as it's possible
+     * to 're-import' the exported search condition with a compatible
+     * input processor.
+     *
      * @param SearchConditionInterface $condition
      *
      * @return mixed

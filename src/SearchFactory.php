@@ -27,7 +27,7 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * @var MetadataReaderInterface
      */
-    private $mappingReader;
+    private $metadataReader;
 
     /**
      * @var ResolvedFieldTypeFactoryInterface
@@ -45,18 +45,11 @@ class SearchFactory implements SearchFactoryInterface
     {
         $this->registry = $registry;
         $this->resolvedTypeFactory = $resolvedTypeFactory;
-        $this->mappingReader = $metadataReader;
+        $this->metadataReader = $metadataReader;
     }
 
     /**
-     * Create a new search field.
-     *
-     * @param string $name
-     * @param string $type
-     * @param array  $options
-     * @param bool   $required
-     *
-     * @return SearchField
+     * {@inheritdoc}
      */
     public function createField($name, $type, array $options = array(), $required = false)
     {
@@ -69,12 +62,14 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * Create a new search field referenced by property.
      *
-     * @param string $class
-     * @param string $property
-     * @param string $name
-     * @param string $type
-     * @param array  $options
-     * @param bool   $required
+
+     * @param string $class    Model reference class-name
+     * @param string $property Model reference property-name
+     * @param string $name     Name of the field
+     * @param string $type     Type of the field
+     * @param array  $options  Array of options for building the field
+     * @param bool   $required Is the field required in a ValuesGroup and must it
+     *                         always have a value (default is false)
      *
      * @return SearchField
      *
@@ -92,15 +87,11 @@ class SearchFactory implements SearchFactoryInterface
     }
 
     /**
-     * Create a new FieldsetBuilderInterface instance.
-     *
-     * @param string $name
-     *
-     * @return FieldsetBuilder Interface
+     * {@inheritdoc}
      */
     public function createFieldSetBuilder($name)
     {
-        $fieldSetBuilder = new FieldSetBuilder($name, $this, $this->mappingReader);
+        $fieldSetBuilder = new FieldSetBuilder($name, $this, $this->metadataReader);
 
         return $fieldSetBuilder;
     }
@@ -143,9 +134,9 @@ class SearchFactory implements SearchFactoryInterface
      * Wraps a type into a ResolvedFieldTypeInterface implementation and connects
      * it with its parent type.
      *
-     * @param FieldTypeInterface $type The type to resolve.
+     * @param FieldTypeInterface $type The type to resolve
      *
-     * @return ResolvedFieldTypeInterface The resolved type.
+     * @return ResolvedFieldTypeInterface The resolved type
      */
     private function resolveType(FieldTypeInterface $type)
     {

@@ -76,7 +76,7 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
              'Rollerworks\Component\Search\Exception\InvalidArgumentException',
-             'Serialized SearchCondition must be exactly two values [fieldSet-name, serialized ValuesGroup].'
+             'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
         );
 
         $this->serializer->unserialize(array('foobar'));
@@ -86,7 +86,7 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
              'Rollerworks\Component\Search\Exception\InvalidArgumentException',
-             'Serialized SearchCondition must be exactly two values [fieldSet-name, serialized ValuesGroup].'
+             'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
         );
 
         $this->serializer->unserialize(array('foobar', 'foo' => 'bar'));

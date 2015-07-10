@@ -99,7 +99,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
      * @test
      *
      * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage Unable to add formatter to chain, can not assign formatter to its self.
+     * @expectedExceptionMessage Unable to add optimizer to its own chain.
      */
     public function it_errors_when_adding_self()
     {

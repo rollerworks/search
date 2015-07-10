@@ -49,7 +49,7 @@ final class FieldSetRegistry implements FieldSetRegistryInterface
         }
 
         if (!$fieldSet->isConfigLocked()) {
-            throw new InvalidArgumentException(sprintf('Unable to register none configuration-locked FieldSet "%s".', $name));
+            throw new InvalidArgumentException(sprintf('Unable to register unlocked FieldSet "%s".', $name));
         }
 
         $this->fieldSets[$name] = $fieldSet;

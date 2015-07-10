@@ -14,18 +14,20 @@ namespace Rollerworks\Component\Search;
 /**
  * ValueIncrementerInterface allows for finding the incremented value.
  *
- * Increments can be used for optimizing and such.
+ * Increments can be used for optimizing eg. the ranges in a search
+ * condition.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface ValueIncrementerInterface extends ValueComparisonInterface
 {
     /**
-     * Returns the incremented value of the input.
+     * Returns the incremented value of the value.
      *
-     * The value should be returned in the normalized format.
+     * The returned value must be returned in the "normalized" format,
+     * that is supported by the field type.
      *
-     * @param mixed $value      The value to increment.
+     * @param mixed $value      The value to increment
      * @param array $options    Array of options passed with the field
      * @param int   $increments Number of increments
      *

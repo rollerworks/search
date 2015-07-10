@@ -23,12 +23,12 @@ class FieldRegistry implements FieldRegistryInterface
     /**
      * Extensions.
      *
-     * @var SearchExtensionInterface[] An array of FormExtensionInterface
+     * @var SearchExtensionInterface[]
      */
     private $extensions = array();
 
     /**
-     * @var array
+     * @var FieldTypeInterface[]
      */
     private $types = array();
 
@@ -40,10 +40,10 @@ class FieldRegistry implements FieldRegistryInterface
     /**
      * Constructor.
      *
-     * @param SearchExtensionInterface[]        $extensions          An array of FormExtensionInterface
-     * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory The factory for resolved form types.
+     * @param SearchExtensionInterface[]        $extensions          An array of SearchExtensionInterface
+     * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory The factory for resolved field types
      *
-     * @throws UnexpectedTypeException if any extension does not implement FormExtensionInterface
+     * @throws UnexpectedTypeException if any extension does not implement SearchExtensionInterface
      */
     public function __construct(array $extensions, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
     {
@@ -67,13 +67,12 @@ class FieldRegistry implements FieldRegistryInterface
         }
 
         if (!isset($this->types[$name])) {
-            /** @var FieldTypeInterface $type */
             $type = null;
 
             foreach ($this->extensions as $extension) {
-                /* @var SearchExtensionInterface $extension */
                 if ($extension->hasType($name)) {
                     $type = $extension->getType($name);
+
                     break;
                 }
             }
@@ -117,12 +116,12 @@ class FieldRegistry implements FieldRegistryInterface
     }
 
     /**
-     * Wraps a type into a ResolvedFormTypeInterface implementation and connects
+     * Wraps a type into a ResolvedFieldTypeInterface implementation and connects
      * it with its parent type.
      *
-     * @param FieldTypeInterface $type The type to resolve.
+     * @param FieldTypeInterface $type The type to resolve
      *
-     * @return ResolvedFieldTypeInterface The resolved type.
+     * @return ResolvedFieldTypeInterface The resolved type
      */
     private function resolveAndAddType(FieldTypeInterface $type)
     {
@@ -130,13 +129,13 @@ class FieldRegistry implements FieldRegistryInterface
 
         if ($parentType instanceof FieldTypeInterface) {
             $this->resolveAndAddType($parentType);
+
             $parentType = $parentType->getName();
         }
 
         $typeExtensions = array();
 
         foreach ($this->extensions as $extension) {
-            /* @var SearchExtensionInterface $extension */
             $typeExtensions = array_merge(
                 $typeExtensions,
                 $extension->getTypeExtensions($type->getName())
