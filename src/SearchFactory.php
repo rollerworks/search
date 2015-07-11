@@ -116,8 +116,11 @@ class SearchFactory implements SearchFactoryInterface
         } elseif (!$type instanceof ResolvedFieldTypeInterface) {
             throw new UnexpectedTypeException(
                 $type,
-                'string, Rollerworks\Component\Search\ResolvedFieldTypeInterface or '.
-                'Rollerworks\Component\Search\FieldTypeInterface'
+                array(
+                     'string',
+                     'Rollerworks\Component\Search\ResolvedFieldTypeInterface',
+                     'Rollerworks\Component\Search\FieldTypeInterface'
+                 )
             );
         }
 

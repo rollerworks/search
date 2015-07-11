@@ -19,11 +19,15 @@ class UnexpectedTypeException extends \InvalidArgumentException implements Excep
     /**
      * Constructor.
      *
-     * @param mixed  $value
-     * @param string $expectedType
+     * @param mixed        $value
+     * @param string|array $expectedType
      */
     public function __construct($value, $expectedType)
     {
+        if (is_array($expectedType)) {
+            $expectedType = implode('", "', $expectedType);
+        }
+
         parent::__construct(
             sprintf(
                 'Expected argument of type "%s", "%s" given',

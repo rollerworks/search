@@ -227,7 +227,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     public static function validateName($name)
     {
         if (null !== $name && !is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string or null');
+            throw new UnexpectedTypeException($name, array('string', 'null'));
         }
 
         if (!self::isValidName($name)) {

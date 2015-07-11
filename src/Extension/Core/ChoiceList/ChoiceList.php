@@ -64,7 +64,7 @@ class ChoiceList implements ChoiceListInterface
     public function __construct($choices, array $labels)
     {
         if (!$choices instanceof \Traversable && !is_array($choices)) {
-            throw new UnexpectedTypeException($choices, 'array or \Traversable');
+            throw new UnexpectedTypeException($choices, array('array', '\Traversable'));
         }
 
         $this->initialize($choices, $labels);
