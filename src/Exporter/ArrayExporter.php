@@ -40,9 +40,9 @@ class ArrayExporter extends AbstractExporter
                 continue;
             }
 
-            $exportedValue = $this->exportValues($values, $fieldSet->get($name));
+            $exportedValue = $this->exportValues($values);
 
-            // Only export fields with actual values
+            // Only export fields with actual values.
             if (count($exportedValue) > 0) {
                 $fieldLabel = $this->labelResolver->resolveFieldLabel($fieldSet, $name);
                 $result['fields'][$fieldLabel] = $exportedValue;
@@ -53,7 +53,7 @@ class ArrayExporter extends AbstractExporter
             $result['groups'][] = $this->exportGroup($group, $fieldSet, false);
         }
 
-        if ((isset($result['fields'])) && ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()) {
+        if (isset($result['fields']) && ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()) {
             $result['logical-case'] = 'OR';
         }
 
@@ -93,16 +93,11 @@ class ArrayExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->getPatternMatchers() as $value) {
-            $matcher = array(
+            $exportedValues['pattern-matchers'][] = array(
                 'type' => $this->getPatternMatchType($value),
                 'value' => $value->getValue(),
+                'case-insensitive' => $value->isCaseInsensitive(),
             );
-
-            if ($value->isCaseInsensitive()) {
-                $matcher['case-insensitive'] = $value->isCaseInsensitive();
-            }
-
-            $exportedValues['pattern-matchers'][] = $matcher;
         }
 
         return $exportedValues;

@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\ValuesGroup;
 
 /**
- * AbstractExporter provides the shared logic for the exporters.
+ * AbstractExporter provides the shared logic for the condition exporters.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -40,9 +40,9 @@ abstract class AbstractExporter implements ExporterInterface
     }
 
     /**
-     * Exports the SearchCondition.
+     * Exports a search condition.
      *
-     * @param SearchConditionInterface $condition     The SearchCondition to export
+     * @param SearchConditionInterface $condition     The search condition to export
      * @param bool                     $useFieldAlias Use the localized field-alias
      *                                                instead of the actual name (default false)
      *
@@ -60,7 +60,7 @@ abstract class AbstractExporter implements ExporterInterface
 
         $result = $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
 
-        // Restore original resolver
+        // Restore original resolver.
         $this->labelResolver = $labelResolver;
 
         return $result;
@@ -69,7 +69,7 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * @param PatternMatch $patternMatch
      *
-     * @throws \RuntimeException When an unsupported pattern-match type is found.
+     * @throws \RuntimeException When an unsupported pattern-match type is provided
      *
      * @return string
      */

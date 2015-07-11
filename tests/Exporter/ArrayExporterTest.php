@@ -118,11 +118,11 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
             'fields' => array(
                 'name' => array(
                     'pattern-matchers' => array(
-                        array('type' => 'CONTAINS', 'value' => 'value'),
+                        array('type' => 'CONTAINS', 'value' => 'value', 'case-insensitive' => false),
                         array('type' => 'STARTS_WITH', 'value' => 'value2', 'case-insensitive' => true),
-                        array('type' => 'ENDS_WITH', 'value' => 'value3'),
-                        array('type' => 'REGEX', 'value' => '^foo|bar?'),
-                        array('type' => 'NOT_CONTAINS', 'value' => 'value4'),
+                        array('type' => 'ENDS_WITH', 'value' => 'value3', 'case-insensitive' => false),
+                        array('type' => 'REGEX', 'value' => '^foo|bar?', 'case-insensitive' => false),
+                        array('type' => 'NOT_CONTAINS', 'value' => 'value4', 'case-insensitive' => false),
                         array('type' => 'NOT_CONTAINS', 'value' => 'value5', 'case-insensitive' => true),
                     ),
                 ),

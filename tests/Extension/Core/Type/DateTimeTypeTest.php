@@ -36,7 +36,17 @@ class DateTimeTypeTest extends FieldTypeTestCase
         $this->assertTransformedEquals($field, $outputTime, '2010-06-02T03:04:00-10:00');
     }
 
-    public function testPatternCanBeConfigured()
+    public function testFormatCanBeConfigured()
+    {
+        $field = $this->getFactory()->createField('datetime', 'datetime', array(
+            'format' => "MM*yyyy*dd",
+        ));
+
+        $outputTime = new \DateTime('2010-06-02');
+        $this->assertTransformedEquals($field, $outputTime, '06*2010*02');
+    }
+
+    public function testPatternIsUsedInFormatBc()
     {
         $field = $this->getFactory()->createField('datetime', 'datetime', array(
             'pattern' => "MM*yyyy*dd",
@@ -78,15 +88,15 @@ class DateTimeTypeTest extends FieldTypeTestCase
         $fieldView = $field->createView();
 
         $this->assertArrayHasKey('timezone', $fieldView->vars);
-        $this->assertArrayHasKey('pattern', $fieldView->vars);
+        $this->assertArrayHasKey('format', $fieldView->vars);
 
         $this->assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
-        $this->assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
+        $this->assertEquals('M/d/yy, h:mm a', $fieldView->vars['format']);
     }
 
     protected function setUp()
     {
-        IntlTestHelper::requireIntl($this);
+        //IntlTestHelper::requireIntl($this);
 
         parent::setUp();
     }

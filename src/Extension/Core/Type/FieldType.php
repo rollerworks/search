@@ -25,7 +25,7 @@ class FieldType extends AbstractFieldType
     /**
      * @var ValueComparisonInterface
      */
-    protected $valueComparison;
+    private $valueComparison;
 
     /**
      * Constructor.

@@ -68,7 +68,7 @@ class DateType extends AbstractFieldType
         $dateFormat = is_int($options['format']) ? $options['format'] : self::DEFAULT_FORMAT;
         $timeFormat = \IntlDateFormatter::NONE;
         $calendar = \IntlDateFormatter::GREGORIAN;
-        $pattern = is_string($options['format']) ? $options['format'] : null;
+        $format = is_string($options['format']) ? $options['format'] : null;
 
         if (!in_array($dateFormat, self::$acceptedFormats, true)) {
             throw new InvalidConfigurationException(
@@ -77,13 +77,13 @@ class DateType extends AbstractFieldType
             );
         }
 
-        if (null !== $pattern && (false === strpos($pattern, 'y') || false === strpos($pattern, 'M')
-            || false === strpos($pattern, 'd'))
+        if (null !== $format && (false === strpos($format, 'y') || false === strpos($format, 'M')
+            || false === strpos($format, 'd'))
         ) {
             throw new InvalidConfigurationException(
                 sprintf(
                     'The "format" option should contain the letters "y", "M" and "d". Its current value is "%s".',
-                    $pattern
+                    $format
                 )
             );
         }
@@ -95,7 +95,7 @@ class DateType extends AbstractFieldType
                 $dateFormat,
                 $timeFormat,
                 $calendar,
-                $pattern
+                $format
             )
         );
     }
@@ -106,9 +106,9 @@ class DateType extends AbstractFieldType
     public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
     {
         if (is_string($options['format'])) {
-            $pattern = $options['format'];
+            $format = $options['format'];
         } else {
-            $pattern = \IntlDateFormatter::create(
+            $format = \IntlDateFormatter::create(
                 \Locale::getDefault(),
                 is_int($options['format']) ? $options['format'] : self::DEFAULT_FORMAT,
                 \IntlDateFormatter::NONE,
@@ -117,7 +117,7 @@ class DateType extends AbstractFieldType
             )->getPattern();
         }
 
-        $view->vars['pattern'] = $pattern;
+        $view->vars['format'] = $format;
     }
 
     /**

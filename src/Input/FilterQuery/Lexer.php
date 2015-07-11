@@ -87,7 +87,7 @@ class Lexer extends AbstractLexer
     }
 
     /**
-     * @param $token
+     * @param int|string $token
      *
      * @return bool
      */
@@ -105,7 +105,7 @@ class Lexer extends AbstractLexer
     {
         return array(
             '(?:\p{L}[\p{L}\p{N}_-]*:)', // field-name, unicode
-            '[\p{L}\p{N}]+', // string literal
+            '[\p{L}\p{N}]+', // string literal, unicode
             '(?:"(?:[^"]|"")*")', // quoted string
         );
     }

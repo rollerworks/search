@@ -41,7 +41,8 @@ class SimpleValueComparison implements ValueComparisonInterface
      */
     public function isEqual($value, $nextValue, $options)
     {
-        // This does not work for objects, so it should have its comparison class
+        // This does not work for objects, so they should have
+        // there own comparison classes.
         return $value === $nextValue;
     }
 }

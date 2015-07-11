@@ -25,7 +25,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     protected function setUp()
     {
-        //IntlTestHelper::requireIntl($this);
+        IntlTestHelper::requireIntl($this);
 
         parent::setUp();
 
