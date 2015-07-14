@@ -30,11 +30,6 @@ class Field
     private $name;
 
     /**
-     * @var bool
-     */
-    private $required;
-
-    /**
      * @var string
      */
     private $type;
@@ -106,19 +101,20 @@ class Field
     }
 
     /**
-     * @param bool $required
+     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
+     *             Use a custom validator instead.
      */
     public function setRequired($required)
     {
-        $this->required = $required;
     }
 
     /**
-     * @return bool
+     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
+     *             Use a custom validator instead.
      */
     public function isRequired()
     {
-        return $this->required;
+        return false;
     }
 
     /**

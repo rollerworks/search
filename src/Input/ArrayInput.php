@@ -108,8 +108,6 @@ class ArrayInput extends AbstractInput
 
     private function processFields(array $values, ValuesGroup $valuesGroup, $groupIdx, $level)
     {
-        $allFields = $this->config->getFieldSet()->all();
-
         foreach ($values as $name => $value) {
             $fieldName = $this->getFieldName($name);
             $fieldConfig = $this->config->getFieldSet()->get($fieldName);
@@ -139,16 +137,6 @@ class ArrayInput extends AbstractInput
                     $fieldName,
                     $this->valuesToBag($fieldConfig, $value, new ValuesBag(), $groupIdx, $level)
                 );
-            }
-
-            unset($allFields[$fieldName]);
-        }
-
-        // Now run trough all the remaining fields and look if they are required.
-        // Fields that were set without values have already been checked by valuesToBag().
-        foreach ($allFields as $fieldName => $filterConfig) {
-            if ($filterConfig->isRequired()) {
-                throw new FieldRequiredException($fieldName, $groupIdx, $level);
             }
         }
     }
@@ -204,10 +192,6 @@ class ArrayInput extends AbstractInput
                 $matcher['value'],
                 isset($matcher['case-insensitive']) && true === (bool) $matcher['case-insensitive']
             );
-        }
-
-        if (0 === $valuesBag->count() && $fieldConfig->isRequired()) {
-            throw new FieldRequiredException($fieldConfig->getName(), $groupIdx, $level);
         }
 
         return $valuesBag;

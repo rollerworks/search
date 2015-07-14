@@ -318,7 +318,6 @@ class FilterQueryInput extends AbstractInput
     private function fieldValuesPairs(ValuesGroup $valuesGroup, $level = 0, $groupIdx = 0, $inGroup = false)
     {
         $groupCount = 0;
-        $allFields = $this->config->getFieldSet()->all();
 
         while (null !== $this->lexer->lookahead) {
             switch ($this->lexer->lookahead['type']) {
@@ -333,8 +332,6 @@ class FilterQueryInput extends AbstractInput
                 case Lexer::T_IDENTIFIER:
                     $fieldName = $this->getFieldName($this->fieldIdentification());
                     $fieldConfig = $this->config->getFieldSet()->get($fieldName);
-
-                    unset($allFields[$fieldName]);
 
                     if ($valuesGroup->hasField($fieldName)) {
                         $this->fieldValues(
@@ -358,13 +355,6 @@ class FilterQueryInput extends AbstractInput
                 default:
                     $this->syntaxError(array('(', 'FieldIdentification'));
                     break;
-            }
-        }
-
-        // Now run trough all the remaining fields and check if they are required.
-        foreach ($allFields as $fieldName => $filterConfig) {
-            if ($filterConfig->isRequired()) {
-                throw new FieldRequiredException($fieldName, $groupIdx, $level);
             }
         }
     }

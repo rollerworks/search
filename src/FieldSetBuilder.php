@@ -118,7 +118,6 @@ class FieldSetBuilder implements FieldSetBuilderInterface
         $this->unresolvedFields[$field] = array(
             'type' => $type,
             'options' => $options,
-            'required' => $required,
         );
 
         return $this;
@@ -177,8 +176,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             $this->fields[$name] = $this->searchFactory->createField(
                 $name,
                 $this->unresolvedFields[$name]['type'],
-                $this->unresolvedFields[$name]['options'],
-                $this->unresolvedFields[$name]['required']
+                $this->unresolvedFields[$name]['options']
             );
 
             unset($this->unresolvedFields[$name]);
@@ -233,7 +231,6 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             $this->unresolvedFields[$field->fieldName] = array(
                 'type' => $field->type,
                 'options' => $field->options,
-                'required' => $field->required,
             );
         }
 
@@ -255,8 +252,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             $this->fields[$name] = $this->searchFactory->createField(
                 $name,
                 $field['type'],
-                $field['options'],
-                $field['required']
+                $field['options']
             );
 
             unset($this->unresolvedFields[$name]);

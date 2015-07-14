@@ -243,18 +243,6 @@ Please keep note of the following:
 
     So displaying an error message is as simple as ``echo $e->getMessage();``.
 
-FieldRequiredException
-~~~~~~~~~~~~~~~~~~~~~~
-
-The ``Rollerworks\Component\Search\Exception\FieldRequiredException``
-is thrown when a required field is missing in the condition.
-
-This exception provides the following properties:
-
-* fieldName: Name of the field which is missing in the condition
-* groupIdx: the group index in which the field is missing
-* nestingLevel: the nesting level at which the field is missing
-
 GroupsNestingException
 ~~~~~~~~~~~~~~~~~~~~~~
 

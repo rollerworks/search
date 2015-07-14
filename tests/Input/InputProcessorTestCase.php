@@ -647,48 +647,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideUnsupportedValueTypeExceptionTests();
 
     /**
-     * @param mixed  $input
-     * @param string $fieldName
-     * @param int    $groupIdx
-     * @param int    $nestingLevel
-     *
-     * @test
-     * @dataProvider provideFieldRequiredTests
-     */
-    public function it_errors_when_a_field_is_required_but_not_set($input, $fieldName, $groupIdx, $nestingLevel)
-    {
-        $fieldSet = $this->getFieldSet(false)
-            ->add($this->getFactory()->createField('field1', 'text'))
-            ->add($this->getFactory()->createField($fieldName, 'text')->setRequired(true))
-            ->getFieldSet()
-        ;
-
-        $processor = $this->getProcessor();
-        $config = new ProcessorConfig($fieldSet);
-
-        try {
-            $processor->process($config, $input);
-
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof FieldRequiredException) {
-                $this->fail('Expected a FieldRequiredException but got: '.get_class($e));
-            }
-
-            $this->assertEquals($fieldName, $e->getFieldName());
-            $this->assertEquals($groupIdx, $e->getGroupIdx());
-            $this->assertEquals($nestingLevel, $e->getNestingLevel());
-        }
-    }
-
-    /**
-     * @return array[]
-     */
-    abstract public function provideFieldRequiredTests();
-
-    /**
      * @param mixed $input
      * @param bool  $exclusive
      *

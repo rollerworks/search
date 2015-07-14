@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-    <property foo="id" name="uid" type="integer" required="true" />
+    <property foo="id" name="uid" type="integer" />
     <property id="name" name="username" type="text">
         <option type="string" key="name">doctor</option>
         <option key="last" type="collection">

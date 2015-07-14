@@ -271,15 +271,6 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         );
     }
 
-    public function provideFieldRequiredTests()
-    {
-        return array(
-            array('field1: value, value2, value3, value4, value5;', 'field2', 0, 0),
-            array('((field1: value, value2, value3, value4, value5));', 'field2', 0, 2),
-            array('((field2: value); (field1: value, value2, value3, value4, value5));', 'field2', 1, 2),
-        );
-    }
-
     public function provideInvalidRangeTests()
     {
         return array(

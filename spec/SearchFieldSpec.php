@@ -67,17 +67,6 @@ class SearchFieldSpec extends ObjectBehavior
         $this->getOption('foo', 'value1')->shouldReturn('value1');
     }
 
-    function it_should_not_be_required_by_default()
-    {
-        $this->isRequired()->shouldReturn(false);
-    }
-
-    function it_should_allow_setting_required()
-    {
-        $this->setRequired();
-        $this->isRequired()->shouldReturn(true);
-    }
-
     function it_supports_no_special_value_types_by_default()
     {
         $this->supportValueType(ValuesBag::VALUE_TYPE_RANGE)->shouldReturn(false);

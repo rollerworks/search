@@ -82,8 +82,6 @@ class XmlInput extends AbstractInput
 
     private function processFields(\SimpleXMLElement $values, ValuesGroup $valuesGroup, $groupIdx, $level)
     {
-        $allFields = $this->config->getFieldSet()->all();
-
         /** @var \SimpleXMLElement $element */
         foreach ($values->fields->children() as $element) {
             $fieldName = $this->getFieldName((string) $element['name']);
@@ -102,16 +100,6 @@ class XmlInput extends AbstractInput
                     $fieldName,
                     $this->valuesToBag($fieldConfig, $element, new ValuesBag(), $groupIdx, $level)
                 );
-            }
-
-            unset($allFields[$fieldName]);
-        }
-
-        // Now run trough all the remaining fields and look if they are required.
-        // Fields that were set without values have already been checked by valuesToBag().
-        foreach ($allFields as $fieldName => $fieldConfig) {
-            if ($fieldConfig->isRequired()) {
-                throw new FieldRequiredException($fieldName, $groupIdx, $level);
             }
         }
     }
@@ -181,10 +169,6 @@ class XmlInput extends AbstractInput
                     'true' === strtolower($patternMatch['case-insensitive'])
                 );
             }
-        }
-
-        if (0 === $valuesBag->count() && $fieldConfig->isRequired()) {
-            throw new FieldRequiredException($fieldConfig->getName(), $groupIdx, $level);
         }
 
         return $valuesBag;

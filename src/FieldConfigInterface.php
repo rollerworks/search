@@ -60,13 +60,6 @@ interface FieldConfigInterface
     public function setValueTypeSupport($type, $enabled);
 
     /**
-     * Returns whether the field is required to have values.
-     *
-     * @return bool
-     */
-    public function isRequired();
-
-    /**
      * Returns the configured Model's class-name.
      *
      * This is required for certain storage engines.

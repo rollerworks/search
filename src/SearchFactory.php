@@ -51,10 +51,9 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createField($name, $type, array $options = array(), $required = false)
+    public function createField($name, $type, array $options = array())
     {
         $field = $this->createFieldBuilder($name, $type, $options);
-        $field->setRequired($required);
 
         return $field;
     }
@@ -68,8 +67,6 @@ class SearchFactory implements SearchFactoryInterface
      * @param string $name     Name of the field
      * @param string $type     Type of the field
      * @param array  $options  Array of options for building the field
-     * @param bool   $required Is the field required in a ValuesGroup and must it
-     *                         always have a value (default is false)
      *
      * @return SearchField
      *
@@ -77,11 +74,10 @@ class SearchFactory implements SearchFactoryInterface
      *             Use createField() with the 'model_class' and 'model_property'
      *             options instead.
      */
-    public function createFieldForProperty($class, $property, $name, $type, array $options = array(), $required = false)
+    public function createFieldForProperty($class, $property, $name, $type, array $options = array())
     {
         $field = $this->createFieldBuilder($name, $type, $options);
         $field->setModelRef($class, $property);
-        $field->setRequired($required);
 
         return $field;
     }

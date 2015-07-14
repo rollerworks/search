@@ -97,7 +97,7 @@ class FieldSetRegistrySpec extends ObjectBehavior
         $fieldSet = new FieldSet('test');
 
         $this->shouldThrow(
-            new InvalidArgumentException('Unable to register none configuration-locked FieldSet "test".')
+            new InvalidArgumentException('Unable to register unlocked FieldSet "test".')
         )->during('add', array($fieldSet));
     }
 }

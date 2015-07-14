@@ -45,11 +45,6 @@ class SearchField implements FieldConfigInterface
     );
 
     /**
-     * @var bool
-     */
-    private $required = false;
-
-    /**
      * @var ValueComparisonInterface
      */
     private $valueComparison;
@@ -94,21 +89,14 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * BC method, does nothing.
      *
-     * @throws BadMethodCallException
+     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
+     *             Use a custom validator instead.
      */
     public function setRequired($required = true)
     {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'SearchField setter methods cannot be accessed anymore once the data is locked.'
-            );
-        }
-
-        $this->required = $required;
-
-        return $this;
+        // noop
     }
 
     /**
@@ -178,13 +166,14 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * {@inheritdoc}
+     * BC method.
      *
-     * @throws BadMethodCallException
+     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
+     *             Use a custom validator instead.
      */
     public function isRequired()
     {
-        return $this->required;
+        return false;
     }
 
     /**

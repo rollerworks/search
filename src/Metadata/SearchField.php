@@ -22,11 +22,6 @@ class SearchField
     public $fieldName;
 
     /**
-     * @var bool
-     */
-    public $required = false;
-
-    /**
      * @var string
      */
     public $type;
@@ -59,7 +54,6 @@ class SearchField
         $this->fieldName = $fieldName;
         $this->class = $class;
         $this->property = $property;
-        $this->required = $required;
         $this->type = $type;
         $this->options = $options;
     }

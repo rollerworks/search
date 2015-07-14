@@ -147,7 +147,6 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
             'accept_ranges' => $config->supportValueType(ValuesBag::VALUE_TYPE_RANGE),
             'accept_compares' => $config->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON),
             'accept_pattern_matchers' => $config->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH),
-            'required' => $config->isRequired(),
         ));
 
         return $view;
