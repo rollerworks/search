@@ -11,12 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesError;
@@ -72,6 +70,19 @@ final class FilterQueryInputTest extends InputProcessorTestCase
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
         $this->assertEquals($condition, $processor->process($config, 'name: "value", "value""2", "!foo";'));
+    }
+
+    public function testPatternMatchLexerNoEndLessLoop()
+    {
+        $processor = $this->getProcessor();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $this->setExpectedException(
+            'Rollerworks\Component\Search\Input\FilterQuery\QueryException',
+            "[Syntax Error] line 0, col 8: Error: Expected '*' | '>' | '<' | '?' | '!*' | '!>' | '!<' | '!?', got '!'"
+        );
+
+        $processor->process($config, 'name: ~!!*"value";');
     }
 
     /**
@@ -221,11 +232,11 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideValueOverflowTests()
     {
         return array(
-            array('name: value, value2, value3, value4, value5;', 'name', 3, 4, 0, 0),
-            array('((name: value, value2, value3, value4, value5));', 'name', 3, 4, 0, 2),
-            array('((name: value); (name: value, value2, value3, value4, value5));', 'name', 3, 4, 1, 2),
-            array('name: value, value2; name: value3, value4, value5;', 'name', 3, 4, 0, 0), // merging
-            array('id: 1, 2; user-id: 3, 4, 5;', 'id', 3, 4, 0, 0), // aliased
+            array('name: value, value2, value3, value4, value5;', 'name', 3, 0, 0),
+            array('((name: value, value2, value3, value4, value5));', 'name', 3, 0, 2),
+            array('((name: value); (name: value, value2, value3, value4, value5));', 'name', 3, 1, 2),
+            array('name: value, value2; name: value3, value4, value5;', 'name', 3, 0, 0), // merging
+            array('id: 1, 2; user-id: 3, 4, 5;', 'id', 3, 0, 0), // aliased
         );
     }
 

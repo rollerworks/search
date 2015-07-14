@@ -468,7 +468,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $input,
         $fieldName,
         $max,
-        $count,
         $groupIdx,
         $nestingLevel
     ) {
@@ -478,20 +477,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxValues(3);
 
-        $expectedGroup = new ValuesGroup();
-        $nestedGroup = new ValuesGroup();
-
-        $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
-        $nestedGroup->addField('field1', $values);
-
-        $subGroup = new ValuesGroup();
-        $subGroup->addGroup($nestedGroup);
-        $expectedGroup->addGroup($subGroup);
-
         try {
-            $processor->process($config, $input);
+            $condition = $processor->process($config, $input);
 
             $this->fail('Condition should be invalid.');
         } catch (\Exception $e) {
@@ -503,7 +490,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
             $this->assertEquals($fieldName, $e->getFieldName());
             $this->assertEquals($max, $e->getMax());
-            $this->assertEquals($count, $e->getCount());
             $this->assertEquals($groupIdx, $e->getGroupIdx());
             $this->assertEquals($nestingLevel, $e->getNestingLevel());
         }

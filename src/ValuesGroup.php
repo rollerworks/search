@@ -59,10 +59,12 @@ class ValuesGroup implements \Serializable
      * Constructor.
      *
      * @param string $groupLogical
+     *
+     * @throws InvalidArgumentException When no an unsupported group logical is provided.
      */
     public function __construct($groupLogical = self::GROUP_LOGICAL_AND)
     {
-        $this->groupLogical = $groupLogical;
+        $this->setGroupLogical($groupLogical);
     }
 
     /**
@@ -276,12 +278,18 @@ class ValuesGroup implements \Serializable
      *
      * @param int
      *
+     * @throws InvalidArgumentException When no an unsupported group logical is provided.
+     *
      * @return self
      */
     public function setGroupLogical($groupLogical)
     {
         if ($this->locked) {
             $this->throwLocked();
+        }
+
+        if (!in_array($groupLogical, array(self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND), true)) {
+            throw new InvalidArgumentException('Unsupported group logical %s.', $groupLogical);
         }
 
         $this->groupLogical = $groupLogical;

@@ -12,6 +12,8 @@
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
+use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
+use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -20,21 +22,43 @@ use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesError;
 
+/**
+ * The FieldValuesFactory works as a wrapper around the ValuesBag
+ * transforming input and ensuring limits are honored.
+ */
 final class FieldValuesFactory
 {
     private $config;
     private $valuesBag;
+    private $maxCount;
+    private $groupIdx;
+    private $level;
+    private $count = 0;
+    private $checkedValueType = array();
 
-    public function __construct(FieldConfigInterface $fieldConfig, ValuesBag $valuesBag)
-    {
+    public function __construct(
+        FieldConfigInterface $fieldConfig,
+        ValuesBag $valuesBag,
+        $maxCount = 100,
+        $groupIdx = 0,
+        $level = 0
+    ) {
         $this->config = $fieldConfig;
         $this->valuesBag = $valuesBag;
+        $this->maxCount = $maxCount;
+        $this->groupIdx = $groupIdx;
+        $this->level = $level;
+
+        $this->count = $valuesBag->count();
     }
 
     public function addSingleValue($value)
     {
+        if (++$this->count > $this->maxCount) {
+            $this->throwValuesOverflow();
+        }
+
         $path = 'singleValues['.count($this->valuesBag->getSingleValues()).']';
-        $value = (string) $value;
 
         $normValue = $this->viewToNorm($value, $path);
         $viewValue = $this->normToView($normValue, $path);
@@ -50,8 +74,11 @@ final class FieldValuesFactory
 
     public function addExcludedValue($value)
     {
+        if (++$this->count > $this->maxCount) {
+            $this->throwValuesOverflow();
+        }
+
         $path = 'excludedValues['.count($this->valuesBag->getExcludedValues()).']';
-        $value = (string) $value;
 
         $normValue = $this->viewToNorm($value, $path);
         $viewValue = $this->normToView($normValue, $path);
@@ -67,6 +94,12 @@ final class FieldValuesFactory
 
     public function addRange($lower, $upper, $lowerInclusive, $upperInclusive)
     {
+        if (++$this->count > $this->maxCount) {
+            $this->throwValuesOverflow();
+        }
+
+        $this->assertAcceptsType('range');
+
         $path = 'ranges['.count($this->valuesBag->getRanges()).']';
 
         $this->valuesBag->addRange(
@@ -76,6 +109,12 @@ final class FieldValuesFactory
 
     public function addExcludedRange($lower, $upper, $lowerInclusive, $upperInclusive)
     {
+        if (++$this->count > $this->maxCount) {
+            $this->throwValuesOverflow();
+        }
+
+        $this->assertAcceptsType('range');
+
         $path = 'excludedRanges['.count($this->valuesBag->getExcludedRanges()).']';
 
         $this->valuesBag->addExcludedRange(
@@ -85,8 +124,13 @@ final class FieldValuesFactory
 
     public function addComparisonValue($operator, $value)
     {
+        if (++$this->count > $this->maxCount) {
+            $this->throwValuesOverflow();
+        }
+
+        $this->assertAcceptsType('comparison');
+
         $path = 'comparisons['.count($this->valuesBag->getComparisons()).'].value';
-        $value = (string) $value;
 
         $normValue = $this->viewToNorm($value, $path);
         $viewValue = $this->normToView($normValue, $path);
@@ -102,8 +146,30 @@ final class FieldValuesFactory
 
     public function addPatterMatch($type, $patternMatch, $caseInsensitive)
     {
+        if (++$this->count > $this->maxCount) {
+            $this->throwValuesOverflow();
+        }
+
+        $this->assertAcceptsType('pattern-match');
+
+        if (!is_scalar($patternMatch)) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Pattern-match value %s is not a scalar value and not cannot be converted to a string.',
+                    gettype($patternMatch)
+                )
+            );
+        }
+
         $this->valuesBag->addPatternMatch(
             new PatternMatch((string) $patternMatch, $type, $caseInsensitive)
+        );
+    }
+
+    private function throwValuesOverflow()
+    {
+        throw new ValuesOverflowException(
+            $this->config->getName(), $this->maxCount, $this->groupIdx, $this->level
         );
     }
 
@@ -116,18 +182,26 @@ final class FieldValuesFactory
         $upperView = $this->normToView($upperNorm, $path.'.upper');
 
         if (null === $lowerNorm || null === $lowerView || null === $upperNorm || null === $upperView) {
-            $range = new Range($lower, $upper, $lowerInclusive, $upperInclusive);
-
-            return $range;
-        } else {
-            $range = new Range(
-                $lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive, $lowerView, $upperView
-            );
-
-            $this->validateRangeBounds($range, $path);
-
-            return $range;
+            return new Range($lower, $upper, $lowerInclusive, $upperInclusive);
         }
+
+        $range = new Range($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive, $lowerView, $upperView);
+        $this->validateRangeBounds($range, $path);
+
+        return $range;
+    }
+
+    private function assertAcceptsType($type)
+    {
+        if (isset($this->checkedValueType[$type])) {
+            return;
+        }
+
+        if (!$this->config->supportValueType($type)) {
+            throw new UnsupportedValueTypeException($this->config->getName(), $type);
+        }
+
+        $this->checkedValueType[$type] = true;
     }
 
     private function validateRangeBounds(Range $range, $path)
@@ -177,7 +251,7 @@ final class FieldValuesFactory
                 );
             }
 
-            return (string) $value;
+            return $value;
         }
 
         try {

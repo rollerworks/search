@@ -302,7 +302,6 @@ final class ArrayInputTest extends InputProcessorTestCase
                 ),
                 'name',
                 3,
-                4,
                 0,
                 0,
             ),
@@ -320,7 +319,6 @@ final class ArrayInputTest extends InputProcessorTestCase
                 ),
                 'name',
                 3,
-                4,
                 0,
                 1,
             ),
@@ -342,7 +340,6 @@ final class ArrayInputTest extends InputProcessorTestCase
                 ),
                 'name',
                 3,
-                4,
                 0,
                 2,
             ),
@@ -371,7 +368,6 @@ final class ArrayInputTest extends InputProcessorTestCase
                 ),
                 'name',
                 3,
-                4,
                 1,
                 2,
             ),
@@ -388,7 +384,6 @@ final class ArrayInputTest extends InputProcessorTestCase
                 ),
                 'id',
                 3,
-                5,
                 0,
                 0,
             ),
@@ -602,8 +597,18 @@ final class ArrayInputTest extends InputProcessorTestCase
             ),
             array(
                 array(
+                    'fields' => array(
+                        'field1' => array(
+                            'single-values' => array('value', 'value2'),
+                        ),
+                    ),
                     'groups' => array(
                         array(
+                            'fields' => array(
+                                'field1' => array(
+                                    'single-values' => array('value', 'value2'),
+                                ),
+                            ),
                             'groups' => array(
                                 array(
                                     'fields' => array(

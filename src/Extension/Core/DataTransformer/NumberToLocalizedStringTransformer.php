@@ -161,8 +161,8 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value, &$currency = null)
     {
-        if (!is_string($value)) {
-            throw new TransformationFailedException('Expected a string.');
+        if (!is_scalar($value)) {
+            throw new TransformationFailedException('Expected a scalar.');
         }
 
         if ('' === $value) {
