@@ -79,7 +79,7 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
              'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
         );
 
-        $this->serializer->unserialize(array('foobar'));
+        $this->serializer->unserialize(['foobar']);
     }
 
     public function testUnSerializeWrongField()
@@ -89,7 +89,7 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
              'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
         );
 
-        $this->serializer->unserialize(array('foobar', 'foo' => 'bar'));
+        $this->serializer->unserialize(['foobar', 'foo' => 'bar']);
     }
 
     /**
@@ -105,6 +105,6 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
              'Unable to unserialize invalid value.'
         );
 
-        $this->serializer->unserialize(array('foobar', '{i-am-invalid}'));
+        $this->serializer->unserialize(['foobar', '{i-am-invalid}']);
     }
 }

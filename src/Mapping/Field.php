@@ -37,7 +37,7 @@ class Field
     /**
      * @var array
      */
-    private $options = array();
+    private $options = [];
 
     /**
      * Constructor.
@@ -52,7 +52,7 @@ class Field
         $this->name = null;
         $this->type = null;
         $this->required = false;
-        $this->options = array();
+        $this->options = [];
 
         if (isset($data['value'])) {
             $data['name'] = $data['value'];

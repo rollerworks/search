@@ -257,7 +257,7 @@ class FilterQueryInput extends AbstractInput
         );
 
         $message = "line 0, col {$tokenPos}: Error: ";
-        $message .= ($expected !== array()) ? "Expected {$formattedExpects}, got " : 'Unexpected ';
+        $message .= ($expected !== []) ? "Expected {$formattedExpects}, got " : 'Unexpected ';
         $message .= ($this->lexer->lookahead === null) ? 'end of string.' : "'{$token['value']}'";
 
         throw QueryException::syntaxError(
@@ -326,7 +326,7 @@ class FilterQueryInput extends AbstractInput
                     $groupCount++;
 
                     $this->validateGroupsCount($groupIdx, $groupCount, $level);
-                    $valuesGroup->addGroup($this->fieldGroup($level+1, $groupCount-1));
+                    $valuesGroup->addGroup($this->fieldGroup($level + 1, $groupCount - 1));
                     break;
 
                 case Lexer::T_IDENTIFIER:
@@ -353,7 +353,7 @@ class FilterQueryInput extends AbstractInput
                     break 2;
 
                 default:
-                    $this->syntaxError(array('(', 'FieldIdentification'));
+                    $this->syntaxError(['(', 'FieldIdentification']);
                     break;
             }
         }
@@ -416,7 +416,7 @@ class FilterQueryInput extends AbstractInput
 
                 default:
                     $this->syntaxError(
-                        array(
+                        [
                             'String',
                             'QuotedString',
                             'Range',
@@ -424,7 +424,7 @@ class FilterQueryInput extends AbstractInput
                             'ExcludedRange',
                             'Comparison',
                             'PatternMatch',
-                        ),
+                        ],
                         $this->lexer->lookahead
                     );
                     break;
@@ -440,7 +440,7 @@ class FilterQueryInput extends AbstractInput
 
         if (!$hasValues) {
             $this->syntaxError(
-                array('String', 'QuotedString', 'Range', 'ExcludedValue', 'ExcludedRange', 'Comparison', 'PatternMatch'),
+                ['String', 'QuotedString', 'Range', 'ExcludedValue', 'ExcludedRange', 'Comparison', 'PatternMatch'],
                 $this->lexer->lookahead
             );
         }
@@ -456,13 +456,13 @@ class FilterQueryInput extends AbstractInput
      */
     private function processRangeValue(FieldValuesFactory $factory, $negative = false)
     {
-        $lowerInclusive = Lexer::T_CLOSE_BRACE !== $this->lexer->matchAndMoveNext(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE));
+        $lowerInclusive = Lexer::T_CLOSE_BRACE !== $this->lexer->matchAndMoveNext([Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE]);
 
         $lowerBound = $this->stringValue();
         $this->match(Lexer::T_MINUS);
         $upperBound = $this->stringValue();
 
-        $upperInclusive = Lexer::T_OPEN_BRACE !== $this->lexer->matchAndMoveNext(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE));
+        $upperInclusive = Lexer::T_OPEN_BRACE !== $this->lexer->matchAndMoveNext([Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE]);
 
         if ($negative) {
             $factory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
@@ -491,7 +491,7 @@ class FilterQueryInput extends AbstractInput
 
     private function singleValueOrRange(FieldValuesFactory $factory, $negative = false)
     {
-        if ($this->lexer->isNextTokenAny(array(Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE))
+        if ($this->lexer->isNextTokenAny([Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE])
             || ($this->lexer->isGlimpse(Lexer::T_MINUS))
         ) {
             $this->processRangeValue($factory, $negative);
@@ -525,7 +525,7 @@ class FilterQueryInput extends AbstractInput
             return true;
         }
 
-        $this->syntaxError(array(';', '|', ',', '|', ')'));
+        $this->syntaxError([';', '|', ',', '|', ')']);
     }
 
     /**
@@ -535,8 +535,8 @@ class FilterQueryInput extends AbstractInput
      */
     private function stringValue()
     {
-        if (!$this->lexer->isNextTokenAny(array(Lexer::T_STRING))) {
-            $this->syntaxError(array('String', 'QuotedString'), $this->lexer->token);
+        if (!$this->lexer->isNextTokenAny([Lexer::T_STRING])) {
+            $this->syntaxError(['String', 'QuotedString'], $this->lexer->token);
         }
 
         $this->lexer->moveNext();
@@ -579,7 +579,7 @@ class FilterQueryInput extends AbstractInput
                 return $operator;
 
             default:
-                $this->syntaxError(array('<', '<=', '<>', '>', '>='));
+                $this->syntaxError(['<', '<=', '<>', '>', '>=']);
         }
     }
 
@@ -617,7 +617,7 @@ class FilterQueryInput extends AbstractInput
                 return 'NOT_'.$this->getPatternMatchOperator(true);
 
             default:
-                $this->syntaxError(array('*', '>', '<', '?', '!*', '!>', '!<', '!?'));
+                $this->syntaxError(['*', '>', '<', '?', '!*', '!>', '!<', '!?']);
         }
     }
 }

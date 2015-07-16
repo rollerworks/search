@@ -44,16 +44,16 @@ final class XmlInputTest extends InputProcessorTestCase
 
     public function provideInvalidInputTests()
     {
-        return array(
-            array(
+        return [
+            [
                 'foobar',
                 "[ERROR 4] Start tag expected, '<' not found (in n/a - line 1, column 1)",
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>',
                 "[ERROR 4] Start tag expected, '<' not found (in n/a - line 1, column 37)",
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -66,22 +66,22 @@ final class XmlInputTest extends InputProcessorTestCase
                     </fields>
                 </search>',
                 "[ERROR 73] expected '>' (in n/a - line 10, column 23)",
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideEmptyInputTests()
     {
-        return array(
-            array(''),
-            array(' '),
-        );
+        return [
+            [''],
+            [' '],
+        ];
     }
 
     public function provideSingleValuePairTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -99,8 +99,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search logical="AND">
                     <fields>
@@ -118,8 +118,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search logical="AND">
                     <fields>
@@ -137,8 +137,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
                 ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
@@ -158,14 +158,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideMultipleValues()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -182,14 +182,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideRangeValues()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -229,14 +229,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideComparisonValues()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -256,14 +256,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideMatcherValues()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -279,14 +279,14 @@ final class XmlInputTest extends InputProcessorTestCase
                     </field>
                   </fields>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideGroupTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -320,8 +320,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         </group>
                     </groups>
                 </search>',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -355,14 +355,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </group>
                     </groups>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideRootLogicalTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -374,8 +374,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search logical="AND">
                     <fields>
@@ -387,8 +387,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search logical="OR">
                     <fields>
@@ -401,14 +401,14 @@ final class XmlInputTest extends InputProcessorTestCase
                     </fields>
                 </search>',
                 ValuesGroup::GROUP_LOGICAL_OR,
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideMultipleSubGroupTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <groups>
@@ -434,14 +434,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </group>
                     </groups>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideNestedGroupTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <groups>
@@ -461,14 +461,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </group>
                     </groups>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideAliasedFieldsTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -484,8 +484,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -501,14 +501,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideValueOverflowTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -527,8 +527,8 @@ final class XmlInputTest extends InputProcessorTestCase
                 3,
                 0,
                 0,
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <groups>
@@ -555,8 +555,8 @@ final class XmlInputTest extends InputProcessorTestCase
                 3,
                 0,
                 2,
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <groups>
@@ -592,9 +592,9 @@ final class XmlInputTest extends InputProcessorTestCase
                 3,
                 1,
                 2,
-            ),
+            ],
             // merging
-            array(
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -617,8 +617,8 @@ final class XmlInputTest extends InputProcessorTestCase
                 3,
                 0,
                 0,
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -641,8 +641,8 @@ final class XmlInputTest extends InputProcessorTestCase
                 3,
                 0,
                 0,
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -665,14 +665,14 @@ final class XmlInputTest extends InputProcessorTestCase
                 3,
                 0,
                 0,
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideGroupsOverflowTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <groups>
@@ -722,8 +722,8 @@ final class XmlInputTest extends InputProcessorTestCase
                 4,
                 0,
                 0,
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <groups>
@@ -795,14 +795,14 @@ final class XmlInputTest extends InputProcessorTestCase
                 4,
                 1,
                 2,
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideNestingLevelExceededTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <groups>
@@ -821,14 +821,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </group>
                     </groups>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideUnknownFieldTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -839,14 +839,14 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideUnsupportedValueTypeExceptionTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -862,8 +862,8 @@ final class XmlInputTest extends InputProcessorTestCase
                 </search>',
                 'no-range-field',
                 'range',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -876,8 +876,8 @@ final class XmlInputTest extends InputProcessorTestCase
                 </search>',
                 'no-compares-field',
                 'comparison',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -890,8 +890,8 @@ final class XmlInputTest extends InputProcessorTestCase
                 </search>',
                 'no-matchers-field',
                 'pattern-match',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -899,8 +899,8 @@ final class XmlInputTest extends InputProcessorTestCase
      */
     public function provideInvalidRangeTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -922,8 +922,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-            array(
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -946,14 +946,14 @@ final class XmlInputTest extends InputProcessorTestCase
                     </fields>
                 </search>',
                 true,
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideInvalidValueTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -970,13 +970,13 @@ final class XmlInputTest extends InputProcessorTestCase
                     </fields>
                 </search>',
                 'id',
-                array(
+                [
                     new ValuesError('singleValues[0]', 'This value is not valid.'),
                     new ValuesError('singleValues[2]', 'This value is not valid.'),
                     new ValuesError('comparisons[0].value', 'This value is not valid.'),
-                ),
-            ),
-            array(
+                ],
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -990,12 +990,12 @@ final class XmlInputTest extends InputProcessorTestCase
                     </fields>
                 </search>',
                 'id',
-                array(
+                [
                     new ValuesError('excludedValues[0]', 'This value is not valid.'),
                     new ValuesError('excludedValues[2]', 'This value is not valid.'),
-                ),
-            ),
-            array(
+                ],
+            ],
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -1018,18 +1018,18 @@ final class XmlInputTest extends InputProcessorTestCase
                     </fields>
                 </search>',
                 'id',
-                array(
+                [
                     new ValuesError('ranges[0].lower', 'This value is not valid.'),
                     new ValuesError('ranges[2].upper', 'This value is not valid.'),
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     public function provideNestedErrorsTests()
     {
-        return array(
-            array(
+        return [
+            [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
                     <fields>
@@ -1044,7 +1044,7 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-            ),
-        );
+            ],
+        ];
     }
 }

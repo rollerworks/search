@@ -24,7 +24,7 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
     /**
      * @var array<SearchConditionOptimizerInterface[]>
      */
-    private $optimizers = array();
+    private $optimizers = [];
 
     /**
      * @param SearchConditionOptimizerInterface $optimizer
@@ -43,7 +43,7 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
         }
 
         if (!isset($this->optimizers[$optimizer->getPriority()])) {
-            $this->optimizers[$optimizer->getPriority()] = array();
+            $this->optimizers[$optimizer->getPriority()] = [];
         }
 
         $this->optimizers[$optimizer->getPriority()][] = $optimizer;

@@ -80,12 +80,12 @@ abstract class AbstractExporter implements ExporterInterface
         if (
             in_array(
                 $patternMatch->getType(),
-                array(
+                [
                     PatternMatch::PATTERN_NOT_CONTAINS,
                     PatternMatch::PATTERN_NOT_STARTS_WITH,
                     PatternMatch::PATTERN_NOT_ENDS_WITH,
                     PatternMatch::PATTERN_NOT_REGEX,
-                ), true
+                ], true
             )
         ) {
             $type .= 'NOT_';

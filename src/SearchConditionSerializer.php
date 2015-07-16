@@ -67,7 +67,7 @@ class SearchConditionSerializer
             );
         }
 
-        return array($setName, serialize($searchCondition->getValuesGroup()));
+        return [$setName, serialize($searchCondition->getValuesGroup())];
     }
 
     /**

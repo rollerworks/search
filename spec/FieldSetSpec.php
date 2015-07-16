@@ -50,7 +50,7 @@ class FieldSetSpec extends ObjectBehavior
         $this->set('id', $fieldConfig);
         $this->set('name', $fieldConfig2);
 
-        $this->all()->shouldReturn(array('id' => $fieldConfig, 'name' => $fieldConfig2));
+        $this->all()->shouldReturn(['id' => $fieldConfig, 'name' => $fieldConfig2]);
         $this->count()->shouldReturn(2);
     }
 
@@ -60,7 +60,7 @@ class FieldSetSpec extends ObjectBehavior
         $this->set('name', $fieldConfig3);
         $this->replace('id', $fieldConfig2);
 
-        $this->all()->shouldReturn(array('id' => $fieldConfig2, 'name' => $fieldConfig3));
+        $this->all()->shouldReturn(['id' => $fieldConfig2, 'name' => $fieldConfig3]);
         $this->count()->shouldReturn(2);
     }
 
@@ -88,7 +88,7 @@ class FieldSetSpec extends ObjectBehavior
 
         $this->remove('id');
 
-        $this->all()->shouldReturn(array('name' => $fieldConfig2));
+        $this->all()->shouldReturn(['name' => $fieldConfig2]);
         $this->count()->shouldReturn(1);
     }
 }

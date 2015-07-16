@@ -55,7 +55,7 @@ class MoneyTypeTest extends FieldTypeTestCase
     {
         \Locale::setDefault('en_US');
 
-        $field = $this->getFactory()->createField('money', 'money', array('default_currency' => 'JPY'));
+        $field = $this->getFactory()->createField('money', 'money', ['default_currency' => 'JPY']);
 
         $this->assertTransformedEquals($field, new MoneyValue('JPY', '12.00'), '¥12');
         $this->assertTransformedEquals($field, new MoneyValue('JPY', '12.00'), '12.00');
@@ -67,12 +67,12 @@ class MoneyTypeTest extends FieldTypeTestCase
         $field = $this->getFactory()->createField(
             'money',
             'money',
-            array(
+            [
                 'precision' => 2,
                 'grouping' => false,
                 'divisor' => 1,
                 'default_currency' => 'EUR',
-            )
+            ]
         );
 
         $field->setDataLocked();

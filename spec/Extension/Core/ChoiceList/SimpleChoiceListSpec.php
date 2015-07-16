@@ -17,10 +17,10 @@ class SimpleChoiceListSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith(array(
+        $this->beConstructedWith([
             'creditcard' => 'credit-card-payment',
             'cash' => 'cash-payment',
-        ));
+        ]);
     }
 
     function it_is_initializable()

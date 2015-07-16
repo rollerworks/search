@@ -19,13 +19,13 @@ interface SearchFactoryInterface
     /**
      * Create a new search field.
      *
-     * @param string $name     Name of the field
-     * @param string $type     Type of the field
-     * @param array  $options  Array of options for building the field
+     * @param string $name    Name of the field
+     * @param string $type    Type of the field
+     * @param array  $options Array of options for building the field
      *
      * @return FieldConfigInterface
      */
-    public function createField($name, $type, array $options = array());
+    public function createField($name, $type, array $options = []);
 
     /**
      * Create a new FieldsetBuilderInterface instance.

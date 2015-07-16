@@ -21,7 +21,7 @@ class NullMetadataReader implements MetadataReaderInterface
      */
     public function getSearchFields($class)
     {
-        return array();
+        return [];
     }
 
     /**

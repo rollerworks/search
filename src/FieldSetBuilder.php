@@ -38,12 +38,12 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * @var FieldConfigInterface[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * @var array[]
      */
-    private $unresolvedFields = array();
+    private $unresolvedFields = [];
 
     /**
      * @var SearchFactoryInterface
@@ -82,7 +82,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function add($field, $type = null, array $options = array(), $required = false, $modelClass = null, $modelProperty = null)
+    public function add($field, $type = null, array $options = [], $required = false, $modelClass = null, $modelProperty = null)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -108,17 +108,17 @@ class FieldSetBuilder implements FieldSetBuilderInterface
         if (null !== $modelClass) {
             $options = array_merge(
                 $options,
-                array(
+                [
                     'model_class' => $modelClass,
                     'model_property' => $modelProperty,
-                )
+                ]
             );
         }
 
-        $this->unresolvedFields[$field] = array(
+        $this->unresolvedFields[$field] = [
             'type' => $type,
             'options' => $options,
-        );
+        ];
 
         return $this;
     }
@@ -201,7 +201,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      *
      * @return self
      */
-    public function importFromClass($class, array $include = array(), array $exclude = array())
+    public function importFromClass($class, array $include = [], array $exclude = [])
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -222,16 +222,16 @@ class FieldSetBuilder implements FieldSetBuilderInterface
 
             $field->options = array_merge(
                 $field->options,
-                array(
+                [
                     'model_class' => $field->class,
                     'model_property' => $field->property,
-                )
+                ]
             );
 
-            $this->unresolvedFields[$field->fieldName] = array(
+            $this->unresolvedFields[$field->fieldName] = [
                 'type' => $field->type,
                 'options' => $field->options,
-            );
+            ];
         }
 
         return $this;

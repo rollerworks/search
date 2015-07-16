@@ -26,7 +26,7 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @var FieldConfigInterface[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * Name of the FieldSet.
@@ -227,7 +227,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     public static function validateName($name)
     {
         if (null !== $name && !is_string($name)) {
-            throw new UnexpectedTypeException($name, array('string', 'null'));
+            throw new UnexpectedTypeException($name, ['string', 'null']);
         }
 
         if (!self::isValidName($name)) {

@@ -38,11 +38,11 @@ class SearchField implements FieldConfigInterface
     /**
      * @var bool[]
      */
-    private $supportedValueTypes = array(
+    private $supportedValueTypes = [
         ValuesBag::VALUE_TYPE_RANGE => false,
         ValuesBag::VALUE_TYPE_COMPARISON => false,
         ValuesBag::VALUE_TYPE_PATTERN_MATCH => false,
-    );
+    ];
 
     /**
      * @var ValueComparisonInterface
@@ -57,7 +57,7 @@ class SearchField implements FieldConfigInterface
     /**
      * @var array
      */
-    private $viewTransformers = array();
+    private $viewTransformers = [];
 
     /**
      * Constructor.
@@ -68,7 +68,7 @@ class SearchField implements FieldConfigInterface
      *
      * @throws \InvalidArgumentException When the name is invalid
      */
-    public function __construct($name, ResolvedFieldTypeInterface $type, array $options = array())
+    public function __construct($name, ResolvedFieldTypeInterface $type, array $options = [])
     {
         FieldSet::validateName($name);
 
@@ -280,7 +280,7 @@ class SearchField implements FieldConfigInterface
             );
         }
 
-        $this->viewTransformers = array();
+        $this->viewTransformers = [];
 
         return $this;
     }

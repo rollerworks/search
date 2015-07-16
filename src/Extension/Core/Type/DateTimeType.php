@@ -64,12 +64,12 @@ class DateTimeType extends AbstractFieldType
     /**
      * @var array
      */
-    private static $acceptedFormats = array(
+    private static $acceptedFormats = [
         \IntlDateFormatter::FULL,
         \IntlDateFormatter::LONG,
         \IntlDateFormatter::MEDIUM,
         \IntlDateFormatter::SHORT,
-    );
+    ];
 
     /**
      * Constructor.
@@ -158,14 +158,14 @@ class DateTimeType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'model_timezone' => 'UTC',
                 'view_timezone' => null,
                 'pattern' => null,
                 'format' => null,
                 'date_format' => self::DEFAULT_DATE_FORMAT,
                 'time_format' => self::DEFAULT_TIME_FORMAT,
-            )
+            ]
         );
 
         // BC to be removed in 2.0.
@@ -180,21 +180,21 @@ class DateTimeType extends AbstractFieldType
         // BC layer for Symfony 2.7 and 3.0
         if ($resolver instanceof OptionsResolverInterface) {
             $resolver->setAllowedTypes(
-                array(
-                    'pattern' => array('string', 'null'),
-                    'format' => array('string', 'null'),
-                    'date_format' => array('int'),
-                    'time_format' => array('int'),
-                )
+                [
+                    'pattern' => ['string', 'null'],
+                    'format' => ['string', 'null'],
+                    'date_format' => ['int'],
+                    'time_format' => ['int'],
+                ]
             );
 
             $resolver->setNormalizers(['format' => $formatNormalizer]);
         } else {
             $resolver->setNormalizer('format', $formatNormalizer);
-            $resolver->setAllowedTypes('pattern', array('string', 'null'));
-            $resolver->setAllowedTypes('format', array('string', 'null'));
-            $resolver->setAllowedTypes('date_format', array('int'));
-            $resolver->setAllowedTypes('time_format', array('int'));
+            $resolver->setAllowedTypes('pattern', ['string', 'null']);
+            $resolver->setAllowedTypes('format', ['string', 'null']);
+            $resolver->setAllowedTypes('date_format', ['int']);
+            $resolver->setAllowedTypes('time_format', ['int']);
         }
     }
 

@@ -28,7 +28,7 @@ class CoreExtension extends AbstractExtension
         $dateTimeComparison = new ValueComparison\DateTimeValueComparison();
         $numberComparison = new ValueComparison\NumberValueComparison();
 
-        return array(
+        return [
             new Type\FieldType(new ValueComparison\SimpleValueComparison()),
             new Type\DateType(new ValueComparison\DateValueComparison()),
             new Type\DateTimeType($dateTimeComparison),
@@ -44,6 +44,6 @@ class CoreExtension extends AbstractExtension
             new Type\TextType(),
             new Type\TimezoneType(),
             new Type\CurrencyType(),
-        );
+        ];
     }
 }

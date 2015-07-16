@@ -72,7 +72,7 @@ class BirthdayType extends AbstractFieldType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'allow_age' => true,
             'allow_future_date' => false,
             'invalid_message' => function (Options $options) {
@@ -82,19 +82,19 @@ class BirthdayType extends AbstractFieldType
 
                 return 'This value is not a valid birthday.';
             },
-        ));
+        ]);
 
         // BC layer for Symfony 2.7 and 3.0
         if ($resolver instanceof OptionsResolverInterface) {
             $resolver->setAllowedTypes(
-                array(
-                    'allow_age' => array('bool'),
-                    'allow_future_date' => array('bool'),
-                )
+                [
+                    'allow_age' => ['bool'],
+                    'allow_future_date' => ['bool'],
+                ]
             );
         } else {
-            $resolver->setAllowedTypes('allow_age', array('bool'));
-            $resolver->setAllowedTypes('allow_future_date', array('bool'));
+            $resolver->setAllowedTypes('allow_age', ['bool']);
+            $resolver->setAllowedTypes('allow_future_date', ['bool']);
         }
     }
 

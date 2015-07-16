@@ -130,7 +130,7 @@ interface FieldConfigInterface
     public function getDataLocked();
 
     /**
-     * Returns all options passed during the construction of the field
+     * Returns all options passed during the construction of the field.
      *
      * @return array The passed options
      */

@@ -14,7 +14,6 @@ namespace Rollerworks\Component\Search\Tests\Input;
 use Prophecy;
 use Prophecy\Prophecy\ObjectProphecy;
 use Rollerworks\Component\Search\Exception\ExceptionInterface;
-use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
@@ -70,7 +69,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $fieldSet->add($this->getFactory()->createField('id', 'integer'));
         $fieldSet->add($this->getFactory()->createField('name', 'text'));
         $fieldSet->add($this->getFactory()->createField('lastname', 'text'));
-        $fieldSet->add($this->getFactory()->createField('date', 'date', array('format' => 'MM-dd-yyyy')));
+        $fieldSet->add($this->getFactory()->createField('date', 'date', ['format' => 'MM-dd-yyyy']));
         $fieldSet->add(
             $this->getFactory()->createField('no-range-field', 'integer')
                 ->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false)
@@ -674,13 +673,13 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
             $error = current($errors);
             $this->assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
-            $this->assertEquals(array('{{ lower }}' => '30', '{{ upper }}' => '10'), $error->getMessageParameters());
-            $this->assertEquals($exclusive ? "excludedRanges[0]" : "ranges[0]", $error->getSubPath());
+            $this->assertEquals(['{{ lower }}' => '30', '{{ upper }}' => '10'], $error->getMessageParameters());
+            $this->assertEquals($exclusive ? 'excludedRanges[0]' : 'ranges[0]', $error->getSubPath());
 
             $error = next($errors);
             $this->assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
-            $this->assertEquals(array('{{ lower }}' => '40', '{{ upper }}' => '20'), $error->getMessageParameters());
-            $this->assertEquals($exclusive ? "excludedRanges[2]" : "ranges[2]", $error->getSubPath());
+            $this->assertEquals(['{{ lower }}' => '40', '{{ upper }}' => '20'], $error->getMessageParameters());
+            $this->assertEquals($exclusive ? 'excludedRanges[2]' : 'ranges[2]', $error->getSubPath());
         }
     }
 

@@ -18,12 +18,12 @@ class PreloadedExtension implements SearchExtensionInterface
     /**
      * @var array
      */
-    private $types = array();
+    private $types = [];
 
     /**
      * @var array
      */
-    private $typeExtensions = array();
+    private $typeExtensions = [];
 
     /**
      * Constructor.
@@ -64,7 +64,7 @@ class PreloadedExtension implements SearchExtensionInterface
      */
     public function getTypeExtensions($name)
     {
-        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : array();
+        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : [];
     }
 
     /**

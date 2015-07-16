@@ -72,20 +72,20 @@ class IntegerType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 // default precision is locale specific (usually around 3)
                 'precision' => null,
                 'grouping' => false,
                 // Integer cast rounds towards 0, so do the same when displaying fractions
                 'rounding_mode' => \NumberFormatter::ROUND_DOWN,
-            )
+            ]
         );
 
         // BC layer for Symfony 2.7 and 3.0
         if ($resolver instanceof OptionsResolverInterface) {
             $resolver->setAllowedValues(
-                array(
-                    'rounding_mode' => array(
+                [
+                    'rounding_mode' => [
                         \NumberFormatter::ROUND_FLOOR,
                         \NumberFormatter::ROUND_DOWN,
                         \NumberFormatter::ROUND_HALFDOWN,
@@ -93,13 +93,13 @@ class IntegerType extends AbstractFieldType
                         \NumberFormatter::ROUND_HALFUP,
                         \NumberFormatter::ROUND_UP,
                         \NumberFormatter::ROUND_CEILING,
-                    ),
-                )
+                    ],
+                ]
             );
         } else {
             $resolver->setAllowedValues(
                 'rounding_mode',
-                array(
+                [
                     \NumberFormatter::ROUND_FLOOR,
                     \NumberFormatter::ROUND_DOWN,
                     \NumberFormatter::ROUND_HALFDOWN,
@@ -107,7 +107,7 @@ class IntegerType extends AbstractFieldType
                     \NumberFormatter::ROUND_HALFUP,
                     \NumberFormatter::ROUND_UP,
                     \NumberFormatter::ROUND_CEILING,
-                )
+                ]
             );
         }
     }

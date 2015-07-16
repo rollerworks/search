@@ -36,21 +36,21 @@ class ChoiceList implements ChoiceListInterface
      *
      * @var array
      */
-    protected $choices = array();
+    protected $choices = [];
 
     /**
      * The choice values with the indices of the matching choices as keys.
      *
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * The choice values with the indices of the matching choices as keys.
      *
      * @var array
      */
-    protected $labels = array();
+    protected $labels = [];
 
     /**
      * Creates a new choice list.
@@ -64,7 +64,7 @@ class ChoiceList implements ChoiceListInterface
     public function __construct($choices, array $labels)
     {
         if (!$choices instanceof \Traversable && !is_array($choices)) {
-            throw new UnexpectedTypeException($choices, array('array', '\Traversable'));
+            throw new UnexpectedTypeException($choices, ['array', '\Traversable']);
         }
 
         $this->initialize($choices, $labels);
@@ -80,8 +80,8 @@ class ChoiceList implements ChoiceListInterface
      */
     protected function initialize($choices, array $labels)
     {
-        $this->choices = array();
-        $this->values = array();
+        $this->choices = [];
+        $this->values = [];
 
         $this->addChoices($choices, $labels);
     }

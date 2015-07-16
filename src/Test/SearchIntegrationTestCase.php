@@ -70,17 +70,17 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
 
     protected function getExtensions()
     {
-        return array();
+        return [];
     }
 
     protected function getTypes()
     {
-        return array();
+        return [];
     }
 
     protected function getTypeExtensions()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -99,24 +99,24 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
 
     protected function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
     {
-        $expectedArray = array(
+        $expectedArray = [
             'single' => $expected->getSingleValues(),
             'excluded' => $expected->getExcludedValues(),
             'ranges' => $expected->getRanges(),
             'excludedRanges' => $expected->getExcludedRanges(),
             'compares' => $expected->getComparisons(),
             'matchers' => $expected->getPatternMatchers(),
-        );
+        ];
 
         // use array_merge to renumber indexes and prevent mismatches
-        $resultArray = array(
-            'single' => array_merge(array(), $result->getSingleValues()),
-            'excluded' => array_merge(array(), $result->getExcludedValues()),
-            'ranges' => array_merge(array(), $result->getRanges()),
-            'excludedRanges' => array_merge(array(), $result->getExcludedRanges()),
-            'compares' => array_merge(array(), $result->getComparisons()),
-            'matchers' => array_merge(array(), $result->getPatternMatchers()),
-        );
+        $resultArray = [
+            'single' => array_merge([], $result->getSingleValues()),
+            'excluded' => array_merge([], $result->getExcludedValues()),
+            'ranges' => array_merge([], $result->getRanges()),
+            'excludedRanges' => array_merge([], $result->getExcludedRanges()),
+            'compares' => array_merge([], $result->getComparisons()),
+            'matchers' => array_merge([], $result->getPatternMatchers()),
+        ];
 
         $this->assertEquals($expectedArray, $resultArray);
     }

@@ -28,7 +28,7 @@ use Rollerworks\Component\Search\ValuesGroup;
  */
 class ValuesToRange implements SearchConditionOptimizerInterface
 {
-    private $comparators = array();
+    private $comparators = [];
 
     /**
      * {@inheritdoc}
@@ -133,7 +133,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         $curCount = 0;
 
         foreach ($values as $valIndex => $value) {
-            $curCount++;
+            ++$curCount;
 
             if (null === $prevValue) {
                 $prevIndex = $valIndex;

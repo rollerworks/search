@@ -32,7 +32,7 @@ class TimezoneType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array('choices' => self::getTimezones())
+            ['choices' => self::getTimezones()]
         );
     }
 
@@ -65,7 +65,7 @@ class TimezoneType extends AbstractFieldType
     public static function getTimezones()
     {
         if (null === self::$timezones) {
-            self::$timezones = array();
+            self::$timezones = [];
 
             foreach (\DateTimeZone::listIdentifiers() as $timezone) {
                 $parts = explode('/', $timezone);

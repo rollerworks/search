@@ -17,7 +17,7 @@ class ChoiceListSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith(array('creditcard', 'cash'), array('credit-card-payment', 'cash-payment'));
+        $this->beConstructedWith(['creditcard', 'cash'], ['credit-card-payment', 'cash-payment']);
     }
 
     function it_is_initializable()

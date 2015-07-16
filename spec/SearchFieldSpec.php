@@ -22,7 +22,7 @@ class SearchFieldSpec extends ObjectBehavior
 {
     function let(ResolvedFieldTypeInterface $resolvedType)
     {
-        $this->beConstructedWith('foobar', $resolvedType, array('name' => 'value'));
+        $this->beConstructedWith('foobar', $resolvedType, ['name' => 'value']);
         $this->shouldImplement('Rollerworks\Component\Search\FieldConfigInterface');
     }
 
@@ -43,7 +43,7 @@ class SearchFieldSpec extends ObjectBehavior
 
     function it_should_have_options()
     {
-        $this->getOptions()->shouldReturn(array('name' => 'value'));
+        $this->getOptions()->shouldReturn(['name' => 'value']);
     }
 
     function it_should_return_if_an_option_exists()
@@ -118,7 +118,7 @@ class SearchFieldSpec extends ObjectBehavior
     function it_should_allow_adding_ViewTransformers(DataTransformerInterface $viewTransformer)
     {
         $this->addViewTransformer($viewTransformer);
-        $this->getViewTransformers()->shouldReturn(array($viewTransformer));
+        $this->getViewTransformers()->shouldReturn([$viewTransformer]);
     }
 
     function it_should_allow_resetting_ViewTransformers(DataTransformerInterface $viewTransformer)

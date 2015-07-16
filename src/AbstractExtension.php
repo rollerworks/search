@@ -81,7 +81,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
             $this->initTypeExtensions();
         }
 
-        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : array();
+        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : [];
     }
 
     /**
@@ -103,7 +103,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      */
     protected function loadTypes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -114,7 +114,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      */
     protected function loadTypeExtensions()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -124,7 +124,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      */
     private function initTypes()
     {
-        $this->types = array();
+        $this->types = [];
 
         foreach ($this->loadTypes() as $type) {
             if (!$type instanceof FieldTypeInterface) {
@@ -143,7 +143,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      */
     private function initTypeExtensions()
     {
-        $this->typeExtensions = array();
+        $this->typeExtensions = [];
 
         foreach ($this->loadTypeExtensions() as $extension) {
             if (!$extension instanceof FieldTypeExtensionInterface) {

@@ -41,14 +41,14 @@ interface FieldSetBuilderInterface
      *
      * @return self
      */
-    public function add($field, $type = null, array $options = array(), $required = false, $modelClass = null, $modelProperty = null);
+    public function add($field, $type = null, array $options = [], $required = false, $modelClass = null, $modelProperty = null);
 
     /**
      * Remove a field from the set-builder.
      *
      * @param string $name
      *
-     * @throws BadMethodCallException  When the FieldSet has been already turned into a FieldSet instance
+     * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
      *
      * @return FieldSetBuilderInterface
      */

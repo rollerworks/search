@@ -29,14 +29,14 @@ class ValuesBag implements \Countable, \Serializable
     const VALUE_TYPE_COMPARISON = 'comparison';
     const VALUE_TYPE_PATTERN_MATCH = 'pattern-match';
 
-    private $excludedValues = array();
-    private $ranges = array();
-    private $excludedRanges = array();
-    private $comparisons = array();
-    private $singleValues = array();
-    private $patternMatchers = array();
+    private $excludedValues = [];
+    private $ranges = [];
+    private $excludedRanges = [];
+    private $comparisons = [];
+    private $singleValues = [];
+    private $patternMatchers = [];
     private $valuesCount = 0;
-    private $errors = array();
+    private $errors = [];
     private $locked = false;
 
     /**
@@ -426,7 +426,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->excludedValues,
             $this->ranges,
             $this->excludedRanges,
@@ -436,7 +436,7 @@ class ValuesBag implements \Countable, \Serializable
             $this->valuesCount,
             $this->errors,
             $this->locked,
-        ));
+        ]);
     }
 
     /**

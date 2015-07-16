@@ -15,7 +15,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
 final class FieldSetRegistry implements FieldSetRegistryInterface
 {
-    private $fieldSets = array();
+    private $fieldSets = [];
 
     /**
      * {@inheritdoc}

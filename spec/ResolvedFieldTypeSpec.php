@@ -60,7 +60,7 @@ class ResolvedFieldTypeSpec extends ObjectBehavior
         $innerType->getName()->willReturn('date');
         $innerType->configureOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolver'))->willReturn(null);
 
-        $extensions = array($extension1, $extension2);
+        $extensions = [$extension1, $extension2];
         $this->beConstructedWith($innerType, $extensions);
 
         $this->getTypeExtensions()->shouldReturn($extensions);
@@ -71,7 +71,7 @@ class ResolvedFieldTypeSpec extends ObjectBehavior
         $innerType->getName()->willReturn('date');
         $innerType->configureOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolver'))->willReturn(null);
 
-        $extensions = array(new \stdClass());
+        $extensions = [new \stdClass()];
 
         $this->shouldThrow(new UnexpectedTypeException($extensions[0], 'Rollerworks\Component\Search\FieldTypeExtensionInterface'));
         $this->beConstructedWith($innerType, $extensions);
@@ -95,7 +95,7 @@ class ResolvedFieldTypeSpec extends ObjectBehavior
 
         $innerType->configureOptions(Argument::type('Symfony\Component\OptionsResolver\OptionsResolver'))->willReturn(null);
 
-        $this->beConstructedWith($innerType, array(), $parentType);
+        $this->beConstructedWith($innerType, [], $parentType);
         $this->getOptionsResolver()->shouldReturnAnInstanceOf('Symfony\Component\OptionsResolver\OptionsResolver');
     }
 }

@@ -51,7 +51,7 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createField($name, $type, array $options = array())
+    public function createField($name, $type, array $options = [])
     {
         $field = $this->createFieldBuilder($name, $type, $options);
 
@@ -61,7 +61,7 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * Create a new search field referenced by property.
      *
-
+     
      * @param string $class    Model reference class-name
      * @param string $property Model reference property-name
      * @param string $name     Name of the field
@@ -74,7 +74,7 @@ class SearchFactory implements SearchFactoryInterface
      *             Use createField() with the 'model_class' and 'model_property'
      *             options instead.
      */
-    public function createFieldForProperty($class, $property, $name, $type, array $options = array())
+    public function createFieldForProperty($class, $property, $name, $type, array $options = [])
     {
         $field = $this->createFieldBuilder($name, $type, $options);
         $field->setModelRef($class, $property);
@@ -103,7 +103,7 @@ class SearchFactory implements SearchFactoryInterface
      *
      * @return SearchField
      */
-    private function createFieldBuilder($name, $type = 'field', array $options = array())
+    private function createFieldBuilder($name, $type = 'field', array $options = [])
     {
         if ($type instanceof FieldTypeInterface) {
             $type = $this->resolveType($type);
@@ -112,11 +112,11 @@ class SearchFactory implements SearchFactoryInterface
         } elseif (!$type instanceof ResolvedFieldTypeInterface) {
             throw new UnexpectedTypeException(
                 $type,
-                array(
+                [
                      'string',
                      'Rollerworks\Component\Search\ResolvedFieldTypeInterface',
-                     'Rollerworks\Component\Search\FieldTypeInterface'
-                 )
+                     'Rollerworks\Component\Search\FieldTypeInterface',
+                 ]
             );
         }
 
@@ -151,7 +151,7 @@ class SearchFactory implements SearchFactoryInterface
             $type, // Type extensions are not supported for unregistered type instances,
             // i.e. type instances that are passed to the SearchFactory directly,
             // nor for their parents, if getParent() also returns a type instance.
-            array(),
+            [],
             $parentType
         );
     }

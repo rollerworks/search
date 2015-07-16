@@ -48,7 +48,7 @@ class NumberTypeTest extends FieldTypeTestCase
 
     public function testDefaultFormattingWithGrouping()
     {
-        $field = $this->getFactory()->createField('number', 'number', array('grouping' => true));
+        $field = $this->getFactory()->createField('number', 'number', ['grouping' => true]);
 
         $this->assertTransformedEquals($field, '12345.679', '12.345,679', '12.345,679');
         $this->assertTransformedEquals($field, '12345.679', '12345,679', '12.345,679');
@@ -56,7 +56,7 @@ class NumberTypeTest extends FieldTypeTestCase
 
     public function testDefaultFormattingWithPrecision()
     {
-        $field = $this->getFactory()->createField('number', 'number', array('precision' => 2));
+        $field = $this->getFactory()->createField('number', 'number', ['precision' => 2]);
 
         $this->assertTransformedEquals($field, '12345.68', '12345,67890', '12345,68');
         $this->assertTransformedEquals($field, '12345.67', '12345,67', '12345,67');
@@ -67,7 +67,7 @@ class NumberTypeTest extends FieldTypeTestCase
         $field = $this->getFactory()->createField(
             'number',
             'number',
-            array('precision' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP)
+            ['precision' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP]
         );
 
         $this->assertTransformedEquals($field, '12346', '12345,54321', '12346');
@@ -79,7 +79,7 @@ class NumberTypeTest extends FieldTypeTestCase
         $field = $this->getFactory()->createField(
             'number',
             'number',
-            array('precision' => 0, 'grouping' => false)
+            ['precision' => 0, 'grouping' => false]
         );
 
         $field->setDataLocked();

@@ -27,13 +27,13 @@ class ChoiceTypeSpec extends ObjectBehavior
     {
         $config->addViewTransformer(Argument::type('Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTransformer'))->shouldBeCalled();
 
-        $this->buildType($config, array('label_as_value' => false, 'choice_list' => $choices));
+        $this->buildType($config, ['label_as_value' => false, 'choice_list' => $choices]);
     }
 
     function it_sets_the_label_transformer_when_configured(FieldConfigInterface $config, ChoiceListInterface $choices)
     {
         $config->addViewTransformer(Argument::type('Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer'))->shouldBeCalled();
 
-        $this->buildType($config, array('label_as_value' => true, 'choice_list' => $choices));
+        $this->buildType($config, ['label_as_value' => true, 'choice_list' => $choices]);
     }
 }

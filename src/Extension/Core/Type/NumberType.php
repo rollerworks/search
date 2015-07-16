@@ -72,19 +72,19 @@ class NumberType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 // default precision is locale specific (usually around 3)
                 'precision' => null,
                 'grouping' => false,
                 'rounding_mode' => \NumberFormatter::ROUND_HALFUP,
-            )
+            ]
         );
 
         // BC layer for Symfony 2.7 and 3.0
         if ($resolver instanceof OptionsResolverInterface) {
             $resolver->setAllowedValues(
-                array(
-                    'rounding_mode' => array(
+                [
+                    'rounding_mode' => [
                         \NumberFormatter::ROUND_FLOOR,
                         \NumberFormatter::ROUND_DOWN,
                         \NumberFormatter::ROUND_HALFDOWN,
@@ -92,13 +92,13 @@ class NumberType extends AbstractFieldType
                         \NumberFormatter::ROUND_HALFUP,
                         \NumberFormatter::ROUND_UP,
                         \NumberFormatter::ROUND_CEILING,
-                    ),
-                )
+                    ],
+                ]
             );
         } else {
             $resolver->setAllowedValues(
                 'rounding_mode',
-                array(
+                [
                     \NumberFormatter::ROUND_FLOOR,
                     \NumberFormatter::ROUND_DOWN,
                     \NumberFormatter::ROUND_HALFDOWN,
@@ -106,7 +106,7 @@ class NumberType extends AbstractFieldType
                     \NumberFormatter::ROUND_HALFUP,
                     \NumberFormatter::ROUND_UP,
                     \NumberFormatter::ROUND_CEILING,
-                )
+                ]
             );
         }
     }

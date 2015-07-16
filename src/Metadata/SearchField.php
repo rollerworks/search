@@ -29,7 +29,7 @@ class SearchField
     /**
      * @var array
      */
-    public $options = array();
+    public $options = [];
 
     /**
      * @var string
@@ -49,7 +49,7 @@ class SearchField
      * @param string|null $type
      * @param array       $options
      */
-    public function __construct($fieldName, $class, $property, $required = false, $type = null, array $options = array())
+    public function __construct($fieldName, $class, $property, $required = false, $type = null, array $options = [])
     {
         $this->fieldName = $fieldName;
         $this->class = $class;

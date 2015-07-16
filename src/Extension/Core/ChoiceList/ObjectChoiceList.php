@@ -73,7 +73,7 @@ class ObjectChoiceList extends ChoiceList
         $this->labelPath = null !== $labelPath ? new PropertyPath($labelPath) : null;
         $this->valuePath = null !== $valuePath ? new PropertyPath($valuePath) : null;
 
-        parent::__construct($choices, array());
+        parent::__construct($choices, []);
     }
 
     /**
@@ -122,7 +122,7 @@ class ObjectChoiceList extends ChoiceList
      */
     protected function initialize($choices, array $labels)
     {
-        $labels = array();
+        $labels = [];
 
         $this->extractLabels($choices, $labels);
 

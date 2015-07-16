@@ -54,7 +54,7 @@ interface ResolvedFieldTypeInterface
      *
      * @return FieldConfigInterface
      */
-    public function createField($name, array $options = array());
+    public function createField($name, array $options = []);
 
     /**
      * This configures the {@link FieldConfigInterface}.

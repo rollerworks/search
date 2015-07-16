@@ -69,7 +69,7 @@ class ValuesError
      *
      * @see \Symfony\Component\Translation\Translator
      */
-    public function __construct($subPath, $message, $messageTemplate = null, array $messageParameters = array(), $messagePluralization = null, $cause = null)
+    public function __construct($subPath, $message, $messageTemplate = null, array $messageParameters = [], $messagePluralization = null, $cause = null)
     {
         $this->subPath = $subPath;
         $this->message = $message;

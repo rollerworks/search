@@ -29,7 +29,7 @@ class FieldSetRegistrySpec extends ObjectBehavior
 
     function it_has_no_FieldSets_when_initialized()
     {
-        $this->all()->shouldReturn(array());
+        $this->all()->shouldReturn([]);
     }
 
     function it_supports_adding_FieldSets()
@@ -43,7 +43,7 @@ class FieldSetRegistrySpec extends ObjectBehavior
         $this->add($fieldSet);
         $this->add($fieldSet2);
 
-        $this->all()->shouldReturn(array($fieldSet->getSetName() => $fieldSet, $fieldSet2->getSetName() => $fieldSet2));
+        $this->all()->shouldReturn([$fieldSet->getSetName() => $fieldSet, $fieldSet2->getSetName() => $fieldSet2]);
     }
 
     function it_can_tell_if_a_FieldSet_is_registered()
@@ -76,7 +76,7 @@ class FieldSetRegistrySpec extends ObjectBehavior
 
         $this->shouldThrow(
             new InvalidArgumentException('Unable to get none registered FieldSet "test2".')
-        )->during('get', array('test2'));
+        )->during('get', ['test2']);
     }
 
     function it_disallows_overwriting_a_FieldSet()
@@ -88,7 +88,7 @@ class FieldSetRegistrySpec extends ObjectBehavior
 
         $this->shouldThrow(
             new InvalidArgumentException('Unable to overwrite already registered FieldSet "test".')
-        )->during('add', array($fieldSet));
+        )->during('add', [$fieldSet]);
     }
 
     // open meaning that the configuration is not locked
@@ -98,6 +98,6 @@ class FieldSetRegistrySpec extends ObjectBehavior
 
         $this->shouldThrow(
             new InvalidArgumentException('Unable to register unlocked FieldSet "test".')
-        )->during('add', array($fieldSet));
+        )->during('add', [$fieldSet]);
     }
 }

@@ -26,7 +26,7 @@ class CountryType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array('choices' => Intl::getRegionBundle()->getCountryNames())
+            ['choices' => Intl::getRegionBundle()->getCountryNames()]
         );
     }
 

@@ -34,7 +34,7 @@ final class FieldValuesFactory
     private $groupIdx;
     private $level;
     private $count = 0;
-    private $checkedValueType = array();
+    private $checkedValueType = [];
 
     public function __construct(
         FieldConfigInterface $fieldConfig,
@@ -215,10 +215,10 @@ final class FieldValuesFactory
             $upperValue = $range->getViewUpper();
 
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';
-            $params = array(
+            $params = [
                 '{{ lower }}' => strpos($lowerValue, ' ') ? "'".$lowerValue."'" : $lowerValue,
                 '{{ upper }}' => strpos($upperValue, ' ') ? "'".$upperValue."'" : $upperValue,
-            );
+            ];
 
             $this->valuesBag->addError(
                 new ValuesError($path, strtr($message, $params), $message, $params)
@@ -266,7 +266,7 @@ final class FieldValuesFactory
                     $path,
                     $this->config->getOption('invalid_message', $e->getMessage()),
                     $this->config->getOption('invalid_message', $e->getMessage()),
-                    $this->config->getOption('invalid_message_parameters', array()),
+                    $this->config->getOption('invalid_message_parameters', []),
                     null,
                     $e
                 )
@@ -302,7 +302,7 @@ final class FieldValuesFactory
                     $path,
                     $this->config->getOption('invalid_message', $e->getMessage()),
                     $this->config->getOption('invalid_message', $e->getMessage()),
-                    $this->config->getOption('invalid_message_parameters', array()),
+                    $this->config->getOption('invalid_message_parameters', []),
                     null,
                     $e
                 )

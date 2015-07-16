@@ -34,12 +34,12 @@ class DateType extends AbstractFieldType
     /**
      * @var array
      */
-    private static $acceptedFormats = array(
+    private static $acceptedFormats = [
         \IntlDateFormatter::FULL,
         \IntlDateFormatter::LONG,
         \IntlDateFormatter::MEDIUM,
         \IntlDateFormatter::SHORT,
-    );
+    ];
 
     /**
      * @var ValueComparisonInterface
@@ -126,18 +126,18 @@ class DateType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                'format' => DateType::DEFAULT_FORMAT,
-            )
+            [
+                'format' => self::DEFAULT_FORMAT,
+            ]
         );
 
         // BC layer for Symfony 2.7 and 3.0
         if ($resolver instanceof OptionsResolverInterface) {
             $resolver->setAllowedTypes(
-                array('format' => array('int', 'string'))
+                ['format' => ['int', 'string']]
             );
         } else {
-            $resolver->setAllowedTypes('format', array('int', 'string'));
+            $resolver->setAllowedTypes('format', ['int', 'string']);
         }
     }
 

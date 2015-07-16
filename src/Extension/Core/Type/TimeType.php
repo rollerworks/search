@@ -97,10 +97,10 @@ class TimeType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'with_minutes' => true,
                 'with_seconds' => false,
-            )
+            ]
         );
     }
 

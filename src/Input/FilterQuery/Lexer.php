@@ -103,11 +103,11 @@ class Lexer extends AbstractLexer
      */
     protected function getCatchablePatterns()
     {
-        return array(
+        return [
             '(?:\p{L}[\p{L}\p{N}_-]*:)', // field-name, unicode
             '[\p{L}\p{N}]+', // string literal, unicode
             '(?:"(?:[^"]|"")*")', // quoted string
-        );
+        ];
     }
 
     /**
@@ -115,7 +115,7 @@ class Lexer extends AbstractLexer
      */
     protected function getNonCatchablePatterns()
     {
-        return array('\s+', '(.)');
+        return ['\s+', '(.)'];
     }
 
     /**
@@ -145,7 +145,7 @@ class Lexer extends AbstractLexer
             // Recognize identifiers
             // identifiers are suffixed with ':' to distinct them from strings literals
             case (':' === substr($value, -1, 1)):
-                $value = substr($value, 0, strlen($value) -1);
+                $value = substr($value, 0, strlen($value) - 1);
 
                 return self::T_IDENTIFIER;
 

@@ -25,12 +25,12 @@ class FieldRegistry implements FieldRegistryInterface
      *
      * @var SearchExtensionInterface[]
      */
-    private $extensions = array();
+    private $extensions = [];
 
     /**
      * @var FieldTypeInterface[]
      */
-    private $types = array();
+    private $types = [];
 
     /**
      * @var ResolvedFieldTypeFactoryInterface
@@ -133,7 +133,7 @@ class FieldRegistry implements FieldRegistryInterface
             $parentType = $parentType->getName();
         }
 
-        $typeExtensions = array();
+        $typeExtensions = [];
 
         foreach ($this->extensions as $extension) {
             $typeExtensions = array_merge(

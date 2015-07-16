@@ -25,7 +25,7 @@ class ValuesGroupSpec extends ObjectBehavior
 
     function it_should_have_values()
     {
-        $this->getFields()->shouldReturn(array());
+        $this->getFields()->shouldReturn([]);
         $this->hasField('user')->shouldReturn(false);
     }
 
@@ -37,7 +37,7 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->addField('user', $field);
         $this->addField('date', $field2);
 
-        $this->getFields()->shouldReturn(array('user' => $field, 'date' => $field2));
+        $this->getFields()->shouldReturn(['user' => $field, 'date' => $field2]);
         $this->hasField('user')->shouldReturn(true);
         $this->hasField('foo')->shouldReturn(false);
     }
@@ -52,13 +52,13 @@ class ValuesGroupSpec extends ObjectBehavior
 
         $this->removeField('user');
 
-        $this->getFields()->shouldReturn(array('date' => $field2));
+        $this->getFields()->shouldReturn(['date' => $field2]);
     }
 
     function it_should_have_subgroups()
     {
         $this->hasGroups()->shouldReturn(false);
-        $this->getGroups()->shouldReturn(array());
+        $this->getGroups()->shouldReturn([]);
     }
 
     function it_should_allow_adding_subgroups()
@@ -70,7 +70,7 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->addGroup($group2);
 
         $this->hasGroups()->shouldReturn(true);
-        $this->getGroups()->shouldReturn(array($group, $group2));
+        $this->getGroups()->shouldReturn([$group, $group2]);
     }
 
     function it_should_allow_removing_subgroups()
@@ -84,7 +84,7 @@ class ValuesGroupSpec extends ObjectBehavior
         $this->removeGroup(0);
 
         $this->hasGroups()->shouldReturn(true);
-        $this->getGroups()->shouldReturn(array(1 => $group2));
+        $this->getGroups()->shouldReturn([1 => $group2]);
     }
 
     function it_allows_getting_subgroups()

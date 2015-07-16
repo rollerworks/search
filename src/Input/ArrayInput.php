@@ -98,7 +98,7 @@ class ArrayInput extends AbstractInput
     {
         $this->validateGroupNesting($groupIdx, $level);
 
-        $this->processFields(isset($values['fields']) ? $values['fields'] : array(), $valuesGroup, $groupIdx, $level);
+        $this->processFields(isset($values['fields']) ? $values['fields'] : [], $valuesGroup, $groupIdx, $level);
 
         if (isset($values['groups'])) {
             $this->validateGroupsCount($groupIdx, count($values['groups']), $level);
@@ -113,14 +113,14 @@ class ArrayInput extends AbstractInput
             $fieldConfig = $this->config->getFieldSet()->get($fieldName);
 
             $value = array_merge(
-                array(
-                    'single-values' => array(),
-                    'excluded-values' => array(),
-                    'ranges' => array(),
-                    'excluded-ranges' => array(),
-                    'comparisons' => array(),
-                    'pattern-matchers' => array(),
-                ),
+                [
+                    'single-values' => [],
+                    'excluded-values' => [],
+                    'ranges' => [],
+                    'excluded-ranges' => [],
+                    'comparisons' => [],
+                    'pattern-matchers' => [],
+                ],
                 $value
             );
 
@@ -171,22 +171,22 @@ class ArrayInput extends AbstractInput
         }
 
         foreach ($values['ranges'] as $index => $range) {
-            $this->assertArrayKeysExists($range, array('lower', 'upper'), $index, $groupIdx, $level);
+            $this->assertArrayKeysExists($range, ['lower', 'upper'], $index, $groupIdx, $level);
             $this->processRange($range, $factory);
         }
 
         foreach ($values['excluded-ranges'] as $index => $range) {
-            $this->assertArrayKeysExists($range, array('lower', 'upper'), $index, $groupIdx, $level);
+            $this->assertArrayKeysExists($range, ['lower', 'upper'], $index, $groupIdx, $level);
             $this->processRange($range, $factory, true);
         }
 
         foreach ($values['comparisons'] as $index => $comparison) {
-            $this->assertArrayKeysExists($comparison, array('value', 'operator'), $index, $groupIdx, $level);
+            $this->assertArrayKeysExists($comparison, ['value', 'operator'], $index, $groupIdx, $level);
             $factory->addComparisonValue($comparison['operator'], $comparison['value']);
         }
 
         foreach ($values['pattern-matchers'] as $index => $matcher) {
-            $this->assertArrayKeysExists($matcher, array('value', 'type'), $index, $groupIdx, $level);
+            $this->assertArrayKeysExists($matcher, ['value', 'type'], $index, $groupIdx, $level);
             $factory->addPatterMatch(
                 $matcher['type'],
                 $matcher['value'],
@@ -212,7 +212,7 @@ class ArrayInput extends AbstractInput
             );
         }
 
-        $missingKeys = array();
+        $missingKeys = [];
 
         foreach ($requiredKeys as $key) {
             if (!array_key_exists($key, $array)) {

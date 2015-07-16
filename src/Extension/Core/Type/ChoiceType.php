@@ -32,7 +32,7 @@ class ChoiceType extends AbstractFieldType
      *
      * @var array
      */
-    private $choiceListCache = array();
+    private $choiceListCache = [];
 
     /**
      * {@inheritdoc}
@@ -72,10 +72,10 @@ class ChoiceType extends AbstractFieldType
 
         $choiceList = function (Options $options) use (&$choiceListCache) {
             // Harden against NULL values (like in EntityType and ModelType)
-            $choices = null !== $options['choices'] ? $options['choices'] : array();
+            $choices = null !== $options['choices'] ? $options['choices'] : [];
 
             // Reuse existing choice lists in order to increase performance
-            $hash = hash('sha256', serialize(array($choices)));
+            $hash = hash('sha256', serialize([$choices]));
 
             if (!isset($choiceListCache[$hash])) {
                 $choiceListCache[$hash] = new SimpleChoiceList($choices);
@@ -84,29 +84,29 @@ class ChoiceType extends AbstractFieldType
             return $choiceListCache[$hash];
         };
 
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'label_as_value' => false,
             'choice_list' => $choiceList,
-            'choices' => array(),
-        ));
+            'choices' => [],
+        ]);
 
         // BC layer for Symfony 2.7 and 3.0
         if ($resolver instanceof OptionsResolverInterface) {
             $resolver->setAllowedTypes(
-                array(
-                    'choice_list' => array(
+                [
+                    'choice_list' => [
                         'null',
-                        'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface'
-                    ),
-                )
+                        'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface',
+                    ],
+                ]
             );
         } else {
             $resolver->setAllowedTypes(
                 'choice_list',
-                array(
+                [
                     'null',
-                    'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface'
-                )
+                    'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface',
+                ]
             );
         }
     }

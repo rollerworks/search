@@ -29,12 +29,12 @@ class ValuesGroup implements \Serializable
     /**
      * @var ValuesGroup[]
      */
-    private $groups = array();
+    private $groups = [];
 
     /**
      * @var ValuesBag[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * @var string
@@ -288,7 +288,7 @@ class ValuesGroup implements \Serializable
             $this->throwLocked();
         }
 
-        if (!in_array($groupLogical, array(self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND), true)) {
+        if (!in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
             throw new InvalidArgumentException('Unsupported group logical %s.', $groupLogical);
         }
 
@@ -303,13 +303,13 @@ class ValuesGroup implements \Serializable
     public function serialize()
     {
         return serialize(
-            array(
+            [
                 $this->groupLogical,
                 $this->groups,
                 $this->fields,
                 $this->locked,
                 $this->count,
-            )
+            ]
         );
     }
 

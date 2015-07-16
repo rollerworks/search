@@ -50,7 +50,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
      * @throws UnexpectedTypeException  When at least one of the given extensions is not an FieldTypeExtensionInterface
      * @throws InvalidArgumentException When the name of inner type is invalid
      */
-    public function __construct(FieldTypeInterface $innerType, array $typeExtensions = array(), ResolvedFieldTypeInterface $parent = null)
+    public function __construct(FieldTypeInterface $innerType, array $typeExtensions = [], ResolvedFieldTypeInterface $parent = null)
     {
         if (!preg_match('/^[a-z0-9_]*$/i', $innerType->getName())) {
             throw new InvalidArgumentException(
@@ -111,7 +111,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function createField($name, array $options = array())
+    public function createField($name, array $options = [])
     {
         $options = $this->getOptionsResolver()->resolve($options);
         $builder = $this->newField($name, $options);
@@ -141,13 +141,13 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     public function createFieldView(FieldConfigInterface $config)
     {
         $view = $this->newFieldView($config);
-        $view->vars = array_merge($view->vars, array(
+        $view->vars = array_merge($view->vars, [
             'name' => $config->getName(),
             'type' => $config->getType()->getName(),
             'accept_ranges' => $config->supportValueType(ValuesBag::VALUE_TYPE_RANGE),
             'accept_compares' => $config->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON),
             'accept_pattern_matchers' => $config->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH),
-        ));
+        ]);
 
         return $view;
     }
