@@ -25,7 +25,7 @@ in the "customer" table, the "invoices" data is stored in it's own table, and
 the details of the invoice also have there own table.
 
 Searching (using the FilterQuery syntax) can be as simple as:
-`invoice_price: >"$20.00" invoice_row_label: ~*"my cool product"; customer_type: !consumer.`
+`invoice_price: >"$20.00" invoice_row_label: ~*"my cool product"; customer_type: !consumer`.
 
 You just searched in three relational tables using a single condition with a
 user-friendly syntax. And that is just the start, checkout all the cool and
@@ -46,7 +46,7 @@ Search conditions can be as simple or complex as you need them to be.
 Including grouping and nesting for the best possible result.
 
 And to keep performance at a high rate, each search condition can be easily stored
-in a persist or session-based cache. On top of that each condition processor provides
+in a persistent or session-based cache. On top of that each condition processor provides
 it's own specialized caching mechanise to further reduce overhead.
 
 *In practice this means that the generated (SQL) query for the DB or index is cached.*
@@ -61,7 +61,7 @@ Input processing is provided for the most common formats.
 Including a special format called FilterQuery which provides
 a user-friendly syntax for creating any type of condition.
 
-Each input processor transforms the input a normalized format,
+Each input processor transforms the input to a normalized format,
 and ensures that no malformed data is passed to the storage layer.
 
 * Array
@@ -109,7 +109,7 @@ as separate packages. Building your own condition processor is also possible.
 Requirements
 ------------
 
-You need at least PHP 5.3.9, and Intl extension for international support.
+You need at least PHP 5.4, and Intl extension for international support.
 
 For framework integration you may use the following;
 
@@ -190,12 +190,12 @@ Contributing
 ------------
 
 This is an open source project. If you'd like to contribute,
-please read the [Contributing Code][1] part of Symfony for the basics. If you're submitting
+please read the [Contributing Guidelines][1]. If you're submitting
 a pull request, please follow the guidelines in the [Submitting a Patch][2] section.
 
-[1]: http://symfony.com/doc/current/contributing/code/index.html
-[2]: http://symfony.com/doc/current/contributing/code/patches.html#check-list
+[1]: https://github.com/rollerworks/contributing
+[2]: https://contributing.readthedocs.org/en/latest/code/patches.html
 [3]: http://docutils.sourceforge.net/rst.html
 [4]: http://sphinx-doc.org/
-[5]: http://symfony.com/doc/current/contributing/documentation/format.html
+[5]: https://contributing.readthedocs.org/en/latest/documentation/format.html
 [6]: http://rollerworkssearch.readthedocs.org/en/latest/
