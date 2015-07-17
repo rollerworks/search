@@ -66,7 +66,7 @@ final class QueryException extends \Exception
     }
 
     /**
-     * @return string|string[]
+     * @return string[]
      */
     public function getExpected()
     {
