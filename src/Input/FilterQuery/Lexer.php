@@ -99,6 +99,53 @@ class Lexer extends AbstractLexer
     }
 
     /**
+     * Get the character or type of the token.
+     *
+     * @param string|int $literal
+     *
+     * @return mixed
+     */
+    public function getCharOfToken($literal)
+    {
+        static $tokens;
+
+        if (!$tokens) {
+            $tokens = [];
+            $tokens[self::T_COMMA] = ',';
+            $tokens[self::T_OPEN_PARENTHESIS] = '(';
+            $tokens[self::T_CLOSE_PARENTHESIS] = ')';
+            $tokens[self::T_EQUALS] = '=';
+            $tokens[self::T_GREATER_THAN] = '>';
+            $tokens[self::T_LOWER_THAN] = '<';
+            $tokens[self::T_PLUS] = '+';
+            $tokens[self::T_MINUS] = '-';
+            $tokens[self::T_MULTIPLY] = '*';
+            $tokens[self::T_DIVIDE] = '/';
+            $tokens[self::T_NEGATE] = '!';
+            $tokens[self::T_SEMICOLON] = ';';
+            $tokens[self::T_COLON] = ':';
+            $tokens[self::T_TILDE] = '~';
+            $tokens[self::T_OPEN_BRACE] = '[';
+            $tokens[self::T_CLOSE_BRACE] = ']';
+            $tokens[self::T_QUESTION_MARK] = '?';
+            $tokens[self::T_AND] = '&';
+            $tokens[self::T_DOT] = '.';
+            $tokens[self::T_OPEN_CURLY_BRACE] = '{';
+            $tokens[self::T_CLOSE_CURLY_BRACE] = '}';
+
+            // Special tokens with a value.
+            $tokens[self::T_STRING] = 'String';
+            $tokens[self::T_IDENTIFIER] = 'FieldIdentification';
+        }
+
+        if (isset($tokens[$literal])) {
+            return $tokens[$literal];
+        }
+
+        return $literal;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getCatchablePatterns()

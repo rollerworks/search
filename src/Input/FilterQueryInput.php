@@ -223,7 +223,7 @@ class FilterQueryInput extends AbstractInput
 
         // short-circuit on first condition, usually types match
         if ($lookaheadType !== $token && $token !== Lexer::T_IDENTIFIER && $lookaheadType <= Lexer::T_IDENTIFIER) {
-            $this->syntaxError($this->lexer->getLiteral($token));
+            $this->syntaxError($this->lexer->getCharOfToken($token));
         }
 
         $this->lexer->moveNext();

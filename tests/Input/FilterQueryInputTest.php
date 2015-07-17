@@ -86,12 +86,14 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     }
 
     /**
-     * @param string         $message
-     * @param string         $input
-     * @param int            $col
-     * @param int            $line
-     * @param array|string[] $expected
-     * @param string         $got
+     * @param string   $input
+     * @param string   $message
+     * @param int      $col
+     * @param int      $line
+     * @param string[] $expected
+     * @param string   $got
+     *
+     * @throws \Exception When an unmatched exception is thrown.
      *
      * @test
      * @dataProvider provideQueryExceptionTests
@@ -136,6 +138,15 @@ final class FilterQueryInputTest extends InputProcessorTestCase
                 0,
                 [';', '|', ',', '|', ')'],
                 'value2',
+            ],
+            // Ensure Rollerworks\Component\Search\Input\FilterQuery\Lexer::T_OPEN_PARENTHESIS is converted to '('
+            [
+                'field1: value, value2; *',
+                "[Syntax Error] line 0, col -1: Error: Expected '(', got end of string.",
+                -1,
+                0,
+                ['('],
+                'end of string',
             ],
         ];
     }
