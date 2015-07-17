@@ -9,8 +9,8 @@ and easier to use.
  * The `Rollerworks\Component\Search\Formatter\TransformFormatter` is removed,
    transforming is now performed in the InputProcessor.
 
- * `Rollerworks\Component\Search\Metadata\Field` is removed,
-   use `Rollerworks\Component\Search\Mapping\SearchField` instead.
+ * The `Rollerworks\Component\Search\Mapping\Field` class is deprecated and will be
+   removed in 2.0 use `Rollerworks\Component\Search\Metadata\SearchField` instead.
 
  * The methods `supportValueType()` and `setValueTypeSupport()` were added
    to `Rollerworks\Component\Search\FieldConfigInterface`. If you implemented

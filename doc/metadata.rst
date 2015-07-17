@@ -19,7 +19,7 @@ or as a separate file using either YAML or XML.
 
     For this example the JmsMetadata loader is used.
 
-The ``FileLocator`` will try to guess the the mapping config-dir by
+The ``FileLocator`` will try to guess the the metadata config-dir by
 matching the namespace prefix to the given Model class-name.
 
 In the example below the Model class ``Acme\Store\Model\Product``
@@ -34,7 +34,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
     use Metadata\MetadataFactory;
     use Doctrine\Common\Annotations\Reader;
     use Rollerworks\Component\Search\Metadata\JmsMetadataReader;
-    use Rollerworks\Component\Search\Metadata\Driver as MappingDriver;
+    use Rollerworks\Component\Search\Metadata\Driver as MetadataDriver;
 
     $locator = new FileLocator(array(
         'Acme\Store\Model' => 'src/Acme/Store/Resources/Rollerworks/Search/',
@@ -45,9 +45,9 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
     // See: https://github.com/schmittjoh/metadata/tree/master/src/Metadata/Cache
 
     $driver = new DriverChain(array(
-        new MappingDriver\AnnotationDriver(),
-        new MappingDriver\XmlFileDriver($locator),
-        new MappingDriver\YamlFileDriver($locator),
+        new MetadataDriver\AnnotationDriver(),
+        new MetadataDriver\XmlFileDriver($locator),
+        new MetadataDriver\YamlFileDriver($locator),
     ));
 
     $metadataFactory = new JmsMetadataReader(new MetadataFactory($driver));
@@ -61,7 +61,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
 
         namespace Acme\Store\Model;
 
-        use Rollerworks\Component\Search\Mapping as Search;
+        use Rollerworks\Component\Search\Metadata as Search;
 
         class Product
         {
