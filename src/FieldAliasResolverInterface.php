@@ -19,15 +19,15 @@ namespace Rollerworks\Component\Search;
 interface FieldAliasResolverInterface
 {
     /**
-     * Resolve the field alias to a real fieldname.
+     * Resolve a field's alias to a real field name.
      *
-     * Note: If a field alias can not be resolved
-     * it should return the $fieldName as-is.
+     * Note: When a field alias cannot be resolved the field $fieldAlias
+     * should be returned without any changes.
      *
      * @param FieldSet $fieldSet
      * @param string   $fieldAlias
      *
-     * @return string
+     * @return string The real field name
      */
     public function resolveFieldName(FieldSet $fieldSet, $fieldAlias);
 }

@@ -21,19 +21,19 @@ interface FieldConfigInterface
     /**
      * Returns the name of field.
      *
-     * @return string the Field name.
+     * @return string the Field name
      */
     public function getName();
 
     /**
      * Returns the field type used to construct the field.
      *
-     * @return ResolvedFieldTypeInterface The field's type.
+     * @return ResolvedFieldTypeInterface The field's type
      */
     public function getType();
 
     /**
-     * Returns whether value-type $type is accepted.
+     * Returns whether value-type $type is accepted by the field.
      *
      * Value must be a constant of:
      *
@@ -48,7 +48,7 @@ interface FieldConfigInterface
     public function supportValueType($type);
 
     /**
-     * Set whether value-type $type is accepted.
+     * Set whether value-type $type is accepted by the field.
      *
      * * ValuesBag::VALUE_TYPE_RANGE
      * * ValuesBag::VALUE_TYPE_COMPARISON
@@ -60,14 +60,7 @@ interface FieldConfigInterface
     public function setValueTypeSupport($type, $enabled);
 
     /**
-     * Returns whether the field is required to have values.
-     *
-     * @return bool
-     */
-    public function isRequired();
-
-    /**
-     * Returns the Model's fully qualified class-name.
+     * Returns the configured Model's class-name.
      *
      * This is required for certain storage engines.
      *
@@ -76,7 +69,7 @@ interface FieldConfigInterface
     public function getModelRefClass();
 
     /**
-     * Returns the Model field property-name.
+     * Returns the configured Model's field property-name.
      *
      * This is required for certain storage engines.
      *
@@ -85,7 +78,8 @@ interface FieldConfigInterface
     public function getModelRefProperty();
 
     /**
-     * Set the {@link ValueComparisonInterface} instance.
+     * Set the {@link ValueComparisonInterface} instance for optimizing
+     * and validation.
      *
      * @param ValueComparisonInterface $comparisonObj
      */
@@ -108,13 +102,11 @@ interface FieldConfigInterface
      *
      * @param DataTransformerInterface $viewTransformer
      * @param bool                     $forcePrepend    if set to true, prepend instead of appending
-     *
-     * @return self The configuration object.
      */
     public function addViewTransformer(DataTransformerInterface $viewTransformer, $forcePrepend = false);
 
     /**
-     * Clears the view transformers.
+     * Clears the view transformers of the field.
      *
      * @return self The configuration object.
      */
@@ -123,7 +115,7 @@ interface FieldConfigInterface
     /**
      * Returns the view transformers of the field.
      *
-     * @return DataTransformerInterface[] An array of {@link DataTransformerInterface} instances.
+     * @return DataTransformerInterface[] An array of {@link DataTransformerInterface} instances
      */
     public function getViewTransformers();
 
@@ -133,33 +125,33 @@ interface FieldConfigInterface
      * A field with locked data is restricted to the data passed in
      * this configuration.
      *
-     * @return bool Whether the data is locked.
+     * @return bool Whether the data is locked
      */
     public function getDataLocked();
 
     /**
      * Returns all options passed during the construction of the field.
      *
-     * @return array The passed options.
+     * @return array The passed options
      */
     public function getOptions();
 
     /**
      * Returns whether a specific option exists.
      *
-     * @param string $name The option name,
+     * @param string $name The option name
      *
-     * @return bool Whether the option exists.
+     * @return bool Whether the option exists
      */
     public function hasOption($name);
 
     /**
      * Returns the value of a specific option.
      *
-     * @param string $name    The option name.
-     * @param mixed  $default The value returned if the option does not exist.
+     * @param string $name    The option name
+     * @param mixed  $default The value returned if the option does not exist
      *
-     * @return mixed The option value.
+     * @return mixed The option value
      */
     public function getOption($name, $default = null);
 

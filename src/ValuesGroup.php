@@ -17,7 +17,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 /**
  * ValuesGroup.
  *
- * The ValuesGroup holds subgroups and values (per-field).
+ * The ValuesGroup holds sub-groups and values (per field).
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -29,12 +29,12 @@ class ValuesGroup implements \Serializable
     /**
      * @var ValuesGroup[]
      */
-    private $groups = array();
+    private $groups = [];
 
     /**
      * @var ValuesBag[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * @var string
@@ -47,6 +47,10 @@ class ValuesGroup implements \Serializable
     private $locked = false;
 
     /**
+     * Total number of values.
+     *
+     * This value is lazy initialized.
+     *
      * @var int|null
      */
     private $count;
@@ -55,10 +59,12 @@ class ValuesGroup implements \Serializable
      * Constructor.
      *
      * @param string $groupLogical
+     *
+     * @throws InvalidArgumentException When no an unsupported group logical is provided.
      */
     public function __construct($groupLogical = self::GROUP_LOGICAL_AND)
     {
-        $this->groupLogical = $groupLogical;
+        $this->setGroupLogical($groupLogical);
     }
 
     /**
@@ -88,7 +94,7 @@ class ValuesGroup implements \Serializable
     /**
      * @param int $index
      *
-     * @throws InvalidArgumentException on invalid index.
+     * @throws InvalidArgumentException when no group exists at the given index
      *
      * @return ValuesGroup
      */
@@ -157,7 +163,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @return array|ValuesBag[]
+     * @return ValuesBag[]
      */
     public function getFields()
     {
@@ -201,7 +207,10 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param bool $deeper
+     * Returns whether one or more fields in this group have errors.
+     *
+     * @param bool $deeper Also check the fields of deeper sub-groups.
+     *                     Default is false
      *
      * @return bool
      */
@@ -225,17 +234,17 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Get the total number of values in fields list structure.
+     * Gets the total number of values in the fields list structure.
      *
      * @return int
      */
     public function countValues()
     {
-        $count = 0;
-
         if (null !== $this->count) {
             return $this->count;
         }
+
+        $count = 0;
 
         foreach ($this->fields as $field) {
             $count += $field->count();
@@ -251,7 +260,7 @@ class ValuesGroup implements \Serializable
     /**
      * Get the logical case of the field.
      *
-     * This is either one of the following class constants value:
+     * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
      * @return string
@@ -262,12 +271,14 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Set the logical case of the field.
+     * Set the logical case of the ValuesGroup.
      *
-     * This is either one of the following class constants value:
+     * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
      * @param int
+     *
+     * @throws InvalidArgumentException When no an unsupported group logical is provided.
      *
      * @return self
      */
@@ -275,6 +286,10 @@ class ValuesGroup implements \Serializable
     {
         if ($this->locked) {
             $this->throwLocked();
+        }
+
+        if (!in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
+            throw new InvalidArgumentException('Unsupported group logical %s.', $groupLogical);
         }
 
         $this->groupLogical = $groupLogical;
@@ -288,13 +303,13 @@ class ValuesGroup implements \Serializable
     public function serialize()
     {
         return serialize(
-            array(
+            [
                 $this->groupLogical,
                 $this->groups,
                 $this->fields,
                 $this->locked,
                 $this->count,
-            )
+            ]
         );
     }
 
@@ -348,7 +363,7 @@ class ValuesGroup implements \Serializable
      * Returns whether the field's data is locked.
      *
      * A field with locked data is restricted to the data passed in
-     * this configuration.
+     * its configuration.
      *
      * @return bool Whether the data is locked.
      */

@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search;
 /**
  * SearchCondition optimizer interface.
  *
- * This interface needs to be implemented by all search-condition optimizers.
+ * This interface needs to be implemented by all search condition optimizers.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -25,7 +25,7 @@ interface SearchConditionOptimizerInterface
      *
      * Optimizing may remove duplicated values, normalize overlapping values, etc.
      *
-     * If the search-condition has errors the formatter is should
+     * If the search condition has errors the optimizer is should
      * ignore the condition and do nothing.
      *
      * @param SearchConditionInterface $condition

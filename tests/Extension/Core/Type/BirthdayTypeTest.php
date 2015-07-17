@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Test\FieldTypeTestCase;
-use Symfony\Component\Intl\Util\IntlTestHelper;
 
 class BirthdayTypeTest extends FieldTypeTestCase
 {
@@ -26,10 +25,10 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testDateOnlyInput()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', array(
+        $field = $this->getFactory()->createField('birthday', 'birthday', [
             'format' => 'yyyy-MM-dd',
             'allow_age' => false,
-        ));
+        ]);
 
         $outputTime = new \DateTime('2010-06-02');
         $this->assertTransformedEquals($field, $outputTime, '2010-06-02', '2010-06-02');
@@ -38,9 +37,9 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testAllowAgeInput()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', array(
+        $field = $this->getFactory()->createField('birthday', 'birthday', [
             'format' => 'yyyy-MM-dd',
-        ));
+        ]);
 
         $this->assertTransformedEquals($field, 15, '15', '15');
 
@@ -50,9 +49,9 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testWrongInputFails()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', array(
+        $field = $this->getFactory()->createField('birthday', 'birthday', [
             'allow_age' => true,
-        ));
+        ]);
 
         $this->assertTransformedFails($field, 'twenty');
         $this->assertTransformedFails($field, '-21');
@@ -61,9 +60,9 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testAgeInTheFutureFails()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', array(
+        $field = $this->getFactory()->createField('birthday', 'birthday', [
             'format' => 'yyyy-MM-dd',
-        ));
+        ]);
 
         $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
 
@@ -72,10 +71,10 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testAgeInWorksWhenAllowed()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', array(
+        $field = $this->getFactory()->createField('birthday', 'birthday', [
             'format' => 'yyyy-MM-dd',
             'allow_future_date' => true,
-        ));
+        ]);
 
         $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
         $currentDate->setTime(0, 0, 0);

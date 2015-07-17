@@ -56,14 +56,14 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         if (!in_array($dateFormat, self::$formats, true)) {
             throw new UnexpectedTypeException(
                 $dateFormat,
-                implode('", "', self::$formats)
+                self::$formats
             );
         }
 
         if (!in_array($timeFormat, self::$formats, true)) {
             throw new UnexpectedTypeException(
                 $timeFormat,
-                implode('", "', self::$formats)
+                self::$formats
             );
         }
 

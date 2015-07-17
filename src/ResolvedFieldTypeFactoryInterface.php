@@ -17,14 +17,14 @@ namespace Rollerworks\Component\Search;
 interface ResolvedFieldTypeFactoryInterface
 {
     /**
-     * Resolves a form type.
+     * Resolves a field type.
      *
      * @param FieldTypeInterface         $type
      * @param array                      $typeExtensions
      * @param ResolvedFieldTypeInterface $parent
      *
-     * @throws Exception\UnexpectedTypeException  if the types parent {@link FormTypeInterface::getParent()} is not a string
-     * @throws Exception\InvalidArgumentException if the types parent can not be retrieved from any extension
+     * @throws Exception\UnexpectedTypeException  if the types parent {@link FieldTypeInterface::getParent()} is not a string
+     * @throws Exception\InvalidArgumentException if the types parent cannot be retrieved from any extension
      *
      * @return ResolvedFieldTypeInterface
      */

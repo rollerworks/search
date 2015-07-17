@@ -107,7 +107,7 @@ final class XmlUtil
                 $messages = static::getXmlErrors($internalErrors);
 
                 if (0 === count($messages)) {
-                    $messages = array($defaultMessage);
+                    $messages = [$defaultMessage];
                 }
 
                 throw new \InvalidArgumentException(implode("\n", $messages), 0, $e);
@@ -143,10 +143,10 @@ final class XmlUtil
     {
         $prefix = (string) $element->prefix;
         $empty = true;
-        $config = array();
+        $config = [];
 
         foreach ($element->attributes as $name => $node) {
-            if ($checkPrefix && !in_array((string) $node->prefix, array('', $prefix), true)) {
+            if ($checkPrefix && !in_array((string) $node->prefix, ['', $prefix], true)) {
                 continue;
             }
             $config[$name] = static::phpize($node->value);
@@ -169,7 +169,7 @@ final class XmlUtil
 
                 if (isset($config[$key])) {
                     if (!is_array($config[$key]) || !is_int(key($config[$key]))) {
-                        $config[$key] = array($config[$key]);
+                        $config[$key] = [$config[$key]];
                     }
 
                     $config[$key][] = $value;
@@ -249,7 +249,7 @@ final class XmlUtil
      */
     protected static function getXmlErrors($internalErrors)
     {
-        $errors = array();
+        $errors = [];
         foreach (libxml_get_errors() as $error) {
             $errors[] = sprintf(
                 '[%s %s] %s (in %s - line %d, column %d)',

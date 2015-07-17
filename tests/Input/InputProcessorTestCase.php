@@ -14,7 +14,6 @@ namespace Rollerworks\Component\Search\Tests\Input;
 use Prophecy;
 use Prophecy\Prophecy\ObjectProphecy;
 use Rollerworks\Component\Search\Exception\ExceptionInterface;
-use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
@@ -70,7 +69,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $fieldSet->add($this->getFactory()->createField('id', 'integer'));
         $fieldSet->add($this->getFactory()->createField('name', 'text'));
         $fieldSet->add($this->getFactory()->createField('lastname', 'text'));
-        $fieldSet->add($this->getFactory()->createField('date', 'date', array('format' => 'MM-dd-yyyy')));
+        $fieldSet->add($this->getFactory()->createField('date', 'date', ['format' => 'MM-dd-yyyy']));
         $fieldSet->add(
             $this->getFactory()->createField('no-range-field', 'integer')
                 ->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false)
@@ -468,7 +467,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $input,
         $fieldName,
         $max,
-        $count,
         $groupIdx,
         $nestingLevel
     ) {
@@ -478,20 +476,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxValues(3);
 
-        $expectedGroup = new ValuesGroup();
-        $nestedGroup = new ValuesGroup();
-
-        $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
-        $nestedGroup->addField('field1', $values);
-
-        $subGroup = new ValuesGroup();
-        $subGroup->addGroup($nestedGroup);
-        $expectedGroup->addGroup($subGroup);
-
         try {
-            $processor->process($config, $input);
+            $condition = $processor->process($config, $input);
 
             $this->fail('Condition should be invalid.');
         } catch (\Exception $e) {
@@ -503,7 +489,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
             $this->assertEquals($fieldName, $e->getFieldName());
             $this->assertEquals($max, $e->getMax());
-            $this->assertEquals($count, $e->getCount());
             $this->assertEquals($groupIdx, $e->getGroupIdx());
             $this->assertEquals($nestingLevel, $e->getNestingLevel());
         }
@@ -661,48 +646,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideUnsupportedValueTypeExceptionTests();
 
     /**
-     * @param mixed  $input
-     * @param string $fieldName
-     * @param int    $groupIdx
-     * @param int    $nestingLevel
-     *
-     * @test
-     * @dataProvider provideFieldRequiredTests
-     */
-    public function it_errors_when_a_field_is_required_but_not_set($input, $fieldName, $groupIdx, $nestingLevel)
-    {
-        $fieldSet = $this->getFieldSet(false)
-            ->add($this->getFactory()->createField('field1', 'text'))
-            ->add($this->getFactory()->createField($fieldName, 'text')->setRequired(true))
-            ->getFieldSet()
-        ;
-
-        $processor = $this->getProcessor();
-        $config = new ProcessorConfig($fieldSet);
-
-        try {
-            $processor->process($config, $input);
-
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof FieldRequiredException) {
-                $this->fail('Expected a FieldRequiredException but got: '.get_class($e));
-            }
-
-            $this->assertEquals($fieldName, $e->getFieldName());
-            $this->assertEquals($groupIdx, $e->getGroupIdx());
-            $this->assertEquals($nestingLevel, $e->getNestingLevel());
-        }
-    }
-
-    /**
-     * @return array[]
-     */
-    abstract public function provideFieldRequiredTests();
-
-    /**
      * @param mixed $input
      * @param bool  $exclusive
      *
@@ -730,13 +673,13 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
             $error = current($errors);
             $this->assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
-            $this->assertEquals(array('{{ lower }}' => '30', '{{ upper }}' => '10'), $error->getMessageParameters());
-            $this->assertEquals($exclusive ? "excludedRanges[0]" : "ranges[0]", $error->getSubPath());
+            $this->assertEquals(['{{ lower }}' => '30', '{{ upper }}' => '10'], $error->getMessageParameters());
+            $this->assertEquals($exclusive ? 'excludedRanges[0]' : 'ranges[0]', $error->getSubPath());
 
             $error = next($errors);
             $this->assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
-            $this->assertEquals(array('{{ lower }}' => '40', '{{ upper }}' => '20'), $error->getMessageParameters());
-            $this->assertEquals($exclusive ? "excludedRanges[2]" : "ranges[2]", $error->getSubPath());
+            $this->assertEquals(['{{ lower }}' => '40', '{{ upper }}' => '20'], $error->getMessageParameters());
+            $this->assertEquals($exclusive ? 'excludedRanges[2]' : 'ranges[2]', $error->getSubPath());
         }
     }
 

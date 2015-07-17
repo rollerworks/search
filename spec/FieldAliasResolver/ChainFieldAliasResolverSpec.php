@@ -19,7 +19,7 @@ class ChainFieldAliasResolverSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith(array());
+        $this->beConstructedWith([]);
     }
 
     function it_is_initializable()
@@ -35,7 +35,7 @@ class ChainFieldAliasResolverSpec extends ObjectBehavior
 
     function it_resolves_a_field(FieldSet $fieldSet, FieldAliasResolverInterface $resolver)
     {
-        $this->beConstructedWith(array($resolver));
+        $this->beConstructedWith([$resolver]);
 
         $resolver->resolveFieldName($fieldSet, 'user')->willReturn('user_id');
         $resolver->resolveFieldName($fieldSet, 'id')->willReturn('id');
@@ -51,7 +51,7 @@ class ChainFieldAliasResolverSpec extends ObjectBehavior
         FieldAliasResolverInterface $resolver,
         FieldAliasResolverInterface $resolver2
     ) {
-        $this->beConstructedWith(array($resolver, $resolver2));
+        $this->beConstructedWith([$resolver, $resolver2]);
 
         $resolver->resolveFieldName($fieldSet, 'user')->willReturn('user_id');
         $resolver->resolveFieldName($fieldSet, 'id')->willReturn('id');

@@ -26,10 +26,10 @@ use Rollerworks\Component\Search\ValuesGroup;
  * Note: The values must in the view-format, transforming is done later.
  * Normalized values are created using the Field's DataTransformers.
  *
- * The provided input must be structured as follow.
+ * The provided input must be structured as follow;
  *
  * Each entry must contain an array with either 'fields' and/or groups.
- * Optionally the array can contain logical-case => 'AND' to make it AND-cased.
+ * Optionally the array can contain logical-case => 'OR' to make it OR-cased.
  *
  * The groups array contains numeric groups with and the value as described above (fields and/or groups).
  *
@@ -52,6 +52,8 @@ class ArrayInput extends AbstractInput
      *
      * @param ProcessorConfig $config
      * @param array           $input
+     *
+     * @throws \InvalidArgumentException When provided input is not an array.
      */
     public function process(ProcessorConfig $config, $input)
     {
@@ -65,11 +67,9 @@ class ArrayInput extends AbstractInput
 
         $this->config = $config;
 
-        $valuesGroup = new ValuesGroup();
-
-        if (isset($input['logical-case']) && 'OR' === strtoupper($input['logical-case'])) {
-            $valuesGroup->setGroupLogical(ValuesGroup::GROUP_LOGICAL_OR);
-        }
+        $valuesGroup = new ValuesGroup(
+            isset($input['logical-case']) ? $input['logical-case'] : ValuesGroup::GROUP_LOGICAL_AND
+        );
 
         $this->processGroup($input, $valuesGroup, 0, 0);
 
@@ -90,21 +90,15 @@ class ArrayInput extends AbstractInput
      * @param int         $groupIdx
      * @param int         $level
      *
-     * @throws FieldRequiredException
-     * @throws ValuesOverflowException
-     * @throws InputProcessorException
+     * @throws FieldRequiredException  When a required is not set or as no values.
+     * @throws ValuesOverflowException When the maximum number of values per group is exceeded.
+     * @throws InputProcessorException When an exception is thrown during the processing.
      */
-    private function processGroup(
-        array $values,
-        ValuesGroup $valuesGroup,
-        $groupIdx = 0,
-        $level = 0
-    ) {
+    private function processGroup(array $values, ValuesGroup $valuesGroup, $groupIdx = 0, $level = 0)
+    {
         $this->validateGroupNesting($groupIdx, $level);
 
-        if (isset($values['fields'])) {
-            $this->processFields($values['fields'], $valuesGroup, $groupIdx, $level);
-        }
+        $this->processFields(isset($values['fields']) ? $values['fields'] : [], $valuesGroup, $groupIdx, $level);
 
         if (isset($values['groups'])) {
             $this->validateGroupsCount($groupIdx, count($values['groups']), $level);
@@ -114,36 +108,21 @@ class ArrayInput extends AbstractInput
 
     private function processFields(array $values, ValuesGroup $valuesGroup, $groupIdx, $level)
     {
-        $countedPairs = array();
-        $allFields = $this->config->getFieldSet()->all();
-
         foreach ($values as $name => $value) {
             $fieldName = $this->getFieldName($name);
             $fieldConfig = $this->config->getFieldSet()->get($fieldName);
 
             $value = array_merge(
-                array(
-                    'single-values' => array(),
-                    'excluded-values' => array(),
-                    'ranges' => array(),
-                    'excluded-ranges' => array(),
-                    'comparisons' => array(),
-                    'pattern-matchers' => array(),
-                ),
+                [
+                    'single-values' => [],
+                    'excluded-values' => [],
+                    'ranges' => [],
+                    'excluded-ranges' => [],
+                    'comparisons' => [],
+                    'pattern-matchers' => [],
+                ],
                 $value
             );
-
-            if (isset($countedPairs[$fieldName])) {
-                $countedPairs[$fieldName] += $this->countValues($value);
-            } else {
-                $countedPairs[$fieldName] = $this->countValues($value);
-            }
-
-            if ($countedPairs[$fieldName] > $this->config->getMaxValues()) {
-                throw new ValuesOverflowException(
-                    $fieldName, $this->config->getMaxValues(), $countedPairs[$fieldName], $groupIdx, $level
-                );
-            }
 
             if ($valuesGroup->hasField($fieldName)) {
                 $this->valuesToBag(
@@ -159,27 +138,15 @@ class ArrayInput extends AbstractInput
                     $this->valuesToBag($fieldConfig, $value, new ValuesBag(), $groupIdx, $level)
                 );
             }
-
-            unset($allFields[$fieldName]);
-        }
-
-        // Now run trough all the remaining fields and look if there are required
-        // Fields that were set without values have already been checked by valuesToBag()
-        foreach ($allFields as $fieldName => $filterConfig) {
-            if ($filterConfig->isRequired()) {
-                throw new FieldRequiredException($fieldName, $groupIdx, $level);
-            }
         }
     }
 
     private function processGroups(array $groups, ValuesGroup $valuesGroup, $level)
     {
         foreach ($groups as $index => $values) {
-            $subValuesGroup = new ValuesGroup();
-
-            if (isset($values['logical-case']) && 'OR' === strtoupper($values['logical-case'])) {
-                $subValuesGroup->setGroupLogical(ValuesGroup::GROUP_LOGICAL_OR);
-            }
+            $subValuesGroup = new ValuesGroup(
+                isset($values['logical-case']) ? $values['logical-case'] : ValuesGroup::GROUP_LOGICAL_AND
+            );
 
             $this->processGroup($values, $subValuesGroup, $index, $level + 1);
             $valuesGroup->addGroup($subValuesGroup);
@@ -193,74 +160,33 @@ class ArrayInput extends AbstractInput
         $groupIdx,
         $level = 0
     ) {
-        if (count($values['comparisons'])) {
-            $this->assertAcceptsType($fieldConfig, 'comparison');
-        }
-
-        if ((count($values['ranges']) || count($values['excluded-ranges']))) {
-            $this->assertAcceptsType($fieldConfig, 'range');
-        }
-
-        if (count($values['pattern-matchers'])) {
-            $this->assertAcceptsType($fieldConfig, 'pattern-match');
-        }
-
-        if (!$this->countValues($values) && $fieldConfig->isRequired()) {
-            throw new FieldRequiredException($fieldConfig->getName(), $groupIdx, $level);
-        }
-
-        $factory = new FieldValuesFactory($fieldConfig, $valuesBag);
+        $factory = new FieldValuesFactory($fieldConfig, $valuesBag, $this->config->getMaxValues(), $groupIdx, $level);
 
         foreach ($values['single-values'] as $index => $value) {
-            if (!is_scalar($value)) {
-                throw new InputProcessorException(
-                    sprintf(
-                        'Single value at index %d in group %d at nesting level %d is not a scalar with field "%s".',
-                        $index,
-                        $groupIdx,
-                        $level,
-                        $fieldConfig->getName()
-                    )
-                );
-            }
-
             $factory->addSingleValue($value);
         }
 
         foreach ($values['excluded-values'] as $index => $value) {
-            if (!is_scalar($value)) {
-                throw new InputProcessorException(
-                    sprintf(
-                        'Excluded value at index %d in group %d at nesting level %d is not scalar with field "%s".',
-                        $index,
-                        $groupIdx,
-                        $level,
-                        $fieldConfig->getName()
-                    )
-                );
-            }
-
             $factory->addExcludedValue($value);
         }
 
         foreach ($values['ranges'] as $index => $range) {
-            $this->assertArrayKeysExists($range, array('lower', 'upper'), $index, $groupIdx, $level);
+            $this->assertArrayKeysExists($range, ['lower', 'upper'], $index, $groupIdx, $level);
             $this->processRange($range, $factory);
         }
 
         foreach ($values['excluded-ranges'] as $index => $range) {
-            $this->assertArrayKeysExists($range, array('lower', 'upper'), $index, $groupIdx, $level);
+            $this->assertArrayKeysExists($range, ['lower', 'upper'], $index, $groupIdx, $level);
             $this->processRange($range, $factory, true);
         }
 
         foreach ($values['comparisons'] as $index => $comparison) {
-            $this->assertArrayKeysExists($comparison, array('value', 'operator'), $index, $groupIdx, $level);
+            $this->assertArrayKeysExists($comparison, ['value', 'operator'], $index, $groupIdx, $level);
             $factory->addComparisonValue($comparison['operator'], $comparison['value']);
         }
 
         foreach ($values['pattern-matchers'] as $index => $matcher) {
-            $this->assertArrayKeysExists($matcher, array('value', 'type'), $index, $groupIdx, $level);
-
+            $this->assertArrayKeysExists($matcher, ['value', 'type'], $index, $groupIdx, $level);
             $factory->addPatterMatch(
                 $matcher['type'],
                 $matcher['value'],
@@ -286,7 +212,7 @@ class ArrayInput extends AbstractInput
             );
         }
 
-        $missingKeys = array();
+        $missingKeys = [];
 
         foreach ($requiredKeys as $key) {
             if (!array_key_exists($key, $array)) {
@@ -311,27 +237,10 @@ class ArrayInput extends AbstractInput
         $lowerInclusive = isset($range['inclusive-lower']) ? (bool) $range['inclusive-lower'] : true;
         $upperInclusive = isset($range['inclusive-upper']) ? (bool) $range['inclusive-upper'] : true;
 
-        $lowerBound = (string) $range['lower'];
-        $upperBound = (string) $range['upper'];
-
         if ($negative) {
-            $factory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
+            $factory->addExcludedRange($range['lower'], $range['upper'], $lowerInclusive, $upperInclusive);
         } else {
-            $factory->addRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive);
+            $factory->addRange($range['lower'], $range['upper'], $lowerInclusive, $upperInclusive);
         }
-    }
-
-    private function countValues(array $values)
-    {
-        $count =
-            count($values['single-values']) +
-            count($values['excluded-values']) +
-            count($values['ranges']) +
-            count($values['excluded-ranges']) +
-            count($values['comparisons']) +
-            count($values['pattern-matchers'])
-        ;
-
-        return $count;
     }
 }

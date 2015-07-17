@@ -109,12 +109,12 @@ final class PatternMatch
     {
         return in_array(
             $this->patternType,
-            array(
-                PatternMatch::PATTERN_NOT_STARTS_WITH,
-                PatternMatch::PATTERN_NOT_CONTAINS,
-                PatternMatch::PATTERN_NOT_ENDS_WITH,
-                PatternMatch::PATTERN_NOT_REGEX,
-            ), true
+            [
+                self::PATTERN_NOT_STARTS_WITH,
+                self::PATTERN_NOT_CONTAINS,
+                self::PATTERN_NOT_ENDS_WITH,
+                self::PATTERN_NOT_REGEX,
+            ], true
         );
     }
 
@@ -123,8 +123,8 @@ final class PatternMatch
      */
     public function isRegex()
     {
-        return PatternMatch::PATTERN_REGEX === $this->patternType
-            || PatternMatch::PATTERN_NOT_REGEX === $this->patternType
+        return self::PATTERN_REGEX === $this->patternType
+            || self::PATTERN_NOT_REGEX === $this->patternType
         ;
     }
 }

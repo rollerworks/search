@@ -28,6 +28,8 @@ use Rollerworks\Component\Search\ValuesGroup;
  */
 class ValuesToRange implements SearchConditionOptimizerInterface
 {
+    private $comparators = [];
+
     /**
      * {@inheritdoc}
      */
@@ -37,17 +39,22 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         $valuesGroup = $condition->getValuesGroup();
         $optimize = false;
 
-        foreach ($fieldSet->all() as $field) {
-            if ($field->getValueComparison() instanceof ValueIncrementerInterface &&
+        // Check if the optimization should be performed.
+        // And builds the comparators.
+
+        foreach ($fieldSet->all() as $name => $field) {
+            $comparison = $field->getValueComparison();
+
+            if ($comparison instanceof ValueIncrementerInterface &&
                 $field->supportValueType(ValuesBag::VALUE_TYPE_RANGE)
             ) {
-                $optimize = true;
+                $this->comparators[$name] = new ValueSortCompare($comparison, $field->getOptions());
 
-                break;
+                $optimize = true;
             }
         }
 
-        // None of the fields supports ranges or value-increments so don't optimize
+        // None of the fields supports ranges or value-increments so don't optimize.
         if (!$optimize) {
             return;
         }
@@ -62,14 +69,18 @@ class ValuesToRange implements SearchConditionOptimizerInterface
     private function optimizeValuesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
+            if (!isset($this->comparators[$fieldName])) {
+                continue;
+            }
+
             $config = $fieldSet->get($fieldName);
 
             if ($values->hasSingleValues() || $values->hasExcludedValues()) {
-                $this->optimizeValuesInValuesBag($config, $values);
+                $this->optimizeValuesInValuesBag($config, $this->comparators[$fieldName], $values);
             }
         }
 
-        // now traverse the subgroups
+        // Traverse the subgroups.
         foreach ($valuesGroup->getGroups() as $group) {
             $this->optimizeValuesInGroup($group, $fieldSet);
         }
@@ -77,25 +88,11 @@ class ValuesToRange implements SearchConditionOptimizerInterface
 
     /**
      * @param FieldConfigInterface $config
-     * @param ValuesBag            $valuesBag
+     * @param                      $comparisonFunc
      * @param ValuesBag            $valuesBag
      */
-    private function optimizeValuesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
+    private function optimizeValuesInValuesBag(FieldConfigInterface $config, $comparisonFunc, ValuesBag $valuesBag)
     {
-        $comparison = $config->getValueComparison();
-        $options = $config->getOptions();
-
-        $comparisonFunc = function (SingleValue $first, SingleValue $second) use ($comparison, $options) {
-            $a = $first->getValue();
-            $b = $second->getValue();
-
-            if ($comparison->isEqual($a, $b, $options)) {
-                return 0;
-            }
-
-            return $comparison->isLower($a, $b, $options) ? -1 : 1;
-        };
-
         if ($valuesBag->hasSingleValues()) {
             $values = $valuesBag->getSingleValues();
             uasort($values, $comparisonFunc);
@@ -136,7 +133,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         $curCount = 0;
 
         foreach ($values as $valIndex => $value) {
-            $curCount++;
+            ++$curCount;
 
             if (null === $prevValue) {
                 $prevIndex = $valIndex;

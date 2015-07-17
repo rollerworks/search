@@ -47,15 +47,15 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
      * @param array                      $typeExtensions
      * @param ResolvedFieldTypeInterface $parent
      *
-     * @throws UnexpectedTypeException  When at least one of the given extensions is not an FieldTypeExtensionInterface.
-     * @throws InvalidArgumentException When the Inner Fieldname is invalid.
+     * @throws UnexpectedTypeException  When at least one of the given extensions is not an FieldTypeExtensionInterface
+     * @throws InvalidArgumentException When the name of inner type is invalid
      */
-    public function __construct(FieldTypeInterface $innerType, array $typeExtensions = array(), ResolvedFieldTypeInterface $parent = null)
+    public function __construct(FieldTypeInterface $innerType, array $typeExtensions = [], ResolvedFieldTypeInterface $parent = null)
     {
         if (!preg_match('/^[a-z0-9_]*$/i', $innerType->getName())) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'The "%s" field type name ("%s") is not valid. Names must only contain letters, numbers, and "_".',
+                    'The "%s" field-type name ("%s") is not valid. Names must only contain letters, numbers, and "_".',
                     get_class($innerType),
                     $innerType->getName()
                 )
@@ -77,9 +77,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     }
 
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -87,9 +85,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     }
 
     /**
-     * Returns the parent type.
-     *
-     * @return ResolvedFieldTypeInterface|null The parent type or null
+     * {@inheritdoc}
      */
     public function getParent()
     {
@@ -97,9 +93,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     }
 
     /**
-     * Returns the wrapped form type.
-     *
-     * @return FieldTypeInterface The wrapped form type
+     * {@inheritdoc}
      */
     public function getInnerType()
     {
@@ -107,9 +101,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     }
 
     /**
-     * Returns the extensions of the wrapped form type.
-     *
-     * @return FieldTypeExtensionInterface[] An array of {@link FieldTypeExtensionInterface} instances.
+     * {@inheritdoc}
      */
     public function getTypeExtensions()
     {
@@ -119,7 +111,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function createField($name, array $options = array())
+    public function createField($name, array $options = [])
     {
         $options = $this->getOptionsResolver()->resolve($options);
         $builder = $this->newField($name, $options);
@@ -139,7 +131,6 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
         $this->innerType->buildType($config, $options);
 
         foreach ($this->typeExtensions as $extension) {
-            /* @var FieldTypeExtensionInterface $extension */
             $extension->buildType($config, $options);
         }
     }
@@ -150,14 +141,13 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     public function createFieldView(FieldConfigInterface $config)
     {
         $view = $this->newFieldView($config);
-        $view->vars = array_merge($view->vars, array(
+        $view->vars = array_merge($view->vars, [
             'name' => $config->getName(),
             'type' => $config->getType()->getName(),
             'accept_ranges' => $config->supportValueType(ValuesBag::VALUE_TYPE_RANGE),
             'accept_compares' => $config->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON),
             'accept_pattern_matchers' => $config->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH),
-            'required' => $config->isRequired(),
-        ));
+        ]);
 
         return $view;
     }
@@ -179,9 +169,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     }
 
     /**
-     * Returns the configured options resolver used for this type.
-     *
-     * @return OptionsResolver The options resolver
+     * {@inheritdoc}
      */
     public function getOptionsResolver()
     {
@@ -203,7 +191,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     }
 
     /**
-     * Creates a new field instance.
+     * Creates a new SearchField instance.
      *
      * Override this method if you want to customize the field class.
      *

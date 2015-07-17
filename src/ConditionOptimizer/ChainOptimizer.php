@@ -22,9 +22,9 @@ use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 class ChainOptimizer implements SearchConditionOptimizerInterface
 {
     /**
-     * @var array[]
+     * @var array<SearchConditionOptimizerInterface[]>
      */
-    private $optimizers = array();
+    private $optimizers = [];
 
     /**
      * @param SearchConditionOptimizerInterface $optimizer
@@ -38,12 +38,12 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
         // Ensure we got no end-less loops
         if ($optimizer === $this) {
             throw new \InvalidArgumentException(
-                'Unable to add formatter to chain, can not assign formatter to its self.'
+                'Unable to add optimizer to its own chain.'
             );
         }
 
         if (!isset($this->optimizers[$optimizer->getPriority()])) {
-            $this->optimizers[$optimizer->getPriority()] = array();
+            $this->optimizers[$optimizer->getPriority()] = [];
         }
 
         $this->optimizers[$optimizer->getPriority()][] = $optimizer;
@@ -71,11 +71,7 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
     }
 
     /**
-     * Priority of the optimizer.
-     *
-     * Must return value between -10 and 10.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getPriority()
     {

@@ -15,7 +15,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
 final class FieldSetRegistry implements FieldSetRegistryInterface
 {
-    private $fieldSets = array();
+    private $fieldSets = [];
 
     /**
      * {@inheritdoc}
@@ -49,7 +49,7 @@ final class FieldSetRegistry implements FieldSetRegistryInterface
         }
 
         if (!$fieldSet->isConfigLocked()) {
-            throw new InvalidArgumentException(sprintf('Unable to register none configuration-locked FieldSet "%s".', $name));
+            throw new InvalidArgumentException(sprintf('Unable to register unlocked FieldSet "%s".', $name));
         }
 
         $this->fieldSets[$name] = $fieldSet;

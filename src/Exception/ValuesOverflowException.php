@@ -46,27 +46,23 @@ class ValuesOverflowException extends InputProcessorException
      *
      * @param string $fieldName
      * @param int    $max
-     * @param int    $count
      * @param int    $groupIdx
      * @param int    $nestingLevel
      */
-    public function __construct($fieldName, $max, $count, $groupIdx, $nestingLevel)
+    public function __construct($fieldName, $max, $groupIdx, $nestingLevel)
     {
         $this->fieldName = $fieldName;
         $this->max = $max;
-        $this->count = $count;
         $this->groupIdx = $groupIdx;
         $this->nestingLevel = $nestingLevel;
 
         parent::__construct(
             sprintf(
-                'Field "%s" in group %d at nesting level %d exceeds the maximum number of values per group, '.
-                'maximum: %d, total of values: %d.',
+                'Field "%s" in group %d at nesting level %d exceeds the maximum number of values %d per group.',
                 $fieldName,
                 $groupIdx,
                 $nestingLevel,
-                $max,
-                $count
+                $max
             )
         );
     }
@@ -89,10 +85,12 @@ class ValuesOverflowException extends InputProcessorException
 
     /**
      * @return int
+     *
+     * @deprecated since beta5 to be removed in 2.0
      */
     public function getCount()
     {
-        return $this->count;
+        return $this->max;
     }
 
     /**

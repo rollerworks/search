@@ -75,12 +75,12 @@ class MoneyType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'precision' => 2,
                 'grouping' => false,
                 'divisor' => 1,
                 'default_currency' => 'EUR',
-            )
+            ]
         );
     }
 

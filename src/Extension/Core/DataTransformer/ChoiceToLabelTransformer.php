@@ -50,7 +50,7 @@ class ChoiceToLabelTransformer implements DataTransformerInterface
         }
 
         // These are now valid ChoiceList values, so we can return null
-        // right away
+        // right away.
         if ('' === $value || null === $value) {
             return;
         }

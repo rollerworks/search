@@ -1,7 +1,6 @@
 id:
     name: uid
     type: integer
-    required: true
 
 name:
     name: username

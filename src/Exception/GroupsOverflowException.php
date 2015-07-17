@@ -19,22 +19,22 @@ class GroupsOverflowException extends InputProcessorException
     /**
      * @var int
      */
-    protected $max;
+    private $max;
 
     /**
      * @var int
      */
-    protected $count;
+    private $count;
 
     /**
      * @var int
      */
-    protected $groupIdx;
+    private $groupIdx;
 
     /**
      * @var int
      */
-    protected $nestingLevel;
+    private $nestingLevel;
 
     /**
      * Constructor.

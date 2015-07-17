@@ -19,7 +19,7 @@ use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
 
 /**
- * ValuesBag holds all the values per-type.
+ * A ValuesBag holds all the values per type.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -29,14 +29,14 @@ class ValuesBag implements \Countable, \Serializable
     const VALUE_TYPE_COMPARISON = 'comparison';
     const VALUE_TYPE_PATTERN_MATCH = 'pattern-match';
 
-    private $excludedValues = array();
-    private $ranges = array();
-    private $excludedRanges = array();
-    private $comparisons = array();
-    private $singleValues = array();
-    private $patternMatchers = array();
+    private $excludedValues = [];
+    private $ranges = [];
+    private $excludedRanges = [];
+    private $comparisons = [];
+    private $singleValues = [];
+    private $patternMatchers = [];
     private $valuesCount = 0;
-    private $errors = array();
+    private $errors = [];
     private $locked = false;
 
     /**
@@ -59,7 +59,7 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         $this->singleValues[] = $value;
-        $this->valuesCount++;
+        ++$this->valuesCount;
 
         return $this;
     }
@@ -69,7 +69,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function hasSingleValues()
     {
-        return !empty($this->singleValues);
+        return count($this->singleValues) > 0;
     }
 
     /**
@@ -86,7 +86,7 @@ class ValuesBag implements \Countable, \Serializable
         if (isset($this->singleValues[$index])) {
             unset($this->singleValues[$index]);
 
-            $this->valuesCount--;
+            --$this->valuesCount;
         }
 
         return $this;
@@ -104,7 +104,7 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         $this->excludedValues[] = $value;
-        $this->valuesCount++;
+        ++$this->valuesCount;
 
         return $this;
     }
@@ -114,7 +114,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function hasExcludedValues()
     {
-        return !empty($this->excludedValues);
+        return count($this->excludedValues) > 0;
     }
 
     /**
@@ -139,7 +139,7 @@ class ValuesBag implements \Countable, \Serializable
         if (isset($this->excludedValues[$index])) {
             unset($this->excludedValues[$index]);
 
-            $this->valuesCount--;
+            --$this->valuesCount;
         }
 
         return $this;
@@ -157,7 +157,7 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         $this->ranges[] = $range;
-        $this->valuesCount++;
+        ++$this->valuesCount;
 
         return $this;
     }
@@ -192,7 +192,7 @@ class ValuesBag implements \Countable, \Serializable
         if (isset($this->ranges[$index])) {
             unset($this->ranges[$index]);
 
-            $this->valuesCount--;
+            --$this->valuesCount;
         }
 
         return $this;
@@ -210,7 +210,7 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         $this->excludedRanges[] = $range;
-        $this->valuesCount++;
+        ++$this->valuesCount;
 
         return $this;
     }
@@ -220,7 +220,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function hasExcludedRanges()
     {
-        return !empty($this->excludedRanges);
+        return count($this->excludedRanges) > 0;
     }
 
     /**
@@ -245,7 +245,7 @@ class ValuesBag implements \Countable, \Serializable
         if (isset($this->excludedRanges[$index])) {
             unset($this->excludedRanges[$index]);
 
-            $this->valuesCount--;
+            --$this->valuesCount;
         }
 
         return $this;
@@ -263,7 +263,7 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         $this->comparisons[] = $value;
-        $this->valuesCount++;
+        ++$this->valuesCount;
 
         return $this;
     }
@@ -281,7 +281,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function hasComparisons()
     {
-        return !empty($this->comparisons);
+        return count($this->comparisons) > 0;
     }
 
     /**
@@ -298,7 +298,7 @@ class ValuesBag implements \Countable, \Serializable
         if (isset($this->comparisons[$index])) {
             unset($this->comparisons[$index]);
 
-            $this->valuesCount--;
+            --$this->valuesCount;
         }
 
         return $this;
@@ -324,7 +324,7 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         $this->patternMatchers[] = $value;
-        $this->valuesCount++;
+        ++$this->valuesCount;
 
         return $this;
     }
@@ -334,7 +334,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function hasPatternMatchers()
     {
-        return !empty($this->patternMatchers);
+        return count($this->patternMatchers) > 0;
     }
 
     /**
@@ -351,7 +351,7 @@ class ValuesBag implements \Countable, \Serializable
         if (isset($this->patternMatchers[$index])) {
             unset($this->patternMatchers[$index]);
 
-            $this->valuesCount--;
+            --$this->valuesCount;
         }
 
         return $this;
@@ -378,7 +378,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function hasErrors()
     {
-        return !empty($this->errors);
+        return count($this->errors) > 0;
     }
 
     /**
@@ -426,7 +426,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->excludedValues,
             $this->ranges,
             $this->excludedRanges,
@@ -436,7 +436,7 @@ class ValuesBag implements \Countable, \Serializable
             $this->valuesCount,
             $this->errors,
             $this->locked,
-        ));
+        ]);
     }
 
     /**

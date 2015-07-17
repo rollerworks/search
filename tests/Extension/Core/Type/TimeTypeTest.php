@@ -25,7 +25,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     protected function setUp()
     {
-        //IntlTestHelper::requireIntl($this);
+        IntlTestHelper::requireIntl($this);
 
         parent::setUp();
 
@@ -50,7 +50,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testCanTransformTimeWithSeconds()
     {
-        $field = $this->getFactory()->createField('time', 'time', array('with_seconds' => true));
+        $field = $this->getFactory()->createField('time', 'time', ['with_seconds' => true]);
 
         $outputTime = new \DateTime('1970-01-01 03:04:05 UTC');
 
@@ -59,10 +59,10 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testViewIsConfiguredProperlyWithMinutesAndSeconds()
     {
-        $field = $this->getFactory()->createField('datetime', 'time', array(
+        $field = $this->getFactory()->createField('datetime', 'time', [
             'with_minutes' => true,
             'with_seconds' => true,
-        ));
+        ]);
 
         $field->setDataLocked();
         $fieldView = $field->createView();
@@ -76,10 +76,10 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testViewIsConfiguredProperlyWithMinutesAndNoSeconds()
     {
-        $field = $this->getFactory()->createField('datetime', 'time', array(
+        $field = $this->getFactory()->createField('datetime', 'time', [
             'with_minutes' => true,
             'with_seconds' => false,
-        ));
+        ]);
 
         $field->setDataLocked();
         $fieldView = $field->createView();
@@ -93,10 +93,10 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testViewIsConfiguredProperlyWithNoMinutesAndNoSeconds()
     {
-        $field = $this->getFactory()->createField('datetime', 'time', array(
+        $field = $this->getFactory()->createField('datetime', 'time', [
             'with_minutes' => false,
             'with_seconds' => false,
-        ));
+        ]);
 
         $field->setDataLocked();
         $fieldView = $field->createView();
@@ -113,9 +113,9 @@ class TimeTypeTest extends FieldTypeTestCase
      */
     public function testCannotInitializeWithSecondsButWithoutMinutes()
     {
-        $this->getFactory()->createField('time', 'time', array(
+        $this->getFactory()->createField('time', 'time', [
             'with_minutes' => false,
             'with_seconds' => true,
-        ));
+        ]);
     }
 }

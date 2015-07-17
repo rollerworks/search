@@ -26,7 +26,7 @@ class LocaleType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array('choices' => Intl::getLocaleBundle()->getLocaleNames())
+            ['choices' => Intl::getLocaleBundle()->getLocaleNames()]
         );
     }
 

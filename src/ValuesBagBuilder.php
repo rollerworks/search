@@ -28,7 +28,7 @@ class ValuesBagBuilder extends ValuesBag
      *
      * @param SearchConditionBuilder $parent
      */
-    public function __construct($parent)
+    public function __construct(SearchConditionBuilder $parent)
     {
         $this->parent = $parent;
     }

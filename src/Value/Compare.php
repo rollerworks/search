@@ -44,7 +44,7 @@ final class Compare
      */
     public function __construct($value, $operator, $viewValue = null)
     {
-        if (!in_array($operator, array('>=', '<=', '<>', '<', '>'), true)) {
+        if (!in_array($operator, ['>=', '<=', '<>', '<', '>'], true)) {
             throw new \InvalidArgumentException(
                 sprintf('Unknown operator "%s".', $operator)
             );

@@ -20,10 +20,10 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
 {
     public function provideSingleValuePairTest()
     {
-        return array(
-            'fields' => array(
-                'name' => array(
-                    'single-values' => array(
+        return [
+            'fields' => [
+                'name' => [
+                    'single-values' => [
                         'value ',
                         '-value2',
                         'value2-',
@@ -32,181 +32,181 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
                         'hÌ',
                         '٤٤٤٦٥٤٦٠٠',
                         'doctor"who""',
-                    ),
-                    'excluded-values' => array('value3'),
-                ),
-            ),
-        );
+                    ],
+                    'excluded-values' => ['value3'],
+                ],
+            ],
+        ];
     }
 
     public function provideFieldAliasTest()
     {
-        return array(
-            'fields' => array(
-                'firstname' => array(
-                    'single-values' => array(
+        return [
+            'fields' => [
+                'firstname' => [
+                    'single-values' => [
                         'value',
                         'value2',
-                    ),
-                ),
-            ),
-        );
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function provideMultipleValuesTest()
     {
-        return array(
-            'fields' => array(
-                'name' => array(
-                    'single-values' => array('value', 'value2'),
-                ),
-                'date' => array(
-                    'single-values' => array('12-16-2014'),
-                ),
-            ),
-        );
+        return [
+            'fields' => [
+                'name' => [
+                    'single-values' => ['value', 'value2'],
+                ],
+                'date' => [
+                    'single-values' => ['12-16-2014'],
+                ],
+            ],
+        ];
     }
 
     public function provideRangeValuesTest()
     {
-        return array(
-            'fields' => array(
-                'id' => array(
-                    'ranges' => array(
-                        array('lower' => 1, 'upper' => 10),
-                        array('lower' => 15, 'upper' => 30),
-                        array('lower' => 100, 'upper' => 200, 'inclusive-lower' => false),
-                        array('lower' => 310, 'upper' => 400, 'inclusive-upper' => false),
-                    ),
-                    'excluded-ranges' => array(
-                        array('lower' => 50, 'upper' => 70),
-                    ),
-                ),
-                'date' => array(
-                    'ranges' => array(
-                        array('lower' => '12-16-2014', 'upper' => '12-20-2014'),
-                    ),
-                ),
-            ),
-        );
+        return [
+            'fields' => [
+                'id' => [
+                    'ranges' => [
+                        ['lower' => 1, 'upper' => 10],
+                        ['lower' => 15, 'upper' => 30],
+                        ['lower' => 100, 'upper' => 200, 'inclusive-lower' => false],
+                        ['lower' => 310, 'upper' => 400, 'inclusive-upper' => false],
+                    ],
+                    'excluded-ranges' => [
+                        ['lower' => 50, 'upper' => 70],
+                    ],
+                ],
+                'date' => [
+                    'ranges' => [
+                        ['lower' => '12-16-2014', 'upper' => '12-20-2014'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function provideComparisonValuesTest()
     {
-        return array(
-            'fields' => array(
-                'id' => array(
-                    'comparisons' => array(
-                        array('value' => 1, 'operator' => '>'),
-                        array('value' => 2, 'operator' => '<'),
-                        array('value' => 5, 'operator' => '<='),
-                        array('value' => 8, 'operator' => '>='),
-                    ),
-                ),
-                'date' => array(
-                    'comparisons' => array(
-                        array('value' => '12-16-2014', 'operator' => '>='),
-                    ),
-                ),
-            ),
-        );
+        return [
+            'fields' => [
+                'id' => [
+                    'comparisons' => [
+                        ['value' => 1, 'operator' => '>'],
+                        ['value' => 2, 'operator' => '<'],
+                        ['value' => 5, 'operator' => '<='],
+                        ['value' => 8, 'operator' => '>='],
+                    ],
+                ],
+                'date' => [
+                    'comparisons' => [
+                        ['value' => '12-16-2014', 'operator' => '>='],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function provideMatcherValuesTest()
     {
-        return array(
-            'fields' => array(
-                'name' => array(
-                    'pattern-matchers' => array(
-                        array('type' => 'CONTAINS', 'value' => 'value'),
-                        array('type' => 'STARTS_WITH', 'value' => 'value2', 'case-insensitive' => true),
-                        array('type' => 'ENDS_WITH', 'value' => 'value3'),
-                        array('type' => 'REGEX', 'value' => '^foo|bar?'),
-                        array('type' => 'NOT_CONTAINS', 'value' => 'value4'),
-                        array('type' => 'NOT_CONTAINS', 'value' => 'value5', 'case-insensitive' => true),
-                    ),
-                ),
-            ),
-        );
+        return [
+            'fields' => [
+                'name' => [
+                    'pattern-matchers' => [
+                        ['type' => 'CONTAINS', 'value' => 'value', 'case-insensitive' => false],
+                        ['type' => 'STARTS_WITH', 'value' => 'value2', 'case-insensitive' => true],
+                        ['type' => 'ENDS_WITH', 'value' => 'value3', 'case-insensitive' => false],
+                        ['type' => 'REGEX', 'value' => '^foo|bar?', 'case-insensitive' => false],
+                        ['type' => 'NOT_CONTAINS', 'value' => 'value4', 'case-insensitive' => false],
+                        ['type' => 'NOT_CONTAINS', 'value' => 'value5', 'case-insensitive' => true],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function provideGroupTest()
     {
-        return array(
-            'fields' => array(
-                'name' => array(
-                    'single-values' => array('value', 'value2'),
-                ),
-            ),
-            'groups' => array(
-                array(
-                    'fields' => array(
-                        'name' => array(
-                            'single-values' => array('value3', 'value4'),
-                        ),
-                    ),
-                ),
-                array(
+        return [
+            'fields' => [
+                'name' => [
+                    'single-values' => ['value', 'value2'],
+                ],
+            ],
+            'groups' => [
+                [
+                    'fields' => [
+                        'name' => [
+                            'single-values' => ['value3', 'value4'],
+                        ],
+                    ],
+                ],
+                [
                     'logical-case' => 'OR',
-                    'fields' => array(
-                        'name' => array(
-                            'single-values' => array('value8', 'value10'),
-                        ),
-                    ),
-                ),
-            ),
-        );
+                    'fields' => [
+                        'name' => [
+                            'single-values' => ['value8', 'value10'],
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function provideMultipleSubGroupTest()
     {
-        return array(
-            'groups' => array(
-                array(
-                    'fields' => array(
-                        'name' => array(
-                            'single-values' => array('value', 'value2'),
-                        ),
-                    ),
-                ),
-                array(
-                    'fields' => array(
-                        'name' => array(
-                            'single-values' => array('value3', 'value4'),
-                        ),
-                    ),
-                ),
-            ),
-        );
+        return [
+            'groups' => [
+                [
+                    'fields' => [
+                        'name' => [
+                            'single-values' => ['value', 'value2'],
+                        ],
+                    ],
+                ],
+                [
+                    'fields' => [
+                        'name' => [
+                            'single-values' => ['value3', 'value4'],
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function provideNestedGroupTest()
     {
-        return array(
-            'groups' => array(
-                array(
-                    'groups' => array(
-                        array(
-                            'fields' => array(
-                                'name' => array(
-                                    'single-values' => array('value', 'value2'),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        );
+        return [
+            'groups' => [
+                [
+                    'groups' => [
+                        [
+                            'fields' => [
+                                'name' => [
+                                    'single-values' => ['value', 'value2'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function provideEmptyValuesTest()
     {
-        return array();
+        return [];
     }
 
     public function provideEmptyGroupTest()
     {
-        return array('groups' => array(array()));
+        return ['groups' => [[]]];
     }
 
     /**

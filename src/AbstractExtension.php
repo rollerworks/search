@@ -15,6 +15,12 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
+ * The AbstractExtension can be used as a base class for SearchExtensions.
+ *
+ * An added bonus for extending this class rather then the implementing the the
+ * {@link SearchExtensionInterface} is that any new methods added the
+ * SearchExtensionInterface will not break existing implementations.
+ *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 abstract class AbstractExtension implements SearchExtensionInterface
@@ -75,7 +81,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
             $this->initTypeExtensions();
         }
 
-        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : array();
+        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : [];
     }
 
     /**
@@ -97,7 +103,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      */
     protected function loadTypes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,7 +114,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      */
     protected function loadTypeExtensions()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -118,7 +124,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      */
     private function initTypes()
     {
-        $this->types = array();
+        $this->types = [];
 
         foreach ($this->loadTypes() as $type) {
             if (!$type instanceof FieldTypeInterface) {
@@ -137,7 +143,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
      */
     private function initTypeExtensions()
     {
-        $this->typeExtensions = array();
+        $this->typeExtensions = [];
 
         foreach ($this->loadTypeExtensions() as $extension) {
             if (!$extension instanceof FieldTypeExtensionInterface) {

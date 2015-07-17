@@ -90,7 +90,6 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
             # Name is the search-field name
             name: product_id
             type: number
-            required: false
             accept-ranges: true
             accept-compares: true
 
@@ -113,7 +112,7 @@ and tries to find the corresponding class-name ``Product`` as either ``Product.y
 
         <?xml version="1.0" encoding="UTF-8"?>
         <properties>
-            <property id="id" name="product_id" required="false">
+            <property id="id" name="product_id">
                 <type name="number" />
             </property>
             <property id="name" name="product_name">

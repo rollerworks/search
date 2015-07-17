@@ -64,7 +64,7 @@ abstract class FieldTypeTestCase extends SearchIntegrationTestCase
             $this->fail('Norm: '.$viewValue->getMessage());
         }
 
-        return array($normValue, $viewValue);
+        return [$normValue, $viewValue];
     }
 
     /**

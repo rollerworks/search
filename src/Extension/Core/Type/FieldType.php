@@ -25,7 +25,7 @@ class FieldType extends AbstractFieldType
     /**
      * @var ValueComparisonInterface
      */
-    protected $valueComparison;
+    private $valueComparison;
 
     /**
      * Constructor.
@@ -67,25 +67,25 @@ class FieldType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'invalid_message' => 'This value is not valid.',
-                'invalid_message_parameters' => array(),
+                'invalid_message_parameters' => [],
                 'model_class' => null,
                 'model_property' => null,
-            )
+            ]
         );
 
         // BC layer for Symfony 2.7 and 3.0
         if ($resolver instanceof OptionsResolverInterface) {
             $resolver->setAllowedTypes(
-                array(
-                    'invalid_message' => array('string'),
-                    'invalid_message_parameters' => array('array'),
-                )
+                [
+                    'invalid_message' => ['string'],
+                    'invalid_message_parameters' => ['array'],
+                ]
             );
         } else {
-            $resolver->setAllowedTypes('invalid_message', array('string'));
-            $resolver->setAllowedTypes('invalid_message_parameters', array('array'));
+            $resolver->setAllowedTypes('invalid_message', ['string']);
+            $resolver->setAllowedTypes('invalid_message_parameters', ['array']);
         }
     }
 }

@@ -41,686 +41,610 @@ final class JsonInputTest extends InputProcessorTestCase
 
     public function provideEmptyInputTests()
     {
-        return array(
-            array(''),
-            array('{}'),
-        );
+        return [
+            [''],
+            ['{}'],
+        ];
     }
 
     public function provideSingleValuePairTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'name' => array(
-                                'single-values' => array('value', 'value2', '٤٤٤٦٥٤٦٠٠', '30', '30L'),
-                                'excluded-values' => array('value3'),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'name' => [
+                                'single-values' => ['value', 'value2', '٤٤٤٦٥٤٦٠٠', '30', '30L'],
+                                'excluded-values' => ['value3'],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideMultipleValues()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'name' => array(
-                                'single-values' => array('value', 'value2'),
-                            ),
-                            'date' => array(
-                                'single-values' => array('12-16-2014'),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'name' => [
+                                'single-values' => ['value', 'value2'],
+                            ],
+                            'date' => [
+                                'single-values' => ['12-16-2014'],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideRangeValues()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'id' => array(
-                                'ranges' => array(
-                                    array('lower' => 1, 'upper' => 10),
-                                    array('lower' => 15, 'upper' => 30),
-                                    array('lower' => 100, 'upper' => 200, 'inclusive-lower' => false),
-                                    array('lower' => 310, 'upper' => 400, 'inclusive-upper' => false),
-                                ),
-                                'excluded-ranges' => array(
-                                    array('lower' => 50, 'upper' => 70, 'inclusive-lower' => true),
-                                ),
-                            ),
-                            'date' => array(
-                                'ranges' => array(
-                                    array('lower' => '12-16-2014', 'upper' => '12-20-2014'),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'id' => [
+                                'ranges' => [
+                                    ['lower' => 1, 'upper' => 10],
+                                    ['lower' => 15, 'upper' => 30],
+                                    ['lower' => 100, 'upper' => 200, 'inclusive-lower' => false],
+                                    ['lower' => 310, 'upper' => 400, 'inclusive-upper' => false],
+                                ],
+                                'excluded-ranges' => [
+                                    ['lower' => 50, 'upper' => 70, 'inclusive-lower' => true],
+                                ],
+                            ],
+                            'date' => [
+                                'ranges' => [
+                                    ['lower' => '12-16-2014', 'upper' => '12-20-2014'],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideComparisonValues()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'id' => array(
-                                'comparisons' => array(
-                                    array('value' => 1, 'operator' => '>'),
-                                    array('value' => 2, 'operator' => '<'),
-                                    array('value' => 5, 'operator' => '<='),
-                                    array('value' => 8, 'operator' => '>='),
-                                    array('value' => 20, 'operator' => '<>'),
-                                ),
-                            ),
-                            'date' => array(
-                                'comparisons' => array(
-                                    array('value' => '12-16-2014', 'operator' => '>='),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'id' => [
+                                'comparisons' => [
+                                    ['value' => 1, 'operator' => '>'],
+                                    ['value' => 2, 'operator' => '<'],
+                                    ['value' => 5, 'operator' => '<='],
+                                    ['value' => 8, 'operator' => '>='],
+                                    ['value' => 20, 'operator' => '<>'],
+                                ],
+                            ],
+                            'date' => [
+                                'comparisons' => [
+                                    ['value' => '12-16-2014', 'operator' => '>='],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideMatcherValues()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'name' => array(
-                                'pattern-matchers' => array(
-                                    array('value' => 'value', 'type' => 'CONTAINS'),
-                                    array('value' => 'value2', 'type' => 'STARTS_WITH', 'case-insensitive' => true),
-                                    array('value' => 'value3', 'type' => 'ENDS_WITH'),
-                                    array('value' => '^foo|bar?', 'type' => 'REGEX'),
-                                    array('value' => 'value4', 'type' => 'NOT_CONTAINS'),
-                                    array('value' => 'value5', 'type' => 'NOT_CONTAINS', 'case-insensitive' => true),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'name' => [
+                                'pattern-matchers' => [
+                                    ['value' => 'value', 'type' => 'CONTAINS'],
+                                    ['value' => 'value2', 'type' => 'STARTS_WITH', 'case-insensitive' => true],
+                                    ['value' => 'value3', 'type' => 'ENDS_WITH'],
+                                    ['value' => '^foo|bar?', 'type' => 'REGEX'],
+                                    ['value' => 'value4', 'type' => 'NOT_CONTAINS'],
+                                    ['value' => 'value5', 'type' => 'NOT_CONTAINS', 'case-insensitive' => true],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideGroupTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'name' => array(
-                                'single-values' => array('value', 'value2'),
-                            ),
-                        ),
-                        'groups' => array(
-                            array(
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value3', 'value4'),
-                                    ),
-                                ),
-                            ),
-                            array(
+                    [
+                        'fields' => [
+                            'name' => [
+                                'single-values' => ['value', 'value2'],
+                            ],
+                        ],
+                        'groups' => [
+                            [
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value3', 'value4'],
+                                    ],
+                                ],
+                            ],
+                            [
                                 'logical-case' => 'OR',
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value8', 'value10'),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value8', 'value10'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideRootLogicalTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'name' => array(
-                                'single-values' => array('value', 'value2'),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'name' => [
+                                'single-values' => ['value', 'value2'],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
+                    [
                         'logical-case' => 'AND',
-                        'fields' => array(
-                            'name' => array(
-                                'single-values' => array('value', 'value2'),
-                            ),
-                        ),
-                    )
+                        'fields' => [
+                            'name' => [
+                                'single-values' => ['value', 'value2'],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
+                    [
                         'logical-case' => 'OR',
-                        'fields' => array(
-                            'name' => array(
-                                'single-values' => array('value', 'value2'),
-                            ),
-                        ),
-                    )
+                        'fields' => [
+                            'name' => [
+                                'single-values' => ['value', 'value2'],
+                            ],
+                        ],
+                    ]
                 ),
                 ValuesGroup::GROUP_LOGICAL_OR,
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideMultipleSubGroupTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value', 'value2'),
-                                    ),
-                                ),
-                            ),
-                            array(
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value3', 'value4'),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value', 'value2'],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value3', 'value4'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideNestedGroupTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'groups' => array(
-                                    array(
-                                        'fields' => array(
-                                            'name' => array(
-                                                'single-values' => array('value', 'value2'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'groups' => [
+                                    [
+                                        'fields' => [
+                                            'name' => [
+                                                'single-values' => ['value', 'value2'],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideAliasedFieldsTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'name' => array(
-                                'single-values' => array('value'),
-                            ),
-                            'firstname' => array(
-                                'single-values' => array('value2'),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'name' => [
+                                'single-values' => ['value'],
+                            ],
+                            'firstname' => [
+                                'single-values' => ['value2'],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'firstname' => array(
-                                'single-values' => array('value'),
-                            ),
-                            'name' => array(
-                                'single-values' => array('value2'),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'firstname' => [
+                                'single-values' => ['value'],
+                            ],
+                            'name' => [
+                                'single-values' => ['value2'],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideValueOverflowTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'name' => array(
-                                'single-values' => array('value', 'value2', 'value3', 'value4'),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'name' => [
+                                'single-values' => ['value', 'value2', 'value3', 'value4'],
+                            ],
+                        ],
+                    ]
                 ),
                 'name',
                 3,
-                4,
                 0,
                 0,
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value', 'value2', 'value3', 'value4'),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value', 'value2', 'value3', 'value4'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
                 'name',
                 3,
-                4,
                 0,
                 1,
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'groups' => array(
-                                    array(
-                                        'fields' => array(
-                                            'name' => array(
-                                                'single-values' => array('value', 'value2', 'value3', 'value4'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'groups' => [
+                                    [
+                                        'fields' => [
+                                            'name' => [
+                                                'single-values' => ['value', 'value2', 'value3', 'value4'],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
                 'name',
                 3,
-                4,
                 0,
                 2,
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'groups' => array(
-                                    array(
-                                        'fields' => array(
-                                            'name' => array(
-                                                'single-values' => array('value', 'value2'),
-                                            ),
-                                        ),
-                                    ),
-                                    array(
-                                        'fields' => array(
-                                            'name' => array(
-                                                'single-values' => array('value', 'value2', 'value3', 'value4'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'groups' => [
+                                    [
+                                        'fields' => [
+                                            'name' => [
+                                                'single-values' => ['value', 'value2'],
+                                            ],
+                                        ],
+                                    ],
+                                    [
+                                        'fields' => [
+                                            'name' => [
+                                                'single-values' => ['value', 'value2', 'value3', 'value4'],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
                 'name',
                 3,
-                4,
                 1,
                 2,
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'id' => array(
-                                'single-values' => array('1', '2'),
-                            ),
-                            'user-id' => array(
-                                'single-values' => array('3', '4', '5'),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'id' => [
+                                'single-values' => ['1', '2'],
+                            ],
+                            'user-id' => [
+                                'single-values' => ['3', '4', '5'],
+                            ],
+                        ],
+                    ]
                 ),
                 'id',
                 3,
-                5,
                 0,
                 0,
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideGroupsOverflowTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value', 'value2'),
-                                    ),
-                                ),
-                            ),
-                            array(
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value', 'value2'),
-                                    ),
-                                ),
-                            ),
-                            array(
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value', 'value2'),
-                                    ),
-                                ),
-                            ),
-                            array(
-                                'fields' => array(
-                                    'name' => array(
-                                        'single-values' => array('value', 'value2'),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value', 'value2'],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value', 'value2'],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value', 'value2'],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'fields' => [
+                                    'name' => [
+                                        'single-values' => ['value', 'value2'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
                 3,
                 4,
                 0,
                 0,
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'groups' => array(
-                                    array(
-                                        'groups' => array(
-                                            array(
-                                                'fields' => array(
-                                                    'name' => array(
-                                                        'single-values' => array('value', 'value2'),
-                                                    ),
-                                                ),
-                                            ),
-                                        ),
-                                    ),
-                                    array(
-                                        'groups' => array(
-                                            array(
-                                                'fields' => array(
-                                                    'name' => array(
-                                                        'single-values' => array('value', 'value2'),
-                                                    ),
-                                                ),
-                                            ),
-                                            array(
-                                                'fields' => array(
-                                                    'name' => array(
-                                                        'single-values' => array('value', 'value2'),
-                                                    ),
-                                                ),
-                                            ),
-                                            array(
-                                                'fields' => array(
-                                                    'name' => array(
-                                                        'single-values' => array('value', 'value2'),
-                                                    ),
-                                                ),
-                                            ),
-                                            array(
-                                                'fields' => array(
-                                                    'name' => array(
-                                                        'single-values' => array('value', 'value2'),
-                                                    ),
-                                                ),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'groups' => [
+                                    [
+                                        'groups' => [
+                                            [
+                                                'fields' => [
+                                                    'name' => [
+                                                        'single-values' => ['value', 'value2'],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                    [
+                                        'groups' => [
+                                            [
+                                                'fields' => [
+                                                    'name' => [
+                                                        'single-values' => ['value', 'value2'],
+                                                    ],
+                                                ],
+                                            ],
+                                            [
+                                                'fields' => [
+                                                    'name' => [
+                                                        'single-values' => ['value', 'value2'],
+                                                    ],
+                                                ],
+                                            ],
+                                            [
+                                                'fields' => [
+                                                    'name' => [
+                                                        'single-values' => ['value', 'value2'],
+                                                    ],
+                                                ],
+                                            ],
+                                            [
+                                                'fields' => [
+                                                    'name' => [
+                                                        'single-values' => ['value', 'value2'],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
             3,
             4,
             1,
             2,
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideNestingLevelExceededTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'groups' => array(
-                                    array(
-                                        'fields' => array(
-                                            'name' => array(
-                                                'single-values' => array('value', 'value2'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'groups' => [
+                                    [
+                                        'fields' => [
+                                            'name' => [
+                                                'single-values' => ['value', 'value2'],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideUnknownFieldTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'field2' => array(
-                                'single-values' => array('value', 'value2'),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'field2' => [
+                                'single-values' => ['value', 'value2'],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideUnsupportedValueTypeExceptionTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'no-range-field' => array(
-                                'ranges' => array(array('lower' => 10, 'upper' => 20)),
-                            ),
-                        ),
+                    [
+                        'fields' => [
+                            'no-range-field' => [
+                                'ranges' => [['lower' => 10, 'upper' => 20]],
+                            ],
+                        ],
 
-                    )
+                    ]
                 ),
                 'no-range-field',
                 'range',
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'no-range-field' => array(
-                                'excluded-ranges' => array(array('lower' => 10, 'upper' => 20)),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'no-range-field' => [
+                                'excluded-ranges' => [['lower' => 10, 'upper' => 20]],
+                            ],
+                        ],
+                    ]
                 ),
                 'no-range-field',
                 'range',
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'no-compares-field' => array(
-                                'comparisons' => array(array('value' => 10, 'operator' => '>')),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'no-compares-field' => [
+                                'comparisons' => [['value' => 10, 'operator' => '>']],
+                            ],
+                        ],
+                    ]
                 ),
                 'no-compares-field',
                 'comparison',
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'no-matchers-field' => array(
-                                'pattern-matchers' => array(array('value' => 'foo', 'type' => 'CONTAINS')),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'no-matchers-field' => [
+                                'pattern-matchers' => [['value' => 'foo', 'type' => 'CONTAINS']],
+                            ],
+                        ],
+                    ]
                 ),
                 'no-matchers-field',
                 'pattern-match',
-            ),
-        );
-    }
-
-    public function provideFieldRequiredTests()
-    {
-        return array(
-            array(
-                json_encode(
-                    array(
-                        'fields' => array(
-                            'field1' => array(
-                                'single-values' => array('value', 'value2'),
-                            ),
-                        ),
-                    )
-                ),
-                'field2',
-                0,
-                0,
-            ),
-            array(
-                json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'groups' => array(
-                                    array(
-                                        'fields' => array(
-                                            'field1' => array(
-                                                'single-values' => array('value', 'value2'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
-                ),
-                'field2',
-                0,
-                2,
-            ),
-            array(
-                json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'groups' => array(
-                                    array(
-                                        'fields' => array(
-                                            'field2' => array(
-                                                'single-values' => array('value'),
-                                            ),
-                                        ),
-                                    ),
-                                    array(
-                                        'fields' => array(
-                                            'field1' => array(
-                                                'single-values' => array('value', 'value2'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
-                ),
-                'field2',
-                1,
-                2,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -728,87 +652,87 @@ final class JsonInputTest extends InputProcessorTestCase
      */
     public function provideInvalidRangeTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'id' => array(
-                                'ranges' => array(
-                                    array('lower' => 30, 'upper' => 10),
-                                    array('lower' => 50, 'upper' => 60),
-                                    array('lower' => 40, 'upper' => 20),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'id' => [
+                                'ranges' => [
+                                    ['lower' => 30, 'upper' => 10],
+                                    ['lower' => 50, 'upper' => 60],
+                                    ['lower' => 40, 'upper' => 20],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-            array(
+            ],
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'id' => array(
-                                'excluded-ranges' => array(
-                                    array('lower' => 30, 'upper' => 10),
-                                    array('lower' => 50, 'upper' => 60),
-                                    array('lower' => 40, 'upper' => 20),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'id' => [
+                                'excluded-ranges' => [
+                                    ['lower' => 30, 'upper' => 10],
+                                    ['lower' => 50, 'upper' => 60],
+                                    ['lower' => 40, 'upper' => 20],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
                 true,
-            ),
-        );
+            ],
+        ];
     }
 
     public function provideInvalidValueTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'fields' => array(
-                            'id' => array(
-                                'single-values' => array('foo', '30', 'bar'),
-                                'comparisons' => array(array('operator' => '>', 'value' => 'life')),
-                            ),
-                        ),
-                    )
+                    [
+                        'fields' => [
+                            'id' => [
+                                'single-values' => ['foo', '30', 'bar'],
+                                'comparisons' => [['operator' => '>', 'value' => 'life']],
+                            ],
+                        ],
+                    ]
                 ),
                 'id',
-                array(
+                [
                     new ValuesError('singleValues[0]', 'This value is not valid.'),
                     new ValuesError('singleValues[2]', 'This value is not valid.'),
                     new ValuesError('comparisons[0].value', 'This value is not valid.'),
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     public function provideNestedErrorsTests()
     {
-        return array(
-            array(
+        return [
+            [
                 json_encode(
-                    array(
-                        'groups' => array(
-                            array(
-                                'groups' => array(
-                                    array(
-                                        'fields' => array(
-                                            'date' => array(
-                                                'single-values' => array('value', 'value2'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    )
+                    [
+                        'groups' => [
+                            [
+                                'groups' => [
+                                    [
+                                        'fields' => [
+                                            'date' => [
+                                                'single-values' => ['value', 'value2'],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ),
-            ),
-        );
+            ],
+        ];
     }
 }

@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Test\FieldTypeTestCase;
-use Symfony\Component\Intl\Util\IntlTestHelper;
 
 class IntegerTypeTest extends FieldTypeTestCase
 {
@@ -43,10 +42,10 @@ class IntegerTypeTest extends FieldTypeTestCase
         $field = $this->getFactory()->createField(
             'integer',
             'integer',
-            array(
+            [
                 'precision' => 2,
                 'grouping' => false,
-            )
+            ]
         );
 
         $field->setDataLocked();

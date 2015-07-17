@@ -64,7 +64,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
         $searchCondition = $this->prophet->prophesize('Rollerworks\Component\Search\SearchConditionInterface');
         $searchCondition->getValuesGroup()->willReturn(new ValuesGroup());
 
-        $checkValue = array();
+        $checkValue = [];
 
         $this->optimizer1->process($searchCondition)->will(function () use (&$checkValue) { $checkValue[] = 2; });
         $this->optimizer2->process($searchCondition)->will(function () use (&$checkValue) { $checkValue[] = 1; });
@@ -73,7 +73,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
         $this->optimizer->addOptimizer($this->optimizer2->reveal());
 
         $this->optimizer->process($searchCondition->reveal());
-        $this->assertSame(array(1, 2), $checkValue);
+        $this->assertSame([1, 2], $checkValue);
     }
 
     /**
@@ -99,7 +99,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
      * @test
      *
      * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage Unable to add formatter to chain, can not assign formatter to its self.
+     * @expectedExceptionMessage Unable to add optimizer to its own chain.
      */
     public function it_errors_when_adding_self()
     {

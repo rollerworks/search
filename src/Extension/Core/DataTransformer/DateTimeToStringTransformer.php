@@ -179,7 +179,7 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
 
                 // preg_match() does not guarantee to set all indices, so
                 // set them unless given
-                $matches = array_merge(array(
+                $matches = array_merge([
                     'day' => false,
                     'month' => false,
                     'year' => false,
@@ -188,7 +188,7 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
                     'second' => false,
                     'dayofyear' => false,
                     'timestamp' => false,
-                ), $matches);
+                ], $matches);
 
                 // Reset all parts that don't exist in the format to the
                 // corresponding part of the UNIX base timestamp

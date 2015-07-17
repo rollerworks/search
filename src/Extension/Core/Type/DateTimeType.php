@@ -19,6 +19,7 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Rollerworks\Component\Search\ValuesBag;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -63,12 +64,12 @@ class DateTimeType extends AbstractFieldType
     /**
      * @var array
      */
-    private static $acceptedFormats = array(
+    private static $acceptedFormats = [
         \IntlDateFormatter::FULL,
         \IntlDateFormatter::LONG,
         \IntlDateFormatter::MEDIUM,
         \IntlDateFormatter::SHORT,
-    );
+    ];
 
     /**
      * Constructor.
@@ -89,7 +90,11 @@ class DateTimeType extends AbstractFieldType
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
 
-        if (null === $options['pattern']) {
+        if ($options['pattern']) {
+            $options['format'] = $options['pattern'];
+        }
+
+        if (null === $options['format']) {
             if (!in_array($options['date_format'], self::$acceptedFormats, true)) {
                 throw new InvalidConfigurationException(
                     'The "date_format" option must be one of the IntlDateFormatter constants '.
@@ -105,7 +110,7 @@ class DateTimeType extends AbstractFieldType
             }
         }
 
-        if (self::HTML5_FORMAT === $options['pattern']) {
+        if (self::HTML5_FORMAT === $options['format']) {
             $config->addViewTransformer(
                 new DateTimeToRfc3339Transformer(
                     $options['model_timezone'],
@@ -120,7 +125,7 @@ class DateTimeType extends AbstractFieldType
                     $options['date_format'],
                     $options['time_format'],
                     \IntlDateFormatter::GREGORIAN,
-                    $options['pattern']
+                    $options['format']
                 )
             );
         }
@@ -131,10 +136,10 @@ class DateTimeType extends AbstractFieldType
      */
     public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
     {
-        $pattern = $options['pattern'];
+        $format = $options['format'];
 
-        if (null === $pattern) {
-            $pattern = \IntlDateFormatter::create(
+        if (null === $format) {
+            $format = \IntlDateFormatter::create(
                 \Locale::getDefault(),
                 $options['date_format'],
                 $options['time_format'],
@@ -144,7 +149,7 @@ class DateTimeType extends AbstractFieldType
         }
 
         $view->vars['timezone'] = $options['view_timezone'] ?: date_default_timezone_get();
-        $view->vars['pattern'] = $pattern;
+        $view->vars['format'] = $format;
     }
 
     /**
@@ -153,28 +158,43 @@ class DateTimeType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'model_timezone' => 'UTC',
                 'view_timezone' => null,
                 'pattern' => null,
+                'format' => null,
                 'date_format' => self::DEFAULT_DATE_FORMAT,
                 'time_format' => self::DEFAULT_TIME_FORMAT,
-            )
+            ]
         );
+
+        // BC to be removed in 2.0.
+        $formatNormalizer = function (Options $options, $value) {
+            if (null === $value && null !== $options['pattern']) {
+                return $options['pattern'];
+            }
+
+            return $value;
+        };
 
         // BC layer for Symfony 2.7 and 3.0
         if ($resolver instanceof OptionsResolverInterface) {
             $resolver->setAllowedTypes(
-                array(
-                    'pattern' => array('string', 'null'),
-                    'date_format' => array('int'),
-                    'time_format' => array('int'),
-                )
+                [
+                    'pattern' => ['string', 'null'],
+                    'format' => ['string', 'null'],
+                    'date_format' => ['int'],
+                    'time_format' => ['int'],
+                ]
             );
+
+            $resolver->setNormalizers(['format' => $formatNormalizer]);
         } else {
-            $resolver->setAllowedTypes('pattern', array('string', 'null'));
-            $resolver->setAllowedTypes('date_format', array('int'));
-            $resolver->setAllowedTypes('time_format', array('int'));
+            $resolver->setNormalizer('format', $formatNormalizer);
+            $resolver->setAllowedTypes('pattern', ['string', 'null']);
+            $resolver->setAllowedTypes('format', ['string', 'null']);
+            $resolver->setAllowedTypes('date_format', ['int']);
+            $resolver->setAllowedTypes('time_format', ['int']);
         }
     }
 

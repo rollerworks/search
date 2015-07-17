@@ -27,7 +27,7 @@ class ValuesBagSpec extends ObjectBehavior
 
     function it_contains_no_single_values_when_initialized()
     {
-        $this->getSingleValues()->shouldReturn(array());
+        $this->getSingleValues()->shouldReturn([]);
         $this->hasSingleValues()->shouldReturn(false);
     }
 
@@ -36,7 +36,7 @@ class ValuesBagSpec extends ObjectBehavior
         $this->addSingleValue(new SingleValue('value'));
         $this->addSingleValue(new SingleValue('value2'));
 
-        $this->getSingleValues()->shouldBeLike(array(new SingleValue('value'), new SingleValue('value2')));
+        $this->getSingleValues()->shouldBeLike([new SingleValue('value'), new SingleValue('value2')]);
         $this->hasSingleValues()->shouldReturn(true);
     }
 
@@ -47,13 +47,13 @@ class ValuesBagSpec extends ObjectBehavior
 
         $this->removeSingleValue(0);
 
-        $this->getSingleValues()->shouldBeLike(array(1 => new SingleValue('value2')));
+        $this->getSingleValues()->shouldBeLike([1 => new SingleValue('value2')]);
         $this->hasSingleValues()->shouldReturn(true);
     }
 
     function it_contains_no_excluded_values_when_initialized()
     {
-        $this->getExcludedValues()->shouldReturn(array());
+        $this->getExcludedValues()->shouldReturn([]);
         $this->hasExcludedValues()->shouldReturn(false);
     }
 
@@ -62,7 +62,7 @@ class ValuesBagSpec extends ObjectBehavior
         $this->addExcludedValue(new SingleValue('value'));
         $this->addExcludedValue(new SingleValue('value2'));
 
-        $this->getExcludedValues()->shouldBeLike(array(new SingleValue('value'), new SingleValue('value2')));
+        $this->getExcludedValues()->shouldBeLike([new SingleValue('value'), new SingleValue('value2')]);
         $this->hasExcludedValues()->shouldReturn(true);
     }
 
@@ -73,13 +73,13 @@ class ValuesBagSpec extends ObjectBehavior
 
         $this->removeExcludedValue(0);
 
-        $this->getExcludedValues()->shouldBeLike(array(1 => new SingleValue('value2')));
+        $this->getExcludedValues()->shouldBeLike([1 => new SingleValue('value2')]);
         $this->hasExcludedValues()->shouldReturn(true);
     }
 
     function it_contains_ranges_by_default()
     {
-        $this->getRanges()->shouldReturn(array());
+        $this->getRanges()->shouldReturn([]);
         $this->hasRanges()->shouldReturn(false);
     }
 
@@ -88,7 +88,7 @@ class ValuesBagSpec extends ObjectBehavior
         $this->addRange(new Range(1, 10));
         $this->addRange(new Range(11, 20));
 
-        $this->getRanges()->shouldBeLike(array(new Range(1, 10), new Range(11, 20)));
+        $this->getRanges()->shouldBeLike([new Range(1, 10), new Range(11, 20)]);
     }
 
     function it_allows_removing_ranges()
@@ -98,12 +98,12 @@ class ValuesBagSpec extends ObjectBehavior
 
         $this->removeRange(0);
 
-        $this->getRanges()->shouldBeLike(array(1 => new Range(11, 20)));
+        $this->getRanges()->shouldBeLike([1 => new Range(11, 20)]);
     }
 
     function it_contains_no_excluded_ranges_when_initialized()
     {
-        $this->getExcludedRanges()->shouldReturn(array());
+        $this->getExcludedRanges()->shouldReturn([]);
         $this->hasExcludedRanges()->shouldReturn(false);
     }
 
@@ -112,7 +112,7 @@ class ValuesBagSpec extends ObjectBehavior
         $this->addExcludedRange(new Range(1, 10));
         $this->addExcludedRange(new Range(11, 20));
 
-        $this->getExcludedRanges()->shouldBeLike(array(new Range(1, 10), new Range(11, 20)));
+        $this->getExcludedRanges()->shouldBeLike([new Range(1, 10), new Range(11, 20)]);
     }
 
     function it_allows_removing_excluded_ranges()
@@ -122,12 +122,12 @@ class ValuesBagSpec extends ObjectBehavior
 
         $this->removeExcludedRange(0);
 
-        $this->getExcludedRanges()->shouldBeLike(array(1 => new Range(11, 20)));
+        $this->getExcludedRanges()->shouldBeLike([1 => new Range(11, 20)]);
     }
 
     function it_contains_no_comparisons_when_initialized()
     {
-        $this->getComparisons()->shouldReturn(array());
+        $this->getComparisons()->shouldReturn([]);
         $this->hasComparisons()->shouldReturn(false);
     }
 
@@ -136,7 +136,7 @@ class ValuesBagSpec extends ObjectBehavior
         $this->addComparison(new Compare(10, '>'));
         $this->addComparison(new Compare(5, '>'));
 
-        $this->getComparisons()->shouldBeLike(array(new Compare(10, '>'), new Compare(5, '>')));
+        $this->getComparisons()->shouldBeLike([new Compare(10, '>'), new Compare(5, '>')]);
         $this->hasComparisons()->shouldReturn(true);
     }
 
@@ -147,13 +147,13 @@ class ValuesBagSpec extends ObjectBehavior
 
         $this->removeComparison(0);
 
-        $this->getComparisons()->shouldBeLike(array(1 => new Compare(5, '>')));
+        $this->getComparisons()->shouldBeLike([1 => new Compare(5, '>')]);
         $this->hasComparisons()->shouldReturn(true);
     }
 
     function it_contains_pattern_matchers_by_default()
     {
-        $this->getPatternMatchers()->shouldReturn(array());
+        $this->getPatternMatchers()->shouldReturn([]);
         $this->hasPatternMatchers()->shouldReturn(false);
     }
 
@@ -162,7 +162,7 @@ class ValuesBagSpec extends ObjectBehavior
         $this->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS));
         $this->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH));
 
-        $this->getPatternMatchers()->shouldBeLike(array(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS), new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)));
+        $this->getPatternMatchers()->shouldBeLike([new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS), new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)]);
         $this->hasPatternMatchers()->shouldReturn(true);
     }
 
@@ -173,14 +173,14 @@ class ValuesBagSpec extends ObjectBehavior
 
         $this->removePatternMatch(0);
 
-        $this->getPatternMatchers()->shouldBeLike(array(1 => new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)));
+        $this->getPatternMatchers()->shouldBeLike([1 => new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)]);
         $this->hasPatternMatchers()->shouldReturn(true);
     }
 
     function it_has_no_errors_when_initialized()
     {
         $this->hasErrors()->shouldReturn(false);
-        $this->getErrors()->shouldReturn(array());
+        $this->getErrors()->shouldReturn([]);
     }
 
     function it_allows_adding_errors()
@@ -189,7 +189,7 @@ class ValuesBagSpec extends ObjectBehavior
 
         $this->addError($error);
         $this->hasErrors()->shouldReturn(true);
-        $this->getErrors()->shouldReturn(array($error->getHash() => $error));
+        $this->getErrors()->shouldReturn([$error->getHash() => $error]);
     }
 
     function it_allows_removing_errors()

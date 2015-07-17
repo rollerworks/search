@@ -21,7 +21,7 @@ class SearchFieldView
      *
      * @var array
      */
-    public $vars = array(
-        'attr' => array(),
-    );
+    public $vars = [
+        'attr' => [],
+    ];
 }

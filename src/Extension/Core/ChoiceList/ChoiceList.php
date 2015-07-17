@@ -36,21 +36,21 @@ class ChoiceList implements ChoiceListInterface
      *
      * @var array
      */
-    protected $choices = array();
+    protected $choices = [];
 
     /**
      * The choice values with the indices of the matching choices as keys.
      *
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * The choice values with the indices of the matching choices as keys.
      *
      * @var array
      */
-    protected $labels = array();
+    protected $labels = [];
 
     /**
      * Creates a new choice list.
@@ -64,7 +64,7 @@ class ChoiceList implements ChoiceListInterface
     public function __construct($choices, array $labels)
     {
         if (!$choices instanceof \Traversable && !is_array($choices)) {
-            throw new UnexpectedTypeException($choices, 'array or \Traversable');
+            throw new UnexpectedTypeException($choices, ['array', '\Traversable']);
         }
 
         $this->initialize($choices, $labels);
@@ -80,8 +80,8 @@ class ChoiceList implements ChoiceListInterface
      */
     protected function initialize($choices, array $labels)
     {
-        $this->choices = array();
-        $this->values = array();
+        $this->choices = [];
+        $this->values = [];
 
         $this->addChoices($choices, $labels);
     }
@@ -174,9 +174,9 @@ class ChoiceList implements ChoiceListInterface
      * * contains only letters, digits, numbers, underscores ("_"),
      * hyphens ("-") and colons (":")
      *
-     * @param string $name The tested form name.
+     * @param string $name The tested name
      *
-     * @return bool Whether the name is valid.
+     * @return bool Whether the name is valid
      */
     public static function isValidName($name)
     {
@@ -186,11 +186,11 @@ class ChoiceList implements ChoiceListInterface
     /**
      * Recursively adds the given choices to the list.
      *
-     * @param array|\Traversable $choices The list of choices.
-     * @param array              $labels  The labels corresponding to the choices.
+     * @param array|\Traversable $choices The list of choices
+     * @param array              $labels  The labels corresponding to the choices
      *
-     * @throws InvalidArgumentException      If the structures of the choices and labels array do not match.
-     * @throws InvalidConfigurationException If no valid value or index could be created for a choice.
+     * @throws InvalidArgumentException      If the structures of the choices and labels array do not match
+     * @throws InvalidConfigurationException If no valid value or index could be created for a choice
      */
     protected function addChoices($choices, array $labels)
     {
@@ -219,7 +219,7 @@ class ChoiceList implements ChoiceListInterface
         if ('' === $index || null === $index || !static::isValidName((string) $index)) {
             throw new InvalidConfigurationException(
                 sprintf(
-                    'The index "%s" created by the choice list is invalid. It should be a valid, non-empty Form name.',
+                    'The index "%s" created by the choice list is invalid. It should be a valid, non-empty name.',
                     $index
                 )
             );

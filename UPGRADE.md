@@ -8,18 +8,27 @@ and easier to use.
 
  * The `Rollerworks\Component\Search\Formatter\TransformFormatter` is removed,
    transforming is now performed in the InputProcessor.
-  
+
  * `Rollerworks\Component\Search\Metadata\Field` is removed,
    use `Rollerworks\Component\Search\Mapping\SearchField` instead.
 
  * The methods `supportValueType()` and `setValueTypeSupport()` were added
    to `Rollerworks\Component\Search\FieldConfigInterface`. If you implemented
    this interface in your own code, you should add these two methods.
-   
+
  * The methods `hasRangeSupport()` and `hasCompareSupport()` were removed
    from the `Rollerworks\Component\Search\FieldConfigInterface`. If you
    relied upon these methods you need to change your code.
    See description below for more details.
+
+ * The methods `setRequired()` and `isRequired()` were removed
+   from the `Rollerworks\Component\Search\FieldConfigInterface`.
+   And marked deprecated in `\Rollerworks\Component\Search\SearchField`.
+
+   Marking a field required has always been a bit unclear, *is the field required
+   to exists in the condition or in exactly every group?*. Th disambiguation
+   has been resolved by simple removing this functionality. If you do need this functionality,
+   you can do this by validating the SearchCondition with a custom validator.
 
 ### Type
 
@@ -27,10 +36,10 @@ and easier to use.
    OptionsResolverInterface. Second the method is renamed to "configureOptions".
 
    Before:
-   
+
    ```php
    use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-   
+
    class TaskType extends AbstractFieldType
    {
        // ...
@@ -42,12 +51,12 @@ and easier to use.
        }
    }
    ```
-   
+
    After:
-   
+
    ```php
    use Symfony\Component\OptionsResolver\OptionsResolver;
-   
+
    class TaskType extends AbstractFieldType
    {
        // ...
@@ -59,22 +68,22 @@ and easier to use.
        }
    }
    ```
-  
+
  * Method `buildFieldView` has been renamed to `buildView` in both
   `Rollerworks\Component\Search\FieldTypeInterface` and
   `Rollerworks\Component\Search\FieldTypeExtensionInterface`.
-  
-* Configuring whether a type supports ranges/comparisons and/or pattern-matchers
-  now needs to be configured in the `buildType()` method.
-  
+
+ * Configuring whether a type supports ranges/comparisons and/or pattern-matchers
+   now needs to be configured in the `buildType()` method.
+
   **Note:** The parent type may already have enabled support for the
-  values-type, so you don't have to always enable this explicitly.
-  
+  values-type, so you should not have to always enable this explicitly.
+
   Before:
-  
+
   ```php
   use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-    
+
   class TaskType extends AbstractFieldType
   {
       public function hasRangeSupport()
@@ -83,12 +92,12 @@ and easier to use.
       }
   }
   ```
-  
+
   After:
-  
+
   ```php
   use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-  
+
   class TaskType extends AbstractFieldType
   {
       public function buildType(FieldConfigInterface $config, array $options)
@@ -100,31 +109,31 @@ and easier to use.
 
 ### Input
 
- * Input processors are made reusable, configuration (limiting) must be passed as the
+ * Input processors are made reusable, configuration must be passed as the
    first parameter of `Rollerworks\Component\Search\Input\InputProcessorInterface::process()`.
-  
- * When the created search-condition has errors an `InvalidSearchValuesException`
+
+ * When the created search condition has errors an `InvalidSearchValuesException`
    will be thrown (after processing).
-  
+
  * Validation of ranges (correct bounds) is now performed when processing
-   the Input (not after).
+   the input (not after).
 
 ### Optimizers (former formatters)
 
 Formatters are renamed to optimizers; The `Rollerworks\Component\Search\FormatterInterface`
 is removed in favor of the new `Rollerworks\Component\Search\SearchConditionOptimizerInterface`.
-  
+
 ### User error handling
 
-Because its possible that a search-condition contains errors, each processor
+Because it's possible that a search condition contains errors, each processor
 that has a transforming or validating role will throw a
 `Rollerworks\Component\Search\Exception\InvalidSearchValuesException`.
 
-The `InvalidSearchValuesException` provides access to the search-condition,
+The `InvalidSearchValuesException` provides access to the actual search condition,
 but the condition will contain some values that are invalid.
-  
+
 **Note:** The `InvalidSearchValuesException` is thrown *after* processing,
-so it contains all invalid values (and not just the first violation) in a field
+so it contains all invalid values (and not just the first violation) in a field's
 values list.
 
 A `ValuesGroup` object no longer keeps track of errors, getting the errors
@@ -136,23 +145,23 @@ error-state of all nested groups.
 
 ### Validation
 
-The default validator (Validator extension) is moved to `rollerworks/search-symfony-validator`, 
+The default validator (Validator extension) is moved to `rollerworks/search-symfony-validator`,
 and no longer implements the old Formatter interface.
 
 **Caution:** To prevent clashes with other validators the namespace of the validator
 is changed to: `Rollerworks\Component\Search\Extension\Symfony\Validator`.
 
 ### Values
-  
+
  * Value objects `Compare`, `SingleValue`, `Range`, `PatternMatch` are now marked as
    final and made immutable. To change a value, remove the original at the index and
    add the new value object to the ValuesBag.
-  
+
  * `PatternMatch::getViewValue()` was removed as this value-type has no view version.
-  
+
  * All view-values are casted to strings now;
-   When no view value is provided the "normalized" value must support casting to a string!
-  
+   When no view value is provided the "normalized" value must be castable to a string!
+
 ### SearchConditionSerializer
 
 The `SearchConditionSerializer` no longer uses the static methods

@@ -84,7 +84,7 @@ class BirthdayTransformer implements DataTransformerInterface
             $value = $transformers[$i]->reverseTransform($value);
         }
 
-        // Force the UTC timezone with 00:00:00 for correct comparison
+        // Force the UTC timezone with 00:00:00 for correct comparison.
         $value = clone $value;
         $value->setTimezone(new \DateTimeZone('UTC'));
         $value->setTime(0, 0, 0);

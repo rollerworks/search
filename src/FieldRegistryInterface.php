@@ -24,7 +24,7 @@ interface FieldRegistryInterface
      * @param string $name The name of the type
      *
      * @throws Exception\UnexpectedTypeException  if the passed name is not a string
-     * @throws Exception\InvalidArgumentException if the type can not be retrieved from any extension
+     * @throws Exception\InvalidArgumentException if the type cannot be retrieved from any extension
      *
      * @return ResolvedFieldTypeInterface The type
      */
@@ -40,7 +40,7 @@ interface FieldRegistryInterface
     public function hasType($name);
 
     /**
-     * Returns the extensions loaded by the framework.
+     * Returns the extensions loaded on the registry.
      *
      * @return SearchExtensionInterface[]
      */

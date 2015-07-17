@@ -49,7 +49,7 @@ class FilterQueryExporter extends AbstractExporter
             }
 
             $result .= $this->labelResolver->resolveFieldLabel($fieldSet, $name);
-            $result .= ': '.$this->exportValues($values, $fieldSet->get($name)).'; ';
+            $result .= ': '.$this->exportValues($values).'; ';
         }
 
         foreach ($valuesGroup->getGroups() as $group) {

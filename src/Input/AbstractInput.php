@@ -110,6 +110,8 @@ abstract class AbstractInput implements InputProcessorInterface
      * @param string               $type
      *
      * @throws UnsupportedValueTypeException
+     *
+     * @deprecated
      */
     protected function assertAcceptsType(FieldConfigInterface $fieldConfig, $type)
     {

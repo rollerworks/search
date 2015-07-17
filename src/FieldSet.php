@@ -15,18 +15,22 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
- * FieldSet holds all the search fields and there configuration.
+ * A FieldSet holds all the search fields and there configuration.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class FieldSet implements \Countable, \IteratorAggregate
 {
     /**
+     * Search fields.
+     *
      * @var FieldConfigInterface[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
+     * Name of the FieldSet.
+     *
      * @var string
      */
     private $name;
@@ -39,10 +43,12 @@ class FieldSet implements \Countable, \IteratorAggregate
     /**
      * Constructor.
      *
-     * @param string|null $name FieldSet name
+     * @param string|null $name FieldSet name, should start with a letter, digit or underscore
+     *                          and only contain letters, digits, numbers, underscores ("_") and
+     *                          hyphens ("-").
      *
-     * @throws UnexpectedTypeException   If the name is not a string or an integer.
-     * @throws \InvalidArgumentException If the name contains invalid characters.
+     * @throws UnexpectedTypeException   If the name is not a string or an integer
+     * @throws \InvalidArgumentException If the name contains invalid characters
      */
     public function __construct($name = null)
     {
@@ -64,7 +70,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns the name of the fieldSet.
+     * Returns the name of the set.
      *
      * @return null|string
      */
@@ -74,7 +80,9 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Set a search field.
+     * Add/replace a search field on the set.
+     *
+     * Any existing field with the same name will be overwritten.
      *
      * @param string               $name
      * @param FieldConfigInterface $config
@@ -95,14 +103,15 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Replaces a search field.
+     * Replaces an existing search field on the set.
      *
-     * Same as {@link FieldSet::set()}, but throws an exception when there is no field with that name.
+     * Same as {@link FieldSet::set()}, but throws an exception when there is no
+     * field registered with that name.
      *
      * @param string               $name
      * @param FieldConfigInterface $config
      *
-     * @throws \RuntimeException When the field is not registered at this fieldset.
+     * @throws \RuntimeException When the field is not registered at this fieldset
      *
      * @return self
      */
@@ -124,7 +133,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Removes the field from this FieldSet.
+     * Removes a field from the set.
      *
      * @param string $name
      *
@@ -148,7 +157,7 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @param string $name
      *
-     * @throws \RuntimeException When the field is not registered at this fieldset.
+     * @throws \RuntimeException When the field is not registered at this Fieldset
      *
      * @return FieldConfigInterface
      */
@@ -156,7 +165,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     {
         if (!isset($this->fields[$name])) {
             throw new \RuntimeException(
-                sprintf('Unable to find filter field: %s', $name)
+                sprintf('Unable to find none existent field: %s', $name)
             );
         }
 
@@ -164,7 +173,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns all the registered fields.
+     * Returns all the registered fields in the set.
      *
      * @return FieldConfigInterface[] [name] => {FieldConfigInterface object})
      */
@@ -174,7 +183,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns whether the field is registered at this FieldSet.
+     * Returns whether the field is registered in the set.
      *
      * @param string $name
      *
@@ -190,7 +199,7 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @see all()
      *
-     * @return \ArrayIterator An \ArrayIterator object for iterating over fields.
+     * @return \ArrayIterator An \ArrayIterator object for iterating over fields
      */
     public function getIterator()
     {
@@ -198,7 +207,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns the number of Fields in this set.
+     * Returns the number of fields in the set.
      *
      * @return int The number of fields
      */
@@ -208,24 +217,24 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Validates whether the given variable is a valid fieldset name.
+     * Validates whether the given name is a valid set name.
      *
-     * @param string|null $name The tested fieldset name.
+     * @param string|null $name The tested FieldSet name
      *
-     * @throws UnexpectedTypeException   If the name is not a string or an integer.
-     * @throws \InvalidArgumentException If the name contains invalid characters.
+     * @throws UnexpectedTypeException   If the name is not a string
+     * @throws \InvalidArgumentException If the name contains invalid characters
      */
     public static function validateName($name)
     {
         if (null !== $name && !is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string or null');
+            throw new UnexpectedTypeException($name, ['string', 'null']);
         }
 
         if (!self::isValidName($name)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore '.
-                    'and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").',
+                    'and only contain letters, digits, numbers, underscores ("_") and hyphens ("-").',
                     $name
                 )
             );
@@ -233,26 +242,25 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns whether the given variable contains a valid name.
+     * Returns whether the given name is a valid set name.
      *
-     * A name is accepted if it
+     * A name is accepted if it:
      *
      * * is empty
      * * starts with a letter, digit or underscore
-     * * contains only letters, digits, numbers, underscores ("_"),
-     * hyphens ("-") and colons (":")
+     * * contains only letters, digits, numbers, underscores ("_") and hyphens ("-")
      *
-     * @param string $name The tested name.
+     * @param string $name The tested name
      *
-     * @return bool Whether the name is valid.
+     * @return bool Whether the name is valid
      */
     final public static function isValidName($name)
     {
-        return '' === $name || null === $name || preg_match('/^[a-zA-Z0-9_][a-zA-Z0-9_\-:]*$/D', $name);
+        return '' === $name || null === $name || preg_match('/^[a-zA-Z0-9_][a-zA-Z0-9_\-]*$/D', $name);
     }
 
     /**
-     * Marks the FieldSet's data is locked.
+     * Sets the set's data is locked.
      *
      * After calling this method, setter methods can be no longer called.
      *
@@ -268,10 +276,10 @@ class FieldSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns whether the FieldSet's data is locked.
+     * Returns whether the set's data is locked.
      *
-     * A FieldSet with locked data is restricted to the data passed in
-     * this configuration.
+     * A FieldSet with locked data is restricted to the data currently
+     * configured.
      *
      * @return bool Whether the data is locked.
      */

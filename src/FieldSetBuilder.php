@@ -17,7 +17,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Metadata\MetadataReaderInterface;
 
 /**
- * A builder for creating {@link FieldSet} instances.
+ * The FieldSetBuilder helps with building a {@link FieldSet}.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -29,6 +29,8 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     private $locked;
 
     /**
+     * Name of the FieldSet.
+     *
      * @var string
      */
     private $name;
@@ -36,12 +38,12 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * @var FieldConfigInterface[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * @var array[]
      */
-    private $unresolvedFields = array();
+    private $unresolvedFields = [];
 
     /**
      * @var SearchFactoryInterface
@@ -51,18 +53,20 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * @var MetadataReaderInterface
      */
-    private $mappingReader;
+    private $metadataReader;
 
     /**
-     * @param string                  $name
-     * @param SearchFactoryInterface  $searchFactory
-     * @param MetadataReaderInterface $mappingReader
+     * Constructor.
+     *
+     * @param string                  $name           Name of the FieldSet
+     * @param SearchFactoryInterface  $searchFactory  Search factory for creating new search fields
+     * @param MetadataReaderInterface $metadataReader Optional metadata reader for loading field configuration
      */
-    public function __construct($name, SearchFactoryInterface $searchFactory, MetadataReaderInterface $mappingReader = null)
+    public function __construct($name, SearchFactoryInterface $searchFactory, MetadataReaderInterface $metadataReader = null)
     {
         $this->name = $name;
         $this->searchFactory = $searchFactory;
-        $this->mappingReader = $mappingReader;
+        $this->metadataReader = $metadataReader;
     }
 
     /**
@@ -76,19 +80,9 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     }
 
     /**
-     * @param string|FieldConfigInterface $field
-     * @param string|FieldTypeInterface   $type
-     * @param array                       $options
-     * @param bool                        $required
-     * @param string                      $modelClass
-     * @param string                      $property
-     *
-     * @throws BadMethodCallException  When the FieldSet is already generated.
-     * @throws UnexpectedTypeException
-     *
-     * @return self
+     * {@inheritdoc}
      */
-    public function add($field, $type = null, array $options = array(), $required = false, $modelClass = null, $property = null)
+    public function add($field, $type = null, array $options = [], $required = false, $modelClass = null, $modelProperty = null)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -114,28 +108,23 @@ class FieldSetBuilder implements FieldSetBuilderInterface
         if (null !== $modelClass) {
             $options = array_merge(
                 $options,
-                array(
+                [
                     'model_class' => $modelClass,
-                    'model_property' => $property,
-                )
+                    'model_property' => $modelProperty,
+                ]
             );
         }
 
-        $this->unresolvedFields[$field] = array(
+        $this->unresolvedFields[$field] = [
             'type' => $type,
             'options' => $options,
-            'required' => $required,
-        );
+        ];
 
         return $this;
     }
 
     /**
-     * @param string $name
-     *
-     * @throws BadMethodCallException
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function remove($name)
     {
@@ -151,11 +140,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     }
 
     /**
-     * @param string $name
-     *
-     * @throws BadMethodCallException
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function has($name)
     {
@@ -177,12 +162,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     }
 
     /**
-     * @param string $name
-     *
-     * @throws BadMethodCallException
-     * @throws InvalidArgumentException
-     *
-     * @return FieldConfigInterface|array
+     * {@inheritdoc}
      */
     public function get($name)
     {
@@ -193,7 +173,13 @@ class FieldSetBuilder implements FieldSetBuilderInterface
         }
 
         if (isset($this->unresolvedFields[$name])) {
-            return $this->unresolvedFields[$name];
+            $this->fields[$name] = $this->searchFactory->createField(
+                $name,
+                $this->unresolvedFields[$name]['type'],
+                $this->unresolvedFields[$name]['options']
+            );
+
+            unset($this->unresolvedFields[$name]);
         }
 
         if (isset($this->fields[$name])) {
@@ -204,15 +190,18 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     }
 
     /**
-     * @param string $class
-     * @param array  $include List of field names to use, everything else is excluded
-     * @param array  $exclude List of field names to exclude
+     * Import the fields configuration using the metadata reader.
      *
-     * @throws BadMethodCallException
+     * @param string $class   Model Class-name to load metadata from
+     * @param array  $include List of field names to use, everything else is excluded
+     * @param array  $exclude List of field names to exclude, everything else is included
+     *
+     * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
+     * @throws BadMethodCallException When no metadata reader is configured
      *
      * @return self
      */
-    public function importFromClass($class, array $include = array(), array $exclude = array())
+    public function importFromClass($class, array $include = [], array $exclude = [])
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -220,39 +209,36 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             );
         }
 
-        if (!$this->mappingReader) {
+        if (!$this->metadataReader) {
             throw new BadMethodCallException(
-                'FieldSetBuilder is unable to import configuration from class because no MappingReader is set.'
+                'FieldSetBuilder is unable to import configuration from class, no MetadataReader was set for the constructor.'
             );
         }
 
-        foreach ($this->mappingReader->getSearchFields($class) as $field) {
+        foreach ($this->metadataReader->getSearchFields($class) as $field) {
             if (($include && !in_array($field->fieldName, $include, true)) xor ($exclude && in_array($field->fieldName, $exclude, true))) {
                 continue;
             }
 
             $field->options = array_merge(
                 $field->options,
-                array(
+                [
                     'model_class' => $field->class,
                     'model_property' => $field->property,
-                )
+                ]
             );
 
-            $this->unresolvedFields[$field->fieldName] = array(
+            $this->unresolvedFields[$field->fieldName] = [
                 'type' => $field->type,
                 'options' => $field->options,
-                'required' => $field->required,
-            );
+            ];
         }
 
         return $this;
     }
 
     /**
-     * @throws BadMethodCallException
-     *
-     * @return FieldSet
+     * {@inheritdoc}
      */
     public function getFieldSet()
     {
@@ -266,8 +252,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             $this->fields[$name] = $this->searchFactory->createField(
                 $name,
                 $field['type'],
-                $field['options'],
-                $field['required']
+                $field['options']
             );
 
             unset($this->unresolvedFields[$name]);

@@ -18,18 +18,18 @@ class PreloadedExtension implements SearchExtensionInterface
     /**
      * @var array
      */
-    private $types = array();
+    private $types = [];
 
     /**
      * @var array
      */
-    private $typeExtensions = array();
+    private $typeExtensions = [];
 
     /**
-     * Creates a new preloaded extension.
+     * Constructor.
      *
-     * @param FieldTypeInterface[]          $types          The types that the extension should support.
-     * @param FieldTypeExtensionInterface[] $typeExtensions The type extensions that the extension should support.
+     * @param FieldTypeInterface[]          $types          The types that the extension should support
+     * @param FieldTypeExtensionInterface[] $typeExtensions The type extensions that the extension should support
      */
     public function __construct(array $types, array $typeExtensions)
     {
@@ -64,7 +64,7 @@ class PreloadedExtension implements SearchExtensionInterface
      */
     public function getTypeExtensions($name)
     {
-        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : array();
+        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : [];
     }
 
     /**

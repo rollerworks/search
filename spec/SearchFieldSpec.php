@@ -22,7 +22,7 @@ class SearchFieldSpec extends ObjectBehavior
 {
     function let(ResolvedFieldTypeInterface $resolvedType)
     {
-        $this->beConstructedWith('foobar', $resolvedType, array('name' => 'value'));
+        $this->beConstructedWith('foobar', $resolvedType, ['name' => 'value']);
         $this->shouldImplement('Rollerworks\Component\Search\FieldConfigInterface');
     }
 
@@ -43,7 +43,7 @@ class SearchFieldSpec extends ObjectBehavior
 
     function it_should_have_options()
     {
-        $this->getOptions()->shouldReturn(array('name' => 'value'));
+        $this->getOptions()->shouldReturn(['name' => 'value']);
     }
 
     function it_should_return_if_an_option_exists()
@@ -65,17 +65,6 @@ class SearchFieldSpec extends ObjectBehavior
     function it_should_return_default_value_if_the_option_does_exist()
     {
         $this->getOption('foo', 'value1')->shouldReturn('value1');
-    }
-
-    function it_should_not_be_required_by_default()
-    {
-        $this->isRequired()->shouldReturn(false);
-    }
-
-    function it_should_allow_setting_required()
-    {
-        $this->setRequired();
-        $this->isRequired()->shouldReturn(true);
     }
 
     function it_supports_no_special_value_types_by_default()
@@ -129,7 +118,7 @@ class SearchFieldSpec extends ObjectBehavior
     function it_should_allow_adding_ViewTransformers(DataTransformerInterface $viewTransformer)
     {
         $this->addViewTransformer($viewTransformer);
-        $this->getViewTransformers()->shouldReturn(array($viewTransformer));
+        $this->getViewTransformers()->shouldReturn([$viewTransformer]);
     }
 
     function it_should_allow_resetting_ViewTransformers(DataTransformerInterface $viewTransformer)

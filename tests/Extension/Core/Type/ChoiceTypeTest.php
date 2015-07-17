@@ -16,21 +16,21 @@ use Rollerworks\Component\Search\Test\FieldTypeTestCase;
 
 class ChoiceTypeTest extends FieldTypeTestCase
 {
-    private $choices = array(
+    private $choices = [
         'a' => 'Bernhard',
         'b' => 'Fabien',
         'c' => 'Kris',
         'd' => 'Jon',
         'e' => 'Roman',
-    );
+    ];
 
-    private $numericChoices = array(
+    private $numericChoices = [
         0 => 'Bernhard',
         1 => 'Fabien',
         2 => 'Kris',
         3 => 'Jon',
         4 => 'Roman',
-    );
+    ];
 
     private $objectChoices;
 
@@ -38,13 +38,13 @@ class ChoiceTypeTest extends FieldTypeTestCase
     {
         parent::setUp();
 
-        $this->objectChoices = array(
-            (object) array('id' => 1, 'name' => 'Bernhard'),
-            (object) array('id' => 2, 'name' => 'Fabien'),
-            (object) array('id' => 3, 'name' => 'Kris'),
-            (object) array('id' => 4, 'name' => 'Jon'),
-            (object) array('id' => 5, 'name' => 'Roman'),
-        );
+        $this->objectChoices = [
+            (object) ['id' => 1, 'name' => 'Bernhard'],
+            (object) ['id' => 2, 'name' => 'Fabien'],
+            (object) ['id' => 3, 'name' => 'Kris'],
+            (object) ['id' => 4, 'name' => 'Jon'],
+            (object) ['id' => 5, 'name' => 'Roman'],
+        ];
     }
 
     protected function tearDown()
@@ -59,9 +59,9 @@ class ChoiceTypeTest extends FieldTypeTestCase
      */
     public function testChoicesOptionExpectsArray()
     {
-        $this->getFactory()->createField('choice', 'choice', array(
+        $this->getFactory()->createField('choice', 'choice', [
             'choices' => new \ArrayObject(),
-        ));
+        ]);
     }
 
     /**
@@ -69,9 +69,9 @@ class ChoiceTypeTest extends FieldTypeTestCase
      */
     public function testChoiceListOptionExpectsChoiceListInterface()
     {
-        $this->getFactory()->createField('choice', 'choice', array(
-            'choice_list' => array('foo' => 'foo'),
-        ));
+        $this->getFactory()->createField('choice', 'choice', [
+            'choice_list' => ['foo' => 'foo'],
+        ]);
     }
 
     public function testChoiceListAndChoicesCanBeEmpty()
@@ -81,14 +81,14 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testSubmitSingleNonExpandedInvalidChoice()
     {
-        $this->getFactory()->createField('choice', 'choice', array(
+        $this->getFactory()->createField('choice', 'choice', [
             'choices' => $this->choices,
-        ));
+        ]);
     }
 
     public function testObjectChoices()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', [
             'choice_list' => new ObjectChoiceList(
                 $this->objectChoices,
                 // label path
@@ -96,7 +96,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
                 // value path
                 'id'
             ),
-        ));
+        ]);
 
         $this->assertTransformedEquals(
             $field,
@@ -108,7 +108,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testObjectChoicesByLabel()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', [
             'label_as_value' => true,
             'choice_list' => new ObjectChoiceList(
                 $this->objectChoices,
@@ -117,7 +117,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
                 // value path
                 'id'
             ),
-        ));
+        ]);
 
         $this->assertTransformedEquals(
             $field,
@@ -129,28 +129,28 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testArrayChoices()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', [
             'choices' => $this->choices,
-        ));
+        ]);
 
         $this->assertTransformedEquals($field, 'b', 'b', 'b');
     }
 
     public function testNumericChoices()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', [
             'choices' => $this->numericChoices,
-        ));
+        ]);
 
         $this->assertTransformedEquals($field, 2, 2, '2');
     }
 
     public function testNumericChoicesByLabel()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', array(
+        $field = $this->getFactory()->createField('choice', 'choice', [
             'label_as_value' => true,
             'choices' => $this->numericChoices,
-        ));
+        ]);
 
         $this->assertTransformedEquals($field, 2, $this->numericChoices[2], $this->numericChoices[2]);
     }
@@ -158,29 +158,29 @@ class ChoiceTypeTest extends FieldTypeTestCase
     // https://github.com/symfony/symfony/issues/10409
     public function testReuseNonUtf8ChoiceLists()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', array(
-            'choices' => array(
+        $field = $this->getFactory()->createField('choice', 'choice', [
+            'choices' => [
                 'meter' => 'm',
                 'millimeter' => 'mm',
                 'micrometer' => chr(181).'meter',
-            ),
-        ));
+            ],
+        ]);
 
-        $field2 = $this->getFactory()->createField('choice', 'choice', array(
-            'choices' => array(
+        $field2 = $this->getFactory()->createField('choice', 'choice', [
+            'choices' => [
                 'meter' => 'm',
                 'millimeter' => 'mm',
                 'micrometer' => chr(181).'meter',
-            ),
-        ));
+            ],
+        ]);
 
-        $field3 = $this->getFactory()->createField('choice', 'choice', array(
-            'choices' => array(
+        $field3 = $this->getFactory()->createField('choice', 'choice', [
+            'choices' => [
                 'meter' => 'm',
                 'millimeter' => 'mm',
                 'micrometer' => null,
-            ),
-        ));
+            ],
+        ]);
 
         // $field1 and $field2 use the same ChoiceList
         $this->assertSame(

@@ -22,7 +22,7 @@ final class InvalidSearchConditionException extends InputProcessorException
 
     public function __construct(SearchConditionInterface $condition)
     {
-        parent::__construct('SearchCondition contains one or more invalid values.');
+        parent::__construct('The search condition contains one or more invalid values.');
 
         $this->condition = $condition;
     }

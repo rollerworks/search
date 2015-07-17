@@ -26,7 +26,7 @@ class LanguageType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array('choices' => Intl::getLanguageBundle()->getLanguageNames())
+            ['choices' => Intl::getLanguageBundle()->getLanguageNames()]
         );
     }
 

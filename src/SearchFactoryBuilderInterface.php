@@ -21,7 +21,7 @@ interface SearchFactoryBuilderInterface
      *
      * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
      *
-     * @return SearchFactoryBuilderInterface The builder.
+     * @return SearchFactoryBuilderInterface The builder
      */
     public function setResolvedTypeFactory(ResolvedFieldTypeFactoryInterface $resolvedTypeFactory);
 
@@ -30,7 +30,7 @@ interface SearchFactoryBuilderInterface
      *
      * @param SearchExtensionInterface $extension The extension.
      *
-     * @return SearchFactoryBuilderInterface The builder.
+     * @return SearchFactoryBuilderInterface The builder
      */
     public function addExtension(SearchExtensionInterface $extension);
 
@@ -39,7 +39,7 @@ interface SearchFactoryBuilderInterface
      *
      * @param SearchExtensionInterface[] $extensions The extensions.
      *
-     * @return SearchFactoryBuilderInterface The builder.
+     * @return SearchFactoryBuilderInterface The builder
      */
     public function addExtensions(array $extensions);
 
@@ -48,7 +48,7 @@ interface SearchFactoryBuilderInterface
      *
      * @param FieldTypeInterface $type The field type.
      *
-     * @return SearchFactoryBuilderInterface The builder.
+     * @return SearchFactoryBuilderInterface The builder
      */
     public function addType(FieldTypeInterface $type);
 
@@ -57,7 +57,7 @@ interface SearchFactoryBuilderInterface
      *
      * @param FieldTypeInterface[] $types The field types.
      *
-     * @return SearchFactoryBuilderInterface The builder.
+     * @return SearchFactoryBuilderInterface The builder
      */
     public function addTypes(array $types);
 
@@ -66,14 +66,14 @@ interface SearchFactoryBuilderInterface
      *
      * @param FieldTypeExtensionInterface $typeExtension The field type extension.
      *
-     * @return SearchFactoryBuilderInterface The builder.
+     * @return SearchFactoryBuilderInterface The builder
      */
     public function addTypeExtension(FieldTypeExtensionInterface $typeExtension);
 
     /**
      * Builds and returns the factory.
      *
-     * @return SearchFactoryInterface The search factory.
+     * @return SearchFactoryInterface The search factory
      */
     public function getSearchFactory();
 }

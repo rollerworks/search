@@ -38,16 +38,11 @@ class SearchField implements FieldConfigInterface
     /**
      * @var bool[]
      */
-    private $supportedValueTypes = array(
+    private $supportedValueTypes = [
         ValuesBag::VALUE_TYPE_RANGE => false,
         ValuesBag::VALUE_TYPE_COMPARISON => false,
         ValuesBag::VALUE_TYPE_PATTERN_MATCH => false,
-    );
-
-    /**
-     * @var bool
-     */
-    private $required = false;
+    ];
 
     /**
      * @var ValueComparisonInterface
@@ -62,7 +57,7 @@ class SearchField implements FieldConfigInterface
     /**
      * @var array
      */
-    private $viewTransformers = array();
+    private $viewTransformers = [];
 
     /**
      * Constructor.
@@ -71,9 +66,9 @@ class SearchField implements FieldConfigInterface
      * @param ResolvedFieldTypeInterface $type
      * @param array                      $options
      *
-     * @throws \InvalidArgumentException when the name is invalid.
+     * @throws \InvalidArgumentException When the name is invalid
      */
-    public function __construct($name, ResolvedFieldTypeInterface $type, array $options = array())
+    public function __construct($name, ResolvedFieldTypeInterface $type, array $options = [])
     {
         FieldSet::validateName($name);
 
@@ -81,7 +76,7 @@ class SearchField implements FieldConfigInterface
             throw new \InvalidArgumentException(
                 sprintf(
                     'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore '.
-                    'and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":").',
+                    'and only contain letters, digits, numbers, underscores ("_") and hyphens ("-").',
                     $name
                 )
             );
@@ -94,27 +89,20 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * @param bool $required
+     * BC method, does nothing.
      *
-     * @throws BadMethodCallException
-     *
-     * @return self
+     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
+     *             Use a custom validator instead.
      */
     public function setRequired($required = true)
     {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'SearchField setter methods cannot be accessed anymore once the data is locked.'
-            );
-        }
-
-        $this->required = $required;
-
-        return $this;
+        // noop
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws BadMethodCallException
      */
     public function supportValueType($type)
     {
@@ -158,9 +146,9 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns the name of field.
+     * {@inheritdoc}
      *
-     * @return string the Field name.
+     * @throws BadMethodCallException
      */
     public function getName()
     {
@@ -168,9 +156,9 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns the field types used to construct the field.
+     * {@inheritdoc}
      *
-     * @return ResolvedFieldTypeInterface The field's type.
+     * @throws BadMethodCallException
      */
     public function getType()
     {
@@ -178,13 +166,14 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns whether the field is required to have values.
+     * BC method.
      *
-     * @return bool
+     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
+     *             Use a custom validator instead.
      */
     public function isRequired()
     {
-        return $this->required;
+        return false;
     }
 
     /**
@@ -213,11 +202,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns the Model's fully qualified class-name.
-     *
-     * This is required for certain storage engines.
-     *
-     * @return string|null
+     * {@inheritdoc}
      */
     public function getModelRefClass()
     {
@@ -225,11 +210,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns the Model field property-name.
-     *
-     * This is required for certain storage engines.
-     *
-     * @return string|null
+     * {@inheritdoc}
      */
     public function getModelRefProperty()
     {
@@ -237,9 +218,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Set the {@link ValueComparisonInterface} instance.
-     *
-     * @param ValueComparisonInterface $comparisonObj
+     * {@inheritdoc}
      *
      * @throws BadMethodCallException when the data is locked
      *
@@ -259,9 +238,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns the configured {@link ValueComparisonInterface} instance.
-     *
-     * @return ValueComparisonInterface
+     * {@inheritdoc}
      */
     public function getValueComparison()
     {
@@ -269,19 +246,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Appends / prepends a transformer to the view transformer chain.
-     *
-     * The transform method of the transformer is used to convert data from the
-     * normalized to the view format.
-     * The reverseTransform method of the transformer is used to convert from the
-     * view to the normalized format.
-     *
-     * @param DataTransformerInterface $viewTransformer
-     * @param bool                     $forcePrepend    if set to true, prepend instead of appending
-     *
-     * @throws BadMethodCallException when the data is locked
-     *
-     * @return self The configuration object.
+     * {@inheritdoc}
      */
     public function addViewTransformer(DataTransformerInterface $viewTransformer, $forcePrepend = false)
     {
@@ -301,11 +266,11 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Clears the view transformers.
+     * {@inheritdoc}
      *
      * @throws BadMethodCallException when the data is locked
      *
-     * @return self The configuration object.
+     * @return self
      */
     public function resetViewTransformers()
     {
@@ -315,15 +280,13 @@ class SearchField implements FieldConfigInterface
             );
         }
 
-        $this->viewTransformers = array();
+        $this->viewTransformers = [];
 
         return $this;
     }
 
     /**
-     * Returns the view transformers of the field.
-     *
-     * @return DataTransformerInterface[] An array of {@link DataTransformerInterface} instances.
+     * {@inheritdoc}
      */
     public function getViewTransformers()
     {
@@ -351,12 +314,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns whether the field's data is locked.
-     *
-     * A field with locked data is restricted to the data passed in
-     * this configuration.
-     *
-     * @return bool Whether the data is locked.
+     * {@inheritdoc}
      */
     public function getDataLocked()
     {
@@ -364,9 +322,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns all options passed during the construction of the field.
-     *
-     * @return array The passed options.
+     * {@inheritdoc}
      */
     public function getOptions()
     {
@@ -374,11 +330,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns whether a specific option exists.
-     *
-     * @param string $name The option name,
-     *
-     * @return bool Whether the option exists.
+     * {@inheritdoc}
      */
     public function hasOption($name)
     {
@@ -386,12 +338,7 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Returns the value of a specific option.
-     *
-     * @param string $name    The option name.
-     * @param mixed  $default The value returned if the option does not exist.
-     *
-     * @return mixed The option value.
+     * {@inheritdoc}
      */
     public function getOption($name, $default = null)
     {
@@ -414,6 +361,7 @@ class SearchField implements FieldConfigInterface
         }
 
         $view = new SearchFieldView();
+
         $this->type->buildFieldView($view, $this, $this->options);
 
         return $view;

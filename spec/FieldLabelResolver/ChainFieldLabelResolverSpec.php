@@ -19,7 +19,7 @@ class ChainFieldLabelResolverSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith(array());
+        $this->beConstructedWith([]);
     }
 
     function it_is_initializable()
@@ -35,7 +35,7 @@ class ChainFieldLabelResolverSpec extends ObjectBehavior
 
     function it_resolves_a_label(FieldSet $fieldSet, FieldLabelResolverInterface $resolver)
     {
-        $this->beConstructedWith(array($resolver));
+        $this->beConstructedWith([$resolver]);
 
         $resolver->resolveFieldLabel($fieldSet, 'user_id')->willReturn('user');
         $resolver->resolveFieldLabel($fieldSet, 'id')->willReturn('id');
@@ -51,7 +51,7 @@ class ChainFieldLabelResolverSpec extends ObjectBehavior
         FieldLabelResolverInterface $resolver,
         FieldLabelResolverInterface $resolver2
     ) {
-        $this->beConstructedWith(array($resolver, $resolver2));
+        $this->beConstructedWith([$resolver, $resolver2]);
 
         $resolver->resolveFieldLabel($fieldSet, 'user_id')->willReturn('user');
         $resolver->resolveFieldLabel($fieldSet, 'id')->willReturn('id');

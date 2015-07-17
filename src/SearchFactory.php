@@ -27,7 +27,7 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * @var MetadataReaderInterface
      */
-    private $mappingReader;
+    private $metadataReader;
 
     /**
      * @var ResolvedFieldTypeFactoryInterface
@@ -45,23 +45,15 @@ class SearchFactory implements SearchFactoryInterface
     {
         $this->registry = $registry;
         $this->resolvedTypeFactory = $resolvedTypeFactory;
-        $this->mappingReader = $metadataReader;
+        $this->metadataReader = $metadataReader;
     }
 
     /**
-     * Create a new search field.
-     *
-     * @param string $name
-     * @param string $type
-     * @param array  $options
-     * @param bool   $required
-     *
-     * @return SearchField
+     * {@inheritdoc}
      */
-    public function createField($name, $type, array $options = array(), $required = false)
+    public function createField($name, $type, array $options = [])
     {
         $field = $this->createFieldBuilder($name, $type, $options);
-        $field->setRequired($required);
 
         return $field;
     }
@@ -69,12 +61,12 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * Create a new search field referenced by property.
      *
-     * @param string $class
-     * @param string $property
-     * @param string $name
-     * @param string $type
-     * @param array  $options
-     * @param bool   $required
+     
+     * @param string $class    Model reference class-name
+     * @param string $property Model reference property-name
+     * @param string $name     Name of the field
+     * @param string $type     Type of the field
+     * @param array  $options  Array of options for building the field
      *
      * @return SearchField
      *
@@ -82,25 +74,20 @@ class SearchFactory implements SearchFactoryInterface
      *             Use createField() with the 'model_class' and 'model_property'
      *             options instead.
      */
-    public function createFieldForProperty($class, $property, $name, $type, array $options = array(), $required = false)
+    public function createFieldForProperty($class, $property, $name, $type, array $options = [])
     {
         $field = $this->createFieldBuilder($name, $type, $options);
         $field->setModelRef($class, $property);
-        $field->setRequired($required);
 
         return $field;
     }
 
     /**
-     * Create a new FieldsetBuilderInterface instance.
-     *
-     * @param string $name
-     *
-     * @return FieldsetBuilder Interface
+     * {@inheritdoc}
      */
     public function createFieldSetBuilder($name)
     {
-        $fieldSetBuilder = new FieldSetBuilder($name, $this, $this->mappingReader);
+        $fieldSetBuilder = new FieldSetBuilder($name, $this, $this->metadataReader);
 
         return $fieldSetBuilder;
     }
@@ -116,7 +103,7 @@ class SearchFactory implements SearchFactoryInterface
      *
      * @return SearchField
      */
-    private function createFieldBuilder($name, $type = 'field', array $options = array())
+    private function createFieldBuilder($name, $type = 'field', array $options = [])
     {
         if ($type instanceof FieldTypeInterface) {
             $type = $this->resolveType($type);
@@ -125,8 +112,11 @@ class SearchFactory implements SearchFactoryInterface
         } elseif (!$type instanceof ResolvedFieldTypeInterface) {
             throw new UnexpectedTypeException(
                 $type,
-                'string, Rollerworks\Component\Search\ResolvedFieldTypeInterface or '.
-                'Rollerworks\Component\Search\FieldTypeInterface'
+                [
+                     'string',
+                     'Rollerworks\Component\Search\ResolvedFieldTypeInterface',
+                     'Rollerworks\Component\Search\FieldTypeInterface',
+                 ]
             );
         }
 
@@ -143,9 +133,9 @@ class SearchFactory implements SearchFactoryInterface
      * Wraps a type into a ResolvedFieldTypeInterface implementation and connects
      * it with its parent type.
      *
-     * @param FieldTypeInterface $type The type to resolve.
+     * @param FieldTypeInterface $type The type to resolve
      *
-     * @return ResolvedFieldTypeInterface The resolved type.
+     * @return ResolvedFieldTypeInterface The resolved type
      */
     private function resolveType(FieldTypeInterface $type)
     {
@@ -161,7 +151,7 @@ class SearchFactory implements SearchFactoryInterface
             $type, // Type extensions are not supported for unregistered type instances,
             // i.e. type instances that are passed to the SearchFactory directly,
             // nor for their parents, if getParent() also returns a type instance.
-            array(),
+            [],
             $parentType
         );
     }

@@ -47,9 +47,9 @@ interface FieldSetRegistryInterface
     public function add(FieldSet $fieldSet);
 
     /**
-     * Returns all the registered FieldSets.
+     * Returns all the available FieldSet's.
      *
-     * @return FieldSet[] as fieldSet-name => {FieldSet object}
+     * @return FieldSet[] as FieldSet-name => {FieldSet object}
      */
     public function all();
 }

@@ -23,7 +23,7 @@ class FieldRegistrySpec extends ObjectBehavior
 {
     function let(ResolvedFieldTypeFactoryInterface $resolvedFieldFactory)
     {
-        $this->beConstructedWith(array(), $resolvedFieldFactory);
+        $this->beConstructedWith([], $resolvedFieldFactory);
     }
 
     function it_is_initializable()
@@ -41,10 +41,10 @@ class FieldRegistrySpec extends ObjectBehavior
 
         $extension->hasType('integer')->willReturn(true);
         $extension->getType('integer')->willReturn($type);
-        $extension->getTypeExtensions('integer')->willReturn(array());
+        $extension->getTypeExtensions('integer')->willReturn([]);
 
-        $resolvedFieldFactory->createResolvedType($type, array(), null)->willReturn($resolvedType);
-        $this->beConstructedWith(array($extension), $resolvedFieldFactory);
+        $resolvedFieldFactory->createResolvedType($type, [], null)->willReturn($resolvedType);
+        $this->beConstructedWith([$extension], $resolvedFieldFactory);
 
         $this->getType('integer')->shouldEqual($resolvedType);
     }
@@ -59,13 +59,13 @@ class FieldRegistrySpec extends ObjectBehavior
 
         $extension->hasType('integer')->willReturn(true);
         $extension->getType('integer')->willReturn($type);
-        $extension->getTypeExtensions('integer')->willReturn(array($fieldExtension->getWrappedObject()));
+        $extension->getTypeExtensions('integer')->willReturn([$fieldExtension->getWrappedObject()]);
 
         $extension->hasType(Argument::any())->willReturn(false);
-        $extension2->getTypeExtensions('integer')->willReturn(array($fieldExtension2->getWrappedObject()));
+        $extension2->getTypeExtensions('integer')->willReturn([$fieldExtension2->getWrappedObject()]);
 
-        $resolvedFieldFactory->createResolvedType($type, array($fieldExtension->getWrappedObject(), $fieldExtension2->getWrappedObject()), null)->willReturn($resolvedType);
-        $this->beConstructedWith(array($extension->getWrappedObject(), $extension2->getWrappedObject()), $resolvedFieldFactory);
+        $resolvedFieldFactory->createResolvedType($type, [$fieldExtension->getWrappedObject(), $fieldExtension2->getWrappedObject()], null)->willReturn($resolvedType);
+        $this->beConstructedWith([$extension->getWrappedObject(), $extension2->getWrappedObject()], $resolvedFieldFactory);
 
         $this->getType('integer')->shouldEqual($resolvedType);
     }

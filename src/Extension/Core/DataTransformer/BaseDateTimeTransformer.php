@@ -23,13 +23,13 @@ abstract class BaseDateTimeTransformer implements DataTransformerInterface
     /**
      * @var array
      */
-    protected static $formats = array(
+    protected static $formats = [
         \IntlDateFormatter::NONE,
         \IntlDateFormatter::FULL,
         \IntlDateFormatter::LONG,
         \IntlDateFormatter::MEDIUM,
         \IntlDateFormatter::SHORT,
-    );
+    ];
 
     /**
      * @var string

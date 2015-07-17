@@ -16,15 +16,15 @@ return Symfony\CS\Config\Config::create()
     // use SYMFONY_LEVEL:
     ->level(Symfony\CS\FixerInterface::SYMFONY_LEVEL)
     // and extra fixers:
-    ->fixers(array(
+    ->fixers([
         'ordered_use',
         //'strict',
         'strict_param',
-        //'short_array_syntax',
+        'short_array_syntax',
         'phpdoc_order',
         'header_comment',
         '-psr0',
-    ))
+    ])
     ->finder(
         Symfony\CS\Finder\DefaultFinder::create()
             ->exclude(array('bin', 'doc', 'spec'))

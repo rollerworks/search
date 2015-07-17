@@ -39,9 +39,18 @@ class SearchConditionBuilder
      * @param string                 $logical
      * @param FieldSet               $fieldSet
      * @param SearchConditionBuilder $parent
+     *
+     * @internal Usage of this method is protected as of v1.0.0-beta5 and access will be changed to protected
+     *           in 2.0. Use the static create() method instead.
+     *
+     * @throws BadMethodCallException when no FieldSet is provided
      */
     public function __construct($logical = ValuesGroup::GROUP_LOGICAL_AND, FieldSet $fieldSet = null, SearchConditionBuilder $parent = null)
     {
+        if (null === $fieldSet && null === $parent) {
+            throw new BadMethodCallException('Unable to create SearchCondition without FieldSet.');
+        }
+
         $this->valuesGroup = new ValuesGroup($logical);
         $this->parent = $parent;
         $this->fieldSet = $fieldSet;
@@ -55,13 +64,24 @@ class SearchConditionBuilder
      *
      * @return SearchConditionBuilder
      */
-    public static function create(FieldSet $fieldSet = null, $logical = ValuesGroup::GROUP_LOGICAL_AND)
+    public static function create(FieldSet $fieldSet, $logical = ValuesGroup::GROUP_LOGICAL_AND)
     {
         return new self($logical, $fieldSet);
     }
 
     /**
-     * @param $logical
+     * Create a new ValuesGroup and returns the object instance.
+     *
+     * After creating the group it can be expended with fields or subgroups:
+     *
+     * ->group()
+     *     ->field('name')
+     *         ->...
+     *     ->end() // return back to the ValuesGroup.
+     * ->end() // return back to the parent ValuesGroup
+     *
+     * @param string $logical eg. one of the following ValuesGroup class constants value:
+     *                        GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
      *
      * @return SearchConditionBuilder
      */
@@ -74,6 +94,19 @@ class SearchConditionBuilder
     }
 
     /**
+     * Add/expend a field on this ValuesGroup and returns the object instance.
+     *
+     * The object instance is a ValuesBagBuilder (subset of ValuesBag), which
+     * allows to add extra values to the field:
+     *
+     * ->field('name')
+     *   ->addSingleValue(new SingleValue('my value'))
+     *   ->addSingleValue(new SingleValue('my value 2'))
+     * ->end() // return back to the ValuesGroup
+     *
+     * Tip! If the field already exists the existing is expended (values are added).
+     * To force an overwrite of the existing field use `->field('name', true)` instead.
+     *
      * @param string $name
      * @param bool   $forceNew
      *
@@ -108,7 +141,7 @@ class SearchConditionBuilder
     }
 
     /**
-     * @throws BadMethodCallException when there is no FieldSet configured.
+     * Build the SearchCondition object using the groups and fields.
      *
      * @return SearchCondition
      */
@@ -116,10 +149,6 @@ class SearchConditionBuilder
     {
         if ($this->parent) {
             return $this->parent->getSearchCondition();
-        }
-
-        if (null === $this->fieldSet) {
-            throw new BadMethodCallException('Unable to create SearchCondition without FieldSet.');
         }
 
         return new SearchCondition($this->fieldSet, $this->valuesGroup);

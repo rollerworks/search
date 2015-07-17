@@ -63,18 +63,20 @@ class XmlExporter extends AbstractExporter
         $searchRoot->setAttribute('logical', $condition->getValuesGroup()->getGroupLogical());
 
         $this->exportGroupNode($searchRoot, $condition->getValuesGroup(), $condition->getFieldSet());
-
         $this->document->appendChild($searchRoot);
+
         $xml = $this->document->saveXML();
         $this->document = null;
 
-        // Restore original resolver
+        // Restore original resolver.
         $this->labelResolver = $labelResolver;
 
         return $xml;
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @ignore
      */
     protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false)
@@ -87,7 +89,7 @@ class XmlExporter extends AbstractExporter
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
      */
-    protected function exportGroupNode(\DOMNode $parent, ValuesGroup $valuesGroup, FieldSet $fieldSet)
+    private function exportGroupNode(\DOMNode $parent, ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         $fields = $valuesGroup->getFields();
 
@@ -103,7 +105,7 @@ class XmlExporter extends AbstractExporter
                 $fieldNode = $this->document->createElement('field');
                 $fieldNode->setAttribute('name', $fieldLabel);
 
-                $this->exportValuesToNode($fieldNode, $values);
+                $this->exportValuesToNode($values, $fieldNode);
                 $fieldsNode->appendChild($fieldNode);
             }
 
@@ -118,7 +120,6 @@ class XmlExporter extends AbstractExporter
                 $groupNode->setAttribute('logical', $group->getGroupLogical());
 
                 $this->exportGroupNode($groupNode, $group, $fieldSet);
-
                 $groupsNode->appendChild($groupNode);
             }
 
@@ -127,12 +128,12 @@ class XmlExporter extends AbstractExporter
     }
 
     /**
-     * @param \DOMNode  $parent
      * @param ValuesBag $valuesBag
+     * @param \DOMNode  $parent
      *
      * @return \DOMNode
      */
-    protected function exportValuesToNode(\DOMNode $parent, ValuesBag $valuesBag)
+    private function exportValuesToNode(ValuesBag $valuesBag, \DOMNode $parent)
     {
         if ($valuesBag->hasSingleValues()) {
             $valuesNode = $this->document->createElement('single-values');
@@ -228,7 +229,7 @@ class XmlExporter extends AbstractExporter
      *
      * @return array
      */
-    protected function exportRangeValueToNode(\DOMNode $parent, Range $range)
+    private function exportRangeValueToNode(\DOMNode $parent, Range $range)
     {
         $rangeNode = $this->document->createElement('range');
 
@@ -254,7 +255,7 @@ class XmlExporter extends AbstractExporter
 
         $rangeNode->appendChild($element);
 
-        // now add to parent
+        // Add to parent (<ranges> Node).
         $parent->appendChild($rangeNode);
     }
 }
