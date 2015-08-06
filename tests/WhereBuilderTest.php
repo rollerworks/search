@@ -465,7 +465,7 @@ class WhereBuilderTest extends OrmTestCase
         $this->assertEquals("((C.id = RW_SEARCH_VALUE_CONVERSION('customer', C.id, 1, 0)))", $whereBuilder->getWhereClause());
         $this->assertDqlCompiles(
             $whereBuilder,
-            "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id = get_customer_type(2)))"
+            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id = get_customer_type(2)))'
         );
     }
 
@@ -535,7 +535,7 @@ class WhereBuilderTest extends OrmTestCase
                         $test->assertEquals($options, $passedOptions);
 
                         if (2 === $hints->conversionStrategy) {
-                            return "CAST(".$hints->connection->quote($input)." AS DATE)";
+                            return 'CAST('.$hints->connection->quote($input).' AS DATE)';
                         }
 
                         $test->assertEquals(1, $hints->conversionStrategy);
@@ -591,12 +591,12 @@ class WhereBuilderTest extends OrmTestCase
             [
                 "((RW_SEARCH_FIELD_CONVERSION('customer', C.id, 0) IN(2)))",
                 [],
-                "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((CAST(c1_.id AS customer_type) IN (2)))",
+                'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((CAST(c1_.id AS customer_type) IN (2)))',
             ],
             [
                 "((RW_SEARCH_FIELD_CONVERSION('customer', C.id, 0) IN(2)))",
                 ['active' => true],
-                "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((CAST(c1_.id AS customer_type) IN (2)))",
+                'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((CAST(c1_.id AS customer_type) IN (2)))',
             ],
         ];
     }
@@ -664,7 +664,7 @@ class WhereBuilderTest extends OrmTestCase
         $whereCase = $whereBuilder->getWhereClause();
 
         $this->assertEquals('((C.id IN(2)))', $whereCase);
-        $this->assertDqlCompiles($whereBuilder, "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2)))");
+        $this->assertDqlCompiles($whereBuilder, 'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2)))');
     }
 
     /**

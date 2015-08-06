@@ -66,7 +66,7 @@ class DoctrineOrmFactoryTest extends OrmTestCase
         $conversion = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
 
         $fieldSet = $this->getFieldSet(false);
-        $fieldSet->add('label', 'invoice_label', ['doctrine_dbal_conversion' => $conversion ], false, $invoiceClass, 'label');
+        $fieldSet->add('label', 'invoice_label', ['doctrine_dbal_conversion' => $conversion], false, $invoiceClass, 'label');
         $fieldSet = $fieldSet->getFieldSet();
 
         $query = $this->em->createQuery(

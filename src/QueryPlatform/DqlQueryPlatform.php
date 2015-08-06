@@ -117,7 +117,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
         if (is_numeric($value) && !is_string($value)) {
             return (string) $value;
         } elseif (is_bool($value)) {
-            return $value ? "true" : "false";
+            return $value ? 'true' : 'false';
         } else {
             return "'".str_replace("'", "''", $value)."'";
         }
@@ -129,7 +129,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
     public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
     {
         return sprintf(
-            "RW_SEARCH_MATCH(%s, %s, %s) %s 1",
+            'RW_SEARCH_MATCH(%s, %s, %s) %s 1',
             $column,
             $value,
             $this->quoteValue($caseInsensitive, Type::getType(Type::BOOLEAN)),

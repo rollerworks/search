@@ -64,7 +64,7 @@ class OrmTestCase extends DbalTestCase
         if (!isset(self::$sharedConn)) {
             $GLOBALS['db_event_subscribers'] = 'Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber';
 
-            $config = Setup::createAnnotationMetadataConfiguration([__DIR__."/Fixtures/Entity"], true, null, null, false);
+            $config = Setup::createAnnotationMetadataConfiguration([__DIR__.'/Fixtures/Entity'], true, null, null, false);
             $config->addCustomStringFunction(
                 'RW_SEARCH_FIELD_CONVERSION',
                 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion'
@@ -212,7 +212,7 @@ class OrmTestCase extends DbalTestCase
         }
 
         if (isset($this->sqlLoggerStack->queries) && count($this->sqlLoggerStack->queries)) {
-            $queries = "";
+            $queries = '';
             $i = count($this->sqlLoggerStack->queries);
 
             foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
@@ -227,8 +227,8 @@ class OrmTestCase extends DbalTestCase
                     $query['params'] ?: []
                 );
 
-                $queries .= ($i+1).". SQL: '".$query['sql']."' Params: ".implode(", ", $params).PHP_EOL;
-                $i--;
+                $queries .= ($i + 1).". SQL: '".$query['sql']."' Params: ".implode(', ', $params).PHP_EOL;
+                --$i;
             }
 
             $trace = $e->getTrace();
@@ -236,22 +236,22 @@ class OrmTestCase extends DbalTestCase
 
             foreach ($trace as $part) {
                 if (isset($part['file'])) {
-                    if (strpos($part['file'], "PHPUnit/") !== false) {
+                    if (strpos($part['file'], 'PHPUnit/') !== false) {
                         // Beginning with PHPUnit files we don't print the trace anymore.
                         break;
                     }
 
-                    $traceMsg .= $part['file'].":".$part['line'].PHP_EOL;
+                    $traceMsg .= $part['file'].':'.$part['line'].PHP_EOL;
                 }
             }
 
             $message =
-                "[".get_class($e)."] ".
+                '['.get_class($e).'] '.
                 $e->getMessage().
                 PHP_EOL.PHP_EOL.
-                "With queries:".PHP_EOL.
+                'With queries:'.PHP_EOL.
                 $queries.PHP_EOL.
-                "Trace:".PHP_EOL.
+                'Trace:'.PHP_EOL.
                 $traceMsg;
 
             throw new \Exception($message, (int) $e->getCode(), $e);

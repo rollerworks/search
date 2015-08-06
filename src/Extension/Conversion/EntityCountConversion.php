@@ -60,6 +60,6 @@ class EntityCountConversion implements SqlFieldConversionInterface
             );
         }
 
-        return "(SELECT COUNT(*) FROM ".$options['table_name']." WHERE ".$options['table_field']." = $column)";
+        return '(SELECT COUNT(*) FROM '.$options['table_name'].' WHERE '.$options['table_field']." = $column)";
     }
 }

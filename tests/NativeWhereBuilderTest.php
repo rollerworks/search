@@ -163,7 +163,7 @@ class NativeWhereBuilderTest extends OrmTestCase
         $whereBuilder->setConverter('customer', $converter);
 
         $this->assertEquals(
-            "((C.id = get_customer_type(2)))",
+            '((C.id = get_customer_type(2)))',
             $whereBuilder->getWhereClause()
         );
     }
@@ -234,7 +234,7 @@ class NativeWhereBuilderTest extends OrmTestCase
                         $test->assertEquals($options, $passedOptions);
 
                         if (2 === $hints->conversionStrategy) {
-                            return "CAST(".$hints->connection->quote($input)." AS DATE)";
+                            return 'CAST('.$hints->connection->quote($input).' AS DATE)';
                         }
 
                         $test->assertEquals(1, $hints->conversionStrategy);
@@ -287,10 +287,10 @@ class NativeWhereBuilderTest extends OrmTestCase
     {
         return [
             [
-                "((CAST(C.id AS customer_type) IN(2)))",
+                '((CAST(C.id AS customer_type) IN(2)))',
             ],
             [
-                "((CAST(C.id AS customer_type) IN(2)))",
+                '((CAST(C.id AS customer_type) IN(2)))',
                 ['active' => true],
             ],
         ];
@@ -311,7 +311,7 @@ class NativeWhereBuilderTest extends OrmTestCase
 
         $this->assertEquals('((C.id IN(2)))', $whereCase);
         $this->assertEquals(
-            "SELECT I FROM Invoice I JOIN customer AS C ON I.customer = C.id WHERE ((C.id IN(2)))",
+            'SELECT I FROM Invoice I JOIN customer AS C ON I.customer = C.id WHERE ((C.id IN(2)))',
             $whereBuilder->getQuery()->getSQL()
         );
     }
