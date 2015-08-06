@@ -11,10 +11,7 @@ disabled:
     - strict
 
 finder:
-    in:
+    path:
         - 'src/'
         - 'tests/'
-    exclude:
-        - 'bin'
-        - 'doc'
-        - 'spec'
+
