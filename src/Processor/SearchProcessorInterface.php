@@ -83,8 +83,8 @@ interface SearchProcessorInterface
     /**
      * Returns whether a new condition was submitted.
      *
-     * @param bool $requireValid         Require that the processed condition is valid
-     *                                   default is true
+     * @param bool $requireValid Require that the processed condition is valid
+     *                           default is true
      *
      * @return bool
      */

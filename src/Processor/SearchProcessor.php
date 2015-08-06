@@ -140,7 +140,7 @@ class SearchProcessor extends AbstractSearchProcessor
     public function exportSearchCondition($format)
     {
         if (!$this->isValid(false)) {
-            return null;
+            return;
         }
 
         $export = $this->exportFactory->create($format);
