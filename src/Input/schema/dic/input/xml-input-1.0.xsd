@@ -114,6 +114,8 @@
                             <xsd:enumeration value="not_starts_with"/>
                             <xsd:enumeration value="not_ends_with"/>
                             <xsd:enumeration value="not_regex"/>
+                            <xsd:enumeration value="equals"/>
+                            <xsd:enumeration value="not_equals"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>

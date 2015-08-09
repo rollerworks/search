@@ -79,7 +79,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
 
         $this->setExpectedException(
             'Rollerworks\Component\Search\Input\FilterQuery\QueryException',
-            "[Syntax Error] line 0, col 8: Error: Expected '*' | '>' | '<' | '?' | '!*' | '!>' | '!<' | '!?', got '!'"
+            "[Syntax Error] line 0, col 8: Error: Expected '*' | '>' | '<' | '?' | '!*' | '!>' | '!<' | '!?' | '=' | '!=', got '!'"
         );
 
         $processor->process($config, 'name: ~!!*"value";');
@@ -192,7 +192,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideMatcherValues()
     {
         return [
-            ['name: ~*value, ~i>value2, ~<value3, ~?"^foo|bar?", ~!*value4, ~i!*value5;'],
+            ['name: ~*value, ~i>value2, ~<value3, ~?"^foo|bar?", ~!*value4, ~i!*value5, ~=value9, ~!=value10, ~i=value11, ~i!=value12;'],
         ];
     }
 

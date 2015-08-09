@@ -268,6 +268,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $values->addPatternMatch(new PatternMatch('^foo|bar?', PatternMatch::PATTERN_REGEX));
         $values->addPatternMatch(new PatternMatch('value4', PatternMatch::PATTERN_NOT_CONTAINS));
         $values->addPatternMatch(new PatternMatch('value5', PatternMatch::PATTERN_NOT_CONTAINS, true));
+        $values->addPatternMatch(new PatternMatch('value9', PatternMatch::PATTERN_EQUALS));
+        $values->addPatternMatch(new PatternMatch('value10', PatternMatch::PATTERN_NOT_EQUALS));
+        $values->addPatternMatch(new PatternMatch('value11', PatternMatch::PATTERN_EQUALS, true));
+        $values->addPatternMatch(new PatternMatch('value12', PatternMatch::PATTERN_NOT_EQUALS, true));
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);

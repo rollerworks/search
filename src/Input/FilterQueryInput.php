@@ -611,13 +611,18 @@ class FilterQueryInput extends AbstractInput
 
                 return 'REGEX';
 
+            case '=':
+                $this->match(Lexer::T_EQUALS);
+
+                return 'EQUALS';
+
             case !$subParse && '!':
                 $this->match(Lexer::T_NEGATE);
 
                 return 'NOT_'.$this->getPatternMatchOperator(true);
 
             default:
-                $this->syntaxError(['*', '>', '<', '?', '!*', '!>', '!<', '!?']);
+                $this->syntaxError(['*', '>', '<', '?', '!*', '!>', '!<', '!?', '=', '!=']);
         }
     }
 }
