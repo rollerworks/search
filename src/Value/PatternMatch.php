@@ -24,6 +24,8 @@ final class PatternMatch
     const PATTERN_NOT_STARTS_WITH = 6;
     const PATTERN_NOT_ENDS_WITH = 7;
     const PATTERN_NOT_REGEX = 8;
+    const PATTERN_EQUALS = 9;
+    const PATTERN_NOT_EQUALS = 10;
 
     /**
      * @var string
@@ -67,7 +69,7 @@ final class PatternMatch
             }
         }
 
-        if ($patternType < 1 || $patternType > 8) {
+        if ($patternType < 1 || $patternType > 10) {
             throw new \InvalidArgumentException(sprintf('Unknown pattern-match type "%s".', $patternType));
         }
 
@@ -114,6 +116,7 @@ final class PatternMatch
                 self::PATTERN_NOT_CONTAINS,
                 self::PATTERN_NOT_ENDS_WITH,
                 self::PATTERN_NOT_REGEX,
+                self::PATTERN_NOT_EQUALS,
             ], true
         );
     }
