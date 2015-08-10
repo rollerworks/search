@@ -109,6 +109,17 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
             );
         }
 
+        if (in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {
+            $value = $this->connection->quote($patternMatch->getValue());
+
+            if ($patternMatch->isCaseInsensitive()) {
+                $column = "LOWER($column)";
+                $value = "LOWER($value)";
+            }
+
+            return $column.($patternMatch->isExclusive() ? ' <>' : ' =')." $value";
+        }
+
         $patternMap = array(
             PatternMatch::PATTERN_STARTS_WITH => '%%%s',
             PatternMatch::PATTERN_NOT_STARTS_WITH => '%%%s',

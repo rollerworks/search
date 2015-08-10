@@ -90,6 +90,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     protected function setUpDbSchema(DbSchema $schema)
     {
         $invoiceTable = $schema->createTable('invoice');
+        $invoiceTable->addOption('collate', 'utf8_bin');
         $invoiceTable->addColumn('id', 'integer');
         $invoiceTable->addColumn('status', 'integer');
         $invoiceTable->addColumn('label', 'string');
@@ -97,6 +98,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $invoiceTable->setPrimaryKey(array('id'));
 
         $customerTable = $schema->createTable('customer');
+        $customerTable->addOption('collate', 'utf8_bin');
         $customerTable->addColumn('id', 'integer');
         $customerTable->addColumn('name', 'string');
         $customerTable->addColumn('birthday', 'date');

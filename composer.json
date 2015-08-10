@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "rollerworks/search": ">1.0.0-beta6@dev",
+        "rollerworks/search": ">=1.0.0-beta6@dev",
         "doctrine/dbal": "~2.4"
     },
     "autoload": {
