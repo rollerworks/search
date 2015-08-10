@@ -54,6 +54,7 @@ final class WhereBuilderResultsTest extends FunctionalDbalTestCase
     protected function setUpDbSchema(DbSchema $schema)
     {
         $customerTable = $schema->createTable('customer');
+        $customerTable->addOption('collate', 'utf8_bin');
         $customerTable->addColumn('id', 'integer');
         $customerTable->addColumn('first_name', 'string');
         $customerTable->addColumn('last_name', 'string');
@@ -62,6 +63,7 @@ final class WhereBuilderResultsTest extends FunctionalDbalTestCase
         $customerTable->setPrimaryKey(array('id'));
 
         $invoiceTable = $schema->createTable('invoice');
+        $invoiceTable->addOption('collate', 'utf8_bin');
         $invoiceTable->addColumn('id', 'integer');
         $invoiceTable->addColumn('customer', 'integer');
         $invoiceTable->addColumn('label', 'string', array('notnull' => false));
@@ -72,6 +74,7 @@ final class WhereBuilderResultsTest extends FunctionalDbalTestCase
         $invoiceTable->addUniqueIndex(array('label'));
 
         $invoiceDetailsTable = $schema->createTable('invoice_details');
+        $invoiceDetailsTable->addOption('collate', 'utf8_bin');
         $invoiceDetailsTable->addColumn('id', 'integer');
         $invoiceDetailsTable->addColumn('invoice', 'integer');
         $invoiceDetailsTable->addColumn('label', 'string');
@@ -317,6 +320,18 @@ SQL;
     public function it_finds_by_excluding_regex_pattern()
     {
         $this->makeTest('status: published; row-label: ~*"repair", ~!?"Armor";', array(6));
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_excluding_equals_pattern()
+    {
+        $this->makeTest('row-label: ~=Armor, ~=sword;', [2]); // Invoice 3 doesn't match as "sword" is lowercase
+        $this->makeTest('row-price: "15.00"; row-label: ~!=Sword;', [5]);
+
+        // Lowercase
+        $this->makeTest('row-label: ~=Armor, ~i=sword;', [2, 3]);
     }
 
     private function makeTest($input, array $expectedRows)

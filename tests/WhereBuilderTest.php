@@ -280,6 +280,10 @@ final class WhereBuilderTest extends DbalTestCase
                 ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
                 ->addPatternMatch(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
                 ->addPatternMatch(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
+                ->addPatternMatch(new PatternMatch('My name', PatternMatch::PATTERN_EQUALS))
+                ->addPatternMatch(new PatternMatch('Last', PatternMatch::PATTERN_NOT_EQUALS))
+                ->addPatternMatch(new PatternMatch('Spider', PatternMatch::PATTERN_EQUALS, true))
+                ->addPatternMatch(new PatternMatch('Piggy', PatternMatch::PATTERN_NOT_EQUALS, true))
             ->end()
         ->getSearchCondition();
 
@@ -287,8 +291,9 @@ final class WhereBuilderTest extends DbalTestCase
 
         $this->assertEquals(
             "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\'o' ESCAPE '\\' OR ".
-            "RW_REGEXP('(foo|bar)', C.name, 'u') OR RW_REGEXP('(doctor|who)', C.name, 'ui')) AND ".
-            "LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))",
+            "RW_REGEXP('(foo|bar)', C.name, 'u') OR RW_REGEXP('(doctor|who)', C.name, 'ui') OR C.name = 'My name' OR ".
+            "LOWER(C.name) = LOWER('Spider')) AND (LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\' AND C.name <> 'Last' ".
+            "AND LOWER(C.name) <> LOWER('Piggy'))))",
             $whereBuilder->getWhereClause()
         );
     }
