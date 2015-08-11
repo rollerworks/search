@@ -175,6 +175,7 @@ Supported operators are:
 * ``~>`` (starts with)
 * ``~<`` (ends with)
 * ``~?`` (regex matching)
+* ``~=`` (equals)
 
 And not the excluding equivalent.
 
@@ -182,6 +183,7 @@ And not the excluding equivalent.
 * ``~!>`` (does not start with)
 * ``~!<`` (does not end with)
 * ``~!?`` (does not match regex)
+* ``~!=`` (equals)
 
 Example: ``field: ~>foo, ~*"bar", ~?"^foo|bar$";``
 

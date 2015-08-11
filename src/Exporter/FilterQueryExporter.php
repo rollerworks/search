@@ -139,6 +139,11 @@ class FilterQueryExporter extends AbstractExporter
                 $operator .= '?';
                 break;
 
+            case PatternMatch::PATTERN_EQUALS:
+            case PatternMatch::PATTERN_NOT_EQUALS:
+                $operator .= '=';
+                break;
+
             default:
                 throw new \RuntimeException(
                     sprintf(
