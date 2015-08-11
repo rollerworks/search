@@ -178,6 +178,10 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
                         <pattern-matcher type="regex" case-insensitive="false">^foo|bar?</pattern-matcher>
                         <pattern-matcher type="not_contains" case-insensitive="false">value4</pattern-matcher>
                         <pattern-matcher type="not_contains" case-insensitive="true">value5</pattern-matcher>
+                        <pattern-matcher type="equals" case-insensitive="false">value9</pattern-matcher>
+                        <pattern-matcher type="not_equals" case-insensitive="false">value10</pattern-matcher>
+                        <pattern-matcher type="equals" case-insensitive="true">value11</pattern-matcher>
+                        <pattern-matcher type="not_equals" case-insensitive="true">value12</pattern-matcher>
                     </pattern-matchers>
                 </field>
               </fields>
