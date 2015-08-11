@@ -62,7 +62,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $this->builder->getName());
     }
 
-    function testAddFields()
+    public function testAddFields()
     {
         $this->builder->add('id', 'integer');
         $this->builder->add('name', 'text');
@@ -71,14 +71,14 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->builder->has('name'));
     }
 
-    function testAlwaysGivesAResolvedField()
+    public function testAlwaysGivesAResolvedField()
     {
         $this->builder->add('id', 'integer', ['foo' => 'bar']);
 
         $this->assertBuilderFieldConfigurationEquals('id', 'integer', ['foo' => 'bar']);
     }
 
-    function testAddedPreConfiguredField()
+    public function testAddedPreConfiguredField()
     {
         $type = $this->prophesize('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
         $type->getName()->willReturn('text');
@@ -89,7 +89,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($field, $this->builder->get('id'));
     }
 
-    function testRemoveField()
+    public function testRemoveField()
     {
         $this->builder->add('id', 'integer');
         $this->builder->add('name', 'text');
@@ -100,7 +100,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->builder->has('id'));
     }
 
-    function testImportFieldsFromMetadata()
+    public function testImportFieldsFromMetadata()
     {
         $this->builder->importFromClass('User');
         $this->builder->importFromClass('Group');
@@ -148,7 +148,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    function testGetBuildFieldSet()
+    public function testGetBuildFieldSet()
     {
         $this->builder->add('id', 'integer', ['max' => 5000]);
         $this->builder->add(
@@ -178,7 +178,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getBuilderMethods
      */
-    function testCannotChangeCompletedBuilder($method, array $parameters)
+    public function testCannotChangeCompletedBuilder($method, array $parameters)
     {
         $this->builder->add('id', 'integer', ['max' => 5000]);
         $this->builder->getFieldSet();

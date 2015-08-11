@@ -24,7 +24,6 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  */
 class Field
 {
-
     /**
      * @var string
      */
