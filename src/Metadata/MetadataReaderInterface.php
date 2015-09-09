@@ -19,21 +19,22 @@ namespace Rollerworks\Component\Search\Metadata;
 interface MetadataReaderInterface
 {
     /**
-     * Attempts to read the search fields from a class.
+     * Attempts to read the search fields configuration
+     * from the class metadata.
      *
-     * @param string $class The class name to test (FQCN).
+     * @param string $class The class name to look in (FQCN).
      *
-     * @return SearchField[]|array An associative array with search fields
+     * @return SearchField[] An associative array with search fields.
      */
     public function getSearchFields($class);
 
     /**
-     * Attempts to read the mapping of a specified property.
+     * Attempts to read the field metadata of a specified property.
      *
      * @param string $class The class name to test (FQCN).
-     * @param string $field The field
+     * @param string $field The search-field name.
      *
-     * @return SearchField|null The field mapping, null when not found
+     * @return SearchField|null The SearchField or null when not found.
      */
     public function getSearchField($class, $field);
 }
