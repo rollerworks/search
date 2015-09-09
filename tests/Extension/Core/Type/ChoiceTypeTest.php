@@ -156,6 +156,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
     }
 
     // https://github.com/symfony/symfony/issues/10409
+
     public function testReuseNonUtf8ChoiceLists()
     {
         $field = $this->getFactory()->createField('choice', 'choice', [

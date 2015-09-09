@@ -52,6 +52,7 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
 
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
