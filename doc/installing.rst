@@ -45,23 +45,17 @@ Doctrine
 * `rollerworks/search-doctrine-orm`_ allows searching a relational SQL database using `Doctrine2 ORM`_.
 * `rollerworks/search-doctrine-dbal`_ allows searching a relational SQL database using `Doctrine2 DBAL`_.
 
-JmsMetadata
-^^^^^^^^^^^
+Metadata extension
+^^^^^^^^^^^^^^^^^^
 
-https://github.com/rollerworks/rollerworks-search-jms-metadata
+https://github.com/rollerworks/rollerworks-search-metadata
 
-Provides a :doc:`Metadata <metadata>` loader using the `jms/metadata`_ package.
-
-.. caution::
-
-    The ``jms/metadata`` package is licensed under the Apache2 licence
-    which is incompatible with GNU GPLv2 and up.
+Provides a :doc:`Metadata <metadata>` loader using the `rollerworks/metadata`_ package.
 
 .. _`Composer`: http://getcomposer.org/
 .. _`downloading Composer`: http://getcomposer.org/download/
-
 .. _`rollerworks/search-doctrine-orm`: https://github.com/rollerworks/rollerworks-search-doctrine-orm
 .. _`rollerworks/search-doctrine-dbal`: https://github.com/rollerworks/rollerworks-search-doctrine-dbal
 .. _`Doctrine2 ORM`: http://www.doctrine-project.org/projects/orm.html
 .. _`Doctrine2 dbal`: http://www.doctrine-project.org/projects/dbal.html
-.. _`jms/metadata`: https://github.com/schmittjoh/metadata
+.. _`rollerworks/metadata`: https://github.com/rollerworks/rollerworks-search-metadata
