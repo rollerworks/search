@@ -72,11 +72,11 @@ class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
         $validator = $this->validator;
 
         $optionsResolver->setDefaults(
-            array(
-                'validation_groups' => array('Default'),
+            [
+                'validation_groups' => ['Default'],
                 'constraints' => function (Options $options) use ($validator) {
                     if (null === $options['model_class'] || null === $options['model_property']) {
-                        return array();
+                        return [];
                     }
 
                     // Its possible getting of the Metadata gives an error,
@@ -86,7 +86,7 @@ class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
                     /** @var ClassMetadata $classMetadata */
                     $classMetadata = $validator->getMetadataFor($options['model_class']);
                     $propertyMetadata = $classMetadata->getPropertyMetadata($options['model_property']);
-                    $constraints = array();
+                    $constraints = [];
 
                     foreach ($propertyMetadata as $metadata) {
                         $constraints += $metadata->getConstraints();
@@ -94,20 +94,20 @@ class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
 
                     return $constraints;
                 },
-            )
+            ]
         );
 
         // BC layer for Symfony 2.7 and 3.0
         if ($optionsResolver instanceof OptionsResolverInterface) {
             $optionsResolver->setAllowedTypes(
-                array(
-                    'constraints' => array('array', 'Symfony\Component\Validator\Constraint'),
-                    'validation_groups' => array('array'),
-                )
+                [
+                    'constraints' => ['array', 'Symfony\Component\Validator\Constraint'],
+                    'validation_groups' => ['array'],
+                ]
             );
         } else {
-            $optionsResolver->setAllowedTypes('constraints', array('array', 'Symfony\Component\Validator\Constraint'));
-            $optionsResolver->setAllowedTypes('validation_groups', array('array'));
+            $optionsResolver->setAllowedTypes('constraints', ['array', 'Symfony\Component\Validator\Constraint']);
+            $optionsResolver->setAllowedTypes('validation_groups', ['array']);
         }
     }
 }

@@ -93,7 +93,7 @@ class Validator
             }
 
             $config = $fieldSet->get($fieldName);
-            $constraints = $config->getOption('constraints', array());
+            $constraints = $config->getOption('constraints', []);
 
             // Don't validate values without constraints
             if (!$constraints) {
@@ -198,7 +198,7 @@ class Validator
      */
     private static function getValidationGroups(FieldConfigInterface $field)
     {
-        $groups = $field->getOption('validation_groups', array(Constraint::DEFAULT_GROUP));
+        $groups = $field->getOption('validation_groups', [Constraint::DEFAULT_GROUP]);
 
         if (!is_string($groups) && is_callable($groups)) {
             $groups = call_user_func($groups, $field);
@@ -258,7 +258,7 @@ class Validator
                 $viewValue = '"'.$viewValue.'"';
             }
 
-            $parameters = array_merge($parameters, array('{{ value }}' => $viewValue));
+            $parameters = array_merge($parameters, ['{{ value }}' => $viewValue]);
         }
 
         return new ValuesError(

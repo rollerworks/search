@@ -52,18 +52,18 @@ final class ValidatorTest extends SearchIntegrationTestCase
     protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('id', 'integer', array('constraints' => new Assert\Range(array('min' => 5))));
+        $fieldSet->add('id', 'integer', ['constraints' => new Assert\Range(['min' => 5])]);
         $fieldSet->add(
             'date',
             'date',
-            array(
-                'constraints' => array(
+            [
+                'constraints' => [
                     new Assert\Date(),
                     new Assert\Range(
-                        array('min' => new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC')))
+                        ['min' => new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC'))]
                     ),
-                ),
-            )
+                ],
+            ]
         );
         $fieldSet->add('type', 'text');
 
@@ -72,7 +72,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
 
     protected function getExtensions()
     {
-        return array(new ValidatorExtension($this->sfValidator));
+        return [new ValidatorExtension($this->sfValidator)];
     }
 
     /**
@@ -103,14 +103,14 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '3', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '4', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[1].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => '4', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[2].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => '1', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[2].upper', 'This value should be {{ limit }} or more.', array('{{ value }}' => '4', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'excludedRanges[0].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => '2', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'excludedRanges[0].upper', 'This value should be {{ limit }} or more.', array('{{ value }}' => '3', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'comparisons[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '3', '{{ limit }}' => 5));
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[1].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[2].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => '1', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[2].upper', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'excludedRanges[0].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => '2', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'excludedRanges[0].upper', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'comparisons[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 5]);
 
         // No more errors then asserted
         $this->assertCount(8, $valuesGroup->getField('id')->getErrors());
@@ -127,10 +127,10 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $fieldSet->add(
             'id',
             'text',
-            array(
+            [
                 'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
                 'model_property' => 'id',
-            )
+            ]
         );
 
         $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
@@ -149,8 +149,8 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '3', '{{ limit }}' => 6));
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '4', '{{ limit }}' => 6));
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 6]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 6]);
 
         // No more errors then asserted
         $this->assertCount(2, $valuesGroup->getField('id')->getErrors());
@@ -167,11 +167,11 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $fieldSet->add(
             'id',
             'text',
-            array(
-                'constraints' => new Assert\Range(array('min' => 5, 'max' => 10)),
+            [
+                'constraints' => new Assert\Range(['min' => 5, 'max' => 10]),
                 'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
                 'model_property' => 'id',
-            )
+            ]
         );
 
         $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
@@ -192,9 +192,9 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '3', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => '4', '{{ limit }}' => 5));
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[4].value', 'This value should be {{ limit }} or less.', array('{{ value }}' => '20', '{{ limit }}' => 10));
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 5]);
+        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[4].value', 'This value should be {{ limit }} or less.', ['{{ value }}' => '20', '{{ limit }}' => 10]);
 
         // No more errors then asserted
         $this->assertCount(3, $valuesGroup->getField('id')->getErrors());
@@ -211,11 +211,11 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $fieldSet->add(
             'id',
             'text',
-            array(
-                'constraints' => array(),
+            [
+                'constraints' => [],
                 'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
                 'model_property' => 'id',
-            )
+            ]
         );
 
         $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
@@ -282,12 +282,12 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date->format('m/d/Y'), '{{ limit }}' => $dateLimit));
-        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date2->format('m/d/Y'), '{{ limit }}' => $dateLimit));
-        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => $startTime->format('m/d/Y'), '{{ limit }}' => $dateLimit));
-        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].upper', 'This value should be {{ limit }} or more.', array('{{ value }}' => $endTime->format('m/d/Y'), '{{ limit }}' => $dateLimit));
-        $this->assertSearchError($valuesGroup->getField('date'), 'excludedRanges[0].lower', 'This value should be {{ limit }} or more.', array('{{ value }}' => $startTime2->format('m/d/Y'), '{{ limit }}' => $dateLimit));
-        $this->assertSearchError($valuesGroup->getField('date'), 'comparisons[1].value', 'This value should be {{ limit }} or more.', array('{{ value }}' => $date4->format('m/d/Y'), '{{ limit }}' => $dateLimit));
+        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => $date->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
+        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => $date2->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
+        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => $startTime->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
+        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].upper', 'This value should be {{ limit }} or more.', ['{{ value }}' => $endTime->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
+        $this->assertSearchError($valuesGroup->getField('date'), 'excludedRanges[0].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => $startTime2->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
+        $this->assertSearchError($valuesGroup->getField('date'), 'comparisons[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => $date4->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
 
         // No more errors then asserted
         $this->assertCount(6, $valuesGroup->getField('date')->getErrors());
@@ -299,7 +299,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
     public function it_validates_matchers()
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('username', 'text', array('constraints' => new Assert\NotBlank()));
+        $fieldSet->add('username', 'text', ['constraints' => new Assert\NotBlank()]);
 
         $fieldSet = $fieldSet->getFieldSet();
 
@@ -316,7 +316,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $valuesGroup = $condition->getValuesGroup();
 
         $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('username'), 'patternMatchers[2].value', 'This value should not be blank.', array('{{ value }}' => '""'));
+        $this->assertSearchError($valuesGroup->getField('username'), 'patternMatchers[2].value', 'This value should not be blank.', ['{{ value }}' => '""']);
 
         // No more errors then asserted
         $this->assertCount(1, $valuesGroup->getField('username')->getErrors());
@@ -328,7 +328,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
     public function it_cannot_validate_a_locked_valuesGroup()
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('username', 'text', array('constraints' => new Assert\NotBlank()));
+        $fieldSet->add('username', 'text', ['constraints' => new Assert\NotBlank()]);
 
         $fieldSet = $fieldSet->getFieldSet();
 
@@ -351,7 +351,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
         ValuesBag $valuesBag,
         $subPath,
         $messageTemplate,
-        array $messageParameters = array(),
+        array $messageParameters = [],
         $messagePluralization = null
     ) {
         $this->assertTrue($valuesBag->hasErrors());
@@ -409,7 +409,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
                         continue 2;
                     }
 
-                    if ($expectedValue != $param) {
+                    if ($expectedValue !== $param) {
                         continue 2;
                     }
                 }

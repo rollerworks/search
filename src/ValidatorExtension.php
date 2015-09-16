@@ -40,8 +40,8 @@ class ValidatorExtension extends AbstractExtension
      */
     protected function loadTypeExtensions()
     {
-        return array(
+        return [
             new Type\FieldTypeValidatorExtension($this->validator),
-        );
+        ];
     }
 }
