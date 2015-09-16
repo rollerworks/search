@@ -15,14 +15,13 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
-        "rollerworks/search": ">1.0.0-beta4@dev",
+        "php": ">=5.4",
+        "rollerworks/search": "^1.0.0",
         "symfony/validator": "^2.3.3",
         "symfony/translation": "^2.3.3"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~2.7@dev",
-        "phpunit/phpunit": "~4.5",
+        "symfony/phpunit-bridge": "~2.7",
         "doctrine/annotations": "~1.2",
         "doctrine/cache": "~1.4"
     },
@@ -35,9 +34,6 @@
         "psr-4": {
             "Rollerworks\\Component\\Search\\Tests\\Extension\\Validator\\Fixtures\\": "tests/Fixtures"
         }
-    },
-    "config": {
-        "bin-dir": "bin"
     },
     "extra": {
         "branch-alias": {

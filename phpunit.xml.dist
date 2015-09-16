@@ -30,7 +30,6 @@
                 <directory>./vendor/</directory>
                 <directory>./tests/</directory>
                 <directory>./doc/</directory>
-                <directory>./bin/</directory>
             </exclude>
         </whitelist>
     </filter>

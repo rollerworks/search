@@ -1,23 +1,20 @@
 language: php
 
 php:
-    - 5.3
     - 5.4
     - 5.5
     - 5.6
     - 7.0
     - hhvm
-    - hhvm-nightly
 
 matrix:
     include:
-        - php: 5.3
+        - php: 5.4
           env: DEPENDENCIES='low'
         - php: 5.6
           env: DEPENDENCIES='dev'
     allow_failures:
         - php: 7.0
-        - php: hhvm-nightly
         - env: DEPENDENCIES='dev'
     fast_finish: true
 
@@ -25,10 +22,7 @@ sudo: false
 
 cache:
     directories:
-        - $HOME/.composer/cache
-
-before_install:
-    - composer selfupdate
+        - $HOME/.composer/cache/files
 
 install:
     - export SYMFONY_DEPRECATIONS_HELPER=strict
@@ -38,4 +32,4 @@ install:
     - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest; fi;
 
 script:
-    - bin/phpunit --configuration phpunit.xml.dist --verbose
+    - phpunit --configuration phpunit.xml.dist --verbose
