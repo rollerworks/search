@@ -12,3 +12,4 @@ repo_org: rollerworks
 repo_name: rollerworks-search-doctrine-orm
 issue_project_org: rollerworks
 issue_project_name: RollerworksSearch
+issue_tracker: github
