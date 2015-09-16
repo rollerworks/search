@@ -19,7 +19,7 @@ final class InvoiceStatusType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array('choices' => array(0 => 'concept', 1 => 'publish', 2 => 'paid'))
+            ['choices' => [0 => 'concept', 1 => 'publish', 2 => 'paid']]
         );
     }
 

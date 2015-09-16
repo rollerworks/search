@@ -35,7 +35,7 @@ final class QueryGenerator
     /**
      * @var QueryField[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * @var Connection
@@ -68,16 +68,16 @@ final class QueryGenerator
      */
     public function getGroupQuery(ValuesGroup $valuesGroup)
     {
-        $query = array();
+        $query = [];
 
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
             if (!isset($this->fields[$fieldName])) {
                 continue;
             }
 
-            $groupSql = array();
-            $inclusiveSqlGroup = array();
-            $exclusiveSqlGroup = array();
+            $groupSql = [];
+            $inclusiveSqlGroup = [];
+            $exclusiveSqlGroup = [];
 
             $this->processSingleValues(
                 $values->getSingleValues(),
@@ -131,23 +131,23 @@ final class QueryGenerator
                 true
             );
 
-            $groupSql[] = self::implodeWithValue(' OR ', $inclusiveSqlGroup, array('(', ')'));
-            $groupSql[] = self::implodeWithValue(' AND ', $exclusiveSqlGroup, array('(', ')'));
-            $query[] = self::implodeWithValue(' AND ', $groupSql, array('(', ')', true));
+            $groupSql[] = self::implodeWithValue(' OR ', $inclusiveSqlGroup, ['(', ')']);
+            $groupSql[] = self::implodeWithValue(' AND ', $exclusiveSqlGroup, ['(', ')']);
+            $query[] = self::implodeWithValue(' AND ', $groupSql, ['(', ')', true]);
         }
 
-        $finalQuery = array();
+        $finalQuery = [];
 
         // Wrap all the fields as a group
         $finalQuery[] = self::implodeWithValue(
             ' '.strtoupper($valuesGroup->getGroupLogical()).' ',
             $query,
-            array('(', ')', true)
+            ['(', ')', true]
         );
 
         $this->processGroups($valuesGroup->getGroups(), $finalQuery);
 
-        return (string) self::implodeWithValue(' AND ', $finalQuery, array('(', ')'));
+        return (string) self::implodeWithValue(' AND ', $finalQuery, ['(', ')']);
     }
 
     /**
@@ -156,13 +156,13 @@ final class QueryGenerator
      */
     private function processGroups(array $groups, array &$query)
     {
-        $groupSql = array();
+        $groupSql = [];
 
         foreach ($groups as $group) {
             $groupSql[] = $this->getGroupQuery($group);
         }
 
-        $query[] = self::implodeWithValue(' OR ', $groupSql, array('(', ')', true));
+        $query[] = self::implodeWithValue(' OR ', $groupSql, ['(', ')', true]);
     }
 
     /**
@@ -177,14 +177,14 @@ final class QueryGenerator
      */
     private function processSingleValuesInList(array $values, $fieldName, array &$query, $exclude = false)
     {
-        $valuesQuery = array();
+        $valuesQuery = [];
         $column = $this->queryPlatform->getFieldColumn($fieldName);
 
         foreach ($values as $value) {
             $valuesQuery[] = $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column);
         }
 
-        $patterns = array('%s IN(%s)', '%s NOT IN(%s)');
+        $patterns = ['%s IN(%s)', '%s NOT IN(%s)'];
 
         if (count($valuesQuery) > 0) {
             $query[] = sprintf(
@@ -215,7 +215,7 @@ final class QueryGenerator
             return;
         }
 
-        $patterns = array('%s = %s', '%s <> %s');
+        $patterns = ['%s = %s', '%s <> %s'];
 
         foreach ($values as $value) {
             $strategy = $this->getConversionStrategy($fieldName, $value->getValue());
@@ -286,7 +286,7 @@ final class QueryGenerator
      */
     private function processCompares(array $compares, $fieldName, array &$query, $exclude = false)
     {
-        $valuesQuery = array();
+        $valuesQuery = [];
 
         foreach ($compares as $comparison) {
             if ($exclude !== ('<>' === $comparison->getOperator())) {
@@ -307,7 +307,7 @@ final class QueryGenerator
         $query[] = self::implodeWithValue(
             ' AND ',
             $valuesQuery,
-            count($valuesQuery) > 1 && !$exclude ? array('(', ')') : array()
+            count($valuesQuery) > 1 && !$exclude ? ['(', ')'] : []
         );
     }
 
@@ -372,7 +372,7 @@ final class QueryGenerator
         return $hints;
     }
 
-    private static function implodeWithValue($glue, array $values, array $wrap = array())
+    private static function implodeWithValue($glue, array $values, array $wrap = [])
     {
         // Remove the empty values
         $values = array_filter($values, 'strlen');

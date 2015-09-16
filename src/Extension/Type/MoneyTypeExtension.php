@@ -45,14 +45,14 @@ class MoneyTypeExtension extends AbstractFieldTypeExtension
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'doctrine_dbal_conversion' => $this->conversion,
                 'doctrine_dbal_with_currency' => false,
-            )
+            ]
         );
 
         $resolver->setAllowedTypes(
-            array('doctrine_dbal_with_currency' => array('bool'))
+            ['doctrine_dbal_with_currency' => ['bool']]
         );
     }
 

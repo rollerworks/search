@@ -38,15 +38,15 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
 
     protected function getExtensions()
     {
-        return array(new DoctrineDbalExtension());
+        return [new DoctrineDbalExtension()];
     }
 
     protected function getTypes()
     {
-        return array(
+        return [
             new InvoiceLabelType(),
             new InvoiceStatusType(),
-        );
+        ];
     }
 
     protected function getDbalFactory()
@@ -61,6 +61,6 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
      */
     protected function getConnectionMock()
     {
-        return new ConnectionMock(array(), new PDOSqlite());
+        return new ConnectionMock([], new PDOSqlite());
     }
 }

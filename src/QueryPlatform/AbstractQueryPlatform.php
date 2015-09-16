@@ -25,12 +25,12 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * @var QueryField[]
      */
-    protected $fields = array();
+    protected $fields = [];
 
     /**
      * @var array[]
      */
-    protected $fieldsMappingCache = array();
+    protected $fieldsMappingCache = [];
 
     /**
      * @var Connection
@@ -120,14 +120,14 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
             return $column.($patternMatch->isExclusive() ? ' <>' : ' =')." $value";
         }
 
-        $patternMap = array(
+        $patternMap = [
             PatternMatch::PATTERN_STARTS_WITH => '%%%s',
             PatternMatch::PATTERN_NOT_STARTS_WITH => '%%%s',
             PatternMatch::PATTERN_CONTAINS => '%%%s%%',
             PatternMatch::PATTERN_NOT_CONTAINS => '%%%s%%',
             PatternMatch::PATTERN_ENDS_WITH => '%s%%',
             PatternMatch::PATTERN_NOT_ENDS_WITH => '%s%%',
-        );
+        ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
         $value = $this->connection->quote(sprintf($patternMap[$patternMatch->getType()], $value));

@@ -60,18 +60,18 @@ final class WhereBuilderResultsTest extends FunctionalDbalTestCase
         $customerTable->addColumn('last_name', 'string');
         $customerTable->addColumn('birthday', 'date');
         $customerTable->addColumn('regdate', 'date');
-        $customerTable->setPrimaryKey(array('id'));
+        $customerTable->setPrimaryKey(['id']);
 
         $invoiceTable = $schema->createTable('invoice');
         $invoiceTable->addOption('collate', 'utf8_bin');
         $invoiceTable->addColumn('id', 'integer');
         $invoiceTable->addColumn('customer', 'integer');
-        $invoiceTable->addColumn('label', 'string', array('notnull' => false));
-        $invoiceTable->addColumn('pub_date', 'date', array('notnull' => false));
+        $invoiceTable->addColumn('label', 'string', ['notnull' => false]);
+        $invoiceTable->addColumn('pub_date', 'date', ['notnull' => false]);
         $invoiceTable->addColumn('status', 'integer');
-        $invoiceTable->addColumn('price_total', 'decimal', array('scale' => 2));
-        $invoiceTable->setPrimaryKey(array('id'));
-        $invoiceTable->addUniqueIndex(array('label'));
+        $invoiceTable->addColumn('price_total', 'decimal', ['scale' => 2]);
+        $invoiceTable->setPrimaryKey(['id']);
+        $invoiceTable->addUniqueIndex(['label']);
 
         $invoiceDetailsTable = $schema->createTable('invoice_details');
         $invoiceDetailsTable->addOption('collate', 'utf8_bin');
@@ -79,9 +79,9 @@ final class WhereBuilderResultsTest extends FunctionalDbalTestCase
         $invoiceDetailsTable->addColumn('invoice', 'integer');
         $invoiceDetailsTable->addColumn('label', 'string');
         $invoiceDetailsTable->addColumn('quantity', 'integer');
-        $invoiceDetailsTable->addColumn('price', 'decimal', array('scale' => 2));
-        $invoiceDetailsTable->addColumn('total', 'decimal', array('scale' => 2));
-        $invoiceDetailsTable->setPrimaryKey(array('id'));
+        $invoiceDetailsTable->addColumn('price', 'decimal', ['scale' => 2]);
+        $invoiceDetailsTable->addColumn('total', 'decimal', ['scale' => 2]);
+        $invoiceDetailsTable->setPrimaryKey(['id']);
     }
 
     /**
@@ -93,78 +93,78 @@ final class WhereBuilderResultsTest extends FunctionalDbalTestCase
             return new \DateTime($input, new \DateTimeZone('UTC'));
         };
 
-        return array(
+        return [
             SchemaRecord::create(
                 'customer',
-                array(
+                [
                     'id' => 'integer',
                     'first_name' => 'string',
                     'last_name' => 'string',
                     'birthday' => 'date',
                     'regdate' => 'date',
-                )
+                ]
             )
             ->records()
-                ->add(array(1, 'Peter', 'Pang', $date('1980-11-20'), $date('2005-11-20')))
-                ->add(array(2, 'Leroy', 'Jenkins', $date('2000-05-15'), $date('2005-05-20')))
-                ->add(array(3, 'Doctor', 'Who', $date('2005-12-10'), $date('2005-02-20')))
-                ->add(array(4, 'Spider', 'Pig', $date('2012-06-10'), $date('2012-07-20')))
+                ->add([1, 'Peter', 'Pang', $date('1980-11-20'), $date('2005-11-20')])
+                ->add([2, 'Leroy', 'Jenkins', $date('2000-05-15'), $date('2005-05-20')])
+                ->add([3, 'Doctor', 'Who', $date('2005-12-10'), $date('2005-02-20')])
+                ->add([4, 'Spider', 'Pig', $date('2012-06-10'), $date('2012-07-20')])
             ->end(),
 
             // Two invoices are paid, one is a concept and three are unpaid
             SchemaRecord::create(
                 'invoice',
-                array(
+                [
                     'id' => 'integer',
                     'customer' => 'integer',
                     'label' => 'string',
                     'pub_date' => 'date',
                     'status' => 'integer',
                     'price_total' => 'decimal',
-                )
+                ]
             )
             ->records()
-                ->add(array(1, 1, '2010-001', $date('2010-05-10'), 2, '100.00')) // 'Peter', 'Pang'
-                ->add(array(2, 2, '2010-002', $date('2010-05-10'), 2, '90.00')) // 'Leroy', 'Jenkins'
-                ->add(array(3, 2, null, null, 0, '10.00')) // concept - 'Leroy', 'Jenkins'
+                ->add([1, 1, '2010-001', $date('2010-05-10'), 2, '100.00']) // 'Peter', 'Pang'
+                ->add([2, 2, '2010-002', $date('2010-05-10'), 2, '90.00']) // 'Leroy', 'Jenkins'
+                ->add([3, 2, null, null, 0, '10.00']) // concept - 'Leroy', 'Jenkins'
                 // unpaid //
-                ->add(array(4, 2, '2015-001', $date('2015-05-10'), 1, '50.00')) // 'Leroy', 'Jenkins'
-                ->add(array(5, 3, '2015-002', $date('2015-05-01'), 1, '215.00')) // 'Doctor', 'Who'
-                ->add(array(6, 4, '2015-003', $date('2015-05-05'), 1, '55.00')) // 'Spider', 'Pig'
+                ->add([4, 2, '2015-001', $date('2015-05-10'), 1, '50.00']) // 'Leroy', 'Jenkins'
+                ->add([5, 3, '2015-002', $date('2015-05-01'), 1, '215.00']) // 'Doctor', 'Who'
+                ->add([6, 4, '2015-003', $date('2015-05-05'), 1, '55.00']) // 'Spider', 'Pig'
             ->end(),
 
             SchemaRecord::create(
                 'invoice_details',
-                array(
+                [
                     'id' => 'integer',
                     'invoice' => 'integer',
                     'label' => 'string',
                     'quantity' => 'integer',
                     'price' => 'decimal',
                     'total' => 'decimal',
-                )
+                ]
             )
             ->records()
                 // invoice 1
-                ->add(array(1, 1, 'Electric Guitar', 1, '200.00', '100.00'))
+                ->add([1, 1, 'Electric Guitar', 1, '200.00', '100.00'])
                 // invoice 2
-                ->add(array(2, 2, 'Sword', 1, '15.00', '15.00'))
-                ->add(array(3, 2, 'Shield', 1, '20.00', '20.00'))
-                ->add(array(4, 2, 'Armor', 1, '55.00', '55.00'))
+                ->add([2, 2, 'Sword', 1, '15.00', '15.00'])
+                ->add([3, 2, 'Shield', 1, '20.00', '20.00'])
+                ->add([4, 2, 'Armor', 1, '55.00', '55.00'])
                 // invoice 3
-                ->add(array(5, 3, 'Sword', 1, '10.00', '10.00'))
+                ->add([5, 3, 'Sword', 1, '10.00', '10.00'])
                 // invoice 4
-                ->add(array(6, 4, 'Armor repair kit', 2, '50.00', '100.00'))
+                ->add([6, 4, 'Armor repair kit', 2, '50.00', '100.00'])
                 // invoice 5
-                ->add(array(7, 5, 'TARDIS Chameleon circuit', 1, '15.00', '15.00'))
-                ->add(array(8, 5, 'Sonic Screwdriver', 10, '20.00', '200.00'))
+                ->add([7, 5, 'TARDIS Chameleon circuit', 1, '15.00', '15.00'])
+                ->add([8, 5, 'Sonic Screwdriver', 10, '20.00', '200.00'])
                 // invoice 6
-                ->add(array(9, 6, 'Web shooter', 1, '10.00', '10.00'))
-                ->add(array(10, 6, 'Cape', 1, '10.00', '10.00'))
-                ->add(array(11, 6, 'Cape repair manual', 1, '10.00', '10.00'))
-                ->add(array(12, 6, 'Hoof polish', 3, '10.00', '30.00'))
+                ->add([9, 6, 'Web shooter', 1, '10.00', '10.00'])
+                ->add([10, 6, 'Cape', 1, '10.00', '10.00'])
+                ->add([11, 6, 'Cape repair manual', 1, '10.00', '10.00'])
+                ->add([12, 6, 'Hoof polish', 3, '10.00', '30.00'])
             ->end(),
-        );
+        ];
     }
 
     protected function getQuery()
@@ -213,15 +213,15 @@ SQL;
         // Customer (by invoice relation)
         $fieldSet->add('customer-first-name', 'text');
         $fieldSet->add('customer-last-name', 'text');
-        $fieldSet->add('customer-birthday', 'birthday', array('format' => 'yyyy-MM-dd'));
-        $fieldSet->add('customer-regdate', 'date', array('format' => 'yyyy-MM-dd'));
+        $fieldSet->add('customer-birthday', 'birthday', ['format' => 'yyyy-MM-dd']);
+        $fieldSet->add('customer-regdate', 'date', ['format' => 'yyyy-MM-dd']);
 
         // Invoice
         $fieldSet->add('id', 'integer');
         $fieldSet->add('customer', 'integer');
         $fieldSet->add('label', 'text');
-        $fieldSet->add('pub-date', 'date', array('format' => 'yyyy-MM-dd'));
-        $fieldSet->add('status', 'choice', array('label_as_value' => true, 'choices' => array(0 => 'concept', 1 => 'published', 2 => 'paid')));
+        $fieldSet->add('pub-date', 'date', ['format' => 'yyyy-MM-dd']);
+        $fieldSet->add('status', 'choice', ['label_as_value' => true, 'choices' => [0 => 'concept', 1 => 'published', 2 => 'paid']]);
         $fieldSet->add('total', 'money');
 
         // Invoice Details
@@ -238,7 +238,7 @@ SQL;
      */
     public function it_finds_with_id()
     {
-        $this->makeTest('id: 1, 5;', array(1, 5));
+        $this->makeTest('id: 1, 5;', [1, 5]);
     }
 
     /**
@@ -246,7 +246,7 @@ SQL;
      */
     public function it_finds_with_range_and_excluding()
     {
-        $this->makeTest('id: 1-7, !2;', array(1, 3, 4, 5, 6));
+        $this->makeTest('id: 1-7, !2;', [1, 3, 4, 5, 6]);
     }
 
     /**
@@ -262,7 +262,7 @@ SQL;
      */
     public function it_finds_by_customer_birthdays()
     {
-        $this->makeTest('customer-birthday: "2000-05-15", "1980-06-10";', array(2, 3, 4));
+        $this->makeTest('customer-birthday: "2000-05-15", "1980-06-10";', [2, 3, 4]);
     }
 
     /**
@@ -270,7 +270,7 @@ SQL;
      */
     public function it_finds_with_or_group()
     {
-        $this->makeTest('* customer-birthday: "1980-11-20"; pub-date: "2015-05-01";', array(1, 5));
+        $this->makeTest('* customer-birthday: "1980-11-20"; pub-date: "2015-05-01";', [1, 5]);
     }
 
     /**
@@ -278,7 +278,7 @@ SQL;
      */
     public function it_finds_pubDate_limited_by_price()
     {
-        $this->makeTest('pub-date: "2015-05-10"; total: "50.00"', array(4));
+        $this->makeTest('pub-date: "2015-05-10"; total: "50.00"', [4]);
     }
 
     /**
@@ -286,7 +286,7 @@ SQL;
      */
     public function it_finds_by_customer_and_status()
     {
-        $this->makeTest('customer: 2; status: concept;', array(3));
+        $this->makeTest('customer: 2; status: concept;', [3]);
     }
 
     /**
@@ -294,7 +294,7 @@ SQL;
      */
     public function it_finds_by_customer_and_status_and_total()
     {
-        $this->makeTest('customer: 2; status: paid; total: "90.00";', array(2));
+        $this->makeTest('customer: 2; status: paid; total: "90.00";', [2]);
     }
 
     /**
@@ -302,7 +302,7 @@ SQL;
      */
     public function it_finds_by_customer_and_status_or_price()
     {
-        $this->makeTest('customer: 2; *(status: paid; total: "50.00";)', array(2, 4));
+        $this->makeTest('customer: 2; *(status: paid; total: "50.00";)', [2, 4]);
     }
 
     /**
@@ -311,7 +311,7 @@ SQL;
     public function it_finds_by_status_and_label_or_quantity_limited_by_price()
     {
         // Note there is no row with quantity 5, which is resolved as its in an OR'ed group
-        $this->makeTest('status: published; *(row-quantity: 5; row-label: ~*"repair"; (row-price: "50.00"));', array(4));
+        $this->makeTest('status: published; *(row-quantity: 5; row-label: ~*"repair"; (row-price: "50.00"));', [4]);
     }
 
     /**
@@ -319,7 +319,7 @@ SQL;
      */
     public function it_finds_by_excluding_regex_pattern()
     {
-        $this->makeTest('status: published; row-label: ~*"repair", ~!?"Armor";', array(6));
+        $this->makeTest('status: published; row-label: ~*"repair", ~!?"Armor";', [6]);
     }
 
     /**

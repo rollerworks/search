@@ -9,10 +9,6 @@
  * with this source code in the file LICENSE.
  */
 
-/**
- * PhpStorm.
- */
-
 namespace Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
 final class DrizzleQueryPlatform extends MysqlQueryPlatform

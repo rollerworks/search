@@ -400,7 +400,7 @@ final class WhereBuilderTest extends DbalTestCase
      * @param string $expectWhereCase
      * @param array  $options
      */
-    public function testFieldConversion($expectWhereCase, array $options = array())
+    public function testFieldConversion($expectWhereCase, array $options = [])
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -467,7 +467,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder->setConverter('customer', $converter);
 
-        $this->assertEquals("((I.customer = get_customer_type(2)))", $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer = get_customer_type(2)))', $whereBuilder->getWhereClause());
     }
 
     public function testConversionStrategyValue()
@@ -536,7 +536,7 @@ final class WhereBuilderTest extends DbalTestCase
                         $test->assertEquals($options, $passedOptions);
 
                         if (2 === $hints->conversionStrategy) {
-                            return "CAST(".$hints->connection->quote($input)." AS DATE)";
+                            return 'CAST('.$hints->connection->quote($input).' AS DATE)';
                         }
 
                         $test->assertEquals(1, $hints->conversionStrategy);
@@ -656,15 +656,15 @@ final class WhereBuilderTest extends DbalTestCase
 
     public static function provideFieldConversionTests()
     {
-        return array(
-            array(
-                "((CAST(I.customer AS customer_type) IN(2)))",
-            ),
-            array(
-                "((CAST(I.customer AS customer_type) IN(2)))",
-                array('active' => true),
-            ),
-        );
+        return [
+            [
+                '((CAST(I.customer AS customer_type) IN(2)))',
+            ],
+            [
+                '((CAST(I.customer AS customer_type) IN(2)))',
+                ['active' => true],
+            ],
+        ];
     }
 
     public function testConditionWithErrors()

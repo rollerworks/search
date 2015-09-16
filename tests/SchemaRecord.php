@@ -16,8 +16,8 @@ use Doctrine\DBAL\Connection;
 final class SchemaRecord
 {
     private $table;
-    private $records = array();
-    private $columns = array();
+    private $records = [];
+    private $columns = [];
 
     public function __construct($tableName, array $columns)
     {

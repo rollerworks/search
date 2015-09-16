@@ -28,7 +28,7 @@ class InvoiceNumber
             throw new \InvalidArgumentException('This not a valid invoice number.');
         }
 
-        return new InvoiceNumber((int) $matches['year'], (int) ltrim($matches['number'], '0'));
+        return new self((int) $matches['year'], (int) ltrim($matches['number'], '0'));
     }
 
     public function equals(InvoiceNumber $input)

@@ -74,7 +74,7 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
         }
 
         return $hints->connection->getDatabasePlatform()->getDecimalTypeDeclarationSQL(
-            array('scale' => $scale)
+            ['scale' => $scale]
         );
     }
 }

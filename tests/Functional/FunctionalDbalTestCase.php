@@ -95,14 +95,14 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $invoiceTable->addColumn('status', 'integer');
         $invoiceTable->addColumn('label', 'string');
         $invoiceTable->addColumn('customer', 'integer');
-        $invoiceTable->setPrimaryKey(array('id'));
+        $invoiceTable->setPrimaryKey(['id']);
 
         $customerTable = $schema->createTable('customer');
         $customerTable->addOption('collate', 'utf8_bin');
         $customerTable->addColumn('id', 'integer');
         $customerTable->addColumn('name', 'string');
         $customerTable->addColumn('birthday', 'date');
-        $customerTable->setPrimaryKey(array('id'));
+        $customerTable->setPrimaryKey(['id']);
     }
 
     /**
@@ -110,7 +110,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
      */
     protected function getDbRecords()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -158,7 +158,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
         $this->assertEquals(
             $ids,
-            array_merge(array(), array_unique($idRows)),
+            array_merge([], array_unique($idRows)),
             sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s", print_r($rows, true), $whereClause)
         );
     }
@@ -184,7 +184,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         }
 
         if (isset($this->sqlLoggerStack->queries) && count($this->sqlLoggerStack->queries)) {
-            $queries = "";
+            $queries = '';
             $i = count($this->sqlLoggerStack->queries);
 
             foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
@@ -196,11 +196,11 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
                             return "'".var_export($p, true)."'";
                         }
                     },
-                    $query['params'] ?: array()
+                    $query['params'] ?: []
                 );
 
-                $queries .= ($i+1).". SQL: '".$query['sql']."' Params: ".implode(", ", $params).PHP_EOL;
-                $i--;
+                $queries .= ($i + 1).". SQL: '".$query['sql']."' Params: ".implode(', ', $params).PHP_EOL;
+                --$i;
             }
 
             $trace = $e->getTrace();
@@ -208,22 +208,22 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
             foreach ($trace as $part) {
                 if (isset($part['file'])) {
-                    if (strpos($part['file'], "PHPUnit/") !== false) {
+                    if (strpos($part['file'], 'PHPUnit/') !== false) {
                         // Beginning with PHPUnit files we don't print the trace anymore.
                         break;
                     }
 
-                    $traceMsg .= $part['file'].":".$part['line'].PHP_EOL;
+                    $traceMsg .= $part['file'].':'.$part['line'].PHP_EOL;
                 }
             }
 
             $message =
-                "[".get_class($e)."] ".
+                '['.get_class($e).'] '.
                 $e->getMessage().
                 PHP_EOL.PHP_EOL.
-                "With queries:".PHP_EOL.
+                'With queries:'.PHP_EOL.
                 $queries.PHP_EOL.
-                "Trace:".PHP_EOL.
+                'Trace:'.PHP_EOL.
                 $traceMsg;
 
             throw new \Exception($message, (int) $e->getCode(), $e);

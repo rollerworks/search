@@ -28,10 +28,10 @@ class DoctrineDbalExtension extends AbstractExtension
      */
     protected function loadTypeExtensions()
     {
-        return array(
+        return [
             new Type\FieldTypeExtension(),
             new Type\BirthdayTypeExtension(new AgeDateConversion()),
             new Type\MoneyTypeExtension(new MoneyValueConversion()),
-        );
+        ];
     }
 }

@@ -16,7 +16,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
     private $_fetchOneResult;
     private $_platformMock;
     private $_lastInsertId = 0;
-    private $_inserts = array();
+    private $_inserts = [];
 
     public function __construct(array $params, $driver, $config = null, $eventManager = null)
     {
@@ -39,7 +39,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
     /**
      * @override
      */
-    public function insert($tableName, array $data, array $types = array())
+    public function insert($tableName, array $data, array $types = [])
     {
         $this->_inserts[$tableName][] = $data;
     }
@@ -55,7 +55,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
     /**
      * @override
      */
-    public function fetchColumn($statement, array $params = array(), $column = 0, array $types = array())
+    public function fetchColumn($statement, array $params = [], $column = 0, array $types = [])
     {
         return $this->_fetchOneResult;
     }
@@ -96,7 +96,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
 
     public function reset()
     {
-        $this->_inserts = array();
+        $this->_inserts = [];
         $this->_lastInsertId = 0;
     }
 }

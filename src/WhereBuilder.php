@@ -50,12 +50,12 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @var ValueConversionInterface[]|SqlValueConversionInterface[]|ConversionStrategyInterface[]
      */
-    private $valueConversions = array();
+    private $valueConversions = [];
 
     /**
      * @var SqlFieldConversionInterface[]
      */
-    private $fieldConversions = array();
+    private $fieldConversions = [];
 
     /**
      * @var string
@@ -65,7 +65,7 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @var array[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * @var Connection
@@ -114,11 +114,11 @@ class WhereBuilder implements WhereBuilderInterface
             );
         }
 
-        $this->fields[$fieldName] = array();
-        $this->fields[$fieldName]['field']   = $this->searchCondition->getFieldSet()->get($fieldName);
+        $this->fields[$fieldName] = [];
+        $this->fields[$fieldName]['field'] = $this->searchCondition->getFieldSet()->get($fieldName);
         $this->fields[$fieldName]['db_type'] = is_object($type) ? $type : MappingType::getType($type);
-        $this->fields[$fieldName]['alias']   = $alias;
-        $this->fields[$fieldName]['column']  = $column;
+        $this->fields[$fieldName]['alias'] = $alias;
+        $this->fields[$fieldName]['column'] = $column;
     }
 
     /**
@@ -215,7 +215,7 @@ class WhereBuilder implements WhereBuilderInterface
 
     private function processFields()
     {
-        $fields = array();
+        $fields = [];
 
         foreach ($this->fields as $fieldName => $field) {
             $fields[$fieldName] = new QueryField(

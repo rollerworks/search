@@ -55,7 +55,7 @@ class DoctrineDbalFactoryTest extends DbalTestCase
         $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
 
         $this->assertInstanceOf('Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder', $whereBuilder);
-        $this->assertEquals(array('invoice_label' => $conversion), $whereBuilder->getValueConversions());
+        $this->assertEquals(['invoice_label' => $conversion], $whereBuilder->getValueConversions());
         $this->assertCount(0, $whereBuilder->getFieldConversions());
     }
 
@@ -85,7 +85,7 @@ class DoctrineDbalFactoryTest extends DbalTestCase
         $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
 
         $this->assertInstanceOf('Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder', $whereBuilder);
-        $this->assertEquals(array('invoice_label' => $conversion), $whereBuilder->getValueConversions());
+        $this->assertEquals(['invoice_label' => $conversion], $whereBuilder->getValueConversions());
         $this->assertCount(0, $whereBuilder->getFieldConversions());
     }
 

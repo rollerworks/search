@@ -30,7 +30,7 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
         $invoiceTable = $schema->createTable('product');
         $invoiceTable->addColumn('id', 'integer');
         $invoiceTable->addColumn('price', 'string');
-        $invoiceTable->addColumn('total', 'decimal', array('scale' => 2));
+        $invoiceTable->addColumn('total', 'decimal', ['scale' => 2]);
     }
 
     /**
@@ -38,20 +38,20 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
      */
     protected function getDbRecords()
     {
-        return array(
-            SchemaRecord::create('product', array('id' => 'integer', 'price' => 'string', 'total' => 'decimal'))
-                ->add(array(1, 'EUR 50.00', '80.00'))
-                ->add(array(2, 'EUR 30.00', '80.00'))
+        return [
+            SchemaRecord::create('product', ['id' => 'integer', 'price' => 'string', 'total' => 'decimal'])
+                ->add([1, 'EUR 50.00', '80.00'])
+                ->add([2, 'EUR 30.00', '80.00'])
                 // --
-                ->add(array(3, 'EUR 66.00', '90.00'))
-                ->add(array(4, 'EUR 70.00', '100.00'))
+                ->add([3, 'EUR 66.00', '90.00'])
+                ->add([4, 'EUR 70.00', '100.00'])
             ->end(),
-        );
+        ];
     }
 
     protected function getQuery()
     {
-        return "SELECT id FROM product AS p WHERE ";
+        return 'SELECT id FROM product AS p WHERE ';
     }
 
     protected function configureWhereBuilder(WhereBuilder $whereBuilder)
@@ -80,7 +80,7 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
             ->getSearchCondition()
         ;
 
-        $this->assertRecordsAreFound($condition, array(3, 4));
+        $this->assertRecordsAreFound($condition, [3, 4]);
     }
 
     public function testWithVarcharColumn()
@@ -93,7 +93,7 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
             ->getSearchCondition()
         ;
 
-        $this->assertRecordsAreFound($condition, array(1, 2));
+        $this->assertRecordsAreFound($condition, [1, 2]);
     }
 
     public function testWithVarcharColumnAndRange()
@@ -105,6 +105,6 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
             ->getSearchCondition()
         ;
 
-        $this->assertRecordsAreFound($condition, array(1, 2));
+        $this->assertRecordsAreFound($condition, [1, 2]);
     }
 }

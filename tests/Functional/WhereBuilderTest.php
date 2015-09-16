@@ -37,18 +37,18 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $invoiceTable->addColumn('status', 'integer');
         $invoiceTable->addColumn('label', 'string');
         $invoiceTable->addColumn('customer', 'integer');
-        $invoiceTable->setPrimaryKey(array('id'));
+        $invoiceTable->setPrimaryKey(['id']);
 
         $customerTable = $schema->createTable('customer');
         $customerTable->addColumn('id', 'integer');
         $customerTable->addColumn('name', 'string');
         $customerTable->addColumn('birthday', 'date');
-        $customerTable->setPrimaryKey(array('id'));
+        $customerTable->setPrimaryKey(['id']);
     }
 
     protected function getQuery()
     {
-        return "SELECT i.*, c.* FROM invoice AS i JOIN customer AS c ON (c.id = i.customer) WHERE ";
+        return 'SELECT i.*, c.* FROM invoice AS i JOIN customer AS c ON (c.id = i.customer) WHERE ';
     }
 
     /**

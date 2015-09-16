@@ -35,19 +35,19 @@ final class AgeConversionTest extends FunctionalDbalTestCase
      */
     protected function getDbRecords()
     {
-        return array(
-            SchemaRecord::create('site_user', array('id' => 'integer', 'birthday' => 'date'))
-                ->add(array(1, new \DateTime('2001-01-15', new \DateTimeZone('UTC'))))
-                ->add(array(2, new \DateTime('2001-05-15', new \DateTimeZone('UTC'))))
-                ->add(array(3, new \DateTime('2001-10-15', new \DateTimeZone('UTC'))))
-                ->add(array(4, new \DateTime('-5 years', new \DateTimeZone('UTC'))))
+        return [
+            SchemaRecord::create('site_user', ['id' => 'integer', 'birthday' => 'date'])
+                ->add([1, new \DateTime('2001-01-15', new \DateTimeZone('UTC'))])
+                ->add([2, new \DateTime('2001-05-15', new \DateTimeZone('UTC'))])
+                ->add([3, new \DateTime('2001-10-15', new \DateTimeZone('UTC'))])
+                ->add([4, new \DateTime('-5 years', new \DateTimeZone('UTC'))])
             ->end(),
-        );
+        ];
     }
 
     protected function getQuery()
     {
-        return "SELECT id FROM site_user AS u WHERE ";
+        return 'SELECT id FROM site_user AS u WHERE ';
     }
 
     protected function configureWhereBuilder(WhereBuilder $whereBuilder)
@@ -74,7 +74,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
             ->getSearchCondition()
         ;
 
-        $this->assertRecordsAreFound($condition, array(1, 3));
+        $this->assertRecordsAreFound($condition, [1, 3]);
     }
 
     public function testWithAge()
@@ -86,6 +86,6 @@ final class AgeConversionTest extends FunctionalDbalTestCase
             ->getSearchCondition()
         ;
 
-        $this->assertRecordsAreFound($condition, array(4));
+        $this->assertRecordsAreFound($condition, [4]);
     }
 }

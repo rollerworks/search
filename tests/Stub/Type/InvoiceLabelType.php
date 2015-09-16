@@ -20,7 +20,7 @@ final class InvoiceLabelType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array('doctrine_dbal_conversion' => new InvoiceLabelConverter())
+            ['doctrine_dbal_conversion' => new InvoiceLabelConverter()]
         );
     }
 
