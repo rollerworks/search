@@ -223,10 +223,8 @@ class Validator
             $violations = $this->validator->validate($value, $constraints, $validationGroups);
         }
 
-        $newApi = null;
-
         foreach ($violations as $violation) {
-            $valuesBag->addError($this->createError($violation, $viewValue, $subPath, $newApi));
+            $valuesBag->addError($this->createError($violation, $viewValue, $subPath));
         }
     }
 
@@ -234,12 +232,13 @@ class Validator
      * @param ConstraintViolation $violation
      * @param string              $viewValue
      * @param string              $subPath
-     * @param bool|null           $newApi
      *
      * @return ValuesError
      */
-    private function createError(ConstraintViolation $violation, $viewValue, $subPath, &$newApi)
+    private function createError(ConstraintViolation $violation, $viewValue, $subPath)
     {
+        static $newApi;
+
         if (null === $newApi) {
             $newApi = method_exists($violation, 'getPlural');
         }

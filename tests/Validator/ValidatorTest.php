@@ -42,7 +42,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
         $validatorBuilder->enableAnnotationMapping();
 
         if (method_exists($validatorBuilder, 'setApiVersion')) {
-            $validatorBuilder->setApiVersion(Validation::API_VERSION_2_5);
+            $validatorBuilder->setApiVersion(Validation::API_VERSION_2_5_BC);
         }
 
         $this->sfValidator = $validatorBuilder->getValidator();
