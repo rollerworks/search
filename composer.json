@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "rollerworks/search": ">=1.0.0-beta6@dev",
+        "rollerworks/search": "^1.0.0",
         "doctrine/dbal": "~2.4"
     },
     "autoload": {
@@ -30,9 +30,6 @@
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "tests/",
             "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
-    },
-    "config": {
-        "bin-dir": "bin"
     },
     "extra": {
         "branch-alias": {
