@@ -23,6 +23,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
             'metadata' => [
                 'cache_driver' => 'memory',
                 'cache_dir' => 'none',
+                'cache_freshness_validator' => 'rollerworks_search.metadata.freshness_validator.file_tracking',
                 'auto_mapping' => false,
                 'mappings' => [
                    'AcmeUser' => [

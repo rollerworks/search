@@ -11,6 +11,8 @@
 
 namespace Rollerworks\Bundle\SearchBundle;
 
+use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\DoctrineCacheWrapperPass;
+use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\FieldSetRegisterPass;
 use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -19,6 +21,9 @@ class RollerworksSearchBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new DoctrineCacheWrapperPass());
+        $container->addCompilerPass(new FieldSetRegisterPass());
+
         $container->addCompilerPass(new Compiler\ChainFieldAliasResolverPass());
         $container->addCompilerPass(new Compiler\ChainFieldLabelResolverPass());
         $container->addCompilerPass(new Compiler\ExtensionPass());

@@ -12,8 +12,10 @@
     ],
     "require": {
         "php": ">=5.4",
-        "rollerworks/search-symfony-di": "~1.0@dev,>=1.0.0-beta5",
-        "rollerworks/search-symfony-validator": "~1.0@dev",
+        "rollerworks/search-symfony-di": "^1.0.0",
+        "rollerworks/search-symfony-validator": "^1.0.0",
+        "rollerworks/search-metadata": "^1.0.2",
+        "rollerworks/metadata-doctrine-cache": ">=0.2,<2.0",
         "rollerworks/exception-parser": "~1.0",
         "rollerworks/uri-encoder": "~1.0",
         "rollerworks/cache-bundle": "~1.1",
@@ -23,7 +25,6 @@
     },
     "require-dev": {
         "symfony/browser-kit": "~2.3",
-        "rollerworks/search-jms-metadata": "~1.0@dev,>=1.0.0-beta3",
         "matthiasnoback/symfony-dependency-injection-test": "^0.7.1",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.2"
     },
@@ -37,8 +38,6 @@
             "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "extra": {
         "branch-alias": {
             "dev-master": "1.1-dev"
