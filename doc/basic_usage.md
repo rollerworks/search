@@ -17,13 +17,11 @@ rollerworks_search:
             fields:
                 id:
                     type:           integer
-                    required:       false
                     model_class:    "Acme\UserBundle\Model\User"
                     model_property: id
                     options:        []
                 username:
                     type:           text
-                    required:       false
                     model_class:    "Acme\UserBundle\Model\User"
                     model_property: name
 ```

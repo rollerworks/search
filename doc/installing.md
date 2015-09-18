@@ -28,9 +28,6 @@ To install RollerworksSearchBundle with Composer just add the following to your
     }
 ```
 
-    For installing additional libraries (like the `jms/metadata` package)
-    please consult the documentation of RollerworksSearch.
-
 Then, you can install the new dependencies by running Composer's `update`
 command from the directory where your ``composer.json`` file is located:
 
