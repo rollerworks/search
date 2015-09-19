@@ -19,6 +19,7 @@
             <xsd:element name="mapping" type="mapping" />
         </xsd:choice>
         <xsd:attribute name="cache-driver" type="xsd:string" />
+        <xsd:attribute name="cache-freshness-validator" type="xsd:string" />
         <xsd:attribute name="cache-dir" type="xsd:string" />
         <xsd:attribute name="auto-mapping" type="xsd:boolean" />
     </xsd:complexType>

@@ -11,11 +11,9 @@
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
-use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Factory\FieldSetFactory;
 use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\ServiceLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Resource\DirectoryResource;
-use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Filesystem\Filesystem;
@@ -43,7 +41,7 @@ class RollerworksSearchExtension extends Extension
         }
 
         if (!empty($config['fieldsets'])) {
-            $this->registerFieldSets($container, $config['fieldsets']);
+            $container->setParameter('rollerworks_search.fieldsets_configuration', $config['fieldsets']);
         }
     }
 
@@ -67,48 +65,6 @@ class RollerworksSearchExtension extends Extension
     }
 
     /**
-     * Register the FieldSets as services.
-     *
-     * @param ContainerBuilder $container
-     * @param array            $fieldSets
-     */
-    private function registerFieldSets(ContainerBuilder $container, array $fieldSets)
-    {
-        $factory = new FieldSetFactory(
-            $container,
-            $container->get('rollerworks_search.metadata_factory', ContainerBuilder::NULL_ON_INVALID_REFERENCE)
-        );
-
-        foreach ($fieldSets as $name => $fieldSetConfig) {
-            $fieldSet = $factory->createFieldSetBuilder($name);
-
-            foreach ($fieldSetConfig['imports'] as $import) {
-                $fieldSet->importFromClass(
-                    $import['class'],
-                    $import['include_fields'],
-                    $import['exclude_fields']
-                );
-
-                $r = new \ReflectionClass($import['class']);
-                $container->addResource(new FileResource($r->getFileName()));
-            }
-
-            foreach ($fieldSetConfig['fields'] as $fieldName => $field) {
-                $fieldSet->set(
-                    $fieldName,
-                    $field['type'],
-                    $field['options'],
-                    $field['required'],
-                    $field['model_class'],
-                    $field['model_property']
-                );
-            }
-
-            $factory->register($fieldSet->getFieldSet());
-        }
-    }
-
-    /**
      * Register the Metadata component.
      *
      * @param ContainerBuilder $container
@@ -119,26 +75,13 @@ class RollerworksSearchExtension extends Extension
      */
     private function registerMetadata(ContainerBuilder $container, XmlFileLoader $loader, array $config)
     {
-        if (!class_exists('Metadata\MetadataFactory')) {
-            throw new \RuntimeException('Unable to load Metadata, the "jms/metadata" package is not (properly) installed.');
-        }
-
         $loader->load('metadata.xml');
 
-        if ('rollerworks_search.metadata.cache_driver.file' === $config['cache_driver']) {
-            $cacheDirectory = $container->getParameterBag()->resolveValue($config['cache_dir']);
-            if (!is_dir($cacheDirectory)) {
-                mkdir($cacheDirectory, 0777, true);
-            }
-
-            $container->findDefinition('rollerworks_search.metadata.cache_driver.file')->replaceArgument(0, $cacheDirectory);
-        } elseif (null === $config['cache_driver']) {
-            $container->findDefinition('rollerworks_search.metadata.metadata_reader')->removeMethodCall('setCache');
-        } else {
-            $container->setAlias('rollerworks_search.metadata.cache_driver', $config['cache_driver']);
-        }
-
         $container->setParameter('rollerworks_search.metadata.directories', $this->getMetadataMappingInformation($config, $container));
+        $container->setParameter('rollerworks_search.metadata.cache_directory', $config['cache_dir']);
+
+        $container->setAlias('rollerworks_search.metadata.cache_driver', $config['cache_driver']);
+        $container->setAlias('rollerworks_search.metadata.freshness_validator', $config['cache_freshness_validator']);
     }
 
     /**
@@ -157,9 +100,9 @@ class RollerworksSearchExtension extends Extension
 
         if ($config['auto_mapping']) {
             // automatically register bundle metadata
-            foreach (array_keys($container->getParameter('kernel.bundles')) as $bundle) {
-                if (!isset($config['mappings'][$bundle])) {
-                    $config['mappings'][$bundle] = [
+            foreach ($container->getParameter('kernel.bundles') as $bundleName => $bundleObj) {
+                if (!isset($config['mappings'][$bundleName])) {
+                    $config['mappings'][$bundleName] = [
                         'mapping' => true,
                         'is_bundle' => true,
                     ];
@@ -185,6 +128,7 @@ class RollerworksSearchExtension extends Extension
 
             if ($mappingConfig['is_bundle']) {
                 $bundle = null;
+
                 foreach ($container->getParameter('kernel.bundles') as $name => $class) {
                     if ($mappingName === $name) {
                         $bundle = new \ReflectionClass($class);
@@ -197,7 +141,8 @@ class RollerworksSearchExtension extends Extension
                     throw new \InvalidArgumentException(sprintf('Bundle "%s" does not exist or it is not enabled.', $mappingName));
                 }
 
-                $mappingConfig = $this->getMetadataDriverConfigDefaults($mappingConfig, $bundle, $container);
+                $mappingConfig = $this->getMetadataDriverConfigDefaults($mappingConfig, $bundle);
+
                 if (!$mappingConfig) {
                     continue;
                 }
@@ -242,7 +187,7 @@ class RollerworksSearchExtension extends Extension
      */
     private function getMetadataDriverConfigDefaults(array $bundleConfig, \ReflectionClass $bundle)
     {
-        $bundleDir = dirname($bundle->getFilename());
+        $bundleDir = dirname($bundle->getFileName());
 
         if (!$bundleConfig['dir']) {
             $bundleConfig['dir'] = $bundleDir.'/Resources/config/rollerworks_search';
