@@ -22,10 +22,18 @@
             <argument id="validator" type="service" />
         </service>
 
-        <!-- XXX Add cache driver for CacheAdapterInterface (using Doctrine Cache and rollerworks_cache.driver.session_driver) -->
-        <service class="Rollerworks\Component\UriEncoder\Encoder\GZipCompressionDecorator" id="rollerworks_search.uri_encoder" public="false">
+        <service id="rollerworks_search.uri_encoder" class="Rollerworks\Component\UriEncoder\Encoder\CacheEncoderDecorator" public="false">
             <argument type="service">
-                <service class="Rollerworks\Component\UriEncoder\Encoder\Base64UriEncoder" />
+                <service class="Rollerworks\Component\UriEncoder\Cache\DoctrineCache">
+                    <argument id="rollerworks_cache.driver.session_driver" type="service" />
+                </service>
+            </argument>
+            <argument type="service">
+                <service class="Rollerworks\Component\UriEncoder\Encoder\GZipCompressionDecorator" public="false">
+                    <argument type="service">
+                        <service class="Rollerworks\Component\UriEncoder\Encoder\Base64UriEncoder"/>
+                    </argument>
+                </service>
             </argument>
         </service>
 
