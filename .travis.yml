@@ -33,4 +33,4 @@ install:
 
 script:
     - phpunit --configuration phpunit.xml.dist --verbose
-    - bin/phpspec run
+    - vendor/bin/phpspec run
