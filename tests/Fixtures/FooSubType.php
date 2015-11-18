@@ -16,14 +16,15 @@ use Rollerworks\Component\Search\AbstractFieldType;
 /**
  * @internal
  */
-class FooType extends AbstractFieldType
+class FooSubType extends AbstractFieldType
 {
     public function getName()
     {
-        return 'foo';
+        return 'foo_sub_type';
     }
 
     public function getParent()
     {
+        return 'foo';
     }
 }
