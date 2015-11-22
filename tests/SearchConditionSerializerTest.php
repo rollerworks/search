@@ -92,9 +92,6 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         $this->serializer->unserialize(['foobar', 'foo' => 'bar']);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testUnSerializeInvalidData()
     {
         // Disable errors to get the exception
