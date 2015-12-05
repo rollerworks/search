@@ -1,10 +1,10 @@
 README
 ======
 
-[![Join the chat at https://gitter.im/rollerworks/RollerworksSearch](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rollerworks/RollerworksSearch?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://secure.travis-ci.org/rollerworks/RollerworksSearch.png?branch=master)](http://travis-ci.org/rollerworks/RollerworksSearch)
+[![Join the chat at https://gitter.im/rollerworks/search](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rollerworks/search?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://secure.travis-ci.org/rollerworks/search.png?branch=master)](http://travis-ci.org/rollerworks/search)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/92caf31d-dae6-49dd-9526-440d859daa31/mini.png)](https://insight.sensiolabs.com/projects/92caf31d-dae6-49dd-9526-440d859daa31)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearch/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/search/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/search/?branch=master)
 
 What is RollerworksSearch?
 --------------------------
@@ -101,10 +101,10 @@ possible and very straightforward.
 Condition processors for searching in the storage engines are provided
 as separate packages. Building your own condition processor is also possible.
 
-* [Doctrine2 DBAL](https://github.com/rollerworks/rollerworks-search-doctrine-dbal)
-* [Doctrine2 ORM](https://github.com/rollerworks/rollerworks-search-doctrine-orm)
+* [Doctrine2 DBAL](https://github.com/rollerworks/search-doctrine-dbal)
+* [Doctrine2 ORM](https://github.com/rollerworks/search-doctrine-orm)
 * Apache Solr (coming soon)
-* [Elasticsearch](https://github.com/rollerworks/rollerworks-search-elasticsearch) (coming soon)
+* [Elasticsearch](https://github.com/rollerworks/search-elasticsearch) (coming soon)
 
 Requirements
 ------------
@@ -113,9 +113,9 @@ You need at least PHP 5.4, and Intl extension for international support.
 
 For framework integration you may use the following;
 
-* [Symfony Bundle](https://github.com/rollerworks/RollerworksSearchBundle)
-* [Symfony DependencyInjection](https://github.com/rollerworks/rollerworks-search-symfony-di)
-* [Symfony Validator](https://github.com/rollerworks/rollerworks-search-symfony-validator)
+* [Symfony Bundle](https://github.com/rollerworks/SearchBundle)
+* [Symfony DependencyInjection](https://github.com/rollerworks/search-symfony-di)
+* [Symfony Validator](https://github.com/rollerworks/search-symfony-validator)
 * ZendFramework2 Plugin (coming soon)
 * Silex Plugin (coming soon)
 
