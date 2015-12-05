@@ -16,12 +16,12 @@
     ],
     "require": {
         "php": ">=5.4",
-        "rollerworks/search": "^1.0.0",
-        "symfony/validator": "^2.3.3",
-        "symfony/translation": "^2.3.3"
+        "rollerworks/search": "^1.0.1",
+        "symfony/validator": "^2.3.3|~3.0",
+        "symfony/translation": "^2.3.3|~3.0"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~2.7",
+        "symfony/phpunit-bridge": "~2.7|~3.0",
         "doctrine/annotations": "~1.2",
         "doctrine/cache": "~1.4"
     },
