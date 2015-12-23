@@ -23,11 +23,17 @@ class SearchFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('filter', 'textarea')
-            ->add('format', 'hidden', ['data' => $options['format']])
-            ->add('submit', 'submit')
-        ;
+        if (method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix')) {
+            $builder
+                ->add('filter', 'Symfony\Component\Form\Extension\Core\Type\TextareaType')
+                ->add('format', 'Symfony\Component\Form\Extension\Core\Type\HiddenType', ['data' => $options['format']])
+                ->add('submit', 'Symfony\Component\Form\Extension\Core\Type\SubmitType');
+        } else {
+            $builder
+                ->add('filter', 'textarea')
+                ->add('format', 'hidden', ['data' => $options['format']])
+                ->add('submit', 'submit');
+        }
     }
 
     /**
@@ -52,6 +58,14 @@ class SearchFormType extends AbstractType
      * {@inheritdoc}
      */
     public function getName()
+    {
+        return 'rollerworks_search';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
     {
         return 'rollerworks_search';
     }
