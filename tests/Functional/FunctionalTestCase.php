@@ -41,8 +41,6 @@ abstract class FunctionalTestCase extends WebTestCase
         $warmer->warmUp($client->getContainer()->getParameter('kernel.cache_dir'));
         $warmer->enableOptionalWarmers();
 
-        $client->getContainer()->getParameter('kernel.cache_dir');
-
         return $client;
     }
 }

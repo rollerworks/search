@@ -134,16 +134,14 @@ abstract class AbstractSearchProcessor implements SearchProcessorInterface
     protected function getRequestParam($name, $default = '', $query = true)
     {
         if (!$query) {
-            return $this->request->request->get(sprintf($this->formFieldPattern, $name), $default, true);
+            return RequestUtils::getParameterBagValue($this->request->request, sprintf($this->formFieldPattern, $name), $default);
         }
-
-        $params = $this->request->query;
 
         if ($this->uriPrefix) {
-            $value = $params->get($this->uriPrefix.'['.$name.']', $default, true);
-        } else {
-            $value = $params->get($name, $default);
+            $name = $this->uriPrefix.'['.$name.']';
         }
+
+        $value = RequestUtils::getParameterBagValue($this->request->query, $name, $default);
 
         if (!is_string($value)) {
             $value = $default;

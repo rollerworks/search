@@ -12,20 +12,22 @@
     ],
     "require": {
         "php": ">=5.4",
-        "rollerworks/search-symfony-di": "^1.0.0",
-        "rollerworks/search-symfony-validator": "^1.0.0",
-        "rollerworks/search-metadata": "^1.0.2",
+        "rollerworks/search-symfony-di": "^1.1.0",
+        "rollerworks/search-symfony-validator": "^1.0.1",
+        "rollerworks/search-metadata": "^1.0.3",
         "rollerworks/metadata-doctrine-cache": ">=0.2,<2.0",
         "rollerworks/exception-parser": "^1.0.1",
         "rollerworks/uri-encoder": "^1.0.0",
         "rollerworks/uri-encoder-doctrine-cache": "^1.0.0",
-        "rollerworks/cache-bundle": "^1.1.0",
-        "symfony/framework-bundle": "^2.3.30",
-        "symfony/finder": "^2.3.24",
-        "symfony/form": "^2.3.24"
+        "rollerworks/cache-bundle": "^1.2.0",
+        "symfony/framework-bundle": "^2.3.30|~3.0",
+        "symfony/property-access": "^2.3.30|~3.0",
+        "symfony/finder": "^2.3.24|~3.0",
+        "symfony/form": "^2.3.24|~3.0"
     },
     "require-dev": {
-        "symfony/browser-kit": "~2.3",
+        "symfony/browser-kit": "~2.3|~3.0",
+        "doctrine/common": "~2.4",
         "matthiasnoback/symfony-dependency-injection-test": "^0.7.4",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.2"
     },

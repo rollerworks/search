@@ -28,7 +28,7 @@ $container->loadFromExtension('rollerworks_search', [
         'field1' => [
             'imports' => [
                 [
-                    'class' => 'Model\User',
+                    'class' => 'Model\\User',
                     'include_fields' => ['name', 'date'],
                     'exclude_fields' => [],
                 ],
@@ -53,7 +53,7 @@ $container->loadFromExtension('rollerworks_search', [
         'field2' => [
             'imports' => [
                 [
-                    'class' => 'Model\User',
+                    'class' => 'Model\\User',
                     'include_fields' => ['name'],
                     'exclude_fields' => [],
                 ],

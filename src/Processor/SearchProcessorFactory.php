@@ -78,7 +78,6 @@ class SearchProcessorFactory implements SearchProcessorFactoryInterface
         Validator $validator,
         TranslatorInterface $translator,
         UriEncoderInterface $uirEncoder,
-
         Cache $cacheAdapter
     ) {
         $this->inputFactory = $inputFactory;

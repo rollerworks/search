@@ -17,7 +17,10 @@ use Rollerworks\Bundle\SearchBundle\DependencyInjection\RollerworksSearchExtensi
 
 class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
 {
-    public function testSupportsAllConfigFormats()
+    /**
+     * @dataProvider provideFormats
+     */
+    public function testSupportsAllConfigFormats($file)
     {
         $expectedConfiguration = [
             'metadata' => [
@@ -38,7 +41,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                 'field1' => [
                     'imports' => [
                         [
-                            'class' => 'Model\User',
+                            'class' => 'Model\\User',
                             'include_fields' => ['name', 'date'],
                             'exclude_fields' => [],
                         ],
@@ -63,7 +66,7 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
                 'field2' => [
                     'imports' => [
                         [
-                            'class' => 'Model\User',
+                            'class' => 'Model\\User',
                             'include_fields' => ['name'],
                             'exclude_fields' => [],
                         ],
@@ -98,17 +101,16 @@ class ExtensionConfigurationTest extends AbstractExtensionConfigurationTestCase
             ],
         ];
 
-        $formats = array_map(function ($path) {
-            return __DIR__.'/../../Resources/Fixtures/'.$path;
-        }, [
-            'config/config.yml',
-            'config/config.xml',
-            'config/config.php',
-        ]);
+        $this->assertProcessedConfigurationEquals($expectedConfiguration, [__DIR__.'/../../Resources/Fixtures/'.$file]);
+    }
 
-        foreach ($formats as $format) {
-            $this->assertProcessedConfigurationEquals($expectedConfiguration, [$format]);
-        }
+    public function provideFormats()
+    {
+        return [
+            'yml' => ['config/config.yml'],
+            'xml' => ['config/config.xml'],
+            'php' => ['config/config.php'],
+        ];
     }
 
     protected function getContainerExtension()

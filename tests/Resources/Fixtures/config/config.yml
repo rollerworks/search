@@ -6,14 +6,14 @@ rollerworks_search:
         mappings:
             "AcmeUser":
                 dir:        Resource/search/
-                prefix:     Model\
+                prefix:     'Model\'
                 is_bundle:  true
                 mapping:    true
     fieldsets:
         field1:
             imports:
                 -
-                    class: "Model\User"
+                    class: 'Model\User'
                     include_fields: [name, date]
             fields:
                 id:
@@ -31,7 +31,7 @@ rollerworks_search:
         field2:
             imports:
                 -
-                    class:          Model\User
+                    class:          'Model\User'
                     include_fields: [name]
             fields:
                 id:
