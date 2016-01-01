@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
 use Rollerworks\Component\Search\AbstractFieldTypeExtension;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -30,17 +31,30 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
             ['doctrine_dbal_conversion' => null]
         );
 
-        $resolver->setAllowedTypes(
-            [
-                'doctrine_dbal_conversion' => [
+        if ($resolver instanceof Options) {
+            $resolver->setAllowedTypes(
+                'doctrine_dbal_conversion',
+                [
                     'null',
                     'Closure',
                     'Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface',
                     'Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface',
                     'Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface',
-                ],
-            ]
-        );
+                ]
+            );
+        } else {
+            $resolver->setAllowedTypes(
+                [
+                    'doctrine_dbal_conversion' => [
+                        'null',
+                        'Closure',
+                        'Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface',
+                        'Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface',
+                        'Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface',
+                    ],
+                ]
+            );
+        }
     }
 
     /**

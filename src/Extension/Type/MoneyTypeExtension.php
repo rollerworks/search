@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
 use Rollerworks\Component\Search\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\MoneyValueConversion;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -51,9 +52,13 @@ class MoneyTypeExtension extends AbstractFieldTypeExtension
             ]
         );
 
-        $resolver->setAllowedTypes(
-            ['doctrine_dbal_with_currency' => ['bool']]
-        );
+        if ($resolver instanceof Options) {
+            $resolver->setAllowedTypes('doctrine_dbal_with_currency', ['bool']);
+        } else {
+            $resolver->setAllowedTypes(
+                ['doctrine_dbal_with_currency' => ['bool']]
+            );
+        }
     }
 
     /**
