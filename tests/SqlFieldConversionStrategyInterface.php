@@ -14,7 +14,6 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 
-interface SqlFieldConversionStrategyInterface
-    extends ConversionStrategyInterface, SqlFieldConversionInterface
+interface SqlFieldConversionStrategyInterface extends ConversionStrategyInterface, SqlFieldConversionInterface
 {
 }

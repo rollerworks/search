@@ -97,12 +97,15 @@ class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
     {
         return 'mock';
     }
+
     protected function initializeDoctrineTypeMappings()
     {
     }
+
     protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed)
     {
     }
+
     /**
      * Gets the SQL Snippet used to declare a BLOB column type.
      */

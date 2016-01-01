@@ -15,7 +15,6 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 
-interface SqlConversionStrategyInterface
-    extends ConversionStrategyInterface, SqlFieldConversionInterface, SqlValueConversionInterface
+interface SqlConversionStrategyInterface extends ConversionStrategyInterface, SqlFieldConversionInterface, SqlValueConversionInterface
 {
 }
