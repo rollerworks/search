@@ -25,6 +25,8 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 
 class OrmTestCase extends DbalTestCase
 {
+    use OnNotSuccessfulTrait;
+
     /**
      * @var \Doctrine\ORM\EntityManager
      */
@@ -203,60 +205,5 @@ class OrmTestCase extends DbalTestCase
             array_merge([], array_unique($idRows)),
             sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s", print_r($rows, true), $whereClause)
         );
-    }
-
-    protected function onNotSuccessfulTest(\Exception $e)
-    {
-        if ($e instanceof \PHPUnit_Framework_AssertionFailedError) {
-            throw $e;
-        }
-
-        if (isset($this->sqlLoggerStack->queries) && count($this->sqlLoggerStack->queries)) {
-            $queries = '';
-            $i = count($this->sqlLoggerStack->queries);
-
-            foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
-                $params = array_map(
-                    function ($p) {
-                        if (is_object($p)) {
-                            return get_class($p);
-                        } else {
-                            return "'".var_export($p, true)."'";
-                        }
-                    },
-                    $query['params'] ?: []
-                );
-
-                $queries .= ($i + 1).". SQL: '".$query['sql']."' Params: ".implode(', ', $params).PHP_EOL;
-                --$i;
-            }
-
-            $trace = $e->getTrace();
-            $traceMsg = '';
-
-            foreach ($trace as $part) {
-                if (isset($part['file'])) {
-                    if (strpos($part['file'], 'PHPUnit/') !== false) {
-                        // Beginning with PHPUnit files we don't print the trace anymore.
-                        break;
-                    }
-
-                    $traceMsg .= $part['file'].':'.$part['line'].PHP_EOL;
-                }
-            }
-
-            $message =
-                '['.get_class($e).'] '.
-                $e->getMessage().
-                PHP_EOL.PHP_EOL.
-                'With queries:'.PHP_EOL.
-                $queries.PHP_EOL.
-                'Trace:'.PHP_EOL.
-                $traceMsg;
-
-            throw new \Exception($message, (int) $e->getCode(), $e);
-        }
-
-        throw $e;
     }
 }
