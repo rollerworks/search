@@ -1,6 +1,23 @@
 UPGRADE
 =======
 
+## Upgrade FROM 1.0.0 to 1.1.0
+
+No significant changes are required.
+
+Support for the Symfony 2.3 OptionsResolver is dropped.
+
+If you require the "symfony/options-resolver" or "symfony/symfony"
+package in your applications composer.json (the root composer.json file).
+You need to eg. set the version constraint to "~2.8" for the "symfony/options-resolver" or
+"symfony/symfony" package.
+
+Installing the new Symfony OptionsResolver should not cause any BC breaks in your
+application. But may give some deprecation notices.
+
+See [UPGRADE-2.6.md#optionsresolver](https://github.com/symfony/symfony/blob/2.8/UPGRADE-2.6.md#optionsresolver)
+for all upgrade instructions.
+
 ## Upgrade FROM 1.0.0-beta4 to 1.0.0-beta5
 
 There has been been some major refactoring to make the system more robust

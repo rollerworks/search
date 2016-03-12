@@ -90,25 +90,13 @@ class ChoiceType extends AbstractFieldType
             'choices' => [],
         ]);
 
-        // BC layer for Symfony 2.7 and 3.0
-        if ($resolver instanceof OptionsResolverInterface) {
-            $resolver->setAllowedTypes(
-                [
-                    'choice_list' => [
-                        'null',
-                        'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface',
-                    ],
-                ]
-            );
-        } else {
-            $resolver->setAllowedTypes(
-                'choice_list',
-                [
-                    'null',
-                    'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface',
-                ]
-            );
-        }
+        $resolver->setAllowedTypes(
+            'choice_list',
+            [
+                'null',
+                'Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface',
+            ]
+        );
     }
 
     /**

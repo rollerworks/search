@@ -177,25 +177,11 @@ class DateTimeType extends AbstractFieldType
             return $value;
         };
 
-        // BC layer for Symfony 2.7 and 3.0
-        if ($resolver instanceof OptionsResolverInterface) {
-            $resolver->setAllowedTypes(
-                [
-                    'pattern' => ['string', 'null'],
-                    'format' => ['string', 'null'],
-                    'date_format' => ['int'],
-                    'time_format' => ['int'],
-                ]
-            );
-
-            $resolver->setNormalizers(['format' => $formatNormalizer]);
-        } else {
-            $resolver->setNormalizer('format', $formatNormalizer);
-            $resolver->setAllowedTypes('pattern', ['string', 'null']);
-            $resolver->setAllowedTypes('format', ['string', 'null']);
-            $resolver->setAllowedTypes('date_format', ['int']);
-            $resolver->setAllowedTypes('time_format', ['int']);
-        }
+        $resolver->setNormalizer('format', $formatNormalizer);
+        $resolver->setAllowedTypes('pattern', ['string', 'null']);
+        $resolver->setAllowedTypes('format', ['string', 'null']);
+        $resolver->setAllowedTypes('date_format', ['int']);
+        $resolver->setAllowedTypes('time_format', ['int']);
     }
 
     /**

@@ -75,17 +75,7 @@ class FieldType extends AbstractFieldType
             ]
         );
 
-        // BC layer for Symfony 2.7 and 3.0
-        if ($resolver instanceof OptionsResolverInterface) {
-            $resolver->setAllowedTypes(
-                [
-                    'invalid_message' => ['string'],
-                    'invalid_message_parameters' => ['array'],
-                ]
-            );
-        } else {
-            $resolver->setAllowedTypes('invalid_message', ['string']);
-            $resolver->setAllowedTypes('invalid_message_parameters', ['array']);
-        }
+        $resolver->setAllowedTypes('invalid_message', ['string']);
+        $resolver->setAllowedTypes('invalid_message_parameters', ['array']);
     }
 }
