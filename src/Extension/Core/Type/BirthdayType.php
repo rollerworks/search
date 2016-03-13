@@ -84,18 +84,8 @@ class BirthdayType extends AbstractFieldType
             },
         ]);
 
-        // BC layer for Symfony 2.7 and 3.0
-        if ($resolver instanceof OptionsResolverInterface) {
-            $resolver->setAllowedTypes(
-                [
-                    'allow_age' => ['bool'],
-                    'allow_future_date' => ['bool'],
-                ]
-            );
-        } else {
-            $resolver->setAllowedTypes('allow_age', ['bool']);
-            $resolver->setAllowedTypes('allow_future_date', ['bool']);
-        }
+        $resolver->setAllowedTypes('allow_age', ['bool']);
+        $resolver->setAllowedTypes('allow_future_date', ['bool']);
     }
 
     /**

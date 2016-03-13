@@ -131,14 +131,7 @@ class DateType extends AbstractFieldType
             ]
         );
 
-        // BC layer for Symfony 2.7 and 3.0
-        if ($resolver instanceof OptionsResolverInterface) {
-            $resolver->setAllowedTypes(
-                ['format' => ['int', 'string']]
-            );
-        } else {
-            $resolver->setAllowedTypes('format', ['int', 'string']);
-        }
+        $resolver->setAllowedTypes('format', ['int', 'string']);
     }
 
     /**

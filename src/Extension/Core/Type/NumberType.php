@@ -80,35 +80,18 @@ class NumberType extends AbstractFieldType
             ]
         );
 
-        // BC layer for Symfony 2.7 and 3.0
-        if ($resolver instanceof OptionsResolverInterface) {
-            $resolver->setAllowedValues(
-                [
-                    'rounding_mode' => [
-                        \NumberFormatter::ROUND_FLOOR,
-                        \NumberFormatter::ROUND_DOWN,
-                        \NumberFormatter::ROUND_HALFDOWN,
-                        \NumberFormatter::ROUND_HALFEVEN,
-                        \NumberFormatter::ROUND_HALFUP,
-                        \NumberFormatter::ROUND_UP,
-                        \NumberFormatter::ROUND_CEILING,
-                    ],
-                ]
-            );
-        } else {
-            $resolver->setAllowedValues(
-                'rounding_mode',
-                [
-                    \NumberFormatter::ROUND_FLOOR,
-                    \NumberFormatter::ROUND_DOWN,
-                    \NumberFormatter::ROUND_HALFDOWN,
-                    \NumberFormatter::ROUND_HALFEVEN,
-                    \NumberFormatter::ROUND_HALFUP,
-                    \NumberFormatter::ROUND_UP,
-                    \NumberFormatter::ROUND_CEILING,
-                ]
-            );
-        }
+        $resolver->setAllowedValues(
+            'rounding_mode',
+            [
+                \NumberFormatter::ROUND_FLOOR,
+                \NumberFormatter::ROUND_DOWN,
+                \NumberFormatter::ROUND_HALFDOWN,
+                \NumberFormatter::ROUND_HALFEVEN,
+                \NumberFormatter::ROUND_HALFUP,
+                \NumberFormatter::ROUND_UP,
+                \NumberFormatter::ROUND_CEILING,
+            ]
+        );
     }
 
     /**
