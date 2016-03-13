@@ -55,16 +55,6 @@ class ChoiceTypeTest extends FieldTypeTestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error
-     */
-    public function testChoicesOptionExpectsArray()
-    {
-        $this->getFactory()->createField('choice', 'choice', [
-            'choices' => new \ArrayObject(),
-        ]);
-    }
-
-    /**
      * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
      */
     public function testChoiceListOptionExpectsChoiceListInterface()
