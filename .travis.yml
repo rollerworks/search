@@ -7,6 +7,11 @@ php:
     - 7.0
     - hhvm
 
+branches:
+    only:
+        - master
+        - 1.x
+
 matrix:
     include:
         - php: 5.4
