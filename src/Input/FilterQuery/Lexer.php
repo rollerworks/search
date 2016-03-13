@@ -184,48 +184,48 @@ class Lexer extends AbstractLexer
 
         switch (true) {
             // Recognize quoted strings
-            case ($value[0] === '"'):
+            case $value[0] === '"':
                 $value = str_replace('""', '"', substr($value, 1, strlen($value) - 2));
 
                 return self::T_STRING;
 
             // Recognize identifiers
             // identifiers are suffixed with ':' to distinct them from strings literals
-            case (':' === substr($value, -1, 1)):
+            case ':' === substr($value, -1, 1):
                 $value = substr($value, 0, strlen($value) - 1);
 
                 return self::T_IDENTIFIER;
 
             // Recognize strings literals
-            case (preg_match('/^([\p{L}\p{N}]+)$/ui', $value) > 0):
+            case preg_match('/^([\p{L}\p{N}]+)$/ui', $value) > 0:
                 return self::T_STRING;
 
             // Recognize symbols
             // @codingStandardsIgnoreStart
 
-            case ($value === ','): return self::T_COMMA;
-            case ($value === '('): return self::T_OPEN_PARENTHESIS;
-            case ($value === ')'): return self::T_CLOSE_PARENTHESIS;
-            case ($value === '='): return self::T_EQUALS;
-            case ($value === '>'): return self::T_GREATER_THAN;
-            case ($value === '<'): return self::T_LOWER_THAN;
-            case ($value === '+'): return self::T_PLUS;
-            case ($value === '-'): return self::T_MINUS;
-            case ($value === '*'): return self::T_MULTIPLY;
-            case ($value === '/'): return self::T_DIVIDE;
-            case ($value === '!'): return self::T_NEGATE;
-            case ($value === ';'): return self::T_SEMICOLON;
-            case ($value === ':'): return self::T_COLON;
-            case ($value === '~'): return self::T_TILDE;
-            case ($value === '['): return self::T_OPEN_BRACE;
-            case ($value === ']'): return self::T_CLOSE_BRACE;
-            case ($value === '?'): return self::T_QUESTION_MARK;
-            case ($value === '&'): return self::T_AND;
+            case $value === ',': return self::T_COMMA;
+            case $value === '(': return self::T_OPEN_PARENTHESIS;
+            case $value === ')': return self::T_CLOSE_PARENTHESIS;
+            case $value === '=': return self::T_EQUALS;
+            case $value === '>': return self::T_GREATER_THAN;
+            case $value === '<': return self::T_LOWER_THAN;
+            case $value === '+': return self::T_PLUS;
+            case $value === '-': return self::T_MINUS;
+            case $value === '*': return self::T_MULTIPLY;
+            case $value === '/': return self::T_DIVIDE;
+            case $value === '!': return self::T_NEGATE;
+            case $value === ';': return self::T_SEMICOLON;
+            case $value === ':': return self::T_COLON;
+            case $value === '~': return self::T_TILDE;
+            case $value === '[': return self::T_OPEN_BRACE;
+            case $value === ']': return self::T_CLOSE_BRACE;
+            case $value === '?': return self::T_QUESTION_MARK;
+            case $value === '&': return self::T_AND;
 
             // Reserved for future usage
-            case ($value === '.'): return self::T_DOT;
-            case ($value === '{'): return self::T_OPEN_CURLY_BRACE;
-            case ($value === '}'): return self::T_CLOSE_CURLY_BRACE;
+            case $value === '.': return self::T_DOT;
+            case $value === '{': return self::T_OPEN_CURLY_BRACE;
+            case $value === '}': return self::T_CLOSE_CURLY_BRACE;
             // @codingStandardsIgnoreEnd
 
             // Default

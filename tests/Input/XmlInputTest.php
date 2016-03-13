@@ -47,11 +47,11 @@ final class XmlInputTest extends InputProcessorTestCase
         return [
             [
                 'foobar',
-                "[ERROR 4]",
+                '[ERROR 4]',
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>',
-                "[ERROR 4]",
+                '[ERROR 4]',
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
@@ -65,7 +65,7 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-                "[ERROR 73]",
+                '[ERROR 73]',
             ],
         ];
     }

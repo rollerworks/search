@@ -348,7 +348,7 @@ class FilterQueryInput extends AbstractInput
                     }
                     break;
 
-                case ($inGroup && Lexer::T_CLOSE_PARENTHESIS):
+                case $inGroup && Lexer::T_CLOSE_PARENTHESIS:
                     // Group closing is handled using the Group() method
                     break 2;
 

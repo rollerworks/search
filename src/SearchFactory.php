@@ -61,7 +61,7 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * Create a new search field referenced by property.
      *
-     
+
      * @param string $class    Model reference class-name
      * @param string $property Model reference property-name
      * @param string $name     Name of the field
