@@ -12,6 +12,7 @@
     ],
     "require": {
         "php": ">=5.4",
+        "rollerworks/search": "^1.1",
         "rollerworks/search-symfony-di": "^1.1.0",
         "rollerworks/search-symfony-validator": "^1.0.1",
         "rollerworks/search-metadata": "^1.0.3",
