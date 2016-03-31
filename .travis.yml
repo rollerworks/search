@@ -11,12 +11,9 @@ matrix:
     include:
         - php: 5.4
           env: DEPENDENCIES='low'
-        - php: 5.6
-          env: DEPENDENCIES='dev'
-        - php: 5.6
-          env: SYMFONY_VERSION=3.0.*
-    allow_failures:
         - php: 7.0
+          env: DEPENDENCIES='dev'
+    allow_failures:
         - env: DEPENDENCIES='dev'
     fast_finish: true
 
