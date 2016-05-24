@@ -28,11 +28,11 @@ interface SearchFactoryInterface
     public function createField($name, $type, array $options = []);
 
     /**
-     * Create a new FieldsetBuilderInterface instance.
+     * Create a new FieldSetBuilderInterface instance.
      *
      * @param string $name
      *
-     * @return FieldsetBuilderInterface
+     * @return FieldSetBuilderInterface
      */
     public function createFieldSetBuilder($name);
 }

@@ -31,7 +31,7 @@ class PreloadedExtension implements SearchExtensionInterface
      * @param FieldTypeInterface[]          $types          The types that the extension should support
      * @param FieldTypeExtensionInterface[] $typeExtensions The type extensions that the extension should support
      */
-    public function __construct(array $types, array $typeExtensions)
+    public function __construct(array $types, array $typeExtensions = [])
     {
         $this->types = $types;
         $this->typeExtensions = $typeExtensions;
