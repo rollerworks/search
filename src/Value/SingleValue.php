@@ -13,6 +13,9 @@ namespace Rollerworks\Component\Search\Value;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @deprecated Deprecated since version 1.2, to be removed in 2.0.
+ *             Simple values will be no longer kept inside an object.
  */
 final class SingleValue
 {

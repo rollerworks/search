@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Value;
 /**
  * Compare value structure.
  */
-final class Compare
+final class Compare implements ValueHolder
 {
     /**
      * Comparison operator.
