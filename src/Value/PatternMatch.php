@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Value;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class PatternMatch
+final class PatternMatch implements ValueHolder
 {
     const PATTERN_CONTAINS = 1;
     const PATTERN_STARTS_WITH = 2;

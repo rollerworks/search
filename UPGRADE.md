@@ -1,6 +1,80 @@
 UPGRADE
 =======
 
+## Upgrade FROM 1.1.0 to 1.2.0
+
+**Note:** This version is the last minor version for the 1.x branch!
+And it will receive support until November 2018.
+
+To enjoy better performance, less memory usage, better support
+for API-only applications and easier error handling
+you must upgrade to 2.0 (not released at this moment).
+
+### Values
+
+ * The "view" version of value holders (Single, Range, Comparison) is deprecated,
+   and should not be relied upon anymore. Keeping a "view" version will be removed
+   in 2.0. Instead you can use the view transformer that is configured for Search Field.
+
+   The view-transformer ensures a proper view representation of the value for the current locale.
+
+ * The `Rollerworks\Component\Search\Value\SingleValue` class is deprecated
+   and will be removed in 2.0.
+
+   Instead the value is passed as-is (without being wrapped inside an object).
+   Please also see the changes in `ValuesBag` for more information.
+
+ * The `Rollerworks\Component\Search\ValuesBag` now supports other custom value
+   types then Single, Ranges, Comparison, and PatternMatchers.
+
+   To reduce the complexity of the `ValuesBag` all specific value methods are
+   deprecated and will be removed in 2.0.
+
+   You must replace specific method types with: `add()`, `has()`, `get()` and `remove()`
+   respectively. For example the Comparison value-type methods are used like:
+
+   * `getComparisons()` becomes `get('Rollerworks\Component\Search\Value\Compare')`
+   * `hasComparisons()` becomes `has('Rollerworks\Component\Search\Value\Compare')`
+   * `removeComparison(1)` becomes `remove('Rollerworks\Component\Search\Value\Compare', 1)`
+   * `addComparisons(new Compare(..))` becomes `add(new Compare(..))`
+
+   **Tip:** With PHP 5.5 you can simple use `Compare::class` instead of having to type
+   the complete class-name.
+
+   **Caution:** Make sure NOT to prefix the class-name value with a `\\` when using strings!
+
+ * Single value is renamed to simple value for clarity, and has it's own methods:
+
+   * `getSingleValues()` becomes `getSimpleValues()`
+   * `hasSingleValues()` becomes `hasSimpleValues()`
+   * `removeSingleValue(1)` becomes `removeSimpleValue(1)`
+   * `addSingleValues(new SingleValue('my-value'))` becomes `getSimpleValues('my-value')`
+
+   **Caution:** `getSimpleValues()` will return the values as-is while `getSingleValues()`
+   returns the values wrapped inside a `SingleValue` object.
+
+   The old single value methods will be removed in 2.0.
+
+### User error handling
+
+ * Keeping value errors inside the `ValuesBag` is deprecated and will be removed in version 2.0.
+   Instead the `InvalidSearchValuesException` provides a list of all the errors,
+   as a single level array.
+
+   The value path of each error is dependent on the input format.
+   For example the path for a FilterQuery is `groups[0].fields['name']['value-position']`
+   as there is no structure (only values with a specific position).
+
+   While the array format produces `groups[0].fields['field-name']['ranges'][0]`.
+
+   *Check the documentation of the used InputProcessor for more information.*
+
+ * The `Rollerworks\Component\Search\ValuesError` is deprecated in favor of
+   `Rollerworks\Component\Search\Value\InvalidValue`.
+
+   The `Rollerworks\Component\Search\ValuesError` class will be removed in version 2.0.
+   You must use the new `InvalidValue` instead.
+
 ## Upgrade FROM 1.0.0 to 1.1.0
 
 No significant changes are required.

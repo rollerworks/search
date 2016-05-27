@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Value;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class Range
+class Range implements ValueHolder
 {
     private $viewLower;
     private $viewUpper;

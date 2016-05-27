@@ -21,7 +21,7 @@ class ValuesBagBuilder extends ValuesBag
     /**
      * @var SearchConditionBuilder
      */
-    protected $parent;
+    private $parent;
 
     /**
      * Constructor.

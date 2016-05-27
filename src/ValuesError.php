@@ -13,6 +13,9 @@ namespace Rollerworks\Component\Search;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @deprecated Deprecated since version 1.2, to be removed in 2.0.
+ *             Use \Rollerworks\Component\Search\Value\InvalidValue instead.
  */
 class ValuesError
 {
@@ -152,6 +155,8 @@ class ValuesError
      * So an error with the same information but different cause will produce the same hash!
      *
      * @return string
+     *
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
      */
     public function getHash()
     {
