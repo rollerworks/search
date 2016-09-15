@@ -55,11 +55,11 @@ class ChoiceList implements ChoiceListInterface
     /**
      * Creates a new choice list.
      *
-     * @param array|\Traversable $choices The array of choices.
+     * @param array|\Traversable $choices The array of choices
      * @param array              $labels  The array of labels. The structure of this array
-     *                                    should match the structure of $choices.
+     *                                    should match the structure of $choices
      *
-     * @throws UnexpectedTypeException If the choices are not an array or \Traversable.
+     * @throws UnexpectedTypeException If the choices are not an array or \Traversable
      */
     public function __construct($choices, array $labels)
     {
@@ -75,8 +75,8 @@ class ChoiceList implements ChoiceListInterface
      *
      * Safe to be called multiple times. The list is cleared on every call.
      *
-     * @param array|\Traversable $choices The choices to write into the list.
-     * @param array              $labels  The labels belonging to the choices.
+     * @param array|\Traversable $choices The choices to write into the list
+     * @param array              $labels  The labels belonging to the choices
      */
     protected function initialize($choices, array $labels)
     {
@@ -207,10 +207,10 @@ class ChoiceList implements ChoiceListInterface
     /**
      * Adds a new choice.
      *
-     * @param mixed  $choice The choice to add.
-     * @param string $label  The label for the choice.
+     * @param mixed  $choice The choice to add
+     * @param string $label  The label for the choice
      *
-     * @throws InvalidConfigurationException If no valid value or index could be created.
+     * @throws InvalidConfigurationException If no valid value or index could be created
      */
     protected function addChoice($choice, $label)
     {
@@ -249,7 +249,7 @@ class ChoiceList implements ChoiceListInterface
      * @param mixed $choice The choice to create an index for
      *
      * @return int|string A unique index containing only ASCII letters,
-     *                    digits and underscores.
+     *                    digits and underscores
      */
     protected function createIndex($choice)
     {
@@ -265,7 +265,7 @@ class ChoiceList implements ChoiceListInterface
      *
      * @param mixed $choice The choice to create a value for
      *
-     * @return string A unique string.
+     * @return string A unique string
      */
     protected function createValue($choice)
     {
@@ -276,9 +276,9 @@ class ChoiceList implements ChoiceListInterface
      * Fixes the data type of the given choice value to avoid comparison
      * problems.
      *
-     * @param mixed $value The choice value.
+     * @param mixed $value The choice value
      *
-     * @return string The value as string.
+     * @return string The value as string
      */
     protected function fixValue($value)
     {
@@ -289,9 +289,9 @@ class ChoiceList implements ChoiceListInterface
      * Fixes the data type of the given choice index to avoid comparison
      * problems.
      *
-     * @param mixed $index The choice index.
+     * @param mixed $index The choice index
      *
-     * @return int|string The index as PHP array key.
+     * @return int|string The index as PHP array key
      */
     protected function fixIndex($index)
     {
@@ -306,9 +306,9 @@ class ChoiceList implements ChoiceListInterface
      * Fixes the data types of the given choice indices to avoid comparison
      * problems.
      *
-     * @param array $indices The choice indices.
+     * @param array $indices The choice indices
      *
-     * @return array The indices as strings.
+     * @return array The indices as strings
      */
     protected function fixIndices(array $indices)
     {

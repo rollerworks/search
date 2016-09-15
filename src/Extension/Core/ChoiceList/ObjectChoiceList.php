@@ -56,16 +56,16 @@ class ObjectChoiceList extends ChoiceList
     /**
      * Creates a new object choice list.
      *
-     * @param array|\Traversable        $choices          The array of choices.
+     * @param array|\Traversable        $choices          The array of choices
      * @param string                    $labelPath        A property path pointing to the property used
      *                                                    for the choice labels. The value is obtained
      *                                                    by calling the getter on the object. If the
      *                                                    path is NULL, the object's __toString() method
-     *                                                    is used instead.
+     *                                                    is used instead
      * @param string                    $valuePath        A property path pointing to the property used
      *                                                    for the choice values. If not given, integers
-     *                                                    are generated instead.
-     * @param PropertyAccessorInterface $propertyAccessor The reflection graph for reading property paths.
+     *                                                    are generated instead
+     * @param PropertyAccessorInterface $propertyAccessor The reflection graph for reading property paths
      */
     public function __construct($choices, $labelPath = null, $valuePath = null, PropertyAccessorInterface $propertyAccessor = null)
     {
@@ -117,8 +117,8 @@ class ObjectChoiceList extends ChoiceList
      *
      * Safe to be called multiple times. The list is cleared on every call.
      *
-     * @param array|\Traversable $choices The choices to write into the list.
-     * @param array              $labels  Ignored.
+     * @param array|\Traversable $choices The choices to write into the list
+     * @param array              $labels  Ignored
      */
     protected function initialize($choices, array $labels)
     {
@@ -138,7 +138,7 @@ class ObjectChoiceList extends ChoiceList
      *
      * @param mixed $choice The choice to create a value for
      *
-     * @return int|string A unique value without character limitations.
+     * @return int|string A unique value without character limitations
      */
     protected function createValue($choice)
     {

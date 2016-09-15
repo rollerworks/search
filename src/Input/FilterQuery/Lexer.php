@@ -55,7 +55,7 @@ class Lexer extends AbstractLexer
     /**
      * Creates a new query scanner object.
      *
-     * @param string $input A query string.
+     * @param string $input A query string
      */
     public function __construct($input = null)
     {

@@ -33,7 +33,7 @@ class SimpleChoiceList extends ChoiceList
      * Creates a new simple choice list.
      *
      * @param array $choices The array of choices with the choices as keys and
-     *                       the labels as values.
+     *                       the labels as values
      */
     public function __construct(array $choices)
     {
@@ -91,8 +91,8 @@ class SimpleChoiceList extends ChoiceList
      * Takes care of splitting the single $choices array passed in the
      * constructor into choices and labels.
      *
-     * @param array|\Traversable $choices The list of choices.
-     * @param array              $labels  Ignored.
+     * @param array|\Traversable $choices The list of choices
+     * @param array              $labels  Ignored
      */
     protected function addChoices($choices, array $labels)
     {

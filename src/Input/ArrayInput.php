@@ -53,7 +53,7 @@ class ArrayInput extends AbstractInput
      * @param ProcessorConfig $config
      * @param array           $input
      *
-     * @throws \InvalidArgumentException When provided input is not an array.
+     * @throws \InvalidArgumentException When provided input is not an array
      */
     public function process(ProcessorConfig $config, $input)
     {
@@ -90,9 +90,9 @@ class ArrayInput extends AbstractInput
      * @param int         $groupIdx
      * @param int         $level
      *
-     * @throws FieldRequiredException  When a required is not set or as no values.
-     * @throws ValuesOverflowException When the maximum number of values per group is exceeded.
-     * @throws InputProcessorException When an exception is thrown during the processing.
+     * @throws FieldRequiredException  When a required is not set or as no values
+     * @throws ValuesOverflowException When the maximum number of values per group is exceeded
+     * @throws InputProcessorException When an exception is thrown during the processing
      */
     private function processGroup(array $values, ValuesGroup $valuesGroup, $groupIdx = 0, $level = 0)
     {

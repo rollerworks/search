@@ -102,7 +102,7 @@ class Field
 
     /**
      * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use a custom validator instead.
+     *             Use a custom validator instead
      */
     public function setRequired($required)
     {
@@ -110,7 +110,7 @@ class Field
 
     /**
      * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use a custom validator instead.
+     *             Use a custom validator instead
      */
     public function isRequired()
     {

@@ -51,8 +51,8 @@ abstract class AbstractInput implements InputProcessorInterface
      *
      * @param string $name
      *
-     * @throws UnknownFieldException When there is no field found.
-     * @throws \LogicException       When there is no FieldSet configured.
+     * @throws UnknownFieldException When there is no field found
+     * @throws \LogicException       When there is no FieldSet configured
      *
      * @return string
      */

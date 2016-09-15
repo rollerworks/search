@@ -106,7 +106,7 @@ class FilterQueryExporter extends AbstractExporter
     /**
      * @param PatternMatch $patternMatch
      *
-     * @throws \RuntimeException When an unsupported pattern-match type is found.
+     * @throws \RuntimeException When an unsupported pattern-match type is found
      *
      * @return string
      */
@@ -179,7 +179,7 @@ class FilterQueryExporter extends AbstractExporter
      *
      * @param string $value
      *
-     * @throws \InvalidArgumentException When the passed value is null or none scalar.
+     * @throws \InvalidArgumentException When the passed value is null or none scalar
      *
      * @return string
      */

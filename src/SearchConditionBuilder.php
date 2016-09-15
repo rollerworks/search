@@ -41,7 +41,7 @@ class SearchConditionBuilder
      * @param SearchConditionBuilder $parent
      *
      * @internal Usage of this method is protected as of v1.0.0-beta5 and access will be changed to protected
-     *           in 2.0. Use the static create() method instead.
+     *           in 2.0. Use the static create() method instead
      *
      * @throws BadMethodCallException when no FieldSet is provided
      */

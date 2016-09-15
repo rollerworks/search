@@ -92,7 +92,7 @@ class SearchField implements FieldConfigInterface
      * BC method, does nothing.
      *
      * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use a custom validator instead.
+     *             Use a custom validator instead
      */
     public function setRequired($required = true)
     {
@@ -169,7 +169,7 @@ class SearchField implements FieldConfigInterface
      * BC method.
      *
      * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use a custom validator instead.
+     *             Use a custom validator instead
      */
     public function isRequired()
     {
@@ -185,7 +185,7 @@ class SearchField implements FieldConfigInterface
      * @return self
      *
      * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use the 'model_class' and 'model_property' options instead.
+     *             Use the 'model_class' and 'model_property' options instead
      */
     public function setModelRef($class, $property)
     {

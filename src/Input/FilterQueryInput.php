@@ -213,9 +213,9 @@ class FilterQueryInput extends AbstractInput
      * If they match, updates the lookahead token; otherwise raises a syntax
      * error.
      *
-     * @param int $token The token type.
+     * @param int $token The token type
      *
-     * @throws QueryException If the tokens don't match.
+     * @throws QueryException If the tokens don't match
      */
     private function match($token)
     {
@@ -232,8 +232,8 @@ class FilterQueryInput extends AbstractInput
     /**
      * Generates a new syntax error.
      *
-     * @param string|string[] $expected Expected string.
-     * @param array|null      $token    Got token.
+     * @param string|string[] $expected Expected string
+     * @param array|null      $token    Got token
      *
      * @throws QueryException
      */

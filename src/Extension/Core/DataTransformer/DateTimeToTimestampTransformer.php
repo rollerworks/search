@@ -28,7 +28,7 @@ class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      *
      * @throws TransformationFailedException If the given value is not an instance
      *                                       of \DateTime or if the output
-     *                                       timezone is not supported.
+     *                                       timezone is not supported
      *
      * @return int A timestamp
      */
@@ -58,7 +58,7 @@ class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      * @param string $value A timestamp
      *
      * @throws TransformationFailedException If the given value is not a timestamp
-     *                                       or if the given timestamp is invalid.
+     *                                       or if the given timestamp is invalid
      *
      * @return \DateTime A \DateTime object
      */

@@ -108,7 +108,7 @@ interface FieldConfigInterface
     /**
      * Clears the view transformers of the field.
      *
-     * @return self The configuration object.
+     * @return self The configuration object
      */
     public function resetViewTransformers();
 

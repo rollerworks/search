@@ -21,7 +21,7 @@ interface FieldTypeInterface
     /**
      * Returns the name of the type.
      *
-     * @return string The type name.
+     * @return string The type name
      */
     public function getName();
 

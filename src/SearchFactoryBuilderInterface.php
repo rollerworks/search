@@ -28,7 +28,7 @@ interface SearchFactoryBuilderInterface
     /**
      * Adds an extension to be loaded by the factory.
      *
-     * @param SearchExtensionInterface $extension The extension.
+     * @param SearchExtensionInterface $extension The extension
      *
      * @return SearchFactoryBuilderInterface The builder
      */
@@ -37,7 +37,7 @@ interface SearchFactoryBuilderInterface
     /**
      * Adds a list of extensions to be loaded by the factory.
      *
-     * @param SearchExtensionInterface[] $extensions The extensions.
+     * @param SearchExtensionInterface[] $extensions The extensions
      *
      * @return SearchFactoryBuilderInterface The builder
      */
@@ -46,7 +46,7 @@ interface SearchFactoryBuilderInterface
     /**
      * Adds a field type to the factory.
      *
-     * @param FieldTypeInterface $type The field type.
+     * @param FieldTypeInterface $type The field type
      *
      * @return SearchFactoryBuilderInterface The builder
      */
@@ -55,7 +55,7 @@ interface SearchFactoryBuilderInterface
     /**
      * Adds a list of field types to the factory.
      *
-     * @param FieldTypeInterface[] $types The field types.
+     * @param FieldTypeInterface[] $types The field types
      *
      * @return SearchFactoryBuilderInterface The builder
      */
@@ -64,7 +64,7 @@ interface SearchFactoryBuilderInterface
     /**
      * Adds a field type extension to the factory.
      *
-     * @param FieldTypeExtensionInterface $typeExtension The field type extension.
+     * @param FieldTypeExtensionInterface $typeExtension The field type extension
      *
      * @return SearchFactoryBuilderInterface The builder
      */

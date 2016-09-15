@@ -66,8 +66,12 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 
         $checkValue = [];
 
-        $this->optimizer1->process($searchCondition)->will(function () use (&$checkValue) { $checkValue[] = 2; });
-        $this->optimizer2->process($searchCondition)->will(function () use (&$checkValue) { $checkValue[] = 1; });
+        $this->optimizer1->process($searchCondition)->will(function () use (&$checkValue) {
+            $checkValue[] = 2;
+        });
+        $this->optimizer2->process($searchCondition)->will(function () use (&$checkValue) {
+            $checkValue[] = 1;
+        });
 
         $this->optimizer->addOptimizer($this->optimizer1->reveal());
         $this->optimizer->addOptimizer($this->optimizer2->reveal());
