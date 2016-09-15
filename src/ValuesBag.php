@@ -523,8 +523,7 @@ class ValuesBag implements \Countable, \Serializable
             $this->values,
             $this->valuesCount,
             $this->errors,
-            $this->locked,
-        ) = $data;
+            $this->locked) = $data;
     }
 
     /**
