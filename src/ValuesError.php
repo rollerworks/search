@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search;
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * @deprecated Deprecated since version 1.2, to be removed in 2.0.
- *             Use \Rollerworks\Component\Search\Value\InvalidValue instead.
+ *             Use \Rollerworks\Component\Search\Value\InvalidValue instead
  */
 class ValuesError
 {
@@ -62,11 +62,11 @@ class ValuesError
      * $messageTemplate.
      *
      * @param string      $subPath              Sub-path of the error, this is relative to
-     *                                          the ValuesBag object.
+     *                                          the ValuesBag object
      * @param string      $message              The translated error message
      * @param string|null $messageTemplate      The template for the error message
      * @param array       $messageParameters    The parameters that should be
-     *                                          substituted in the message template.
+     *                                          substituted in the message template
      * @param int|null    $messagePluralization The value for error message pluralization
      * @param mixed       $cause                The cause of the error
      *
@@ -156,7 +156,7 @@ class ValuesError
      *
      * @return string
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0
      */
     public function getHash()
     {

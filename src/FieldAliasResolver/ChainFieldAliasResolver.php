@@ -25,7 +25,7 @@ class ChainFieldAliasResolver implements FieldAliasResolverInterface
     /**
      * @param FieldAliasResolverInterface[] $resolvers
      *
-     * @throws UnexpectedTypeException when a resolver does not implement the FieldAliasResolverInterface.
+     * @throws UnexpectedTypeException when a resolver does not implement the FieldAliasResolverInterface
      */
     public function __construct(array $resolvers)
     {

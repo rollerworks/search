@@ -80,7 +80,7 @@ final class Searches
     /**
      * Creates a search factory builder with the default configuration.
      *
-     * @return SearchFactoryBuilder The search factory builder.
+     * @return SearchFactoryBuilder The search factory builder
      */
     public static function createSearchFactoryBuilder()
     {

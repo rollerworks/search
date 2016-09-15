@@ -60,7 +60,7 @@ class ValuesGroup implements \Serializable
      *
      * @param string $groupLogical
      *
-     * @throws InvalidArgumentException When no an unsupported group logical is provided.
+     * @throws InvalidArgumentException When no an unsupported group logical is provided
      */
     public function __construct($groupLogical = self::GROUP_LOGICAL_AND)
     {
@@ -278,7 +278,7 @@ class ValuesGroup implements \Serializable
      *
      * @param int
      *
-     * @throws InvalidArgumentException When no an unsupported group logical is provided.
+     * @throws InvalidArgumentException When no an unsupported group logical is provided
      *
      * @return self
      */
@@ -365,7 +365,7 @@ class ValuesGroup implements \Serializable
      * A field with locked data is restricted to the data passed in
      * its configuration.
      *
-     * @return bool Whether the data is locked.
+     * @return bool Whether the data is locked
      */
     public function isDataLocked()
     {

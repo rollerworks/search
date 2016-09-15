@@ -45,7 +45,7 @@ class FieldSet implements \Countable, \IteratorAggregate
      *
      * @param string|null $name FieldSet name, should start with a letter, digit or underscore
      *                          and only contain letters, digits, numbers, underscores ("_") and
-     *                          hyphens ("-").
+     *                          hyphens ("-")
      *
      * @throws UnexpectedTypeException   If the name is not a string or an integer
      * @throws \InvalidArgumentException If the name contains invalid characters
@@ -281,7 +281,7 @@ class FieldSet implements \Countable, \IteratorAggregate
      * A FieldSet with locked data is restricted to the data currently
      * configured.
      *
-     * @return bool Whether the data is locked.
+     * @return bool Whether the data is locked
      */
     public function isConfigLocked()
     {

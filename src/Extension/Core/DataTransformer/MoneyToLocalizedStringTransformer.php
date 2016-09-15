@@ -66,9 +66,9 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
      * @param MoneyValue $value Normalized number
      *
      * @throws TransformationFailedException If the given value is not numeric or
-     *                                       if the value can not be transformed.
+     *                                       if the value can not be transformed
      *
-     * @return string Localized money string.
+     * @return string Localized money string
      */
     public function transform($value)
     {
@@ -106,7 +106,7 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
      * @param string $value Localized money string
      *
      * @throws TransformationFailedException If the given value is not a string
-     *                                       or if the value can not be transformed.
+     *                                       or if the value can not be transformed
      *
      * @return MoneyValue Normalized number
      */

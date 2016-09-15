@@ -25,7 +25,7 @@ class ChainFieldLabelResolver implements FieldLabelResolverInterface
     /**
      * @param FieldLabelResolverInterface[] $resolvers
      *
-     * @throws UnexpectedTypeException when a resolver does not implement the FieldLabelResolverInterface.
+     * @throws UnexpectedTypeException when a resolver does not implement the FieldLabelResolverInterface
      */
     public function __construct(array $resolvers)
     {

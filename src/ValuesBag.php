@@ -29,19 +29,19 @@ class ValuesBag implements \Countable, \Serializable
 {
     /**
      * @deprecated Deprecated since version 1.2, to be removed in 2.0.
-     *             Use `Rollerworks\Component\Search\Value\Range::class` instead.
+     *             Use `Rollerworks\Component\Search\Value\Range::class` instead
      */
     const VALUE_TYPE_RANGE = 'range';
 
     /**
      * @deprecated Deprecated since version 1.2, to be removed in 2.0.
-     *             Use `Rollerworks\Component\Search\Value\Compare::class` instead.
+     *             Use `Rollerworks\Component\Search\Value\Compare::class` instead
      */
     const VALUE_TYPE_COMPARISON = 'comparison';
 
     /**
      * @deprecated Deprecated since version 1.2, to be removed in 2.0.
-     *             Use `Rollerworks\Component\Search\Value\PatternMatch::class` instead.
+     *             Use `Rollerworks\Component\Search\Value\PatternMatch::class` instead
      */
     const VALUE_TYPE_PATTERN_MATCH = 'pattern-match';
 
@@ -58,7 +58,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return SingleValue[]
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getSimpleValues() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getSimpleValues() instead
      */
     public function getSingleValues()
     {
@@ -72,7 +72,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use addSimpleValue() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use addSimpleValue() instead
      */
     public function addSingleValue(SingleValue $value)
     {
@@ -93,7 +93,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return bool
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use hasSimpleValues() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use hasSimpleValues() instead
      */
     public function hasSingleValues()
     {
@@ -107,7 +107,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use removeSimpleValues() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use removeSimpleValues() instead
      */
     public function removeSingleValue($index)
     {
@@ -121,7 +121,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use addExcludedSimpleValue() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use addExcludedSimpleValue() instead
      */
     public function addExcludedValue(SingleValue $value)
     {
@@ -141,7 +141,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return bool
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use hasExcludedSimpleValues() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use hasExcludedSimpleValues() instead
      */
     public function hasExcludedValues()
     {
@@ -153,7 +153,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return SingleValue[]
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getExcludedSimpleValues() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getExcludedSimpleValues() instead
      */
     public function getExcludedValues()
     {
@@ -167,7 +167,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getExcludedSimpleValues() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getExcludedSimpleValues() instead
      */
     public function removeExcludedValue($index)
     {
@@ -191,7 +191,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead
      */
     public function addRange(Range $range)
     {
@@ -203,7 +203,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return bool
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead
      */
     public function hasRanges()
     {
@@ -215,7 +215,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return Range[]
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead
      */
     public function getRanges()
     {
@@ -229,7 +229,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead
      */
     public function removeRange($index)
     {
@@ -243,7 +243,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead
      */
     public function addExcludedRange(Range $range)
     {
@@ -266,7 +266,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return bool
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead
      */
     public function hasExcludedRanges()
     {
@@ -278,7 +278,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return Range[]
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead
      */
     public function getExcludedRanges()
     {
@@ -292,7 +292,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead
      */
     public function removeExcludedRange($index)
     {
@@ -306,7 +306,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead
      */
     public function addComparison(Compare $value)
     {
@@ -318,7 +318,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return Compare[]
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead
      */
     public function getComparisons()
     {
@@ -330,7 +330,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return bool
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead
      */
     public function hasComparisons()
     {
@@ -344,7 +344,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead
      */
     public function removeComparison($index)
     {
@@ -356,7 +356,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return PatternMatch[]
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead
      */
     public function getPatternMatchers()
     {
@@ -370,7 +370,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead
      */
     public function addPatternMatch(PatternMatch $value)
     {
@@ -382,7 +382,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return bool
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead
      */
     public function hasPatternMatchers()
     {
@@ -396,7 +396,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead
      */
     public function removePatternMatch($index)
     {
@@ -410,7 +410,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return static
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0
      */
     public function addError(ValuesError $error)
     {
@@ -428,7 +428,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return bool
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0
      */
     public function hasErrors()
     {
@@ -440,7 +440,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return ValuesError[]
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0
      */
     public function getErrors()
     {
@@ -454,7 +454,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return bool
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0
      */
     public function hasError(ValuesError $error)
     {
@@ -468,7 +468,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return static
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0
      */
     public function removeError(ValuesError $error)
     {
@@ -535,7 +535,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @throws BadMethodCallException when the data is locked
      *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use ensureDataLocked() instead.
+     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use ensureDataLocked() instead
      */
     public function setDataLocked($locked = true)
     {
@@ -554,7 +554,7 @@ class ValuesBag implements \Countable, \Serializable
      * A field with locked data is restricted to the data passed in
      * this configuration.
      *
-     * @return bool Whether the data is locked.
+     * @return bool Whether the data is locked
      */
     public function isDataLocked()
     {

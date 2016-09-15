@@ -65,7 +65,7 @@ class DateValueComparison implements ValueIncrementerInterface
      *
      * The value should returned in the normalized format.
      *
-     * @param \DateTime $value      The value to increment.
+     * @param \DateTime $value      The value to increment
      * @param array     $options    Array of options passed with the field
      * @param int       $increments Number of increments
      *

@@ -94,7 +94,7 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @throws TransformationFailedException If the given value is not a \DateTime
      *                                       instance or if the output timezone
-     *                                       is not supported.
+     *                                       is not supported
      *
      * @return string A value as produced by PHP's date() function
      */
@@ -125,7 +125,7 @@ class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @throws TransformationFailedException If the given value is not a string,
      *                                       if the date could not be parsed or
-     *                                       if the input timezone is not supported.
+     *                                       if the input timezone is not supported
      *
      * @return \DateTime An instance of \DateTime
      */

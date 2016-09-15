@@ -93,7 +93,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
      * @param string[] $expected
      * @param string   $got
      *
-     * @throws \Exception When an unmatched exception is thrown.
+     * @throws \Exception When an unmatched exception is thrown
      *
      * @test
      * @dataProvider provideQueryExceptionTests

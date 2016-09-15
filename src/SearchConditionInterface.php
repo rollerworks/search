@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search;
 /**
  * SearchCondition contains the searching conditions and FieldSet.
  *
- * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use SearchCondition instead.
+ * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use SearchCondition instead
  */
 interface SearchConditionInterface
 {

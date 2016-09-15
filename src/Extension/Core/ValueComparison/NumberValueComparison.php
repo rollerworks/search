@@ -65,7 +65,7 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * The value should returned in the normalized format.
      *
-     * @param int|float $value      The value to increment.
+     * @param int|float $value      The value to increment
      * @param array     $options    Array of options passed with the field
      * @param int       $increments Number of increments
      *
