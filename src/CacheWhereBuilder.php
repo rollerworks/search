@@ -38,7 +38,7 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
+class CacheWhereBuilder extends AbstractCacheWhereBuilder
 {
     use QueryPlatformTrait;
 
@@ -63,7 +63,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      * @param WhereBuilder $whereBuilder The WhereBuilder to use for generating and updating the query
      * @param Cache        $cacheDriver  Doctrine Cache instance
      * @param int          $lifeTime     Lifetime in seconds after which the cache is expired
-     *                                   Set this 0 to never expire.
+     *                                   Set this 0 to never expire
      */
     public function __construct(WhereBuilder $whereBuilder, Cache $cacheDriver, $lifeTime = 0)
     {
@@ -157,7 +157,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      *
      * The Query hint is used for sql-value-conversions.
      *
-     * @return \Closure
+     * @return \Closure|SqlConversionInfo
      */
     public function getQueryHintValue()
     {

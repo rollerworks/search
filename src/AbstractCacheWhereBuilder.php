@@ -12,6 +12,8 @@
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\Common\Cache\Cache;
+use Doctrine\ORM\NativeQuery;
+use Doctrine\ORM\Query;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 
 /***
@@ -64,7 +66,7 @@ abstract class AbstractCacheWhereBuilder implements WhereBuilderInterface
      *
      * @param Cache $cacheDriver Doctrine Cache instance
      * @param int   $lifeTime    Lifetime in seconds after which the cache is expired
-     *                           Set this 0 to never expire.
+     *                           Set this 0 to never expire
      */
     public function __construct(Cache $cacheDriver, $lifeTime = 0)
     {
@@ -76,7 +78,7 @@ abstract class AbstractCacheWhereBuilder implements WhereBuilderInterface
      * Set the cache key.
      *
      * This method also accepts a callback that can calculate the key for you.
-     * The callback will receive wherebuilder.
+     * The callback will receive the WhereBuilder.
      *
      * @param string   $key
      * @param callable $callback
@@ -120,7 +122,7 @@ abstract class AbstractCacheWhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * @return object
+     * @return Query|NativeQuery
      */
     public function getQuery()
     {

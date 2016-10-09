@@ -11,12 +11,16 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+// Type-hint was removed for PHP 7
 if (PHP_MAJOR_VERSION > 5) {
     trait OnNotSuccessfulTrait
     {
         protected function onNotSuccessfulTest($e)
         {
-            if ($e instanceof \PHPUnit_Framework_AssertionFailedError) {
+            // Ignore deprecation warnings.
+            if ($e instanceof \PHPUnit_Framework_AssertionFailedError ||
+                ($e instanceof \PHPUnit_Framework_Warning && strpos($e->getMessage(), ' is deprecated,'))
+            ) {
                 throw $e;
             }
 

@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\NativeQuery;
 
-class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
+class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder
 {
     /**
      * @var NativeQuery
@@ -27,7 +27,7 @@ class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder implements Where
      * @param NativeWhereBuilder $whereBuilder The WhereBuilder to use for generating and updating the query
      * @param Cache              $cacheDriver  Doctrine Cache instance
      * @param int                $lifeTime     Lifetime in seconds after which the cache is expired
-     *                                         Set this 0 to never expire.
+     *                                         Set this 0 to never expire
      */
     public function __construct(NativeWhereBuilder $whereBuilder, Cache $cacheDriver, $lifeTime = 0)
     {
@@ -85,7 +85,7 @@ class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder implements Where
         $whereCase = $this->getWhereClause($prependQuery);
 
         if ($whereCase !== '') {
-            $this->query->setSql($this->query->getSQL().$whereCase);
+            $this->query->setSQL($this->query->getSQL().$whereCase);
         }
 
         return $this;
