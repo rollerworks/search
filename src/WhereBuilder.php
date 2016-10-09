@@ -56,7 +56,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * @param DqlQuery                 $query           Doctrine ORM Query object
      * @param SearchConditionInterface $searchCondition SearchCondition object
      *
-     * @throws BadMethodCallException When SearchCondition contains errors.
+     * @throws BadMethodCallException When SearchCondition contains errors
      */
     public function __construct(DqlQuery $query, SearchConditionInterface $searchCondition)
     {
@@ -75,7 +75,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * hints using getQueryHintName() and getQueryHintValue().
      *
      * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example).
+     *                             (" WHERE " or " AND " for example)
      *
      * @return string
      */
@@ -105,7 +105,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      * Updates the configured query object with the where-clause and query-hints.
      *
      * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example).
+     *                             (" WHERE " or " AND " for example)
      *
      * @return self
      */
