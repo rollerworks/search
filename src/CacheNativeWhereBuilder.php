@@ -27,7 +27,7 @@ class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder
      * @param NativeWhereBuilder $whereBuilder The WhereBuilder to use for generating and updating the query
      * @param Cache              $cacheDriver  Doctrine Cache instance
      * @param int                $lifeTime     Lifetime in seconds after which the cache is expired
-     *                                         Set this 0 to never expire.
+     *                                         Set this 0 to never expire
      */
     public function __construct(NativeWhereBuilder $whereBuilder, Cache $cacheDriver, $lifeTime = 0)
     {

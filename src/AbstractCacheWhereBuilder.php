@@ -66,7 +66,7 @@ abstract class AbstractCacheWhereBuilder implements WhereBuilderInterface
      *
      * @param Cache $cacheDriver Doctrine Cache instance
      * @param int   $lifeTime    Lifetime in seconds after which the cache is expired
-     *                           Set this 0 to never expire.
+     *                           Set this 0 to never expire
      */
     public function __construct(Cache $cacheDriver, $lifeTime = 0)
     {
