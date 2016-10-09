@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\NativeQuery;
 
-class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
+class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder
 {
     /**
      * @var NativeQuery
@@ -85,7 +85,7 @@ class CacheNativeWhereBuilder extends AbstractCacheWhereBuilder implements Where
         $whereCase = $this->getWhereClause($prependQuery);
 
         if ($whereCase !== '') {
-            $this->query->setSql($this->query->getSQL().$whereCase);
+            $this->query->setSQL($this->query->getSQL().$whereCase);
         }
 
         return $this;

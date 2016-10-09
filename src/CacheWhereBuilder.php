@@ -38,7 +38,7 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilderInterface
+class CacheWhereBuilder extends AbstractCacheWhereBuilder
 {
     use QueryPlatformTrait;
 
@@ -157,7 +157,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder implements WhereBuilde
      *
      * The Query hint is used for sql-value-conversions.
      *
-     * @return \Closure
+     * @return \Closure|SqlConversionInfo
      */
     public function getQueryHintValue()
     {

@@ -41,6 +41,6 @@ final class SqlConversionInfo implements \Serializable
      */
     public function unserialize($serialized)
     {
-        // noop
+        // no-op
     }
 }
