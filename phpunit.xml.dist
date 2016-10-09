@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+         backupGlobals="false"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="false"
          bootstrap="vendor/autoload.php"
-         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutTestsThatDoNotTestAnything="false"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
-        >
+>
     <testsuites>
         <testsuite name="RollerworksSearch Test Suite">
             <directory>./tests/</directory>
@@ -27,13 +22,16 @@
                 <directory>./vendor/</directory>
                 <directory>./tests/</directory>
                 <directory>./doc/</directory>
-                <directory>./bin/</directory>
             </exclude>
         </whitelist>
     </filter>
 
     <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="date.timezone" value="UTC"/>
         <ini name="intl.default_locale" value="en"/>
+        <ini name="intl.error_level" value="0"/>
+        <ini name="memory_limit" value="-1"/>
     </php>
 
 </phpunit>
