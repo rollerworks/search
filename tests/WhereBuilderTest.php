@@ -396,7 +396,7 @@ class WhereBuilderTest extends OrmTestCase
      * @param array  $options
      * @param string $expectedSql
      */
-    public function testFieldConversion($expectWhereCase, array $options = [], $expectedSql)
+    public function testFieldConversion($expectWhereCase, array $options, $expectedSql)
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')

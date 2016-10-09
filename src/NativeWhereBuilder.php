@@ -43,7 +43,7 @@ class NativeWhereBuilder extends AbstractWhereBuilder implements WhereBuilderInt
      * @param NativeQuery              $query           Doctrine ORM NativeQuery object
      * @param SearchConditionInterface $searchCondition SearchCondition object
      *
-     * @throws BadMethodCallException When SearchCondition contains errors.
+     * @throws BadMethodCallException When SearchCondition contains errors
      */
     public function __construct(NativeQuery $query, SearchConditionInterface $searchCondition)
     {
@@ -59,7 +59,7 @@ class NativeWhereBuilder extends AbstractWhereBuilder implements WhereBuilderInt
      * with other conditions.
      *
      * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example).
+     *                             (" WHERE " or " AND " for example)
      *
      * @return string
      */
@@ -89,7 +89,7 @@ class NativeWhereBuilder extends AbstractWhereBuilder implements WhereBuilderInt
      * Updates the configured query object with the where-clause.
      *
      * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example).
+     *                             (" WHERE " or " AND " for example)
      *
      * @return self
      */

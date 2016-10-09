@@ -74,7 +74,7 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws BadMethodCallException When the where-clause is already generated.
+     * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return self
      */
@@ -89,7 +89,7 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws BadMethodCallException When the where-clause is already generated.
+     * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return self
      */
@@ -104,7 +104,7 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws BadMethodCallException When the where-clause is already generated.
+     * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return self
      */
@@ -119,7 +119,7 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws BadMethodCallException When the where-clause is already generated.
+     * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return self
      */
@@ -158,7 +158,7 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     }
 
     /**
-     * @throws BadMethodCallException When the where-clause is already generated.
+     * @throws BadMethodCallException When the where-clause is already generated
      */
     protected function guardNotGenerated()
     {

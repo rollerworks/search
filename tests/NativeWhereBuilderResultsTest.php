@@ -17,7 +17,7 @@ final class NativeWhereBuilderResultsTest extends WhereBuilderResultsTestCase
 {
     protected function getQuery()
     {
-        $query = <<<SQL
+        $query = <<<'SQL'
 SELECT
     I.*
 FROM

@@ -57,7 +57,7 @@ interface ConfigurableWhereBuilderInterface extends WhereBuilderInterface
      * @param string             $property    Entity field name
      * @param string|MappingType $mappingType Doctrine Mapping-type
      *
-     * @throws UnknownFieldException When the field is not registered in the fieldset.
+     * @throws UnknownFieldException When the field is not registered in the fieldset
      *
      * @return self
      */
@@ -71,7 +71,7 @@ interface ConfigurableWhereBuilderInterface extends WhereBuilderInterface
      * @param string                                               $fieldName
      * @param ValueConversionInterface|SqlFieldConversionInterface $converter
      *
-     * @throws UnknownFieldException When the field is not registered in the fieldset.
+     * @throws UnknownFieldException When the field is not registered in the fieldset
      *
      * @return self
      */
