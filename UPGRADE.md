@@ -25,7 +25,7 @@ you must upgrade to 2.0 (not released at this moment).
    Please also see the changes in `ValuesBag` for more information.
 
  * The `Rollerworks\Component\Search\ValuesBag` now supports other custom value
-   types then Single, Ranges, Comparison, and PatternMatchers.
+   types than Single, Ranges, Comparison, and PatternMatchers.
 
    To reduce the complexity of the `ValuesBag` all specific value methods are
    deprecated and will be removed in 2.0.
@@ -73,7 +73,7 @@ you must upgrade to 2.0 (not released at this moment).
    `Rollerworks\Component\Search\Value\InvalidValue`.
 
    The `Rollerworks\Component\Search\ValuesError` class will be removed in version 2.0.
-   You must use the new `InvalidValue` instead.
+   You must use the new `InvalidValue` class instead.
 
 ## Upgrade FROM 1.0.0 to 1.1.0
 
