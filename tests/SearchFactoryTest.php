@@ -39,9 +39,9 @@ final class SearchFactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->resolvedTypeFactory = $this->getMock('Rollerworks\Component\Search\ResolvedFieldTypeFactoryInterface');
-        $this->registry = $this->getMock('Rollerworks\Component\Search\FieldRegistryInterface');
-        $this->fieldConfig = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
+        $this->resolvedTypeFactory = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldTypeFactoryInterface')->getMock();
+        $this->registry = $this->getMockBuilder('Rollerworks\Component\Search\FieldRegistryInterface')->getMock();
+        $this->fieldConfig = $this->getMockBuilder('Rollerworks\Component\Search\FieldConfigInterface')->getMock();
 
         $this->factory = new SearchFactory($this->registry, $this->resolvedTypeFactory);
     }
@@ -193,6 +193,6 @@ final class SearchFactoryTest extends \PHPUnit_Framework_TestCase
 
     private function getMockResolvedType()
     {
-        return $this->getMock('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
+        return $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldTypeInterface')->getMock();
     }
 }
