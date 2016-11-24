@@ -63,6 +63,8 @@ Inherited Options
 
 These options inherit from the :doc:`field </reference/types/field>` type:
 
+.. include:: /reference/types/options/model_mappings.rst.inc
+
 .. include:: /reference/types/options/invalid_message.rst.inc
 
 .. include:: /reference/types/options/invalid_message_parameters.rst.inc
