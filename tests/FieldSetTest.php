@@ -66,8 +66,8 @@ final class FieldSetTest extends \PHPUnit_Framework_TestCase
     public function it_allows_adding_fields()
     {
         $fieldSet = new FieldSet();
-        $fieldSet->set('id', $idField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
-        $fieldSet->set('name', $nameField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
+        $fieldSet->set('id', $idField = $this->createFieldMock());
+        $fieldSet->set('name', $nameField = $this->createFieldMock());
 
         $this->assertSame(['id' => $idField, 'name' => $nameField], $fieldSet->all());
         $this->assertCount(2, $fieldSet);
@@ -79,10 +79,10 @@ final class FieldSetTest extends \PHPUnit_Framework_TestCase
     public function it_allows_replacing_existing_fields()
     {
         $fieldSet = new FieldSet();
-        $fieldSet->set('id', $idField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
-        $fieldSet->set('name', $nameField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
+        $fieldSet->set('id', $idField = $this->createFieldMock());
+        $fieldSet->set('name', $nameField = $this->createFieldMock());
 
-        $fieldSet->replace('id', $idNewField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
+        $fieldSet->replace('id', $idNewField = $this->createFieldMock());
 
         $this->assertSame(['id' => $idNewField, 'name' => $nameField], $fieldSet->all());
         $this->assertCount(2, $fieldSet);
@@ -94,8 +94,8 @@ final class FieldSetTest extends \PHPUnit_Framework_TestCase
     public function it_gets_a_field()
     {
         $fieldSet = new FieldSet();
-        $fieldSet->set('id', $idField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
-        $fieldSet->set('name', $nameField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
+        $fieldSet->set('id', $idField = $this->createFieldMock());
+        $fieldSet->set('name', $nameField = $this->createFieldMock());
 
         $this->assertSame($idField, $fieldSet->get('id'));
         $this->assertSame($nameField, $fieldSet->get('name'));
@@ -107,8 +107,8 @@ final class FieldSetTest extends \PHPUnit_Framework_TestCase
     public function it_returns_whether_field_is_registered()
     {
         $fieldSet = new FieldSet();
-        $fieldSet->set('id', $idField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
-        $fieldSet->set('name', $nameField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
+        $fieldSet->set('id', $idField = $this->createFieldMock());
+        $fieldSet->set('name', $nameField = $this->createFieldMock());
 
         $this->assertSame($idField, $fieldSet->get('id'));
         $this->assertSame($nameField, $fieldSet->get('name'));
@@ -124,12 +124,20 @@ final class FieldSetTest extends \PHPUnit_Framework_TestCase
     public function it_allows_removing_registered_fields()
     {
         $fieldSet = new FieldSet();
-        $fieldSet->set('id', $idField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
-        $fieldSet->set('name', $nameField = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface'));
+        $fieldSet->set('id', $idField = $this->createFieldMock());
+        $fieldSet->set('name', $nameField = $this->createFieldMock());
 
         $fieldSet->remove('id');
 
         $this->assertSame(['name' => $nameField], $fieldSet->all());
         $this->assertCount(1, $fieldSet);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function createFieldMock()
+    {
+        return $this->getMockBuilder('Rollerworks\Component\Search\FieldConfigInterface')->getMock();
     }
 }

@@ -28,7 +28,7 @@ final class SearchFieldTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->resolvedType = $this->getMock('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
+        $this->resolvedType = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldTypeInterface')->getMock();
         $this->field = new SearchField('foobar', $this->resolvedType, ['name' => 'value']);
 
         $this->assertInstanceOf('Rollerworks\Component\Search\FieldConfigInterface', $this->field);
@@ -150,7 +150,7 @@ final class SearchFieldTest extends \PHPUnit_Framework_TestCase
      */
     public function it_allows_setting_a_comparison_class()
     {
-        $comparisonObj = $this->getMock('Rollerworks\Component\Search\ValueComparisonInterface');
+        $comparisonObj = $this->getMockBuilder('Rollerworks\Component\Search\ValueComparisonInterface')->getMock();
 
         $this->field->setValueComparison($comparisonObj);
         $this->assertEquals($comparisonObj, $this->field->getValueComparison());
@@ -169,7 +169,7 @@ final class SearchFieldTest extends \PHPUnit_Framework_TestCase
      */
     public function it_allows_adding_ViewTransformers()
     {
-        $viewTransformer = $this->getMock('Rollerworks\Component\Search\DataTransformerInterface');
+        $viewTransformer = $this->createTransformerMock();
 
         $this->field->addViewTransformer($viewTransformer);
 
@@ -181,7 +181,7 @@ final class SearchFieldTest extends \PHPUnit_Framework_TestCase
      */
     public function it_allows_resetting_ViewTransformers()
     {
-        $viewTransformer = $this->getMock('Rollerworks\Component\Search\DataTransformerInterface');
+        $viewTransformer = $this->createTransformerMock();
 
         $this->field->addViewTransformer($viewTransformer);
         $this->field->resetViewTransformers();
@@ -219,5 +219,13 @@ final class SearchFieldTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->field->setDataLocked();
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function createTransformerMock()
+    {
+        return $this->getMockBuilder('Rollerworks\Component\Search\DataTransformerInterface')->getMock();
     }
 }

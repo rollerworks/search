@@ -113,7 +113,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
     {
         $givenOptions = ['a' => 'a_custom', 'c' => 'c_custom'];
         $resolvedOptions = ['a' => 'a_custom', 'b' => 'b_default', 'c' => 'c_custom', 'd' => 'd_default'];
-        $optionsResolver = $this->getMock('Symfony\Component\OptionsResolver\OptionsResolver');
+        $optionsResolver = $this->createOptionsResolverMock();
 
         $this->resolvedType = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldType')
             ->setConstructorArgs([$this->type, [$this->extension1, $this->extension2], $this->parentResolvedType])
@@ -142,7 +142,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
     {
         $givenOptions = ['model_class' => 'Foo'];
         $resolvedOptions = ['model_class' => '\stdClass', 'model_property' => 'id'];
-        $optionsResolver = $this->getMock('Symfony\Component\OptionsResolver\OptionsResolver');
+        $optionsResolver = $this->createOptionsResolverMock();
 
         $this->resolvedType = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldType')
             ->setConstructorArgs([$this->type, [$this->extension1, $this->extension2], $this->parentResolvedType])
@@ -182,7 +182,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
         };
 
         $options = ['a' => 'Foo', 'b' => 'Bar'];
-        $field = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
+        $field = $this->createFieldMock();
 
         // First the field is built for the super type
         $this->parentType->expects($this->once())
@@ -212,7 +212,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateView()
     {
-        $field = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
+        $field = $this->createFieldMock();
         $field->expects($this->atLeastOnce())
             ->method('getType')
             ->willReturn($this->getMockFieldType());
@@ -225,8 +225,8 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
     public function testBuildView()
     {
         $options = ['a' => '1', 'b' => '2'];
-        $field = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
-        $view = $this->getMock('Rollerworks\Component\Search\SearchFieldView');
+        $field = $this->createFieldMock();
+        $view = $this->createSearchFieldViewMock();
 
         $i = 0;
 
@@ -271,7 +271,9 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockFieldType($typeClass = 'Rollerworks\Component\Search\AbstractFieldType')
     {
-        return $this->getMock($typeClass, ['getName', 'configureOptions', 'buildView', 'buildType']);
+        return $this->getMockBuilder($typeClass)
+            ->setMethods(['getName', 'configureOptions', 'buildView', 'buildType'])
+            ->getMock();
     }
 
     /**
@@ -279,9 +281,34 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockFieldTypeExtension()
     {
-        return $this->getMock(
-            'Rollerworks\Component\Search\AbstractFieldTypeExtension',
-            ['getExtendedType', 'configureOptions', 'buildView', 'buildType']
-        );
+        return $this->getMockBuilder('Rollerworks\Component\Search\AbstractFieldTypeExtension')
+            ->setMethods(['getExtendedType', 'configureOptions', 'buildView', 'buildType']
+        )->getMock();
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function createOptionsResolverMock()
+    {
+        return $this->getMockBuilder('Symfony\Component\OptionsResolver\OptionsResolver')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function createFieldMock()
+    {
+        return $this->getMockBuilder('Rollerworks\Component\Search\FieldConfigInterface')->getMock();
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function createSearchFieldViewMock()
+    {
+        return $this->getMockBuilder('Rollerworks\Component\Search\SearchFieldView')->getMock();
     }
 }
