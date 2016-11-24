@@ -16,23 +16,23 @@ use Rollerworks\Component\Search\FieldSet;
 
 class ProcessorConfigSpec extends ObjectBehavior
 {
-    function let()
+    public function let()
     {
         $fieldSet = new FieldSet('test');
         $this->beConstructedWith($fieldSet);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\Input\ProcessorConfig');
     }
 
-    function it_has_a_fieldSet()
+    public function it_has_a_fieldSet()
     {
         $this->getFieldSet()->shouldReturnAnInstanceOf('Rollerworks\Component\Search\FieldSet');
     }
 
-    function it_allows_setting_maximum_nesting_level()
+    public function it_allows_setting_maximum_nesting_level()
     {
         $this->setMaxNestingLevel(5);
         $this->getMaxNestingLevel()->shouldReturn(5);
@@ -41,7 +41,7 @@ class ProcessorConfigSpec extends ObjectBehavior
         $this->getMaxNestingLevel()->shouldReturn(10);
     }
 
-    function it_allows_setting_maximum_values_count()
+    public function it_allows_setting_maximum_values_count()
     {
         $this->setMaxValues(5);
         $this->getMaxValues()->shouldReturn(5);
@@ -50,7 +50,7 @@ class ProcessorConfigSpec extends ObjectBehavior
         $this->getMaxValues()->shouldReturn(10);
     }
 
-    function it_allows_setting_maximum_groups_count()
+    public function it_allows_setting_maximum_groups_count()
     {
         $this->setMaxGroups(5);
         $this->getMaxGroups()->shouldReturn(5);
