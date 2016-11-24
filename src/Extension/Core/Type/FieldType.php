@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
+use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -58,6 +59,16 @@ class FieldType extends AbstractFieldType
     public function buildType(FieldConfigInterface $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
+
+        if (null !== $options['model_mappings'] && ($options['model_class'] || $options['model_property'])) {
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'Option "model_mappings" cannot be set in combination with "model_class" '.
+                    'and/or "model_property" for field "%s"',
+                    $config->getName()
+                )
+            );
+        }
     }
 
     /**
@@ -71,10 +82,12 @@ class FieldType extends AbstractFieldType
                 'invalid_message_parameters' => [],
                 'model_class' => null,
                 'model_property' => null,
+                'model_mappings' => null,
             ]
         );
 
         $resolver->setAllowedTypes('invalid_message', ['string']);
         $resolver->setAllowedTypes('invalid_message_parameters', ['array']);
+        $resolver->setAllowedTypes('model_mappings', ['array', 'null']);
     }
 }
