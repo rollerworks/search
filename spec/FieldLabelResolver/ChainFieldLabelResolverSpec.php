@@ -17,23 +17,23 @@ use Rollerworks\Component\Search\FieldSet;
 
 class ChainFieldLabelResolverSpec extends ObjectBehavior
 {
-    function let()
+    public function let()
     {
         $this->beConstructedWith([]);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Rollerworks\Component\Search\FieldLabelResolver\ChainFieldLabelResolver');
     }
 
-    function it_returns_the_input_when_there_are_no_resolvers(FieldSet $fieldSet, FieldLabelResolverInterface $resolver)
+    public function it_returns_the_input_when_there_are_no_resolvers(FieldSet $fieldSet, FieldLabelResolverInterface $resolver)
     {
         $resolver->resolveFieldLabel($fieldSet, 'user')->willReturn('user');
         $resolver->resolveFieldLabel($fieldSet, 'user')->willReturn('user');
     }
 
-    function it_resolves_a_label(FieldSet $fieldSet, FieldLabelResolverInterface $resolver)
+    public function it_resolves_a_label(FieldSet $fieldSet, FieldLabelResolverInterface $resolver)
     {
         $this->beConstructedWith([$resolver]);
 
@@ -46,7 +46,7 @@ class ChainFieldLabelResolverSpec extends ObjectBehavior
         $this->resolveFieldLabel($fieldSet, 'name')->shouldReturn('name');
     }
 
-    function it_resolves_a_label_with_multiple_resolvers(
+    public function it_resolves_a_label_with_multiple_resolvers(
         FieldSet $fieldSet,
         FieldLabelResolverInterface $resolver,
         FieldLabelResolverInterface $resolver2
