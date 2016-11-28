@@ -183,9 +183,51 @@ The WhereBuilder will safely embed all values within the generated query.
 
         $whereClause = $whereBuilder->getWhereClause(' AND ');
 
+        // Add the Where-clause
+        $query .= $whereClause;
+
         $statement = $connection->prepare($query);
         $statement->bindValue(1, $id);
         $statement->execute();
+
+Mapping a field to multiple columns
+***********************************
+
+.. versionadded:: v1.1.0
+    Support for mapping a field to multiple columns was introduced
+    in version 1.1 of the Doctrine DBAL SearchCondition processor.
+
+Instead of searching in a single column it's possible to search in multiple
+columns for the same field. In practice this will work the same as using
+the same values for other fields.
+
+In the example below field ``name`` will search in both the user's ``first``
+and ``last`` name columns (as ``OR`` case). And it's still possible to search
+with only the first and/or last name.
+
+.. code-block:: php
+
+    $query = 'SELECT u.name AS name, u.id AS id FROM users AS u WHERE id = ?';
+    $whereBuilder = ...;
+    $whereBuilder->setCombinedField('name', [['column' => 'first', 'alias' => 'u', 'type' => 'string'], ['column' => 'last', 'alias' => 'u']]);
+    $whereBuilder->setField('first-name', 'first', 'string', 'u');
+    $whereBuilder->setField('last-name', 'last', 'string', 'u');
+
+    $whereClause = $whereBuilder->getWhereClause(' AND ');
+
+    // Add the Where-clause
+    $query .= $whereClause;
+
+    $statement = $connection->prepare($query);
+    $statement->bindValue(1, $id);
+    $statement->execute();
+
+.. note::
+
+    The ``alias`` and ``type`` of a mapping are optional.
+
+    A mapping can be named (for better error reporting).
+    ``['first' => ['column' => 'first', 'alias' => 'u', 'type' => 'string'], 'last' => ['column' => 'last', 'alias' => 'u']]``
 
 Setting Conversions
 *******************

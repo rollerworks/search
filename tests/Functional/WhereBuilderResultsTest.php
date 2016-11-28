@@ -190,6 +190,10 @@ SQL;
         $whereBuilder->setField('customer-last-name', 'last_name', 'string', 'c');
         $whereBuilder->setField('customer-birthday', 'birthday', 'date', 'c');
         $whereBuilder->setField('customer-regdate', 'regdate', 'date', 'c');
+        $whereBuilder->setCombinedField('customer-name', [
+            ['column' => 'first_name', 'type' => 'string', 'alias' => 'c'],
+            ['column' => 'last_name', 'type' => 'string', 'alias' => 'c'],
+        ]);
 
         // Invoice
         $whereBuilder->setField('id', 'id', 'integer', 'i');
@@ -213,6 +217,7 @@ SQL;
         // Customer (by invoice relation)
         $fieldSet->add('customer-first-name', 'text');
         $fieldSet->add('customer-last-name', 'text');
+        $fieldSet->add('customer-name', 'text');
         $fieldSet->add('customer-birthday', 'birthday', ['format' => 'yyyy-MM-dd']);
         $fieldSet->add('customer-regdate', 'date', ['format' => 'yyyy-MM-dd']);
 
@@ -239,6 +244,14 @@ SQL;
     public function it_finds_with_id()
     {
         $this->makeTest('id: 1, 5;', [1, 5]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_with_combined_field()
+    {
+        $this->makeTest('customer-name: Pang, Leroy;', [1, 2, 3, 4]);
     }
 
     /**

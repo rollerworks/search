@@ -101,6 +101,36 @@ final class WhereBuilderTest extends DbalTestCase
         $this->assertEquals('((I.customer IN(2, 5)) AND (I.status IN(2, 5)))', $whereBuilder->getWhereClause());
     }
 
+    public function testQueryWithCombinedField()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSingleValue(new SingleValue(2))
+                ->addSingleValue(new SingleValue(5))
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        $whereBuilder->setCombinedField('customer', [['column' => 'id'], ['column' => 'number2']]);
+
+        $this->assertEquals('(((id IN(2, 5) OR number2 IN(2, 5))))', $whereBuilder->getWhereClause());
+    }
+
+    public function testQueryWithCombinedFieldAndCustomAlias()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSingleValue(new SingleValue(2))
+                ->addSingleValue(new SingleValue(5))
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        $whereBuilder->setCombinedField('customer', [['column' => 'id'], ['column' => 'number2', 'alias' => 'C']]);
+
+        $this->assertEquals('(((id IN(2, 5) OR C.number2 IN(2, 5))))', $whereBuilder->getWhereClause());
+    }
+
     public function testEmptyResult()
     {
         $connection = $this->getConnectionMock();
