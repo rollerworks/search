@@ -51,7 +51,7 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
 
     protected function getDbalFactory()
     {
-        $cacheDriver = $this->getMock('Doctrine\Common\Cache\Cache');
+        $cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
 
         return new DoctrineDbalFactory($cacheDriver);
     }

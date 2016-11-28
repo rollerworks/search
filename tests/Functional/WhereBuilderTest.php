@@ -311,7 +311,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->configureWhereBuilder($whereBuilder);
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
-        $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface');
+        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface')->getMock();
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
@@ -338,7 +338,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
 
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
-        $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface');
+        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface')->getMock();
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlValue')
