@@ -37,14 +37,14 @@ class DoctrineDbalFactoryTest extends DbalTestCase
     {
         $fieldSet = new FieldSet('invoice');
 
-        $conversion = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
+        $conversion = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface')->getMock();
 
-        $fieldLabel = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
+        $fieldLabel = $this->getMockBuilder('Rollerworks\Component\Search\FieldConfigInterface')->getMock();
         $fieldLabel->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(true));
         $fieldLabel->expects($this->once())->method('getOption')->with('doctrine_dbal_conversion')->will($this->returnValue($conversion));
         $fieldSet->set('invoice_label', $fieldLabel);
 
-        $fieldCustomer = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
+        $fieldCustomer = $this->getMockBuilder('Rollerworks\Component\Search\FieldConfigInterface')->getMock();
         $fieldCustomer->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(false));
         $fieldCustomer->expects($this->never())->method('getOption');
         $fieldSet->set('invoice_customer', $fieldCustomer);
@@ -64,17 +64,17 @@ class DoctrineDbalFactoryTest extends DbalTestCase
         $fieldSet = new FieldSet('invoice');
 
         $test = $this;
-        $conversion = $test->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
+        $conversion = $test->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface')->getMock();
         $lazyConversion = function () use ($conversion) {
             return $conversion;
         };
 
-        $fieldLabel = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
+        $fieldLabel = $this->getMockBuilder('Rollerworks\Component\Search\FieldConfigInterface')->getMock();
         $fieldLabel->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(true));
         $fieldLabel->expects($this->once())->method('getOption')->with('doctrine_dbal_conversion')->will($this->returnValue($lazyConversion));
         $fieldSet->set('invoice_label', $fieldLabel);
 
-        $fieldCustomer = $this->getMock('Rollerworks\Component\Search\FieldConfigInterface');
+        $fieldCustomer = $this->getMockBuilder('Rollerworks\Component\Search\FieldConfigInterface')->getMock();
         $fieldCustomer->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(false));
         $fieldCustomer->expects($this->never())->method('getOption');
         $fieldSet->set('invoice_customer', $fieldCustomer);
@@ -105,7 +105,7 @@ class DoctrineDbalFactoryTest extends DbalTestCase
     {
         parent::setUp();
 
-        $cacheDriver = $this->getMock('Doctrine\Common\Cache\Cache');
+        $cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
         $this->factory = new DoctrineDbalFactory($cacheDriver);
     }
 }
