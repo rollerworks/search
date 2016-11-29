@@ -70,7 +70,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
      * @param WhereBuilderInterface $whereBuilder The WhereBuilder to use for generating and updating the query
      * @param Cache                 $cacheDriver  Doctrine Cache instance
      * @param int                   $lifeTime     Lifetime in seconds after which the cache is expired
-     *                                            Set this 0 to never expire.
+     *                                            Set this 0 to never expire
      */
     public function __construct(WhereBuilderInterface $whereBuilder, Cache $cacheDriver, $lifeTime = 0)
     {
@@ -119,7 +119,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
      * @return self
      *
      * @deprecated since version 1.0.0-beta7, to be removed in 2.0.
-     *             Use setCacheKey() instead with a unique key.
+     *             Use setCacheKey() instead with a unique key
      */
     public function setCacheKeySuffix($key)
     {
@@ -134,7 +134,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
      * @see WhereBuilder::getWhereClause()
      *
      * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example).
+     *                             (" WHERE " or " AND " for example)
      *
      * @return string
      */

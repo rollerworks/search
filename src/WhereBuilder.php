@@ -83,7 +83,7 @@ class WhereBuilder implements WhereBuilderInterface
      * @param Connection               $connection      Doctrine DBAL Connection object
      * @param SearchConditionInterface $searchCondition SearchCondition object
      *
-     * @throws BadMethodCallException When SearchCondition contains errors.
+     * @throws BadMethodCallException When SearchCondition contains errors
      */
     public function __construct(Connection $connection, SearchConditionInterface $searchCondition)
     {
@@ -106,8 +106,8 @@ class WhereBuilder implements WhereBuilderInterface
      * @param string|MappingType $type      DB mapping-type
      * @param string             $alias     alias to use with the column
      *
-     * @throws UnknownFieldException  When the field is not registered in the fieldset.
-     * @throws BadMethodCallException When the where-clause is already generated.
+     * @throws UnknownFieldException  When the field is not registered in the fieldset
+     * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return self
      */
@@ -135,8 +135,8 @@ class WhereBuilder implements WhereBuilderInterface
      * @param string     $fieldName Name of the Search-field
      * @param array|null $mappings  ['mapping-name' => ['column' => '...', 'type' => 'string', 'alias' => null], ...]
      *
-     * @throws UnknownFieldException  When the field is not registered in the fieldset.
-     * @throws BadMethodCallException When the where-clause is already generated.
+     * @throws UnknownFieldException  When the field is not registered in the fieldset
+     * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return self
      */
@@ -187,8 +187,8 @@ class WhereBuilder implements WhereBuilderInterface
      * @param string                                               $fieldName
      * @param ValueConversionInterface|SqlFieldConversionInterface $converter
      *
-     * @throws UnknownFieldException  When the field is not registered in the fieldset.
-     * @throws BadMethodCallException When the where-clause is already generated.
+     * @throws UnknownFieldException  When the field is not registered in the fieldset
+     * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return self
      */
@@ -222,7 +222,7 @@ class WhereBuilder implements WhereBuilderInterface
      * Values are embedded with in the Query.
      *
      * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example).
+     *                             (" WHERE " or " AND " for example)
      *
      * @return string
      */

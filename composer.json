@@ -19,6 +19,9 @@
         "rollerworks/search": "^1.0.0",
         "doctrine/dbal": "~2.4"
     },
+    "require-dev": {
+        "sllh/php-cs-fixer-styleci-bridge": "^2.0"
+    },
     "autoload": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Doctrine\\Dbal\\": "src/",
