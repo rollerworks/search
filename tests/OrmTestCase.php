@@ -144,7 +144,7 @@ class OrmTestCase extends DbalTestCase
 
     protected function getOrmFactory()
     {
-        return new DoctrineOrmFactory($this->getMock('Doctrine\Common\Cache\Cache'));
+        return new DoctrineOrmFactory($this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock());
     }
 
     /**

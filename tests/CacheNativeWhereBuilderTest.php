@@ -115,7 +115,7 @@ class CacheNativeWhereBuilderTest extends OrmTestCase
 
         $fieldSet = new FieldSet('invoice');
 
-        $this->cacheDriver = $this->getMock('Doctrine\Common\Cache\Cache');
+        $this->cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
         $this->whereBuilder = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Orm\NativeWhereBuilder')
            ->disableOriginalConstructor()
            ->getMock()

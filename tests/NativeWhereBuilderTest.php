@@ -108,7 +108,7 @@ class NativeWhereBuilderTest extends OrmTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
         $test = $this;
 
-        $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface');
+        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface')->getMock();
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
@@ -137,7 +137,7 @@ class NativeWhereBuilderTest extends OrmTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
         $test = $this;
 
-        $converter = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface');
+        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface')->getMock();
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlValue')
@@ -184,7 +184,7 @@ class NativeWhereBuilderTest extends OrmTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
         $test = $this;
 
-        $converter = $this->getMock('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlConversionStrategyInterface');
+        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlConversionStrategyInterface')->getMock();
         $converter
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')

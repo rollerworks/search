@@ -63,7 +63,7 @@ class DoctrineOrmFactoryTest extends OrmTestCase
     public function testCreateWhereBuilderWithConversionSetting()
     {
         $invoiceClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice';
-        $conversion = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
+        $conversion = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface')->getMock();
 
         $fieldSet = $this->getFieldSet(false);
         $fieldSet->add('label', 'invoice_label', ['doctrine_dbal_conversion' => $conversion], false, $invoiceClass, 'label');
@@ -85,13 +85,13 @@ class DoctrineOrmFactoryTest extends OrmTestCase
 
     public function testCreateWhereBuilderWithLazyConversionSetting()
     {
-        $conversion = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
+        $conversion = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface')->getMock();
         $lazyConversion = function () use ($conversion) {
             return $conversion;
         };
 
         $invoiceClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice';
-        $conversion = $this->getMock('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface');
+        $conversion = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface')->getMock();
 
         $fieldSet = $this->getFieldSet(false);
         $fieldSet->add('label', 'invoice_label', ['doctrine_dbal_conversion' => $lazyConversion], false, $invoiceClass, 'label');
@@ -127,7 +127,7 @@ class DoctrineOrmFactoryTest extends OrmTestCase
     {
         parent::setUp();
 
-        $cacheDriver = $this->getMock('Doctrine\Common\Cache\Cache');
+        $cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
         $this->factory = new DoctrineOrmFactory($cacheDriver);
     }
 }
