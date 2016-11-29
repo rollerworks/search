@@ -68,6 +68,11 @@ class WhereBuilder implements WhereBuilderInterface
     private $fields = [];
 
     /**
+     * @var array[]
+     */
+    private $combinedFields = [];
+
+    /**
      * @var Connection
      */
     private $connection;
@@ -119,6 +124,59 @@ class WhereBuilder implements WhereBuilderInterface
         $this->fields[$fieldName]['db_type'] = is_object($type) ? $type : MappingType::getType($type);
         $this->fields[$fieldName]['alias'] = $alias;
         $this->fields[$fieldName]['column'] = $column;
+    }
+
+    /**
+     * Set a CombinedField configuration for the query-generation.
+     *
+     * The $mappings expects an array with one or more mappings or null to unset this field.
+     * Each mapping must have a `column`, all other keys are optional.
+     *
+     * @param string     $fieldName Name of the Search-field
+     * @param array|null $mappings  ['mapping-name' => ['column' => '...', 'type' => 'string', 'alias' => null], ...]
+     *
+     * @throws UnknownFieldException  When the field is not registered in the fieldset.
+     * @throws BadMethodCallException When the where-clause is already generated.
+     *
+     * @return self
+     */
+    public function setCombinedField($fieldName, array $mappings = null)
+    {
+        if ($this->whereClause) {
+            throw new BadMethodCallException(
+                'WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.'
+            );
+        }
+
+        $fieldConfig = $this->fieldset->get($fieldName);
+
+        if (null === $mappings) {
+            unset($this->combinedFields[$fieldName]);
+
+            return $this;
+        }
+
+        foreach ($mappings as $n => $mapping) {
+            if (!isset($mapping['column'])) {
+                throw new \InvalidArgumentException(
+                    sprintf('Combined search field "%s" is missing "column" at index "%s".', $fieldName, $n)
+                );
+            }
+
+            if (!isset($mapping['type'])) {
+                $mapping['type'] = 'string';
+            }
+
+            $this->combinedFields[$fieldName][$n] = [];
+            $this->combinedFields[$fieldName][$n]['field'] = $fieldConfig;
+            $this->combinedFields[$fieldName][$n]['alias'] = isset($mapping['alias']) ? $mapping['alias'] : null;
+            $this->combinedFields[$fieldName][$n]['column'] = $mapping['column'];
+            $this->combinedFields[$fieldName][$n]['db_type'] = is_object($mapping['type']) ? $mapping['type'] : MappingType::getType($mapping['type']);
+        }
+
+        unset($this->fields[$fieldName]);
+
+        return $this;
     }
 
     /**
@@ -226,6 +284,26 @@ class WhereBuilder implements WhereBuilderInterface
                 isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null,
                 isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null
             );
+        }
+
+        foreach ($this->combinedFields as $fieldName => $subFieldsConfig) {
+            $subsFieldNames = [];
+
+            foreach ($subFieldsConfig as $n => $field) {
+                $fieldNameN = $fieldName.'#'.$n;
+
+                $subsFieldNames[] = $fieldNameN;
+                $fields[$fieldNameN] = new QueryField(
+                    $field['field'],
+                    $field['db_type'],
+                    $field['alias'],
+                    $field['column'],
+                    isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null,
+                    isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null
+                );
+            }
+
+            $fields[$fieldName] = $subsFieldNames;
         }
 
         return $fields;

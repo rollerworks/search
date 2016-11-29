@@ -20,6 +20,7 @@ use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\SingleValue;
+use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
 
 /**
@@ -33,7 +34,7 @@ use Rollerworks\Component\Search\ValuesGroup;
 final class QueryGenerator
 {
     /**
-     * @var QueryField[]
+     * @var array
      */
     private $fields = [];
 
@@ -52,7 +53,7 @@ final class QueryGenerator
      *
      * @param Connection             $connection
      * @param QueryPlatformInterface $queryPlatform
-     * @param QueryField[]           $fields
+     * @param array     $fields
      */
     public function __construct(Connection $connection, QueryPlatformInterface $queryPlatform, array $fields)
     {
@@ -79,57 +80,13 @@ final class QueryGenerator
             $inclusiveSqlGroup = [];
             $exclusiveSqlGroup = [];
 
-            $this->processSingleValues(
-                $values->getSingleValues(),
-                $fieldName,
-                $inclusiveSqlGroup
-            );
-
-            $this->processRanges(
-                $values->getRanges(),
-                $fieldName,
-                $inclusiveSqlGroup
-            );
-
-            $this->processCompares(
-                $values->getComparisons(),
-                $fieldName,
-                $inclusiveSqlGroup
-            );
-
-            $this->processPatternMatchers(
-                $values->getPatternMatchers(),
-                $fieldName,
-                $inclusiveSqlGroup
-            );
-
-            $this->processSingleValues(
-                $values->getExcludedValues(),
-                $fieldName,
-                $exclusiveSqlGroup,
-                true
-            );
-
-            $this->processRanges(
-                $values->getExcludedRanges(),
-                $fieldName,
-                $exclusiveSqlGroup,
-                true
-            );
-
-            $this->processPatternMatchers(
-                $values->getPatternMatchers(),
-                $fieldName,
-                $exclusiveSqlGroup,
-                true
-            );
-
-            $this->processCompares(
-                $values->getComparisons(),
-                $fieldName,
-                $exclusiveSqlGroup,
-                true
-            );
+            if (is_array($this->fields[$fieldName])) {
+                foreach ($this->fields[$fieldName] as $n) {
+                    $this->processFieldValues($values, $n, $inclusiveSqlGroup, $exclusiveSqlGroup);
+                }
+            } else {
+                $this->processFieldValues($values, $fieldName, $inclusiveSqlGroup, $exclusiveSqlGroup);
+            }
 
             $groupSql[] = self::implodeWithValue(' OR ', $inclusiveSqlGroup, ['(', ')']);
             $groupSql[] = self::implodeWithValue(' AND ', $exclusiveSqlGroup, ['(', ')']);
@@ -388,5 +345,60 @@ final class QueryGenerator
         }
 
         return $value;
+    }
+
+    private function processFieldValues(ValuesBag $values, $fieldName, array &$inclusiveSqlGroup, array &$exclusiveSqlGroup)
+    {
+        $this->processSingleValues(
+            $values->getSingleValues(),
+            $fieldName,
+            $inclusiveSqlGroup
+        );
+
+        $this->processRanges(
+            $values->getRanges(),
+            $fieldName,
+            $inclusiveSqlGroup
+        );
+
+        $this->processCompares(
+            $values->getComparisons(),
+            $fieldName,
+            $inclusiveSqlGroup
+        );
+
+        $this->processPatternMatchers(
+            $values->getPatternMatchers(),
+            $fieldName,
+            $inclusiveSqlGroup
+        );
+
+        $this->processSingleValues(
+            $values->getExcludedValues(),
+            $fieldName,
+            $exclusiveSqlGroup,
+            true
+        );
+
+        $this->processRanges(
+            $values->getExcludedRanges(),
+            $fieldName,
+            $exclusiveSqlGroup,
+            true
+        );
+
+        $this->processPatternMatchers(
+            $values->getPatternMatchers(),
+            $fieldName,
+            $exclusiveSqlGroup,
+            true
+        );
+
+        $this->processCompares(
+            $values->getComparisons(),
+            $fieldName,
+            $exclusiveSqlGroup,
+            true
+        );
     }
 }
