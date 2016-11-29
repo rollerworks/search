@@ -169,7 +169,7 @@ final class WhereBuilderResultsTest extends FunctionalDbalTestCase
 
     protected function getQuery()
     {
-        return <<<SQL
+        return <<<'SQL'
 SELECT
     *, i.id AS id
 FROM

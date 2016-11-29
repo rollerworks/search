@@ -53,7 +53,7 @@ final class QueryGenerator
      *
      * @param Connection             $connection
      * @param QueryPlatformInterface $queryPlatform
-     * @param array     $fields
+     * @param array                  $fields
      */
     public function __construct(Connection $connection, QueryPlatformInterface $queryPlatform, array $fields)
     {
