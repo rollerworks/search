@@ -45,7 +45,7 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @var FieldSet
      */
-    private $fieldset;
+    private $fieldSet;
 
     /**
      * @var ValueConversionInterface[]|SqlValueConversionInterface[]|ConversionStrategyInterface[]
@@ -94,7 +94,7 @@ class WhereBuilder implements WhereBuilderInterface
         }
 
         $this->searchCondition = $searchCondition;
-        $this->fieldset = $searchCondition->getFieldSet();
+        $this->fieldSet = $searchCondition->getFieldSet();
         $this->connection = $connection;
     }
 
@@ -120,7 +120,7 @@ class WhereBuilder implements WhereBuilderInterface
         }
 
         $this->fields[$fieldName] = [];
-        $this->fields[$fieldName]['field'] = $this->searchCondition->getFieldSet()->get($fieldName);
+        $this->fields[$fieldName]['field'] = $this->fieldSet->get($fieldName);
         $this->fields[$fieldName]['db_type'] = is_object($type) ? $type : MappingType::getType($type);
         $this->fields[$fieldName]['alias'] = $alias;
         $this->fields[$fieldName]['column'] = $column;
@@ -148,7 +148,7 @@ class WhereBuilder implements WhereBuilderInterface
             );
         }
 
-        $fieldConfig = $this->fieldset->get($fieldName);
+        $fieldConfig = $this->fieldSet->get($fieldName);
 
         if (null === $mappings) {
             unset($this->combinedFields[$fieldName]);
@@ -198,7 +198,7 @@ class WhereBuilder implements WhereBuilderInterface
             throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
         }
 
-        if (!$this->searchCondition->getFieldSet()->has($fieldName)) {
+        if (!$this->fieldSet->has($fieldName)) {
             throw new UnknownFieldException($fieldName);
         }
 
@@ -277,7 +277,7 @@ class WhereBuilder implements WhereBuilderInterface
 
         foreach ($this->fields as $fieldName => $field) {
             $fields[$fieldName] = new QueryField(
-                $this->searchCondition->getFieldSet()->get($fieldName),
+                $this->fieldSet->get($fieldName),
                 $field['db_type'],
                 $field['alias'],
                 $field['column'],
