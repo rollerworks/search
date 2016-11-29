@@ -34,4 +34,11 @@ class DoctrineDbalExtension extends AbstractExtension
             new Type\MoneyTypeExtension(new MoneyValueConversion()),
         ];
     }
+
+    protected function loadTypes()
+    {
+        return [
+            new Type\ChildCountType(),
+        ];
+    }
 }
