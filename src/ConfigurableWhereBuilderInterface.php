@@ -64,6 +64,22 @@ interface ConfigurableWhereBuilderInterface extends WhereBuilderInterface
     public function setField($fieldName, $alias, $entity = null, $property = null, $mappingType = null);
 
     /**
+     * Set a CombinedField configuration for the query-generation.
+     *
+     * The $mappings expects an array with one or more mappings.
+     * Each mapping must have a `property`, all other keys are optional.
+     *
+     * @param string     $fieldName Name of the Search-field
+     * @param array|null $mappings  ['mapping-name' => ['property' => '...', 'class' => '...', 'type' => 'string',
+     *                              'alias' => null], ...]
+     *
+     * @throws UnknownFieldException When the field is not registered in the fieldset
+     *
+     * @return self
+     */
+    public function setCombinedField($fieldName, array $mappings);
+
+    /**
      * Set the converters for a field.
      *
      * Setting is done per type (field or value), any existing conversions are overwritten.

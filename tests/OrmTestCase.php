@@ -136,7 +136,8 @@ class OrmTestCase extends DbalTestCase
         $fieldSet->add('row_label', 'text', [], false, $invoiceRowClass, 'label');
 
         $fieldSet->add('customer', 'integer', [], false, $customerClass, 'id');
-        $fieldSet->add('customer_name', 'text', [], false, $customerClass, 'name');
+        $fieldSet->add('customer_name', 'text', [], false, $customerClass, 'name'); // deprecated
+        $fieldSet->add('customer-name', 'text', [], false, $customerClass, 'id'); // property is wrong here, but ignored later
         $fieldSet->add('customer_birthday', 'birthday', ['format' => 'yyyy-MM-dd'], false, $customerClass, 'birthday');
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;

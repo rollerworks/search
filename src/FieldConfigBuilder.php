@@ -32,6 +32,7 @@ final class FieldConfigBuilder
     private $fieldConversions = [];
     private $entityClassMapping = [];
     private $entityFieldMapping = [];
+    private $combinedFields = [];
 
     public function __construct(EntityManagerInterface $entityManager, FieldSet $fieldSet)
     {
@@ -71,6 +72,44 @@ final class FieldConfigBuilder
                 )
             );
         }
+
+        unset($this->combinedFields[$fieldName]);
+    }
+
+    public function setCombinedField($fieldName, array $mappings)
+    {
+        $fieldConfig = $this->fieldSet->get($fieldName);
+
+        foreach ($mappings as $n => $mapping) {
+            if (!isset($mapping['property'])) {
+                throw new \InvalidArgumentException(
+                    sprintf('Combined search field "%s" is missing "property" at index "%s".', $fieldName, $n)
+                );
+            }
+
+            $this->combinedFields[$fieldName][$n] = [];
+            $this->combinedFields[$fieldName][$n]['field'] = $fieldConfig;
+            $this->combinedFields[$fieldName][$n]['alias'] = isset($mapping['alias']) ? $mapping['alias'] : null;
+            $this->combinedFields[$fieldName][$n]['entity'] = isset($mapping['class']) ? $mapping['class'] : $fieldConfig->getModelRefClass();
+            $this->combinedFields[$fieldName][$n]['property'] = $mapping['property'];
+
+            // Do type resolving here to simplify the fields resolving logic.
+            $this->combinedFields[$fieldName][$n]['mapping_type'] = isset($mapping['type']) ?
+                (is_object($mapping['type']) ? $mapping['type'] : MappingType::getType($mapping['type'])) : null;
+
+            if (null === $this->combinedFields[$fieldName][$n]['entity']) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Combined search field "%s" has no entity set at index "%s" and no entity was set for the field.'.
+                        'Make sure the field has a entity mapping configured or set the "model_class" option for the field.'.
+                        $fieldName,
+                        $n
+                    )
+                );
+            }
+        }
+
+        unset($this->entityFieldMapping[$fieldName]);
     }
 
     public function setConverter($fieldName, $converter)
@@ -122,6 +161,32 @@ final class FieldConfigBuilder
                 isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null,
                 isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null
             );
+        }
+
+        foreach ($this->combinedFields as $fieldName => $subFieldsConfig) {
+            $subsFieldNames = [];
+
+            foreach ($subFieldsConfig as $n => $mapping) {
+                $fieldNameN = $fieldName.'#'.$n;
+
+                list($entityName, $property) = $this->resolveEntityReference(
+                    $mapping['entity'],
+                    $mapping['property'],
+                    $fieldNameN
+                );
+
+                $subsFieldNames[] = $fieldNameN;
+                $fields[$fieldNameN] = new QueryField(
+                    $mapping['field'],
+                    isset($mapping['mapping_type']) ? $mapping['mapping_type'] : $this->getMappingType($fieldName.'#'.$n, $entityName, $property),
+                    $mapping['alias'] ?: $this->getEntityAlias($fieldNameN, $entityName),
+                    $this->getFieldColumn($entityName, $property, $fieldNameN, $useNative),
+                    isset($this->fieldConversions[$fieldName]) ? $this->fieldConversions[$fieldName] : null,
+                    isset($this->valueConversions[$fieldName]) ? $this->valueConversions[$fieldName] : null
+                );
+            }
+
+            $fields[$fieldName] = $subsFieldNames;
         }
 
         return $fields;

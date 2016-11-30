@@ -123,6 +123,21 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
      *
      * @return self
      */
+    public function setCombinedField($fieldName, array $mappings)
+    {
+        $this->guardNotGenerated();
+        $this->fieldsConfig->setCombinedField($fieldName, $mappings);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws BadMethodCallException When the where-clause is already generated
+     *
+     * @return self
+     */
     public function setConverter($fieldName, $converter)
     {
         $this->guardNotGenerated();

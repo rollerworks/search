@@ -28,9 +28,9 @@ use Rollerworks\Component\Search\ValuesGroup;
  * This example uses a 'classic' invoice system
  * with three tables:
  *
- * * invoice
- * * invoice_details
- * * customer
+ * * invoices
+ * * invoice_rows
+ * * customers
  *
  * For simplicity this example doesn't do tax calculation.
  *
@@ -65,15 +65,16 @@ class WhereBuilderResultsTestCase extends OrmTestCase
                 'customers',
                 [
                     'id' => 'integer',
-                    'name' => 'string',
+                    'first_name' => 'string',
+                    'last_name' => 'string',
                     'birthday' => 'date',
                 ]
             )
             ->records()
-                ->add([1, 'Peter Pang', $date('1980-11-20')])
-                ->add([2, 'Leroy Jenkins', $date('2000-05-15')])
-                ->add([3, 'Doctor Who', $date('2005-12-10')])
-                ->add([4, 'Spider Pig', $date('2012-06-10')])
+                ->add([1, 'Peter', 'Pang', $date('1980-11-20')])
+                ->add([2, 'Leroy', 'Jenkins', $date('2000-05-15')])
+                ->add([3, 'Doctor', 'Who', $date('2005-12-10')])
+                ->add([4, 'Spider', 'Pig', $date('2012-06-10')])
             ->end(),
 
             // Two invoices are paid, one is a concept and three are unpaid
@@ -144,6 +145,10 @@ class WhereBuilderResultsTestCase extends OrmTestCase
             'R'
         );
         $whereBuilder->setField('credit_parent', 'IP', null, 'id');
+        $whereBuilder->setCombinedField('customer-name', [
+            ['property' => 'firstName', 'type' => 'string', 'alias' => 'C'],
+            ['property' => 'lastName', 'alias' => 'C'],
+        ]);
     }
 
     /**
@@ -152,6 +157,14 @@ class WhereBuilderResultsTestCase extends OrmTestCase
     public function it_finds_with_id()
     {
         $this->makeTest('id: 1, 5;', [1, 5]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_with_combined_field()
+    {
+        $this->makeTest('customer-name: Pang, Leroy;', [1, 2, 3, 4]);
     }
 
     /**
