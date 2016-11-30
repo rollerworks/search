@@ -1,6 +1,15 @@
 UPGRADE
 =======
 
+## Upgrade FROM v1.1.0 to v1.2.0
+ 
+The `doctrine_orm_entity_count` (`EntityCountType`) is removed as this
+type has been broken for a long time. 
+
+Instead you can use the `doctrine_dbal_child_count` type, which require
+manual configuration of the `table_name` and `table_column` for the child
+relation.
+
 ## Upgrade FROM v1.0.0-beta2 to 1.0.0-beta3
 
 This beta release is compatible with RollerworksSearch v1.0.0-beta5

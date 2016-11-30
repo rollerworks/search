@@ -48,14 +48,4 @@ class DoctrineOrmExtension extends AbstractExtension
             );
         }
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function loadTypes()
-    {
-        return [
-            new Type\EntityCountType(),
-        ];
-    }
 }
