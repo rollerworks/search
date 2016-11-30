@@ -210,6 +210,46 @@ See `Doctrine DBAL Types`_ for a complete list of types and options.
 If you have a type which requires the setting of options you may need
 to use a value_conversion instead.
 
+Mapping a field to multiple columns
+***********************************
+
+.. versionadded:: v1.1.0
+    Support for mapping a field to multiple columns was introduced
+    in version 1.1 of the Doctrine ORM SearchCondition processor.
+
+Instead of searching in a single column it's possible to search in multiple
+columns for the same field. In practice this will work the same as using
+the same values for other fields.
+
+In the example below field ``name`` will search in both the user's ``first``
+and ``last`` name columns (as ``OR`` case). And it's still possible to search
+with only the first and/or last name (when those fields are configured also).
+
+.. code-block:: php
+
+    /* ... */
+
+    // Doctrine\ORM\EntityManagerInterface
+    $entityManager = ...;
+
+    $statement = $entityManager->createQuery("SELECT u FROM Acme\Entity\User AS u");
+
+    // Rollerworks\Component\Search\SearchCondition object
+    $searchCondition = ...;
+
+    $whereBuilder = $doctrineDbalFactory->createWhereBuilder($statement, $searchCondition);
+    $whereBuilder->setCombinedField('name', [['property' => 'firstName', 'alias' => 'u', 'type' => 'string'], ['property' => 'lastName', 'alias' => 'u']]);
+
+    $whereClause = $whereBuilder->getWhereClause(' AND ');
+
+.. note::
+
+    The ``alias`` and ``type`` of a mapping are optional.
+
+    A mapping can be named (for better error reporting).
+    ``['first' => ['property' => 'firstName', 'alias' => 'u', 'type' => 'string'],
+    'last' => ['property' => 'lastName', 'alias' => 'u']]``
+
 Generating the Where-clause
 ***************************
 
