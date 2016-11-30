@@ -27,9 +27,21 @@ class ECommerceCustomer
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @deprecated
+     *
+     * @ORM\Column(type="string", nullable=true)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", name="first_name")
+     */
+    private $firstName;
+
+    /**
+     * @ORM\Column(type="string", name="last_name")
+     */
+    private $lastName;
 
     /**
      * @ORM\Column(type="date")
