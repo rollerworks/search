@@ -103,7 +103,6 @@ as separate packages. Building your own condition processor is also possible.
 
 * [Doctrine2 DBAL](https://github.com/rollerworks/search-doctrine-dbal)
 * [Doctrine2 ORM](https://github.com/rollerworks/search-doctrine-orm)
-* Apache Solr (coming soon)
 * [Elasticsearch](https://github.com/rollerworks/search-elasticsearch) (coming soon)
 
 Requirements
