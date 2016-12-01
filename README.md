@@ -24,7 +24,7 @@ And a complex data is structure is no problem, say your customer data is stored
 in the "customer" table, the "invoices" data is stored in it's own table, and
 the details of the invoice also have there own table.
 
-Searching (using the FilterQuery syntax) can be as simple as:
+Searching (using the special FilterQuery syntax) can be as simple as:
 `invoice_price: >"$20.00" invoice_row_label: ~*"my cool product"; customer_type: !consumer`.
 
 You just searched in three relational tables using a single condition with a
@@ -32,28 +32,19 @@ user-friendly syntax. And that is just the start, checkout all the cool and
 powerful features RollerworksSearch has to offer.
 
 **Note:** FilterQuery is just one of the supported input formats, you can use XML,
-JSON, PHP Array or simply build your own.
+JSON or simply build your own.
 
 Features
 --------
 
 RollerworksSearch provides you with most of the features you would expect
 from a search system. Including input processing, condition optimizing and
-transforming user input to a normalized data-format. And everything can be
-extended for your own use-cases and needs.
+normalizing user input. With a high performance grade.
+
+All with complete flexibility and and extendability for your use-cases.
 
 Search conditions can be as simple or complex as you need them to be.
 Including grouping and nesting for the best possible result.
-
-And to keep performance at a high rate, each search condition can be easily stored
-in a persistent or session-based cache. On top of that each condition processor provides
-it's own specialized caching mechanise to further reduce overhead.
-
-*In practice this means that the generated (SQL) query for the DB or index is cached.*
-
-And finally executing the search operation on the storage engine,
-whether you use an SQL database system or using a lucene search back-end like
-ElasticSearch or Apache Solr.
 
 ## Input processors
 
@@ -62,20 +53,19 @@ Including a special format called FilterQuery which provides
 a user-friendly syntax for creating any type of condition.
 
 Each input processor transforms the input to a normalized format,
-and ensures that no malformed data is passed to the storage layer.
+and ensures that no malformed data leaks to the storage layer.
 
-* Array
 * JSON
 * XML
 * FilterQuery
 
 ## Optimizers
 
-Optimizers help you with optimizing SearchConditions for a better
-and faster search-condition, including removing duplicated values and
+Optimizers help with optimizing SearchConditions for a better
+and faster search condition, removing duplicated values and
 normalizing redundant values.
 
-## FieldTypes
+## Types
 
 The following types are provided out of the box, building your is also
 possible and very straightforward.
@@ -83,7 +73,7 @@ possible and very straightforward.
 **Tip:** All types listed below support localization.
 
 * Birthday (with optional support for Age conversion)
-* Choice (array, entity list, and custom implementation)
+* Choice
 * Country choice
 * Currency choice
 * Timezone choice
@@ -103,18 +93,16 @@ as separate packages. Building your own condition processor is also possible.
 
 * [Doctrine2 DBAL](https://github.com/rollerworks/search-doctrine-dbal)
 * [Doctrine2 ORM](https://github.com/rollerworks/search-doctrine-orm)
-* Apache Solr (coming soon)
 * [Elasticsearch](https://github.com/rollerworks/search-elasticsearch) (coming soon)
 
 Requirements
 ------------
 
-You need at least PHP 5.4, and Intl extension for international support.
+You need at least PHP 7.0, and Intl extension for international support.
 
 For framework integration you may use the following;
 
 * [Symfony Bundle](https://github.com/rollerworks/SearchBundle)
-* [Symfony DependencyInjection](https://github.com/rollerworks/search-symfony-di)
 * [Symfony Validator](https://github.com/rollerworks/search-symfony-validator)
 * ZendFramework2 Plugin (coming soon)
 * Silex Plugin (coming soon)
@@ -170,7 +158,7 @@ For more information on SemVer, please visit <http://semver.org/>.
 Credits
 -------
 
-The field-type extensions are largely inspired on the Symfony Form
+The type extensions are largely inspired on the Symfony Form
 Component, and contain a good amount code originally developed by
 the amazing Symfony developers.
 
@@ -180,11 +168,7 @@ Symfony project.
 License
 -------
 
-RollerworksSearch is provided under the none-restrictive MIT license,
-you are free to use it for any free or proprietary product/application,
-without restrictions.
-
-[LICENSE](LICENSE)
+RollerworksSearch is provided under the [MIT license](LICENSE).
 
 Contributing
 ------------
