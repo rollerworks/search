@@ -74,7 +74,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function add($field, $type = null, array $options = [], $required = false, $modelClass = null, $modelProperty = null)
+    public function add($field, $type = null, array $options = [])
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -95,16 +95,6 @@ class FieldSetBuilder implements FieldSetBuilderInterface
 
         if (!$type instanceof FieldTypeInterface && !is_string($type)) {
             throw new UnexpectedTypeException($type, 'string or Rollerworks\Component\Search\FieldTypeInterface');
-        }
-
-        if (null !== $modelClass) {
-            $options = array_merge(
-                $options,
-                [
-                    'model_class' => $modelClass,
-                    'model_property' => $modelProperty,
-                ]
-            );
         }
 
         $this->unresolvedFields[$field] = [

@@ -138,37 +138,6 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_creates_a_field_with_model_reference()
-    {
-        $givenOptions = ['model_class' => 'Foo'];
-        $resolvedOptions = ['model_class' => '\stdClass', 'model_property' => 'id'];
-        $optionsResolver = $this->createOptionsResolverMock();
-
-        $this->resolvedType = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldType')
-            ->setConstructorArgs([$this->type, [$this->extension1, $this->extension2], $this->parentResolvedType])
-            ->setMethods(['getOptionsResolver'])
-            ->getMock();
-
-        $this->resolvedType->expects($this->once())
-            ->method('getOptionsResolver')
-            ->will($this->returnValue($optionsResolver));
-
-        $optionsResolver->expects($this->once())
-            ->method('resolve')
-            ->with($givenOptions)
-            ->will($this->returnValue($resolvedOptions));
-
-        $field = $this->resolvedType->createField('name', $givenOptions);
-
-        $this->assertSame($this->resolvedType, $field->getType());
-        $this->assertSame($resolvedOptions, $field->getOptions());
-        $this->assertSame('\stdClass', $field->getModelRefClass());
-        $this->assertSame('id', $field->getModelRefProperty());
-    }
-
-    /**
-     * @test
-     */
     public function it_builds_the_type()
     {
         $i = 0;

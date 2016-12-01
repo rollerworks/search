@@ -114,29 +114,6 @@ final class SearchFieldTest extends \PHPUnit_Framework_TestCase
         $this->field->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false);
         $this->assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
     }
-
-    /**
-     * @test
-     */
-    public function it_has_no_model_reference_by_default()
-    {
-        $this->assertEquals(null, $this->field->getModelRefClass());
-        $this->assertEquals(null, $this->field->getModelRefProperty());
-    }
-
-    /**
-     * @test
-     *
-     * @group legacy
-     */
-    public function it_allows_setting_model_reference()
-    {
-        $this->field->setModelRef('User', 'id');
-
-        $this->assertEquals('User', $this->field->getModelRefClass());
-        $this->assertEquals('id', $this->field->getModelRefProperty());
-    }
-
     /**
      * @test
      */

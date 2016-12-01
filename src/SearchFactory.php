@@ -51,30 +51,6 @@ class SearchFactory implements SearchFactoryInterface
     }
 
     /**
-     * Create a new search field referenced by property.
-     *
-
-     * @param string $class    Model reference class-name
-     * @param string $property Model reference property-name
-     * @param string $name     Name of the field
-     * @param string $type     Type of the field
-     * @param array  $options  Array of options for building the field
-     *
-     * @return SearchField
-     *
-     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use createField() with the 'model_class' and 'model_property'
-     *             options instead
-     */
-    public function createFieldForProperty($class, $property, $name, $type, array $options = [])
-    {
-        $field = $this->createFieldBuilder($name, $type, $options);
-        $field->setModelRef($class, $property);
-
-        return $field;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function createFieldSetBuilder($name)

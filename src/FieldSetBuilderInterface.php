@@ -31,17 +31,13 @@ interface FieldSetBuilderInterface
      *                                                   object
      * @param string                      $type          Field type-name
      * @param array                       $options       Array of options for building the field
-     * @param bool                        $required      Is the field required in a ValuesGroup and must it
-     *                                                   always have a value (default is false)
-     * @param string                      $modelClass    Optional Model class-name reference
-     * @param string                      $modelProperty Model property reference
      *
      * @throws BadMethodCallException  When the FieldSet has been already turned into a FieldSet instance
      * @throws UnexpectedTypeException
      *
      * @return self
      */
-    public function add($field, $type = null, array $options = [], $required = false, $modelClass = null, $modelProperty = null);
+    public function add($field, $type = null, array $options = []);
 
     /**
      * Remove a field from the set-builder.
