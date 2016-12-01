@@ -48,15 +48,6 @@ names like: 'customer_invoices' and 'customers'.
         ->add('name', 'text')
         ->getFieldSet();
 
-.. tip::
-
-    You can also use the FieldSetBuilder to import the fields from models
-    using the :doc:`Metadata <metadata>` component.
-
-    Loading a Fields configuration using metadata reduces the duplication
-    between FieldSets. You only configure the field once and can reuse it
-    multiple times throughout the application.
-
 .. _do_manual_search:
 
 Performing a manual search (SearchConditionBuilder)

@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\Metadata\MetadataReaderInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -25,11 +24,6 @@ class SearchFactory implements SearchFactoryInterface
     private $registry;
 
     /**
-     * @var MetadataReaderInterface
-     */
-    private $metadataReader;
-
-    /**
      * @var ResolvedFieldTypeFactoryInterface
      */
     private $resolvedTypeFactory;
@@ -39,13 +33,11 @@ class SearchFactory implements SearchFactoryInterface
      *
      * @param FieldRegistryInterface            $registry
      * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
-     * @param MetadataReaderInterface           $metadataReader
      */
-    public function __construct(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory, MetadataReaderInterface $metadataReader = null)
+    public function __construct(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
     {
         $this->registry = $registry;
         $this->resolvedTypeFactory = $resolvedTypeFactory;
-        $this->metadataReader = $metadataReader;
     }
 
     /**
@@ -87,7 +79,7 @@ class SearchFactory implements SearchFactoryInterface
      */
     public function createFieldSetBuilder($name)
     {
-        $fieldSetBuilder = new FieldSetBuilder($name, $this, $this->metadataReader);
+        $fieldSetBuilder = new FieldSetBuilder($name, $this);
 
         return $fieldSetBuilder;
     }

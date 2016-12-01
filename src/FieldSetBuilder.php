@@ -14,7 +14,6 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\Metadata\MetadataReaderInterface;
 
 /**
  * The FieldSetBuilder helps with building a {@link FieldSet}.
@@ -51,22 +50,15 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     private $searchFactory;
 
     /**
-     * @var MetadataReaderInterface
-     */
-    private $metadataReader;
-
-    /**
      * Constructor.
      *
-     * @param string                  $name           Name of the FieldSet
-     * @param SearchFactoryInterface  $searchFactory  Search factory for creating new search fields
-     * @param MetadataReaderInterface $metadataReader Optional metadata reader for loading field configuration
+     * @param string                 $name          Name of the FieldSet
+     * @param SearchFactoryInterface $searchFactory Search factory for creating new search fields
      */
-    public function __construct($name, SearchFactoryInterface $searchFactory, MetadataReaderInterface $metadataReader = null)
+    public function __construct($name, SearchFactoryInterface $searchFactory)
     {
         $this->name = $name;
         $this->searchFactory = $searchFactory;
-        $this->metadataReader = $metadataReader;
     }
 
     /**
@@ -187,54 +179,6 @@ class FieldSetBuilder implements FieldSetBuilderInterface
         }
 
         throw new InvalidArgumentException(sprintf('The field with the name "%s" does not exist.', $name));
-    }
-
-    /**
-     * Import the fields configuration using the metadata reader.
-     *
-     * @param string $class   Model Class-name to load metadata from
-     * @param array  $include List of field names to use, everything else is excluded
-     * @param array  $exclude List of field names to exclude, everything else is included
-     *
-     * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
-     * @throws BadMethodCallException When no metadata reader is configured
-     *
-     * @return self
-     */
-    public function importFromClass($class, array $include = [], array $exclude = [])
-    {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
-            );
-        }
-
-        if (!$this->metadataReader) {
-            throw new BadMethodCallException(
-                'FieldSetBuilder is unable to import configuration from class, no MetadataReader was set for the constructor.'
-            );
-        }
-
-        foreach ($this->metadataReader->getSearchFields($class) as $field) {
-            if (($include && !in_array($field->fieldName, $include, true)) xor ($exclude && in_array($field->fieldName, $exclude, true))) {
-                continue;
-            }
-
-            $field->options = array_merge(
-                $field->options,
-                [
-                    'model_class' => $field->class,
-                    'model_property' => $field->property,
-                ]
-            );
-
-            $this->unresolvedFields[$field->fieldName] = [
-                'type' => $field->type,
-                'options' => $field->options,
-            ];
-        }
-
-        return $this;
     }
 
     /**

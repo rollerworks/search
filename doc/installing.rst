@@ -45,17 +45,9 @@ Doctrine
 * `rollerworks/search-doctrine-orm`_ allows searching a relational SQL database using `Doctrine2 ORM`_.
 * `rollerworks/search-doctrine-dbal`_ allows searching a relational SQL database using `Doctrine2 DBAL`_.
 
-Metadata extension
-^^^^^^^^^^^^^^^^^^
-
-https://github.com/rollerworks/rollerworks-search-metadata
-
-Provides a :doc:`Metadata <metadata>` loader using the `rollerworks/metadata`_ package.
-
 .. _`Composer`: http://getcomposer.org/
 .. _`downloading Composer`: http://getcomposer.org/download/
 .. _`rollerworks/search-doctrine-orm`: https://github.com/rollerworks/rollerworks-search-doctrine-orm
 .. _`rollerworks/search-doctrine-dbal`: https://github.com/rollerworks/rollerworks-search-doctrine-dbal
 .. _`Doctrine2 ORM`: http://www.doctrine-project.org/projects/orm.html
 .. _`Doctrine2 dbal`: http://www.doctrine-project.org/projects/dbal.html
-.. _`rollerworks/metadata`: https://github.com/rollerworks/rollerworks-search-metadata

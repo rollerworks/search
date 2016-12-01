@@ -14,7 +14,6 @@ namespace Rollerworks\Component\Search\Tests;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSetBuilder;
-use Rollerworks\Component\Search\Metadata\SearchField as MappingSearchField;
 use Rollerworks\Component\Search\SearchField;
 
 final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
@@ -39,22 +38,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $metadataReader = $this->prophesize('Rollerworks\Component\Search\Metadata\MetadataReaderInterface');
-        $metadataReader->getSearchFields('User')->willReturn(
-            [
-                'uid' => new MappingSearchField('uid', 'User', 'id', false, 'integer', ['min' => 1]),
-                'username' => new MappingSearchField('username', 'User', 'name', false, 'text'),
-            ]
-        );
-
-        $metadataReader->getSearchFields('Group')->willReturn(
-            [
-                'gid' => new MappingSearchField('gid', 'Group', 'id', false, 'integer'),
-                'group-name' => new MappingSearchField('group-name', 'Group', 'name', false, 'text'),
-            ]
-        );
-
-        $this->builder = new FieldSetBuilder('test', $factory->reveal(), $metadataReader->reveal());
+        $this->builder = new FieldSetBuilder('test', $factory->reveal());
     }
 
     public function testGetName()
@@ -98,54 +82,6 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->builder->has('name'));
         $this->assertFalse($this->builder->has('id'));
-    }
-
-    public function testImportFieldsFromMetadata()
-    {
-        $this->builder->importFromClass('User');
-        $this->builder->importFromClass('Group');
-
-        $this->assertTrue($this->builder->has('uid'));
-        $this->assertTrue($this->builder->has('username'));
-        $this->assertTrue($this->builder->has('gid'));
-        $this->assertTrue($this->builder->has('group-name'));
-
-        $this->assertBuilderFieldConfigurationEquals(
-            'uid',
-            'integer',
-            [
-                'min' => 1,
-                'model_class' => 'User',
-                'model_property' => 'id',
-            ]
-        );
-
-        $this->assertBuilderFieldConfigurationEquals(
-            'username',
-            'text',
-            [
-                'model_class' => 'User',
-                'model_property' => 'name',
-            ]
-        );
-
-        $this->assertBuilderFieldConfigurationEquals(
-            'gid',
-            'integer',
-            [
-                'model_class' => 'Group',
-                'model_property' => 'id',
-            ]
-        );
-
-        $this->assertBuilderFieldConfigurationEquals(
-            'group-name',
-            'text',
-            [
-                'model_class' => 'Group',
-                'model_property' => 'name',
-            ]
-        );
     }
 
     public function testGetBuildFieldSet()
