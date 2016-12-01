@@ -100,8 +100,8 @@ class SearchConditionBuilder
      * allows to add extra values to the field:
      *
      * ->field('name')
-     *   ->addSingleValue(new SingleValue('my value'))
-     *   ->addSingleValue(new SingleValue('my value 2'))
+     *   ->addSimpleValue('my value')
+     *   ->addSimpleValue('my value 2')
      * ->end() // return back to the ValuesGroup
      *
      * Tip! If the field already exists the existing is expended (values are added).

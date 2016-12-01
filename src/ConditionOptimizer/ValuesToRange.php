@@ -15,8 +15,8 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValueIncrementerInterface;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
@@ -75,7 +75,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
 
             $config = $fieldSet->get($fieldName);
 
-            if ($values->hasSingleValues() || $values->hasExcludedValues()) {
+            if ($values->hasSimpleValues() || $values->hasExcludedSimpleValues()) {
                 $this->optimizeValuesInValuesBag($config, $this->comparators[$fieldName], $values);
             }
         }
@@ -93,15 +93,15 @@ class ValuesToRange implements SearchConditionOptimizerInterface
      */
     private function optimizeValuesInValuesBag(FieldConfigInterface $config, $comparisonFunc, ValuesBag $valuesBag)
     {
-        if ($valuesBag->hasSingleValues()) {
-            $values = $valuesBag->getSingleValues();
+        if ($valuesBag->hasSimpleValues()) {
+            $values = $valuesBag->getSimpleValues();
             uasort($values, $comparisonFunc);
 
             $this->listToRanges($values, $valuesBag, $config);
         }
 
-        if ($valuesBag->hasExcludedValues()) {
-            $excludes = $valuesBag->getExcludedValues();
+        if ($valuesBag->hasExcludedSimpleValues()) {
+            $excludes = $valuesBag->getExcludedSimpleValues();
             uasort($excludes, $comparisonFunc);
 
             $this->listToRanges($excludes, $valuesBag, $config, true);
@@ -111,19 +111,19 @@ class ValuesToRange implements SearchConditionOptimizerInterface
     /**
      * Converts a list of values to ranges.
      *
-     * @param SingleValue[]        $values
+     * @param array                $values
      * @param ValuesBag            $valuesBag
      * @param FieldConfigInterface $config
      * @param bool                 $exclude
      */
     private function listToRanges($values, ValuesBag $valuesBag, FieldConfigInterface $config, $exclude = false)
     {
+        $class = $exclude ? ExcludedRange::class : Range::class;
         /** @var ValueIncrementerInterface $comparison */
         $comparison = $config->getValueComparison();
         $options = $config->getOptions();
 
         $prevIndex = null;
-        /** @var SingleValue $prevValue */
         $prevValue = null;
 
         $rangeLower = null;
@@ -143,9 +143,9 @@ class ValuesToRange implements SearchConditionOptimizerInterface
             }
 
             $unsetIndex = null;
-            $increasedValue = $comparison->getIncrementedValue($prevValue->getValue(), $options);
+            $increasedValue = $comparison->getIncrementedValue($prevValue, $options);
 
-            if ($comparison->isEqual($value->getValue(), $increasedValue, $options)) {
+            if ($comparison->isEqual($value, $increasedValue, $options)) {
                 if (null === $rangeLower) {
                     $rangeLower = $prevValue;
                 }
@@ -156,21 +156,15 @@ class ValuesToRange implements SearchConditionOptimizerInterface
             if (null !== $rangeUpper) {
                 $unsetIndex = $prevIndex;
 
-                if ($curCount === $valuesCount || !$comparison->isEqual($value->getValue(), $increasedValue, $options)) {
-                    $range = new Range(
-                        $rangeLower->getValue(),
-                        $rangeUpper->getValue(),
+                if ($curCount === $valuesCount || !$comparison->isEqual($value, $increasedValue, $options)) {
+                    $range = new $class(
+                        $rangeLower,
+                        $rangeUpper,
                         true,
-                        true,
-                        $rangeLower->getViewValue(),
-                        $rangeUpper->getViewValue()
+                        true
                     );
 
-                    if ($exclude) {
-                        $valuesBag->addExcludedRange($range);
-                    } else {
-                        $valuesBag->addRange($range);
-                    }
+                    $valuesBag->add($range);
 
                     $unsetIndex = $prevIndex;
 
@@ -187,9 +181,9 @@ class ValuesToRange implements SearchConditionOptimizerInterface
 
             if (null !== $unsetIndex) {
                 if ($exclude) {
-                    $valuesBag->removeExcludedValue($unsetIndex);
+                    $valuesBag->removeExcludedSimpleValue($unsetIndex);
                 } else {
-                    $valuesBag->removeSingleValue($unsetIndex);
+                    $valuesBag->removeSimpleValue($unsetIndex);
                 }
             }
         }

@@ -15,7 +15,6 @@ use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesError;
 use Rollerworks\Component\Search\ValuesGroup;
@@ -42,8 +41,8 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
         $expectedGroup->addField('field-1', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
@@ -63,9 +62,9 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value"2'));
-        $values->addSingleValue(new SingleValue('!foo'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value"2');
+        $values->addSimpleValue('!foo');
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);

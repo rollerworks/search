@@ -38,7 +38,7 @@ final class SingleValue
     public function __construct($value, $viewValue = null)
     {
         $this->value = $value;
-        $this->viewValue = (string) (null !== $viewValue ? $viewValue : $value);
+        $this->viewValue = (string) (null !== $viewValue ? $viewValue : (is_scalar($value) ? $value : ''));
     }
 
     /**

@@ -11,7 +11,10 @@
 
 namespace Rollerworks\Component\Search\Exporter;
 
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\ValuesBag;
@@ -49,7 +52,7 @@ class FilterQueryExporter extends AbstractExporter
             }
 
             $result .= $this->labelResolver->resolveFieldLabel($fieldSet, $name);
-            $result .= ': '.$this->exportValues($values).'; ';
+            $result .= ': '.$this->exportValues($values, $fieldSet->get($name)).'; ';
         }
 
         foreach ($valuesGroup->getGroups() as $group) {
@@ -72,31 +75,31 @@ class FilterQueryExporter extends AbstractExporter
      *
      * @return string
      */
-    private function exportValues(ValuesBag $valuesBag)
+    private function exportValues(ValuesBag $valuesBag, FieldConfigInterface $field)
     {
         $exportedValues = '';
 
-        foreach ($valuesBag->getSingleValues() as $value) {
-            $exportedValues .= $this->exportValuePart($value->getViewValue()).', ';
+        foreach ($valuesBag->getSimpleValues() as $value) {
+            $exportedValues .= $this->exportValuePart($this->normToView($value, $field)).', ';
         }
 
-        foreach ($valuesBag->getExcludedValues() as $value) {
-            $exportedValues .= '!'.$this->exportValuePart($value->getViewValue()).', ';
+        foreach ($valuesBag->getExcludedSimpleValues() as $value) {
+            $exportedValues .= '!'.$this->exportValuePart($this->normToView($value, $field)).', ';
         }
 
-        foreach ($valuesBag->getRanges() as $value) {
-            $exportedValues .= $this->exportRangeValue($value).', ';
+        foreach ($valuesBag->get(Range::class) as $value) {
+            $exportedValues .= $this->exportRangeValue($value, $field).', ';
         }
 
-        foreach ($valuesBag->getExcludedRanges() as $value) {
-            $exportedValues .= '!'.$this->exportRangeValue($value).', ';
+        foreach ($valuesBag->get(ExcludedRange::class) as $value) {
+            $exportedValues .= '!'.$this->exportRangeValue($value, $field).', ';
         }
 
-        foreach ($valuesBag->getComparisons() as $value) {
-            $exportedValues .= $value->getOperator().$this->exportValuePart($value->getViewValue()).', ';
+        foreach ($valuesBag->get(Compare::class) as $value) {
+            $exportedValues .= $value->getOperator().$this->exportValuePart($this->normToView($value->getValue(), $field)).', ';
         }
 
-        foreach ($valuesBag->getPatternMatchers() as $value) {
+        foreach ($valuesBag->get(PatternMatch::class) as $value) {
             $exportedValues .= $this->getPatternMatchOperator($value).$this->exportValuePart($value->getValue()).', ';
         }
 
@@ -157,16 +160,17 @@ class FilterQueryExporter extends AbstractExporter
     }
 
     /**
-     * @param Range $range
+     * @param Range                $range
+     * @param FieldConfigInterface $field
      *
      * @return string
      */
-    private function exportRangeValue(Range $range)
+    private function exportRangeValue(Range $range, FieldConfigInterface $field)
     {
         $result = !$range->isLowerInclusive() ? ']' : '';
-        $result .= $this->exportValuePart($range->getViewLower());
+        $result .= $this->exportValuePart($this->normToView($range->getLower(), $field));
         $result .= '-';
-        $result .= $this->exportValuePart($range->getViewUpper());
+        $result .= $this->exportValuePart($this->normToView($range->getUpper(), $field));
         $result .= !$range->isUpperInclusive() ? '[' : '';
 
         return $result;
@@ -177,20 +181,12 @@ class FilterQueryExporter extends AbstractExporter
      *
      * If the value needs escaping/quotation this is performed.
      *
-     * @param string $value
+     * @param mixed $value
      *
-     * @throws \InvalidArgumentException When the passed value is null or none scalar
-     *
-     * @return string
+     * @return string When the passed value is null or none scalar
      */
     private function exportValuePart($value)
     {
-        if ('' === $value) {
-            throw new \InvalidArgumentException(
-                'Unable to export empty view-value. Please make sure there is a view-value set.'
-            );
-        }
-
         if (!preg_match('/^([\p{L}\p{N}]+)$/siu', $value)) {
             return '"'.str_replace('"', '""', $value).'"';
         }

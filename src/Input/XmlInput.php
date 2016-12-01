@@ -132,13 +132,13 @@ class XmlInput extends AbstractInput
 
         if (isset($values->{'single-values'})) {
             foreach ($values->{'single-values'}->children() as $value) {
-                $factory->addSingleValue((string) $value);
+                $factory->addSimpleValue((string) $value);
             }
         }
 
         if (isset($values->{'excluded-values'})) {
             foreach ($values->{'excluded-values'}->children() as $value) {
-                $factory->addExcludedValue((string) $value);
+                $factory->addExcludedSimpleValue((string) $value);
             }
         }
 

@@ -163,11 +163,11 @@ class ArrayInput extends AbstractInput
         $factory = new FieldValuesFactory($fieldConfig, $valuesBag, $this->config->getMaxValues(), $groupIdx, $level);
 
         foreach ($values['single-values'] as $index => $value) {
-            $factory->addSingleValue($value);
+            $factory->addSimpleValue($value);
         }
 
         foreach ($values['excluded-values'] as $index => $value) {
-            $factory->addExcludedValue($value);
+            $factory->addExcludedSimpleValue($value);
         }
 
         foreach ($values['ranges'] as $index => $range) {

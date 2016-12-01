@@ -14,8 +14,8 @@ namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 use Rollerworks\Component\Search\ConditionOptimizer\ValuesToRange;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 
 final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
@@ -34,13 +34,13 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('id')
-                ->addSingleValue(new SingleValue(1))
-                ->addSingleValue(new SingleValue(2))
-                ->addSingleValue(new SingleValue(3))
-                ->addSingleValue(new SingleValue(4))
-                ->addSingleValue(new SingleValue(5))
-                ->addSingleValue(new SingleValue(10))
-                ->addSingleValue(new SingleValue(7))
+                ->addSimpleValue(1)
+                ->addSimpleValue(2)
+                ->addSimpleValue(3)
+                ->addSimpleValue(4)
+                ->addSimpleValue(5)
+                ->addSimpleValue(10)
+                ->addSimpleValue(7)
             ->end()
             ->getSearchCondition()
         ;
@@ -50,25 +50,28 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addSingleValue(new SingleValue(10))
-            ->addSingleValue(new SingleValue(7))
-            ->addRange(new Range(1, 5))
+            ->addSimpleValue(10)
+            ->addSimpleValue(7)
+            ->add(new Range(1, 5))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
+    /**
+     * @test
+     */
     public function it_converts_excluded_proceeding_values_to_ranges()
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('id')
-                ->addExcludedValue(new SingleValue(1))
-                ->addExcludedValue(new SingleValue(2))
-                ->addExcludedValue(new SingleValue(3))
-                ->addExcludedValue(new SingleValue(4))
-                ->addExcludedValue(new SingleValue(5))
-                ->addExcludedValue(new SingleValue(10))
-                ->addExcludedValue(new SingleValue(7))
+                ->addExcludedSimpleValue(1)
+                ->addExcludedSimpleValue(2)
+                ->addExcludedSimpleValue(3)
+                ->addExcludedSimpleValue(4)
+                ->addExcludedSimpleValue(5)
+                ->addExcludedSimpleValue(10)
+                ->addExcludedSimpleValue(7)
             ->end()
             ->getSearchCondition()
         ;
@@ -78,9 +81,9 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addExcludedValue(new SingleValue(10))
-            ->addExcludedValue(new SingleValue(7))
-            ->addExcludedRange(new Range(1, 5))
+            ->addExcludedSimpleValue(10)
+            ->addExcludedSimpleValue(7)
+            ->add(new ExcludedRange(1, 5))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));

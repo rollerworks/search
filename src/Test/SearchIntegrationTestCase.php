@@ -16,6 +16,10 @@ use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\ValuesBag;
 
 abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
@@ -100,22 +104,22 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
     protected function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
     {
         $expectedArray = [
-            'single' => $expected->getSingleValues(),
-            'excluded' => $expected->getExcludedValues(),
-            'ranges' => $expected->getRanges(),
-            'excludedRanges' => $expected->getExcludedRanges(),
-            'compares' => $expected->getComparisons(),
-            'matchers' => $expected->getPatternMatchers(),
+            'single' => $expected->getSimpleValues(),
+            'excluded' => $expected->getExcludedSimpleValues(),
+            'ranges' => $expected->get(Range::class),
+            'excludedRanges' => $expected->get(ExcludedRange::class),
+            'compares' => $expected->get(Compare::class),
+            'matchers' => $expected->get(PatternMatch::class),
         ];
 
         // use array_merge to renumber indexes and prevent mismatches
         $resultArray = [
-            'single' => array_merge([], $result->getSingleValues()),
-            'excluded' => array_merge([], $result->getExcludedValues()),
-            'ranges' => array_merge([], $result->getRanges()),
-            'excludedRanges' => array_merge([], $result->getExcludedRanges()),
-            'compares' => array_merge([], $result->getComparisons()),
-            'matchers' => array_merge([], $result->getPatternMatchers()),
+            'single' => array_merge([], $result->getSimpleValues()),
+            'excluded' => array_merge([], $result->getExcludedSimpleValues()),
+            'ranges' => array_merge([], $result->get(Range::class)),
+            'excludedRanges' => array_merge([], $result->get(ExcludedRange::class)),
+            'compares' => array_merge([], $result->get(Compare::class)),
+            'matchers' => array_merge([], $result->get(PatternMatch::class)),
         ];
 
         $this->assertEquals($expectedArray, $resultArray);

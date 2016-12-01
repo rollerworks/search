@@ -497,9 +497,9 @@ class FilterQueryInput extends AbstractInput
             $this->processRangeValue($factory, $negative);
         } else {
             if ($negative) {
-                $factory->addExcludedValue($this->stringValue());
+                $factory->addExcludedSimpleValue($this->stringValue());
             } else {
-                $factory->addSingleValue($this->stringValue());
+                $factory->addSimpleValue($this->stringValue());
             }
         }
     }

@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\ExporterInterface;
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldLabelResolver\NoopLabelResolver;
 use Rollerworks\Component\Search\FieldLabelResolverInterface;
 use Rollerworks\Component\Search\FieldSet;
@@ -127,4 +128,39 @@ abstract class AbstractExporter implements ExporterInterface
      * @return mixed
      */
     abstract protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false);
+
+    /**
+     * Transforms the value if a value transformer is set.
+     *
+     * @param mixed                $value
+     * @param FieldConfigInterface $field
+     *
+     * @return string
+     */
+    protected function normToView($value, FieldConfigInterface $field): string
+    {
+        // Scalar values should be converted to strings to
+        // facilitate differentiation between empty ("") and zero (0).
+        if (null === $value || !$field->getViewTransformers()) {
+            if (null !== $value && !is_scalar($value)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Norm value of type %s is not a scalar value or null and not cannot be '.
+                        'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
+                        gettype($value),
+                        $field->getName(),
+                        $field->getType()->getName()
+                    )
+                );
+            }
+
+            return (string) $value;
+        }
+
+        foreach ($field->getViewTransformers() as $transformer) {
+            $value = $transformer->transform($value);
+        }
+
+        return (string) $value;
+    }
 }

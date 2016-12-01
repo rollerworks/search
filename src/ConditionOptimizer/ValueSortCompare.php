@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\ConditionOptimizer;
 
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValueComparisonInterface;
 
 /**
@@ -32,11 +31,8 @@ final class ValueSortCompare
         $this->options = $options;
     }
 
-    public function __invoke(SingleValue $first, SingleValue $second)
+    public function __invoke($a, $b)
     {
-        $a = $first->getValue();
-        $b = $second->getValue();
-
         if ($this->comparison->isEqual($a, $b, $this->options)) {
             return 0;
         }

@@ -16,9 +16,9 @@ use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesError;
 
@@ -52,44 +52,28 @@ final class FieldValuesFactory
         $this->count = $valuesBag->count();
     }
 
-    public function addSingleValue($value)
+    public function addSimpleValue($value)
     {
         if (++$this->count > $this->maxCount) {
             $this->throwValuesOverflow();
         }
 
-        $path = 'singleValues['.count($this->valuesBag->getSingleValues()).']';
-
+        $path = 'singleValues['.count($this->valuesBag->getSimpleValues()).']';
         $normValue = $this->viewToNorm($value, $path);
-        $viewValue = $this->normToView($normValue, $path);
 
-        if (null === $normValue || null === $viewValue) {
-            $singleValue = new SingleValue($value);
-        } else {
-            $singleValue = new SingleValue($normValue, $viewValue);
-        }
-
-        $this->valuesBag->addSingleValue($singleValue);
+        $this->valuesBag->addSimpleValue($normValue);
     }
 
-    public function addExcludedValue($value)
+    public function addExcludedSimpleValue($value)
     {
         if (++$this->count > $this->maxCount) {
             $this->throwValuesOverflow();
         }
 
-        $path = 'excludedValues['.count($this->valuesBag->getExcludedValues()).']';
-
+        $path = 'excludedValues['.count($this->valuesBag->getExcludedSimpleValues()).']';
         $normValue = $this->viewToNorm($value, $path);
-        $viewValue = $this->normToView($normValue, $path);
 
-        if (null === $normValue || null === $viewValue) {
-            $singleValue = new SingleValue($value);
-        } else {
-            $singleValue = new SingleValue($normValue, $viewValue);
-        }
-
-        $this->valuesBag->addExcludedValue($singleValue);
+        $this->valuesBag->addExcludedSimpleValue($normValue);
     }
 
     public function addRange($lower, $upper, $lowerInclusive, $upperInclusive)
@@ -100,9 +84,9 @@ final class FieldValuesFactory
 
         $this->assertAcceptsType('range');
 
-        $path = 'ranges['.count($this->valuesBag->getRanges()).']';
+        $path = 'ranges['.count($this->valuesBag->get(Range::class)).']';
 
-        $this->valuesBag->addRange(
+        $this->valuesBag->add(
             $this->createRangeValue($lower, $upper, $lowerInclusive, $upperInclusive, $path)
         );
     }
@@ -115,10 +99,10 @@ final class FieldValuesFactory
 
         $this->assertAcceptsType('range');
 
-        $path = 'excludedRanges['.count($this->valuesBag->getExcludedRanges()).']';
+        $path = 'excludedRanges['.count($this->valuesBag->get(ExcludedRange::class)).']';
 
-        $this->valuesBag->addExcludedRange(
-            $this->createRangeValue($lower, $upper, $lowerInclusive, $upperInclusive, $path)
+        $this->valuesBag->add(
+            $this->createRangeValue($lower, $upper, $lowerInclusive, $upperInclusive, $path, true)
         );
     }
 
@@ -130,7 +114,7 @@ final class FieldValuesFactory
 
         $this->assertAcceptsType('comparison');
 
-        $path = 'comparisons['.count($this->valuesBag->getComparisons()).'].value';
+        $path = 'comparisons['.count($this->valuesBag->get(Compare::class)).'].value';
 
         $normValue = $this->viewToNorm($value, $path);
         $viewValue = $this->normToView($normValue, $path);
@@ -141,7 +125,7 @@ final class FieldValuesFactory
             $comparison = new Compare($normValue, $operator, $viewValue);
         }
 
-        $this->valuesBag->addComparison($comparison);
+        $this->valuesBag->add($comparison);
     }
 
     public function addPatterMatch($type, $patternMatch, $caseInsensitive)
@@ -161,7 +145,7 @@ final class FieldValuesFactory
             );
         }
 
-        $this->valuesBag->addPatternMatch(
+        $this->valuesBag->add(
             new PatternMatch((string) $patternMatch, $type, $caseInsensitive)
         );
     }
@@ -173,8 +157,10 @@ final class FieldValuesFactory
         );
     }
 
-    private function createRangeValue($lower, $upper, $lowerInclusive, $upperInclusive, $path)
+    private function createRangeValue($lower, $upper, $lowerInclusive, $upperInclusive, $path, $exclude = false)
     {
+        $class = $exclude ? ExcludedRange::class : Range::class;
+
         $lowerNorm = $this->viewToNorm($lower, $path.'.lower');
         $lowerView = $this->normToView($lowerNorm, $path.'.lower');
 
@@ -182,10 +168,10 @@ final class FieldValuesFactory
         $upperView = $this->normToView($upperNorm, $path.'.upper');
 
         if (null === $lowerNorm || null === $lowerView || null === $upperNorm || null === $upperView) {
-            return new Range($lower, $upper, $lowerInclusive, $upperInclusive);
+            return new $class($lower, $upper, $lowerInclusive, $upperInclusive);
         }
 
-        $range = new Range($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive, $lowerView, $upperView);
+        $range = new $class($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive, $lowerView, $upperView);
         $this->validateRangeBounds($range, $path);
 
         return $range;

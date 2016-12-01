@@ -48,16 +48,16 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         $date = new \DateTime();
 
         $fieldId = new ValuesBag();
-        $fieldId->addSingleValue(new SingleValue(10));
-        $fieldId->addSingleValue(new SingleValue($date, $date->format('m/d/Y')));
+        $fieldId->addSimpleValue(10);
+        $fieldId->addSimpleValue($date);
 
         $valuesGroup0 = new ValuesGroup();
         $valuesGroup0->addField('id', $fieldId);
 
         $fieldName = new ValuesBag();
         $fieldName->addError(new ValuesError('singleValue[0]', 'system error'));
-        $fieldName->addSingleValue(new SingleValue(10));
-        $fieldName->addSingleValue(new SingleValue($date, $date->format('m/d/Y')));
+        $fieldName->addSimpleValue(10);
+        $fieldName->addSimpleValue($date);
 
         $valuesGroup1 = new ValuesGroup();
 
