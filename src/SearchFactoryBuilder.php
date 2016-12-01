@@ -11,8 +11,6 @@
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Metadata\MetadataReaderInterface;
-
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -39,26 +37,11 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     private $typeExtensions = [];
 
     /**
-     * @var MetadataReaderInterface
-     */
-    private $mappingReader;
-
-    /**
      * {@inheritdoc}
      */
     public function setResolvedTypeFactory(ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
     {
         $this->resolvedTypeFactory = $resolvedTypeFactory;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetaReader(MetadataReaderInterface $mappingReader)
-    {
-        $this->mappingReader = $mappingReader;
 
         return $this;
     }
@@ -145,6 +128,6 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
         $resolvedTypeFactory = $this->resolvedTypeFactory ?: new ResolvedFieldTypeFactory();
         $registry = new FieldRegistry($extensions, $resolvedTypeFactory);
 
-        return new SearchFactory($registry, $resolvedTypeFactory, $this->mappingReader);
+        return new SearchFactory($registry, $resolvedTypeFactory);
     }
 }
