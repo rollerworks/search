@@ -90,17 +90,6 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * BC method, does nothing.
-     *
-     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use a custom validator instead
-     */
-    public function setRequired($required = true)
-    {
-        // noop
-    }
-
-    /**
      * {@inheritdoc}
      *
      * @throws BadMethodCallException
@@ -164,58 +153,6 @@ class SearchField implements FieldConfigInterface
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * BC method.
-     *
-     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use a custom validator instead
-     */
-    public function isRequired()
-    {
-        return false;
-    }
-
-    /**
-     * @param string $class
-     * @param string $property
-     *
-     * @throws BadMethodCallException when the data is locked
-     *
-     * @return self
-     *
-     * @deprecated Deprecated since version 1.0.0-beta5, to be removed in 2.0.
-     *             Use the 'model_class' and 'model_property' options instead
-     */
-    public function setModelRef($class, $property)
-    {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'SearchField setter methods cannot be accessed anymore once the data is locked.'
-            );
-        }
-
-        $this->options['model_class'] = $class;
-        $this->options['model_property'] = $property;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getModelRefClass()
-    {
-        return $this->getOption('model_class');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getModelRefProperty()
-    {
-        return $this->getOption('model_property');
     }
 
     /**

@@ -60,24 +60,6 @@ interface FieldConfigInterface
     public function setValueTypeSupport($type, $enabled);
 
     /**
-     * Returns the configured Model's class-name.
-     *
-     * This is required for certain storage engines.
-     *
-     * @return string
-     */
-    public function getModelRefClass();
-
-    /**
-     * Returns the configured Model's field property-name.
-     *
-     * This is required for certain storage engines.
-     *
-     * @return string
-     */
-    public function getModelRefProperty();
-
-    /**
      * Set the {@link ValueComparisonInterface} instance for optimizing
      * and validation.
      *

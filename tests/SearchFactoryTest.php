@@ -148,49 +148,6 @@ final class SearchFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->fieldConfig, $this->factory->createField('name', $type, $options));
     }
 
-    /**
-     * @test
-     *
-     * @group legacy
-     */
-    public function create_field_with_model_reference()
-    {
-        $options = ['a' => '1', 'b' => '2'];
-        $resolvedOptions = ['a' => '2', 'b' => '3'];
-        $resolvedType = $this->getMockResolvedType();
-
-        $this->fieldConfig = $this->getMockBuilder('Rollerworks\Component\Search\SearchField')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->registry->expects($this->once())
-            ->method('getType')
-            ->with('type')
-            ->will($this->returnValue($resolvedType));
-
-        $resolvedType->expects($this->once())
-            ->method('createField')
-            ->with('name', $options)
-            ->will($this->returnValue($this->fieldConfig));
-
-        $this->fieldConfig->expects($this->any())
-            ->method('getOptions')
-            ->will($this->returnValue($resolvedOptions));
-
-        $this->fieldConfig->expects($this->once())
-            ->method('setModelRef')
-            ->with('Entity\User', 'id');
-
-        $resolvedType->expects($this->once())
-            ->method('buildType')
-            ->with($this->fieldConfig, $resolvedOptions);
-
-        $this->assertSame(
-            $this->fieldConfig,
-            $this->factory->createFieldForProperty('Entity\User', 'id', 'name', 'type', $options)
-        );
-    }
-
     private function getMockResolvedType()
     {
         return $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldTypeInterface')->getMock();
