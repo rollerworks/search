@@ -17,9 +17,9 @@ use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 use Rollerworks\Component\Search\ValueComparisonInterface;
-use Rollerworks\Component\Search\ValuesBag;
-use Rollerworks\Component\Search\ValuesGroup;
 
 /**
  * Removes overlapping ranges/values and merges connected ranges.

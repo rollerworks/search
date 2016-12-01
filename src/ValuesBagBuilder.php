@@ -11,6 +11,8 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Value\ValuesBag;
+
 /**
  * Helper class for the SearchConditionBuilder.
  *

@@ -13,8 +13,8 @@ namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\XmlInput;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 use Rollerworks\Component\Search\ValuesError;
-use Rollerworks\Component\Search\ValuesGroup;
 
 final class XmlInputTest extends InputProcessorTestCase
 {

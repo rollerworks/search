@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Rollerworks\Component\Search\Value\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**

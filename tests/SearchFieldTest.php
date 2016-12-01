@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search\Tests;
 
 use Rollerworks\Component\Search\SearchField;
-use Rollerworks\Component\Search\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesBag;
 
 final class SearchFieldTest extends \PHPUnit_Framework_TestCase
 {

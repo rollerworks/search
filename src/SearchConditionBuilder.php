@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

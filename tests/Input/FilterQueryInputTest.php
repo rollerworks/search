@@ -15,9 +15,9 @@ use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 use Rollerworks\Component\Search\ValuesError;
-use Rollerworks\Component\Search\ValuesGroup;
 
 final class FilterQueryInputTest extends InputProcessorTestCase
 {

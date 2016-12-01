@@ -73,8 +73,8 @@ mapping fields that need to be used.
 
     use Rollerworks\Component\Search\InputProcessorInterface;
     use Rollerworks\Component\Search\Value\SingleValue;
-    use Rollerworks\Component\Search\ValuesBag;
-    use Rollerworks\Component\Search\ValuesGroup;
+    use Rollerworks\Component\Search\Value\ValuesBag;
+    use Rollerworks\Component\Search\Value\ValuesGroup;
 
     class SingleValuesInput implements InputProcessorInterface
     {
