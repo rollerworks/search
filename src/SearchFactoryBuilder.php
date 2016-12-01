@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchFactoryBuilder implements SearchFactoryBuilderInterface
+class SearchFactoryBuilder
 {
     /**
      * @var ResolvedFieldTypeFactoryInterface
@@ -37,7 +37,11 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     private $typeExtensions = [];
 
     /**
-     * {@inheritdoc}
+     * Sets the factory for creating ResolvedFieldTypeInterface instances.
+     *
+     * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
+     *
+     * @return $this The builder
      */
     public function setResolvedTypeFactory(ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
     {
@@ -47,7 +51,11 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds an extension to be loaded by the factory.
+     *
+     * @param SearchExtensionInterface $extension The extension
+     *
+     * @return $this The builder
      */
     public function addExtension(SearchExtensionInterface $extension)
     {
@@ -57,7 +65,11 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds a list of extensions to be loaded by the factory.
+     *
+     * @param SearchExtensionInterface[] $extensions The extensions
+     *
+     * @return $this The builder
      */
     public function addExtensions(array $extensions)
     {
@@ -67,7 +79,11 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds a field type to the factory.
+     *
+     * @param FieldTypeInterface $type The field type
+     *
+     * @return $this The builder
      */
     public function addType(FieldTypeInterface $type)
     {
@@ -77,9 +93,11 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     }
 
     /**
-     * @param FieldTypeInterface[] $types
+     * Adds a list of field types to the factory.
      *
-     * @return $this
+     * @param FieldTypeInterface[] $types The field types
+     *
+     * @return $this The builder
      */
     public function addTypes(array $types)
     {
@@ -91,7 +109,11 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds a field type extension to the factory.
+     *
+     * @param FieldTypeExtensionInterface $typeExtension The field type extension
+     *
+     * @return $this The builder
      */
     public function addTypeExtension(FieldTypeExtensionInterface $typeExtension)
     {
@@ -101,9 +123,11 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     }
 
     /**
-     * @param FieldTypeExtensionInterface[] $typeExtensions
+     * Adds a list of field type extension to the factory.
      *
-     * @return $this
+     * @param FieldTypeExtensionInterface[] $typeExtension The field type extension
+     *
+     * @return $this The builder
      */
     public function addTypeExtensions(array $typeExtensions)
     {
@@ -115,7 +139,9 @@ class SearchFactoryBuilder implements SearchFactoryBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Builds and returns the factory.
+     *
+     * @return SearchFactoryInterface The search factory
      */
     public function getSearchFactory()
     {
