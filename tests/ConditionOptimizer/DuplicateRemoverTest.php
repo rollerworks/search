@@ -15,9 +15,9 @@ use Rollerworks\Component\Search\ConditionOptimizer\DuplicateRemover;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 
 final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
@@ -36,10 +36,10 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('id')
-                ->addSingleValue(new SingleValue(10))
-                ->addSingleValue(new SingleValue(3))
-                ->addSingleValue(new SingleValue(3))
-                ->addSingleValue(new SingleValue(4))
+                ->addSimpleValue(10)
+                ->addSimpleValue(3)
+                ->addSimpleValue(3)
+                ->addSimpleValue(4)
             ->end()
             ->getSearchCondition()
         ;
@@ -48,9 +48,9 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
         $valuesGroup = $condition->getValuesGroup();
 
         $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag->addSingleValue(new SingleValue(10));
-        $expectedValuesBag->addSingleValue(new SingleValue(3));
-        $expectedValuesBag->addSingleValue(new SingleValue(4));
+        $expectedValuesBag->addSimpleValue(10);
+        $expectedValuesBag->addSimpleValue(3);
+        $expectedValuesBag->addSimpleValue(4);
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
@@ -62,10 +62,10 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('id')
-                ->addExcludedValue(new SingleValue(10))
-                ->addExcludedValue(new SingleValue(3))
-                ->addExcludedValue(new SingleValue(3))
-                ->addExcludedValue(new SingleValue(4))
+                ->addExcludedSimpleValue(10)
+                ->addExcludedSimpleValue(3)
+                ->addExcludedSimpleValue(3)
+                ->addExcludedSimpleValue(4)
             ->end()
             ->getSearchCondition()
         ;
@@ -75,9 +75,9 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addExcludedValue(new SingleValue(10))
-            ->addExcludedValue(new SingleValue(3))
-            ->addExcludedValue(new SingleValue(4))
+            ->addExcludedSimpleValue(10)
+            ->addExcludedSimpleValue(3)
+            ->addExcludedSimpleValue(4)
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
@@ -90,17 +90,17 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('id')
-                ->addRange(new Range(10, 50))
-                ->addRange(new Range(60, 70))
-                ->addRange(new Range(60, 70)) // duplicate
-                ->addRange(new Range(100, 300))
-                ->addRange(new Range(200, 300, false, false))
-                ->addRange(new Range(200, 300, false, false)) // duplicate
+                ->add(new Range(10, 50))
+                ->add(new Range(60, 70))
+                ->add(new Range(60, 70)) // duplicate
+                ->add(new Range(100, 300))
+                ->add(new Range(200, 300, false, false))
+                ->add(new Range(200, 300, false, false)) // duplicate
                 // duplicated but inclusive differs
-                ->addRange(new Range(100, 400, false))
-                ->addRange(new Range(100, 400, true))
-                ->addRange(new Range(1000, 3000, false, true))
-                ->addRange(new Range(1000, 3000, true, false))
+                ->add(new Range(100, 400, false))
+                ->add(new Range(100, 400, true))
+                ->add(new Range(1000, 3000, false, true))
+                ->add(new Range(1000, 3000, true, false))
             ->end()
             ->getSearchCondition()
         ;
@@ -110,15 +110,15 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addRange(new Range(10, 50))
-            ->addRange(new Range(60, 70))
-            ->addRange(new Range(100, 300))
-            ->addRange(new Range(200, 300, false, false))
+            ->add(new Range(10, 50))
+            ->add(new Range(60, 70))
+            ->add(new Range(100, 300))
+            ->add(new Range(200, 300, false, false))
             // duplicated but inclusive differs
-            ->addRange(new Range(100, 400, false))
-            ->addRange(new Range(100, 400, true))
-            ->addRange(new Range(1000, 3000, false, true))
-            ->addRange(new Range(1000, 3000, true, false))
+            ->add(new Range(100, 400, false))
+            ->add(new Range(100, 400, true))
+            ->add(new Range(1000, 3000, false, true))
+            ->add(new Range(1000, 3000, true, false))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
@@ -128,17 +128,17 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('id')
-                ->addExcludedRange(new Range(10, 50))
-                ->addExcludedRange(new Range(60, 70))
-                ->addExcludedRange(new Range(60, 70)) // duplicate
-                ->addExcludedRange(new Range(100, 300))
-                ->addExcludedRange(new Range(200, 300, false, false))
-                ->addExcludedRange(new Range(200, 300, false, false)) // duplicate
+                ->add(new ExcludedRange(10, 50))
+                ->add(new ExcludedRange(60, 70))
+                ->add(new ExcludedRange(60, 70)) // duplicate
+                ->add(new ExcludedRange(100, 300))
+                ->add(new ExcludedRange(200, 300, false, false))
+                ->add(new ExcludedRange(200, 300, false, false)) // duplicate
                 // duplicated but inclusive differs
-                ->addExcludedRange(new Range(100, 400, false))
-                ->addExcludedRange(new Range(100, 400, true))
-                ->addExcludedRange(new Range(1000, 3000, false, true))
-                ->addExcludedRange(new Range(1000, 3000, true, false))
+                ->add(new ExcludedRange(100, 400, false))
+                ->add(new ExcludedRange(100, 400, true))
+                ->add(new ExcludedRange(1000, 3000, false, true))
+                ->add(new ExcludedRange(1000, 3000, true, false))
             ->end()
             ->getSearchCondition()
         ;
@@ -148,15 +148,15 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addExcludedRange(new Range(10, 50))
-            ->addExcludedRange(new Range(60, 70))
-            ->addExcludedRange(new Range(100, 300))
-            ->addExcludedRange(new Range(200, 300, false, false))
+            ->add(new ExcludedRange(10, 50))
+            ->add(new ExcludedRange(60, 70))
+            ->add(new ExcludedRange(100, 300))
+            ->add(new ExcludedRange(200, 300, false, false))
             // duplicated but inclusive differs
-            ->addExcludedRange(new Range(100, 400, false))
-            ->addExcludedRange(new Range(100, 400, true))
-            ->addExcludedRange(new Range(1000, 3000, false, true))
-            ->addExcludedRange(new Range(1000, 3000, true, false))
+            ->add(new ExcludedRange(100, 400, false))
+            ->add(new ExcludedRange(100, 400, true))
+            ->add(new ExcludedRange(1000, 3000, false, true))
+            ->add(new ExcludedRange(1000, 3000, true, false))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
@@ -169,10 +169,10 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('id')
-                ->addComparison(new Compare(10, '>'))
-                ->addComparison(new Compare(20, '>'))
-                ->addComparison(new Compare(20, '>')) // duplicate
-                ->addComparison(new Compare(20, '<'))
+                ->add(new Compare(10, '>'))
+                ->add(new Compare(20, '>'))
+                ->add(new Compare(20, '>')) // duplicate
+                ->add(new Compare(20, '<'))
             ->end()
             ->getSearchCondition()
         ;
@@ -182,9 +182,9 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addComparison(new Compare(10, '>'))
-            ->addComparison(new Compare(20, '>'))
-            ->addComparison(new Compare(20, '<'))
+            ->add(new Compare(10, '>'))
+            ->add(new Compare(20, '>'))
+            ->add(new Compare(20, '<'))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
@@ -197,14 +197,14 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
             ->field('name')
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS))
-                ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_CONTAINS))
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS)) // duplicate
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH))
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)) // duplicate
-                ->addPatternMatch(new PatternMatch('bla', PatternMatch::PATTERN_CONTAINS))
-                ->addPatternMatch(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS))
-                ->addPatternMatch(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS, true))
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('bar', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS)) // duplicate
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH))
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH)) // duplicate
+                ->add(new PatternMatch('bla', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS, true))
             ->end()
             ->getSearchCondition()
         ;
@@ -214,12 +214,12 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
 
         $expectedValuesBag = new ValuesBag();
         $expectedValuesBag
-            ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_CONTAINS))
-            ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS))
-            ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH))
-            ->addPatternMatch(new PatternMatch('bla', PatternMatch::PATTERN_CONTAINS))
-            ->addPatternMatch(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS))
-            ->addPatternMatch(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS, true))
+            ->add(new PatternMatch('bar', PatternMatch::PATTERN_CONTAINS))
+            ->add(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS))
+            ->add(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH))
+            ->add(new PatternMatch('bla', PatternMatch::PATTERN_CONTAINS))
+            ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS))
+            ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS, true))
         ;
 
         $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('name'));

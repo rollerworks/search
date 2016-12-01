@@ -26,9 +26,9 @@ use Rollerworks\Component\Search\InputProcessorInterface;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesError;
 use Rollerworks\Component\Search\ValuesGroup;
@@ -125,12 +125,12 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
-        $values->addSingleValue(new SingleValue('٤٤٤٦٥٤٦٠٠')); // number in Arab
-        $values->addSingleValue(new SingleValue('30'));
-        $values->addSingleValue(new SingleValue('30L'));
-        $values->addExcludedValue(new SingleValue('value3'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
+        $values->addSimpleValue('٤٤٤٦٥٤٦٠٠'); // number in Arab
+        $values->addSimpleValue('30');
+        $values->addSimpleValue('30L');
+        $values->addExcludedSimpleValue('value3');
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
@@ -156,14 +156,14 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
         $expectedGroup->addField('name', $values);
 
         $date = new \DateTime('2014-12-16 00:00:00 UTC');
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue($date, $date->format('m-d-Y')));
+        $values->addSimpleValue($date);
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
@@ -189,18 +189,18 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addRange(new Range(1, 10));
-        $values->addRange(new Range(15, 30));
-        $values->addRange(new Range(100, 200, false));
-        $values->addRange(new Range(310, 400, true, false));
-        $values->addExcludedRange(new Range(50, 70));
+        $values->add(new Range(1, 10));
+        $values->add(new Range(15, 30));
+        $values->add(new Range(100, 200, false));
+        $values->add(new Range(310, 400, true, false));
+        $values->add(new ExcludedRange(50, 70));
         $expectedGroup->addField('id', $values);
 
         $date = new \DateTime('2014-12-16 00:00:00 UTC');
         $date2 = new \DateTime('2014-12-20 00:00:00 UTC');
 
         $values = new ValuesBag();
-        $values->addRange(new Range($date, $date2, true, true, $date->format('m-d-Y'), $date2->format('m-d-Y')));
+        $values->add(new Range($date, $date2, true, true, $date->format('m-d-Y'), $date2->format('m-d-Y')));
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
@@ -226,17 +226,17 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addComparison(new Compare(1, '>'));
-        $values->addComparison(new Compare(2, '<'));
-        $values->addComparison(new Compare(5, '<='));
-        $values->addComparison(new Compare(8, '>='));
-        $values->addComparison(new Compare(20, '<>'));
+        $values->add(new Compare(1, '>'));
+        $values->add(new Compare(2, '<'));
+        $values->add(new Compare(5, '<='));
+        $values->add(new Compare(8, '>='));
+        $values->add(new Compare(20, '<>'));
         $expectedGroup->addField('id', $values);
 
         $date = new \DateTime('2014-12-16 00:00:00 UTC');
 
         $values = new ValuesBag();
-        $values->addComparison(new Compare($date, '>=', $date->format('m-d-Y')));
+        $values->add(new Compare($date, '>=', $date->format('m-d-Y')));
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
@@ -262,16 +262,16 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addPatternMatch(new PatternMatch('value', PatternMatch::PATTERN_CONTAINS));
-        $values->addPatternMatch(new PatternMatch('value2', PatternMatch::PATTERN_STARTS_WITH, true));
-        $values->addPatternMatch(new PatternMatch('value3', PatternMatch::PATTERN_ENDS_WITH));
-        $values->addPatternMatch(new PatternMatch('^foo|bar?', PatternMatch::PATTERN_REGEX));
-        $values->addPatternMatch(new PatternMatch('value4', PatternMatch::PATTERN_NOT_CONTAINS));
-        $values->addPatternMatch(new PatternMatch('value5', PatternMatch::PATTERN_NOT_CONTAINS, true));
-        $values->addPatternMatch(new PatternMatch('value9', PatternMatch::PATTERN_EQUALS));
-        $values->addPatternMatch(new PatternMatch('value10', PatternMatch::PATTERN_NOT_EQUALS));
-        $values->addPatternMatch(new PatternMatch('value11', PatternMatch::PATTERN_EQUALS, true));
-        $values->addPatternMatch(new PatternMatch('value12', PatternMatch::PATTERN_NOT_EQUALS, true));
+        $values->add(new PatternMatch('value', PatternMatch::PATTERN_CONTAINS));
+        $values->add(new PatternMatch('value2', PatternMatch::PATTERN_STARTS_WITH, true));
+        $values->add(new PatternMatch('value3', PatternMatch::PATTERN_ENDS_WITH));
+        $values->add(new PatternMatch('^foo|bar?', PatternMatch::PATTERN_REGEX));
+        $values->add(new PatternMatch('value4', PatternMatch::PATTERN_NOT_CONTAINS));
+        $values->add(new PatternMatch('value5', PatternMatch::PATTERN_NOT_CONTAINS, true));
+        $values->add(new PatternMatch('value9', PatternMatch::PATTERN_EQUALS));
+        $values->add(new PatternMatch('value10', PatternMatch::PATTERN_NOT_EQUALS));
+        $values->add(new PatternMatch('value11', PatternMatch::PATTERN_EQUALS, true));
+        $values->add(new PatternMatch('value12', PatternMatch::PATTERN_NOT_EQUALS, true));
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
@@ -297,21 +297,21 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
         $expectedGroup->addField('name', $values);
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value3'));
-        $values->addSingleValue(new SingleValue('value4'));
+        $values->addSimpleValue('value3');
+        $values->addSimpleValue('value4');
 
         $subGroup = new ValuesGroup();
         $subGroup->addField('name', $values);
         $expectedGroup->addGroup($subGroup);
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value8'));
-        $values->addSingleValue(new SingleValue('value10'));
+        $values->addSimpleValue('value8');
+        $values->addSimpleValue('value10');
 
         $subGroup = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR);
         $subGroup->addField('name', $values);
@@ -341,8 +341,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup($logical);
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
@@ -368,15 +368,15 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
 
         $subGroup = new ValuesGroup();
         $subGroup->addField('name', $values);
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value3'));
-        $values->addSingleValue(new SingleValue('value4'));
+        $values->addSimpleValue('value3');
+        $values->addSimpleValue('value4');
         $expectedGroup->addGroup($subGroup);
 
         $subGroup2 = new ValuesGroup();
@@ -407,8 +407,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $nestedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
         $nestedGroup->addField('name', $values);
 
         $subGroup = new ValuesGroup();
@@ -443,8 +443,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup = new ValuesGroup();
 
         $values = new ValuesBag();
-        $values->addSingleValue(new SingleValue('value'));
-        $values->addSingleValue(new SingleValue('value2'));
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);

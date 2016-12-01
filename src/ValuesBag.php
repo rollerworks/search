@@ -13,11 +13,7 @@ namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\ValuesStructureIsLocked;
-use Rollerworks\Component\Search\Value\Compare;
-use Rollerworks\Component\Search\Value\ExcludedRange;
-use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
 use Rollerworks\Component\Search\Value\ValueHolder;
 
 /**
@@ -47,363 +43,11 @@ class ValuesBag implements \Countable, \Serializable
 
     private $simpleValues = [];
     private $simpleExcludedValues = [];
-    private $simpleValuesObjects = [];
-    private $simpleExcludedValuesObjects = [];
     private $values = [];
 
     private $valuesCount = 0;
     private $errors = [];
     private $locked = false;
-
-    /**
-     * @return SingleValue[]
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getSimpleValues() instead
-     */
-    public function getSingleValues()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use getSimpleValue() instead.', E_USER_DEPRECATED);
-
-        return $this->simpleValuesObjects;
-    }
-
-    /**
-     * @param SingleValue $value
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use addSimpleValue() instead
-     */
-    public function addSingleValue(SingleValue $value)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use addSimpleValue() instead.', E_USER_DEPRECATED);
-
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
-        $this->simpleValuesObjects[] = $value;
-        $this->simpleValues[] = $value->getValue();
-
-        ++$this->valuesCount;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use hasSimpleValues() instead
-     */
-    public function hasSingleValues()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use hasSimpleValue() instead.', E_USER_DEPRECATED);
-
-        return count($this->simpleValues) > 0;
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use removeSimpleValues() instead
-     */
-    public function removeSingleValue($index)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use removeSimpleValue() instead.', E_USER_DEPRECATED);
-
-        return $this->removeSimpleValue($index);
-    }
-
-    /**
-     * @param SingleValue $value
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use addExcludedSimpleValue() instead
-     */
-    public function addExcludedValue(SingleValue $value)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use addExcludedSimpleValue() instead.', E_USER_DEPRECATED);
-
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
-        $this->simpleExcludedValues[] = $value;
-        $this->simpleExcludedValuesObjects[] = $value;
-        ++$this->valuesCount;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use hasExcludedSimpleValues() instead
-     */
-    public function hasExcludedValues()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use hasExcludedSimpleValue() instead.', E_USER_DEPRECATED);
-
-        return count($this->simpleExcludedValues) > 0;
-    }
-
-    /**
-     * @return SingleValue[]
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getExcludedSimpleValues() instead
-     */
-    public function getExcludedValues()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use getExcludedSimpleValue() instead.', E_USER_DEPRECATED);
-
-        return $this->simpleExcludedValuesObjects;
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use getExcludedSimpleValues() instead
-     */
-    public function removeExcludedValue($index)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use removeExcludedSimpleValue() instead.', E_USER_DEPRECATED);
-
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
-        if (isset($this->simpleExcludedValues[$index])) {
-            unset($this->simpleExcludedValues[$index], $this->simpleExcludedValuesObjects[$index]);
-
-            --$this->valuesCount;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Range $range
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead
-     */
-    public function addRange(Range $range)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use add() instead.', E_USER_DEPRECATED);
-
-        return $this->add($range);
-    }
-
-    /**
-     * @return bool
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead
-     */
-    public function hasRanges()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use has() instead.', E_USER_DEPRECATED);
-
-        return $this->has('Rollerworks\Component\Search\Value\Range');
-    }
-
-    /**
-     * @return Range[]
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead
-     */
-    public function getRanges()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use get() instead.', E_USER_DEPRECATED);
-
-        return $this->get('Rollerworks\Component\Search\Value\Range');
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead
-     */
-    public function removeRange($index)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use remove() instead.', E_USER_DEPRECATED);
-
-        return $this->remove('Rollerworks\Component\Search\Value\Range', $index);
-    }
-
-    /**
-     * @param Range $range
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead
-     */
-    public function addExcludedRange(Range $range)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use add() instead.', E_USER_DEPRECATED);
-
-        if (!$range instanceof ExcludedRange) {
-            $range = new ExcludedRange(
-                $range->getLower(),
-                $range->getUpper(),
-                $range->isLowerInclusive(),
-                $range->isUpperInclusive(),
-                $range->getViewLower(),
-                $range->getViewUpper()
-            );
-        }
-
-        return $this->add($range);
-    }
-
-    /**
-     * @return bool
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead
-     */
-    public function hasExcludedRanges()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use has() instead.', E_USER_DEPRECATED);
-
-        return $this->has('Rollerworks\Component\Search\Value\ExcludedRange');
-    }
-
-    /**
-     * @return Range[]
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead
-     */
-    public function getExcludedRanges()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use get() instead.', E_USER_DEPRECATED);
-
-        return $this->get('Rollerworks\Component\Search\Value\ExcludedRange');
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead
-     */
-    public function removeExcludedRange($index)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use remove() instead.', E_USER_DEPRECATED);
-
-        return $this->remove('Rollerworks\Component\Search\Value\ExcludedRange', $index);
-    }
-
-    /**
-     * @param Compare $value
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead
-     */
-    public function addComparison(Compare $value)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use add() instead.', E_USER_DEPRECATED);
-
-        return $this->add($value);
-    }
-
-    /**
-     * @return Compare[]
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead
-     */
-    public function getComparisons()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use get() instead.', E_USER_DEPRECATED);
-
-        return $this->get('Rollerworks\Component\Search\Value\Compare');
-    }
-
-    /**
-     * @return bool
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead
-     */
-    public function hasComparisons()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use has() instead.', E_USER_DEPRECATED);
-
-        return $this->has('Rollerworks\Component\Search\Value\Compare');
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead
-     */
-    public function removeComparison($index)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use remove() instead.', E_USER_DEPRECATED);
-
-        return $this->remove('Rollerworks\Component\Search\Value\Compare', $index);
-    }
-
-    /**
-     * @return PatternMatch[]
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use get() instead
-     */
-    public function getPatternMatchers()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use get() instead.', E_USER_DEPRECATED);
-
-        return $this->get('Rollerworks\Component\Search\Value\PatternMatch');
-    }
-
-    /**
-     * @param PatternMatch $value
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use add() instead
-     */
-    public function addPatternMatch(PatternMatch $value)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use add() instead.', E_USER_DEPRECATED);
-
-        return $this->add($value);
-    }
-
-    /**
-     * @return bool
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use has() instead
-     */
-    public function hasPatternMatchers()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use has() instead.', E_USER_DEPRECATED);
-
-        return $this->has('Rollerworks\Component\Search\Value\PatternMatch');
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return $this
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use remove() instead
-     */
-    public function removePatternMatch($index)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use remove() instead.', E_USER_DEPRECATED);
-
-        return $this->remove('Rollerworks\Component\Search\Value\PatternMatch', $index);
-    }
 
     /**
      * @param ValuesError $error
@@ -497,9 +141,7 @@ class ValuesBag implements \Countable, \Serializable
         return serialize(
             [
                 $this->simpleValues,
-                $this->simpleValuesObjects,
                 $this->simpleExcludedValues,
-                $this->simpleExcludedValuesObjects,
                 $this->values,
                 $this->valuesCount,
                 $this->errors,
@@ -517,9 +159,7 @@ class ValuesBag implements \Countable, \Serializable
 
         list(
             $this->simpleValues,
-            $this->simpleValuesObjects,
             $this->simpleExcludedValues,
-            $this->simpleExcludedValuesObjects,
             $this->values,
             $this->valuesCount,
             $this->errors,
@@ -594,7 +234,6 @@ class ValuesBag implements \Countable, \Serializable
             throw new ValuesStructureIsLocked();
         }
 
-        $this->simpleValuesObjects[] = new SingleValue($value);
         $this->simpleValues[] = $value;
 
         ++$this->valuesCount;
@@ -622,7 +261,7 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         if (isset($this->simpleValues[$index])) {
-            unset($this->simpleValues[$index], $this->simpleValuesObjects[$index]);
+            unset($this->simpleValues[$index]);
 
             --$this->valuesCount;
         }
@@ -650,7 +289,6 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         $this->simpleExcludedValues[] = $value;
-        $this->simpleExcludedValuesObjects[] = new SingleValue($value);
         ++$this->valuesCount;
 
         return $this;
@@ -678,7 +316,7 @@ class ValuesBag implements \Countable, \Serializable
         }
 
         if (isset($this->simpleExcludedValues[$index])) {
-            unset($this->simpleExcludedValues[$index], $this->simpleExcludedValuesObjects[$index]);
+            unset($this->simpleExcludedValues[$index]);
 
             --$this->valuesCount;
         }
@@ -742,7 +380,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @param ValueHolder|ValueHolder[] $value
      *
-     * @return ValuesBag New ValuesBag object with the values added
+     * @return $this
      */
     public function add(ValueHolder $value)
     {

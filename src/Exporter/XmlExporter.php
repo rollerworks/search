@@ -11,9 +11,13 @@
 
 namespace Rollerworks\Component\Search\Exporter;
 
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldLabelResolver\NoopLabelResolver;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
+use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
@@ -105,7 +109,7 @@ class XmlExporter extends AbstractExporter
                 $fieldNode = $this->document->createElement('field');
                 $fieldNode->setAttribute('name', $fieldLabel);
 
-                $this->exportValuesToNode($values, $fieldNode);
+                $this->exportValuesToNode($values, $fieldNode, $fieldSet->get($name));
                 $fieldsNode->appendChild($fieldNode);
             }
 
@@ -133,16 +137,16 @@ class XmlExporter extends AbstractExporter
      *
      * @return \DOMNode
      */
-    private function exportValuesToNode(ValuesBag $valuesBag, \DOMNode $parent)
+    private function exportValuesToNode(ValuesBag $valuesBag, \DOMNode $parent, FieldConfigInterface $field)
     {
-        if ($valuesBag->hasSingleValues()) {
+        if ($valuesBag->hasSimpleValues()) {
             $valuesNode = $this->document->createElement('single-values');
 
-            foreach ($valuesBag->getSingleValues() as $value) {
+            foreach ($valuesBag->getSimpleValues() as $value) {
                 $element = $this->document->createElement('value');
                 $element->appendChild(
                     $this->document->createTextNode(
-                        $value->getViewValue()
+                        $this->normToView($value, $field)
                     )
                 );
 
@@ -152,14 +156,14 @@ class XmlExporter extends AbstractExporter
             $parent->appendChild($valuesNode);
         }
 
-        if ($valuesBag->hasExcludedValues()) {
+        if ($valuesBag->hasExcludedSimpleValues()) {
             $valuesNode = $this->document->createElement('excluded-values');
 
-            foreach ($valuesBag->getExcludedValues() as $value) {
+            foreach ($valuesBag->getExcludedSimpleValues() as $value) {
                 $element = $this->document->createElement('value');
                 $element->appendChild(
                     $this->document->createTextNode(
-                        $value->getViewValue()
+                        $this->normToView($value, $field)
                     )
                 );
 
@@ -169,34 +173,34 @@ class XmlExporter extends AbstractExporter
             $parent->appendChild($valuesNode);
         }
 
-        if ($valuesBag->hasRanges()) {
+        if ($valuesBag->has(Range::class)) {
             $valuesNode = $this->document->createElement('ranges');
 
-            foreach ($valuesBag->getRanges() as $value) {
-                $this->exportRangeValueToNode($valuesNode, $value);
+            foreach ($valuesBag->get(Range::class) as $value) {
+                $this->exportRangeValueToNode($valuesNode, $value, $field);
             }
 
             $parent->appendChild($valuesNode);
         }
 
-        if ($valuesBag->hasExcludedRanges()) {
+        if ($valuesBag->has(ExcludedRange::class)) {
             $valuesNode = $this->document->createElement('excluded-ranges');
 
-            foreach ($valuesBag->getExcludedRanges() as $value) {
-                $this->exportRangeValueToNode($valuesNode, $value);
+            foreach ($valuesBag->get(ExcludedRange::class) as $value) {
+                $this->exportRangeValueToNode($valuesNode, $value, $field);
             }
 
             $parent->appendChild($valuesNode);
         }
 
-        if ($valuesBag->hasComparisons()) {
+        if ($valuesBag->has(Compare::class)) {
             $valuesNode = $this->document->createElement('comparisons');
 
-            foreach ($valuesBag->getComparisons() as $value) {
+            foreach ($valuesBag->get(Compare::class) as $value) {
                 $element = $this->document->createElement('compare');
                 $element->setAttribute('operator', $value->getOperator());
                 $element->appendChild(
-                    $this->document->createTextNode($value->getViewValue())
+                    $this->document->createTextNode($this->normToView($value->getValue(), $field))
                 );
 
                 $valuesNode->appendChild($element);
@@ -205,10 +209,10 @@ class XmlExporter extends AbstractExporter
             $parent->appendChild($valuesNode);
         }
 
-        if ($valuesBag->hasPatternMatchers()) {
+        if ($valuesBag->has(PatternMatch::class)) {
             $valuesNode = $this->document->createElement('pattern-matchers');
 
-            foreach ($valuesBag->getPatternMatchers() as $value) {
+            foreach ($valuesBag->get(PatternMatch::class) as $value) {
                 $element = $this->document->createElement('pattern-matcher');
                 $element->setAttribute('type', strtolower($this->getPatternMatchType($value)));
                 $element->setAttribute('case-insensitive', $value->isCaseInsensitive() ? 'true' : 'false');
@@ -229,13 +233,13 @@ class XmlExporter extends AbstractExporter
      *
      * @return array
      */
-    private function exportRangeValueToNode(\DOMNode $parent, Range $range)
+    private function exportRangeValueToNode(\DOMNode $parent, Range $range, FieldConfigInterface $field)
     {
         $rangeNode = $this->document->createElement('range');
 
         $element = $this->document->createElement('lower');
         $element->appendChild(
-            $this->document->createTextNode($range->getViewLower())
+            $this->document->createTextNode($this->normToView($range->getLower(), $field))
         );
 
         if (!$range->isLowerInclusive()) {
@@ -246,7 +250,7 @@ class XmlExporter extends AbstractExporter
 
         $element = $this->document->createElement('upper');
         $element->appendChild(
-            $this->document->createTextNode($range->getViewUpper())
+            $this->document->createTextNode($this->normToView($range->getUpper(), $field))
         );
 
         if (!$range->isUpperInclusive()) {

@@ -11,7 +11,11 @@
 
 namespace Rollerworks\Component\Search\Exporter;
 
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
+use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\ValuesBag;
 use Rollerworks\Component\Search\ValuesGroup;
@@ -40,7 +44,7 @@ class ArrayExporter extends AbstractExporter
                 continue;
             }
 
-            $exportedValue = $this->exportValues($values);
+            $exportedValue = $this->exportValues($values, $fieldSet->get($name));
 
             // Only export fields with actual values.
             if (count($exportedValue) > 0) {
@@ -65,34 +69,34 @@ class ArrayExporter extends AbstractExporter
      *
      * @return string
      */
-    protected function exportValues(ValuesBag $valuesBag)
+    protected function exportValues(ValuesBag $valuesBag, FieldConfigInterface $field)
     {
         $exportedValues = [];
 
-        foreach ($valuesBag->getSingleValues() as $value) {
-            $exportedValues['single-values'][] = $value->getViewValue();
+        foreach ($valuesBag->getSimpleValues() as $value) {
+            $exportedValues['single-values'][] = $this->normToView($value, $field);
         }
 
-        foreach ($valuesBag->getExcludedValues() as $value) {
-            $exportedValues['excluded-values'][] = $value->getViewValue();
+        foreach ($valuesBag->getExcludedSimpleValues() as $value) {
+            $exportedValues['excluded-values'][] = $this->normToView($value, $field);
         }
 
-        foreach ($valuesBag->getRanges() as $value) {
-            $exportedValues['ranges'][] = $this->exportRangeValue($value);
+        foreach ($valuesBag->get(Range::class) as $value) {
+            $exportedValues['ranges'][] = $this->exportRangeValue($value, $field);
         }
 
-        foreach ($valuesBag->getExcludedRanges() as $value) {
-            $exportedValues['excluded-ranges'][] = $this->exportRangeValue($value);
+        foreach ($valuesBag->get(ExcludedRange::class) as $value) {
+            $exportedValues['excluded-ranges'][] = $this->exportRangeValue($value, $field);
         }
 
-        foreach ($valuesBag->getComparisons() as $value) {
+        foreach ($valuesBag->get(Compare::class) as $value) {
             $exportedValues['comparisons'][] = [
                 'operator' => $value->getOperator(),
-                'value' => $value->getViewValue(),
+                'value' => $this->normToView($value->getValue(), $field),
             ];
         }
 
-        foreach ($valuesBag->getPatternMatchers() as $value) {
+        foreach ($valuesBag->get(PatternMatch::class) as $value) {
             $exportedValues['pattern-matchers'][] = [
                 'type' => $this->getPatternMatchType($value),
                 'value' => $value->getValue(),
@@ -108,11 +112,11 @@ class ArrayExporter extends AbstractExporter
      *
      * @return array
      */
-    protected function exportRangeValue(Range $range)
+    protected function exportRangeValue(Range $range, FieldConfigInterface $field)
     {
         $result = [
-            'lower' => $range->getViewLower(),
-            'upper' => $range->getViewUpper(),
+            'lower' => $this->normToView($range->getLower(), $field),
+            'upper' => $this->normToView($range->getUpper(), $field),
         ];
 
         if (!$range->isLowerInclusive()) {
