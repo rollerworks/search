@@ -14,9 +14,9 @@ namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 use Prophecy\Prophecy\ObjectProphecy;
 use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
-use Rollerworks\Component\Search\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 use Rollerworks\Component\Search\ValuesError;
-use Rollerworks\Component\Search\ValuesGroup;
 
 final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 {

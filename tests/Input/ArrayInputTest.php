@@ -12,8 +12,8 @@
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\Input\ArrayInput;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 use Rollerworks\Component\Search\ValuesError;
-use Rollerworks\Component\Search\ValuesGroup;
 
 final class ArrayInputTest extends InputProcessorTestCase
 {

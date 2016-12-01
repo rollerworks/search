@@ -89,7 +89,7 @@ invoice field type.
     use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
     use Rollerworks\Component\Search\FieldConfigInterface;
     use Rollerworks\Component\Search\ValueComparisonInterface;
-    use Rollerworks\Component\Search\ValuesBag;
+    use Rollerworks\Component\Search\Value\ValuesBag;
 
     class InvoiceNumberType extends AbstractFieldType
     {

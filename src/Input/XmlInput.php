@@ -16,8 +16,8 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Util\XmlUtil;
-use Rollerworks\Component\Search\ValuesBag;
-use Rollerworks\Component\Search\ValuesGroup;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * XmlInput processes input provided as an XML document.

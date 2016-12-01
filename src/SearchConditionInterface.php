@@ -11,6 +11,8 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Value\ValuesGroup;
+
 /**
  * SearchCondition contains the searching conditions and FieldSet.
  *

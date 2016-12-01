@@ -19,10 +19,9 @@ use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 use Rollerworks\Component\Search\ValueComparisonInterface;
-use Rollerworks\Component\Search\ValuesBag;
-use Rollerworks\Component\Search\ValuesGroup;
 
 /**
  * Removes duplicated values.
@@ -75,7 +74,7 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
     }
 
     /**
-     * @param SingleValue[]            $values
+     * @param array                    $values
      * @param ValuesBag                $valuesBag
      * @param ValueComparisonInterface $comparison
      * @param array                    $options

@@ -16,7 +16,7 @@ use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesBag;
 
 final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
 {

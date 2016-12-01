@@ -111,7 +111,7 @@ Or if you need a more complex condition.
     :linenos:
 
     use Rollerworks\Component\Search\SearchConditionBuilder;
-    use Rollerworks\Component\Search\ValuesGroup;
+    use Rollerworks\Component\Search\Value\ValuesGroup;
     use Rollerworks\Component\Search\Value\Compare;
     use Rollerworks\Component\Search\Value\PatternMatch;
     use Rollerworks\Component\Search\Value\Range;
@@ -326,8 +326,8 @@ The following example shows you can render these errors into a display for the u
 .. code-block:: php
     :linenos:
 
-    use Rollerworks\Component\Search\ValuesGroup;
-    use Rollerworks\Component\Search\ValuesBag;
+    use Rollerworks\Component\Search\Value\ValuesGroup;
+    use Rollerworks\Component\Search\Value\ValuesBag;
 
     // ..
 
