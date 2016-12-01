@@ -27,10 +27,10 @@ interface FieldSetBuilderInterface
      *
      * Its possible to also pass in a FieldTypeInterface
      *
-     * @param string|FieldConfigInterface $field         Name of search field or an actual search field
-     *                                                   object
-     * @param string                      $type          Field type-name
-     * @param array                       $options       Array of options for building the field
+     * @param string|FieldConfigInterface $field   Name of search field or an actual search field
+     *                                             object
+     * @param string                      $type    Field type-name
+     * @param array                       $options Array of options for building the field
      *
      * @throws BadMethodCallException  When the FieldSet has been already turned into a FieldSet instance
      * @throws UnexpectedTypeException

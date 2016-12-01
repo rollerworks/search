@@ -114,6 +114,7 @@ final class SearchFieldTest extends \PHPUnit_Framework_TestCase
         $this->field->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false);
         $this->assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
     }
+
     /**
      * @test
      */
