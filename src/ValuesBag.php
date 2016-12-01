@@ -131,7 +131,7 @@ class ValuesBag implements \Countable, \Serializable
             throw new ValuesStructureIsLocked();
         }
 
-        $this->simpleExcludedValues[] = $value;
+        $this->simpleExcludedValues[] = $value->getValue();
         $this->simpleExcludedValuesObjects[] = $value;
         ++$this->valuesCount;
 

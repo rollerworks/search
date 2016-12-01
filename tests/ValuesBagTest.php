@@ -28,7 +28,7 @@ final class ValuesBagTest extends \PHPUnit_Framework_TestCase
     {
         $valuesBag = new ValuesBag();
         $valuesBag->addSimpleValue('value');
-        $valuesBag->addSimpleValue('value2');
+        $valuesBag->addSingleValue(new SingleValue('value2'));
 
         $this->assertTrue($valuesBag->hasSimpleValues());
         $this->assertEquals(['value', 'value2'], $valuesBag->getSimpleValues());
@@ -36,6 +36,7 @@ final class ValuesBagTest extends \PHPUnit_Framework_TestCase
         // To be removed in 2.0
         $this->assertTrue($valuesBag->hasSingleValues());
         $this->assertEquals([new SingleValue('value'), new SingleValue('value2')], $valuesBag->getSingleValues());
+        $this->assertEquals(['value', 'value2'], $valuesBag->getSimpleValues());
     }
 
     /**
@@ -105,7 +106,7 @@ final class ValuesBagTest extends \PHPUnit_Framework_TestCase
     {
         $valuesBag = new ValuesBag();
         $valuesBag->addExcludedSimpleValue('value');
-        $valuesBag->addExcludedSimpleValue('value2');
+        $valuesBag->addExcludedValue(new SingleValue('value2'));
 
         $this->assertTrue($valuesBag->hasExcludedSimpleValues());
         $this->assertEquals(['value', 'value2'], $valuesBag->getExcludedSimpleValues());
