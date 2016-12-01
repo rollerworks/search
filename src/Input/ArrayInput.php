@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\Input;
 
-use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
@@ -90,7 +89,6 @@ class ArrayInput extends AbstractInput
      * @param int         $groupIdx
      * @param int         $level
      *
-     * @throws FieldRequiredException  When a required is not set or as no values
      * @throws ValuesOverflowException When the maximum number of values per group is exceeded
      * @throws InputProcessorException When an exception is thrown during the processing
      */
