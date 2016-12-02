@@ -13,7 +13,7 @@ namespace Rollerworks\Component\Search\ConditionOptimizer;
 
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
@@ -31,7 +31,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
     /**
      * {@inheritdoc}
      */
-    public function process(SearchConditionInterface $condition)
+    public function process(SearchCondition $condition)
     {
         $fieldSet = $condition->getFieldSet();
         $supportsRanges = false;

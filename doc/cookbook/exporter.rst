@@ -26,11 +26,11 @@ in :doc:`input_processor`).
     namespace Acme\Search\Exporter;
 
     use Rollerworks\Component\Search\ExporterInterface
-    use Rollerworks\Component\Search\SearchConditionInterface;
+    use Rollerworks\Component\Search\SearchCondition;
 
     class SingleValuesExporter implements ExporterInterface
     {
-        public function exportCondition(SearchConditionInterface $condition)
+        public function exportCondition(SearchCondition $condition)
         {
             $fields = $condition->getValuesGroup()->getFields();
             $values = array();

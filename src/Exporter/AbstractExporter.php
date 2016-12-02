@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Exporter;
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
@@ -28,11 +28,11 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * Exports a search condition.
      *
-     * @param SearchConditionInterface $condition The search condition to export
+     * @param SearchCondition $condition The search condition to export
      *
      * @return mixed
      */
-    public function exportCondition(SearchConditionInterface $condition)
+    public function exportCondition(SearchCondition $condition)
     {
         return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
     }

@@ -59,7 +59,7 @@ in this section of the book.
 SearchCondition
 ~~~~~~~~~~~~~~~
 
-Each search operation starts with a SearchCondition (``SearchConditionInterface``).
+Each search operation starts with a SearchCondition (``SearchCondition``).
 A SearchCondition defines a set of requirements (conditions) for one or
 more fields. And holds the configuration of these fields within in a ``FieldSet``.
 

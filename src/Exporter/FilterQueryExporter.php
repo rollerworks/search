@@ -14,7 +14,7 @@ namespace Rollerworks\Component\Search\Exporter;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -51,11 +51,11 @@ class FilterQueryExporter extends AbstractExporter
     /**
      * Exports a search condition.
      *
-     * @param SearchConditionInterface $condition The search condition to export
+     * @param SearchCondition $condition The search condition to export
      *
      * @return mixed
      */
-    public function exportCondition(SearchConditionInterface $condition)
+    public function exportCondition(SearchCondition $condition)
     {
         $this->fields = $this->resolveLabels($condition->getFieldSet());
 

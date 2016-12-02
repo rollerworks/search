@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Exporter;
 
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * Exports the SearchCondition as a JSON object.
@@ -23,11 +23,11 @@ class JsonExporter extends ArrayExporter
     /**
      * Exports the SearchCondition.
      *
-     * @param SearchConditionInterface $condition The SearchCondition to export
+     * @param SearchCondition $condition The SearchCondition to export
      *
      * @return string
      */
-    public function exportCondition(SearchConditionInterface $condition)
+    public function exportCondition(SearchCondition $condition)
     {
         return json_encode(parent::exportCondition($condition));
     }

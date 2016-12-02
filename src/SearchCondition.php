@@ -16,33 +16,23 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 /**
  * SearchCondition contains the searching conditions and FieldSet.
  */
-class SearchCondition implements SearchConditionInterface
+class SearchCondition
 {
     private $fieldSet;
     private $values;
 
-    /**
-     * @param FieldSet    $fieldSet
-     * @param ValuesGroup $valuesGroup
-     */
     public function __construct(FieldSet $fieldSet, ValuesGroup $valuesGroup)
     {
         $this->fieldSet = $fieldSet;
         $this->values = $valuesGroup;
     }
 
-    /**
-     * @return FieldSet
-     */
-    public function getFieldSet()
+    public function getFieldSet(): FieldSet
     {
         return $this->fieldSet;
     }
 
-    /**
-     * @return ValuesGroup
-     */
-    public function getValuesGroup()
+    public function getValuesGroup(): ValuesGroup
     {
         return $this->values;
     }

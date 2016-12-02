@@ -46,14 +46,14 @@ class SearchConditionSerializer
      * This is not done already because storing a serialized SearchCondition
      * in a php session would serialize the serialized result again.
      *
-     * @param SearchConditionInterface $searchCondition
+     * @param SearchCondition $searchCondition
      *
      * @throws InvalidArgumentException when the FieldSet of the search condition
      *                                  is not registered in the FieldSetRegistry
      *
      * @return array [FieldSet-name, serialized ValuesGroup object]
      */
-    public function serialize(SearchConditionInterface $searchCondition)
+    public function serialize(SearchCondition $searchCondition)
     {
         $setName = $searchCondition->getFieldSet()->getSetName();
 
