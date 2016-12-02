@@ -20,7 +20,7 @@ final class XmlInputTest extends InputProcessorTestCase
 {
     protected function getProcessor()
     {
-        return new XmlInput($this->fieldAliasResolver->reveal());
+        return new XmlInput();
     }
 
     /**
@@ -469,46 +469,6 @@ final class XmlInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideAliasedFieldsTests()
-    {
-        return [
-            [
-                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
-                <search>
-                    <fields>
-                        <field name="name">
-                            <single-values>
-                                <value>value</value>
-                            </single-values>
-                        </field>
-                        <field name="firstname">
-                            <single-values>
-                                <value>value2</value>
-                            </single-values>
-                        </field>
-                    </fields>
-                </search>',
-            ],
-            [
-                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
-                <search>
-                    <fields>
-                        <field name="firstname">
-                            <single-values>
-                                <value>value</value>
-                            </single-values>
-                        </field>
-                        <field name="name">
-                            <single-values>
-                                <value>value2</value>
-                            </single-values>
-                        </field>
-                    </fields>
-                </search>',
-            ],
-        ];
-    }
-
     public function provideValueOverflowTests()
     {
         return [
@@ -633,30 +593,6 @@ final class XmlInputTest extends InputProcessorTestCase
                             </single-values>
                         </field>
                         <field name="id">
-                            <single-values>
-                                <value>3</value>
-                                <value>4</value>
-                                <value>5</value>
-                            </single-values>
-                        </field>
-                    </fields>
-                </search>',
-                'id',
-                3,
-                0,
-                0,
-            ],
-            [
-                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
-                <search>
-                    <fields>
-                        <field name="id">
-                            <single-values>
-                                <value>1</value>
-                                <value>2</value>
-                            </single-values>
-                        </field>
-                        <field name="user-id">
                             <single-values>
                                 <value>3</value>
                                 <value>4</value>

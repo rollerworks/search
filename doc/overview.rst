@@ -233,29 +233,6 @@ Or if you need to perform a search operation on an external system that uses Rol
 Build-up your SearchCondition using the :doc:`SearchConditionBuilder </searches>` and export
 it for usage!
 
-FieldAliasResolver
-~~~~~~~~~~~~~~~~~~
-
-Sometimes you want to use a localized field-name rather then
-the actual field-name.
-
-For example: "factuur-nummer" (in Dutch) for "invoice-number" (original name).
-
-For this you can use the FieldAliasResolver (``FieldAliasResolverInterface``)
-which tries to resolve a field-alias to a real field-name.
-
-RollerworksSearch comes bundled with three alias-resolvers:
-
-* Noop: This resolver does nothing and simple returns the original input.
-* Chain: This allows to chain multiple alias-resolvers, the first resolver
-  which returns something else than the original input is considered the
-  matching resolver.
-* Array: This resolver uses a simple PHP array for keeping track of aliases.
-
-.. note::
-
-    If the resolving process fails the originally provided field-name is used.
-
 Condition Optimizers
 ~~~~~~~~~~~~~~~~~~~~
 

@@ -13,9 +13,7 @@ namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
-use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
-use Rollerworks\Component\Search\FieldAliasResolverInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\InputProcessorInterface;
 
@@ -27,46 +25,9 @@ use Rollerworks\Component\Search\InputProcessorInterface;
 abstract class AbstractInput implements InputProcessorInterface
 {
     /**
-     * @var FieldAliasResolverInterface|null
-     */
-    protected $aliasResolver;
-
-    /**
      * @var ProcessorConfig
      */
     protected $config;
-
-    /**
-     * @param FieldAliasResolverInterface $aliasResolver
-     */
-    public function __construct(FieldAliasResolverInterface $aliasResolver)
-    {
-        $this->aliasResolver = $aliasResolver;
-    }
-
-    /**
-     * Get 'real' fieldname.
-     *
-     * This will pass the Field through the alias resolver.
-     *
-     * @param string $name
-     *
-     * @throws UnknownFieldException When there is no field found
-     * @throws \LogicException       When there is no FieldSet configured
-     *
-     * @return string
-     */
-    protected function getFieldName($name)
-    {
-        $fieldSet = $this->config->getFieldSet();
-        $name = $this->aliasResolver->resolveFieldName($fieldSet, $name);
-
-        if (!$fieldSet->has($name)) {
-            throw new UnknownFieldException($name);
-        }
-
-        return $name;
-    }
 
     /**
      * Checks if the maximum group nesting level is exceeded.

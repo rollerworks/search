@@ -83,20 +83,20 @@ class XmlInput extends AbstractInput
     {
         /** @var \SimpleXMLElement $element */
         foreach ($values->fields->children() as $element) {
-            $fieldName = $this->getFieldName((string) $element['name']);
-            $fieldConfig = $this->config->getFieldSet()->get($fieldName);
+            $name = (string) $element['name'];
+            $fieldConfig = $this->config->getFieldSet()->get($name);
 
-            if ($valuesGroup->hasField($fieldName)) {
+            if ($valuesGroup->hasField($name)) {
                 $this->valuesToBag(
                     $fieldConfig,
                     $element,
-                    $valuesGroup->getField($fieldName),
+                    $valuesGroup->getField($name),
                     $groupIdx,
                     $level
                 );
             } else {
                 $valuesGroup->addField(
-                    $fieldName,
+                    $name,
                     $this->valuesToBag($fieldConfig, $element, new ValuesBag(), $groupIdx, $level)
                 );
             }

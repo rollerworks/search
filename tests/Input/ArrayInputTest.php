@@ -22,7 +22,7 @@ final class ArrayInputTest extends InputProcessorTestCase
      */
     protected function getProcessor()
     {
-        return new ArrayInput($this->fieldAliasResolver->reveal());
+        return new ArrayInput();
     }
 
     public function provideEmptyInputTests()
@@ -263,36 +263,6 @@ final class ArrayInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideAliasedFieldsTests()
-    {
-        return [
-            [
-                [
-                    'fields' => [
-                        'name' => [
-                            'single-values' => ['value'],
-                        ],
-                        'firstname' => [
-                            'single-values' => ['value2'],
-                        ],
-                    ],
-                ],
-            ],
-            [
-                [
-                    'fields' => [
-                        'firstname' => [
-                            'single-values' => ['value'],
-                        ],
-                        'name' => [
-                            'single-values' => ['value2'],
-                        ],
-                    ],
-                ],
-            ],
-        ];
-    }
-
     public function provideValueOverflowTests()
     {
         return [
@@ -374,22 +344,6 @@ final class ArrayInputTest extends InputProcessorTestCase
                 3,
                 1,
                 2,
-            ],
-            [
-                [
-                    'fields' => [
-                        'id' => [
-                            'single-values' => ['1', '2'],
-                        ],
-                        'user-id' => [
-                            'single-values' => ['3', '4', '5'],
-                        ],
-                    ],
-                ],
-                'id',
-                3,
-                0,
-                0,
             ],
         ];
     }

@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
@@ -21,9 +22,41 @@ use Rollerworks\Component\Search\ValuesError;
 
 final class FilterQueryInputTest extends InputProcessorTestCase
 {
-    protected function getProcessor()
+    protected function getProcessor(callable $labelResolver = null)
     {
-        return new FilterQueryInput($this->fieldAliasResolver->reveal());
+        return new FilterQueryInput($labelResolver);
+    }
+
+    /**
+     * @param mixed $input
+     *
+     * @test
+     * @dataProvider provideAliasedFieldsTests
+     */
+    public function it_processes_aliased_fields($input)
+    {
+        $labelResolver = function (FieldConfigInterface $field) {
+            $name = $field->getName();
+
+            if ($name === 'name') {
+                return 'first-name';
+            }
+
+            return $name;
+        };
+
+        $processor = $this->getProcessor($labelResolver);
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $values = new ValuesBag();
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
+        $expectedGroup->addField('name', $values);
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -232,10 +265,8 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideAliasedFieldsTests()
     {
         return [
-            ['name: value; name: value2;'],
-            ['name: value; firstname: value2;'],
-            ['firstname: value; name: value2;'],
-            ['firstname: value, value2;'],
+            ['first-name: value; first-name: value2;'],
+            ['first-name: value, value2;'],
         ];
     }
 
@@ -246,7 +277,6 @@ final class FilterQueryInputTest extends InputProcessorTestCase
             ['((name: value, value2, value3, value4, value5));', 'name', 3, 0, 2],
             ['((name: value); (name: value, value2, value3, value4, value5));', 'name', 3, 1, 2],
             ['name: value, value2; name: value3, value4, value5;', 'name', 3, 0, 0], // merging
-            ['id: 1, 2; user-id: 3, 4, 5;', 'id', 3, 0, 0], // aliased
         ];
     }
 

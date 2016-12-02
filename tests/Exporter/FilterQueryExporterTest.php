@@ -13,19 +13,52 @@ namespace Rollerworks\Component\Search\Tests\Exporter;
 
 use Rollerworks\Component\Search\Exporter\FilterQueryExporter;
 use Rollerworks\Component\Search\ExporterInterface;
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Input\FilterQueryInput;
+use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class FilterQueryExporterTest extends SearchConditionExporterTestCase
 {
+    /**
+     * @test
+     */
+    public function it_exporters_with_field_label()
+    {
+        $labelResolver = function (FieldConfigInterface $field) {
+            $name = $field->getName();
+
+            if ($name === 'name') {
+                return 'firstname';
+            }
+
+            return $name;
+        };
+
+        $exporter = $this->getExporter($labelResolver);
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $values = new ValuesBag();
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
+
+        $expectedGroup->addField('name', $values);
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertExportEquals('firstname: value, value2;', $exporter->exportCondition($condition));
+
+        $processor = $this->getInputProcessor($labelResolver);
+        $processor->process($config, 'firstname: value, value2;');
+    }
+
     public function provideSingleValuePairTest()
     {
         return 'name: "value ", "-value2", "value2-", "10.00", "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3;';
-    }
-
-    public function provideFieldAliasTest()
-    {
-        return 'firstname: value, value2;';
     }
 
     public function provideMultipleValuesTest()
@@ -76,16 +109,16 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
     /**
      * @return ExporterInterface
      */
-    protected function getExporter()
+    protected function getExporter(callable $labelResolver = null)
     {
-        return new FilterQueryExporter($this->fieldLabelResolver->reveal());
+        return new FilterQueryExporter($labelResolver);
     }
 
     /**
      * @return InputProcessorInterface
      */
-    protected function getInputProcessor()
+    protected function getInputProcessor(callable $labelResolver = null)
     {
-        return new FilterQueryInput($this->fieldAliasResolver->reveal());
+        return new FilterQueryInput($labelResolver);
     }
 }

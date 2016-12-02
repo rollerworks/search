@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Rollerworks\Component\Search\Exception\UnknownFieldException;
 
 /**
  * A FieldSet holds all the search fields and there configuration.
@@ -164,9 +165,7 @@ class FieldSet implements \Countable, \IteratorAggregate
     public function get($name)
     {
         if (!isset($this->fields[$name])) {
-            throw new \RuntimeException(
-                sprintf('Unable to find none existent field: %s', $name)
-            );
+            throw new UnknownFieldException($name);
         }
 
         return $this->fields[$name];

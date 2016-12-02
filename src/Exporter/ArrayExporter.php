@@ -48,8 +48,7 @@ class ArrayExporter extends AbstractExporter
 
             // Only export fields with actual values.
             if (count($exportedValue) > 0) {
-                $fieldLabel = $this->labelResolver->resolveFieldLabel($fieldSet, $name);
-                $result['fields'][$fieldLabel] = $exportedValue;
+                $result['fields'][$name] = $exportedValue;
             }
         }
 

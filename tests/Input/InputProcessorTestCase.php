@@ -11,8 +11,6 @@
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
-use Prophecy;
-use Prophecy\Prophecy\ObjectProphecy;
 use Rollerworks\Component\Search\Exception\ExceptionInterface;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
@@ -35,26 +33,6 @@ use Rollerworks\Component\Search\ValuesError;
 
 abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 {
-    /**
-     * @var ObjectProphecy
-     */
-    protected $fieldAliasResolver;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->fieldAliasResolver = $this->prophet->prophesize('Rollerworks\Component\Search\FieldAliasResolverInterface');
-        $this->fieldAliasResolver->resolveFieldName(Prophecy\Argument::any(), Prophecy\Argument::any())->will(
-            function ($args) {
-                return $args[1];
-            }
-        );
-    }
-
     /**
      * @return InputProcessorInterface
      */
@@ -425,38 +403,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideNestedGroupTests();
 
     /**
-     * @param mixed $input
-     *
-     * @test
-     * @dataProvider provideAliasedFieldsTests
-     */
-    public function it_processes_aliased_fields($input)
-    {
-        $this->fieldAliasResolver->resolveFieldName(
-            Prophecy\Argument::any(),
-            Prophecy\Argument::exact('firstname')
-        )->willReturn('name');
-
-        $processor = $this->getProcessor();
-        $config = new ProcessorConfig($this->getFieldSet());
-
-        $expectedGroup = new ValuesGroup();
-
-        $values = new ValuesBag();
-        $values->addSimpleValue('value');
-        $values->addSimpleValue('value2');
-        $expectedGroup->addField('name', $values);
-
-        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
-    }
-
-    /**
-     * @return array[]
-     */
-    abstract public function provideAliasedFieldsTests();
-
-    /**
      * @param mixed  $input
      * @param string $fieldName
      * @param int    $max
@@ -474,7 +420,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $groupIdx,
         $nestingLevel
     ) {
-        $this->fieldAliasResolver->resolveFieldName(Prophecy\Argument::any(), 'user-id')->willReturn('id');
         $processor = $this->getProcessor();
 
         $config = new ProcessorConfig($this->getFieldSet());

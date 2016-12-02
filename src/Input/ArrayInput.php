@@ -107,8 +107,7 @@ class ArrayInput extends AbstractInput
     private function processFields(array $values, ValuesGroup $valuesGroup, $groupIdx, $level)
     {
         foreach ($values as $name => $value) {
-            $fieldName = $this->getFieldName($name);
-            $fieldConfig = $this->config->getFieldSet()->get($fieldName);
+            $fieldConfig = $this->config->getFieldSet()->get($name);
 
             $value = array_merge(
                 [
@@ -122,17 +121,17 @@ class ArrayInput extends AbstractInput
                 $value
             );
 
-            if ($valuesGroup->hasField($fieldName)) {
+            if ($valuesGroup->hasField($name)) {
                 $this->valuesToBag(
                     $fieldConfig,
                     $value,
-                    $valuesGroup->getField($fieldName),
+                    $valuesGroup->getField($name),
                     $groupIdx,
                     $level
                 );
             } else {
                 $valuesGroup->addField(
-                    $fieldName,
+                    $name,
                     $this->valuesToBag($fieldConfig, $value, new ValuesBag(), $groupIdx, $level)
                 );
             }

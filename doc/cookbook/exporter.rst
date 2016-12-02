@@ -77,8 +77,7 @@ Need more inspiration? Take a look at one of the already provided `exporters`_.
 
     For this example we are using the :class:`Rollerworks\\Component\\Search\\ExporterInterface`
     but it's also possible to leverage the :class:`Rollerworks\\Component\\Search\\Exporter\\AbstractExporter`
-    which provides some helper methods for field label resolving and PatternMatchType
-    exporting.
+    which provides some helper methods for PatternMatchType exporting.
 
     Note that the ``AbstractExporter`` requires you to implement the ``exportGroup``
     method rather than ``exportCondition``.
