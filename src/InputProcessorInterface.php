@@ -33,7 +33,6 @@ interface InputProcessorInterface
      * @throws Exception\InvalidSearchConditionException When a search condition is created
      *                                                   but it has errors
      * @throws Exception\ValuesOverflowException         When maximum values count is exceeded
-     * @throws Exception\FieldRequiredException          When a field is required but missing
      * @throws Exception\UnknownFieldException           When an unknown field is provided in the input
      *
      * @return SearchConditionInterface|null Returns null on empty input

@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\Input;
 
-use Rollerworks\Component\Search\Exception\FieldRequiredException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
@@ -20,7 +19,6 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Input\FilterQuery\Lexer;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
@@ -312,8 +310,6 @@ class FilterQueryInput extends AbstractInput
      * @param int         $level
      * @param int         $groupIdx
      * @param bool        $inGroup
-     *
-     * @throws FieldRequiredException
      */
     private function fieldValuesPairs(ValuesGroup $valuesGroup, $level = 0, $groupIdx = 0, $inGroup = false)
     {

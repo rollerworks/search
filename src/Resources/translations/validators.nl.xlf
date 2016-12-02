@@ -22,10 +22,6 @@
                 <source>Field {{ field }} is not registered in the FieldSet or available as alias.</source>
                 <target>Veld {{ field }} is niet geregistreerd in de veldenset en is niet beschikbaar als alias.</target>
             </trans-unit>
-            <trans-unit id="6">
-                <source>Field {{ field }} is required but is missing in group {{ group }} at nesting level {{ nesting }}.</source>
-                <target>Veld {{ field }} moet minstens één waarde hebben maar ontbreekt in groep {{ group }} op niveau {{ nesting }}.</target>
-            </trans-unit>
             <trans-unit id="7">
                 <source>Group {{ group }} at nesting level {{ nesting }} exceeds maximum nesting level of {{ max }}.</source>
                 <target>Groep {{ group }} op niveau {{ nesting }}, overschrijdt het maximum diepte niveau van {{ max }}.</target>
