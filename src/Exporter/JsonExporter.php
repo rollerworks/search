@@ -23,16 +23,12 @@ class JsonExporter extends ArrayExporter
     /**
      * Exports the SearchCondition.
      *
-     * @param SearchConditionInterface $condition     The SearchCondition to export
-     * @param bool                     $useFieldAlias Use the localized field-alias
-     *                                                instead of the actual name (default false)
-     *
-     * @throws \RuntimeException
+     * @param SearchConditionInterface $condition The SearchCondition to export
      *
      * @return string
      */
-    public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false)
+    public function exportCondition(SearchConditionInterface $condition)
     {
-        return json_encode(parent::exportCondition($condition, $useFieldAlias));
+        return json_encode(parent::exportCondition($condition));
     }
 }

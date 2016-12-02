@@ -11,8 +11,6 @@
 
 namespace Rollerworks\Component\Search\Tests\Exporter;
 
-use Prophecy;
-use Prophecy\Prophecy\ObjectProphecy;
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
@@ -29,38 +27,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 // TODO Add some tests with empty fields and groups (and they should be able to process)
 abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 {
-    /**
-     * @var ObjectProphecy
-     */
-    protected $fieldAliasResolver;
-
-    /**
-     * @var ObjectProphecy
-     */
-    protected $fieldLabelResolver;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->fieldAliasResolver = $this->prophet->prophesize('Rollerworks\Component\Search\FieldAliasResolverInterface');
-        $this->fieldAliasResolver->resolveFieldName(Prophecy\Argument::any(), Prophecy\Argument::any())->will(
-            function ($args) {
-                return $args[1];
-            }
-        );
-
-        $this->fieldLabelResolver = $this->prophet->prophesize('Rollerworks\Component\Search\FieldLabelResolverInterface');
-        $this->fieldLabelResolver->resolveFieldLabel(Prophecy\Argument::any(), Prophecy\Argument::any())->will(
-            function ($args) {
-                return $args[1];
-            }
-        );
-    }
-
     /**
      * @return ExporterInterface
      */
@@ -119,44 +85,6 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
      * @return mixed
      */
     abstract public function provideSingleValuePairTest();
-
-    /**
-     * @test
-     */
-    public function it_exporters_with_field_label()
-    {
-        $this->fieldLabelResolver->resolveFieldLabel(
-            Prophecy\Argument::any(),
-            Prophecy\Argument::exact('name')
-        )->willReturn('firstname');
-
-        $this->fieldAliasResolver->resolveFieldName(
-            Prophecy\Argument::any(),
-            Prophecy\Argument::exact('firstname')
-        )->willReturn('name');
-
-        $exporter = $this->getExporter();
-        $config = new ProcessorConfig($this->getFieldSet());
-
-        $expectedGroup = new ValuesGroup();
-
-        $values = new ValuesBag();
-        $values->addSimpleValue('value');
-        $values->addSimpleValue('value2');
-
-        $expectedGroup->addField('name', $values);
-
-        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertExportEquals($this->provideFieldAliasTest(), $exporter->exportCondition($condition, true));
-
-        $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideFieldAliasTest());
-    }
-
-    /**
-     * @return mixed
-     */
-    abstract public function provideFieldAliasTest();
 
     /**
      * @test

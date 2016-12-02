@@ -13,9 +13,10 @@ namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
-use Rollerworks\Component\Search\FieldAliasResolverInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Input\FilterQuery\Lexer;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\SearchCondition;
@@ -130,18 +131,32 @@ class FilterQueryInput extends AbstractInput
     private $lexer;
 
     /**
+     * @var callable
+     */
+    private $labelResolver;
+
+    /**
      * @var string
      */
     private $input;
 
-    /**
-     * @param FieldAliasResolverInterface $aliasResolver
-     */
-    public function __construct(FieldAliasResolverInterface $aliasResolver)
-    {
-        parent::__construct($aliasResolver);
+    private $fields = [];
 
+    /**
+     * Constructor.
+     *
+     * @param callable|null $labelResolver A callable to resolve the actual label
+     *                                     of the field, receives a
+     *                                     FieldConfigInterface instance.
+     *                                     If null the `label` option value is
+     *                                     used instead
+     */
+    public function __construct(callable $labelResolver = null)
+    {
         $this->lexer = new Lexer();
+        $this->labelResolver = $labelResolver ?? function (FieldConfigInterface $field) {
+            return $field->getOption('label', $field->getName());
+        };
     }
 
     /**
@@ -166,6 +181,7 @@ class FilterQueryInput extends AbstractInput
             return;
         }
 
+        $this->fields = $this->resolveLabels($config->getFieldSet());
         $condition = new SearchCondition(
             $config->getFieldSet(),
             $this->parse($config, $input)
@@ -176,6 +192,28 @@ class FilterQueryInput extends AbstractInput
         }
 
         return $condition;
+    }
+
+    private function resolveLabels(FieldSet $fieldSet): array
+    {
+        $labels = [];
+        $callable = $this->labelResolver;
+
+        foreach ($fieldSet->all() as $name => $field) {
+            $label = $callable($field);
+            $labels[$label] = $name;
+        }
+
+        return $labels;
+    }
+
+    private function getFieldName(string $name): string
+    {
+        if (isset($this->fields[$name])) {
+            return $this->fields[$name];
+        }
+
+        throw new UnknownFieldException($name);
     }
 
     /**

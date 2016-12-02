@@ -46,25 +46,6 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         ;
     }
 
-    public function provideFieldAliasTest()
-    {
-        return
-            '<?xml version="1.0" encoding="UTF-8"?'.'>
-            <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
-            ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
-                <fields>
-                    <field name="firstname">
-                        <single-values>
-                            <value>value</value>
-                            <value>value2</value>
-                        </single-values>
-                    </field>
-                </fields>
-            </search>'
-        ;
-    }
-
     public function provideMultipleValuesTest()
     {
         return
@@ -326,7 +307,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
      */
     protected function getExporter()
     {
-        return new XmlExporter($this->fieldLabelResolver->reveal());
+        return new XmlExporter();
     }
 
     /**
@@ -334,6 +315,6 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
      */
     protected function getInputProcessor()
     {
-        return new XmlInput($this->fieldAliasResolver->reveal());
+        return new XmlInput();
     }
 }

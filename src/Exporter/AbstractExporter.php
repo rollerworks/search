@@ -13,8 +13,6 @@ namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldLabelResolver\NoopLabelResolver;
-use Rollerworks\Component\Search\FieldLabelResolverInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -28,43 +26,15 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 abstract class AbstractExporter implements ExporterInterface
 {
     /**
-     * @var FieldLabelResolverInterface
-     */
-    protected $labelResolver;
-
-    /**
-     * @param FieldLabelResolverInterface $labelResolver
-     */
-    public function __construct(FieldLabelResolverInterface $labelResolver)
-    {
-        $this->labelResolver = $labelResolver;
-    }
-
-    /**
      * Exports a search condition.
      *
-     * @param SearchConditionInterface $condition     The search condition to export
-     * @param bool                     $useFieldAlias Use the localized field-alias
-     *                                                instead of the actual name (default false)
-     *
-     * @throws \RuntimeException
+     * @param SearchConditionInterface $condition The search condition to export
      *
      * @return mixed
      */
-    public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false)
+    public function exportCondition(SearchConditionInterface $condition)
     {
-        $labelResolver = $this->labelResolver;
-
-        if (!$useFieldAlias && $this->labelResolver instanceof NoopLabelResolver) {
-            $this->labelResolver = new NoopLabelResolver();
-        }
-
-        $result = $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
-
-        // Restore original resolver.
-        $this->labelResolver = $labelResolver;
-
-        return $result;
+        return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
     }
 
     /**

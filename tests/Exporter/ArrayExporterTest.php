@@ -39,20 +39,6 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
         ];
     }
 
-    public function provideFieldAliasTest()
-    {
-        return [
-            'fields' => [
-                'firstname' => [
-                    'single-values' => [
-                        'value',
-                        'value2',
-                    ],
-                ],
-            ],
-        ];
-    }
-
     public function provideMultipleValuesTest()
     {
         return [
@@ -218,7 +204,7 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
      */
     protected function getExporter()
     {
-        return new ArrayExporter($this->fieldLabelResolver->reveal());
+        return new ArrayExporter();
     }
 
     /**
@@ -226,6 +212,6 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
      */
     protected function getInputProcessor()
     {
-        return new ArrayInput($this->fieldAliasResolver->reveal());
+        return new ArrayInput();
     }
 }

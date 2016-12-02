@@ -11,8 +11,10 @@
 
 namespace Rollerworks\Component\Search\Exporter;
 
+use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -27,6 +29,39 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 class FilterQueryExporter extends AbstractExporter
 {
+    private $labelResolver;
+    private $fields = [];
+
+    /**
+     * Constructor.
+     *
+     * @param callable|null $labelResolver A callable to resolve the actual label
+     *                                     of the field, receives a
+     *                                     FieldConfigInterface instance.
+     *                                     If null the `label` option value is
+     *                                     used instead
+     */
+    public function __construct(callable $labelResolver = null)
+    {
+        $this->labelResolver = $labelResolver ?? function (FieldConfigInterface $field) {
+            return $field->getOption('label', $field->getName());
+        };
+    }
+
+    /**
+     * Exports a search condition.
+     *
+     * @param SearchConditionInterface $condition The search condition to export
+     *
+     * @return mixed
+     */
+    public function exportCondition(SearchConditionInterface $condition)
+    {
+        $this->fields = $this->resolveLabels($condition->getFieldSet());
+
+        return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
+    }
+
     /**
      * @param ValuesGroup $valuesGroup
      * @param FieldSet    $fieldSet
@@ -51,7 +86,7 @@ class FilterQueryExporter extends AbstractExporter
                 continue;
             }
 
-            $result .= $this->labelResolver->resolveFieldLabel($fieldSet, $name);
+            $result .= $this->getFieldLabel($name);
             $result .= ': '.$this->exportValues($values, $fieldSet->get($name)).'; ';
         }
 
@@ -68,6 +103,27 @@ class FilterQueryExporter extends AbstractExporter
         $result .= $exportedGroups;
 
         return trim($result);
+    }
+
+    private function resolveLabels(FieldSet $fieldSet): array
+    {
+        $labels = [];
+        $callable = $this->labelResolver;
+
+        foreach ($fieldSet->all() as $name => $field) {
+            $labels[$name] = $callable($field);
+        }
+
+        return $labels;
+    }
+
+    private function getFieldLabel(string $name): string
+    {
+        if (isset($this->fields[$name])) {
+            return $this->fields[$name];
+        }
+
+        throw new UnknownFieldException($name);
     }
 
     /**

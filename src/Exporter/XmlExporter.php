@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldLabelResolver\NoopLabelResolver;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionInterface;
 use Rollerworks\Component\Search\Value\Compare;
@@ -37,23 +36,15 @@ class XmlExporter extends AbstractExporter
     /**
      * Exports the SearchCondition.
      *
-     * @param SearchConditionInterface $condition     The SearchCondition to export
-     * @param bool                     $useFieldAlias Use the localized field-alias instead
-     *                                                of the actual name (default false)
-     * @param bool                     $formatOutput  Set whether to format the output (default true)
+     * @param SearchConditionInterface $condition    The SearchCondition to export
+     * @param bool                     $formatOutput Set whether to format the output (default true)
      *
      * @throws \RuntimeException
      *
      * @return string
      */
-    public function exportCondition(SearchConditionInterface $condition, $useFieldAlias = false, $formatOutput = true)
+    public function exportCondition(SearchConditionInterface $condition, $formatOutput = true)
     {
-        $labelResolver = $this->labelResolver;
-
-        if (!$useFieldAlias && $this->labelResolver instanceof NoopLabelResolver) {
-            $this->labelResolver = new NoopLabelResolver();
-        }
-
         $this->document = new \DOMDocument('1.0', 'utf-8');
         $this->document->formatOutput = $formatOutput;
 
@@ -71,9 +62,6 @@ class XmlExporter extends AbstractExporter
 
         $xml = $this->document->saveXML();
         $this->document = null;
-
-        // Restore original resolver.
-        $this->labelResolver = $labelResolver;
 
         return $xml;
     }
@@ -105,9 +93,8 @@ class XmlExporter extends AbstractExporter
                     continue;
                 }
 
-                $fieldLabel = $this->labelResolver->resolveFieldLabel($fieldSet, $name);
                 $fieldNode = $this->document->createElement('field');
-                $fieldNode->setAttribute('name', $fieldLabel);
+                $fieldNode->setAttribute('name', $name);
 
                 $this->exportValuesToNode($values, $fieldNode, $fieldSet->get($name));
                 $fieldsNode->appendChild($fieldNode);

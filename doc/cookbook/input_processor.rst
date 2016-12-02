@@ -139,8 +139,7 @@ Need more inspiration? Take a look at one of the already provided `input process
 
     For this example we are using the :class:`Rollerworks\\Component\\Search\\InputProcessorInterface`
     but it's also possible to leverage the :class:`Rollerworks\\Component\\Search\\Input\\AbstractInput`
-    which provides some helper methods for field alias resolving and type
-    support validating.
+    which provides some helper methods for type support validation.
 
 Now that we have an input processor, it may be a good idea to create an
 exporter that can deal with search conditions within the input format.

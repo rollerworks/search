@@ -225,7 +225,6 @@ wrong.
 
 Please keep note of the following:
 
-* The field-name is the resolved field name and not the alias that was used.
 * The group and nesting level start at index 0 which is the root of the condition.
 
 .. tip::
