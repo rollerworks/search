@@ -41,15 +41,7 @@ class TimezoneType extends AbstractFieldType
      */
     public function getParent()
     {
-        return 'choice';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'timezone';
+        return ChoiceType::class;
     }
 
     /**

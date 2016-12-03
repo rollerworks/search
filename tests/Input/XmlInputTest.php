@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\XmlInput;
 use Rollerworks\Component\Search\Value\ValuesGroup;
@@ -32,7 +33,7 @@ final class XmlInputTest extends InputProcessorTestCase
      */
     public function it_errors_when_the_syntax_is_invalid($input, $message)
     {
-        $fieldSet = $this->getFieldSet(false)->add('field1', 'text')->getFieldSet();
+        $fieldSet = $this->getFieldSet(false)->add('field1', TextType::class)->getFieldSet();
 
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($fieldSet);

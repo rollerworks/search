@@ -119,7 +119,7 @@ abstract class AbstractExporter implements ExporterInterface
                         'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
                         gettype($value),
                         $field->getName(),
-                        $field->getType()->getName()
+                        get_class($field->getType()->getInnerType())
                     )
                 );
             }

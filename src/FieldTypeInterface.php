@@ -19,13 +19,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 interface FieldTypeInterface
 {
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name
-     */
-    public function getName();
-
-    /**
      * Returns the name of the parent type.
      *
      * @return string|null The name of the parent type if any, null otherwise

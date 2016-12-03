@@ -23,7 +23,7 @@ class CoreExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    protected function loadTypes()
+    protected function loadTypes(): array
     {
         $dateTimeComparison = new ValueComparison\DateTimeValueComparison();
         $numberComparison = new ValueComparison\NumberValueComparison();

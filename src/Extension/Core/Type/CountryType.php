@@ -35,14 +35,6 @@ class CountryType extends AbstractFieldType
      */
     public function getParent()
     {
-        return 'choice';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'country';
+        return ChoiceType::class;
     }
 }

@@ -35,14 +35,6 @@ class CurrencyType extends AbstractFieldType
      */
     public function getParent()
     {
-        return 'choice';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'currency';
+        return ChoiceType::class;
     }
 }

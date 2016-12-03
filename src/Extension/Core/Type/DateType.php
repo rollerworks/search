@@ -132,12 +132,4 @@ class DateType extends AbstractFieldType
 
         $resolver->setAllowedTypes('format', ['int', 'string']);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'date';
-    }
 }

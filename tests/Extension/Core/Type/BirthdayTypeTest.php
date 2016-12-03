@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
+use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Test\FieldTypeTestCase;
 
 class BirthdayTypeTest extends FieldTypeTestCase
@@ -19,13 +20,13 @@ class BirthdayTypeTest extends FieldTypeTestCase
     {
         $this->assertInstanceOf(
             'Rollerworks\Component\Search\FieldConfigInterface',
-            $this->getFactory()->createField('birthday', 'birthday')
+            $this->getFactory()->createField('birthday', BirthdayType::class)
         );
     }
 
     public function testDateOnlyInput()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', [
+        $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'format' => 'yyyy-MM-dd',
             'allow_age' => false,
         ]);
@@ -37,7 +38,7 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testAllowAgeInput()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', [
+        $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'format' => 'yyyy-MM-dd',
         ]);
 
@@ -49,7 +50,7 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testWrongInputFails()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', [
+        $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'allow_age' => true,
         ]);
 
@@ -60,7 +61,7 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testAgeInTheFutureFails()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', [
+        $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'format' => 'yyyy-MM-dd',
         ]);
 
@@ -71,7 +72,7 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     public function testAgeInWorksWhenAllowed()
     {
-        $field = $this->getFactory()->createField('birthday', 'birthday', [
+        $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'format' => 'yyyy-MM-dd',
             'allow_future_date' => true,
         ]);
@@ -89,6 +90,6 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
     protected function getTestedType()
     {
-        return 'birthday';
+        return BirthdayType::class;
     }
 }

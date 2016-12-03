@@ -15,6 +15,8 @@ use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\SearchField;
+use Rollerworks\Component\Search\Tests\Fixtures\BarType;
+use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
 final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,7 +34,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         $factory->createField(Argument::cetera())->will(
             function ($args) use ($test) {
                 $type = $test->prophesize('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
-                $type->getName()->willReturn($args[1]);
+                $type->getInnerType()->willReturn(new $args[1]());
 
                 return new SearchField($args[0], $type->reveal(), $args[2]);
             }
@@ -48,8 +50,8 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testAddFields()
     {
-        $this->builder->add('id', 'integer');
-        $this->builder->add('name', 'text');
+        $this->builder->add('id', FooType::class);
+        $this->builder->add('name', BarType::class);
 
         $this->assertTrue($this->builder->has('id'));
         $this->assertTrue($this->builder->has('name'));
@@ -57,17 +59,19 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testAlwaysGivesAResolvedField()
     {
-        $this->builder->add('id', 'integer', ['foo' => 'bar']);
+        $this->builder->add('id', FooType::class, ['foo' => 'bar']);
 
-        $this->assertBuilderFieldConfigurationEquals('id', 'integer', ['foo' => 'bar']);
+        $this->assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
     }
 
     public function testAddedPreConfiguredField()
     {
-        $type = $this->prophesize('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
-        $type->getName()->willReturn('text');
+        $field = $this->prophesize(FieldConfigInterface::class);
+        $field->getName()->willReturn('id');
 
-        $this->builder->add($field = new SearchField('id', $type->reveal()));
+        $field = $field->reveal();
+
+        $this->builder->add($field);
 
         $this->assertTrue($this->builder->has('id'));
         $this->assertSame($field, $this->builder->get('id'));
@@ -75,7 +79,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testRemoveField()
     {
-        $this->builder->add('id', 'integer');
+        $this->builder->add('id', FooType::class);
         $this->builder->add('name', 'text');
 
         $this->builder->remove('id');
@@ -86,29 +90,14 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetBuildFieldSet()
     {
-        $this->builder->add('id', 'integer', ['max' => 5000]);
-        $this->builder->add(
-            'gid',
-            'integer',
-            [
-                'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
-                'model_property' => 'name',
-            ]
-        );
+        $this->builder->add('id', FooType::class, ['max' => 5000]);
+        $this->builder->add('gid', FooType::class);
 
         $fieldSet = $this->builder->getFieldSet();
 
         $this->assertEquals('test', $fieldSet->getSetName());
-        $this->assertFieldConfigurationEquals($fieldSet->get('id'), 'id', 'integer', ['max' => 5000]);
-        $this->assertFieldConfigurationEquals(
-            $fieldSet->get('gid'),
-            'gid',
-            'integer',
-            [
-                'model_class' => 'Rollerworks\Component\Search\Fixtures\Entity\Group',
-                'model_property' => 'name',
-            ]
-        );
+        $this->assertFieldConfigurationEquals($fieldSet->get('id'), 'id', FooType::class, ['max' => 5000]);
+        $this->assertFieldConfigurationEquals($fieldSet->get('gid'), 'gid', FooType::class);
     }
 
     /**
@@ -116,7 +105,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testCannotChangeCompletedBuilder($method, array $parameters)
     {
-        $this->builder->add('id', 'integer', ['max' => 5000]);
+        $this->builder->add('id', FooType::class, ['max' => 5000]);
         $this->builder->getFieldSet();
 
         $this->setExpectedException(
@@ -130,25 +119,25 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
     public function getBuilderMethods()
     {
         return [
-            ['add', ['id', 'integer']],
+            ['add', ['id', FooType::class]],
             ['has', ['id']],
             ['get', ['id']],
             ['remove', ['id']],
         ];
     }
 
-    private function assertBuilderFieldConfigurationEquals($name, $type, $options = [])
+    private function assertBuilderFieldConfigurationEquals(string $name, string $type, array $options = [])
     {
         $this->assertInstanceOf('Rollerworks\Component\Search\FieldConfigInterface', $field = $this->builder->get($name));
         $this->assertEquals($name, $field->getName());
-        $this->assertEquals($type, $field->getType()->getName());
+        $this->assertInstanceOf($type, $field->getType()->getInnerType());
         $this->assertEquals($options, $field->getOptions());
     }
 
-    private function assertFieldConfigurationEquals(FieldConfigInterface $field, $name, $type, $options = [])
+    private function assertFieldConfigurationEquals(FieldConfigInterface $field, string $name, string $type, array $options = [])
     {
         $this->assertEquals($name, $field->getName());
-        $this->assertEquals($type, $field->getType()->getName());
+        $this->assertInstanceOf($type, $field->getType()->getInnerType());
         $this->assertEquals($options, $field->getOptions());
     }
 }

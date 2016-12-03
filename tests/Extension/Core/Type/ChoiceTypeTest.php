@@ -12,6 +12,7 @@
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ObjectChoiceList;
+use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
 use Rollerworks\Component\Search\Test\FieldTypeTestCase;
 
 class ChoiceTypeTest extends FieldTypeTestCase
@@ -59,26 +60,26 @@ class ChoiceTypeTest extends FieldTypeTestCase
      */
     public function testChoiceListOptionExpectsChoiceListInterface()
     {
-        $this->getFactory()->createField('choice', 'choice', [
+        $this->getFactory()->createField('choice', ChoiceType::class, [
             'choice_list' => ['foo' => 'foo'],
         ]);
     }
 
     public function testChoiceListAndChoicesCanBeEmpty()
     {
-        $this->getFactory()->createField('choice', 'choice');
+        $this->getFactory()->createField('choice', ChoiceType::class);
     }
 
     public function testSubmitSingleNonExpandedInvalidChoice()
     {
-        $this->getFactory()->createField('choice', 'choice', [
+        $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->choices,
         ]);
     }
 
     public function testObjectChoices()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', [
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choice_list' => new ObjectChoiceList(
                 $this->objectChoices,
                 // label path
@@ -98,7 +99,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testObjectChoicesByLabel()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', [
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'label_as_value' => true,
             'choice_list' => new ObjectChoiceList(
                 $this->objectChoices,
@@ -119,7 +120,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testArrayChoices()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', [
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->choices,
         ]);
 
@@ -128,7 +129,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testNumericChoices()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', [
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->numericChoices,
         ]);
 
@@ -137,7 +138,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testNumericChoicesByLabel()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', [
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'label_as_value' => true,
             'choices' => $this->numericChoices,
         ]);
@@ -149,7 +150,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
 
     public function testReuseNonUtf8ChoiceLists()
     {
-        $field = $this->getFactory()->createField('choice', 'choice', [
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => [
                 'meter' => 'm',
                 'millimeter' => 'mm',
@@ -157,7 +158,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
             ],
         ]);
 
-        $field2 = $this->getFactory()->createField('choice', 'choice', [
+        $field2 = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => [
                 'meter' => 'm',
                 'millimeter' => 'mm',
@@ -165,7 +166,7 @@ class ChoiceTypeTest extends FieldTypeTestCase
             ],
         ]);
 
-        $field3 = $this->getFactory()->createField('choice', 'choice', [
+        $field3 = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => [
                 'meter' => 'm',
                 'millimeter' => 'mm',

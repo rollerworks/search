@@ -38,6 +38,6 @@ class SearchFactoryBuilderTest extends \PHPUnit_Framework_TestCase
         $extensions = $registry->getExtensions();
 
         $this->assertCount(1, $extensions);
-        $this->assertTrue($extensions[0]->hasType($this->type->getName()));
+        $this->assertTrue($extensions[0]->hasType(FooType::class));
     }
 }

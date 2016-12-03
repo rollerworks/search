@@ -40,11 +40,11 @@ class PreloadedExtension implements SearchExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getType($name)
+    public function getType(string $name): FieldTypeInterface
     {
         if (!isset($this->types[$name])) {
             throw new InvalidArgumentException(
-                sprintf('The type "%s" can not be loaded by this extension', $name)
+                sprintf('Type "%s" can not be loaded by this extension', $name)
             );
         }
 
@@ -54,7 +54,7 @@ class PreloadedExtension implements SearchExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function hasType($name)
+    public function hasType(string $name): bool
     {
         return isset($this->types[$name]);
     }
@@ -62,16 +62,8 @@ class PreloadedExtension implements SearchExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getTypeExtensions($name)
+    public function getTypeExtensions(string $name): array
     {
-        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasTypeExtensions($name)
-    {
-        return !empty($this->typeExtensions[$name]);
+        return $this->typeExtensions[$name] ?? [];
     }
 }

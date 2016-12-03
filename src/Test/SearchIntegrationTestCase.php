@@ -12,6 +12,8 @@
 namespace Rollerworks\Component\Search\Test;
 
 use Prophecy\Prophet;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\SearchFactory;
@@ -95,8 +97,8 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
     protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add($this->getFactory()->createField('id', 'integer'));
-        $fieldSet->add('name', 'text');
+        $fieldSet->add($this->getFactory()->createField('id', IntegerType::class));
+        $fieldSet->add('name', TextType::class);
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }

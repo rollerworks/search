@@ -93,12 +93,4 @@ class IntegerType extends AbstractFieldType
             ]
         );
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'integer';
-    }
 }

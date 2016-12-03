@@ -92,12 +92,4 @@ class NumberType extends AbstractFieldType
             ]
         );
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'number';
-    }
 }

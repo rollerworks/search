@@ -35,14 +35,6 @@ class LanguageType extends AbstractFieldType
      */
     public function getParent()
     {
-        return 'choice';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'language';
+        return ChoiceType::class;
     }
 }

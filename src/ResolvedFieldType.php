@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -48,41 +47,19 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
      * @param array                      $typeExtensions
      * @param ResolvedFieldTypeInterface $parent
      *
-     * @throws UnexpectedTypeException  When at least one of the given extensions is not an FieldTypeExtensionInterface
-     * @throws InvalidArgumentException When the name of inner type is invalid
+     * @throws UnexpectedTypeException When at least one of the given extensions is not an FieldTypeExtensionInterface
      */
     public function __construct(FieldTypeInterface $innerType, array $typeExtensions = [], ResolvedFieldTypeInterface $parent = null)
     {
-        if (!preg_match('/^[a-z0-9_]*$/i', $innerType->getName())) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'The "%s" field-type name ("%s") is not valid. Names must only contain letters, numbers, and "_".',
-                    get_class($innerType),
-                    $innerType->getName()
-                )
-            );
-        }
-
         foreach ($typeExtensions as $extension) {
             if (!$extension instanceof FieldTypeExtensionInterface) {
-                throw new UnexpectedTypeException(
-                    $extension,
-                    'Rollerworks\Component\Search\FieldTypeExtensionInterface'
-                );
+                throw new UnexpectedTypeException($extension, FieldTypeExtensionInterface::class);
             }
         }
 
         $this->innerType = $innerType;
         $this->typeExtensions = $typeExtensions;
         $this->parent = $parent;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->innerType->getName();
     }
 
     /**
@@ -144,7 +121,6 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
         $view = $this->newFieldView($config);
         $view->vars = array_merge($view->vars, [
             'name' => $config->getName(),
-            'type' => $config->getType()->getName(),
             'accept_ranges' => $config->supportValueType(ValuesBag::VALUE_TYPE_RANGE),
             'accept_compares' => $config->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON),
             'accept_pattern_matchers' => $config->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH),

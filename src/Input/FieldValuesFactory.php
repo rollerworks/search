@@ -232,7 +232,7 @@ final class FieldValuesFactory
                         'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
                         gettype($value),
                         $this->config->getName(),
-                        $this->config->getType()->getName()
+                        get_class($this->config->getType()->getInnerType())
                     )
                 );
             }

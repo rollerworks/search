@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\Input\FilterQueryInput;
@@ -66,7 +67,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
      */
     public function it_parses_fieldNames_with_dash()
     {
-        $fieldSet = $this->getFieldSet(false)->add('field-1', 'text')->getFieldSet();
+        $fieldSet = $this->getFieldSet(false)->add('field-1', TextType::class)->getFieldSet();
 
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($fieldSet);
@@ -132,7 +133,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
      */
     public function it_errors_when_the_syntax_is_invalid($input, $message, $col, $line, $expected, $got)
     {
-        $fieldSet = $this->getFieldSet(false)->add('field1', 'text')->getFieldSet();
+        $fieldSet = $this->getFieldSet(false)->add('field1', TextType::class)->getFieldSet();
 
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($fieldSet);

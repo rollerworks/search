@@ -182,10 +182,6 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
     public function testCreateView()
     {
         $field = $this->createFieldMock();
-        $field->expects($this->atLeastOnce())
-            ->method('getType')
-            ->willReturn($this->getMockFieldType());
-
         $view = $this->resolvedType->createFieldView($field);
 
         $this->assertInstanceOf('Rollerworks\Component\Search\SearchFieldView', $view);
@@ -241,7 +237,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
     private function getMockFieldType($typeClass = 'Rollerworks\Component\Search\AbstractFieldType')
     {
         return $this->getMockBuilder($typeClass)
-            ->setMethods(['getName', 'configureOptions', 'buildView', 'buildType'])
+            ->setMethods(['configureOptions', 'buildView', 'buildType'])
             ->getMock();
     }
 

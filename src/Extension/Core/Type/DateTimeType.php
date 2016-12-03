@@ -182,12 +182,4 @@ class DateTimeType extends AbstractFieldType
         $resolver->setAllowedTypes('date_format', ['int']);
         $resolver->setAllowedTypes('time_format', ['int']);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'datetime';
-    }
 }
