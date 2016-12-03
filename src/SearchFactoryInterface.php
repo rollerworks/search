@@ -25,7 +25,7 @@ interface SearchFactoryInterface
      *
      * @return FieldConfigInterface
      */
-    public function createField($name, $type, array $options = []);
+    public function createField($name, string $type, array $options = []);
 
     /**
      * Create a new FieldSetBuilderInterface instance.

@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Extension\Core\Type\FieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -50,6 +51,6 @@ abstract class AbstractFieldType implements FieldTypeInterface
      */
     public function getParent()
     {
-        return 'field';
+        return FieldType::class;
     }
 }

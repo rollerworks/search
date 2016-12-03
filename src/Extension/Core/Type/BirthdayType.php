@@ -92,18 +92,8 @@ class BirthdayType extends AbstractFieldType
      *
      * @return string The type name
      */
-    public function getName()
-    {
-        return 'birthday';
-    }
-
-    /**
-     * Returns the name of the type.
-     *
-     * @return string The type name
-     */
     public function getParent()
     {
-        return 'date';
+        return DateType::class;
     }
 }

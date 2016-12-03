@@ -43,13 +43,13 @@ class FieldRegistry implements FieldRegistryInterface
      * @param SearchExtensionInterface[]        $extensions          An array of SearchExtensionInterface
      * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory The factory for resolved field types
      *
-     * @throws UnexpectedTypeException if any extension does not implement SearchExtensionInterface
+     * @throws UnexpectedTypeException if an extension does not implement SearchExtensionInterface
      */
     public function __construct(array $extensions, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
     {
         foreach ($extensions as $extension) {
             if (!$extension instanceof SearchExtensionInterface) {
-                throw new UnexpectedTypeException($extension, 'Rollerworks\Component\Search\SearchExtensionInterface');
+                throw new UnexpectedTypeException($extension, SearchExtensionInterface::class);
             }
         }
 
@@ -60,12 +60,8 @@ class FieldRegistry implements FieldRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getType($name)
+    public function getType(string $name): ResolvedFieldTypeInterface
     {
-        if (!is_string($name)) {
-            throw new UnexpectedTypeException($name, 'string');
-        }
-
         if (!isset($this->types[$name])) {
             $type = null;
 
@@ -78,12 +74,15 @@ class FieldRegistry implements FieldRegistryInterface
             }
 
             if (!$type) {
-                throw new InvalidArgumentException(
-                    sprintf('Could not load type "%s"', $name)
-                );
+                // Support fully-qualified class names.
+                if (!class_exists($name) || !in_array(FieldTypeInterface::class, class_implements($name), true)) {
+                    throw new InvalidArgumentException(sprintf('Could not load type "%s"', $name));
+                }
+
+                $type = new $name();
             }
 
-            $this->resolveAndAddType($type);
+            $this->types[$name] = $this->resolveType($type);
         }
 
         return $this->types[$name];
@@ -92,7 +91,7 @@ class FieldRegistry implements FieldRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function hasType($name)
+    public function hasType(string $name): bool
     {
         if (isset($this->types[$name])) {
             return true;
@@ -110,39 +109,26 @@ class FieldRegistry implements FieldRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getExtensions()
+    public function getExtensions(): array
     {
         return $this->extensions;
     }
 
-    /**
-     * Wraps a type into a ResolvedFieldTypeInterface implementation and connects
-     * it with its parent type.
-     *
-     * @param FieldTypeInterface $type The type to resolve
-     *
-     * @return ResolvedFieldTypeInterface The resolved type
-     */
-    private function resolveAndAddType(FieldTypeInterface $type)
+    private function resolveType(FieldTypeInterface $type): ResolvedFieldTypeInterface
     {
         $parentType = $type->getParent();
-
-        if ($parentType instanceof FieldTypeInterface) {
-            $this->resolveAndAddType($parentType);
-
-            $parentType = $parentType->getName();
-        }
+        $fqcn = get_class($type);
 
         $typeExtensions = [];
 
         foreach ($this->extensions as $extension) {
             $typeExtensions = array_merge(
                 $typeExtensions,
-                $extension->getTypeExtensions($type->getName())
+                $extension->getTypeExtensions($fqcn)
             );
         }
 
-        $this->types[$type->getName()] = $this->resolvedTypeFactory->createResolvedType(
+        return $this->resolvedTypeFactory->createResolvedType(
             $type,
             $typeExtensions,
             $parentType ? $this->getType($parentType) : null

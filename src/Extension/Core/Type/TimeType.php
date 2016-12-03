@@ -103,12 +103,4 @@ class TimeType extends AbstractFieldType
             ]
         );
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'time';
-    }
 }

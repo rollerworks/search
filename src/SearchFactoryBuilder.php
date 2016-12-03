@@ -87,7 +87,7 @@ class SearchFactoryBuilder
      */
     public function addType(FieldTypeInterface $type)
     {
-        $this->types[$type->getName()] = $type;
+        $this->types[get_class($type)] = $type;
 
         return $this;
     }
@@ -102,7 +102,7 @@ class SearchFactoryBuilder
     public function addTypes(array $types)
     {
         foreach ($types as $type) {
-            $this->types[$type->getName()] = $type;
+            $this->types[get_class($type)] = $type;
         }
 
         return $this;
@@ -125,7 +125,7 @@ class SearchFactoryBuilder
     /**
      * Adds a list of field type extension to the factory.
      *
-     * @param FieldTypeExtensionInterface[] $typeExtension The field type extension
+     * @param FieldTypeExtensionInterface[] $typeExtensions The field type extension
      *
      * @return $this The builder
      */

@@ -11,13 +11,14 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Test\FieldTypeTestCase;
 
 class TextTypeTest extends FieldTypeTestCase
 {
     public function testCreate()
     {
-        $this->getFactory()->createField('name', 'text');
+        $this->getFactory()->createField('name', TextType::class);
     }
 
     protected function getTestedType()

@@ -23,26 +23,25 @@ interface FieldRegistryInterface
      *
      * @param string $name The name of the type
      *
-     * @throws Exception\UnexpectedTypeException  if the passed name is not a string
      * @throws Exception\InvalidArgumentException if the type cannot be retrieved from any extension
      *
-     * @return ResolvedFieldTypeInterface The type
+     * @return ResolvedFieldTypeInterface
      */
-    public function getType($name);
+    public function getType(string $name): ResolvedFieldTypeInterface;
 
     /**
      * Returns whether the given field type is supported.
      *
-     * @param string $name The name of the type
+     * @param string $name
      *
-     * @return bool Whether the type is supported
+     * @return bool
      */
-    public function hasType($name);
+    public function hasType(string $name): bool;
 
     /**
      * Returns the extensions loaded on the registry.
      *
      * @return SearchExtensionInterface[]
      */
-    public function getExtensions();
+    public function getExtensions(): array;
 }

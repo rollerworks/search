@@ -83,12 +83,4 @@ class MoneyType extends AbstractFieldType
             ]
         );
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'money';
-    }
 }

@@ -25,27 +25,13 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  */
 abstract class AbstractExtension implements SearchExtensionInterface
 {
-    /**
-     * The types provided by this extension.
-     *
-     * @var FieldTypeInterface[]
-     */
+    private $typesExtensions;
     private $types;
-
-    /**
-     * The type extensions provided by this extension.
-     *
-     * Keeps an array of FieldTypeExtensionInterface objects per type-name.
-     * type-name => FieldTypeExtensionInterface[]
-     *
-     * @var array<FieldTypeExtensionInterface[]>
-     */
-    private $typeExtensions;
 
     /**
      * {@inheritdoc}
      */
-    public function getType($name)
+    public function getType(string $name): FieldTypeInterface
     {
         if (null === $this->types) {
             $this->initTypes();
@@ -53,7 +39,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
 
         if (!isset($this->types[$name])) {
             throw new InvalidArgumentException(
-                sprintf('The type "%s" can not be loaded by this extension', $name)
+                sprintf('Type "%s" can not be loaded by this extension', $name)
             );
         }
 
@@ -63,7 +49,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function hasType($name)
+    public function hasType(string $name): bool
     {
         if (null === $this->types) {
             $this->initTypes();
@@ -75,87 +61,76 @@ abstract class AbstractExtension implements SearchExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getTypeExtensions($name)
+    public function hasTypeExtensions(string $type): bool
     {
-        if (null === $this->typeExtensions) {
-            $this->initTypeExtensions();
+        if (null === $this->typesExtensions) {
+            $this->initTypesExtensions();
         }
 
-        return isset($this->typeExtensions[$name]) ? $this->typeExtensions[$name] : [];
+        return isset($this->typesExtensions[$type]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasTypeExtensions($name)
+    public function getTypeExtensions(string $type): array
     {
-        if (null === $this->typeExtensions) {
-            $this->initTypeExtensions();
+        if (null === $this->typesExtensions) {
+            $this->initTypesExtensions();
         }
 
-        return isset($this->typeExtensions[$name]) && count($this->typeExtensions[$name]) > 0;
+        return $this->typesExtensions[$type] ?? [];
     }
 
     /**
-     * Registers the types.
+     * If extension needs to provide new field types this function
+     * should be overloaded in child class and return an array of FieldTypeInterface
+     * instances.
      *
-     * @return FieldTypeInterface[] an array of FormTypeInterface instances
+     * This is only required for types that have a constructor with (required) arguments.
+     *
+     * @return FieldTypeInterface[]
      */
-    protected function loadTypes()
+    protected function loadTypes(): array
     {
         return [];
     }
 
     /**
-     * Registers the type extensions.
+     * If extension needs to provide field type extensions this function
+     * should be overloaded in child class and return array of FieldTypeExtensionInterface
+     * instances per type: `TypeClassName => [FieldTypeExtensionInterface, ...]`.
      *
-     * @return array<FieldTypeExtensionInterface[]> an array of FieldTypeExtensionInterface instances
-     *                                              per type name
+     * @return array
      */
-    protected function loadTypeExtensions()
+    protected function loadTypesExtensions(): array
     {
         return [];
     }
 
-    /**
-     * Initializes the types.
-     *
-     * @throws UnexpectedTypeException if any registered type is not an instance of FormTypeInterface
-     */
     private function initTypes()
     {
         $this->types = [];
 
         foreach ($this->loadTypes() as $type) {
             if (!$type instanceof FieldTypeInterface) {
-                throw new UnexpectedTypeException($type, 'Rollerworks\Component\Search\FieldTypeInterface');
+                throw new UnexpectedTypeException($type, FieldTypeInterface::class);
             }
 
-            $this->types[$type->getName()] = $type;
+            $this->types[get_class($type)] = $type;
         }
     }
 
-    /**
-     * Initializes the type extensions.
-     *
-     * @throws UnexpectedTypeException if any registered type extension is not
-     *                                 an instance of FieldTypeExtensionInterface
-     */
-    private function initTypeExtensions()
+    private function initTypesExtensions()
     {
-        $this->typeExtensions = [];
+        $this->typesExtensions = [];
 
-        foreach ($this->loadTypeExtensions() as $extension) {
+        foreach ($this->loadTypesExtensions() as $extension) {
             if (!$extension instanceof FieldTypeExtensionInterface) {
-                throw new UnexpectedTypeException(
-                    $extension,
-                    'Rollerworks\Component\Search\FieldTypeExtensionInterface'
-                );
+                throw new UnexpectedTypeException($extension, FieldTypeExtensionInterface::class);
             }
 
-            $type = $extension->getExtendedType();
-
-            $this->typeExtensions[$type][] = $extension;
+            $this->typesExtensions[$extension->getExtendedType()][] = $extension;
         }
     }
 }

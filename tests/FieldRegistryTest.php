@@ -11,9 +11,16 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldRegistry;
+use Rollerworks\Component\Search\FieldTypeExtensionInterface;
 use Rollerworks\Component\Search\FieldTypeInterface;
 use Rollerworks\Component\Search\PreloadedExtension;
+use Rollerworks\Component\Search\ResolvedFieldTypeFactory;
+use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
+use Rollerworks\Component\Search\Tests\Fixtures\BarType;
+use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
+use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
 final class FieldRegistryTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,21 +29,26 @@ final class FieldRegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function it_loads_types_from_extensions()
     {
-        $extension = new PreloadedExtension(['integer' => $integerType = $this->createTypeMock('integer')]);
-        $extension2 = new PreloadedExtension(['text' => $textType = $this->createTypeMock('text')]);
+        $extension = new PreloadedExtension([FooType::class => $fooType = new FooType()]);
+        $extension2 = new PreloadedExtension([FooSubType::class => $fooSubType = new FooSubType()]);
+        $barType = new BarType();
 
-        $resolvedFieldTypeFactory = $this->prophesize('Rollerworks\Component\Search\ResolvedFieldTypeFactory');
-        $resolvedFieldTypeFactory->createResolvedType($integerType, [], null)->willReturn($this->createResolvedTypeMock($integerType));
-        $resolvedFieldTypeFactory->createResolvedType($textType, [], null)->willReturn($this->createResolvedTypeMock($textType));
+        $resolvedFieldTypeFactory = $this->prophesize(ResolvedFieldTypeFactory::class);
+        $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooType::class), [], null)->willReturn($resolvedFooType = $this->createResolvedTypeMock($fooType));
+        $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooSubType::class), [], $resolvedFooType)->willReturn($this->createResolvedTypeMock($fooSubType));
+        $resolvedFieldTypeFactory->createResolvedType(Argument::type(BarType::class), [], null)->willReturn($this->createResolvedTypeMock($barType));
 
         $registry = new FieldRegistry([$extension, $extension2], $resolvedFieldTypeFactory->reveal());
 
-        $this->assertTrue($registry->hasType('integer'));
-        $this->assertTrue($registry->hasType('text'));
-        $this->assertFalse($registry->hasType('money'));
+        $this->assertTrue($registry->hasType(FooType::class));
+        $this->assertTrue($registry->hasType(FooType::class)); // once the type is loaded it's cached internally
+        $this->assertTrue($registry->hasType(FooSubType::class));
+        $this->assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
+        $this->assertFalse($registry->hasType('text'));
 
-        $this->assertInstanceOf('Rollerworks\Component\Search\ResolvedFieldTypeInterface', $registry->getType('integer'));
-        $this->assertInstanceOf('Rollerworks\Component\Search\ResolvedFieldTypeInterface', $registry->getType('text'));
+        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
+        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
+        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
     }
 
     /**
@@ -44,53 +56,49 @@ final class FieldRegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function it_loads_type_extensions()
     {
-        $extension = new PreloadedExtension(['text' => $textType = $this->createTypeMock('text')]);
+        $extension = new PreloadedExtension([FooType::class => $fooType = new FooType()]);
         $extension2 = new PreloadedExtension(
             [
-                'field' => $fieldType = $this->createTypeMock('field'),
-                'integer' => $integerType = $this->createTypeMock('integer', 'field'),
+                FooSubType::class => $fooSubType = new FooSubType(),
             ],
-            ['text' => [$textTypeExtension = $this->createTypeExtensionMock('text')]]
+            [
+                BarType::class => [$barTypeExtension = $this->createTypeExtensionMock(BarType::class)],
+                FooSubType::class => [$fooSubTypeExtension = $this->createTypeExtensionMock(FooSubType::class)],
+            ]
         );
 
-        $resolvedFieldTypeFactory = $this->prophesize('Rollerworks\Component\Search\ResolvedFieldTypeFactory');
-        $resolvedFieldTypeFactory->createResolvedType($fieldType, [], null)->willReturn($resolvedField = $this->createResolvedTypeMock($fieldType));
-        $resolvedFieldTypeFactory->createResolvedType($integerType, [], $resolvedField)->willReturn($this->createResolvedTypeMock($integerType));
-        $resolvedFieldTypeFactory->createResolvedType($textType, [$textTypeExtension], null)->willReturn($this->createResolvedTypeMock($textType));
+        $barType = new BarType();
+
+        $resolvedFieldTypeFactory = $this->prophesize(ResolvedFieldTypeFactory::class);
+        $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooType::class), [], null)->willReturn($resolvedFooType = $this->createResolvedTypeMock($fooType));
+        $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooSubType::class), [$fooSubTypeExtension], $resolvedFooType)->willReturn($this->createResolvedTypeMock($fooSubType));
+        $resolvedFieldTypeFactory->createResolvedType(Argument::type(BarType::class), [$barTypeExtension], null)->willReturn($this->createResolvedTypeMock($barType));
 
         $registry = new FieldRegistry([$extension, $extension2], $resolvedFieldTypeFactory->reveal());
 
-        $this->assertTrue($registry->hasType('integer'));
-        $this->assertTrue($registry->hasType('text'));
-        $this->assertFalse($registry->hasType('money'));
+        $this->assertTrue($registry->hasType(FooType::class));
+        $this->assertTrue($registry->hasType(FooSubType::class));
+        $this->assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
+        $this->assertFalse($registry->hasType('text'));
 
-        $this->assertInstanceOf('Rollerworks\Component\Search\ResolvedFieldTypeInterface', $registry->getType('integer'));
-        $this->assertInstanceOf('Rollerworks\Component\Search\ResolvedFieldTypeInterface', $registry->getType('text'));
+        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
+        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
+        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
     }
 
-    private function createTypeMock($name, $parent = null)
+    private function createResolvedTypeMock(FieldTypeInterface $type): ResolvedFieldTypeInterface
     {
-        $type = $this->prophesize('Rollerworks\Component\Search\FieldTypeInterface');
-        $type->getName()->willReturn($name);
-        $type->getParent()->willReturn($parent);
+        $resolvedType = $this->createMock(ResolvedFieldTypeInterface::class);
+        $resolvedType->expects($this->any())->method('getInnerType')->willReturn($type);
 
-        return $type->reveal();
+        return $resolvedType;
     }
 
-    private function createResolvedTypeMock(FieldTypeInterface $type)
+    private function createTypeExtensionMock(string $name)
     {
-        $resolvedType = $this->prophesize('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
-        $resolvedType->getName()->willReturn($type->getName());
-        $resolvedType->getInnerType()->willReturn($type);
+        $fieldExtension = $this->createMock(FieldTypeExtensionInterface::class);
+        $fieldExtension->expects($this->any())->method('getExtendedType')->willReturn($name);
 
-        return $resolvedType->reveal();
-    }
-
-    private function createTypeExtensionMock($name)
-    {
-        $fieldExtension = $this->prophesize('Rollerworks\Component\Search\FieldTypeExtensionInterface');
-        $fieldExtension->getExtendedType()->willReturn($name);
-
-        return $fieldExtension->reveal();
+        return $fieldExtension;
     }
 }

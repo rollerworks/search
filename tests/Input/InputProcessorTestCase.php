@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessorInterface;
@@ -44,24 +47,24 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add($this->getFactory()->createField('id', 'integer'));
-        $fieldSet->add($this->getFactory()->createField('name', 'text'));
-        $fieldSet->add($this->getFactory()->createField('lastname', 'text'));
-        $fieldSet->add($this->getFactory()->createField('date', 'date', ['format' => 'MM-dd-yyyy']));
+        $fieldSet->add($this->getFactory()->createField('id', IntegerType::class));
+        $fieldSet->add($this->getFactory()->createField('name', TextType::class));
+        $fieldSet->add($this->getFactory()->createField('lastname', TextType::class));
+        $fieldSet->add($this->getFactory()->createField('date', DateType::class, ['format' => 'MM-dd-yyyy']));
         $fieldSet->add(
-            $this->getFactory()->createField('no-range-field', 'integer')
+            $this->getFactory()->createField('no-range-field', IntegerType::class)
                 ->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false)
         );
 
         $fieldSet->add(
-            $this->getFactory()->createField('no-compares-field', 'integer')->setValueTypeSupport(
+            $this->getFactory()->createField('no-compares-field', IntegerType::class)->setValueTypeSupport(
                 ValuesBag::VALUE_TYPE_COMPARISON,
                 false
             )
         );
 
         $fieldSet->add(
-            $this->getFactory()->createField('no-matchers-field', 'integer')->setValueTypeSupport(
+            $this->getFactory()->createField('no-matchers-field', IntegerType::class)->setValueTypeSupport(
                 ValuesBag::VALUE_TYPE_PATTERN_MATCH,
                 false
             )

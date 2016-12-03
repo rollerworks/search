@@ -11,9 +11,8 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchFactory;
-use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
-use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
 final class SearchFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,7 +56,7 @@ final class SearchFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->registry->expects($this->once())
             ->method('getType')
-            ->with('type')
+            ->with(TextType::class)
             ->will($this->returnValue($resolvedType));
 
         $resolvedType->expects($this->once())
@@ -73,79 +72,7 @@ final class SearchFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('buildType')
             ->with($this->fieldConfig, $resolvedOptions);
 
-        $this->assertSame($this->fieldConfig, $this->factory->createField('name', 'type', $options));
-    }
-
-    /**
-     * @test
-     */
-    public function create_field_with_type_instance()
-    {
-        $options = ['a' => '1', 'b' => '2'];
-        $resolvedOptions = ['a' => '2', 'b' => '3'];
-        $type = new FooType();
-        $resolvedType = $this->getMockResolvedType();
-
-        $this->resolvedTypeFactory->expects($this->once())
-            ->method('createResolvedType')
-            ->with($type)
-            ->will($this->returnValue($resolvedType));
-
-        $this->registry->expects($this->never())
-            ->method('getType')
-            ->with('type');
-
-        $resolvedType->expects($this->once())
-            ->method('createField')
-            ->with('name', $options)
-            ->will($this->returnValue($this->fieldConfig));
-
-        $this->fieldConfig->expects($this->any())
-            ->method('getOptions')
-            ->will($this->returnValue($resolvedOptions));
-
-        $resolvedType->expects($this->once())
-            ->method('buildType')
-            ->with($this->fieldConfig, $resolvedOptions);
-
-        $this->assertSame($this->fieldConfig, $this->factory->createField('name', $type, $options));
-    }
-
-    /**
-     * @test
-     */
-    public function create_field_with_type_instance_with_parent_type()
-    {
-        $options = ['a' => '1', 'b' => '2'];
-        $resolvedOptions = ['a' => '2', 'b' => '3'];
-        $type = new FooSubType();
-        $resolvedType = $this->getMockResolvedType();
-        $parentResolvedType = $this->getMockResolvedType();
-
-        $this->registry->expects($this->once())
-            ->method('getType')
-            ->with('foo')
-            ->will($this->returnValue($parentResolvedType));
-
-        $this->resolvedTypeFactory->expects($this->once())
-            ->method('createResolvedType')
-            ->with($type, [], $parentResolvedType)
-            ->will($this->returnValue($resolvedType));
-
-        $resolvedType->expects($this->once())
-            ->method('createField')
-            ->with('name', $options)
-            ->will($this->returnValue($this->fieldConfig));
-
-        $this->fieldConfig->expects($this->any())
-            ->method('getOptions')
-            ->will($this->returnValue($resolvedOptions));
-
-        $resolvedType->expects($this->once())
-            ->method('buildType')
-            ->with($this->fieldConfig, $resolvedOptions);
-
-        $this->assertSame($this->fieldConfig, $this->factory->createField('name', $type, $options));
+        $this->assertSame($this->fieldConfig, $this->factory->createField('name', TextType::class, $options));
     }
 
     private function getMockResolvedType()

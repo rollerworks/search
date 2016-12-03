@@ -23,9 +23,9 @@ interface SearchExtensionInterface
      *
      * @throws Exception\InvalidArgumentException if the given type is not supported by this extension
      *
-     * @return FieldTypeInterface The type
+     * @return FieldTypeInterface
      */
-    public function getType($name);
+    public function getType(string $name): FieldTypeInterface;
 
     /**
      * Returns whether the given type is supported.
@@ -34,14 +34,14 @@ interface SearchExtensionInterface
      *
      * @return bool Whether the type is supported by this extension
      */
-    public function hasType($name);
+    public function hasType(string $name): bool;
 
     /**
      * Returns the extensions for the given type.
      *
      * @param string $name The name of the type
      *
-     * @return FieldTypeExtensionInterface[] An array of extensions as FieldTypeExtensionInterface instances
+     * @return FieldTypeExtensionInterface[]
      */
-    public function getTypeExtensions($name);
+    public function getTypeExtensions(string $name): array;
 }

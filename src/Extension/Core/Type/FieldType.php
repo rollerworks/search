@@ -39,17 +39,9 @@ class FieldType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'field';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getParent()
     {
-        // noop
+        // no-op
     }
 
     /**

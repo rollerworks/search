@@ -27,12 +27,4 @@ class TextType extends AbstractFieldType
     {
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_PATTERN_MATCH, true);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'text';
-    }
 }

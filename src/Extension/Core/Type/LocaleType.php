@@ -35,14 +35,6 @@ class LocaleType extends AbstractFieldType
      */
     public function getParent()
     {
-        return 'choice';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'locale';
+        return ChoiceType::class;
     }
 }

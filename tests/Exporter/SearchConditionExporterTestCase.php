@@ -12,6 +12,9 @@
 namespace Rollerworks\Component\Search\Tests\Exporter;
 
 use Rollerworks\Component\Search\ExporterInterface;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessorInterface;
@@ -43,10 +46,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
     protected function getFieldSet($build = true)
     {
         $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add($this->getFactory()->createField('id', 'integer'));
-        $fieldSet->add($this->getFactory()->createField('name', 'text'));
-        $fieldSet->add($this->getFactory()->createField('lastname', 'text'));
-        $fieldSet->add($this->getFactory()->createField('date', 'date', ['format' => 'MM-dd-yyyy']));
+        $fieldSet->add($this->getFactory()->createField('id', IntegerType::class));
+        $fieldSet->add($this->getFactory()->createField('name', TextType::class));
+        $fieldSet->add($this->getFactory()->createField('lastname', TextType::class));
+        $fieldSet->add($this->getFactory()->createField('date', DateType::class, ['format' => 'MM-dd-yyyy']));
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }

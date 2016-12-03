@@ -18,13 +18,8 @@ use Rollerworks\Component\Search\AbstractFieldType;
  */
 class FooSubType extends AbstractFieldType
 {
-    public function getName()
-    {
-        return 'foo_sub_type';
-    }
-
     public function getParent()
     {
-        return 'foo';
+        return FooType::class;
     }
 }
