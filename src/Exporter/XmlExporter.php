@@ -13,7 +13,7 @@ namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -36,14 +36,14 @@ class XmlExporter extends AbstractExporter
     /**
      * Exports the SearchCondition.
      *
-     * @param SearchConditionInterface $condition    The SearchCondition to export
-     * @param bool                     $formatOutput Set whether to format the output (default true)
+     * @param SearchCondition $condition    The SearchCondition to export
+     * @param bool            $formatOutput Set whether to format the output (default true)
      *
      * @throws \RuntimeException
      *
      * @return string
      */
-    public function exportCondition(SearchConditionInterface $condition, $formatOutput = true)
+    public function exportCondition(SearchCondition $condition, $formatOutput = true)
     {
         $this->document = new \DOMDocument('1.0', 'utf-8');
         $this->document->formatOutput = $formatOutput;

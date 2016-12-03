@@ -35,7 +35,7 @@ interface InputProcessorInterface
      * @throws Exception\ValuesOverflowException         When maximum values count is exceeded
      * @throws Exception\UnknownFieldException           When an unknown field is provided in the input
      *
-     * @return SearchConditionInterface|null Returns null on empty input
+     * @return SearchCondition|null Returns null on empty input
      */
     public function process(ProcessorConfig $config, $input);
 }

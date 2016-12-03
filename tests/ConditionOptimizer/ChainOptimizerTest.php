@@ -61,7 +61,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
      */
     public function it_execute_the_registered_formatters_priority_order()
     {
-        $searchCondition = $this->prophet->prophesize('Rollerworks\Component\Search\SearchConditionInterface');
+        $searchCondition = $this->prophet->prophesize('Rollerworks\Component\Search\SearchCondition');
         $searchCondition->getValuesGroup()->willReturn(new ValuesGroup());
 
         $checkValue = [];
@@ -90,7 +90,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
         $values->addError(new ValuesError('ranges[0].lower', 'whoops'));
         $valuesGroup->addField('id', $values);
 
-        $searchCondition = $this->prophet->prophesize('Rollerworks\Component\Search\SearchConditionInterface');
+        $searchCondition = $this->prophet->prophesize('Rollerworks\Component\Search\SearchCondition');
         $searchCondition->getValuesGroup()->willReturn($valuesGroup);
 
         $this->optimizer1->process($searchCondition)->shouldNotBeCalled();

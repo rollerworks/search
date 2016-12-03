@@ -11,16 +11,16 @@
 
 namespace Rollerworks\Component\Search\Exception;
 
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 final class InvalidSearchConditionException extends InputProcessorException
 {
     /**
-     * @var SearchConditionInterface
+     * @var SearchCondition
      */
     private $condition;
 
-    public function __construct(SearchConditionInterface $condition)
+    public function __construct(SearchCondition $condition)
     {
         parent::__construct('The search condition contains one or more invalid values.');
 
@@ -28,7 +28,7 @@ final class InvalidSearchConditionException extends InputProcessorException
     }
 
     /**
-     * @return SearchConditionInterface
+     * @return SearchCondition
      */
     public function getCondition()
     {
