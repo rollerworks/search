@@ -12,7 +12,6 @@
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -20,24 +19,24 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 interface FieldSetBuilderInterface
 {
     /**
-     * Add a field to the set-builder.
+     * Add a field to the builder.
      *
-     * Note. The possibility to pass a FieldTypeInterface as $type is deprecated
-     * since 1.0.0-beta5 and will be removed in 2.0
-     *
-     * Its possible to also pass in a FieldTypeInterface
-     *
-     * @param string|FieldConfigInterface $field   Name of search field or an actual search field
-     *                                             object
-     * @param string                      $type    Field type-name
-     * @param array                       $options Array of options for building the field
-     *
-     * @throws BadMethodCallException  When the FieldSet has been already turned into a FieldSet instance
-     * @throws UnexpectedTypeException
+     * @param string $name    Name of search field
+     * @param string $type    The FQCN of the type
+     * @param array  $options Array of options for building the field
      *
      * @return self
      */
-    public function add($field, $type = null, array $options = []);
+    public function add(string $name, string $type, array $options = []);
+
+    /**
+     * Set a field on the builder.
+     *
+     * @param FieldConfigInterface $field
+     *
+     * @return FieldSetBuilderInterface
+     */
+    public function set(FieldConfigInterface $field);
 
     /**
      * Remove a field from the set-builder.
@@ -46,7 +45,7 @@ interface FieldSetBuilderInterface
      *
      * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
      *
-     * @return FieldSetBuilderInterface
+     * @return self
      */
     public function remove($name);
 
@@ -73,5 +72,5 @@ interface FieldSetBuilderInterface
      *
      * @return FieldSet
      */
-    public function getFieldSet();
+    public function getFieldSet(string $name = null);
 }

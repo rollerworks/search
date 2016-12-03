@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\FieldSetRegistry;
 use Rollerworks\Component\Search\SearchCondition;
@@ -33,8 +34,10 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $fieldSet = new FieldSet('foobar');
-        $fieldSet->lockConfig();
+        $field = $this->createMock(FieldConfigInterface::class);
+        $field->expects(self::any())->method('getName')->willReturn('id');
+
+        $fieldSet = new FieldSet(['id' => $field], 'foobar');
 
         $this->fieldSetRegistry = new FieldSetRegistry();
         $this->fieldSetRegistry->add($fieldSet);

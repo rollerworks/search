@@ -40,12 +40,7 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $this->builder = new FieldSetBuilder('test', $factory->reveal());
-    }
-
-    public function testGetName()
-    {
-        $this->assertEquals('test', $this->builder->getName());
+        $this->builder = new FieldSetBuilder($factory->reveal());
     }
 
     public function testAddFields()
@@ -64,14 +59,14 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
     }
 
-    public function testAddedPreConfiguredField()
+    public function testSetPreConfiguredField()
     {
         $field = $this->prophesize(FieldConfigInterface::class);
         $field->getName()->willReturn('id');
 
         $field = $field->reveal();
 
-        $this->builder->add($field);
+        $this->builder->set($field);
 
         $this->assertTrue($this->builder->has('id'));
         $this->assertSame($field, $this->builder->get('id'));
@@ -93,37 +88,11 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         $this->builder->add('id', FooType::class, ['max' => 5000]);
         $this->builder->add('gid', FooType::class);
 
-        $fieldSet = $this->builder->getFieldSet();
+        $fieldSet = $this->builder->getFieldSet('test');
 
         $this->assertEquals('test', $fieldSet->getSetName());
         $this->assertFieldConfigurationEquals($fieldSet->get('id'), 'id', FooType::class, ['max' => 5000]);
         $this->assertFieldConfigurationEquals($fieldSet->get('gid'), 'gid', FooType::class);
-    }
-
-    /**
-     * @dataProvider getBuilderMethods
-     */
-    public function testCannotChangeCompletedBuilder($method, array $parameters)
-    {
-        $this->builder->add('id', FooType::class, ['max' => 5000]);
-        $this->builder->getFieldSet();
-
-        $this->setExpectedException(
-            'Rollerworks\Component\Search\Exception\BadMethodCallException',
-            'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
-        );
-
-        call_user_func_array([$this->builder, $method], $parameters);
-    }
-
-    public function getBuilderMethods()
-    {
-        return [
-            ['add', ['id', FooType::class]],
-            ['has', ['id']],
-            ['get', ['id']],
-            ['remove', ['id']],
-        ];
     }
 
     private function assertBuilderFieldConfigurationEquals(string $name, string $type, array $options = [])

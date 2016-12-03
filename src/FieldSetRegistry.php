@@ -48,10 +48,6 @@ final class FieldSetRegistry implements FieldSetRegistryInterface
             throw new InvalidArgumentException(sprintf('Unable to overwrite already registered FieldSet "%s".', $name));
         }
 
-        if (!$fieldSet->isConfigLocked()) {
-            throw new InvalidArgumentException(sprintf('Unable to register unlocked FieldSet "%s".', $name));
-        }
-
         $this->fieldSets[$name] = $fieldSet;
 
         return $this;

@@ -30,9 +30,7 @@ interface SearchFactoryInterface
     /**
      * Create a new FieldSetBuilderInterface instance.
      *
-     * @param string $name
-     *
      * @return FieldSetBuilderInterface
      */
-    public function createFieldSetBuilder($name);
+    public function createFieldSetBuilder();
 }

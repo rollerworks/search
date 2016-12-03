@@ -56,10 +56,8 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createFieldSetBuilder($name)
+    public function createFieldSetBuilder()
     {
-        $fieldSetBuilder = new FieldSetBuilder($name, $this);
-
-        return $fieldSetBuilder;
+        return new FieldSetBuilder($this);
     }
 }

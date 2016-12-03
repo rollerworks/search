@@ -39,11 +39,8 @@ final class FieldSetRegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function it_allows_adding_FieldSets()
     {
-        $fieldSet = new FieldSet('test');
-        $fieldSet->lockConfig();
-
-        $fieldSet2 = new FieldSet('test2');
-        $fieldSet2->lockConfig();
+        $fieldSet = new FieldSet([], 'test');
+        $fieldSet2 = new FieldSet([], 'test2');
 
         $this->fieldSetRegistry->add($fieldSet);
         $this->fieldSetRegistry->add($fieldSet2);
@@ -59,8 +56,7 @@ final class FieldSetRegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_whether_the_FieldSet_is_registered()
     {
-        $fieldSet = new FieldSet('test');
-        $fieldSet->lockConfig();
+        $fieldSet = new FieldSet([], 'test');
 
         $this->fieldSetRegistry->add($fieldSet);
 
@@ -73,8 +69,7 @@ final class FieldSetRegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function it_gets_a_registered_FieldSet()
     {
-        $fieldSet = new FieldSet('test');
-        $fieldSet->lockConfig();
+        $fieldSet = new FieldSet([], 'test');
 
         $this->fieldSetRegistry->add($fieldSet);
 
@@ -86,8 +81,7 @@ final class FieldSetRegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function it_throws_when_getting_an_unregistered_FieldSet()
     {
-        $fieldSet = new FieldSet('test');
-        $fieldSet->lockConfig();
+        $fieldSet = new FieldSet([], 'test');
 
         $this->fieldSetRegistry->add($fieldSet);
 
@@ -104,29 +98,13 @@ final class FieldSetRegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function it_disallows_overwriting_a_FieldSet()
     {
-        $fieldSet = new FieldSet('test');
-        $fieldSet->lockConfig();
+        $fieldSet = new FieldSet([], 'test');
 
         $this->fieldSetRegistry->add($fieldSet);
 
         $this->setExpectedException(
             'Rollerworks\Component\Search\Exception\InvalidArgumentException',
             'Unable to overwrite already registered FieldSet "test".'
-        );
-
-        $this->fieldSetRegistry->add($fieldSet);
-    }
-
-    /**
-     * @test
-     */
-    public function it_disallows_registering_unlocked_FieldSet()
-    {
-        $fieldSet = new FieldSet('test');
-
-        $this->setExpectedException(
-            'Rollerworks\Component\Search\Exception\InvalidArgumentException',
-            'Unable to register unlocked FieldSet "test".'
         );
 
         $this->fieldSetRegistry->add($fieldSet);
