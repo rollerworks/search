@@ -16,33 +16,16 @@ namespace Rollerworks\Component\Search\Value;
  */
 final class Compare implements ValueHolder
 {
-    /**
-     * Comparison operator.
-     *
-     * @var string
-     */
     private $operator;
-
-    /**
-     * @var mixed
-     */
     private $value;
-
-    /**
-     * @var string
-     */
-    private $viewValue;
 
     /**
      * Constructor.
      *
      * @param mixed  $value
      * @param string $operator
-     * @param mixed  $viewValue
-     *
-     * @throws \InvalidArgumentException When the operator is invalid
      */
-    public function __construct($value, $operator, $viewValue = null)
+    public function __construct($value, $operator)
     {
         if (!in_array($operator, ['>=', '<=', '<>', '<', '>'], true)) {
             throw new \InvalidArgumentException(
@@ -51,7 +34,6 @@ final class Compare implements ValueHolder
         }
 
         $this->value = $value;
-        $this->viewValue = (string) (null !== $viewValue ? $viewValue : $value);
         $this->operator = $operator;
     }
 
@@ -71,13 +53,5 @@ final class Compare implements ValueHolder
     public function getValue()
     {
         return $this->value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getViewValue()
-    {
-        return $this->viewValue;
     }
 }

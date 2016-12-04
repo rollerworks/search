@@ -20,44 +20,31 @@ class RangeTest extends \PHPUnit_Framework_TestCase
      */
     private $value;
 
-    public function setUp()
-    {
-        $this->value = new Range(10, 20);
-    }
-
     /** @test */
     public function it_has_a_lower_value()
     {
+        $this->value = new Range(10, 20);
         $this->assertEquals(10, $this->value->getLower());
     }
 
     /** @test */
     public function it_has_an_upper_value()
     {
+        $this->value = new Range(10, 20);
         $this->assertEquals(20, $this->value->getUpper());
-    }
-
-    /** @test */
-    public function it_has_a_lower_viewValue()
-    {
-        $this->assertEquals('10', $this->value->getViewLower());
-    }
-
-    /** @test */
-    public function it_has_an_upper_viewValue()
-    {
-        $this->assertEquals('20', $this->value->getViewUpper());
     }
 
     /** @test */
     public function its_lower_value_is_inclusive_by_default()
     {
+        $this->value = new Range(10, 20);
         $this->assertEquals(true, $this->value->isLowerInclusive());
     }
 
     /** @test */
     public function its_upper_value_should_be_inclusive_by_default()
     {
+        $this->value = new Range(10, 20);
         $this->assertEquals(true, $this->value->isUpperInclusive());
     }
 

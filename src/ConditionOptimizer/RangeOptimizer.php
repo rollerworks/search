@@ -255,9 +255,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
                         $range->getLower(),
                         $value->getUpper(),
                         $range->isLowerInclusive(),
-                        $range->isUpperInclusive(),
-                        $range->getViewLower(),
-                        $value->getViewUpper()
+                        $range->isUpperInclusive()
                     );
 
                     $valuesBag->remove($class, $i);

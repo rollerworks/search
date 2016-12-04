@@ -16,8 +16,6 @@ namespace Rollerworks\Component\Search\Value;
  */
 class Range implements ValueHolder
 {
-    private $viewLower;
-    private $viewUpper;
     private $lower;
     private $upper;
     private $inclusiveLower;
@@ -26,29 +24,21 @@ class Range implements ValueHolder
     /**
      * Constructor.
      *
-     * @param mixed  $lower
-     * @param mixed  $upper
-     * @param string $viewLower
-     * @param string $viewUpper
-     * @param bool   $inclusiveLower
-     * @param bool   $inclusiveUpper
+     * @param mixed $lower
+     * @param mixed $upper
+     * @param bool  $inclusiveLower
+     * @param bool  $inclusiveUpper
      */
     public function __construct(
         $lower,
         $upper,
-        $inclusiveLower = true,
-        $inclusiveUpper = true,
-        $viewLower = null,
-        $viewUpper = null
+        bool $inclusiveLower = true,
+        bool $inclusiveUpper = true
     ) {
         $this->lower = $lower;
         $this->upper = $upper;
-
-        $this->viewLower = (string) (null !== $viewLower ? $viewLower : $lower);
-        $this->viewUpper = (string) (null !== $viewUpper ? $viewUpper : $upper);
-
-        $this->inclusiveLower = (bool) $inclusiveLower;
-        $this->inclusiveUpper = (bool) $inclusiveUpper;
+        $this->inclusiveLower = $inclusiveLower;
+        $this->inclusiveUpper = $inclusiveUpper;
     }
 
     /**
@@ -89,21 +79,5 @@ class Range implements ValueHolder
     public function isUpperInclusive()
     {
         return $this->inclusiveUpper;
-    }
-
-    /**
-     * @return string
-     */
-    public function getViewLower()
-    {
-        return $this->viewLower;
-    }
-
-    /**
-     * @return string
-     */
-    public function getViewUpper()
-    {
-        return $this->viewUpper;
     }
 }

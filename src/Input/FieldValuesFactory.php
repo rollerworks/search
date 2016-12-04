@@ -115,17 +115,9 @@ final class FieldValuesFactory
         $this->assertAcceptsType('comparison');
 
         $path = 'comparisons['.count($this->valuesBag->get(Compare::class)).'].value';
+        $normValue = $this->viewToNorm($value, $path) ?? $value;
 
-        $normValue = $this->viewToNorm($value, $path);
-        $viewValue = $this->normToView($normValue, $path);
-
-        if (null === $normValue || null === $viewValue) {
-            $comparison = new Compare($value, $operator);
-        } else {
-            $comparison = new Compare($normValue, $operator, $viewValue);
-        }
-
-        $this->valuesBag->add($comparison);
+        $this->valuesBag->add(new Compare($normValue, $operator));
     }
 
     public function addPatterMatch($type, $patternMatch, $caseInsensitive)
@@ -162,17 +154,13 @@ final class FieldValuesFactory
         $class = $exclude ? ExcludedRange::class : Range::class;
 
         $lowerNorm = $this->viewToNorm($lower, $path.'.lower');
-        $lowerView = $this->normToView($lowerNorm, $path.'.lower');
-
         $upperNorm = $this->viewToNorm($upper, $path.'.upper');
-        $upperView = $this->normToView($upperNorm, $path.'.upper');
 
-        if (null === $lowerNorm || null === $lowerView || null === $upperNorm || null === $upperView) {
-            return new $class($lower, $upper, $lowerInclusive, $upperInclusive);
+        $range = new $class($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive);
+
+        if (null !== $lowerNorm && null !== $upperNorm) {
+            $this->validateRangeBounds($range, $path, $lower, $upper);
         }
-
-        $range = new $class($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive, $lowerView, $upperView);
-        $this->validateRangeBounds($range, $path);
 
         return $range;
     }
@@ -190,20 +178,17 @@ final class FieldValuesFactory
         $this->checkedValueType[$type] = true;
     }
 
-    private function validateRangeBounds(Range $range, $path)
+    private function validateRangeBounds(Range $range, $path, $lower, $upper)
     {
         if (!$this->config->getValueComparison()->isLower(
             $range->getLower(),
             $range->getUpper(),
             $this->config->getOptions()
         )) {
-            $lowerValue = $range->getViewLower();
-            $upperValue = $range->getViewUpper();
-
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';
             $params = [
-                '{{ lower }}' => strpos($lowerValue, ' ') ? "'".$lowerValue."'" : $lowerValue,
-                '{{ upper }}' => strpos($upperValue, ' ') ? "'".$upperValue."'" : $upperValue,
+                '{{ lower }}' => strpos($lower, ' ') ? "'".$lower."'" : $lower,
+                '{{ upper }}' => strpos($upper, ' ') ? "'".$upper."'" : $upper,
             ];
 
             $this->valuesBag->addError(
