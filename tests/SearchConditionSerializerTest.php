@@ -11,38 +11,36 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\FieldSetRegistry;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionSerializer;
+use Rollerworks\Component\Search\SearchFactoryInterface;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValuesError;
 
 final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var FieldSetRegistry
-     */
-    private $fieldSetRegistry;
-
-    /**
      * @var SearchConditionSerializer
      */
     private $serializer;
+
+    /** @var FieldSet */
+    private $fieldSet;
 
     protected function setUp()
     {
         $field = $this->createMock(FieldConfigInterface::class);
         $field->expects(self::any())->method('getName')->willReturn('id');
 
-        $fieldSet = new FieldSet(['id' => $field], 'foobar');
+        $this->fieldSet = new FieldSet(['id' => $field], 'foobar');
 
-        $this->fieldSetRegistry = new FieldSetRegistry();
-        $this->fieldSetRegistry->add($fieldSet);
+        $factory = $this->prophesize(SearchFactoryInterface::class);
+        $factory->createFieldSet('foobar')->willReturn($this->fieldSet);
 
-        $this->serializer = new SearchConditionSerializer($this->fieldSetRegistry);
+        $this->serializer = new SearchConditionSerializer($factory->reveal());
     }
 
     public function testSerializeUnSerialize()
@@ -57,7 +55,6 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         $valuesGroup0->addField('id', $fieldId);
 
         $fieldName = new ValuesBag();
-        $fieldName->addError(new ValuesError('singleValue[0]', 'system error'));
         $fieldName->addSimpleValue(10);
         $fieldName->addSimpleValue($date);
 
@@ -66,7 +63,7 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         $valuesGroup1->addField('name', $fieldName);
         $valuesGroup0->addGroup($valuesGroup1);
 
-        $searchCondition = new SearchCondition($this->fieldSetRegistry->get('foobar'), $valuesGroup0);
+        $searchCondition = new SearchCondition($this->fieldSet, $valuesGroup0);
 
         $serialized = serialize($this->serializer->serialize($searchCondition));
         $unSerialized = $this->serializer->unserialize(unserialize($serialized));
@@ -76,9 +73,9 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
 
     public function testUnSerializeMissingFields()
     {
-        $this->setExpectedException(
-             'Rollerworks\Component\Search\Exception\InvalidArgumentException',
-             'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
         );
 
         $this->serializer->unserialize(['foobar']);
@@ -86,9 +83,9 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
 
     public function testUnSerializeWrongField()
     {
-        $this->setExpectedException(
-             'Rollerworks\Component\Search\Exception\InvalidArgumentException',
-             'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
         );
 
         $this->serializer->unserialize(['foobar', 'foo' => 'bar']);
@@ -96,14 +93,16 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
 
     public function testUnSerializeInvalidData()
     {
-        // Disable errors to get the exception
-        error_reporting(0);
+        try {
+            // Disable errors to get the exception
+            error_reporting(0);
 
-        $this->setExpectedException(
-             'Rollerworks\Component\Search\Exception\InvalidArgumentException',
-             'Unable to unserialize invalid value.'
-        );
+            $this->expectException(InvalidArgumentException::class);
+            $this->expectExceptionMessage('Unable to unserialize invalid value.');
 
-        $this->serializer->unserialize(['foobar', '{i-am-invalid}']);
+            $this->serializer->unserialize(['foobar', '{i-am-invalid}']);
+        } finally {
+            error_reporting(1);
+        }
     }
 }

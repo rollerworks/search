@@ -37,6 +37,11 @@ class SearchFactoryBuilder
     private $typeExtensions = [];
 
     /**
+     * @var FieldSetRegistryInterface
+     */
+    private $fieldSetRegistry;
+
+    /**
      * Sets the factory for creating ResolvedFieldTypeInterface instances.
      *
      * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
@@ -154,6 +159,6 @@ class SearchFactoryBuilder
         $resolvedTypeFactory = $this->resolvedTypeFactory ?: new ResolvedFieldTypeFactory();
         $registry = new FieldRegistry($extensions, $resolvedTypeFactory);
 
-        return new SearchFactory($registry, $resolvedTypeFactory);
+        return new SearchFactory($registry, $this->fieldSetRegistry ?: new FieldSetRegistry());
     }
 }

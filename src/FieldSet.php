@@ -27,7 +27,7 @@ class FieldSet implements \IteratorAggregate
      * Constructor.
      *
      * @param FieldConfigInterface[] $fields
-     * @param string|null            $name FQCN of the FieldSet configurator
+     * @param string|null            $name   FQCN of the FieldSet configurator
      */
     public function __construct(array $fields, string $name = null)
     {

@@ -22,7 +22,7 @@ final class FieldSetTest extends \PHPUnit_Framework_TestCase
     {
         $fieldSet = new FieldSet([
             'id' => $idField = $this->createFieldMock('id'),
-            'name' => $nameField = $this->createFieldMock('name')
+            'name' => $nameField = $this->createFieldMock('name'),
         ]);
 
         $this->assertSame($idField, $fieldSet->get('id'));

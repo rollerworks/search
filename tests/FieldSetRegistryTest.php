@@ -11,102 +11,144 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
-use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\FieldSetConfiguratorInterface;
 use Rollerworks\Component\Search\FieldSetRegistry;
 
 final class FieldSetRegistryTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var FieldSetRegistry
-     */
-    private $fieldSetRegistry;
-
-    protected function setUp()
+    /** @test */
+    public function it_loads_configurator_lazily()
     {
-        $this->fieldSetRegistry = new FieldSetRegistry();
-    }
+        $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
+        $configurator2 = $this->createMock(FieldSetConfiguratorInterface::class);
 
-    /**
-     * @test
-     */
-    public function it_returns_an_empty_array_when_none_are_registered()
-    {
-        $this->assertEquals([], $this->fieldSetRegistry->all());
-    }
-
-    /**
-     * @test
-     */
-    public function it_allows_adding_FieldSets()
-    {
-        $fieldSet = new FieldSet([], 'test');
-        $fieldSet2 = new FieldSet([], 'test2');
-
-        $this->fieldSetRegistry->add($fieldSet);
-        $this->fieldSetRegistry->add($fieldSet2);
-
-        $this->assertEquals(
-            $this->fieldSetRegistry->all(),
-            [$fieldSet->getSetName() => $fieldSet, $fieldSet2->getSetName() => $fieldSet2]
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function it_returns_whether_the_FieldSet_is_registered()
-    {
-        $fieldSet = new FieldSet([], 'test');
-
-        $this->fieldSetRegistry->add($fieldSet);
-
-        $this->assertTrue($this->fieldSetRegistry->has('test'));
-        $this->assertFalse($this->fieldSetRegistry->has('test2'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_gets_a_registered_FieldSet()
-    {
-        $fieldSet = new FieldSet([], 'test');
-
-        $this->fieldSetRegistry->add($fieldSet);
-
-        $this->assertEquals($fieldSet, $this->fieldSetRegistry->get('test'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_when_getting_an_unregistered_FieldSet()
-    {
-        $fieldSet = new FieldSet([], 'test');
-
-        $this->fieldSetRegistry->add($fieldSet);
-
-        $this->setExpectedException(
-            'Rollerworks\Component\Search\Exception\InvalidArgumentException',
-            'Unable to get none registered FieldSet "test2".'
+        $registry = new FieldSetRegistry(
+            [
+                'set' => function () use ($configurator) {
+                    return $configurator;
+                },
+                'set2' => function () use ($configurator2) {
+                    return $configurator2;
+                },
+            ]
         );
 
-        $this->fieldSetRegistry->get('test2');
+        self::assertTrue($registry->hasConfigurator('set'));
+        self::assertTrue($registry->hasConfigurator('set2'));
+
+        self::assertSame($configurator, $registry->getConfigurator('set'));
+        self::assertSame($configurator2, $registry->getConfigurator('set2'));
+
+        // Ensure they still work, after initializing.
+        self::assertFalse($registry->hasConfigurator('set3'));
+        self::assertTrue($registry->hasConfigurator('set'));
+
+        self::assertSame($configurator, $registry->getConfigurator('set'));
+        self::assertSame($configurator2, $registry->getConfigurator('set2'));
     }
 
-    /**
-     * @test
-     */
-    public function it_disallows_overwriting_a_FieldSet()
+    /** @test */
+    public function it_loads_configurator_by_fqcn()
     {
-        $fieldSet = new FieldSet([], 'test');
+        $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
+        $configurator2 = $this->createMock(FieldSetConfiguratorInterface::class);
 
-        $this->fieldSetRegistry->add($fieldSet);
-
-        $this->setExpectedException(
-            'Rollerworks\Component\Search\Exception\InvalidArgumentException',
-            'Unable to overwrite already registered FieldSet "test".'
+        $registry = new FieldSetRegistry(
+            [
+                'set' => function () use ($configurator) {
+                    return $configurator;
+                },
+            ]
         );
 
-        $this->fieldSetRegistry->add($fieldSet);
+        $name = get_class($configurator2);
+
+        self::assertTrue($registry->hasConfigurator('set'));
+        self::assertTrue($registry->hasConfigurator($name));
+        self::assertFalse($registry->hasConfigurator('set2'));
+
+        self::assertSame($configurator, $registry->getConfigurator('set'));
+        self::assertSame($name, get_class($registry->getConfigurator($name)));
+    }
+
+    /** @test */
+    public function it_checks_registered_before_className()
+    {
+        $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
+        $configurator2 = $this->createMock(FieldSetConfiguratorInterface::class);
+        $name = get_class($configurator2);
+
+        $registry = new FieldSetRegistry(
+            [
+                'set' => function () use ($configurator) {
+                    return $configurator;
+                },
+                $name => function () use ($configurator2) {
+                    return $configurator2;
+                },
+            ]
+        );
+
+        $name = get_class($configurator2);
+
+        self::assertTrue($registry->hasConfigurator('set'));
+        self::assertTrue($registry->hasConfigurator($name));
+        self::assertFalse($registry->hasConfigurator('set2'));
+
+        self::assertSame($configurator, $registry->getConfigurator('set'));
+        self::assertSame($configurator2, $registry->getConfigurator($name));
+    }
+
+    /** @test */
+    public function it_errors_when_configurator_is_not_registered_and_class_is_a_configurator()
+    {
+        $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
+        $configurator2 = \stdClass::class;
+
+        $registry = new FieldSetRegistry(
+            [
+                'set' => function () use ($configurator) {
+                    return $configurator;
+                },
+            ]
+        );
+
+        self::assertTrue($registry->hasConfigurator('set'));
+        self::assertFalse($registry->hasConfigurator('set2'));
+        self::assertFalse($registry->hasConfigurator($configurator2));
+
+        self::assertSame($configurator, $registry->getConfigurator('set'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not load FieldSet configurator "stdClass"');
+
+        $registry->getConfigurator($configurator2);
+    }
+
+    /** @test */
+    public function it_errors_when_configurator_is_not_registered_class_does_not_exist()
+    {
+        $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
+        $configurator2 = 'f4394832948_foobar_cow';
+
+        $registry = new FieldSetRegistry(
+            [
+                'set' => function () use ($configurator) {
+                    return $configurator;
+                },
+            ]
+        );
+
+        self::assertTrue($registry->hasConfigurator('set'));
+        self::assertFalse($registry->hasConfigurator('set2'));
+        self::assertFalse($registry->hasConfigurator($configurator2));
+
+        self::assertSame($configurator, $registry->getConfigurator('set'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not load FieldSet configurator "f4394832948_foobar_cow"');
+
+        $registry->getConfigurator($configurator2);
     }
 }

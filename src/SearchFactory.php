@@ -16,26 +16,30 @@ namespace Rollerworks\Component\Search;
  */
 class SearchFactory implements SearchFactoryInterface
 {
-    /**
-     * @var FieldRegistryInterface
-     */
     private $registry;
+    private $fieldSetRegistry;
+    private $serializer;
 
-    /**
-     * @var ResolvedFieldTypeFactoryInterface
-     */
-    private $resolvedTypeFactory;
-
-    /**
-     * Constructor.
-     *
-     * @param FieldRegistryInterface            $registry
-     * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
-     */
-    public function __construct(FieldRegistryInterface $registry, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
+    public function __construct(FieldRegistryInterface $registry, FieldSetRegistryInterface $fieldSetRegistry)
     {
         $this->registry = $registry;
-        $this->resolvedTypeFactory = $resolvedTypeFactory;
+        $this->fieldSetRegistry = $fieldSetRegistry;
+        $this->serializer = new SearchConditionSerializer($this);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createFieldSet($configurator)
+    {
+        if (!$configurator instanceof FieldSetConfiguratorInterface) {
+            $configurator = $this->fieldSetRegistry->getConfigurator($configurator);
+        }
+
+        $builder = $this->createFieldSetBuilder();
+        $configurator->buildFieldSet($builder);
+
+        return $builder->getFieldSet(get_class($configurator));
     }
 
     /**
@@ -59,5 +63,13 @@ class SearchFactory implements SearchFactoryInterface
     public function createFieldSetBuilder()
     {
         return new FieldSetBuilder($this);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSerializer(): SearchConditionSerializer
+    {
+        return $this->serializer;
     }
 }
