@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by sstok at 2016-12-04T11:04:21Z
+
+Scrutinizer reports `FieldValuesFactory::normToView` as being unused but there are other changes planned that do use this method. So lets keep it for now.
