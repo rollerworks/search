@@ -144,7 +144,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $date2 = new \DateTime('2014-12-20 00:00:00 UTC');
 
         $values = new ValuesBag();
-        $values->add(new Range($date, $date2, true, true, $date->format('m-d-Y'), $date2->format('m-d-Y')));
+        $values->add(new Range($date, $date2, true, true));
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
@@ -179,7 +179,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $date = new \DateTime('2014-12-16 00:00:00 UTC');
 
         $values = new ValuesBag();
-        $values->add(new Compare($date, '>=', $date->format('m-d-Y')));
+        $values->add(new Compare($date, '>='));
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);

@@ -20,7 +20,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->value = new Compare(10, '>', '10');
+        $this->value = new Compare(10, '>');
     }
 
     /** @test */
@@ -40,7 +40,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
     {
         $value = new \DateTime();
 
-        $this->value = new Compare($value, '<', '2014-12-24');
+        $this->value = new Compare($value, '<');
 
         $this->assertEquals($value, $this->value->getValue());
         $this->assertEquals('<', $this->value->getOperator());
