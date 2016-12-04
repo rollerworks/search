@@ -11,9 +11,7 @@
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
  * The FieldSetBuilder helps with building a {@link FieldSet}.
@@ -22,18 +20,6 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  */
 class FieldSetBuilder implements FieldSetBuilderInterface
 {
-    /**
-     * @var bool
-     */
-    private $locked;
-
-    /**
-     * Name of the FieldSet.
-     *
-     * @var string
-     */
-    private $name;
-
     /**
      * @var FieldConfigInterface[]
      */
@@ -49,55 +35,27 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      */
     private $searchFactory;
 
-    /**
-     * Constructor.
-     *
-     * @param string                 $name          Name of the FieldSet
-     * @param SearchFactoryInterface $searchFactory Search factory for creating new search fields
-     */
-    public function __construct($name, SearchFactoryInterface $searchFactory)
+    public function __construct(SearchFactoryInterface $searchFactory)
     {
-        $this->name = $name;
         $this->searchFactory = $searchFactory;
-    }
-
-    /**
-     * Get the configured name for the FieldSet.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function add($field, $type = null, array $options = [])
+    public function set(FieldConfigInterface $field)
     {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
-            );
-        }
+        $this->fields[$field->getName()] = $field;
 
-        if (!$field instanceof FieldConfigInterface && !is_string($field)) {
-            throw new UnexpectedTypeException($field, 'string or Rollerworks\Component\Search\FieldConfigInterface');
-        }
+        return $this;
+    }
 
-        if ($field instanceof FieldConfigInterface) {
-            $this->fields[$field->getName()] = $field;
-            unset($this->unresolvedFields[$field->getName()]);
-
-            return $this;
-        }
-
-        if (!$type instanceof FieldTypeInterface && !is_string($type)) {
-            throw new UnexpectedTypeException($type, 'string or Rollerworks\Component\Search\FieldTypeInterface');
-        }
-
-        $this->unresolvedFields[$field] = [
+    /**
+     * {@inheritdoc}
+     */
+    public function add(string $name, string $type, array $options = [])
+    {
+        $this->unresolvedFields[$name] = [
             'type' => $type,
             'options' => $options,
         ];
@@ -110,12 +68,6 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      */
     public function remove($name)
     {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
-            );
-        }
-
         unset($this->fields[$name], $this->unresolvedFields[$name]);
 
         return $this;
@@ -126,12 +78,6 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      */
     public function has($name)
     {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
-            );
-        }
-
         if (isset($this->unresolvedFields[$name])) {
             return true;
         }
@@ -148,12 +94,6 @@ class FieldSetBuilder implements FieldSetBuilderInterface
      */
     public function get($name)
     {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
-            );
-        }
-
         if (isset($this->unresolvedFields[$name])) {
             $this->fields[$name] = $this->searchFactory->createField(
                 $name,
@@ -174,14 +114,8 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getFieldSet()
+    public function getFieldSet(string $setName = null)
     {
-        if ($this->locked) {
-            throw new BadMethodCallException(
-                'FieldSetBuilder methods cannot be accessed anymore once the builder is turned into a FieldSet instance.'
-            );
-        }
-
         foreach ($this->unresolvedFields as $name => $field) {
             $this->fields[$name] = $this->searchFactory->createField(
                 $name,
@@ -192,14 +126,6 @@ class FieldSetBuilder implements FieldSetBuilderInterface
             unset($this->unresolvedFields[$name]);
         }
 
-        $fieldSet = new FieldSet($this->name);
-
-        foreach ($this->fields as $name => $field) {
-            $fieldSet->set($name, $field);
-        }
-
-        $this->locked = true;
-
-        return $fieldSet;
+        return new FieldSet($this->fields, $setName);
     }
 }

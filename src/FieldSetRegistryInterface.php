@@ -16,40 +16,22 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 interface FieldSetRegistryInterface
 {
     /**
-     * Returns whether the registry has the requested FieldSet.
+     * Returns a FieldSetConfiguratorInterface by name.
      *
-     * @param string $name
+     * @param string $name The name of the FieldSet configurator
+     *
+     * @throws InvalidArgumentException if the configurator can not be retrieved
+     *
+     * @return FieldSetConfiguratorInterface
+     */
+    public function getConfigurator(string $name): FieldSetConfiguratorInterface;
+
+    /**
+     * Returns whether the given FieldSetConfigurator is supported.
+     *
+     * @param string $name The name of the FieldSet configurator
      *
      * @return bool
      */
-    public function has($name);
-
-    /**
-     * Get a FieldSet from the registry.
-     *
-     * @param string $name
-     *
-     * @throws InvalidArgumentException when the requested FieldSet
-     *                                  is not registered
-     *
-     * @return FieldSet
-     */
-    public function get($name);
-
-    /**
-     * Set a FieldSet on the registry.
-     *
-     * @param FieldSet $fieldSet
-     *
-     * @throws InvalidArgumentException when the FieldSet is
-     *                                  already registered
-     */
-    public function add(FieldSet $fieldSet);
-
-    /**
-     * Returns all the available FieldSet's.
-     *
-     * @return FieldSet[] as FieldSet-name => {FieldSet object}
-     */
-    public function all();
+    public function hasConfigurator(string $name): bool;
 }

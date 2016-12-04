@@ -34,4 +34,3 @@ install:
 
 script:
     - vendor/bin/phpunit --configuration phpunit.xml.dist --verbose
-    - vendor/bin/phpspec run

@@ -12,56 +12,90 @@
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 final class FieldSetRegistry implements FieldSetRegistryInterface
 {
-    private $fieldSets = [];
+    private $configurators;
+
+    /** @var \Closure[] */
+    private $lazyConfigurators = [];
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * Note you don't have to register the Configurator when it has no constructor
+     * or setter dependencies. You can simple use the FQCN of the configurator class,
+     * and will be initialized upon first usage.
+     *
+     * @param \Closure[] $configurators An array of lazy loading configurators.
+     *                                  The Closure when called it expected to return
+     *                                  the FieldSetConfiguratorInterface object
+     *
+     * @throws UnexpectedTypeException
      */
-    public function has($name)
+    public function __construct(array $configurators = [])
     {
-        return isset($this->fieldSets[$name]);
+        /** @var string $name */
+        foreach ($configurators as $name => $configurator) {
+            if (!$configurator instanceof \Closure) {
+                throw new UnexpectedTypeException($configurator, \Closure::class);
+            }
+
+            $this->lazyConfigurators[$name] = $configurator;
+        }
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a FieldSetConfigurator by name.
+     *
+     * @param string $name The name of the FieldSet configurator
+     *
+     * @throws InvalidArgumentException if the configurator can not be retrieved
+     *
+     * @return FieldSetConfiguratorInterface
      */
-    public function get($name)
+    public function getConfigurator(string $name): FieldSetConfiguratorInterface
     {
-        if (isset($this->fieldSets[$name])) {
-            return $this->fieldSets[$name];
+        if (!isset($this->configurators[$name])) {
+            $configurator = null;
+
+            if (isset($this->lazyConfigurators[$name])) {
+                $configurator = $this->lazyConfigurators[$name]();
+            }
+
+            if (!$configurator) {
+                // Support fully-qualified class names.
+                if (!class_exists($name) || !in_array(FieldSetConfiguratorInterface::class, class_implements($name), true)) {
+                    throw new InvalidArgumentException(sprintf('Could not load FieldSet configurator "%s"', $name));
+                }
+
+                $configurator = new $name();
+            }
+
+            $this->configurators[$name] = $configurator;
         }
 
-        throw new InvalidArgumentException(sprintf('Unable to get none registered FieldSet "%s".', $name));
+        return $this->configurators[$name];
     }
 
     /**
-     * {@inheritdoc}
+     * Returns whether the given FieldSetConfigurator is supported.
+     *
+     * @param string $name The name of the FieldSet configurator
+     *
+     * @return bool
      */
-    public function add(FieldSet $fieldSet)
+    public function hasConfigurator(string $name): bool
     {
-        $name = $fieldSet->getSetName();
-
-        if (isset($this->fieldSets[$name])) {
-            throw new InvalidArgumentException(sprintf('Unable to overwrite already registered FieldSet "%s".', $name));
+        if (isset($this->configurators[$name])) {
+            return true;
         }
 
-        if (!$fieldSet->isConfigLocked()) {
-            throw new InvalidArgumentException(sprintf('Unable to register unlocked FieldSet "%s".', $name));
+        if (isset($this->lazyConfigurators[$name])) {
+            return true;
         }
 
-        $this->fieldSets[$name] = $fieldSet;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function all()
-    {
-        return $this->fieldSets;
+        return class_exists($name) && in_array(FieldSetConfiguratorInterface::class, class_implements($name), true);
     }
 }

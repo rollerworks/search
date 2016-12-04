@@ -17,6 +17,17 @@ namespace Rollerworks\Component\Search;
 interface SearchFactoryInterface
 {
     /**
+     * Create a new FieldSet instance with the configurator name
+     * as FieldSet name.
+     *
+     * @param string|FieldSetConfiguratorInterface $configurator Configurator for building the FieldSet,
+     *                                                           a string will be resolved to a configurator
+     *
+     * @return FieldSet
+     */
+    public function createFieldSet($configurator);
+
+    /**
      * Create a new search field.
      *
      * @param string $name    Name of the field
@@ -30,9 +41,14 @@ interface SearchFactoryInterface
     /**
      * Create a new FieldSetBuilderInterface instance.
      *
-     * @param string $name
-     *
      * @return FieldSetBuilderInterface
      */
-    public function createFieldSetBuilder($name);
+    public function createFieldSetBuilder();
+
+    /**
+     * Get the SearchConditionSerializer.
+     *
+     * @return SearchConditionSerializer
+     */
+    public function getSerializer(): SearchConditionSerializer;
 }

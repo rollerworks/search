@@ -23,20 +23,11 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  */
 class SearchConditionSerializer
 {
-    /**
-     * @var FieldSetRegistry
-     */
-    private $fieldSetRegistry;
+    private $searchFactory;
 
-    /**
-     * Constructor.
-     *
-     * @param FieldSetRegistryInterface $fieldSetRegistry A FieldSet registry for loading
-     *                                                    FieldSet configurations
-     */
-    public function __construct(FieldSetRegistryInterface $fieldSetRegistry)
+    public function __construct(SearchFactoryInterface $searchFactory)
     {
-        $this->fieldSetRegistry = $fieldSetRegistry;
+        $this->searchFactory = $searchFactory;
     }
 
     /**
@@ -46,26 +37,15 @@ class SearchConditionSerializer
      * This is not done already because storing a serialized SearchCondition
      * in a php session would serialize the serialized result again.
      *
-     * @param SearchCondition $searchCondition
+     * Caution: The FieldSet must be loadable from the factory.
      *
-     * @throws InvalidArgumentException when the FieldSet of the search condition
-     *                                  is not registered in the FieldSetRegistry
+     * @param SearchCondition $searchCondition
      *
      * @return array [FieldSet-name, serialized ValuesGroup object]
      */
     public function serialize(SearchCondition $searchCondition)
     {
         $setName = $searchCondition->getFieldSet()->getSetName();
-
-        if (!$this->fieldSetRegistry->has($setName)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'FieldSet "%s" is not registered in the FieldSetRegistry, '.
-                    'you should register the FieldSet before serializing the search condition.',
-                    $setName
-                )
-            );
-        }
 
         return [$setName, serialize($searchCondition->getValuesGroup())];
     }
@@ -88,7 +68,7 @@ class SearchConditionSerializer
             );
         }
 
-        $fieldSet = $this->fieldSetRegistry->get($searchCondition[0]);
+        $fieldSet = $this->searchFactory->createFieldSet($searchCondition[0]);
 
         if (false === $group = unserialize($searchCondition[1])) {
             throw new InvalidArgumentException('Unable to unserialize invalid value.');

@@ -23,14 +23,14 @@ use Rollerworks\Component\Search\Extension\Core\CoreExtension;
  *
  * $searchFactory = Searches::createSearchFactory();
  *
- * $fieldSet = $searchFactory->createFieldSetBuilder('fieldset-name')
+ * $fieldSet = $searchFactory->createFieldSetBuilder()
  *     ->add('firstName', 'text')
  *     ->add('lastName', 'text')
  *     ->add('age', 'integer')
  *     ->add('gender', 'choice', array(
  *         'choices' => array('m' => 'Male', 'f' => 'Female'),
  *     ))
- *     ->getFieldSet();
+ *     ->getFieldSet('fieldset-name');
  * </code>
  *
  * You can also add custom extensions to the search factory:

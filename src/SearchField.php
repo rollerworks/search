@@ -71,12 +71,10 @@ class SearchField implements FieldConfigInterface
      */
     public function __construct($name, ResolvedFieldTypeInterface $type, array $options = [])
     {
-        FieldSet::validateName($name);
-
-        if ('' === $name) {
+        if ('' === $name || !preg_match('/^[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    'The name "%s" contains illegal characters. Names should start with a letter, digit or underscore '.
+                    'The name "%s" contains illegal characters. Name must start with a letter '.
                     'and only contain letters, digits, numbers, underscores ("_") and hyphens ("-").',
                     $name
                 )
