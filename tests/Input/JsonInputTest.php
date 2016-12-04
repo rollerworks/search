@@ -551,7 +551,6 @@ final class JsonInputTest extends InputProcessorTestCase
                                 'ranges' => [['lower' => 10, 'upper' => 20]],
                             ],
                         ],
-
                     ]
                 ),
                 'no-range-field',

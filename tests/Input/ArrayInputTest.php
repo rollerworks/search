@@ -497,7 +497,6 @@ final class ArrayInputTest extends InputProcessorTestCase
                             'ranges' => [['lower' => 10, 'upper' => 20]],
                         ],
                     ],
-
                 ],
                 'no-range-field',
                 'range',

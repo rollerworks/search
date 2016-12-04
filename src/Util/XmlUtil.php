@@ -19,7 +19,7 @@ namespace Rollerworks\Component\Search\Util;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Martin Hasoň <martin.hason@gmail.com>
  *
- * @link https://raw.github.com/symfony/symfony/master/src/Symfony/Component/Config/Util/XmlUtils.php
+ * @see https://raw.github.com/symfony/symfony/master/src/Symfony/Component/Config/Util/XmlUtils.php
  */
 final class XmlUtil
 {
