@@ -100,7 +100,7 @@ class NumberTypeTest extends SearchIntegrationTestCase
     public function testDefaultFormattingWithRounding()
     {
         $field = $this->getFactory()->createField('number', NumberType::class, [
-            'precision' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP
+            'precision' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP,
         ]);
 
         FieldTransformationAssertion::assertThat($field)
@@ -117,7 +117,7 @@ class NumberTypeTest extends SearchIntegrationTestCase
     public function testViewIsConfiguredProperly()
     {
         $field = $this->getFactory()->createField('number', NumberType::class, [
-            'precision' => 0, 'grouping' => false
+            'precision' => 0, 'grouping' => false,
         ]);
 
         $field->setDataLocked();

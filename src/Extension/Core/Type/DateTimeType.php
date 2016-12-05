@@ -19,7 +19,6 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\ValueComparisonInterface;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
