@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\Exporter\XmlExporter;
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\Input\XmlInput;
 use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
 final class XmlExporterTest extends SearchConditionExporterTestCase
 {

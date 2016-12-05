@@ -18,6 +18,7 @@ use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessorInterface;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 

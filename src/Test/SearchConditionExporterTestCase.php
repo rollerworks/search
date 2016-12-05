@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Exporter;
+namespace Rollerworks\Component\Search\Test;
 
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
