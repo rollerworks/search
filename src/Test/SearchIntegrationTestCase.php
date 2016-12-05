@@ -11,7 +11,6 @@
 
 namespace Rollerworks\Component\Search\Test;
 
-use Prophecy\Prophet;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldSetBuilder;
@@ -36,16 +35,10 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
      */
     private $searchFactory;
 
-    /**
-     * @var Prophet
-     */
-    protected $prophet;
-
     protected function setUp()
     {
         parent::setUp();
 
-        $this->prophet = new Prophet();
         $this->factoryBuilder = Searches::createSearchFactoryBuilder();
     }
 
@@ -63,15 +56,6 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
         }
 
         return $this->searchFactory;
-    }
-
-    protected function tearDown()
-    {
-        if ($this->prophet) {
-            $this->prophet->checkPredictions();
-        }
-
-        parent::tearDown();
     }
 
     protected function getExtensions()
