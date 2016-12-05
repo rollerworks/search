@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSetBuilder;
@@ -18,7 +19,7 @@ use Rollerworks\Component\Search\SearchField;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
-final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
+final class FieldSetBuilderTest extends TestCase
 {
     /**
      * @var FieldSetBuilder

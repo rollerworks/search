@@ -11,10 +11,11 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
-class MoneyToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
+class MoneyToLocalizedStringTransformerTest extends TestCase
 {
     /** @var MoneyToLocalizedStringTransformer */
     private $transformer;

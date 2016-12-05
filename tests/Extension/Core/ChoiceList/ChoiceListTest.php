@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\ChoiceList;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 
-final class ChoiceListTest extends \PHPUnit_Framework_TestCase
+final class ChoiceListTest extends TestCase
 {
     /**
      * @var ChoiceList

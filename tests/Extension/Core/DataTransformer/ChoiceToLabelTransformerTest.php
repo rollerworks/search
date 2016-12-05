@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer;
 
-final class ChoiceToLabelTransformerTest extends \PHPUnit_Framework_TestCase
+final class ChoiceToLabelTransformerTest extends TestCase
 {
     /**
      * @test

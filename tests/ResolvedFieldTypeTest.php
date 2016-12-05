@@ -11,12 +11,13 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\FieldTypeExtensionInterface;
 use Rollerworks\Component\Search\FieldTypeInterface;
 use Rollerworks\Component\Search\ResolvedFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
+final class ResolvedFieldTypeTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeInterface

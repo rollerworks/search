@@ -11,12 +11,13 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 
-final class ValuesBagTest extends \PHPUnit_Framework_TestCase
+final class ValuesBagTest extends TestCase
 {
     /**
      * @test

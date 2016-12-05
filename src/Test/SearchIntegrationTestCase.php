@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Test;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldSetBuilder;
@@ -23,7 +24,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 
-abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
+abstract class SearchIntegrationTestCase extends TestCase
 {
     /**
      * @var SearchFactoryBuilder

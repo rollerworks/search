@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldRegistry;
 use Rollerworks\Component\Search\FieldTypeExtensionInterface;
@@ -22,7 +23,7 @@ use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
-final class FieldRegistryTest extends \PHPUnit_Framework_TestCase
+final class FieldRegistryTest extends TestCase
 {
     /**
      * @test

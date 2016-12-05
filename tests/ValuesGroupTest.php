@@ -11,11 +11,12 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 use Rollerworks\Component\Search\ValuesError;
 
-final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
+final class ValuesGroupTest extends TestCase
 {
     /**
      * @test

@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Value;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\Range;
 
-class RangeTest extends \PHPUnit_Framework_TestCase
+class RangeTest extends TestCase
 {
     /**
      * @var Range

@@ -11,10 +11,11 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\SearchField;
 use Rollerworks\Component\Search\Value\ValuesBag;
 
-final class SearchFieldTest extends \PHPUnit_Framework_TestCase
+final class SearchFieldTest extends TestCase
 {
     /**
      * @var \Rollerworks\Component\Search\ResolvedFieldTypeInterface

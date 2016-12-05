@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\FieldSet;
 
-final class FieldSetTest extends \PHPUnit_Framework_TestCase
+final class FieldSetTest extends TestCase
 {
     /**
      * @test

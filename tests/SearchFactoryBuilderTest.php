@@ -11,10 +11,11 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
-class SearchFactoryBuilderTest extends \PHPUnit_Framework_TestCase
+class SearchFactoryBuilderTest extends TestCase
 {
     private $registry;
     private $type;
