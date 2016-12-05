@@ -181,14 +181,14 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
 
         // $field1 and $field2 use the same ChoiceList
-        $this->assertSame(
+        self::assertSame(
             $field->getOption('choice_list'),
             $field2->getOption('choice_list')
         );
 
         // $field3 doesn't, but used to use the same when using json_encode()
         // instead of serialize for the hashing algorithm
-        $this->assertNotSame(
+        self::assertNotSame(
             $field->getOption('choice_list'),
             $field3->getOption('choice_list')
         );

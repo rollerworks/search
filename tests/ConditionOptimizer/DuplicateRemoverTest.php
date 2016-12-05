@@ -52,7 +52,7 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
         $expectedValuesBag->addSimpleValue(3);
         $expectedValuesBag->addSimpleValue(4);
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -80,7 +80,7 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
             ->addExcludedSimpleValue(4)
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -121,7 +121,7 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
             ->add(new Range(1000, 3000, true, false))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     public function it_removes_all_duplicated_excludedRanges()
@@ -159,7 +159,7 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
             ->add(new ExcludedRange(1000, 3000, true, false))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -187,7 +187,7 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
             ->add(new Compare(20, '<'))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -222,6 +222,6 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
             ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS, true))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('name'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('name'));
     }
 }

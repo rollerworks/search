@@ -90,11 +90,11 @@ class DateTimeTypeTest extends SearchIntegrationTestCase
         $field->setDataLocked();
         $fieldView = $field->createView();
 
-        $this->assertArrayHasKey('timezone', $fieldView->vars);
-        $this->assertArrayHasKey('pattern', $fieldView->vars);
+        self::assertArrayHasKey('timezone', $fieldView->vars);
+        self::assertArrayHasKey('pattern', $fieldView->vars);
 
-        $this->assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
-        $this->assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
+        self::assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
+        self::assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
     }
 
     protected function setUp()

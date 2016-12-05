@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSetBuilder;
@@ -18,7 +19,7 @@ use Rollerworks\Component\Search\SearchField;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
-final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
+final class FieldSetBuilderTest extends TestCase
 {
     /**
      * @var FieldSetBuilder
@@ -48,15 +49,15 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
         $this->builder->add('id', FooType::class);
         $this->builder->add('name', BarType::class);
 
-        $this->assertTrue($this->builder->has('id'));
-        $this->assertTrue($this->builder->has('name'));
+        self::assertTrue($this->builder->has('id'));
+        self::assertTrue($this->builder->has('name'));
     }
 
     public function testAlwaysGivesAResolvedField()
     {
         $this->builder->add('id', FooType::class, ['foo' => 'bar']);
 
-        $this->assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
+        self::assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
     }
 
     public function testSetPreConfiguredField()
@@ -68,8 +69,8 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->builder->set($field);
 
-        $this->assertTrue($this->builder->has('id'));
-        $this->assertSame($field, $this->builder->get('id'));
+        self::assertTrue($this->builder->has('id'));
+        self::assertSame($field, $this->builder->get('id'));
     }
 
     public function testRemoveField()
@@ -79,8 +80,8 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->builder->remove('id');
 
-        $this->assertTrue($this->builder->has('name'));
-        $this->assertFalse($this->builder->has('id'));
+        self::assertTrue($this->builder->has('name'));
+        self::assertFalse($this->builder->has('id'));
     }
 
     public function testGetBuildFieldSet()
@@ -90,23 +91,23 @@ final class FieldSetBuilderTest extends \PHPUnit_Framework_TestCase
 
         $fieldSet = $this->builder->getFieldSet('test');
 
-        $this->assertEquals('test', $fieldSet->getSetName());
-        $this->assertFieldConfigurationEquals($fieldSet->get('id'), 'id', FooType::class, ['max' => 5000]);
-        $this->assertFieldConfigurationEquals($fieldSet->get('gid'), 'gid', FooType::class);
+        self::assertEquals('test', $fieldSet->getSetName());
+        self::assertFieldConfigurationEquals($fieldSet->get('id'), 'id', FooType::class, ['max' => 5000]);
+        self::assertFieldConfigurationEquals($fieldSet->get('gid'), 'gid', FooType::class);
     }
 
     private function assertBuilderFieldConfigurationEquals(string $name, string $type, array $options = [])
     {
-        $this->assertInstanceOf('Rollerworks\Component\Search\FieldConfigInterface', $field = $this->builder->get($name));
-        $this->assertEquals($name, $field->getName());
-        $this->assertInstanceOf($type, $field->getType()->getInnerType());
-        $this->assertEquals($options, $field->getOptions());
+        self::assertInstanceOf('Rollerworks\Component\Search\FieldConfigInterface', $field = $this->builder->get($name));
+        self::assertEquals($name, $field->getName());
+        self::assertInstanceOf($type, $field->getType()->getInnerType());
+        self::assertEquals($options, $field->getOptions());
     }
 
     private function assertFieldConfigurationEquals(FieldConfigInterface $field, string $name, string $type, array $options = [])
     {
-        $this->assertEquals($name, $field->getName());
-        $this->assertInstanceOf($type, $field->getType()->getInnerType());
-        $this->assertEquals($options, $field->getOptions());
+        self::assertEquals($name, $field->getName());
+        self::assertInstanceOf($type, $field->getType()->getInnerType());
+        self::assertEquals($options, $field->getOptions());
     }
 }

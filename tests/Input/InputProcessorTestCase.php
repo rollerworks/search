@@ -84,7 +84,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
 
-        $this->assertNull($processor->process($config, $input));
+        self::assertNull($processor->process($config, $input));
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -148,7 +148,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -221,7 +221,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -256,7 +256,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -299,7 +299,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addGroup($subGroup);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -327,7 +327,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -365,7 +365,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addGroup($subGroup2);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -397,7 +397,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addGroup($subGroup);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -439,10 +439,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 $this->fail('Expected a ValuesOverflowException but got: '.get_class($e));
             }
 
-            $this->assertEquals($fieldName, $e->getFieldName());
-            $this->assertEquals($max, $e->getMax());
-            $this->assertEquals($groupIdx, $e->getGroupIdx());
-            $this->assertEquals($nestingLevel, $e->getNestingLevel());
+            self::assertEquals($fieldName, $e->getFieldName());
+            self::assertEquals($max, $e->getMax());
+            self::assertEquals($groupIdx, $e->getGroupIdx());
+            self::assertEquals($nestingLevel, $e->getNestingLevel());
         }
     }
 
@@ -479,10 +479,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 $this->fail('Expected a GroupsOverflowException but got: '.get_class($e));
             }
 
-            $this->assertEquals($max, $e->getMax());
-            $this->assertEquals($count, $e->getCount());
-            $this->assertEquals($groupIdx, $e->getGroupIdx());
-            $this->assertEquals($nestingLevel, $e->getNestingLevel());
+            self::assertEquals($max, $e->getMax());
+            self::assertEquals($count, $e->getCount());
+            self::assertEquals($groupIdx, $e->getGroupIdx());
+            self::assertEquals($nestingLevel, $e->getNestingLevel());
         }
     }
 
@@ -515,9 +515,9 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 $this->fail('Expected a GroupsNestingException but got: '.get_class($e));
             }
 
-            $this->assertEquals(1, $e->getMaxNesting());
-            $this->assertEquals(0, $e->getGroupIdx());
-            $this->assertEquals(2, $e->getNestingLevel());
+            self::assertEquals(1, $e->getMaxNesting());
+            self::assertEquals(0, $e->getGroupIdx());
+            self::assertEquals(2, $e->getNestingLevel());
         }
     }
 
@@ -548,7 +548,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 $this->fail('Expected a UnknownFieldException but got: '.get_class($e));
             }
 
-            $this->assertEquals('field2', $e->getFieldName());
+            self::assertEquals('field2', $e->getFieldName());
         }
     }
 
@@ -587,8 +587,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 );
             }
 
-            $this->assertEquals($fieldName, $e->getFieldName());
-            $this->assertEquals($valueType, $e->getValueType());
+            self::assertEquals($fieldName, $e->getFieldName());
+            self::assertEquals($valueType, $e->getValueType());
         }
     }
 
@@ -620,18 +620,18 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 $this->fail('Expected a InvalidSearchConditionException but got: '.get_class($e));
             }
 
-            $this->assertCount(2, $e->getCondition()->getValuesGroup()->getField('id')->getErrors());
+            self::assertCount(2, $e->getCondition()->getValuesGroup()->getField('id')->getErrors());
             $errors = $e->getCondition()->getValuesGroup()->getField('id')->getErrors();
 
             $error = current($errors);
-            $this->assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
-            $this->assertEquals(['{{ lower }}' => '30', '{{ upper }}' => '10'], $error->getMessageParameters());
-            $this->assertEquals($exclusive ? 'excludedRanges[0]' : 'ranges[0]', $error->getSubPath());
+            self::assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
+            self::assertEquals(['{{ lower }}' => '30', '{{ upper }}' => '10'], $error->getMessageParameters());
+            self::assertEquals($exclusive ? 'excludedRanges[0]' : 'ranges[0]', $error->getSubPath());
 
             $error = next($errors);
-            $this->assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
-            $this->assertEquals(['{{ lower }}' => '40', '{{ upper }}' => '20'], $error->getMessageParameters());
-            $this->assertEquals($exclusive ? 'excludedRanges[2]' : 'ranges[2]', $error->getSubPath());
+            self::assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
+            self::assertEquals(['{{ lower }}' => '40', '{{ upper }}' => '20'], $error->getMessageParameters());
+            self::assertEquals($exclusive ? 'excludedRanges[2]' : 'ranges[2]', $error->getSubPath());
         }
     }
 
@@ -664,12 +664,12 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 $this->fail('Expected a InvalidSearchConditionException but got: '.get_class($e));
             }
 
-            $this->assertCount(count($errors), $e->getCondition()->getValuesGroup()->getField('id')->getErrors());
+            self::assertCount(count($errors), $e->getCondition()->getValuesGroup()->getField('id')->getErrors());
             $errorsList = $e->getCondition()->getValuesGroup()->getField($fieldName)->getErrors();
 
             foreach ($errors as $error) {
-                $this->assertArrayHasKey($error->getHash(), $errorsList);
-                $this->assertNotNull($errorsList[$error->getHash()]->getCause());
+                self::assertArrayHasKey($error->getHash(), $errorsList);
+                self::assertNotNull($errorsList[$error->getHash()]->getCause());
             }
         }
     }

@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldRegistry;
 use Rollerworks\Component\Search\FieldTypeExtensionInterface;
@@ -22,7 +23,7 @@ use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
-final class FieldRegistryTest extends \PHPUnit_Framework_TestCase
+final class FieldRegistryTest extends TestCase
 {
     /**
      * @test
@@ -40,15 +41,15 @@ final class FieldRegistryTest extends \PHPUnit_Framework_TestCase
 
         $registry = new FieldRegistry([$extension, $extension2], $resolvedFieldTypeFactory->reveal());
 
-        $this->assertTrue($registry->hasType(FooType::class));
-        $this->assertTrue($registry->hasType(FooType::class)); // once the type is loaded it's cached internally
-        $this->assertTrue($registry->hasType(FooSubType::class));
-        $this->assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
-        $this->assertFalse($registry->hasType('text'));
+        self::assertTrue($registry->hasType(FooType::class));
+        self::assertTrue($registry->hasType(FooType::class)); // once the type is loaded it's cached internally
+        self::assertTrue($registry->hasType(FooSubType::class));
+        self::assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
+        self::assertFalse($registry->hasType('text'));
 
-        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
-        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
-        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
+        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
+        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
+        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
     }
 
     /**
@@ -76,14 +77,14 @@ final class FieldRegistryTest extends \PHPUnit_Framework_TestCase
 
         $registry = new FieldRegistry([$extension, $extension2], $resolvedFieldTypeFactory->reveal());
 
-        $this->assertTrue($registry->hasType(FooType::class));
-        $this->assertTrue($registry->hasType(FooSubType::class));
-        $this->assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
-        $this->assertFalse($registry->hasType('text'));
+        self::assertTrue($registry->hasType(FooType::class));
+        self::assertTrue($registry->hasType(FooSubType::class));
+        self::assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
+        self::assertFalse($registry->hasType('text'));
 
-        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
-        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
-        $this->assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
+        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
+        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
+        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
     }
 
     private function createResolvedTypeMock(FieldTypeInterface $type): ResolvedFieldTypeInterface

@@ -11,10 +11,11 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
-class MoneyToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
+class MoneyToLocalizedStringTransformerTest extends TestCase
 {
     /** @var MoneyToLocalizedStringTransformer */
     private $transformer;
@@ -31,8 +32,8 @@ class MoneyToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
 
         $value = new MoneyValue('EUR', '1.23');
 
-        $this->assertEquals('€ 1,23', $this->transformer->transform($value));
-        $this->assertEquals(new MoneyValue('EUR', '1.23'), $this->transformer->reverseTransform('€ 1,23'));
+        self::assertEquals('€ 1,23', $this->transformer->transform($value));
+        self::assertEquals(new MoneyValue('EUR', '1.23'), $this->transformer->reverseTransform('€ 1,23'));
     }
 
     /** @test */
@@ -40,6 +41,6 @@ class MoneyToLocalizedStringTransformerTest extends \PHPUnit_Framework_TestCase
     {
         \Locale::setDefault('de_AT');
 
-        $this->assertEquals(new MoneyValue('EUR', '1.23'), $this->transformer->reverseTransform('1,23'));
+        self::assertEquals(new MoneyValue('EUR', '1.23'), $this->transformer->reverseTransform('1,23'));
     }
 }

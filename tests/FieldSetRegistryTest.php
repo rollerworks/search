@@ -11,11 +11,12 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\FieldSetConfiguratorInterface;
 use Rollerworks\Component\Search\FieldSetRegistry;
 
-final class FieldSetRegistryTest extends \PHPUnit_Framework_TestCase
+final class FieldSetRegistryTest extends TestCase
 {
     /** @test */
     public function it_loads_configurator_lazily()

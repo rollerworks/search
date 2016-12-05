@@ -11,12 +11,13 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\FieldTypeExtensionInterface;
 use Rollerworks\Component\Search\FieldTypeInterface;
 use Rollerworks\Component\Search\ResolvedFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
+final class ResolvedFieldTypeTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeInterface
@@ -71,7 +72,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
 
         $assertIndexAndAddOption = function ($index, $option, $default) use (&$i) {
             return function (OptionsResolver $resolver) use (&$i, $index, $option, $default) {
-                $this->assertEquals($index, $i, 'Executed at index '.$index);
+                self::assertEquals($index, $i, 'Executed at index '.$index);
 
                 ++$i;
 
@@ -103,7 +104,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
 
         $resolver = $this->resolvedType->getOptionsResolver();
 
-        $this->assertEquals($resolvedOptions, $resolver->resolve($givenOptions));
+        self::assertEquals($resolvedOptions, $resolver->resolve($givenOptions));
     }
 
     /**
@@ -131,8 +132,8 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
 
         $field = $this->resolvedType->createField('name', $givenOptions);
 
-        $this->assertSame($this->resolvedType, $field->getType());
-        $this->assertSame($resolvedOptions, $field->getOptions());
+        self::assertSame($this->resolvedType, $field->getType());
+        self::assertSame($resolvedOptions, $field->getOptions());
     }
 
     /**
@@ -144,7 +145,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
 
         $assertIndex = function ($index) use (&$i) {
             return function () use (&$i, $index) {
-                $this->assertEquals($index, $i, 'Executed at index '.$index);
+                self::assertEquals($index, $i, 'Executed at index '.$index);
 
                 ++$i;
             };
@@ -184,7 +185,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
         $field = $this->createFieldMock();
         $view = $this->resolvedType->createFieldView($field);
 
-        $this->assertInstanceOf('Rollerworks\Component\Search\SearchFieldView', $view);
+        self::assertInstanceOf('Rollerworks\Component\Search\SearchFieldView', $view);
     }
 
     public function testBuildView()
@@ -197,7 +198,7 @@ final class ResolvedFieldTypeTest extends \PHPUnit_Framework_TestCase
 
         $assertIndex = function ($index) use (&$i) {
             return function () use (&$i, $index) {
-                $this->assertEquals($index, $i, 'Executed at index '.$index);
+                self::assertEquals($index, $i, 'Executed at index '.$index);
 
                 ++$i;
             };

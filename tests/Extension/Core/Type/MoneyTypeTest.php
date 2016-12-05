@@ -101,14 +101,14 @@ class MoneyTypeTest extends SearchIntegrationTestCase
         $field->setDataLocked();
         $fieldView = $field->createView();
 
-        $this->assertArrayHasKey('precision', $fieldView->vars);
-        $this->assertArrayHasKey('grouping', $fieldView->vars);
-        $this->assertArrayHasKey('divisor', $fieldView->vars);
-        $this->assertArrayHasKey('default_currency', $fieldView->vars);
+        self::assertArrayHasKey('precision', $fieldView->vars);
+        self::assertArrayHasKey('grouping', $fieldView->vars);
+        self::assertArrayHasKey('divisor', $fieldView->vars);
+        self::assertArrayHasKey('default_currency', $fieldView->vars);
 
-        $this->assertEquals(2, $fieldView->vars['precision']);
-        $this->assertFalse($fieldView->vars['grouping']);
-        $this->assertEquals(1, $fieldView->vars['divisor']);
-        $this->assertEquals('EUR', $fieldView->vars['default_currency']);
+        self::assertEquals(2, $fieldView->vars['precision']);
+        self::assertFalse($fieldView->vars['grouping']);
+        self::assertEquals(1, $fieldView->vars['divisor']);
+        self::assertEquals('EUR', $fieldView->vars['default_currency']);
     }
 }

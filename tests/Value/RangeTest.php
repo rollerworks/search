@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Value;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\Range;
 
-class RangeTest extends \PHPUnit_Framework_TestCase
+class RangeTest extends TestCase
 {
     /**
      * @var Range
@@ -24,41 +25,41 @@ class RangeTest extends \PHPUnit_Framework_TestCase
     public function it_has_a_lower_value()
     {
         $this->value = new Range(10, 20);
-        $this->assertEquals(10, $this->value->getLower());
+        self::assertEquals(10, $this->value->getLower());
     }
 
     /** @test */
     public function it_has_an_upper_value()
     {
         $this->value = new Range(10, 20);
-        $this->assertEquals(20, $this->value->getUpper());
+        self::assertEquals(20, $this->value->getUpper());
     }
 
     /** @test */
     public function its_lower_value_is_inclusive_by_default()
     {
         $this->value = new Range(10, 20);
-        $this->assertEquals(true, $this->value->isLowerInclusive());
+        self::assertEquals(true, $this->value->isLowerInclusive());
     }
 
     /** @test */
     public function its_upper_value_should_be_inclusive_by_default()
     {
         $this->value = new Range(10, 20);
-        $this->assertEquals(true, $this->value->isUpperInclusive());
+        self::assertEquals(true, $this->value->isUpperInclusive());
     }
 
     /** @test */
     public function it_allows_exclusive_lower_value()
     {
         $this->value = new Range(10, 20, false);
-        $this->assertEquals(false, $this->value->isLowerInclusive());
+        self::assertEquals(false, $this->value->isLowerInclusive());
     }
 
     /** @test */
     public function it_allows_exclusive_upper_value()
     {
         $this->value = new Range(10, 20, true, false);
-        $this->assertEquals(false, $this->value->isUpperInclusive());
+        self::assertEquals(false, $this->value->isUpperInclusive());
     }
 }

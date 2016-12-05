@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\Exporter\ArrayExporter;
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\Input\ArrayInput;
 use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
 final class ArrayExporterTest extends SearchConditionExporterTestCase
 {

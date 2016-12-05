@@ -57,7 +57,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, $input));
+        self::assertEquals($condition, $processor->process($config, $input));
     }
 
     /**
@@ -81,8 +81,8 @@ final class FilterQueryInputTest extends InputProcessorTestCase
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
 
-        $this->assertEquals($condition, $processor->process($config, 'field-1: value, value2;'));
-        $this->assertEquals($condition, $processor->process($config, 'field-1: value, value2'));
+        self::assertEquals($condition, $processor->process($config, 'field-1: value, value2;'));
+        self::assertEquals($condition, $processor->process($config, 'field-1: value, value2'));
     }
 
     /**
@@ -102,7 +102,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertEquals($condition, $processor->process($config, 'name: "value", "value""2", "!foo";'));
+        self::assertEquals($condition, $processor->process($config, 'name: "value", "value""2", "!foo";'));
     }
 
     public function testPatternMatchLexerNoEndLessLoop()
@@ -145,11 +145,11 @@ final class FilterQueryInputTest extends InputProcessorTestCase
                 throw $e;
             }
 
-            $this->assertEquals($message, $e->getMessage());
-            $this->assertEquals($col, $e->getCol());
-            $this->assertEquals($line, $e->getSyntaxLine());
-            $this->assertEquals($expected, $e->getExpected());
-            $this->assertEquals($got, $e->getInstead());
+            self::assertEquals($message, $e->getMessage());
+            self::assertEquals($col, $e->getCol());
+            self::assertEquals($line, $e->getSyntaxLine());
+            self::assertEquals($expected, $e->getExpected());
+            self::assertEquals($got, $e->getInstead());
         }
     }
 

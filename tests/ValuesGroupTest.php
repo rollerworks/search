@@ -11,11 +11,12 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 use Rollerworks\Component\Search\ValuesError;
 
-final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
+final class ValuesGroupTest extends TestCase
 {
     /**
      * @test
@@ -24,8 +25,8 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
     {
         $valuesGroup = new ValuesGroup();
 
-        $this->assertEquals([], $valuesGroup->getFields());
-        $this->assertEquals(false, $valuesGroup->hasField('user'));
+        self::assertEquals([], $valuesGroup->getFields());
+        self::assertEquals(false, $valuesGroup->hasField('user'));
     }
 
     /**
@@ -41,9 +42,9 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
         $valuesGroup->addField('user', $field);
         $valuesGroup->addField('date', $field2);
 
-        $this->assertEquals(['user' => $field, 'date' => $field2], $valuesGroup->getFields());
-        $this->assertEquals(true, $valuesGroup->hasField('user'));
-        $this->assertEquals(false, $valuesGroup->hasField('foo'));
+        self::assertEquals(['user' => $field, 'date' => $field2], $valuesGroup->getFields());
+        self::assertEquals(true, $valuesGroup->hasField('user'));
+        self::assertEquals(false, $valuesGroup->hasField('foo'));
     }
 
     /**
@@ -61,7 +62,7 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
 
         $valuesGroup->removeField('user');
 
-        $this->assertEquals(['date' => $field2], $valuesGroup->getFields());
+        self::assertEquals(['date' => $field2], $valuesGroup->getFields());
     }
 
     /**
@@ -71,8 +72,8 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
     {
         $valuesGroup = new ValuesGroup();
 
-        $this->assertEquals(false, $valuesGroup->hasGroups());
-        $this->assertEquals([], $valuesGroup->getGroups());
+        self::assertEquals(false, $valuesGroup->hasGroups());
+        self::assertEquals([], $valuesGroup->getGroups());
     }
 
     /**
@@ -88,8 +89,8 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
         $valuesGroup->addGroup($group);
         $valuesGroup->addGroup($group2);
 
-        $this->assertEquals(true, $valuesGroup->hasGroups());
-        $this->assertEquals([$group, $group2], $valuesGroup->getGroups());
+        self::assertEquals(true, $valuesGroup->hasGroups());
+        self::assertEquals([$group, $group2], $valuesGroup->getGroups());
     }
 
     /**
@@ -107,8 +108,8 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
 
         $valuesGroup->removeGroup(0);
 
-        $this->assertEquals(true, $valuesGroup->hasGroups());
-        $this->assertEquals([1 => $group2], $valuesGroup->getGroups());
+        self::assertEquals(true, $valuesGroup->hasGroups());
+        self::assertEquals([1 => $group2], $valuesGroup->getGroups());
     }
 
     /**
@@ -124,8 +125,8 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
         $valuesGroup->addGroup($group);
         $valuesGroup->addGroup($group2);
 
-        $this->assertEquals($group, $valuesGroup->getGroup(0));
-        $this->assertEquals($group2, $valuesGroup->getGroup(1));
+        self::assertEquals($group, $valuesGroup->getGroup(0));
+        self::assertEquals($group2, $valuesGroup->getGroup(1));
     }
 
     /**
@@ -135,8 +136,8 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
     {
         $valuesGroup = new ValuesGroup();
 
-        $this->assertEquals(false, $valuesGroup->hasErrors());
-        $this->assertEquals(false, $valuesGroup->hasErrors(true));
+        self::assertEquals(false, $valuesGroup->hasErrors());
+        self::assertEquals(false, $valuesGroup->hasErrors(true));
     }
 
     /**
@@ -150,8 +151,8 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
         $field->addError(new ValuesError('value', 'whoops'));
         $valuesGroup->addField('user', $field);
 
-        $this->assertEquals(true, $valuesGroup->hasErrors());
-        $this->assertEquals(true, $valuesGroup->hasErrors(true));
+        self::assertEquals(true, $valuesGroup->hasErrors());
+        self::assertEquals(true, $valuesGroup->hasErrors(true));
     }
 
     /**
@@ -168,7 +169,7 @@ final class ValuesGroupTest extends \PHPUnit_Framework_TestCase
         $group->addField('user', $field);
         $valuesGroup->addGroup($group);
 
-        $this->assertEquals(false, $valuesGroup->hasErrors()); // current level has no errors
-        $this->assertEquals(true, $valuesGroup->hasErrors(true)); // deeper level with errors
+        self::assertEquals(false, $valuesGroup->hasErrors()); // current level has no errors
+        self::assertEquals(true, $valuesGroup->hasErrors(true)); // deeper level with errors
     }
 }

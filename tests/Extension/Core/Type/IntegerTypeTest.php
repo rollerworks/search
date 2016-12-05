@@ -63,10 +63,10 @@ class IntegerTypeTest extends SearchIntegrationTestCase
         $field->setDataLocked();
         $fieldView = $field->createView();
 
-        $this->assertArrayHasKey('precision', $fieldView->vars);
-        $this->assertArrayHasKey('grouping', $fieldView->vars);
+        self::assertArrayHasKey('precision', $fieldView->vars);
+        self::assertArrayHasKey('grouping', $fieldView->vars);
 
-        $this->assertEquals(2, $fieldView->vars['precision']);
-        $this->assertFalse($fieldView->vars['grouping']);
+        self::assertEquals(2, $fieldView->vars['precision']);
+        self::assertFalse($fieldView->vars['grouping']);
     }
 }

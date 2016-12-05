@@ -11,10 +11,11 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchFactory;
 
-final class SearchFactoryTest extends \PHPUnit_Framework_TestCase
+final class SearchFactoryTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -72,7 +73,7 @@ final class SearchFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('buildType')
             ->with($this->fieldConfig, $resolvedOptions);
 
-        $this->assertSame($this->fieldConfig, $this->factory->createField('name', TextType::class, $options));
+        self::assertSame($this->fieldConfig, $this->factory->createField('name', TextType::class, $options));
     }
 
     private function getMockResolvedType()

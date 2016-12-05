@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\ValueComparison;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\ValueComparison\DateValueComparison;
 
-class DateValueComparisonSpec extends \PHPUnit_Framework_TestCase
+class DateValueComparisonSpec extends TestCase
 {
     /** @var DateValueComparison */
     private $comparison;
@@ -29,7 +30,7 @@ class DateValueComparisonSpec extends \PHPUnit_Framework_TestCase
         $date1 = new \DateTime('2013-09-21 12:46:00');
         $date2 = new \DateTime('2013-09-21 12:46:00');
 
-        $this->assertTrue($this->comparison->isEqual($date1, $date2, []));
+        self::assertTrue($this->comparison->isEqual($date1, $date2, []));
     }
 
     /** @test */
@@ -38,12 +39,12 @@ class DateValueComparisonSpec extends \PHPUnit_Framework_TestCase
         $date1 = new \DateTime('2013-09-21 12:46:00');
         $date2 = new \DateTime('2013-09-22 12:46:00');
 
-        $this->assertFalse($this->comparison->isEqual($date1, $date2, []));
+        self::assertFalse($this->comparison->isEqual($date1, $date2, []));
 
         $date1 = new \DateTime('2013-09-21 12:46:00');
         $date2 = new \DateTime('2013-09-21 12:40:00');
 
-        $this->assertFalse($this->comparison->isEqual($date1, $date2, []));
+        self::assertFalse($this->comparison->isEqual($date1, $date2, []));
     }
 
     /** @test */
@@ -52,7 +53,7 @@ class DateValueComparisonSpec extends \PHPUnit_Framework_TestCase
         $date1 = new \DateTime('2013-09-23 12:46:00');
         $date2 = new \DateTime('2013-09-21 12:46:00');
 
-        $this->assertTrue($this->comparison->isHigher($date1, $date2, []));
+        self::assertTrue($this->comparison->isHigher($date1, $date2, []));
     }
 
     /** @test */
@@ -61,7 +62,7 @@ class DateValueComparisonSpec extends \PHPUnit_Framework_TestCase
         $date1 = new \DateTime('2013-09-21 12:46:00');
         $date2 = new \DateTime('2013-09-23 12:46:00');
 
-        $this->assertTrue($this->comparison->isLower($date1, $date2, []));
+        self::assertTrue($this->comparison->isLower($date1, $date2, []));
     }
 
     /** @test */
@@ -69,6 +70,6 @@ class DateValueComparisonSpec extends \PHPUnit_Framework_TestCase
     {
         $date = new \DateTime('2013-09-21 12:46:00');
 
-        $this->assertEquals(new \DateTime('2013-09-22 12:46:00'), $this->comparison->getIncrementedValue($date, []));
+        self::assertEquals(new \DateTime('2013-09-22 12:46:00'), $this->comparison->getIncrementedValue($date, []));
     }
 }

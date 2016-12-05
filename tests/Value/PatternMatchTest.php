@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Value;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
-class PatternMatchTest extends \PHPUnit_Framework_TestCase
+class PatternMatchTest extends TestCase
 {
     /** @var PatternMatch */
     private $value;
@@ -26,26 +27,26 @@ class PatternMatchTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_has_a_value()
     {
-        $this->assertEquals('foo', $this->value->getValue());
+        self::assertEquals('foo', $this->value->getValue());
     }
 
     /** @test */
     public function it_has_a_patternType()
     {
-        $this->assertEquals(PatternMatch::PATTERN_CONTAINS, $this->value->getType());
+        self::assertEquals(PatternMatch::PATTERN_CONTAINS, $this->value->getType());
     }
 
     /** @test */
     public function it_is_case_sensitive_by_default()
     {
-        $this->assertEquals(false, $this->value->isCaseInsensitive());
+        self::assertEquals(false, $this->value->isCaseInsensitive());
     }
 
     /** @test */
     public function it_allows_case_insensitive()
     {
         $this->value = new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS, true);
-        $this->assertEquals(true, $this->value->isCaseInsensitive());
+        self::assertEquals(true, $this->value->isCaseInsensitive());
     }
 
     /** @test */
@@ -60,6 +61,6 @@ class PatternMatchTest extends \PHPUnit_Framework_TestCase
     public function it_accepts_a_patternType_as_string()
     {
         $this->value = new PatternMatch('foo', 'CONTAINS');
-        $this->assertEquals(PatternMatch::PATTERN_CONTAINS, $this->value->getType());
+        self::assertEquals(PatternMatch::PATTERN_CONTAINS, $this->value->getType());
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
@@ -20,7 +21,7 @@ use Rollerworks\Component\Search\SearchFactoryInterface;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
+final class SearchConditionSerializerTest extends TestCase
 {
     /**
      * @var SearchConditionSerializer
@@ -68,7 +69,7 @@ final class SearchConditionSerializerTest extends \PHPUnit_Framework_TestCase
         $serialized = serialize($this->serializer->serialize($searchCondition));
         $unSerialized = $this->serializer->unserialize(unserialize($serialized));
 
-        $this->assertEquals($searchCondition, $unSerialized);
+        self::assertEquals($searchCondition, $unSerialized);
     }
 
     public function testUnSerializeMissingFields()

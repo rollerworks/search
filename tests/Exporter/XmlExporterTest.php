@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\Exporter\XmlExporter;
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\Input\XmlInput;
 use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
 final class XmlExporterTest extends SearchConditionExporterTestCase
 {
@@ -274,9 +275,9 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
     protected function assertExportEquals($expected, $actual)
     {
         if (!empty($expected) xor !empty($actual)) {
-            $this->assertEquals($expected, $actual);
+            self::assertEquals($expected, $actual);
         } else {
-            $this->assertXmlStringEqualsXmlString($expected, $actual);
+            self::assertXmlStringEqualsXmlString($expected, $actual);
         }
     }
 

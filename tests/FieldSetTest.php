@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\FieldSet;
 
-final class FieldSetTest extends \PHPUnit_Framework_TestCase
+final class FieldSetTest extends TestCase
 {
     /**
      * @test
@@ -25,12 +26,12 @@ final class FieldSetTest extends \PHPUnit_Framework_TestCase
             'name' => $nameField = $this->createFieldMock('name'),
         ]);
 
-        $this->assertSame($idField, $fieldSet->get('id'));
-        $this->assertSame($nameField, $fieldSet->get('name'));
+        self::assertSame($idField, $fieldSet->get('id'));
+        self::assertSame($nameField, $fieldSet->get('name'));
 
-        $this->assertTrue($fieldSet->has('id'));
-        $this->assertTrue($fieldSet->has('name'));
-        $this->assertFalse($fieldSet->has('foo'));
+        self::assertTrue($fieldSet->has('id'));
+        self::assertTrue($fieldSet->has('name'));
+        self::assertFalse($fieldSet->has('foo'));
     }
 
     /**

@@ -15,6 +15,7 @@ use Rollerworks\Component\Search\Exporter\JsonExporter;
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\Input\JsonInput;
 use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
 final class JsonExporterTest extends SearchConditionExporterTestCase
 {

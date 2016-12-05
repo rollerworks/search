@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Test;
 
-use Prophecy\Prophet;
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldSetBuilder;
@@ -24,7 +24,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 
-abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
+abstract class SearchIntegrationTestCase extends TestCase
 {
     /**
      * @var SearchFactoryBuilder
@@ -36,16 +36,10 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
      */
     private $searchFactory;
 
-    /**
-     * @var Prophet
-     */
-    protected $prophet;
-
     protected function setUp()
     {
         parent::setUp();
 
-        $this->prophet = new Prophet();
         $this->factoryBuilder = Searches::createSearchFactoryBuilder();
     }
 
@@ -63,15 +57,6 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
         }
 
         return $this->searchFactory;
-    }
-
-    protected function tearDown()
-    {
-        if ($this->prophet) {
-            $this->prophet->checkPredictions();
-        }
-
-        parent::tearDown();
     }
 
     protected function getExtensions()
@@ -103,7 +88,7 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
-    protected function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
+    protected static function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
     {
         $expectedArray = [
             'single' => $expected->getSimpleValues(),
@@ -124,6 +109,6 @@ abstract class SearchIntegrationTestCase extends \PHPUnit_Framework_TestCase
             'matchers' => array_merge([], $result->get(PatternMatch::class)),
         ];
 
-        $this->assertEquals($expectedArray, $resultArray);
+        self::assertEquals($expectedArray, $resultArray);
     }
 }

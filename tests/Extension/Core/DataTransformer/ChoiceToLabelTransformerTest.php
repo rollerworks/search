@@ -11,9 +11,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer;
 
-final class ChoiceToLabelTransformerTest extends \PHPUnit_Framework_TestCase
+final class ChoiceToLabelTransformerTest extends TestCase
 {
     /**
      * @test
@@ -26,8 +27,8 @@ final class ChoiceToLabelTransformerTest extends \PHPUnit_Framework_TestCase
 
         $transformer = new ChoiceToLabelTransformer($choices->reveal());
 
-        $this->assertEquals('1', $transformer->transform('active'));
-        $this->assertEquals('2', $transformer->transform('removed'));
+        self::assertEquals('1', $transformer->transform('active'));
+        self::assertEquals('2', $transformer->transform('removed'));
     }
 
     /**
@@ -41,7 +42,7 @@ final class ChoiceToLabelTransformerTest extends \PHPUnit_Framework_TestCase
 
         $transformer = new ChoiceToLabelTransformer($choices->reveal());
 
-        $this->assertEquals('active', $transformer->reverseTransform('1'));
-        $this->assertEquals('removed', $transformer->reverseTransform('2'));
+        self::assertEquals('active', $transformer->reverseTransform('1'));
+        self::assertEquals('removed', $transformer->reverseTransform('2'));
     }
 }

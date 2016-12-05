@@ -41,8 +41,8 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 
         $this->optimizer = new ChainOptimizer();
 
-        $this->optimizer1 = $this->prophet->prophesize('Rollerworks\Component\Search\SearchConditionOptimizerInterface');
-        $this->optimizer2 = $this->prophet->prophesize('Rollerworks\Component\Search\SearchConditionOptimizerInterface');
+        $this->optimizer1 = $this->prophesize('Rollerworks\Component\Search\SearchConditionOptimizerInterface');
+        $this->optimizer2 = $this->prophesize('Rollerworks\Component\Search\SearchConditionOptimizerInterface');
         $this->optimizer1->getPriority()->willReturn(0);
         $this->optimizer2->getPriority()->willReturn(5);
     }
@@ -61,7 +61,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
      */
     public function it_execute_the_registered_formatters_priority_order()
     {
-        $searchCondition = $this->prophet->prophesize('Rollerworks\Component\Search\SearchCondition');
+        $searchCondition = $this->prophesize('Rollerworks\Component\Search\SearchCondition');
         $searchCondition->getValuesGroup()->willReturn(new ValuesGroup());
 
         $checkValue = [];
@@ -77,7 +77,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
         $this->optimizer->addOptimizer($this->optimizer2->reveal());
 
         $this->optimizer->process($searchCondition->reveal());
-        $this->assertSame([1, 2], $checkValue);
+        self::assertSame([1, 2], $checkValue);
     }
 
     /**
@@ -90,7 +90,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
         $values->addError(new ValuesError('ranges[0].lower', 'whoops'));
         $valuesGroup->addField('id', $values);
 
-        $searchCondition = $this->prophet->prophesize('Rollerworks\Component\Search\SearchCondition');
+        $searchCondition = $this->prophesize('Rollerworks\Component\Search\SearchCondition');
         $searchCondition->getValuesGroup()->willReturn($valuesGroup);
 
         $this->optimizer1->process($searchCondition)->shouldNotBeCalled();
