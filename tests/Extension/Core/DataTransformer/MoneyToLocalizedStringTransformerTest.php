@@ -32,8 +32,8 @@ class MoneyToLocalizedStringTransformerTest extends TestCase
 
         $value = new MoneyValue('EUR', '1.23');
 
-        $this->assertEquals('€ 1,23', $this->transformer->transform($value));
-        $this->assertEquals(new MoneyValue('EUR', '1.23'), $this->transformer->reverseTransform('€ 1,23'));
+        self::assertEquals('€ 1,23', $this->transformer->transform($value));
+        self::assertEquals(new MoneyValue('EUR', '1.23'), $this->transformer->reverseTransform('€ 1,23'));
     }
 
     /** @test */
@@ -41,6 +41,6 @@ class MoneyToLocalizedStringTransformerTest extends TestCase
     {
         \Locale::setDefault('de_AT');
 
-        $this->assertEquals(new MoneyValue('EUR', '1.23'), $this->transformer->reverseTransform('1,23'));
+        self::assertEquals(new MoneyValue('EUR', '1.23'), $this->transformer->reverseTransform('1,23'));
     }
 }

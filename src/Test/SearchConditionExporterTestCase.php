@@ -392,6 +392,6 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     protected function assertExportEquals($expected, $actual)
     {
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 }

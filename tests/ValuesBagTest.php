@@ -28,8 +28,8 @@ final class ValuesBagTest extends TestCase
         $valuesBag->addSimpleValue('value');
         $valuesBag->addSimpleValue('value2');
 
-        $this->assertTrue($valuesBag->hasSimpleValues());
-        $this->assertEquals(['value', 'value2'], $valuesBag->getSimpleValues());
+        self::assertTrue($valuesBag->hasSimpleValues());
+        self::assertEquals(['value', 'value2'], $valuesBag->getSimpleValues());
     }
 
     /**
@@ -41,15 +41,15 @@ final class ValuesBagTest extends TestCase
         $valuesBag->add($val1 = new Range(10, 20));
         $valuesBag->add($val2 = new Compare(10, '>'));
 
-        $this->assertEquals(2, $valuesBag->count());
+        self::assertEquals(2, $valuesBag->count());
 
-        $this->assertTrue($valuesBag->has(Range::class));
-        $this->assertTrue($valuesBag->has(Compare::class));
-        $this->assertFalse($valuesBag->has(PatternMatch::class));
+        self::assertTrue($valuesBag->has(Range::class));
+        self::assertTrue($valuesBag->has(Compare::class));
+        self::assertFalse($valuesBag->has(PatternMatch::class));
 
-        $this->assertEquals([$val1], $valuesBag->get(Range::class));
-        $this->assertEquals([$val2], $valuesBag->get(Compare::class));
-        $this->assertEquals([], $valuesBag->get(PatternMatch::class));
+        self::assertEquals([$val1], $valuesBag->get(Range::class));
+        self::assertEquals([$val2], $valuesBag->get(Compare::class));
+        self::assertEquals([], $valuesBag->get(PatternMatch::class));
     }
 
     /**
@@ -61,16 +61,16 @@ final class ValuesBagTest extends TestCase
         $valuesBag->add($val1 = new Range(10, 20));
         $valuesBag->add($val2 = new Compare(10, '>'));
 
-        $this->assertEquals(2, $valuesBag->count());
+        self::assertEquals(2, $valuesBag->count());
 
         $valuesBag->remove(Range::class, 0);
         $valuesBag->remove(Range::class, 1); // should not decrease the counter
 
-        $this->assertEquals(1, $valuesBag->count());
+        self::assertEquals(1, $valuesBag->count());
 
-        $this->assertFalse($valuesBag->has(Range::class));
-        $this->assertEquals([], $valuesBag->get(Range::class));
-        $this->assertEquals([$val2], $valuesBag->get(Compare::class));
+        self::assertFalse($valuesBag->has(Range::class));
+        self::assertEquals([], $valuesBag->get(Range::class));
+        self::assertEquals([$val2], $valuesBag->get(Compare::class));
     }
 
     /**
@@ -84,8 +84,8 @@ final class ValuesBagTest extends TestCase
 
         $valuesBag->removeSimpleValue(0);
 
-        $this->assertTrue($valuesBag->hasSimpleValues());
-        $this->assertEquals([1 => 'value2'], $valuesBag->getSimpleValues());
+        self::assertTrue($valuesBag->hasSimpleValues());
+        self::assertEquals([1 => 'value2'], $valuesBag->getSimpleValues());
     }
 
     /**
@@ -97,8 +97,8 @@ final class ValuesBagTest extends TestCase
         $valuesBag->addExcludedSimpleValue('value');
         $valuesBag->addExcludedSimpleValue('value2');
 
-        $this->assertTrue($valuesBag->hasExcludedSimpleValues());
-        $this->assertEquals(['value', 'value2'], $valuesBag->getExcludedSimpleValues());
+        self::assertTrue($valuesBag->hasExcludedSimpleValues());
+        self::assertEquals(['value', 'value2'], $valuesBag->getExcludedSimpleValues());
     }
 
     /**
@@ -112,7 +112,7 @@ final class ValuesBagTest extends TestCase
 
         $valuesBag->removeExcludedSimpleValue(0);
 
-        $this->assertTrue($valuesBag->hasExcludedSimpleValues());
-        $this->assertEquals([1 => 'value2'], $valuesBag->getExcludedSimpleValues());
+        self::assertTrue($valuesBag->hasExcludedSimpleValues());
+        self::assertEquals([1 => 'value2'], $valuesBag->getExcludedSimpleValues());
     }
 }

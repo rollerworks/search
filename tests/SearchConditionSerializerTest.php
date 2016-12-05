@@ -69,7 +69,7 @@ final class SearchConditionSerializerTest extends TestCase
         $serialized = serialize($this->serializer->serialize($searchCondition));
         $unSerialized = $this->serializer->unserialize(unserialize($serialized));
 
-        $this->assertEquals($searchCondition, $unSerialized);
+        self::assertEquals($searchCondition, $unSerialized);
     }
 
     public function testUnSerializeMissingFields()

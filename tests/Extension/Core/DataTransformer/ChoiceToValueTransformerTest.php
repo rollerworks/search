@@ -27,8 +27,8 @@ final class ChoiceToValueTransformerTest extends TestCase
 
         $transformer = new ChoiceToValueTransformer($choices->reveal());
 
-        $this->assertEquals('1', $transformer->transform('active'));
-        $this->assertEquals('2', $transformer->transform('removed'));
+        self::assertEquals('1', $transformer->transform('active'));
+        self::assertEquals('2', $transformer->transform('removed'));
     }
 
     /**
@@ -42,7 +42,7 @@ final class ChoiceToValueTransformerTest extends TestCase
 
         $transformer = new ChoiceToValueTransformer($choices->reveal());
 
-        $this->assertEquals('active', $transformer->reverseTransform('1'));
-        $this->assertEquals('removed', $transformer->reverseTransform('2'));
+        self::assertEquals('active', $transformer->reverseTransform('1'));
+        self::assertEquals('removed', $transformer->reverseTransform('2'));
     }
 }

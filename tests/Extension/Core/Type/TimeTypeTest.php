@@ -70,11 +70,11 @@ class TimeTypeTest extends SearchIntegrationTestCase
         $field->setDataLocked();
         $fieldView = $field->createView();
 
-        $this->assertArrayHasKey('pattern', $fieldView->vars);
-        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
-        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+        self::assertArrayHasKey('pattern', $fieldView->vars);
+        self::assertArrayHasKey('with_seconds', $fieldView->vars);
+        self::assertArrayHasKey('with_seconds', $fieldView->vars);
 
-        $this->assertEquals('H:i:s', $fieldView->vars['pattern']);
+        self::assertEquals('H:i:s', $fieldView->vars['pattern']);
     }
 
     public function testViewIsConfiguredProperlyWithMinutesAndNoSeconds()
@@ -87,11 +87,11 @@ class TimeTypeTest extends SearchIntegrationTestCase
         $field->setDataLocked();
         $fieldView = $field->createView();
 
-        $this->assertArrayHasKey('pattern', $fieldView->vars);
-        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
-        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+        self::assertArrayHasKey('pattern', $fieldView->vars);
+        self::assertArrayHasKey('with_seconds', $fieldView->vars);
+        self::assertArrayHasKey('with_seconds', $fieldView->vars);
 
-        $this->assertEquals('H:i', $fieldView->vars['pattern']);
+        self::assertEquals('H:i', $fieldView->vars['pattern']);
     }
 
     public function testViewIsConfiguredProperlyWithNoMinutesAndNoSeconds()
@@ -104,11 +104,11 @@ class TimeTypeTest extends SearchIntegrationTestCase
         $field->setDataLocked();
         $fieldView = $field->createView();
 
-        $this->assertArrayHasKey('pattern', $fieldView->vars);
-        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
-        $this->assertArrayHasKey('with_seconds', $fieldView->vars);
+        self::assertArrayHasKey('pattern', $fieldView->vars);
+        self::assertArrayHasKey('with_seconds', $fieldView->vars);
+        self::assertArrayHasKey('with_seconds', $fieldView->vars);
 
-        $this->assertEquals('H', $fieldView->vars['pattern']);
+        self::assertEquals('H', $fieldView->vars['pattern']);
     }
 
     /**

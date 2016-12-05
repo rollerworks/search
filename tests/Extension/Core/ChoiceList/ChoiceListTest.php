@@ -31,8 +31,8 @@ final class ChoiceListTest extends TestCase
      */
     public function it_returns_the_choice_by_value()
     {
-        $this->assertEquals('creditcard', $this->choiceList->getChoiceForValue(0));
-        $this->assertEquals('cash', $this->choiceList->getChoiceForValue(1));
+        self::assertEquals('creditcard', $this->choiceList->getChoiceForValue(0));
+        self::assertEquals('cash', $this->choiceList->getChoiceForValue(1));
     }
 
     /**
@@ -40,7 +40,7 @@ final class ChoiceListTest extends TestCase
      */
     public function its_choice_returns_null_when_the_value_is_not_set()
     {
-        $this->assertNull($this->choiceList->getChoiceForValue(2));
+        self::assertNull($this->choiceList->getChoiceForValue(2));
     }
 
     /**
@@ -48,8 +48,8 @@ final class ChoiceListTest extends TestCase
      */
     public function it_returns_the_choice_by_label()
     {
-        $this->assertEquals('creditcard', $this->choiceList->getChoiceForLabel('credit-card-payment'));
-        $this->assertEquals('cash', $this->choiceList->getChoiceForLabel('cash-payment'));
+        self::assertEquals('creditcard', $this->choiceList->getChoiceForLabel('credit-card-payment'));
+        self::assertEquals('cash', $this->choiceList->getChoiceForLabel('cash-payment'));
     }
 
     /**
@@ -57,7 +57,7 @@ final class ChoiceListTest extends TestCase
      */
     public function its_choice_returns_null_when_the_label_is_not_set()
     {
-        $this->assertNull($this->choiceList->getChoiceForValue('paypal'));
+        self::assertNull($this->choiceList->getChoiceForValue('paypal'));
     }
 
     /**
@@ -65,8 +65,8 @@ final class ChoiceListTest extends TestCase
      */
     public function it_returns_the_label_by_choice()
     {
-        $this->assertEquals('credit-card-payment', $this->choiceList->getLabelForChoice('creditcard'));
-        $this->assertEquals('cash-payment', $this->choiceList->getLabelForChoice('cash'));
+        self::assertEquals('credit-card-payment', $this->choiceList->getLabelForChoice('creditcard'));
+        self::assertEquals('cash-payment', $this->choiceList->getLabelForChoice('cash'));
     }
 
     /**
@@ -74,6 +74,6 @@ final class ChoiceListTest extends TestCase
      */
     public function its_label_returns_null_when_the_choice_is_not_set()
     {
-        $this->assertNull($this->choiceList->getLabelForChoice('paypal'));
+        self::assertNull($this->choiceList->getLabelForChoice('paypal'));
     }
 }

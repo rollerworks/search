@@ -27,13 +27,13 @@ class CompareTest extends TestCase
     /** @test */
     public function it_has_a_value()
     {
-        $this->assertEquals(10, $this->value->getValue());
+        self::assertEquals(10, $this->value->getValue());
     }
 
     /** @test */
     public function it_has_an_operator()
     {
-        $this->assertEquals('>', $this->value->getOperator());
+        self::assertEquals('>', $this->value->getOperator());
     }
 
     /** @test */
@@ -43,7 +43,7 @@ class CompareTest extends TestCase
 
         $this->value = new Compare($value, '<');
 
-        $this->assertEquals($value, $this->value->getValue());
-        $this->assertEquals('<', $this->value->getOperator());
+        self::assertEquals($value, $this->value->getValue());
+        self::assertEquals('<', $this->value->getOperator());
     }
 }

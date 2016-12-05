@@ -77,7 +77,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
         $this->optimizer->addOptimizer($this->optimizer2->reveal());
 
         $this->optimizer->process($searchCondition->reveal());
-        $this->assertSame([1, 2], $checkValue);
+        self::assertSame([1, 2], $checkValue);
     }
 
     /**

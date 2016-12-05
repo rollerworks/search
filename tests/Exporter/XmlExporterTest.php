@@ -275,9 +275,9 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
     protected function assertExportEquals($expected, $actual)
     {
         if (!empty($expected) xor !empty($actual)) {
-            $this->assertEquals($expected, $actual);
+            self::assertEquals($expected, $actual);
         } else {
-            $this->assertXmlStringEqualsXmlString($expected, $actual);
+            self::assertXmlStringEqualsXmlString($expected, $actual);
         }
     }
 

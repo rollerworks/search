@@ -73,7 +73,7 @@ final class SearchFactoryTest extends TestCase
             ->method('buildType')
             ->with($this->fieldConfig, $resolvedOptions);
 
-        $this->assertSame($this->fieldConfig, $this->factory->createField('name', TextType::class, $options));
+        self::assertSame($this->fieldConfig, $this->factory->createField('name', TextType::class, $options));
     }
 
     private function getMockResolvedType()

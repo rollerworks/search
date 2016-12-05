@@ -51,7 +51,7 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        $this->assertExportEquals('firstname: value, value2;', $exporter->exportCondition($condition));
+        self::assertExportEquals('firstname: value, value2;', $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor($labelResolver);
         $processor->process($config, 'firstname: value, value2;');

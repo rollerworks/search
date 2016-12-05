@@ -55,7 +55,7 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
             ->add(new Range(1, 5))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -86,6 +86,6 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
             ->add(new ExcludedRange(1, 5))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 }

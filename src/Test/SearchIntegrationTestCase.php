@@ -88,7 +88,7 @@ abstract class SearchIntegrationTestCase extends TestCase
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
-    protected function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
+    protected static function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
     {
         $expectedArray = [
             'single' => $expected->getSimpleValues(),
@@ -109,6 +109,6 @@ abstract class SearchIntegrationTestCase extends TestCase
             'matchers' => array_merge([], $result->get(PatternMatch::class)),
         ];
 
-        $this->assertEquals($expectedArray, $resultArray);
+        self::assertEquals($expectedArray, $resultArray);
     }
 }

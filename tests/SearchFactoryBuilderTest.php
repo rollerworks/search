@@ -38,7 +38,7 @@ class SearchFactoryBuilderTest extends TestCase
         $registry = $this->registry->getValue($factory);
         $extensions = $registry->getExtensions();
 
-        $this->assertCount(1, $extensions);
-        $this->assertTrue($extensions[0]->hasType(FooType::class));
+        self::assertCount(1, $extensions);
+        self::assertTrue($extensions[0]->hasType(FooType::class));
     }
 }

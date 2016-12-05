@@ -65,7 +65,7 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
                 ->add(new Range(1, 10, false))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -109,7 +109,7 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
             ->add(new Range(99, 151, false, false))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -150,7 +150,7 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
             ->add(new ExcludedRange(1, 10, false))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -194,7 +194,7 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
             ->add(new ExcludedRange(99, 151, false, false))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -223,7 +223,7 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
             ->add(new Range(10, 26))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 
     /**
@@ -252,6 +252,6 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
             ->add(new ExcludedRange(10, 26))
         ;
 
-        $this->assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
     }
 }

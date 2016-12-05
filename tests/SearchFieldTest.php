@@ -32,7 +32,7 @@ final class SearchFieldTest extends TestCase
         $this->resolvedType = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldTypeInterface')->getMock();
         $this->field = new SearchField('foobar', $this->resolvedType, ['name' => 'value']);
 
-        $this->assertInstanceOf('Rollerworks\Component\Search\FieldConfigInterface', $this->field);
+        self::assertInstanceOf('Rollerworks\Component\Search\FieldConfigInterface', $this->field);
     }
 
     /**
@@ -40,7 +40,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_has_a_name()
     {
-        $this->assertEquals('foobar', $this->field->getName());
+        self::assertEquals('foobar', $this->field->getName());
     }
 
     /**
@@ -48,7 +48,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_has_a_type()
     {
-        $this->assertEquals($this->resolvedType, $this->field->getType());
+        self::assertEquals($this->resolvedType, $this->field->getType());
     }
 
     /**
@@ -56,7 +56,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_has_options()
     {
-        $this->assertEquals(['name' => 'value'], $this->field->getOptions());
+        self::assertEquals(['name' => 'value'], $this->field->getOptions());
     }
 
     /**
@@ -64,8 +64,8 @@ final class SearchFieldTest extends TestCase
      */
     public function it_should_return_if_an_option_exists()
     {
-        $this->assertEquals(true, $this->field->hasOption('name'));
-        $this->assertEquals(false, $this->field->hasOption('foo'));
+        self::assertEquals(true, $this->field->hasOption('name'));
+        self::assertEquals(false, $this->field->hasOption('foo'));
     }
 
     /**
@@ -73,7 +73,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_should_return_an_options_value()
     {
-        $this->assertEquals('value', $this->field->getOption('name'));
+        self::assertEquals('value', $this->field->getOption('name'));
     }
 
     /**
@@ -81,7 +81,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_should_return_null_by_default_if_the_option_does_exist()
     {
-        $this->assertEquals(null, $this->field->getOption('foo'));
+        self::assertEquals(null, $this->field->getOption('foo'));
     }
 
     /**
@@ -89,7 +89,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_should_return_default_value_if_the_option_does_exist()
     {
-        $this->assertEquals('value1', $this->field->getOption('foo', 'value1'));
+        self::assertEquals('value1', $this->field->getOption('foo', 'value1'));
     }
 
     /**
@@ -97,9 +97,9 @@ final class SearchFieldTest extends TestCase
      */
     public function it_supports_no_special_value_types_by_default()
     {
-        $this->assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
-        $this->assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON));
-        $this->assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH));
+        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
+        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON));
+        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH));
     }
 
     /**
@@ -108,12 +108,12 @@ final class SearchFieldTest extends TestCase
     public function it_allows_configuring_value_support()
     {
         $this->field->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
-        $this->assertEquals(true, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
-        $this->assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON));
+        self::assertEquals(true, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
+        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON));
 
         // And now disable it
         $this->field->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false);
-        $this->assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
+        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
     }
 
     /**
@@ -121,7 +121,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_has_no_comparison_class_by_default()
     {
-        $this->assertEquals(null, $this->field->getValueComparison());
+        self::assertEquals(null, $this->field->getValueComparison());
     }
 
     /**
@@ -132,7 +132,7 @@ final class SearchFieldTest extends TestCase
         $comparisonObj = $this->getMockBuilder('Rollerworks\Component\Search\ValueComparisonInterface')->getMock();
 
         $this->field->setValueComparison($comparisonObj);
-        $this->assertEquals($comparisonObj, $this->field->getValueComparison());
+        self::assertEquals($comparisonObj, $this->field->getValueComparison());
     }
 
     /**
@@ -140,7 +140,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_has_no_ViewTransformer_by_default()
     {
-        $this->assertNull($this->field->getViewTransformer());
+        self::assertNull($this->field->getViewTransformer());
     }
 
     /**
@@ -151,7 +151,7 @@ final class SearchFieldTest extends TestCase
         $viewTransformer = $this->createTransformerMock();
         $this->field->setViewTransformer($viewTransformer);
 
-        $this->assertEquals($viewTransformer, $this->field->getViewTransformer());
+        self::assertEquals($viewTransformer, $this->field->getViewTransformer());
     }
 
     /**
@@ -159,7 +159,7 @@ final class SearchFieldTest extends TestCase
      */
     public function its_data_is_locked_by_default()
     {
-        $this->assertEquals(false, $this->field->getDataLocked());
+        self::assertEquals(false, $this->field->getDataLocked());
     }
 
     /**
@@ -168,7 +168,7 @@ final class SearchFieldTest extends TestCase
     public function its_data_is_lockable()
     {
         $this->field->setDataLocked();
-        $this->assertEquals(true, $this->field->getDataLocked());
+        self::assertEquals(true, $this->field->getDataLocked());
     }
 
     /**
