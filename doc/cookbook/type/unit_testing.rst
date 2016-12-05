@@ -17,7 +17,7 @@ is done in a real application. It is simple to bootstrap and you can trust
 the Search components enough to use them as a testing base.
 
 There is already a class that you can benefit from for simple FieldTypes
-testing: :class:`Rollerworks\\Component\\Search\\Test\\FieldTypeTestCase`. It is used to
+testing: :class:`Rollerworks\\Component\\Search\\Test\\SearchIntegrationTestCase`. It is used to
 test the core types and you can use it to test your types too.
 
 .. note::
@@ -29,17 +29,17 @@ test the core types and you can use it to test your types too.
 The Basics
 ----------
 
-The simplest ``FieldTypeTestCase`` implementation looks like the following::
+The simplest ``SearchIntegrationTestCase`` implementation looks like the following::
 
     // src/Acme/Invoice/Tests/Search/Type/InvoiceNumberTypeTest.php
     namespace Acme\Invoice\Tests\Search\Type;
 
-    use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+    use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
     use Acme\Invoice\Search\Type\InvoiceNumberType;
     use Acme\Invoice\Search\ValueComparison\InvoiceNumberComparison;
     use Acme\Invoice\InvoiceNumber;
 
-    class InvoiceNumberTypeTest extends FieldTypeTestCase
+    class InvoiceNumberTypeTest extends SearchIntegrationTestCase
     {
         public function testValidInvoiceNumber()
         {
@@ -60,11 +60,6 @@ The simplest ``FieldTypeTestCase`` implementation looks like the following::
             $this->assertTransformedFails($field, '201-0020');
             $this->assertTransformedFails($field, '2015-');
             $this->assertTransformedFails($field, '201500');
-        }
-
-        protected function getTestedType()
-        {
-            return 'invoice_number';
         }
 
         protected function getTypes()
@@ -135,12 +130,12 @@ before creating the child type using the ``getTypes`` method::
     // src/Acme/Test/Tests/Search/Type/TestedTypeTest.php
     namespace Acme\Test\Tests\Search\Type;
 
-    use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+    use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
     use Acme\Test\Search\Type\ParentType;
     use Acme\Test\Search\Type\TestedType;
     use Acme\Test\ValueObject;
 
-    class TestedTypeTest extends FieldTypeTestCase
+    class TestedTypeTest extends SearchIntegrationTestCase
     {
         public function testValidValueTransforms()
         {
@@ -150,11 +145,6 @@ before creating the child type using the ``getTypes`` method::
             $expectedView = '{10, 20, 50}';
 
             $this->assertTransformedEquals($field, $expectedOutput, '{10, 20,50}', $expectedView);
-        }
-
-        protected function getTestedType()
-        {
-            return 'tested_type';
         }
 
         protected function getTypes()
@@ -178,17 +168,17 @@ Adding custom Extensions
 It often happens that you use some options that are added by
 :doc:`type extensions </cookbook/type/create_field_type_extension>`. One of the
 cases may be the Symfony ``ValidatorExtension`` with its ``constraints`` option.
-The ``FieldTypeTestCase`` loads only the core form extension so an "Invalid option"
+The ``SearchIntegrationTestCase`` loads only the core form extension so an "Invalid option"
 exception will be raised if you try to use it for testing a class that depends
 on other extensions. You need add those extensions to the factory object::
 
     // src/Acme/Test/Tests/Search/Type/TestedTypeTest.php
     namespace Acme\Test\Tests\Search\Type;
 
-    use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+    use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
     use Rollerworks\Component\Search\Extension\Symfony\ValidatorExtension;
 
-    class TestedTypeTest extends FieldTypeTestCase
+    class TestedTypeTest extends SearchIntegrationTestCase
     {
         protected function getTypeExtensions()
         {
@@ -214,22 +204,17 @@ a good opportunity to use them::
     // src/Acme/Test/Tests/Search/Type/TestedTypeTest.php
     namespace Acme\Test\Tests\Search\Type;
 
-    use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+    use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
     use Acme\Test\Search\Type\TestedType;
     use Acme\Test\ValueObject;
 
-    class TestedTypeTest extends FieldTypeTestCase
+    class TestedTypeTest extends SearchIntegrationTestCase
     {
         protected function getTypes()
         {
             return array(
                 new TestedType(),
             );
-        }
-
-        protected function getTestedType()
-        {
-            return 'tested_type';
         }
 
         /**

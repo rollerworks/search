@@ -14,6 +14,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\ValuesBag;
@@ -87,7 +88,7 @@ class DateType extends AbstractFieldType
             );
         }
 
-        $config->addViewTransformer(
+        $config->setViewTransformer(
             new DateTimeToLocalizedStringTransformer(
                 'UTC',
                 'UTC',
@@ -95,6 +96,13 @@ class DateType extends AbstractFieldType
                 $timeFormat,
                 $calendar,
                 $format
+            )
+        );
+
+        $config->setNormTransformer(
+            new DateTimeToRfc3339Transformer(
+                'UTC',
+                'UTC'
             )
         );
     }

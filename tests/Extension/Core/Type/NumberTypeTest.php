@@ -11,76 +11,114 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
-use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+use Rollerworks\Component\Search\Extension\Core\Type\NumberType;
+use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
+use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class NumberTypeTest extends FieldTypeTestCase
+class NumberTypeTest extends SearchIntegrationTestCase
 {
-    public function testCreate()
-    {
-        $this->getFactory()->createField('integer', 'integer');
-    }
-
     public function testCastsToInteger()
     {
-        $field = $this->getFactory()->createField('number', 'number');
+        $field = $this->getFactory()->createField('number', NumberType::class);
 
-        $this->assertTransformedEquals($field, '1.678', '1,678', '1,678');
-        $this->assertTransformedEquals($field, '1', '1', '1');
-        $this->assertTransformedEquals($field, '-1', '-1', '-1');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('1,678', '1.678')
+            ->successfullyTransformsTo('1.678')
+            ->andReverseTransformsTo('1,678', '1.678');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('1', '1')
+            ->successfullyTransformsTo('1')
+            ->andReverseTransformsTo('1', '1');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('01', '01')
+            ->successfullyTransformsTo('01')
+            ->andReverseTransformsTo('01', '01');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('-1')
+            ->successfullyTransformsTo('-1')
+            ->andReverseTransformsTo('-1');
     }
 
     public function testWrongInputFails()
     {
-        $field = $this->getFactory()->createField('integer', 'integer');
+        $field = $this->getFactory()->createField('integer', NumberType::class);
 
-        $this->assertTransformedFails($field, 'foo');
-        $this->assertTransformedFails($field, '+1');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('foo')
+            ->failsToTransforms();
     }
 
     public function testDefaultFormatting()
     {
-        $field = $this->getFactory()->createField('number', 'number');
+        $field = $this->getFactory()->createField('number', NumberType::class);
 
-        $this->assertTransformedEquals($field, '12345.67890', '12345,67890', '12345,679');
-        $this->assertTransformedEquals($field, '12345.679', '12345,679', '12345,679');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('12345,67890', '12345.67890')
+            ->successfullyTransformsTo('12345.67890')
+            ->andReverseTransformsTo('12345,679', '12345.679');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('12345,679', '12345.679')
+            ->successfullyTransformsTo('12345.679')
+            ->andReverseTransformsTo('12345,679', '12345.679');
     }
 
     public function testDefaultFormattingWithGrouping()
     {
-        $field = $this->getFactory()->createField('number', 'number', ['grouping' => true]);
+        $field = $this->getFactory()->createField('number', NumberType::class, ['grouping' => true]);
 
-        $this->assertTransformedEquals($field, '12345.679', '12.345,679', '12.345,679');
-        $this->assertTransformedEquals($field, '12345.679', '12345,679', '12.345,679');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('12.345,679', '12345.679')
+            ->successfullyTransformsTo('12345.679')
+            ->andReverseTransformsTo('12.345,679', '12,345.679');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('12345,679', '12345.679')
+            ->successfullyTransformsTo('12345.679')
+            ->andReverseTransformsTo('12.345,679', '12,345.679');
     }
 
     public function testDefaultFormattingWithPrecision()
     {
-        $field = $this->getFactory()->createField('number', 'number', ['precision' => 2]);
+        $field = $this->getFactory()->createField('number', NumberType::class, ['precision' => 2]);
 
-        $this->assertTransformedEquals($field, '12345.68', '12345,67890', '12345,68');
-        $this->assertTransformedEquals($field, '12345.67', '12345,67', '12345,67');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('12345,67890', '12345.67890')
+            ->successfullyTransformsTo('12345.68')
+            ->andReverseTransformsTo('12345,68', '12345.68');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('12345,67', '12345.67')
+            ->successfullyTransformsTo('12345.67')
+            ->andReverseTransformsTo('12345,67', '12345.67');
     }
 
     public function testDefaultFormattingWithRounding()
     {
-        $field = $this->getFactory()->createField(
-            'number',
-            'number',
-            ['precision' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP]
-        );
+        $field = $this->getFactory()->createField('number', NumberType::class, [
+            'precision' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP
+        ]);
 
-        $this->assertTransformedEquals($field, '12346', '12345,54321', '12346');
-        $this->assertTransformedEquals($field, '12345', '12345', '12345');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('12345,54321', '12345.54321')
+            ->successfullyTransformsTo('12346')
+            ->andReverseTransformsTo('12346');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('12345')
+            ->successfullyTransformsTo('12345')
+            ->andReverseTransformsTo('12345');
     }
 
     public function testViewIsConfiguredProperly()
     {
-        $field = $this->getFactory()->createField(
-            'number',
-            'number',
-            ['precision' => 0, 'grouping' => false]
-        );
+        $field = $this->getFactory()->createField('number', NumberType::class, [
+            'precision' => 0, 'grouping' => false
+        ]);
 
         $field->setDataLocked();
         $fieldView = $field->createView();
@@ -100,10 +138,5 @@ class NumberTypeTest extends FieldTypeTestCase
         IntlTestHelper::requireFullIntl($this);
 
         \Locale::setDefault('de_DE');
-    }
-
-    protected function getTestedType()
-    {
-        return 'number';
     }
 }

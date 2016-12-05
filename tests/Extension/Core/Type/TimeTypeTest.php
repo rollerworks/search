@@ -11,16 +11,13 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
-use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+use Rollerworks\Component\Search\Extension\Core\Type\TimeType;
+use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
+use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class TimeTypeTest extends FieldTypeTestCase
+class TimeTypeTest extends SearchIntegrationTestCase
 {
-    public function testCanBeCreated()
-    {
-        $this->getFactory()->createField('time', 'time');
-    }
-
     private $defaultTimezone;
 
     protected function setUp()
@@ -41,25 +38,31 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testCanTransformTimeWithoutSeconds()
     {
-        $field = $this->getFactory()->createField('time', 'time');
+        $field = $this->getFactory()->createField('time', TimeType::class);
 
         $outputTime = new \DateTime('1970-01-01 03:04:00 UTC');
 
-        $this->assertTransformedEquals($field, $outputTime, '03:04', '03:04');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('03:04')
+            ->successfullyTransformsTo($outputTime)
+            ->andReverseTransformsTo('03:04');
     }
 
     public function testCanTransformTimeWithSeconds()
     {
-        $field = $this->getFactory()->createField('time', 'time', ['with_seconds' => true]);
+        $field = $this->getFactory()->createField('time', TimeType::class, ['with_seconds' => true]);
 
         $outputTime = new \DateTime('1970-01-01 03:04:05 UTC');
 
-        $this->assertTransformedEquals($field, $outputTime, '03:04:05', '03:04:05');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('03:04:05')
+            ->successfullyTransformsTo($outputTime)
+            ->andReverseTransformsTo('03:04:05');
     }
 
     public function testViewIsConfiguredProperlyWithMinutesAndSeconds()
     {
-        $field = $this->getFactory()->createField('datetime', 'time', [
+        $field = $this->getFactory()->createField('datetime', TimeType::class, [
             'with_minutes' => true,
             'with_seconds' => true,
         ]);
@@ -76,7 +79,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testViewIsConfiguredProperlyWithMinutesAndNoSeconds()
     {
-        $field = $this->getFactory()->createField('datetime', 'time', [
+        $field = $this->getFactory()->createField('datetime', TimeType::class, [
             'with_minutes' => true,
             'with_seconds' => false,
         ]);
@@ -93,7 +96,7 @@ class TimeTypeTest extends FieldTypeTestCase
 
     public function testViewIsConfiguredProperlyWithNoMinutesAndNoSeconds()
     {
-        $field = $this->getFactory()->createField('datetime', 'time', [
+        $field = $this->getFactory()->createField('datetime', TimeType::class, [
             'with_minutes' => false,
             'with_seconds' => false,
         ]);
@@ -113,7 +116,7 @@ class TimeTypeTest extends FieldTypeTestCase
      */
     public function testCannotInitializeWithSecondsButWithoutMinutes()
     {
-        $this->getFactory()->createField('time', 'time', [
+        $this->getFactory()->createField('time', TimeType::class, [
             'with_minutes' => false,
             'with_seconds' => true,
         ]);

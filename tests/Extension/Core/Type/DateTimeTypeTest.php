@@ -12,19 +12,15 @@
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
-use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
+use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class DateTimeTypeTest extends FieldTypeTestCase
+class DateTimeTypeTest extends SearchIntegrationTestCase
 {
-    public function testCanBeCreated()
-    {
-        $this->getFactory()->createField('datetime', 'datetime');
-    }
-
     public function testViewTimezoneCanBeTransformedToModelTimezone()
     {
-        $field = $this->getFactory()->createField('datetime', 'datetime', [
+        $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'model_timezone' => 'America/New_York',
             'view_timezone' => 'Pacific/Tahiti',
             'pattern' => DateTimeType::HTML5_FORMAT,
@@ -33,53 +29,60 @@ class DateTimeTypeTest extends FieldTypeTestCase
         $outputTime = new \DateTime('2010-06-02 03:04:00 Pacific/Tahiti');
         $outputTime->setTimezone(new \DateTimeZone('America/New_York'));
 
-        $this->assertTransformedEquals($field, $outputTime, '2010-06-02T03:04:00-10:00');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('2010-06-02T03:04:00-10:00')
+            ->successfullyTransformsTo($outputTime)
+            ->andReverseTransformsTo('2010-06-02T03:04:00-10:00');
     }
 
-    public function testFormatCanBeConfigured()
+    public function testPatternCanBeConfigured()
     {
-        $field = $this->getFactory()->createField('datetime', 'datetime', [
-            'format' => 'MM*yyyy*dd',
+        $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
+            'pattern' => 'MM*yyyy*dd HH:mm',
         ]);
 
-        $outputTime = new \DateTime('2010-06-02');
-        $this->assertTransformedEquals($field, $outputTime, '06*2010*02');
+        $outputTime = new \DateTime('2010-06-02T13:12:00.000000+0000');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput($outputTime->format('m*Y*d H:i'), $outputTime->format('c'))
+            ->successfullyTransformsTo($outputTime)
+            ->andReverseTransformsTo('06*2010*02 13:12', '2010-06-02T13:12:00Z');
     }
 
-    public function testPatternIsUsedInFormatBc()
+    public function testTimeFormatCanBeConfigurable()
     {
-        $field = $this->getFactory()->createField('datetime', 'datetime', [
-            'pattern' => 'MM*yyyy*dd',
-        ]);
-
-        $outputTime = new \DateTime('2010-06-02');
-        $this->assertTransformedEquals($field, $outputTime, '06*2010*02');
-    }
-
-    public function testTimePatternCanBeConfigurable()
-    {
-        $field = $this->getFactory()->createField('datetime', 'datetime', [
+        $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'model_timezone' => 'UTC',
             'view_timezone' => 'UTC',
             'time_format' => \IntlDateFormatter::SHORT,
         ]);
 
         $outputTime = new \DateTime('2010-06-02 03:04:00 UTC');
-        $this->assertTransformedEquals($field, $outputTime, 'Jun 2, 2010, 3:04 AM');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('Jun 2, 2010, 3:04 AM', '2010-06-02T03:04:00Z')
+            ->successfullyTransformsTo($outputTime)
+            ->andReverseTransformsTo('Jun 2, 2010, 3:04 AM', '2010-06-02T03:04:00Z');
     }
 
     public function testInvalidInputShouldFailTransformation()
     {
-        $field = $this->getFactory()->createField('datetime', 'datetime', [
+        $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'pattern' => 'MM-yyyy-dd',
         ]);
 
-        $this->assertTransformedFails($field, '06*2010*02');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('06*2010*02', '2010-06-02T13:12:00Z')
+            ->failsToTransforms();
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('06-2010-02', '2010-06*02T13:12:00Z')
+            ->failsToTransforms();
     }
 
     public function testViewIsConfiguredProperly()
     {
-        $field = $this->getFactory()->createField('datetime', 'datetime', [
+        $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'date_format' => \IntlDateFormatter::SHORT,
             'time_format' => \IntlDateFormatter::SHORT,
         ]);
@@ -88,10 +91,10 @@ class DateTimeTypeTest extends FieldTypeTestCase
         $fieldView = $field->createView();
 
         $this->assertArrayHasKey('timezone', $fieldView->vars);
-        $this->assertArrayHasKey('format', $fieldView->vars);
+        $this->assertArrayHasKey('pattern', $fieldView->vars);
 
         $this->assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
-        $this->assertEquals('M/d/yy, h:mm a', $fieldView->vars['format']);
+        $this->assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
     }
 
     protected function setUp()

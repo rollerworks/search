@@ -137,34 +137,20 @@ final class SearchFieldTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_has_no_ViewTransformers_by_default()
+    public function it_has_no_ViewTransformer_by_default()
     {
-        $this->assertEquals([], $this->field->getViewTransformers());
+        $this->assertNull($this->field->getViewTransformer());
     }
 
     /**
      * @test
      */
-    public function it_allows_adding_ViewTransformers()
+    public function it_allows_setting_a_ViewTransformer()
     {
         $viewTransformer = $this->createTransformerMock();
+        $this->field->setViewTransformer($viewTransformer);
 
-        $this->field->addViewTransformer($viewTransformer);
-
-        $this->assertEquals([$viewTransformer], $this->field->getViewTransformers());
-    }
-
-    /**
-     * @test
-     */
-    public function it_allows_resetting_ViewTransformers()
-    {
-        $viewTransformer = $this->createTransformerMock();
-
-        $this->field->addViewTransformer($viewTransformer);
-        $this->field->resetViewTransformers();
-
-        $this->assertEquals([], $this->field->getViewTransformers());
+        $this->assertEquals($viewTransformer, $this->field->getViewTransformer());
     }
 
     /**

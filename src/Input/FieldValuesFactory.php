@@ -198,54 +198,6 @@ final class FieldValuesFactory
     }
 
     /**
-     * Transforms the value if a value transformer is set.
-     *
-     * @param mixed  $value The value to transform
-     * @param string $path
-     *
-     * @return string|null Returns null when the value is empty or invalid
-     */
-    private function normToView($value, $path)
-    {
-        // Scalar values should be converted to strings to
-        // facilitate differentiation between empty ("") and zero (0).
-        if (null === $value || !$this->config->getViewTransformers()) {
-            if (null !== $value && !is_scalar($value)) {
-                throw new \RuntimeException(
-                    sprintf(
-                        'Norm value of type %s is not a scalar value or null and not cannot be '.
-                        'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
-                        gettype($value),
-                        $this->config->getName(),
-                        get_class($this->config->getType()->getInnerType())
-                    )
-                );
-            }
-
-            return $value;
-        }
-
-        try {
-            foreach ($this->config->getViewTransformers() as $transformer) {
-                $value = $transformer->transform($value);
-            }
-
-            return $value;
-        } catch (TransformationFailedException $e) {
-            $this->valuesBag->addError(
-                new ValuesError(
-                    $path,
-                    $this->config->getOption('invalid_message', $e->getMessage()),
-                    $this->config->getOption('invalid_message', $e->getMessage()),
-                    $this->config->getOption('invalid_message_parameters', []),
-                    null,
-                    $e
-                )
-            );
-        }
-    }
-
-    /**
      * Reverse transforms a value if a value transformer is set.
      *
      * @param string $value The value to reverse transform
@@ -255,18 +207,14 @@ final class FieldValuesFactory
      */
     private function viewToNorm($value, $path)
     {
-        $transformers = $this->config->getViewTransformers();
+        $transformer = $this->config->getViewTransformer();
 
-        if (!$transformers) {
+        if (!$transformer) {
             return '' === $value ? null : $value;
         }
 
         try {
-            for ($i = count($transformers) - 1; $i >= 0; --$i) {
-                $value = $transformers[$i]->reverseTransform($value);
-            }
-
-            return $value;
+            return $transformer->reverseTransform($value);
         } catch (TransformationFailedException $e) {
             $this->valuesBag->addError(
                 new ValuesError(

@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
-use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\LocalizedBirthdayTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\ValuesBag;
@@ -49,11 +49,20 @@ class BirthdayType extends AbstractFieldType
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
 
-        $viewTransformers = $config->getViewTransformers();
+        $config->setViewTransformer(
+            new LocalizedBirthdayTransformer(
+                $config->getViewTransformer(),
+                $options['allow_age'],
+                $options['allow_future_date']
+            )
+        );
 
-        $config->resetViewTransformers();
-        $config->addViewTransformer(
-            new BirthdayTransformer($viewTransformers, $options['allow_age'], $options['allow_future_date'])
+        $config->setNormTransformer(
+            new LocalizedBirthdayTransformer(
+                $config->getNormTransformer(),
+                $options['allow_age'],
+                $options['allow_future_date']
+            )
         );
     }
 

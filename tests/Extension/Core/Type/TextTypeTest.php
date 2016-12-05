@@ -12,17 +12,18 @@
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
+use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
-class TextTypeTest extends FieldTypeTestCase
+class TextTypeTest extends SearchIntegrationTestCase
 {
-    public function testCreate()
+    public function testAcceptsAnyScalarInput()
     {
-        $this->getFactory()->createField('name', TextType::class);
-    }
+        $field = $this->getFactory()->createField('name', TextType::class);
 
-    protected function getTestedType()
-    {
-        return 'text';
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('foobar')
+            ->successfullyTransformsTo('foobar')
+            ->andReverseTransformsTo('foobar');
     }
 }
