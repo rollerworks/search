@@ -136,11 +136,11 @@ class FilterQueryExporter extends AbstractExporter
         $exportedValues = '';
 
         foreach ($valuesBag->getSimpleValues() as $value) {
-            $exportedValues .= $this->exportValuePart($this->normToView($value, $field)).', ';
+            $exportedValues .= $this->exportValuePart($this->modelToView($value, $field)).', ';
         }
 
         foreach ($valuesBag->getExcludedSimpleValues() as $value) {
-            $exportedValues .= '!'.$this->exportValuePart($this->normToView($value, $field)).', ';
+            $exportedValues .= '!'.$this->exportValuePart($this->modelToView($value, $field)).', ';
         }
 
         foreach ($valuesBag->get(Range::class) as $value) {
@@ -152,7 +152,7 @@ class FilterQueryExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->get(Compare::class) as $value) {
-            $exportedValues .= $value->getOperator().$this->exportValuePart($this->normToView($value->getValue(), $field)).', ';
+            $exportedValues .= $value->getOperator().$this->exportValuePart($this->modelToView($value->getValue(), $field)).', ';
         }
 
         foreach ($valuesBag->get(PatternMatch::class) as $value) {
@@ -224,9 +224,9 @@ class FilterQueryExporter extends AbstractExporter
     private function exportRangeValue(Range $range, FieldConfigInterface $field)
     {
         $result = !$range->isLowerInclusive() ? ']' : '';
-        $result .= $this->exportValuePart($this->normToView($range->getLower(), $field));
+        $result .= $this->exportValuePart($this->modelToView($range->getLower(), $field));
         $result .= '-';
-        $result .= $this->exportValuePart($this->normToView($range->getUpper(), $field));
+        $result .= $this->exportValuePart($this->modelToView($range->getUpper(), $field));
         $result .= !$range->isUpperInclusive() ? '[' : '';
 
         return $result;

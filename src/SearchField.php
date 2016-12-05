@@ -56,9 +56,14 @@ class SearchField implements FieldConfigInterface
     private $locked = false;
 
     /**
-     * @var array
+     * @var DataTransformerInterface|null
      */
-    private $viewTransformers = [];
+    private $viewTransformer;
+
+    /**
+     * @var DataTransformerInterface|null
+     */
+    private $normTransformer;
 
     /**
      * Constructor.
@@ -184,7 +189,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function addViewTransformer(DataTransformerInterface $viewTransformer, $forcePrepend = false)
+    public function setViewTransformer(DataTransformerInterface $viewTransformer = null)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -192,23 +197,23 @@ class SearchField implements FieldConfigInterface
             );
         }
 
-        if ($forcePrepend) {
-            array_unshift($this->viewTransformers, $viewTransformer);
-        } else {
-            $this->viewTransformers[] = $viewTransformer;
-        }
+        $this->viewTransformer = $viewTransformer;
 
         return $this;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @throws BadMethodCallException when the data is locked
-     *
-     * @return self
      */
-    public function resetViewTransformers()
+    public function getViewTransformer()
+    {
+        return $this->viewTransformer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNormTransformer(DataTransformerInterface $viewTransformer = null)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -216,7 +221,7 @@ class SearchField implements FieldConfigInterface
             );
         }
 
-        $this->viewTransformers = [];
+        $this->normTransformer = $viewTransformer;
 
         return $this;
     }
@@ -224,9 +229,9 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getViewTransformers()
+    public function getNormTransformer()
     {
-        return $this->viewTransformers;
+        return $this->normTransformer;
     }
 
     /**

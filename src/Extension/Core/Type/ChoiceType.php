@@ -43,14 +43,12 @@ class ChoiceType extends AbstractFieldType
         }
 
         if ($options['label_as_value']) {
-            $config->addViewTransformer(
-                new ChoiceToLabelTransformer($options['choice_list'])
-            );
+            $config->setViewTransformer($transformer = new ChoiceToLabelTransformer($options['choice_list']));
         } else {
-            $config->addViewTransformer(
-                new ChoiceToValueTransformer($options['choice_list'])
-            );
+            $config->setViewTransformer($transformer = new ChoiceToValueTransformer($options['choice_list']));
         }
+
+        $config->setNormTransformer($transformer);
     }
 
     /**

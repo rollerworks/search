@@ -89,45 +89,37 @@ class DateTimeType extends AbstractFieldType
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
 
-        if ($options['pattern']) {
-            $options['format'] = $options['pattern'];
+        if (null === $options['pattern']) {
+            $this->validateFormat('date_format', $options['date_format']);
+            $this->validateFormat('time_format', $options['time_format']);
         }
 
-        if (null === $options['format']) {
-            if (!in_array($options['date_format'], self::$acceptedFormats, true)) {
-                throw new InvalidConfigurationException(
-                    'The "date_format" option must be one of the IntlDateFormatter constants '.
-                    '(FULL, LONG, MEDIUM, SHORT) or the "format" must be a string representing a custom format.'
-                );
-            }
-
-            if (!in_array($options['time_format'], self::$acceptedFormats, true)) {
-                throw new InvalidConfigurationException(
-                    'The "time_format" option must be one of the IntlDateFormatter constants '.
-                    '(FULL, LONG, MEDIUM, SHORT) or the "format" must be a string representing a custom format.'
-                );
-            }
-        }
-
-        if (self::HTML5_FORMAT === $options['format']) {
-            $config->addViewTransformer(
+        if (self::HTML5_FORMAT === $options['pattern']) {
+            $config->setViewTransformer(
                 new DateTimeToRfc3339Transformer(
                     $options['model_timezone'],
                     $options['view_timezone']
                 )
             );
         } else {
-            $config->addViewTransformer(
+            $config->setViewTransformer(
                 new DateTimeToLocalizedStringTransformer(
                     $options['model_timezone'],
                     $options['view_timezone'],
                     $options['date_format'],
                     $options['time_format'],
                     \IntlDateFormatter::GREGORIAN,
-                    $options['format']
+                    $options['pattern']
                 )
             );
         }
+
+        $config->setNormTransformer(
+            new DateTimeToRfc3339Transformer(
+                $options['model_timezone'],
+                $options['view_timezone']
+            )
+        );
     }
 
     /**
@@ -135,10 +127,10 @@ class DateTimeType extends AbstractFieldType
      */
     public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
     {
-        $format = $options['format'];
+        $pattern = $options['pattern'];
 
-        if (null === $format) {
-            $format = \IntlDateFormatter::create(
+        if (null === $pattern) {
+            $pattern = \IntlDateFormatter::create(
                 \Locale::getDefault(),
                 $options['date_format'],
                 $options['time_format'],
@@ -148,7 +140,7 @@ class DateTimeType extends AbstractFieldType
         }
 
         $view->vars['timezone'] = $options['view_timezone'] ?: date_default_timezone_get();
-        $view->vars['format'] = $format;
+        $view->vars['pattern'] = $pattern;
     }
 
     /**
@@ -161,25 +153,23 @@ class DateTimeType extends AbstractFieldType
                 'model_timezone' => 'UTC',
                 'view_timezone' => null,
                 'pattern' => null,
-                'format' => null,
                 'date_format' => self::DEFAULT_DATE_FORMAT,
                 'time_format' => self::DEFAULT_TIME_FORMAT,
             ]
         );
 
-        // BC to be removed in 2.0.
-        $formatNormalizer = function (Options $options, $value) {
-            if (null === $value && null !== $options['pattern']) {
-                return $options['pattern'];
-            }
-
-            return $value;
-        };
-
-        $resolver->setNormalizer('format', $formatNormalizer);
         $resolver->setAllowedTypes('pattern', ['string', 'null']);
-        $resolver->setAllowedTypes('format', ['string', 'null']);
         $resolver->setAllowedTypes('date_format', ['int']);
         $resolver->setAllowedTypes('time_format', ['int']);
+    }
+
+    private function validateFormat(string $name, $value)
+    {
+        if (!in_array($value, self::$acceptedFormats, true)) {
+            throw new InvalidConfigurationException(
+                'The "'.$name.'" option must be one of the IntlDateFormatter constants '.
+                '(FULL, LONG, MEDIUM, SHORT) or the "pattern" option must be a string representing a custom format.'
+            );
+        }
     }
 }

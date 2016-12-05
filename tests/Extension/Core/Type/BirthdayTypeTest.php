@@ -12,18 +12,11 @@
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
-use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
+use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
-class BirthdayTypeTest extends FieldTypeTestCase
+class BirthdayTypeTest extends SearchIntegrationTestCase
 {
-    public function testCreate()
-    {
-        $this->assertInstanceOf(
-            'Rollerworks\Component\Search\FieldConfigInterface',
-            $this->getFactory()->createField('birthday', BirthdayType::class)
-        );
-    }
-
     public function testDateOnlyInput()
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
@@ -31,9 +24,14 @@ class BirthdayTypeTest extends FieldTypeTestCase
             'allow_age' => false,
         ]);
 
-        $outputTime = new \DateTime('2010-06-02');
-        $this->assertTransformedEquals($field, $outputTime, '2010-06-02', '2010-06-02');
-        $this->assertTransformedFails($field, '21');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('2010-06-02', '2010-06-02')
+            ->successfullyTransformsTo(new \DateTime('2010-06-02'))
+            ->andReverseTransformsTo('2010-06-02', '2010-06-02T00:00:00Z');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('21')
+            ->failsToTransforms();
     }
 
     public function testAllowAgeInput()
@@ -42,10 +40,15 @@ class BirthdayTypeTest extends FieldTypeTestCase
             'format' => 'yyyy-MM-dd',
         ]);
 
-        $this->assertTransformedEquals($field, 15, '15', '15');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('2010-06-02', '2010-06-02')
+            ->successfullyTransformsTo(new \DateTime('2010-06-02'))
+            ->andReverseTransformsTo('2010-06-02', '2010-06-02T00:00:00Z');
 
-        $outputTime = new \DateTime('2010-06-02');
-        $this->assertTransformedEquals($field, $outputTime, '2010-06-02', '2010-06-02');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('15')
+            ->successfullyTransformsTo(15)
+            ->andReverseTransformsTo('15');
     }
 
     public function testWrongInputFails()
@@ -54,9 +57,9 @@ class BirthdayTypeTest extends FieldTypeTestCase
             'allow_age' => true,
         ]);
 
-        $this->assertTransformedFails($field, 'twenty');
-        $this->assertTransformedFails($field, '-21');
-        $this->assertTransformedFails($field, '+21');
+        FieldTransformationAssertion::assertThat($field)->withInput('twenty')->failsToTransforms();
+        FieldTransformationAssertion::assertThat($field)->withInput('-21')->failsToTransforms();
+        FieldTransformationAssertion::assertThat($field)->withInput('+21')->failsToTransforms();
     }
 
     public function testAgeInTheFutureFails()
@@ -67,10 +70,10 @@ class BirthdayTypeTest extends FieldTypeTestCase
 
         $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
 
-        $this->assertTransformedFails($field, $currentDate->format('Y-m-d'));
+        FieldTransformationAssertion::assertThat($field)->withInput($currentDate->format('Y-m-d'))->failsToTransforms();
     }
 
-    public function testAgeInWorksWhenAllowed()
+    public function testAgeInFutureWorksWhenAllowed()
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'format' => 'yyyy-MM-dd',
@@ -80,16 +83,12 @@ class BirthdayTypeTest extends FieldTypeTestCase
         $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
         $currentDate->setTime(0, 0, 0);
 
-        $this->assertTransformedEquals($field, $currentDate, $currentDate->format('Y-m-d'), $currentDate->format('Y-m-d'));
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-    }
-
-    protected function getTestedType()
-    {
-        return BirthdayType::class;
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput($currentDate->format('Y-m-d'))
+            ->successfullyTransformsTo($currentDate)
+            ->andReverseTransformsTo(
+                $currentDate->format('Y-m-d'),
+                preg_replace('/\+00:00$/', 'Z', $currentDate->format('c'))
+            );
     }
 }

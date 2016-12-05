@@ -100,22 +100,24 @@ abstract class AbstractExporter implements ExporterInterface
     abstract protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false);
 
     /**
-     * Transforms the value if a value transformer is set.
+     * Transforms the model value to a view representation.
      *
      * @param mixed                $value
      * @param FieldConfigInterface $field
      *
      * @return string
      */
-    protected function normToView($value, FieldConfigInterface $field): string
+    protected function modelToView($value, FieldConfigInterface $field): string
     {
+        $transformer = $field->getViewTransformer();
+
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
-        if (null === $value || !$field->getViewTransformers()) {
+        if (null === $value || !$transformer) {
             if (null !== $value && !is_scalar($value)) {
                 throw new \RuntimeException(
                     sprintf(
-                        'Norm value of type %s is not a scalar value or null and not cannot be '.
+                        'Model value of type %s is not a scalar value or null and not cannot be '.
                         'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
                         gettype($value),
                         $field->getName(),
@@ -127,10 +129,39 @@ abstract class AbstractExporter implements ExporterInterface
             return (string) $value;
         }
 
-        foreach ($field->getViewTransformers() as $transformer) {
-            $value = $transformer->transform($value);
+        return (string) $transformer->transform($value);
+    }
+
+    /**
+     * Transforms the model value to a normalized version.
+     *
+     * @param mixed                $value
+     * @param FieldConfigInterface $field
+     *
+     * @return string
+     */
+    protected function modelToNorm($value, FieldConfigInterface $field): string
+    {
+        $transformer = $field->getNormTransformer();
+
+        // Scalar values should be converted to strings to
+        // facilitate differentiation between empty ("") and zero (0).
+        if (null === $value || !$transformer) {
+            if (null !== $value && !is_scalar($value)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Model value of type %s is not a scalar value or null and not cannot be '.
+                        'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
+                        gettype($value),
+                        $field->getName(),
+                        get_class($field->getType()->getInnerType())
+                    )
+                );
+            }
+
+            return (string) $value;
         }
 
-        return (string) $value;
+        return (string) $transformer->transform($value);
     }
 }

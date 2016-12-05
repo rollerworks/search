@@ -18,7 +18,7 @@ final class ChoiceToLabelTransformerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_transformers_label_to_choice()
+    public function it_transforms_label_to_choice()
     {
         $choices = $this->prophesize('Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface');
         $choices->getLabelForChoice('active')->willReturn('1');
@@ -33,7 +33,7 @@ final class ChoiceToLabelTransformerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_reverse_transformers_choice_to_label()
+    public function it_reverse_transforms_choice_to_label()
     {
         $choices = $this->prophesize('Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface');
         $choices->getChoiceForLabel('1')->willReturn('active');

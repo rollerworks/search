@@ -133,7 +133,7 @@ class XmlExporter extends AbstractExporter
                 $element = $this->document->createElement('value');
                 $element->appendChild(
                     $this->document->createTextNode(
-                        $this->normToView($value, $field)
+                        $this->modelToView($value, $field)
                     )
                 );
 
@@ -150,7 +150,7 @@ class XmlExporter extends AbstractExporter
                 $element = $this->document->createElement('value');
                 $element->appendChild(
                     $this->document->createTextNode(
-                        $this->normToView($value, $field)
+                        $this->modelToView($value, $field)
                     )
                 );
 
@@ -187,7 +187,7 @@ class XmlExporter extends AbstractExporter
                 $element = $this->document->createElement('compare');
                 $element->setAttribute('operator', $value->getOperator());
                 $element->appendChild(
-                    $this->document->createTextNode($this->normToView($value->getValue(), $field))
+                    $this->document->createTextNode($this->modelToView($value->getValue(), $field))
                 );
 
                 $valuesNode->appendChild($element);
@@ -226,7 +226,7 @@ class XmlExporter extends AbstractExporter
 
         $element = $this->document->createElement('lower');
         $element->appendChild(
-            $this->document->createTextNode($this->normToView($range->getLower(), $field))
+            $this->document->createTextNode($this->modelToView($range->getLower(), $field))
         );
 
         if (!$range->isLowerInclusive()) {
@@ -237,7 +237,7 @@ class XmlExporter extends AbstractExporter
 
         $element = $this->document->createElement('upper');
         $element->appendChild(
-            $this->document->createTextNode($this->normToView($range->getUpper(), $field))
+            $this->document->createTextNode($this->modelToView($range->getUpper(), $field))
         );
 
         if (!$range->isUpperInclusive()) {

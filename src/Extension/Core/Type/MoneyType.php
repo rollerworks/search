@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\ValuesBag;
@@ -47,8 +48,19 @@ class MoneyType extends AbstractFieldType
         $config->setValueComparison($this->valueComparison);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
-        $config->addViewTransformer(
+
+        $config->setViewTransformer(
             new MoneyToLocalizedStringTransformer(
+                $options['precision'],
+                $options['grouping'],
+                null,
+                $options['divisor'],
+                $options['default_currency']
+            )
+        );
+
+        $config->setNormTransformer(
+            new MoneyToStringTransformer(
                 $options['precision'],
                 $options['grouping'],
                 null,

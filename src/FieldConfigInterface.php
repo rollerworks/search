@@ -75,31 +75,44 @@ interface FieldConfigInterface
     public function getValueComparison();
 
     /**
-     * Appends / prepends a transformer to the view transformer chain.
+     * Sets a view transformer for the field.
+     *
+     * The reverseTransform method of the transformer is used to convert data from the
+     * model to the view format.
+     * The transform method of the transformer is used to convert from the
+     * view to the model format.
+     *
+     * @param DataTransformerInterface|null $viewTransformer Use null to remove the
+     *                                                       transformer
+     */
+    public function setViewTransformer(DataTransformerInterface $viewTransformer = null);
+
+    /**
+     * Returns the view transformer of the field.
+     *
+     * @return DataTransformerInterface
+     */
+    public function getViewTransformer();
+
+    /**
+     * Sets a normalize transformer for the field.
      *
      * The transform method of the transformer is used to convert data from the
-     * normalized to the view format.
+     * normalized to the model format.
      * The reverseTransform method of the transformer is used to convert from the
-     * view to the normalized format.
+     * model to the normalized format.
      *
-     * @param DataTransformerInterface $viewTransformer
-     * @param bool                     $forcePrepend    if set to true, prepend instead of appending
+     * @param DataTransformerInterface|null $viewTransformer Use null to remove the
+     *                                                       transformer
      */
-    public function addViewTransformer(DataTransformerInterface $viewTransformer, $forcePrepend = false);
+    public function setNormTransformer(DataTransformerInterface $viewTransformer = null);
 
     /**
-     * Clears the view transformers of the field.
+     * Returns the normalize transformer of the field.
      *
-     * @return self The configuration object
+     * @return DataTransformerInterface
      */
-    public function resetViewTransformers();
-
-    /**
-     * Returns the view transformers of the field.
-     *
-     * @return DataTransformerInterface[] An array of {@link DataTransformerInterface} instances
-     */
-    public function getViewTransformers();
+    public function getNormTransformer();
 
     /**
      * Returns whether the field's data is locked.

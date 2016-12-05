@@ -16,9 +16,9 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
 /**
  * Transforms between a date string and a DateTime object
- * and between a ISO string and an integer.
+ * and between a localized string and a integer.
  */
-class BirthdayTransformer implements DataTransformerInterface
+class LocalizedBirthdayTransformer implements DataTransformerInterface
 {
     /**
      * @var DataTransformerInterface
@@ -53,7 +53,7 @@ class BirthdayTransformer implements DataTransformerInterface
     public function transform($value)
     {
         if (is_int($value)) {
-            return $value;
+            return $this->getNumberFormatter()->format($value, \NumberFormatter::DECIMAL);
         }
 
         if ($transformer = $this->transformer) {
@@ -96,8 +96,8 @@ class BirthdayTransformer implements DataTransformerInterface
 
     private function transformWhenInteger($value)
     {
-        if (ctype_digit($value)) {
-            return (int) $value;
+        if (preg_match('/^\p{N}+$/', $value)) {
+            return $this->getNumberFormatter()->parse($value, \NumberFormatter::DECIMAL);
         }
 
         return $value;
@@ -124,5 +124,23 @@ class BirthdayTransformer implements DataTransformerInterface
                 )
             );
         }
+    }
+
+    /**
+     * Returns a pre-configured \NumberFormatter instance.
+     *
+     * @return \NumberFormatter
+     */
+    private function getNumberFormatter()
+    {
+        /** @var \NumberFormatter $formatter */
+        static $formatter;
+
+        if (!$formatter || $formatter->getLocale() !== \Locale::getDefault()) {
+            $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
+            $formatter->setAttribute(\NumberFormatter::GROUPING_USED, false);
+        }
+
+        return $formatter;
     }
 }

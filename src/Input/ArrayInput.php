@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  * ArrayInput processes input provided as a PHP Array.
  *
  * Note: The values must in the view-format, transforming is done later.
- * Normalized values are created using the Field's DataTransformers.
+ * Normalized values are created using the Field's DataTransformer.
  *
  * The provided input must be structured as follow;
  *

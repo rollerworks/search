@@ -62,7 +62,16 @@ class TimeType extends AbstractFieldType
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
         $config->setValueComparison($this->valueComparison);
-        $config->addViewTransformer(
+
+        $config->setViewTransformer(
+            new DateTimeToStringTransformer(
+                'UTC',
+                'UTC',
+                $format
+            )
+        );
+
+        $config->setNormTransformer(
             new DateTimeToStringTransformer(
                 'UTC',
                 'UTC',

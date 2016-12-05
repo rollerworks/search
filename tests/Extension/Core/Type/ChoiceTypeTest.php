@@ -13,9 +13,10 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ObjectChoiceList;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
-use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
+use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
-class ChoiceTypeTest extends FieldTypeTestCase
+class ChoiceTypeTest extends SearchIntegrationTestCase
 {
     private $choices = [
         'a' => 'Bernhard',
@@ -89,12 +90,10 @@ class ChoiceTypeTest extends FieldTypeTestCase
             ),
         ]);
 
-        $this->assertTransformedEquals(
-            $field,
-            $this->objectChoices[2],
-            $this->objectChoices[2]->id,
-            $this->objectChoices[2]->id
-        );
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput($this->objectChoices[2]->id)
+            ->successfullyTransformsTo($this->objectChoices[2])
+            ->andReverseTransformsTo($this->objectChoices[2]->id);
     }
 
     public function testObjectChoicesByLabel()
@@ -110,12 +109,10 @@ class ChoiceTypeTest extends FieldTypeTestCase
             ),
         ]);
 
-        $this->assertTransformedEquals(
-            $field,
-            $this->objectChoices[2],
-            $this->objectChoices[2]->name,
-            $this->objectChoices[2]->name
-        );
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput($this->objectChoices[2]->name, $this->objectChoices[2]->name)
+            ->successfullyTransformsTo($this->objectChoices[2])
+            ->andReverseTransformsTo($this->objectChoices[2]->name, $this->objectChoices[2]->name);
     }
 
     public function testArrayChoices()
@@ -124,7 +121,10 @@ class ChoiceTypeTest extends FieldTypeTestCase
             'choices' => $this->choices,
         ]);
 
-        $this->assertTransformedEquals($field, 'b', 'b', 'b');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('b')
+            ->successfullyTransformsTo('b')
+            ->andReverseTransformsTo('b');
     }
 
     public function testNumericChoices()
@@ -133,7 +133,10 @@ class ChoiceTypeTest extends FieldTypeTestCase
             'choices' => $this->numericChoices,
         ]);
 
-        $this->assertTransformedEquals($field, 2, 2, '2');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput(2)
+            ->successfullyTransformsTo(2)
+            ->andReverseTransformsTo('2');
     }
 
     public function testNumericChoicesByLabel()
@@ -143,7 +146,10 @@ class ChoiceTypeTest extends FieldTypeTestCase
             'choices' => $this->numericChoices,
         ]);
 
-        $this->assertTransformedEquals($field, 2, $this->numericChoices[2], $this->numericChoices[2]);
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput($this->numericChoices[2])
+            ->successfullyTransformsTo(2)
+            ->andReverseTransformsTo($this->numericChoices[2]);
     }
 
     // https://github.com/symfony/symfony/issues/10409
@@ -186,10 +192,5 @@ class ChoiceTypeTest extends FieldTypeTestCase
             $field->getOption('choice_list'),
             $field3->getOption('choice_list')
         );
-    }
-
-    protected function getTestedType()
-    {
-        return 'choice';
     }
 }

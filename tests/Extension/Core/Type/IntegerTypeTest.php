@@ -12,9 +12,10 @@
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
-use Rollerworks\Component\Search\Test\FieldTypeTestCase;
+use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
+use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
-class IntegerTypeTest extends FieldTypeTestCase
+class IntegerTypeTest extends SearchIntegrationTestCase
 {
     public function testCreate()
     {
@@ -25,17 +26,27 @@ class IntegerTypeTest extends FieldTypeTestCase
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
 
-        $this->assertTransformedEquals($field, 1, '1.678', '1');
-        $this->assertTransformedEquals($field, 1, '1', '1');
-        $this->assertTransformedEquals($field, -1, '-1', '-1');
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('1.678')
+            ->successfullyTransformsTo(1)
+            ->andReverseTransformsTo('1');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('1')
+            ->successfullyTransformsTo(1)
+            ->andReverseTransformsTo('1');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('-1')
+            ->successfullyTransformsTo(-1)
+            ->andReverseTransformsTo('-1');
     }
 
     public function testWrongInputFails()
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
 
-        $this->assertTransformedFails($field, 'foo');
-        $this->assertTransformedFails($field, '+1');
+        FieldTransformationAssertion::assertThat($field)->withInput('foo')->failsToTransforms();
     }
 
     public function testViewIsConfiguredProperly()
@@ -57,15 +68,5 @@ class IntegerTypeTest extends FieldTypeTestCase
 
         $this->assertEquals(2, $fieldView->vars['precision']);
         $this->assertFalse($fieldView->vars['grouping']);
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-    }
-
-    protected function getTestedType()
-    {
-        return 'integer';
     }
 }

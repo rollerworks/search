@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\IntegerToStringTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\ValuesBag;
@@ -47,8 +48,17 @@ class IntegerType extends AbstractFieldType
         $config->setValueComparison($this->valueComparison);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
         $config->setValueTypeSupport(ValuesBag::VALUE_TYPE_COMPARISON, true);
-        $config->addViewTransformer(
+
+        $config->setViewTransformer(
             new IntegerToLocalizedStringTransformer(
+                $options['precision'],
+                $options['grouping'],
+                $options['rounding_mode']
+            )
+        );
+
+        $config->setViewTransformer(
+            new IntegerToStringTransformer(
                 $options['precision'],
                 $options['grouping'],
                 $options['rounding_mode']
