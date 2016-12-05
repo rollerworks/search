@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -165,7 +167,7 @@ class XmlInput extends AbstractInput
                 $factory->addPatterMatch(
                     (string) $patternMatch['type'],
                     (string) $patternMatch,
-                    'true' === strtolower($patternMatch['case-insensitive'])
+                    'true' === strtolower((string) $patternMatch['case-insensitive'])
                 );
             }
         }
@@ -175,8 +177,8 @@ class XmlInput extends AbstractInput
 
     private function processRange($range, FieldValuesFactory $factory, $negative = false)
     {
-        $lowerInclusive = 'false' !== strtolower($range->lower['inclusive']);
-        $upperInclusive = 'false' !== strtolower($range->upper['inclusive']);
+        $lowerInclusive = 'false' !== strtolower((string) $range->lower['inclusive']);
+        $upperInclusive = 'false' !== strtolower((string) $range->upper['inclusive']);
 
         $lowerBound = (string) $range->lower;
         $upperBound = (string) $range->upper;

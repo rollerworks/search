@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -187,8 +189,8 @@ final class FieldValuesFactory
         )) {
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';
             $params = [
-                '{{ lower }}' => strpos($lower, ' ') ? "'".$lower."'" : $lower,
-                '{{ upper }}' => strpos($upper, ' ') ? "'".$upper."'" : $upper,
+                '{{ lower }}' => strpos((string) $lower, ' ') ? "'".$lower."'" : $lower,
+                '{{ upper }}' => strpos((string) $upper, ' ') ? "'".$upper."'" : $upper,
             ];
 
             $this->valuesBag->addError(

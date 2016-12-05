@@ -36,14 +36,14 @@ final class FieldTransformationAssertion
         return new self($field);
     }
 
-    public function withInput(string $inputView, string $inputNorm = null): self
+    public function withInput($inputView, $inputNorm = null): self
     {
         if ($this->transformed) {
             throw new \LogicException('Cannot change input after transformation.');
         }
 
-        $this->inputView = $inputView;
-        $this->inputNorm = null === $inputNorm ? $inputView : $inputNorm;
+        $this->inputView = (string) $inputView;
+        $this->inputNorm = null === $inputNorm ? $this->inputView : (string) $inputNorm;
 
         return $this;
     }
@@ -102,7 +102,7 @@ final class FieldTransformationAssertion
         }
     }
 
-    public function andReverseTransformsTo(string $expectedView = null, string $expectedNorm = null)
+    public function andReverseTransformsTo($expectedView = null, $expectedNorm = null)
     {
         if (!$this->transformed) {
             throw new \LogicException('successfullyTransformsTo() must be called first.');
