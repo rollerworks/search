@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -11,13 +9,8 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Value;
+namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\ValuesError;
-
-/**
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
-final class InvalidValue extends ValuesError
+final class ErrorList extends \ArrayObject
 {
 }

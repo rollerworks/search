@@ -209,33 +209,6 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Returns whether one or more fields in this group have errors.
-     *
-     * @param bool $deeper Also check the fields of deeper sub-groups.
-     *                     Default is false
-     *
-     * @return bool
-     */
-    public function hasErrors($deeper = false)
-    {
-        foreach ($this->fields as $field) {
-            if ($field->hasErrors()) {
-                return true;
-            }
-        }
-
-        if ($deeper) {
-            foreach ($this->groups as $group) {
-                if ($group->hasErrors(true)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Gets the total number of values in the fields list structure.
      *
      * @return int
@@ -278,9 +251,9 @@ class ValuesGroup implements \Serializable
      * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
-     * @param int
+     * @param string $groupLogical
      *
-     * @throws InvalidArgumentException When no an unsupported group logical is provided
+     * @throws InvalidArgumentException When an unsupported group logical is provided
      *
      * @return self
      */
@@ -291,7 +264,7 @@ class ValuesGroup implements \Serializable
         }
 
         if (!in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
-            throw new InvalidArgumentException('Unsupported group logical %s.', $groupLogical);
+            throw new InvalidArgumentException(sprintf('Unsupported group logical "%s".', $groupLogical));
         }
 
         $this->groupLogical = $groupLogical;

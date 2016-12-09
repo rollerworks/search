@@ -58,10 +58,6 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
      */
     public function process(SearchCondition $condition)
     {
-        if ($condition->getValuesGroup()->hasErrors(true)) {
-            return;
-        }
-
         krsort($this->optimizers, SORT_NUMERIC);
 
         foreach ($this->optimizers as $optimizers) {

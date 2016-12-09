@@ -45,7 +45,7 @@ class XmlExporter extends AbstractExporter
      *
      * @return string
      */
-    public function exportCondition(SearchCondition $condition, $formatOutput = true)
+    public function exportCondition(SearchCondition $condition, bool $formatOutput = true)
     {
         $this->document = new \DOMDocument('1.0', 'utf-8');
         $this->document->formatOutput = $formatOutput;
@@ -54,7 +54,7 @@ class XmlExporter extends AbstractExporter
         $searchRoot->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $searchRoot->setAttribute(
             'xsi:schemaLocation',
-            'http://rollerworks.github.io/search/input/schema/search http://rollerworks.github.io/schema/search/xml-input-1.0.xsd'
+            'http://rollerworks.github.io/search/input/schema/search http://rollerworks.github.io/schema/search/xml-input-2.0.xsd'
         );
 
         $searchRoot->setAttribute('logical', $condition->getValuesGroup()->getGroupLogical());
@@ -78,11 +78,6 @@ class XmlExporter extends AbstractExporter
         // no-op
     }
 
-    /**
-     * @param \DOMNode    $parent
-     * @param ValuesGroup $valuesGroup
-     * @param FieldSet    $fieldSet
-     */
     private function exportGroupNode(\DOMNode $parent, ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         $fields = $valuesGroup->getFields();
@@ -120,22 +115,16 @@ class XmlExporter extends AbstractExporter
         }
     }
 
-    /**
-     * @param ValuesBag $valuesBag
-     * @param \DOMNode  $parent
-     *
-     * @return \DOMNode
-     */
     private function exportValuesToNode(ValuesBag $valuesBag, \DOMNode $parent, FieldConfigInterface $field)
     {
         if ($valuesBag->hasSimpleValues()) {
-            $valuesNode = $this->document->createElement('single-values');
+            $valuesNode = $this->document->createElement('simple-values');
 
             foreach ($valuesBag->getSimpleValues() as $value) {
                 $element = $this->document->createElement('value');
                 $element->appendChild(
                     $this->document->createTextNode(
-                        $this->modelToView($value, $field)
+                        $this->modelToNorm($value, $field)
                     )
                 );
 
@@ -146,13 +135,13 @@ class XmlExporter extends AbstractExporter
         }
 
         if ($valuesBag->hasExcludedSimpleValues()) {
-            $valuesNode = $this->document->createElement('excluded-values');
+            $valuesNode = $this->document->createElement('excluded-simple-values');
 
             foreach ($valuesBag->getExcludedSimpleValues() as $value) {
                 $element = $this->document->createElement('value');
                 $element->appendChild(
                     $this->document->createTextNode(
-                        $this->modelToView($value, $field)
+                        $this->modelToNorm($value, $field)
                     )
                 );
 
@@ -189,7 +178,7 @@ class XmlExporter extends AbstractExporter
                 $element = $this->document->createElement('compare');
                 $element->setAttribute('operator', $value->getOperator());
                 $element->appendChild(
-                    $this->document->createTextNode($this->modelToView($value->getValue(), $field))
+                    $this->document->createTextNode($this->modelToNorm($value->getValue(), $field))
                 );
 
                 $valuesNode->appendChild($element);
@@ -216,19 +205,13 @@ class XmlExporter extends AbstractExporter
         }
     }
 
-    /**
-     * @param \DOMNode $parent
-     * @param Range    $range
-     *
-     * @return array
-     */
     private function exportRangeValueToNode(\DOMNode $parent, Range $range, FieldConfigInterface $field)
     {
         $rangeNode = $this->document->createElement('range');
 
         $element = $this->document->createElement('lower');
         $element->appendChild(
-            $this->document->createTextNode($this->modelToView($range->getLower(), $field))
+            $this->document->createTextNode($this->modelToNorm($range->getLower(), $field))
         );
 
         if (!$range->isLowerInclusive()) {
@@ -239,7 +222,7 @@ class XmlExporter extends AbstractExporter
 
         $element = $this->document->createElement('upper');
         $element->appendChild(
-            $this->document->createTextNode($this->modelToView($range->getUpper(), $field))
+            $this->document->createTextNode($this->modelToNorm($range->getUpper(), $field))
         );
 
         if (!$range->isUpperInclusive()) {

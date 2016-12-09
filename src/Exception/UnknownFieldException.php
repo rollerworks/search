@@ -16,32 +16,19 @@ namespace Rollerworks\Component\Search\Exception;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class UnknownFieldException extends InputProcessorException
+final class UnknownFieldException extends InputProcessorException
 {
-    /**
-     * @var string
-     */
-    private $fieldName;
-
     /**
      * Constructor.
      *
      * @param string $fieldName
      */
-    public function __construct($fieldName)
+    public function __construct(string $fieldName)
     {
-        $this->fieldName = $fieldName;
-
         parent::__construct(
-            sprintf('Field "%s" is not registered in the FieldSet or available as alias.', $fieldName)
+            '',
+            'Field {{ field }} is not registered in the FieldSet or available as alias.',
+            ['{{ field }}' => $fieldName]
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function getFieldName()
-    {
-        return $this->fieldName;
     }
 }

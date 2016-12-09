@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Input;
 
+use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
-use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
-use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\InputProcessorInterface;
 
 /**
@@ -32,20 +32,32 @@ abstract class AbstractInput implements InputProcessorInterface
     protected $config;
 
     /**
+     * Error messages.
+     *
+     * Must be an ErrorList to allow passing by reference
+     * in the FieldValuesByViewFactory.
+     *
+     * @var ConditionErrorMessage[]|ErrorList
+     */
+    protected $errors = [];
+
+    /**
+     * Current nesting level.
+     *
+     * @var int
+     */
+    protected $level = 0;
+
+    /**
      * Checks if the maximum group nesting level is exceeded.
      *
-     * @param int $groupIdx
-     * @param int $nestingLevel
-     *
-     * @throws GroupsNestingException
+     * @param string $path
      */
-    protected function validateGroupNesting($groupIdx, $nestingLevel)
+    protected function validateGroupNesting(string $path)
     {
-        if ($nestingLevel > $this->config->getMaxNestingLevel()) {
+        if ($this->level > $this->config->getMaxNestingLevel()) {
             throw new GroupsNestingException(
-                $this->config->getMaxNestingLevel(),
-                $groupIdx,
-                $nestingLevel
+                $this->config->getMaxNestingLevel(), $path
             );
         }
     }
@@ -53,33 +65,26 @@ abstract class AbstractInput implements InputProcessorInterface
     /**
      * Checks if the maximum group count is exceeded.
      *
-     * @param int $groupIdx
-     * @param int $count
-     * @param int $nestingLevel
-     *
-     * @throws GroupsOverflowException
+     * @param int    $count
+     * @param string $path
      */
-    protected function validateGroupsCount($groupIdx, $count, $nestingLevel)
+    protected function validateGroupsCount(int $count, string $path)
     {
         if ($count > $this->config->getMaxGroups()) {
-            throw new GroupsOverflowException($this->config->getMaxGroups(), $count, $groupIdx, $nestingLevel);
+            throw new GroupsOverflowException($this->config->getMaxGroups(), $path);
         }
     }
 
     /**
-     * Checks if the given field accepts the given value-type.
+     * Ensure the nesting level returned to 0.
      *
-     * @param FieldConfigInterface $fieldConfig
-     * @param string               $type
-     *
-     * @throws UnsupportedValueTypeException
-     *
-     * @deprecated
+     * This method is called after processing and helps with
+     * finding bugs.
      */
-    protected function assertAcceptsType(FieldConfigInterface $fieldConfig, $type)
+    protected function assertLevel0()
     {
-        if (!$fieldConfig->supportValueType($type)) {
-            throw new UnsupportedValueTypeException($fieldConfig->getName(), $type);
+        if ($this->level > 0) {
+            throw new \RuntimeException('Level nesting is not reset to 0, please report this bug.');
         }
     }
 }

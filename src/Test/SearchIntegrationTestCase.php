@@ -14,12 +14,17 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Test;
 
 use PHPUnit\Framework\TestCase;
+use Rollerworks\Component\Search\Exception\ExceptionInterface;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldSetBuilder;
+use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
+use Rollerworks\Component\Search\Tests\Input\InputProcessorTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -112,5 +117,36 @@ abstract class SearchIntegrationTestCase extends TestCase
         ];
 
         self::assertEquals($expectedArray, $resultArray);
+    }
+
+    protected function assertConditionEquals(
+        $input,
+        SearchCondition $condition,
+        InputProcessorInterface $processor,
+        ProcessorConfig $config
+    ) {
+        try {
+            self::assertEquals($condition, $processor->process($config, $input));
+        } catch (\Exception $e) {
+            InputProcessorTestCase::detectSystemException($e);
+
+            if (function_exists('dump')) {
+                dump($e);
+            } else {
+                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.'.PHP_EOL;
+
+                // Don't use var-dump or print-r as this crashes php...
+                echo get_class($e).'::'.(string) $e;
+            }
+
+            $this->fail('Condition contains errors.');
+        }
+    }
+
+    protected static function detectSystemException(\Exception $exception)
+    {
+        if (!$exception instanceof ExceptionInterface) {
+            throw $exception;
+        }
     }
 }

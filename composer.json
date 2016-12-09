@@ -27,7 +27,7 @@
         "phpunit/phpunit": "^5.7.2",
         "phpspec/prophecy": "^1.6.2",
         "symfony/phpunit-bridge": "^3.1.6",
-        "symfony/debug": "^3.1.6",
+        "symfony/var-dumper": "^3.2",
         "sllh/php-cs-fixer-styleci-bridge": "^2.0"
     },
     "autoload": {

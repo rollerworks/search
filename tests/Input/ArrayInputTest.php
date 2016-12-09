@@ -13,10 +13,15 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
+use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Input\ArrayInput;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValuesError;
 
+/**
+ * ArrayInputTest.
+ *
+ * Note. Array's are zero indexed, and so are there error paths.
+ */
 final class ArrayInputTest extends InputProcessorTestCase
 {
     /**
@@ -41,8 +46,8 @@ final class ArrayInputTest extends InputProcessorTestCase
                 [
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value', 'value2', '٤٤٤٦٥٤٦٠٠', '30', '30L'],
-                            'excluded-values' => ['value3'],
+                            'simple-values' => ['value', 'value2', '٤٤٤٦٥٤٦٠٠', '30', '30L'],
+                            'excluded-simple-values' => ['value3'],
                         ],
                     ],
                 ],
@@ -57,10 +62,10 @@ final class ArrayInputTest extends InputProcessorTestCase
                 [
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value', 'value2'],
+                            'simple-values' => ['value', 'value2'],
                         ],
                         'date' => [
-                            'single-values' => ['12-16-2014'],
+                            'simple-values' => ['2014-12-16T00:00:00Z'],
                         ],
                     ],
                 ],
@@ -87,7 +92,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                         ],
                         'date' => [
                             'ranges' => [
-                                ['lower' => '12-16-2014', 'upper' => '12-20-2014'],
+                                ['lower' => '2014-12-16T00:00:00Z', 'upper' => '2014-12-20T00:00:00Z'],
                             ],
                         ],
                     ],
@@ -113,7 +118,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                         ],
                         'date' => [
                             'comparisons' => [
-                                ['value' => '12-16-2014', 'operator' => '>='],
+                                ['value' => '2014-12-16T00:00:00Z', 'operator' => '>='],
                             ],
                         ],
                     ],
@@ -155,14 +160,14 @@ final class ArrayInputTest extends InputProcessorTestCase
                 [
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value', 'value2'],
+                            'simple-values' => ['value', 'value2'],
                         ],
                     ],
                     'groups' => [
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value3', 'value4'],
+                                    'simple-values' => ['value3', 'value4'],
                                 ],
                             ],
                         ],
@@ -170,7 +175,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                             'logical-case' => 'OR',
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value8', 'value10'],
+                                    'simple-values' => ['value8', 'value10'],
                                 ],
                             ],
                         ],
@@ -187,7 +192,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                 [
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value', 'value2'],
+                            'simple-values' => ['value', 'value2'],
                         ],
                     ],
                 ],
@@ -197,7 +202,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                     'logical-case' => 'AND',
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value', 'value2'],
+                            'simple-values' => ['value', 'value2'],
                         ],
                     ],
                 ],
@@ -207,7 +212,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                     'logical-case' => 'OR',
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value', 'value2'],
+                            'simple-values' => ['value', 'value2'],
                         ],
                     ],
                 ],
@@ -225,14 +230,14 @@ final class ArrayInputTest extends InputProcessorTestCase
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value', 'value2'],
+                                    'simple-values' => ['value', 'value2'],
                                 ],
                             ],
                         ],
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value3', 'value4'],
+                                    'simple-values' => ['value3', 'value4'],
                                 ],
                             ],
                         ],
@@ -253,7 +258,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                                 [
                                     'fields' => [
                                         'name' => [
-                                            'single-values' => ['value', 'value2'],
+                                            'simple-values' => ['value', 'value2'],
                                         ],
                                     ],
                                 ],
@@ -272,14 +277,12 @@ final class ArrayInputTest extends InputProcessorTestCase
                 [
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value', 'value2', 'value3', 'value4'],
+                            'simple-values' => ['value', 'value2', 'value3', 'value4'],
                         ],
                     ],
                 ],
                 'name',
-                3,
-                0,
-                0,
+                '[fields][name][simple-values][3]',
             ],
             [
                 [
@@ -287,16 +290,14 @@ final class ArrayInputTest extends InputProcessorTestCase
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value', 'value2', 'value3', 'value4'],
+                                    'simple-values' => ['value', 'value2', 'value3', 'value4'],
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'name',
-                3,
-                0,
-                1,
+                '[groups][0][fields][name][simple-values][3]',
             ],
             [
                 [
@@ -306,7 +307,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                                 [
                                     'fields' => [
                                         'name' => [
-                                            'single-values' => ['value', 'value2', 'value3', 'value4'],
+                                            'simple-values' => ['value', 'value2', 'value3', 'value4'],
                                         ],
                                     ],
                                 ],
@@ -315,9 +316,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                     ],
                 ],
                 'name',
-                3,
-                0,
-                2,
+                '[groups][0][groups][0][fields][name][simple-values][3]',
             ],
             [
                 [
@@ -327,14 +326,14 @@ final class ArrayInputTest extends InputProcessorTestCase
                                 [
                                     'fields' => [
                                         'name' => [
-                                            'single-values' => ['value', 'value2'],
+                                            'simple-values' => ['value', 'value2'],
                                         ],
                                     ],
                                 ],
                                 [
                                     'fields' => [
                                         'name' => [
-                                            'single-values' => ['value', 'value2', 'value3', 'value4'],
+                                            'simple-values' => ['value', 'value2', 'value3', 'value4'],
                                         ],
                                     ],
                                 ],
@@ -343,9 +342,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                     ],
                 ],
                 'name',
-                3,
-                1,
-                2,
+                '[groups][0][groups][1][fields][name][simple-values][3]',
             ],
         ];
     }
@@ -359,37 +356,34 @@ final class ArrayInputTest extends InputProcessorTestCase
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value', 'value2'],
+                                    'simple-values' => ['value', 'value2'],
                                 ],
                             ],
                         ],
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value', 'value2'],
+                                    'simple-values' => ['value', 'value2'],
                                 ],
                             ],
                         ],
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value', 'value2'],
+                                    'simple-values' => ['value', 'value2'],
                                 ],
                             ],
                         ],
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value', 'value2'],
+                                    'simple-values' => ['value', 'value2'],
                                 ],
                             ],
                         ],
                     ],
                 ],
-                3,
-                4,
-                0,
-                0,
+                '',
             ],
             [
                 [
@@ -401,7 +395,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                                         [
                                             'fields' => [
                                                 'name' => [
-                                                    'single-values' => ['value', 'value2'],
+                                                    'simple-values' => ['value', 'value2'],
                                                 ],
                                             ],
                                         ],
@@ -412,28 +406,28 @@ final class ArrayInputTest extends InputProcessorTestCase
                                         [
                                             'fields' => [
                                                 'name' => [
-                                                    'single-values' => ['value', 'value2'],
+                                                    'simple-values' => ['value', 'value2'],
                                                 ],
                                             ],
                                         ],
                                         [
                                             'fields' => [
                                                 'name' => [
-                                                    'single-values' => ['value', 'value2'],
+                                                    'simple-values' => ['value', 'value2'],
                                                 ],
                                             ],
                                         ],
                                         [
                                             'fields' => [
                                                 'name' => [
-                                                    'single-values' => ['value', 'value2'],
+                                                    'simple-values' => ['value', 'value2'],
                                                 ],
                                             ],
                                         ],
                                         [
                                             'fields' => [
                                                 'name' => [
-                                                    'single-values' => ['value', 'value2'],
+                                                    'simple-values' => ['value', 'value2'],
                                                 ],
                                             ],
                                         ],
@@ -443,10 +437,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                         ],
                     ],
                 ],
-            3,
-            4,
-            1,
-            2,
+                '[groups][0][groups][1]',
             ],
         ];
     }
@@ -462,7 +453,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                                 [
                                     'fields' => [
                                         'name' => [
-                                            'single-values' => ['value', 'value2'],
+                                            'simple-values' => ['value', 'value2'],
                                         ],
                                     ],
                                 ],
@@ -470,6 +461,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                         ],
                     ],
                 ],
+                '[groups][0][groups][0]',
             ],
         ];
     }
@@ -481,7 +473,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                 [
                     'fields' => [
                         'field2' => [
-                            'single-values' => ['value', 'value2'],
+                            'simple-values' => ['value', 'value2'],
                         ],
                     ],
                 ],
@@ -539,81 +531,6 @@ final class ArrayInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideFieldRequiredTests()
-    {
-        return [
-            [
-                [
-                    'fields' => [
-                        'field1' => [
-                            'single-values' => ['value', 'value2'],
-                        ],
-                    ],
-                ],
-                'field2',
-                0,
-                0,
-            ],
-            [
-                [
-                    'fields' => [
-                        'field1' => [
-                            'single-values' => ['value', 'value2'],
-                        ],
-                    ],
-                    'groups' => [
-                        [
-                            'fields' => [
-                                'field1' => [
-                                    'single-values' => ['value', 'value2'],
-                                ],
-                            ],
-                            'groups' => [
-                                [
-                                    'fields' => [
-                                        'field1' => [
-                                            'single-values' => ['value', 'value2'],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                'field2',
-                0,
-                2,
-            ],
-            [
-                [
-                    'groups' => [
-                        [
-                            'groups' => [
-                                [
-                                    'fields' => [
-                                        'field2' => [
-                                            'single-values' => ['value'],
-                                        ],
-                                    ],
-                                ],
-                                [
-                                    'fields' => [
-                                        'field1' => [
-                                            'single-values' => ['value', 'value2'],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                'field2',
-                1,
-                2,
-            ],
-        ];
-    }
-
     /**
      * @return array[]
      */
@@ -632,6 +549,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                         ],
                     ],
                 ],
+                ['[fields][id][ranges][0]', '[fields][id][ranges][2]'],
             ],
             [
                 [
@@ -645,7 +563,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                         ],
                     ],
                 ],
-                true,
+                ['[fields][id][excluded-ranges][0]', '[fields][id][excluded-ranges][2]'],
             ],
         ];
     }
@@ -657,16 +575,34 @@ final class ArrayInputTest extends InputProcessorTestCase
                 [
                     'fields' => [
                         'id' => [
-                            'single-values' => ['foo', '30', 'bar'],
+                            'simple-values' => ['foo', '30', 'bar'],
                             'comparisons' => [['operator' => '>', 'value' => 'life']],
                         ],
                     ],
                 ],
-                'id',
                 [
-                    new ValuesError('singleValues[0]', 'This value is not valid.'),
-                    new ValuesError('singleValues[2]', 'This value is not valid.'),
-                    new ValuesError('comparisons[0].value', 'This value is not valid.'),
+                    new ConditionErrorMessage('[fields][id][simple-values][0]', 'This value is not valid.'),
+                    new ConditionErrorMessage('[fields][id][simple-values][2]', 'This value is not valid.'),
+                    new ConditionErrorMessage('[fields][id][comparisons][0][value]', 'This value is not valid.'),
+                ],
+            ],
+            [
+                [
+                    'fields' => [
+                        'id' => [
+                            'simple-values' => ['foo', '30', 'bar'],
+                            'comparisons' => [['operator' => '>?', 'value' => '30']],
+                        ],
+                    ],
+                ],
+                [
+                    new ConditionErrorMessage('[fields][id][simple-values][0]', 'This value is not valid.'),
+                    new ConditionErrorMessage('[fields][id][simple-values][2]', 'This value is not valid.'),
+                    ConditionErrorMessage::withMessageTemplate(
+                        '[fields][id][comparisons][0][operator]',
+                        'Unknown Comparison operator "{{ operator }}".',
+                        ['{{ operator }}' => '>?']
+                    ),
                 ],
             ],
         ];
@@ -683,20 +619,25 @@ final class ArrayInputTest extends InputProcessorTestCase
                                 [
                                     'fields' => [
                                         'date' => [
-                                            'single-values' => ['value'],
+                                            'simple-values' => ['value'],
                                         ],
                                     ],
                                 ],
                                 [
                                     'fields' => [
                                         'date' => [
-                                            'single-values' => ['value', 'value2'],
+                                            'simple-values' => ['value', 'value2'],
                                         ],
                                     ],
                                 ],
                             ],
                         ],
                     ],
+                ],
+                [
+                    new ConditionErrorMessage('[groups][0][groups][0][fields][date][simple-values][0]', 'This value is not valid.'),
+                    new ConditionErrorMessage('[groups][0][groups][1][fields][date][simple-values][0]', 'This value is not valid.'),
+                    new ConditionErrorMessage('[groups][0][groups][1][fields][date][simple-values][1]', 'This value is not valid.'),
                 ],
             ],
         ];

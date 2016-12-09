@@ -82,7 +82,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideSingleValuePairTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideSingleValuePairTest());
+        $this->assertConditionEquals($this->provideSingleValuePairTest(), $condition, $processor, $config);
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideMultipleValuesTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideSingleValuePairTest());
+        $this->assertConditionEquals($this->provideMultipleValuesTest(), $condition, $processor, $config);
     }
 
     /**
@@ -152,7 +152,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideRangeValuesTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideSingleValuePairTest());
+        $this->assertConditionEquals($this->provideRangeValuesTest(), $condition, $processor, $config);
     }
 
     /**
@@ -187,7 +187,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideComparisonValuesTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideComparisonValuesTest());
+        $this->assertConditionEquals($this->provideComparisonValuesTest(), $condition, $processor, $config);
     }
 
     /**
@@ -222,7 +222,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideMatcherValuesTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideMatcherValuesTest());
+        $this->assertConditionEquals($this->provideMatcherValuesTest(), $condition, $processor, $config);
     }
 
     /**
@@ -265,7 +265,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideGroupTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideGroupTest());
+        $this->assertConditionEquals($this->provideGroupTest(), $condition, $processor, $config);
     }
 
     /**
@@ -303,7 +303,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideMultipleSubGroupTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideMultipleSubGroupTest());
+        $this->assertConditionEquals($this->provideMultipleSubGroupTest(), $condition, $processor, $config);
     }
 
     /**
@@ -335,7 +335,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideNestedGroupTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideNestedGroupTest());
+        $this->assertConditionEquals($this->provideNestedGroupTest(), $condition, $processor, $config);
     }
 
     /**
@@ -353,14 +353,11 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
         $expectedGroup = new ValuesGroup();
 
-        $values = new ValuesBag();
-        $expectedGroup->addField('name', $values);
-
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
         $this->assertExportEquals($this->provideEmptyValuesTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideEmptyValuesTest());
+        $this->assertConditionEquals($this->provideEmptyValuesTest(), $condition, $processor, $config);
     }
 
     /**
@@ -383,7 +380,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideEmptyGroupTest(), $exporter->exportCondition($condition));
 
         $processor = $this->getInputProcessor();
-        $processor->process($config, $this->provideEmptyGroupTest());
+        $this->assertConditionEquals($this->provideEmptyGroupTest(), $condition, $processor, $config);
     }
 
     /**

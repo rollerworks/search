@@ -7,38 +7,30 @@
                 <target>Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>Field {{ field }} does not accept comparison values.</source>
-                <target>Field {{ field }} does not accept comparison values.</target>
+                <source>Field {{ field }} does not accept {{ type }} values.</source>
+                <target>Field {{ field }} does not accept {{ type }} values.</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>Field {{ field }} does not accept range values.</source>
-                <target>Field {{ field }} does not accept range values.</target>
-            </trans-unit>
-            <trans-unit id="4">
-                <source>Field {{ field }} does not accept pattern values.</source>
-                <target>Field {{ field }} does not accept pattern values.</target>
-            </trans-unit>
-            <trans-unit id="5">
                 <source>Field {{ field }} is not registered in the FieldSet or available as alias.</source>
                 <target>Field {{ field }} is not registered in the FieldSet or available as alias.</target>
             </trans-unit>
+            <trans-unit id="4">
+                <source>Group exceeds maximum nesting level of {{ max }}.</source>
+                <target>Group exceeds maximum nesting level of {{ max }}.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>Group exceeds maximum number of groups {{ max }}.</source>
+                <target>Group exceeds maximum number of groups {{ max }}.</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>Field {{ field }} value exceeds the maximum number of values per group {{ max }}.</source>
+                <target>Field {{ field }} value exceeds the maximum number of values per group {{ max }}.</target>
+            </trans-unit>
             <trans-unit id="7">
-                <source>Group {{ group }} at nesting level {{ nesting }} exceeds maximum nesting level of {{ max }}.</source>
-                <target>Group {{ group }} at nesting level {{ nesting }} exceeds maximum nesting level of {{ max }}.</target>
-            </trans-unit>
-            <trans-unit id="8">
-                <source>Group {{ group }} at nesting level {{ nesting }} exceeds maximum number of groups, maximum: {{ max }}, total of groups: {{ count }}.</source>
-                <target>Group {{ group }} at nesting level {{ nesting }} exceeds maximum number of groups, maximum: {{ max }}, total of groups: {{ count }}.</target>
-            </trans-unit>
-            <trans-unit id="9">
-                <source>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</source>
-                <target>Field {{ field }} in group {{ group }} at nesting level {{ nesting }} exceeds the maximum number values per group, maximum: {{ max }}, total of values: {{ count }}.</target>
-            </trans-unit>
-            <trans-unit id="10">
                 <source>This value is not a valid birthday or age.</source>
                 <target>This value is not a valid birthday or age.</target>
             </trans-unit>
-            <trans-unit id="11">
+            <trans-unit id="8">
                 <source>This value is not a valid birthday.</source>
                 <target>This value is not a valid birthday.</target>
             </trans-unit>

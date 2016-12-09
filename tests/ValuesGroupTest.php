@@ -16,7 +16,6 @@ namespace Rollerworks\Component\Search\Tests;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValuesError;
 
 final class ValuesGroupTest extends TestCase
 {
@@ -129,49 +128,5 @@ final class ValuesGroupTest extends TestCase
 
         self::assertEquals($group, $valuesGroup->getGroup(0));
         self::assertEquals($group2, $valuesGroup->getGroup(1));
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_have_no_errors_by_default()
-    {
-        $valuesGroup = new ValuesGroup();
-
-        self::assertEquals(false, $valuesGroup->hasErrors());
-        self::assertEquals(false, $valuesGroup->hasErrors(true));
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_only_errors_when_field_has_errors()
-    {
-        $valuesGroup = new ValuesGroup();
-
-        $field = new ValuesBag();
-        $field->addError(new ValuesError('value', 'whoops'));
-        $valuesGroup->addField('user', $field);
-
-        self::assertEquals(true, $valuesGroup->hasErrors());
-        self::assertEquals(true, $valuesGroup->hasErrors(true));
-    }
-
-    /**
-     * @test
-     */
-    public function it_supports_finding_errors_in_nested_groups()
-    {
-        $valuesGroup = new ValuesGroup();
-
-        $field = new ValuesBag();
-        $field->addError(new ValuesError('value', 'whoops'));
-
-        $group = new ValuesGroup();
-        $group->addField('user', $field);
-        $valuesGroup->addGroup($group);
-
-        self::assertEquals(false, $valuesGroup->hasErrors()); // current level has no errors
-        self::assertEquals(true, $valuesGroup->hasErrors(true)); // deeper level with errors
     }
 }
