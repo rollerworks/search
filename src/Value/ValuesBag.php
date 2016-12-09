@@ -13,9 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Value;
 
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Exception\ValuesStructureIsLocked;
-
 /**
  * A ValuesBag holds all the values per type.
  *
@@ -41,12 +38,11 @@ class ValuesBag implements \Countable, \Serializable
      */
     const VALUE_TYPE_PATTERN_MATCH = 'pattern-match';
 
+    private $valuesCount = 0;
     private $simpleValues = [];
     private $simpleExcludedValues = [];
-    private $values = [];
 
-    private $valuesCount = 0;
-    private $locked = false;
+    private $values = [];
 
     /**
      * @return int
@@ -67,7 +63,6 @@ class ValuesBag implements \Countable, \Serializable
                 $this->simpleExcludedValues,
                 $this->values,
                 $this->valuesCount,
-                $this->locked,
             ]
         );
     }
@@ -83,57 +78,8 @@ class ValuesBag implements \Countable, \Serializable
             $this->simpleValues,
             $this->simpleExcludedValues,
             $this->values,
-            $this->valuesCount,
-            $this->locked) = $data;
-    }
-
-    /**
-     * Sets the values data is locked.
-     *
-     * After calling this method, setter methods can be no longer called.
-     *
-     * @param bool $locked
-     *
-     * @throws BadMethodCallException when the data is locked
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0. Use ensureDataLocked() instead
-     */
-    public function setDataLocked($locked = true)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0. Use ensureDataLocked() instead.', E_USER_DEPRECATED);
-
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
-        $this->locked = $locked;
-    }
-
-    /**
-     * Returns whether the field's data is locked.
-     *
-     * A field with locked data is restricted to the data passed in
-     * this configuration.
-     *
-     * @return bool Whether the data is locked
-     */
-    public function isDataLocked()
-    {
-        return $this->locked;
-    }
-
-    /**
-     * Sets the data is locked (if not already locked).
-     *
-     * A ValuesBag with locked data is restricted to the current data.
-     *
-     * @return $this
-     */
-    public function ensureDataLocked()
-    {
-        $this->locked = true;
-
-        return $this;
+            $this->valuesCount
+        ) = $data;
     }
 
     /**
@@ -151,10 +97,6 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addSimpleValue($value)
     {
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
         $this->simpleValues[] = $value;
 
         ++$this->valuesCount;
@@ -175,12 +117,8 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      */
-    public function removeSimpleValue($index)
+    public function removeSimpleValue(int $index)
     {
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
         if (isset($this->simpleValues[$index])) {
             unset($this->simpleValues[$index]);
 
@@ -205,10 +143,6 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function addExcludedSimpleValue($value)
     {
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
         $this->simpleExcludedValues[] = $value;
         ++$this->valuesCount;
 
@@ -218,7 +152,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return bool
      */
-    public function hasExcludedSimpleValues()
+    public function hasExcludedSimpleValues(): bool
     {
         return count($this->simpleExcludedValues) > 0;
     }
@@ -230,12 +164,8 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return $this
      */
-    public function removeExcludedSimpleValue($index)
+    public function removeExcludedSimpleValue(int $index)
     {
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
         if (isset($this->simpleExcludedValues[$index])) {
             unset($this->simpleExcludedValues[$index]);
 
@@ -252,7 +182,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return ValueHolder[]
      */
-    public function get($type)
+    public function get(string $type)
     {
         if (!isset($this->values[$type])) {
             return [];
@@ -268,7 +198,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @return bool
      */
-    public function has($type)
+    public function has(string $type): bool
     {
         return isset($this->values[$type]) && count($this->values[$type]) > 0;
     }
@@ -276,17 +206,13 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * Remove a value by type and index.
      *
-     * @param string    $type
-     * @param int|int[] $index
+     * @param string $type
+     * @param int    $index
      *
      * @return ValuesBag New ValuesBag object with the referenced values removed
      */
-    public function remove($type, $index)
+    public function remove(string $type, int $index)
     {
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
         if (isset($this->values[$type][$index])) {
             unset($this->values[$type][$index]);
 
@@ -299,16 +225,12 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * Add a value to the bag.
      *
-     * @param ValueHolder|ValueHolder[] $value
+     * @param ValueHolder $value
      *
      * @return $this
      */
     public function add(ValueHolder $value)
     {
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
         $this->values[get_class($value)][] = $value;
 
         ++$this->valuesCount;

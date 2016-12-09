@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Value;
 
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
 /**
@@ -44,27 +43,13 @@ class ValuesGroup implements \Serializable
     private $groupLogical;
 
     /**
-     * @var bool
-     */
-    private $locked = false;
-
-    /**
-     * Total number of values.
-     *
-     * This value is lazy initialized.
-     *
-     * @var int|null
-     */
-    private $count;
-
-    /**
      * Constructor.
      *
      * @param string $groupLogical
      *
      * @throws InvalidArgumentException When no an unsupported group logical is provided
      */
-    public function __construct($groupLogical = self::GROUP_LOGICAL_AND)
+    public function __construct(string $groupLogical = self::GROUP_LOGICAL_AND)
     {
         $this->setGroupLogical($groupLogical);
     }
@@ -76,10 +61,6 @@ class ValuesGroup implements \Serializable
      */
     public function addGroup(ValuesGroup $group)
     {
-        if ($this->locked) {
-            $this->throwLocked();
-        }
-
         $this->groups[] = $group;
 
         return $this;
@@ -88,7 +69,7 @@ class ValuesGroup implements \Serializable
     /**
      * @return bool
      */
-    public function hasGroups()
+    public function hasGroups(): bool
     {
         return count($this->groups) > 0;
     }
@@ -100,7 +81,7 @@ class ValuesGroup implements \Serializable
      *
      * @return ValuesGroup
      */
-    public function getGroup($index)
+    public function getGroup(int $index)
     {
         if (!isset($this->groups[$index])) {
             throw new InvalidArgumentException(
@@ -124,12 +105,8 @@ class ValuesGroup implements \Serializable
      *
      * @return self
      */
-    public function removeGroup($index)
+    public function removeGroup(int $index)
     {
-        if ($this->locked) {
-            $this->throwLocked();
-        }
-
         if (isset($this->groups[$index])) {
             unset($this->groups[$index]);
         }
@@ -143,12 +120,8 @@ class ValuesGroup implements \Serializable
      *
      * @return self
      */
-    public function addField($name, ValuesBag $values)
+    public function addField(string $name, ValuesBag $values)
     {
-        if ($this->locked) {
-            $this->throwLocked();
-        }
-
         $this->fields[$name] = $values;
 
         return $this;
@@ -159,7 +132,7 @@ class ValuesGroup implements \Serializable
      *
      * @return bool
      */
-    public function hasField($name)
+    public function hasField(string $name)
     {
         return isset($this->fields[$name]);
     }
@@ -179,7 +152,7 @@ class ValuesGroup implements \Serializable
      *
      * @return ValuesBag
      */
-    public function getField($name)
+    public function getField(string $name)
     {
         if (!isset($this->fields[$name])) {
             throw new InvalidArgumentException(
@@ -195,12 +168,8 @@ class ValuesGroup implements \Serializable
      *
      * @return self
      */
-    public function removeField($name)
+    public function removeField(string $name)
     {
-        if ($this->locked) {
-            $this->throwLocked();
-        }
-
         if (isset($this->fields[$name])) {
             unset($this->fields[$name]);
         }
@@ -209,24 +178,17 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Gets the total number of values in the fields list structure.
+     * Gets the total number of values
+     * in the fields list structure.
      *
      * @return int
      */
-    public function countValues()
+    public function countValues(): int
     {
-        if (null !== $this->count) {
-            return $this->count;
-        }
-
         $count = 0;
 
         foreach ($this->fields as $field) {
             $count += $field->count();
-        }
-
-        if ($this->locked) {
-            $this->count = $count;
         }
 
         return $count;
@@ -240,7 +202,7 @@ class ValuesGroup implements \Serializable
      *
      * @return string
      */
-    public function getGroupLogical()
+    public function getGroupLogical(): string
     {
         return $this->groupLogical;
     }
@@ -259,10 +221,6 @@ class ValuesGroup implements \Serializable
      */
     public function setGroupLogical($groupLogical)
     {
-        if ($this->locked) {
-            $this->throwLocked();
-        }
-
         if (!in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
             throw new InvalidArgumentException(sprintf('Unsupported group logical "%s".', $groupLogical));
         }
@@ -282,8 +240,6 @@ class ValuesGroup implements \Serializable
                 $this->groupLogical,
                 $this->groups,
                 $this->fields,
-                $this->locked,
-                $this->count,
             ]
         );
     }
@@ -298,59 +254,6 @@ class ValuesGroup implements \Serializable
         list(
             $this->groupLogical,
             $this->groups,
-            $this->fields,
-            $this->locked,
-            $this->count
-        ) = $data;
-    }
-
-    /**
-     * Sets the ValuesGroup graph data is locked.
-     *
-     * After calling this method, setter methods can be no longer called.
-     *
-     * @param bool $locked
-     *
-     * @throws BadMethodCallException when the data is locked
-     *
-     * @return self
-     */
-    public function setDataLocked($locked = true)
-    {
-        if ($this->locked) {
-            $this->throwLocked();
-        }
-
-        $this->locked = $locked;
-
-        foreach ($this->fields as $field) {
-            $field->setDataLocked();
-        }
-
-        foreach ($this->groups as $group) {
-            $group->setDataLocked();
-        }
-
-        return $this;
-    }
-
-    /**
-     * Returns whether the field's data is locked.
-     *
-     * A field with locked data is restricted to the data passed in
-     * its configuration.
-     *
-     * @return bool Whether the data is locked
-     */
-    public function isDataLocked()
-    {
-        return $this->locked;
-    }
-
-    protected function throwLocked()
-    {
-        throw new BadMethodCallException(
-            'ValuesGroup setter methods cannot be accessed anymore once the data is locked.'
-        );
+            $this->fields) = $data;
     }
 }
