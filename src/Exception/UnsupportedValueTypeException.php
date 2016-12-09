@@ -18,47 +18,25 @@ namespace Rollerworks\Component\Search\Exception;
  *
  * Throw this exception when the value-type is not supported for the field.
  */
-class UnsupportedValueTypeException extends InputProcessorException
+final class UnsupportedValueTypeException extends InputProcessorException
 {
-    /**
-     * @var string
-     */
-    private $fieldName;
-
-    /**
-     * @var string
-     */
-    private $valueType;
-
     /**
      * Constructor.
      *
      * @param string $fieldName
      * @param string $valueType
      */
-    public function __construct($fieldName, $valueType)
+    public function __construct(string $fieldName, string $valueType)
     {
-        $this->fieldName = $fieldName;
-        $this->valueType = $valueType;
-
         parent::__construct(
-            sprintf('Field "%s" does not accept %s values.', $fieldName, $valueType)
+            '',
+            'Field {{ field }} does not accept {{ type }} values.',
+            [
+                '{{ field }}' => $fieldName,
+                '{{ type }}' => $valueType,
+            ]
         );
-    }
 
-    /**
-     * @return string
-     */
-    public function getValueType()
-    {
-        return $this->valueType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFieldName()
-    {
-        return $this->fieldName;
+        $this->setTranslatedParameters(['{{ type }}']);
     }
 }

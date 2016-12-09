@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
-use Rollerworks\Component\Search\Exception\ExceptionInterface;
+use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
@@ -34,7 +34,6 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValuesError;
 
 abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 {
@@ -76,20 +75,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     }
 
     /**
-     * @param mixed $input
-     *
-     * @test
-     * @dataProvider provideEmptyInputTests
-     */
-    public function it_returns_null_on_empty_input($input)
-    {
-        $processor = $this->getProcessor();
-        $config = new ProcessorConfig($this->getFieldSet());
-
-        self::assertNull($processor->process($config, $input));
-    }
-
-    /**
      * @return array[]
      */
     abstract public function provideEmptyInputTests();
@@ -117,7 +102,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -150,7 +135,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -187,7 +172,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -223,7 +208,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('date', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -258,7 +243,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -301,7 +286,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addGroup($subGroup);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -329,7 +314,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -367,7 +352,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addGroup($subGroup2);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -399,7 +384,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addGroup($subGroup);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -410,42 +395,20 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @param mixed  $input
      * @param string $fieldName
-     * @param int    $max
-     * @param int    $count
-     * @param int    $groupIdx
-     * @param int    $nestingLevel
+     * @param string $path
      *
      * @test
      * @dataProvider provideValueOverflowTests
      */
-    public function it_errors_when_maximum_values_count_is_exceeded(
-        $input,
-        $fieldName,
-        $max,
-        $groupIdx,
-        $nestingLevel
-    ) {
-        $processor = $this->getProcessor();
-
+    public function it_errors_when_maximum_values_count_is_exceeded($input, string $fieldName, string $path)
+    {
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxValues(3);
 
-        try {
-            $condition = $processor->process($config, $input);
+        $e = new ValuesOverflowException($fieldName, 3, $path);
+        $error = $e->toErrorMessageObj();
 
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof ValuesOverflowException) {
-                $this->fail('Expected a ValuesOverflowException but got: '.get_class($e));
-            }
-
-            self::assertEquals($fieldName, $e->getFieldName());
-            self::assertEquals($max, $e->getMax());
-            self::assertEquals($groupIdx, $e->getGroupIdx());
-            self::assertEquals($nestingLevel, $e->getNestingLevel());
-        }
+        $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
     /**
@@ -454,38 +417,21 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideValueOverflowTests();
 
     /**
-     * @param mixed $input
-     * @param int   $max
-     * @param int   $count
-     * @param int   $groupIdx
-     * @param int   $nestingLevel
+     * @param mixed  $input
+     * @param string $path
      *
      * @test
      * @dataProvider provideGroupsOverflowTests
      */
-    public function it_errors_when_maximum_groups_count_is_exceeded($input, $max, $count, $groupIdx, $nestingLevel)
+    public function it_errors_when_maximum_groups_count_is_exceeded($input, string $path)
     {
-        $processor = $this->getProcessor();
-
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxGroups(3);
 
-        try {
-            $processor->process($config, $input);
+        $e = new GroupsOverflowException(3, $path);
+        $error = $e->toErrorMessageObj();
 
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof GroupsOverflowException) {
-                $this->fail('Expected a GroupsOverflowException but got: '.get_class($e));
-            }
-
-            self::assertEquals($max, $e->getMax());
-            self::assertEquals($count, $e->getCount());
-            self::assertEquals($groupIdx, $e->getGroupIdx());
-            self::assertEquals($nestingLevel, $e->getNestingLevel());
-        }
+        $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
     /**
@@ -499,28 +445,15 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      * @test
      * @dataProvider provideNestingLevelExceededTests
      */
-    public function it_errors_when_maximum_nesting_level_is_reached($input)
+    public function it_errors_when_maximum_nesting_level_is_reached($input, string $path)
     {
-        $processor = $this->getProcessor();
-
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxNestingLevel(1);
 
-        try {
-            $processor->process($config, $input);
+        $e = new GroupsNestingException(1, $path);
+        $error = $e->toErrorMessageObj();
 
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof GroupsNestingException) {
-                $this->fail('Expected a GroupsNestingException but got: '.get_class($e));
-            }
-
-            self::assertEquals(1, $e->getMaxNesting());
-            self::assertEquals(0, $e->getGroupIdx());
-            self::assertEquals(2, $e->getNestingLevel());
-        }
+        $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
     /**
@@ -536,22 +469,12 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      */
     public function it_errors_when_the_field_does_not_exist_in_fieldset($input)
     {
-        $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
 
-        try {
-            $processor->process($config, $input);
+        $e = new UnknownFieldException('field2');
+        $error = $e->toErrorMessageObj();
 
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof UnknownFieldException) {
-                $this->fail('Expected a UnknownFieldException but got: '.get_class($e));
-            }
-
-            self::assertEquals('field2', $e->getFieldName());
-        }
+        $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
     /**
@@ -569,29 +492,12 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      */
     public function it_errors_when_the_field_does_not_support_the_value_type($input, $fieldName, $valueType)
     {
-        $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
 
-        try {
-            $processor->process($config, $input);
+        $e = new UnsupportedValueTypeException($fieldName, $valueType);
+        $error = $e->toErrorMessageObj();
 
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof UnsupportedValueTypeException) {
-                $this->fail(
-                    sprintf(
-                        'Expected a UnknownFieldException but got: "%s" with message: %s',
-                        get_class($e),
-                        $e->getMessage()
-                    )
-                );
-            }
-
-            self::assertEquals($fieldName, $e->getFieldName());
-            self::assertEquals($valueType, $e->getValueType());
-        }
+        $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
     /**
@@ -601,40 +507,21 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
     /**
      * @param mixed $input
-     * @param bool  $exclusive
+     * @param array $path
      *
      * @test
      * @dataProvider provideInvalidRangeTests
      */
-    public function it_errors_when_a_range_has_invalid_bounds($input, $exclusive = false)
+    public function it_errors_when_a_range_has_invalid_bounds($input, array $path)
     {
-        $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
 
-        try {
-            $processor->process($config, $input);
+        $errors = [
+            ConditionErrorMessage::withMessageTemplate($path[0], 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', ['{{ lower }}' => '30', '{{ upper }}' => '10']),
+            ConditionErrorMessage::withMessageTemplate($path[1], 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', ['{{ lower }}' => '40', '{{ upper }}' => '20']),
+        ];
 
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof InvalidSearchConditionException) {
-                $this->fail('Expected a InvalidSearchConditionException but got: '.get_class($e));
-            }
-
-            self::assertCount(2, $e->getCondition()->getValuesGroup()->getField('id')->getErrors());
-            $errors = $e->getCondition()->getValuesGroup()->getField('id')->getErrors();
-
-            $error = current($errors);
-            self::assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
-            self::assertEquals(['{{ lower }}' => '30', '{{ upper }}' => '10'], $error->getMessageParameters());
-            self::assertEquals($exclusive ? 'excludedRanges[0]' : 'ranges[0]', $error->getSubPath());
-
-            $error = next($errors);
-            self::assertEquals('Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', $error->getMessageTemplate());
-            self::assertEquals(['{{ lower }}' => '40', '{{ upper }}' => '20'], $error->getMessageParameters());
-            self::assertEquals($exclusive ? 'excludedRanges[2]' : 'ranges[2]', $error->getSubPath());
-        }
+        $this->assertConditionContainsErrorsWithoutCause($input, $config, $errors);
     }
 
     /**
@@ -643,37 +530,18 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideInvalidRangeTests();
 
     /**
-     * @param mixed         $input
-     * @param string        $fieldName
-     * @param ValuesError[] $errors
+     * @param mixed                   $input
+     * @param string                  $fieldName
+     * @param ConditionErrorMessage[] $errors
      *
      * @test
      * @dataProvider provideInvalidValueTests
      */
-    public function it_errors_when_transformation_fails($input, $fieldName, array $errors)
+    public function it_errors_when_transformation_fails($input, array $errors)
     {
-        $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
 
-        try {
-            $processor->process($config, $input);
-
-            $this->fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            $this->detectSystemException($e);
-
-            if (!$e instanceof InvalidSearchConditionException) {
-                $this->fail('Expected a InvalidSearchConditionException but got: '.get_class($e));
-            }
-
-            self::assertCount(count($errors), $e->getCondition()->getValuesGroup()->getField('id')->getErrors());
-            $errorsList = $e->getCondition()->getValuesGroup()->getField($fieldName)->getErrors();
-
-            foreach ($errors as $error) {
-                self::assertArrayHasKey($error->getHash(), $errorsList);
-                self::assertNotNull($errorsList[$error->getHash()]->getCause());
-            }
-        }
+        $this->assertConditionContainsErrorsWithoutCause($input, $config, $errors);
     }
 
     /**
@@ -682,19 +550,16 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideInvalidValueTests();
 
     /**
-     * @param mixed $input
+     * @param mixed                   $input
+     * @param ConditionErrorMessage[] $errors
      *
      * @test
      * @dataProvider provideNestedErrorsTests
      */
-    public function it_checks_nested_fields($input)
+    public function it_checks_nested_fields($input, array $errors)
     {
-        $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
-
-        $this->setExpectedException('\Rollerworks\Component\Search\Exception\InvalidSearchConditionException');
-
-        $processor->process($config, $input);
+        $this->assertConditionContainsErrorsWithoutCause($input, $config, $errors);
     }
 
     /**
@@ -702,10 +567,52 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      */
     abstract public function provideNestedErrorsTests();
 
-    protected function detectSystemException(\Exception $exception)
+    /**
+     * @param mixed                   $input
+     * @param ProcessorConfig         $config
+     * @param ConditionErrorMessage[] $errors
+     */
+    protected function assertConditionContainsErrorsWithoutCause($input, $config, array $errors)
     {
-        if (!$exception instanceof ExceptionInterface) {
-            throw $exception;
+        $processor = $this->getProcessor();
+
+        try {
+            $processor->process($config, $input);
+
+            $this->fail('Condition should be invalid.');
+        } catch (\Exception $e) {
+            /* @var InvalidSearchConditionException $e */
+            self::detectSystemException($e);
+            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
+
+            $errorsList = $e->getErrors();
+            foreach ($errorsList as $error) {
+                // Remove cause to make assertion possible.
+                $error->cause = null;
+            }
+
+            self::assertEquals($errors, $errorsList);
+        }
+    }
+
+    /**
+     * @param mixed                   $input
+     * @param ProcessorConfig         $config
+     * @param ConditionErrorMessage[] $errors
+     */
+    protected function assertConditionContainsErrors($input, ProcessorConfig $config, array $errors)
+    {
+        $processor = $this->getProcessor();
+
+        try {
+            $processor->process($config, $input);
+
+            $this->fail('Condition should be invalid.');
+        } catch (\Exception $e) {
+            /* @var InvalidSearchConditionException $e */
+            self::detectSystemException($e);
+            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
+            self::assertEquals($errors, $e->getErrors());
         }
     }
 }

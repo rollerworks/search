@@ -26,7 +26,7 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
         return [
             'fields' => [
                 'name' => [
-                    'single-values' => [
+                    'simple-values' => [
                         'value ',
                         '-value2',
                         'value2-',
@@ -36,7 +36,7 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
                         '٤٤٤٦٥٤٦٠٠',
                         'doctor"who""',
                     ],
-                    'excluded-values' => ['value3'],
+                    'excluded-simple-values' => ['value3'],
                 ],
             ],
         ];
@@ -47,10 +47,10 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
         return [
             'fields' => [
                 'name' => [
-                    'single-values' => ['value', 'value2'],
+                    'simple-values' => ['value', 'value2'],
                 ],
                 'date' => [
-                    'single-values' => ['12-16-2014'],
+                    'simple-values' => ['2014-12-16T00:00:00Z'],
                 ],
             ],
         ];
@@ -73,7 +73,7 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
                 ],
                 'date' => [
                     'ranges' => [
-                        ['lower' => '12-16-2014', 'upper' => '12-20-2014'],
+                        ['lower' => '2014-12-16T00:00:00Z', 'upper' => '2014-12-20T00:00:00Z'],
                     ],
                 ],
             ],
@@ -94,7 +94,7 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
                 ],
                 'date' => [
                     'comparisons' => [
-                        ['value' => '12-16-2014', 'operator' => '>='],
+                        ['value' => '2014-12-16T00:00:00Z', 'operator' => '>='],
                     ],
                 ],
             ],
@@ -128,14 +128,14 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
         return [
             'fields' => [
                 'name' => [
-                    'single-values' => ['value', 'value2'],
+                    'simple-values' => ['value', 'value2'],
                 ],
             ],
             'groups' => [
                 [
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value3', 'value4'],
+                            'simple-values' => ['value3', 'value4'],
                         ],
                     ],
                 ],
@@ -143,7 +143,7 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
                     'logical-case' => 'OR',
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value8', 'value10'],
+                            'simple-values' => ['value8', 'value10'],
                         ],
                     ],
                 ],
@@ -158,14 +158,14 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
                 [
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value', 'value2'],
+                            'simple-values' => ['value', 'value2'],
                         ],
                     ],
                 ],
                 [
                     'fields' => [
                         'name' => [
-                            'single-values' => ['value3', 'value4'],
+                            'simple-values' => ['value3', 'value4'],
                         ],
                     ],
                 ],
@@ -182,7 +182,7 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
                         [
                             'fields' => [
                                 'name' => [
-                                    'single-values' => ['value', 'value2'],
+                                    'simple-values' => ['value', 'value2'],
                                 ],
                             ],
                         ],

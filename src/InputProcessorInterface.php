@@ -32,12 +32,11 @@ interface InputProcessorInterface
      * @param mixed           $input  Input to process, actual format depends
      *                                on the processor implementation
      *
-     * @throws Exception\InvalidSearchConditionException When a search condition is created
-     *                                                   but it has errors
-     * @throws Exception\ValuesOverflowException         When maximum values count is exceeded
-     * @throws Exception\UnknownFieldException           When an unknown field is provided in the input
+     * @throws Exception\InvalidSearchConditionException When there are errors in the input
+     *                                                   this can be a failed transformation
+     *                                                   or processing error
      *
-     * @return SearchCondition|null Returns null on empty input
+     * @return SearchCondition
      */
-    public function process(ProcessorConfig $config, $input);
+    public function process(ProcessorConfig $config, $input): SearchCondition;
 }

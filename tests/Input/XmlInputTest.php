@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
+use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\XmlInput;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValuesError;
 
 final class XmlInputTest extends InputProcessorTestCase
 {
@@ -36,13 +37,22 @@ final class XmlInputTest extends InputProcessorTestCase
     public function it_errors_when_the_syntax_is_invalid($input, $message)
     {
         $fieldSet = $this->getFieldSet(false)->add('field1', TextType::class)->getFieldSet();
-
-        $processor = $this->getProcessor();
         $config = new ProcessorConfig($fieldSet);
 
-        $this->setExpectedException('\InvalidArgumentException', $message);
+        $processor = $this->getProcessor();
 
-        $processor->process($config, $input);
+        try {
+            $processor->process($config, $input);
+
+            $this->fail('Condition should be invalid.');
+        } catch (\Exception $e) {
+            /* @var InvalidSearchConditionException $e */
+            self::detectSystemException($e);
+            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
+            self::assertCount(1, $errors = $e->getErrors());
+            self::assertContains($message, current($errors)->message);
+            self::assertNotNull(current($errors)->cause);
+        }
     }
 
     public function provideInvalidInputTests()
@@ -58,16 +68,16 @@ final class XmlInputTest extends InputProcessorTestCase
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
-                <search>
-                    <fields>
-                        <field name="name">
-                            <single-values>
-                                <value>value<></value>
-                            </single-values>
-                            <excluded-values>
-                        </field>
-                    </fields>
-                </search>',
+                 <search>
+                     <fields>
+                         <field name="name">
+                             <single-values>
+                                 <value>value<></value>
+                             </single-values>
+                             <excluded-values>
+                         </field>
+                     </fields>
+                 </search>',
                 '[ERROR 73]',
             ],
         ];
@@ -89,16 +99,16 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
                                 <value>٤٤٤٦٥٤٦٠٠</value>
                                 <value>30</value>
                                 <value>30L</value>
-                            </single-values>
-                            <excluded-values>
+                            </simple-values>
+                            <excluded-simple-values>
                                 <value>value3</value>
-                            </excluded-values>
+                            </excluded-simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -108,16 +118,16 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search logical="AND">
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
                                 <value>٤٤٤٦٥٤٦٠٠</value>
                                 <value>30</value>
                                 <value>30L</value>
-                            </single-values>
-                            <excluded-values>
+                            </simple-values>
+                            <excluded-simple-values>
                                 <value>value3</value>
-                            </excluded-values>
+                            </excluded-simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -127,16 +137,16 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search logical="AND">
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value><![CDATA[value]]></value>
                                 <value>value2</value>
                                 <value>٤٤٤٦٥٤٦٠٠</value>
                                 <value>30</value>
                                 <value>30L</value>
-                            </single-values>
-                            <excluded-values>
+                            </simple-values>
+                            <excluded-simple-values>
                                 <value>value3</value>
-                            </excluded-values>
+                            </excluded-simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -148,16 +158,16 @@ final class XmlInputTest extends InputProcessorTestCase
                 'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                             <value>value2</value>
                             <value>٤٤٤٦٥٤٦٠٠</value>
                                 <value>30</value>
                                 <value>30L</value>
-                            </single-values>
-                            <excluded-values>
+                            </simple-values>
+                            <excluded-simple-values>
                                 <value>value3</value>
-                            </excluded-values>
+                            </excluded-simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -173,15 +183,15 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
-                            </single-values>
+                            </simple-values>
                         </field>
                         <field name="date">
-                            <single-values>
-                                <value>12-16-2014</value>
-                            </single-values>
+                            <simple-values>
+                                <value>2014-12-16T00:00:00Z</value>
+                            </simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -225,8 +235,8 @@ final class XmlInputTest extends InputProcessorTestCase
                         <field name="date">
                             <ranges>
                                 <range>
-                                    <lower>12-16-2014</lower>
-                                    <upper>12-20-2014</upper>
+                                    <lower>2014-12-16T00:00:00Z</lower>
+                                    <upper>2014-12-20T00:00:00Z</upper>
                                 </range>
                             </ranges>
                         </field>
@@ -254,7 +264,7 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                         <field name="date">
                             <comparisons>
-                                <compare operator="&gt;=">12-16-2014</compare>
+                                <compare operator="&gt;=">2014-12-16T00:00:00Z</compare>
                             </comparisons>
                         </field>
                     </fields>
@@ -298,30 +308,30 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
-                            </single-values>
+                            </simple-values>
                         </field>
                     </fields>
                     <groups>
                         <group logical="AND">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value3</value>
                                         <value>value4</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
                         <group logical="OR">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value8</value>
                                         <value>value10</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
@@ -333,30 +343,30 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
-                            </single-values>
+                            </simple-values>
                         </field>
                     </fields>
                     <groups>
                         <group>
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value3</value>
                                         <value>value4</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
                         <group logical="OR">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value8</value>
                                         <value>value10</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
@@ -374,10 +384,10 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
-                            </single-values>
+                            </simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -387,10 +397,10 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search logical="AND">
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
-                            </single-values>
+                            </simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -400,10 +410,10 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search logical="OR">
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
-                            </single-values>
+                            </simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -422,20 +432,20 @@ final class XmlInputTest extends InputProcessorTestCase
                         <group logical="AND">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value</value>
                                         <value>value2</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
                         <group logical="AND">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value3</value>
                                         <value>value4</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
@@ -457,10 +467,10 @@ final class XmlInputTest extends InputProcessorTestCase
                                 <group logical="AND">
                                     <fields>
                                         <field name="name">
-                                            <single-values>
+                                            <simple-values>
                                                 <value>value</value>
                                                 <value>value2</value>
-                                            </single-values>
+                                            </simple-values>
                                         </field>
                                     </fields>
                                 </group>
@@ -480,20 +490,18 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="name">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
                                 <value>value2</value>
                                 <value>value3</value>
                                 <value>value4</value>
                                 <value>value5</value>
-                            </single-values>
+                            </simple-values>
                         </field>
                     </fields>
                 </search>',
                 'name',
-                3,
-                0,
-                0,
+                "/search/fields/field[@name='name'][1]/simple-values/value[4]",
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
@@ -504,13 +512,13 @@ final class XmlInputTest extends InputProcessorTestCase
                                 <group logical="AND">
                                     <fields>
                                         <field name="name">
-                                            <single-values>
+                                            <simple-values>
                                                 <value>value</value>
                                                 <value>value2</value>
                                                 <value>value3</value>
                                                 <value>value4</value>
                                                 <value>value5</value>
-                                            </single-values>
+                                            </simple-values>
                                         </field>
                                     </fields>
                                 </group>
@@ -519,9 +527,7 @@ final class XmlInputTest extends InputProcessorTestCase
                     </groups>
                 </search>',
                 'name',
-                3,
-                0,
-                2,
+                "/search/groups/group[1]/groups/group[1]/fields/field[@name='name'][1]/simple-values/value[4]",
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
@@ -532,22 +538,22 @@ final class XmlInputTest extends InputProcessorTestCase
                                 <group logical="AND">
                                     <fields>
                                         <field name="name">
-                                            <single-values>
+                                            <simple-values>
                                                 <value>value</value>
-                                            </single-values>
+                                            </simple-values>
                                         </field>
                                     </fields>
                                 </group>
                                 <group logical="AND">
                                     <fields>
                                         <field name="name">
-                                            <single-values>
+                                            <simple-values>
                                                 <value>value</value>
                                                 <value>value2</value>
                                                 <value>value3</value>
                                                 <value>value4</value>
                                                 <value>value5</value>
-                                            </single-values>
+                                            </simple-values>
                                         </field>
                                     </fields>
                                 </group>
@@ -556,58 +562,7 @@ final class XmlInputTest extends InputProcessorTestCase
                     </groups>
                 </search>',
                 'name',
-                3,
-                1,
-                2,
-            ],
-            // merging
-            [
-                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
-                <search>
-                    <fields>
-                        <field name="name">
-                            <single-values>
-                                <value>value</value>
-                                <value>value2</value>
-                            </single-values>
-                        </field>
-                        <field name="name">
-                            <single-values>
-                                <value>value3</value>
-                                <value>value4</value>
-                                <value>value5</value>
-                            </single-values>
-                        </field>
-                    </fields>
-                </search>',
-                'name',
-                3,
-                0,
-                0,
-            ],
-            [
-                '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
-                <search>
-                    <fields>
-                        <field name="id">
-                            <single-values>
-                                <value>1</value>
-                                <value>2</value>
-                            </single-values>
-                        </field>
-                        <field name="id">
-                            <single-values>
-                                <value>3</value>
-                                <value>4</value>
-                                <value>5</value>
-                            </single-values>
-                        </field>
-                    </fields>
-                </search>',
-                'id',
-                3,
-                0,
-                0,
+                "/search/groups/group[1]/groups/group[2]/fields/field[@name='name'][1]/simple-values/value[4]",
             ],
         ];
     }
@@ -622,49 +577,46 @@ final class XmlInputTest extends InputProcessorTestCase
                         <group logical="AND">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value</value>
                                         <value>value2</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
                         <group logical="AND">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value</value>
                                         <value>value2</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
                         <group logical="AND">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value</value>
                                         <value>value2</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
                         <group logical="AND">
                             <fields>
                                 <field name="name">
-                                    <single-values>
+                                    <simple-values>
                                         <value>value</value>
                                         <value>value2</value>
-                                    </single-values>
+                                    </simple-values>
                                 </field>
                             </fields>
                         </group>
                     </groups>
                 </search>',
-                3,
-                4,
-                0,
-                0,
+                '/search/groups',
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
@@ -677,10 +629,10 @@ final class XmlInputTest extends InputProcessorTestCase
                                         <group logical="AND">
                                             <fields>
                                                 <field name="name">
-                                                    <single-values>
+                                                    <simple-values>
                                                         <value>value</value>
                                                         <value>value2</value>
-                                                    </single-values>
+                                                    </simple-values>
                                                 </field>
                                             </fields>
                                         </group>
@@ -691,40 +643,40 @@ final class XmlInputTest extends InputProcessorTestCase
                                         <group logical="AND">
                                             <fields>
                                                 <field name="name">
-                                                    <single-values>
+                                                    <simple-values>
                                                         <value>value</value>
                                                         <value>value2</value>
-                                                    </single-values>
+                                                    </simple-values>
                                                 </field>
                                             </fields>
                                         </group>
                                         <group logical="AND">
                                             <fields>
                                                 <field name="name">
-                                                    <single-values>
+                                                    <simple-values>
                                                         <value>value</value>
                                                         <value>value2</value>
-                                                    </single-values>
+                                                    </simple-values>
                                                 </field>
                                             </fields>
                                         </group>
                                         <group logical="AND">
                                             <fields>
                                                 <field name="name">
-                                                    <single-values>
+                                                    <simple-values>
                                                         <value>value</value>
                                                         <value>value2</value>
-                                                    </single-values>
+                                                    </simple-values>
                                                 </field>
                                             </fields>
                                         </group>
                                         <group logical="AND">
                                             <fields>
                                                 <field name="name">
-                                                    <single-values>
+                                                    <simple-values>
                                                         <value>value</value>
                                                         <value>value2</value>
-                                                    </single-values>
+                                                    </simple-values>
                                                 </field>
                                             </fields>
                                         </group>
@@ -734,10 +686,7 @@ final class XmlInputTest extends InputProcessorTestCase
                         </group>
                     </groups>
                 </search>',
-                3,
-                4,
-                1,
-                2,
+                '/search/groups/group[1]/groups/group[2]/groups',
             ],
         ];
     }
@@ -754,9 +703,9 @@ final class XmlInputTest extends InputProcessorTestCase
                                 <group logical="AND">
                                     <fields>
                                         <field name="field2">
-                                            <single-values>
+                                            <simple-values>
                                                 <value>value</value>
-                                            </single-values>
+                                            </simple-values>
                                         </field>
                                     </fields>
                                 </group>
@@ -764,6 +713,7 @@ final class XmlInputTest extends InputProcessorTestCase
                         </group>
                     </groups>
                 </search>',
+                '/search/groups/group[1]/groups/group[1]',
             ],
         ];
     }
@@ -776,9 +726,9 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="field2">
-                            <single-values>
+                            <simple-values>
                                 <value>value</value>
-                            </single-values>
+                            </simple-values>
                         </field>
                     </fields>
                 </search>',
@@ -865,6 +815,7 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
+                ["/search/fields/field[@name='id'][1]/ranges/range[1]", "/search/fields/field[@name='id'][1]/ranges/range[3]"],
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
@@ -888,7 +839,7 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-                true,
+                ["/search/fields/field[@name='id'][1]/excluded-ranges/range[1]", "/search/fields/field[@name='id'][1]/excluded-ranges/range[3]"],
             ],
         ];
     }
@@ -901,22 +852,21 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="id">
-                            <single-values>
+                            <simple-values>
                                 <value>foo</value>
                                 <value>30</value>
                                 <value>bar</value>
-                            </single-values>
+                            </simple-values>
                            <comparisons>
                                 <compare operator="&gt;">life</compare>
                             </comparisons>
                         </field>
                     </fields>
                 </search>',
-                'id',
                 [
-                    new ValuesError('singleValues[0]', 'This value is not valid.'),
-                    new ValuesError('singleValues[2]', 'This value is not valid.'),
-                    new ValuesError('comparisons[0].value', 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/fields/field[@name='id'][1]/simple-values/value[1]", 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/fields/field[@name='id'][1]/simple-values/value[3]", 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/fields/field[@name='id'][1]/comparisons/compare[1]", 'This value is not valid.'),
                 ],
             ],
             [
@@ -924,18 +874,17 @@ final class XmlInputTest extends InputProcessorTestCase
                 <search>
                     <fields>
                         <field name="id">
-                            <excluded-values>
+                            <excluded-simple-values>
                                 <value>foo</value>
                                 <value>30</value>
                                 <value>bar</value>
-                            </excluded-values>
+                            </excluded-simple-values>
                         </field>
                     </fields>
                 </search>',
-                'id',
                 [
-                    new ValuesError('excludedValues[0]', 'This value is not valid.'),
-                    new ValuesError('excludedValues[2]', 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/fields/field[@name='id'][1]/excluded-simple-values/value[1]", 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/fields/field[@name='id'][1]/excluded-simple-values/value[3]", 'This value is not valid.'),
                 ],
             ],
             [
@@ -960,10 +909,9 @@ final class XmlInputTest extends InputProcessorTestCase
                         </field>
                     </fields>
                 </search>',
-                'id',
                 [
-                    new ValuesError('ranges[0].lower', 'This value is not valid.'),
-                    new ValuesError('ranges[2].upper', 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/fields/field[@name='id'][1]/ranges/range[1]/lower", 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/fields/field[@name='id'][1]/ranges/range[3]/upper", 'This value is not valid.'),
                 ],
             ],
         ];
@@ -975,18 +923,37 @@ final class XmlInputTest extends InputProcessorTestCase
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
                 <search>
-                    <fields>
-                        <field name="date">
-                            <single-values>
-                                <value>value</value>
-                                <value>value2</value>
-                                <value>value3</value>
-                                <value>value4</value>
-                                <value>value5</value>
-                            </single-values>
-                        </field>
-                    </fields>
+                    <groups>
+                        <group>
+                            <groups>
+                                <group>
+                                    <fields>
+                                        <field name="date">
+                                            <simple-values>
+                                                <value>value</value>
+                                            </simple-values>
+                                        </field>
+                                    </fields>
+                                </group>
+                                <group>
+                                    <fields>
+                                        <field name="date">
+                                            <simple-values>
+                                                <value>value</value>
+                                                <value>value2</value>
+                                            </simple-values>
+                                        </field>
+                                    </fields>
+                                </group>
+                            </groups>
+                        </group>
+                    </groups>
                 </search>',
+                [
+                    new ConditionErrorMessage("/search/groups/group[1]/groups/group[1]/fields/field[@name='date'][1]/simple-values/value[1]", 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/groups/group[1]/groups/group[2]/fields/field[@name='date'][1]/simple-values/value[1]", 'This value is not valid.'),
+                    new ConditionErrorMessage("/search/groups/group[1]/groups/group[2]/fields/field[@name='date'][1]/simple-values/value[2]", 'This value is not valid.'),
+                ],
             ],
         ];
     }

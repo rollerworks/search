@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Value;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\ValuesStructureIsLocked;
-use Rollerworks\Component\Search\ValuesError;
 
 /**
  * A ValuesBag holds all the values per type.
@@ -47,84 +46,7 @@ class ValuesBag implements \Countable, \Serializable
     private $values = [];
 
     private $valuesCount = 0;
-    private $errors = [];
     private $locked = false;
-
-    /**
-     * @param ValuesError $error
-     *
-     * @return static
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0
-     */
-    public function addError(ValuesError $error)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0.', E_USER_DEPRECATED);
-
-        if ($this->locked) {
-            throw new ValuesStructureIsLocked();
-        }
-
-        $this->errors[$error->getHash()] = $error;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0
-     */
-    public function hasErrors()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0.', E_USER_DEPRECATED);
-
-        return count($this->errors) > 0;
-    }
-
-    /**
-     * @return ValuesError[]
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0
-     */
-    public function getErrors()
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0.', E_USER_DEPRECATED);
-
-        return $this->errors;
-    }
-
-    /**
-     * @param ValuesError $error
-     *
-     * @return bool
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0
-     */
-    public function hasError(ValuesError $error)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0.', E_USER_DEPRECATED);
-
-        return isset($this->errors[$error->getHash()]);
-    }
-
-    /**
-     * @param ValuesError $error
-     *
-     * @return static
-     *
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0
-     */
-    public function removeError(ValuesError $error)
-    {
-        @trigger_error('The '.__METHOD__.' method is deprecated since version 1.2 and will be removed in 2.0.', E_USER_DEPRECATED);
-
-        if (isset($this->errors[$error->getHash()])) {
-            unset($this->errors[$error->getHash()]);
-        }
-
-        return $this;
-    }
 
     /**
      * @return int
@@ -145,7 +67,6 @@ class ValuesBag implements \Countable, \Serializable
                 $this->simpleExcludedValues,
                 $this->values,
                 $this->valuesCount,
-                $this->errors,
                 $this->locked,
             ]
         );
@@ -163,7 +84,6 @@ class ValuesBag implements \Countable, \Serializable
             $this->simpleExcludedValues,
             $this->values,
             $this->valuesCount,
-            $this->errors,
             $this->locked) = $data;
     }
 

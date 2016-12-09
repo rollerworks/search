@@ -21,6 +21,8 @@ final class Compare implements ValueHolder
     private $operator;
     private $value;
 
+    const OPERATORS = ['>=', '<=', '<>', '<', '>'];
+
     /**
      * Constructor.
      *
@@ -29,7 +31,7 @@ final class Compare implements ValueHolder
      */
     public function __construct($value, $operator)
     {
-        if (!in_array($operator, ['>=', '<=', '<>', '<', '>'], true)) {
+        if (!in_array($operator, self::OPERATORS, true)) {
             throw new \InvalidArgumentException(
                 sprintf('Unknown operator "%s".', $operator)
             );

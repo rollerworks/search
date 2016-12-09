@@ -13,8 +13,11 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Input;
 
-use Rollerworks\Component\Search\Exception\InputProcessorException;
+use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
 
@@ -33,7 +36,7 @@ class JsonInput extends ArrayInput
     /**
      * {@inheritdoc}
      */
-    public function process(ProcessorConfig $config, $input)
+    public function process(ProcessorConfig $config, $input): SearchCondition
     {
         if (!is_string($input)) {
             throw new UnexpectedTypeException($input, 'string');
@@ -42,14 +45,22 @@ class JsonInput extends ArrayInput
         $input = trim($input);
 
         if (empty($input)) {
-            return;
+            return new SearchCondition($config->getFieldSet(), new ValuesGroup());
         }
 
         try {
             $parser = new JsonParser();
             $array = $parser->parse($input, JsonParser::PARSE_TO_ASSOC);
         } catch (ParsingException $e) {
-            throw new InputProcessorException('Input does not contain valid JSON: '."\n".$e->getMessage(), 0, $e);
+            $errors = [
+                ConditionErrorMessage::rawMessage(
+                    $input,
+                    'Input does not contain valid JSON: '."\n".$e->getMessage(),
+                    $e
+                ),
+            ];
+
+            throw new InvalidSearchConditionException($errors);
         }
 
         return parent::process($config, $array);

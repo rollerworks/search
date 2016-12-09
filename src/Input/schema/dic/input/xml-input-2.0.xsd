@@ -32,8 +32,8 @@
 
     <xsd:complexType name="field-content">
         <xsd:sequence>
-            <xsd:element name="single-values" type="single-value" minOccurs="0" maxOccurs="1"/>
-            <xsd:element name="excluded-values" type="single-value" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="simple-values" type="single-value" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="excluded-simple-values" type="single-value" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="ranges" type="range" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="excluded-ranges" type="range" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="comparisons" type="compare" minOccurs="0" maxOccurs="1"/>

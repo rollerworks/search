@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
+use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
@@ -21,7 +22,6 @@ use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValuesError;
 
 final class FilterQueryInputTest extends InputProcessorTestCase
 {
@@ -109,20 +109,16 @@ final class FilterQueryInputTest extends InputProcessorTestCase
 
     public function testPatternMatchLexerNoEndLessLoop()
     {
-        $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
 
-        $this->setExpectedException(
-            'Rollerworks\Component\Search\Input\FilterQuery\QueryException',
-            "[Syntax Error] line 0, col 8: Error: Expected '*' | '>' | '<' | '?' | '!*' | '!>' | '!<' | '!?' | '=' | '!=', got '!'"
-        );
+        $e = QueryException::syntaxError(8, 0, ['*', '>', '<', '?', '!*', '!>', '!<', '!?', '=', '!='], '!');
+        $error = $e->toErrorMessageObj();
 
-        $processor->process($config, 'name: ~!!*"value";');
+        $this->assertConditionContainsErrors('name: ~!!*"value";', $config, [$error]);
     }
 
     /**
      * @param string   $input
-     * @param string   $message
      * @param int      $col
      * @param int      $line
      * @param string[] $expected
@@ -133,26 +129,15 @@ final class FilterQueryInputTest extends InputProcessorTestCase
      * @test
      * @dataProvider provideQueryExceptionTests
      */
-    public function it_errors_when_the_syntax_is_invalid($input, $message, $col, $line, $expected, $got)
+    public function it_errors_when_the_syntax_is_invalid($input, $col, $line, $expected, $got)
     {
         $fieldSet = $this->getFieldSet(false)->add('field1', TextType::class)->getFieldSet();
-
-        $processor = $this->getProcessor();
         $config = new ProcessorConfig($fieldSet);
 
-        try {
-            $processor->process($config, $input);
-        } catch (\Exception $e) {
-            if (!$e instanceof QueryException) {
-                throw $e;
-            }
+        $e = QueryException::syntaxError($col, $line, $expected, $got);
+        $error = $e->toErrorMessageObj();
 
-            self::assertEquals($message, $e->getMessage());
-            self::assertEquals($col, $e->getCol());
-            self::assertEquals($line, $e->getSyntaxLine());
-            self::assertEquals($expected, $e->getExpected());
-            self::assertEquals($got, $e->getInstead());
-        }
+        $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
     public function provideQueryExceptionTests()
@@ -160,7 +145,6 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         return [
             [
                 'field1: value, value2, value3, value4, value5;)',
-                "[Syntax Error] line 0, col 46: Error: Expected '(' | FieldIdentification, got ')'",
                 46,
                 0,
                 ['(', 'FieldIdentification'],
@@ -168,7 +152,6 @@ final class FilterQueryInputTest extends InputProcessorTestCase
             ],
             [
                 'field1: value value2)',
-                "[Syntax Error] line 0, col 14: Error: Expected ';' | '|' | ',' | '|' | ')', got 'value2'",
                 14,
                 0,
                 [';', '|', ',', '|', ')'],
@@ -177,7 +160,6 @@ final class FilterQueryInputTest extends InputProcessorTestCase
             // Ensure Rollerworks\Component\Search\Input\FilterQuery\Lexer::T_OPEN_PARENTHESIS is converted to '('
             [
                 'field1: value, value2; *',
-                "[Syntax Error] line 0, col -1: Error: Expected '(', got end of string.",
                 -1,
                 0,
                 ['('],
@@ -268,7 +250,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideAliasedFieldsTests()
     {
         return [
-            ['first-name: value; first-name: value2;'],
+            ['first-name: value1; first-name: value, value2;'],
             ['first-name: value, value2;'],
         ];
     }
@@ -276,25 +258,25 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideValueOverflowTests()
     {
         return [
-            ['name: value, value2, value3, value4, value5;', 'name', 3, 0, 0],
-            ['((name: value, value2, value3, value4, value5));', 'name', 3, 0, 2],
-            ['((name: value); (name: value, value2, value3, value4, value5));', 'name', 3, 1, 2],
-            ['name: value, value2; name: value3, value4, value5;', 'name', 3, 0, 0], // merging
+            ['first level' => 'name: value, value2, value3, value4, value5;', 'name', '[name][3]'],
+            ['nested level' => '((name: value, value2, value3, value4, value5));', 'name', '[1][1][name][3]'],
+            ['deeper level' => '((name: value); (name: value, value2, value3, value4, value5));', 'name', '[1][2][name][3]'],
+            ['overwriting' => 'name: value1, value22; name: value, value2, value3, value4, value5;', 'name', '[name][3]'],
         ];
     }
 
     public function provideGroupsOverflowTests()
     {
         return [
-            ['(name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)', 3, 4, 0, 0],
-            ['( ((name: value, value2)); ((name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)) )', 3, 4, 1, 2],
+            ['(name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)', ''],
+            ['( ((name: value, value2)); ((name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)) )', '[1][2]'],
         ];
     }
 
     public function provideNestingLevelExceededTests()
     {
         return [
-            ['((field2: value;))'],
+            ['((field2: value;))', '[1][1]'],
         ];
     }
 
@@ -317,8 +299,8 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideInvalidRangeTests()
     {
         return [
-            ['id: 30-10, 50-60, 40-20;'],
-            ['id: !30-10, !50-60, !40-20;', true],
+            ['id: 30-10, 50-60, 40-20;', ['[id][0]', '[id][2]']],
+            ['id: !30-10, !50-60, !40-20;', ['[id][0]', '[id][2]']],
         ];
     }
 
@@ -327,19 +309,17 @@ final class FilterQueryInputTest extends InputProcessorTestCase
         return [
             [
                 'id: foo, 30, bar, >life;',
-                'id',
                 [
-                    new ValuesError('singleValues[0]', 'This value is not valid.'),
-                    new ValuesError('singleValues[2]', 'This value is not valid.'),
-                    new ValuesError('comparisons[0].value', 'This value is not valid.'),
+                    new ConditionErrorMessage('[id][0]', 'This value is not valid.'),
+                    new ConditionErrorMessage('[id][2]', 'This value is not valid.'),
+                    new ConditionErrorMessage('[id][3]', 'This value is not valid.'),
                 ],
             ],
             [
                 'id: foo-10, 50-60, 50-bar;',
-                'id',
                 [
-                    new ValuesError('ranges[0].lower', 'This value is not valid.'),
-                    new ValuesError('ranges[2].upper', 'This value is not valid.'),
+                    new ConditionErrorMessage('[id][0][lower]', 'This value is not valid.'),
+                    new ConditionErrorMessage('[id][2][upper]', 'This value is not valid.'),
                 ],
             ],
         ];
@@ -348,9 +328,9 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideNestedErrorsTests()
     {
         return [
-            ['date: 1;'],
-            ['(date: 1;)'],
-            ['((((((date: 1;))))))'],
+            ['date: 1;', [new ConditionErrorMessage('[date][0]', 'This value is not valid.')]],
+            ['(date: 1;)', [new ConditionErrorMessage('[1][date][0]', 'This value is not valid.')]],
+            ['((((((date: 1;))))))', [new ConditionErrorMessage('[1][1][1][1][1][1][date][0]', 'This value is not valid.')]],
         ];
     }
 }

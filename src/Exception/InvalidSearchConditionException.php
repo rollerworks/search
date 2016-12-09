@@ -13,27 +13,24 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exception;
 
-use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\ConditionErrorMessage;
 
-final class InvalidSearchConditionException extends InputProcessorException
+final class InvalidSearchConditionException extends \InvalidArgumentException implements ExceptionInterface
 {
-    /**
-     * @var SearchCondition
-     */
-    private $condition;
+    private $errors;
 
-    public function __construct(SearchCondition $condition)
+    public function __construct(array $errors)
     {
-        parent::__construct('The search condition contains one or more invalid values.');
+        parent::__construct('The search-condition contains one or more errors.');
 
-        $this->condition = $condition;
+        $this->errors = $errors;
     }
 
     /**
-     * @return SearchCondition
+     * @return ConditionErrorMessage[]
      */
-    public function getCondition()
+    public function getErrors(): array
     {
-        return $this->condition;
+        return $this->errors;
     }
 }

@@ -13,73 +13,45 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Input\FilterQuery;
 
-final class QueryException extends \Exception
-{
-    private $input;
-    private $col;
-    private $syntaxLine;
-    private $expected;
-    private $got;
+use Rollerworks\Component\Search\Exception\InputProcessorException;
 
+final class QueryException extends InputProcessorException
+{
     /**
-     * @param string         $message
-     * @param string         $input
-     * @param int            $col
+     * @param int            $column
      * @param int            $line
      * @param array|string[] $expected
      * @param string         $got
      *
      * @return QueryException
      */
-    public static function syntaxError($message, $input, $col, $line, $expected, $got)
+    public static function syntaxError(int $column, int $line, $expected, string $got)
     {
-        $exp = new self('[Syntax Error] '.$message);
-        $exp->input = $input;
-        $exp->col = $col;
-        $exp->syntaxLine = $line;
-        $exp->expected = $expected;
-        $exp->got = $got;
+        if ($expected) {
+            $exp = new self(
+                '',
+                '[Syntax Error] line {{ line }} col {{ column }}: Expected {{ expected }}, got "{{ got }}".',
+                [
+                    '{{ line }}' => $line,
+                    '{{ column }}' => $column,
+                    '{{ expected }}' => $expected,
+                    '{{ got }}' => $got,
+                ]
+            );
+        } else {
+            $exp = new self(
+                '',
+                '[Syntax Error] line {{ line }} col {{ column }}: Unexpected {{ unexpected }}.',
+                [
+                    '{{ line }}' => $line,
+                    '{{ column }}' => $column,
+                    '{{ unexpected }}' => $got,
+                ]
+            );
+        }
+
+        $exp->setTranslatedParameters(['unexpected', 'got']);
 
         return $exp;
-    }
-
-    /**
-     * @return string
-     */
-    public function getInput()
-    {
-        return $this->input;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCol()
-    {
-        return $this->col;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSyntaxLine()
-    {
-        return $this->syntaxLine;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getExpected()
-    {
-        return $this->expected;
-    }
-
-    /**
-     * @return string
-     */
-    public function getInstead()
-    {
-        return $this->got;
     }
 }

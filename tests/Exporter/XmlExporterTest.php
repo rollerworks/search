@@ -27,10 +27,10 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <fields>
                     <field name="name">
-                        <single-values>
+                        <simple-values>
                             <value>value </value>
                             <value>-value2</value>
                             <value>value2-</value>
@@ -39,10 +39,10 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
                             <value>h&#xCC;</value>
                             <value>&#x664;&#x664;&#x664;&#x666;&#x665;&#x664;&#x666;&#x660;&#x660;</value>
                             <value>doctor"who""</value>
-                        </single-values>
-                        <excluded-values>
+                        </simple-values>
+                        <excluded-simple-values>
                             <value>value3</value>
-                        </excluded-values>
+                        </excluded-simple-values>
                     </field>
                 </fields>
             </search>'
@@ -55,18 +55,18 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <fields>
                     <field name="name">
-                        <single-values>
+                        <simple-values>
                             <value>value</value>
                             <value>value2</value>
-                        </single-values>
+                        </simple-values>
                     </field>
                     <field name="date">
-                        <single-values>
-                            <value>12-16-2014</value>
-                        </single-values>
+                        <simple-values>
+                            <value>2014-12-16T00:00:00Z</value>
+                        </simple-values>
                     </field>
                 </fields>
             </search>'
@@ -79,7 +79,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <fields>
                     <field name="id">
                         <ranges>
@@ -110,8 +110,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
                     <field name="date">
                         <ranges>
                             <range>
-                                <lower>12-16-2014</lower>
-                                <upper>12-20-2014</upper>
+                                <lower>2014-12-16T00:00:00Z</lower>
+                                <upper>2014-12-20T00:00:00Z</upper>
                             </range>
                         </ranges>
                     </field>
@@ -126,7 +126,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <fields>
                     <field name="id">
                         <comparisons>
@@ -138,7 +138,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
                     </field>
                     <field name="date">
                         <comparisons>
-                            <compare operator="&gt;=">12-16-2014</compare>
+                            <compare operator="&gt;=">2014-12-16T00:00:00Z</compare>
                         </comparisons>
                     </field>
                 </fields>
@@ -152,7 +152,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <fields>
                 <field name="name">
                     <pattern-matchers>
@@ -179,33 +179,33 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <fields>
                     <field name="name">
-                        <single-values>
+                        <simple-values>
                             <value>value</value>
                             <value>value2</value>
-                        </single-values>
+                        </simple-values>
                     </field>
                 </fields>
                 <groups>
                     <group logical="AND">
                         <fields>
                             <field name="name">
-                                <single-values>
+                                <simple-values>
                                     <value>value3</value>
                                     <value>value4</value>
-                                </single-values>
+                                </simple-values>
                             </field>
                         </fields>
                     </group>
                     <group logical="OR">
                         <fields>
                             <field name="name">
-                                <single-values>
+                                <simple-values>
                                     <value>value8</value>
                                     <value>value10</value>
-                                </single-values>
+                                </simple-values>
                             </field>
                         </fields>
                     </group>
@@ -220,25 +220,25 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <groups>
                     <group logical="AND">
                         <fields>
                             <field name="name">
-                                <single-values>
+                                <simple-values>
                                     <value>value</value>
                                     <value>value2</value>
-                                </single-values>
+                                </simple-values>
                             </field>
                         </fields>
                     </group>
                     <group logical="AND">
                         <fields>
                             <field name="name">
-                                <single-values>
+                                <simple-values>
                                     <value>value3</value>
                                     <value>value4</value>
-                                </single-values>
+                                </simple-values>
                             </field>
                         </fields>
                     </group>
@@ -253,17 +253,17 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
             '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <groups>
                     <group logical="AND">
                         <groups>
                             <group logical="AND">
                                 <fields>
                                     <field name="name">
-                                        <single-values>
+                                        <simple-values>
                                             <value>value</value>
                                             <value>value2</value>
-                                        </single-values>
+                                        </simple-values>
                                     </field>
                                 </fields>
                             </group>
@@ -288,7 +288,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND"/>'
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND"/>'
         ;
     }
 
@@ -297,7 +297,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         return '<?xml version="1.0" encoding="UTF-8"?'.'>
             <search xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'.
             ' xsi:schemaLocation="http://rollerworks.github.io/search/input/schema/search '.
-            'http://rollerworks.github.io/schema/search/xml-input-1.0.xsd" logical="AND">
+            'http://rollerworks.github.io/schema/search/xml-input-2.0.xsd" logical="AND">
                 <groups>
                     <group logical="AND"/>
                 </groups>

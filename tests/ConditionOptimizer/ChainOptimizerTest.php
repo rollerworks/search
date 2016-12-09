@@ -16,9 +16,7 @@ namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 use Prophecy\Prophecy\ObjectProphecy;
 use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
-use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValuesError;
 
 final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 {
@@ -80,25 +78,6 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 
         $this->optimizer->process($searchCondition->reveal());
         self::assertSame([1, 2], $checkValue);
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_not_execution_when_ValuesGroup_has_violations()
-    {
-        $valuesGroup = new ValuesGroup();
-        $values = new ValuesBag();
-        $values->addError(new ValuesError('ranges[0].lower', 'whoops'));
-        $valuesGroup->addField('id', $values);
-
-        $searchCondition = $this->prophesize('Rollerworks\Component\Search\SearchCondition');
-        $searchCondition->getValuesGroup()->willReturn($valuesGroup);
-
-        $this->optimizer1->process($searchCondition)->shouldNotBeCalled();
-        $this->optimizer->addOptimizer($this->optimizer1->reveal());
-
-        $this->optimizer->process($searchCondition->reveal());
     }
 
     /**

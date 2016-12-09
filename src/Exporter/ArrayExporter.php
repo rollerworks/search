@@ -66,7 +66,8 @@ class ArrayExporter extends AbstractExporter
     }
 
     /**
-     * @param ValuesBag $valuesBag
+     * @param ValuesBag            $valuesBag
+     * @param FieldConfigInterface $field
      *
      * @return string
      */
@@ -75,11 +76,11 @@ class ArrayExporter extends AbstractExporter
         $exportedValues = [];
 
         foreach ($valuesBag->getSimpleValues() as $value) {
-            $exportedValues['single-values'][] = $this->modelToView($value, $field);
+            $exportedValues['simple-values'][] = $this->modelToNorm($value, $field);
         }
 
         foreach ($valuesBag->getExcludedSimpleValues() as $value) {
-            $exportedValues['excluded-values'][] = $this->modelToView($value, $field);
+            $exportedValues['excluded-simple-values'][] = $this->modelToNorm($value, $field);
         }
 
         foreach ($valuesBag->get(Range::class) as $value) {
@@ -93,7 +94,7 @@ class ArrayExporter extends AbstractExporter
         foreach ($valuesBag->get(Compare::class) as $value) {
             $exportedValues['comparisons'][] = [
                 'operator' => $value->getOperator(),
-                'value' => $this->modelToView($value->getValue(), $field),
+                'value' => $this->modelToNorm($value->getValue(), $field),
             ];
         }
 
@@ -109,15 +110,16 @@ class ArrayExporter extends AbstractExporter
     }
 
     /**
-     * @param Range $range
+     * @param Range                $range
+     * @param FieldConfigInterface $field
      *
      * @return array
      */
     protected function exportRangeValue(Range $range, FieldConfigInterface $field)
     {
         $result = [
-            'lower' => $this->modelToView($range->getLower(), $field),
-            'upper' => $this->modelToView($range->getUpper(), $field),
+            'lower' => $this->modelToNorm($range->getLower(), $field),
+            'upper' => $this->modelToNorm($range->getUpper(), $field),
         ];
 
         if (!$range->isLowerInclusive()) {
