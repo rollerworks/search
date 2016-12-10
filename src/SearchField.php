@@ -210,20 +210,17 @@ class SearchField implements FieldConfigInterface
     }
 
     /**
-     * Sets the field's data is locked.
+     * Finalize the configuration and mark config as locked.
      *
      * After calling this method, setter methods can be no longer called.
      *
-     * @param bool $locked
-     *
-     * @throws BadMethodCallException when the data is locked
+     * @throws InvalidConfigurationException when a supported value-type requires
+     *                                       a value comparator but none is set
      */
-    public function setDataLocked($locked = true)
+    public function finalizeConfig()
     {
         if ($this->locked) {
-            throw new BadMethodCallException(
-                'SearchField setter methods cannot be accessed anymore once the data is locked.'
-            );
+            return;
         }
 
         if (null === $this->valueComparison) {
@@ -241,13 +238,13 @@ class SearchField implements FieldConfigInterface
             }
         }
 
-        $this->locked = $locked;
+        $this->locked = true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDataLocked()
+    public function isConfigLocked()
     {
         return $this->locked;
     }
