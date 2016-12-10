@@ -62,7 +62,7 @@ class IntegerTypeTest extends SearchIntegrationTestCase
             ]
         );
 
-        $field->setDataLocked();
+        $field->finalizeConfig();
         $fieldView = $field->createView();
 
         self::assertArrayHasKey('precision', $fieldView->vars);

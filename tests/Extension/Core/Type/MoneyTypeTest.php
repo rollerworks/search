@@ -100,7 +100,7 @@ class MoneyTypeTest extends SearchIntegrationTestCase
             'default_currency' => 'EUR',
         ]);
 
-        $field->setDataLocked();
+        $field->finalizeConfig();
         $fieldView = $field->createView();
 
         self::assertArrayHasKey('precision', $fieldView->vars);

@@ -163,7 +163,7 @@ final class SearchFieldTest extends TestCase
      */
     public function its_data_is_unlocked_by_default()
     {
-        self::assertFalse($this->field->getDataLocked());
+        self::assertFalse($this->field->isConfigLocked());
     }
 
     /**
@@ -171,8 +171,8 @@ final class SearchFieldTest extends TestCase
      */
     public function its_data_is_lockable()
     {
-        $this->field->setDataLocked();
-        self::assertTrue($this->field->getDataLocked());
+        $this->field->finalizeConfig();
+        self::assertTrue($this->field->isConfigLocked());
     }
 
     /**
@@ -182,9 +182,9 @@ final class SearchFieldTest extends TestCase
     {
         $this->field->setValueTypeSupport(PatternMatch::class, true);
         $this->field->setValueTypeSupport(Range::class, false);
-        $this->field->setDataLocked();
+        $this->field->finalizeConfig();
 
-        self::assertTrue($this->field->getDataLocked());
+        self::assertTrue($this->field->isConfigLocked());
     }
 
     /**
@@ -199,7 +199,7 @@ final class SearchFieldTest extends TestCase
             'Supported value-type "'.Range::class.'" requires a value comparator but none is set for field "foobar"'
         );
 
-        $this->field->setDataLocked();
+        $this->field->finalizeConfig();
     }
 
     /**
@@ -207,12 +207,12 @@ final class SearchFieldTest extends TestCase
      */
     public function its_data_is_not_changeable_when_locked()
     {
-        $this->field->setDataLocked();
+        $this->field->finalizeConfig();
 
         $this->expectException('Rollerworks\Component\Search\Exception\BadMethodCallException');
         $this->expectExceptionMessage('SearchField setter methods cannot be accessed anymore once the data is locked.');
 
-        $this->field->setDataLocked();
+        $this->field->setViewTransformer(null);
     }
 
     /**

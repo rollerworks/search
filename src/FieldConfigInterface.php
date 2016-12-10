@@ -121,7 +121,7 @@ interface FieldConfigInterface
      *
      * @return bool Whether the data is locked
      */
-    public function getDataLocked();
+    public function isConfigLocked();
 
     /**
      * Returns all options passed during the construction of the field.
