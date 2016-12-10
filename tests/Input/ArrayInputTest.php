@@ -15,6 +15,9 @@ namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Input\ArrayInput;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -493,7 +496,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                     ],
                 ],
                 'no-range-field',
-                'range',
+                Range::class,
             ],
             [
                 [
@@ -504,7 +507,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                     ],
                 ],
                 'no-range-field',
-                'range',
+                Range::class,
             ],
             [
                 [
@@ -515,7 +518,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                     ],
                 ],
                 'no-compares-field',
-                'comparison',
+                Compare::class,
             ],
             [
                 [
@@ -526,7 +529,7 @@ final class ArrayInputTest extends InputProcessorTestCase
                     ],
                 ],
                 'no-matchers-field',
-                'pattern-match',
+                PatternMatch::class,
             ],
         ];
     }

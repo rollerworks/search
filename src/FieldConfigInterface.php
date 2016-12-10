@@ -37,17 +37,14 @@ interface FieldConfigInterface
     /**
      * Returns whether value-type $type is accepted by the field.
      *
-     * Value must be a constant of:
-     *
-     * * ValuesBag::VALUE_TYPE_RANGE
-     * * ValuesBag::VALUE_TYPE_COMPARISON
-     * * ValuesBag::VALUE_TYPE_PATTERN_MATCH
+     * Value must be a FQCN of a class implementing
+     * {@link \Rollerworks\Component\Search\Value\ValueHolder}.
      *
      * @param string $type
      *
      * @return bool
      */
-    public function supportValueType($type);
+    public function supportValueType(string $type): bool;
 
     /**
      * Set whether value-type $type is accepted by the field.
@@ -59,7 +56,7 @@ interface FieldConfigInterface
      * @param string $type
      * @param bool   $enabled
      */
-    public function setValueTypeSupport($type, $enabled);
+    public function setValueTypeSupport(string $type, bool $enabled);
 
     /**
      * Set the {@link ValueComparisonInterface} instance for optimizing

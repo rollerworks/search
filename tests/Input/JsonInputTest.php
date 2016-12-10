@@ -16,6 +16,9 @@ namespace Rollerworks\Component\Search\Tests\Input;
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Input\JsonInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class JsonInputTest extends InputProcessorTestCase
@@ -541,7 +544,7 @@ final class JsonInputTest extends InputProcessorTestCase
                     ]
                 ),
                 'no-range-field',
-                'range',
+               Range::class,
             ],
             [
                 json_encode(
@@ -554,7 +557,7 @@ final class JsonInputTest extends InputProcessorTestCase
                     ]
                 ),
                 'no-range-field',
-                'range',
+                Range::class,
             ],
             [
                 json_encode(
@@ -567,7 +570,7 @@ final class JsonInputTest extends InputProcessorTestCase
                     ]
                 ),
                 'no-compares-field',
-                'comparison',
+                Compare::class,
             ],
             [
                 json_encode(
@@ -580,7 +583,7 @@ final class JsonInputTest extends InputProcessorTestCase
                     ]
                 ),
                 'no-matchers-field',
-                'pattern-match',
+                PatternMatch::class,
             ],
         ];
     }

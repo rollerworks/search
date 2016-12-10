@@ -20,6 +20,9 @@ use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
@@ -290,9 +293,9 @@ final class FilterQueryInputTest extends InputProcessorTestCase
     public function provideUnsupportedValueTypeExceptionTests()
     {
         return [
-            ['no-range-field: 1-12;', 'no-range-field', 'range'],
-            ['no-compares-field: >12;', 'no-compares-field', 'comparison'],
-            ['no-matchers-field: ~>12;', 'no-matchers-field', 'pattern-match'],
+            ['no-range-field: 1-12;', 'no-range-field', Range::class],
+            ['no-compares-field: >12;', 'no-compares-field', Compare::class],
+            ['no-matchers-field: ~>12;', 'no-matchers-field', PatternMatch::class],
         ];
     }
 

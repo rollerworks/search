@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
+use Rollerworks\Component\Search\Value\RequiresComparatorValueHolder;
 
 /**
  * SearchField.
@@ -41,11 +42,7 @@ class SearchField implements FieldConfigInterface
     /**
      * @var bool[]
      */
-    private $supportedValueTypes = [
-        ValuesBag::VALUE_TYPE_RANGE => false,
-        ValuesBag::VALUE_TYPE_COMPARISON => false,
-        ValuesBag::VALUE_TYPE_PATTERN_MATCH => false,
-    ];
+    private $supportedValueTypes = [];
 
     /**
      * @var ValueComparisonInterface
@@ -96,21 +93,10 @@ class SearchField implements FieldConfigInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws BadMethodCallException
      */
-    public function supportValueType($type)
+    public function supportValueType(string $type): bool
     {
-        if (!isset($this->supportedValueTypes[$type])) {
-            throw new BadMethodCallException(
-                sprintf(
-                    'Unable to find configured-support for unknown value type "%s".',
-                    $type
-                )
-            );
-        }
-
-        return $this->supportedValueTypes[$type];
+        return $this->supportedValueTypes[$type] ?? false;
     }
 
     /**
@@ -118,7 +104,7 @@ class SearchField implements FieldConfigInterface
      *
      * @throws BadMethodCallException
      */
-    public function setValueTypeSupport($type, $enabled)
+    public function setValueTypeSupport(string $type, bool $enabled)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -126,24 +112,13 @@ class SearchField implements FieldConfigInterface
             );
         }
 
-        if (!isset($this->supportedValueTypes[$type])) {
-            throw new BadMethodCallException(
-                sprintf(
-                    'Unable to configure support for unknown value type "%s".',
-                    $type
-                )
-            );
-        }
-
-        $this->supportedValueTypes[$type] = (bool) $enabled;
+        $this->supportedValueTypes[$type] = $enabled;
 
         return $this;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @throws BadMethodCallException
      */
     public function getName()
     {
@@ -152,8 +127,6 @@ class SearchField implements FieldConfigInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws BadMethodCallException
      */
     public function getType()
     {
@@ -251,6 +224,21 @@ class SearchField implements FieldConfigInterface
             throw new BadMethodCallException(
                 'SearchField setter methods cannot be accessed anymore once the data is locked.'
             );
+        }
+
+        if (null === $this->valueComparison) {
+            foreach ($this->supportedValueTypes as $type => $supported) {
+                if ($supported && isset(class_implements($type)[RequiresComparatorValueHolder::class])) {
+                    throw new InvalidConfigurationException(
+                        sprintf(
+                            'Supported value-type "%s" requires a value comparator but none is set for field "%s" with type "%s".',
+                            $type,
+                            $this->getName(),
+                            get_class($this->getType()->getInnerType())
+                        )
+                    );
+                }
+            }
         }
 
         $this->locked = $locked;
