@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\XmlInput;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class XmlInputTest extends InputProcessorTestCase
@@ -754,7 +757,7 @@ final class XmlInputTest extends InputProcessorTestCase
                     </fields>
                 </search>',
                 'no-range-field',
-                'range',
+                Range::class,
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
@@ -768,7 +771,7 @@ final class XmlInputTest extends InputProcessorTestCase
                     </fields>
                 </search>',
                 'no-compares-field',
-                'comparison',
+                Compare::class,
             ],
             [
                 '<?xml version="1.0" encoding="UTF-8"'.'?'.'>
@@ -782,7 +785,7 @@ final class XmlInputTest extends InputProcessorTestCase
                       </fields>
                 </search>',
                 'no-matchers-field',
-                'pattern-match',
+                PatternMatch::class,
             ],
         ];
     }

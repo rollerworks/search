@@ -14,8 +14,11 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\SearchField;
-use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
 
 final class SearchFieldTest extends TestCase
 {
@@ -33,8 +36,6 @@ final class SearchFieldTest extends TestCase
     {
         $this->resolvedType = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldTypeInterface')->getMock();
         $this->field = new SearchField('foobar', $this->resolvedType, ['name' => 'value']);
-
-        self::assertInstanceOf('Rollerworks\Component\Search\FieldConfigInterface', $this->field);
     }
 
     /**
@@ -67,7 +68,7 @@ final class SearchFieldTest extends TestCase
     public function it_should_return_if_an_option_exists()
     {
         self::assertEquals(true, $this->field->hasOption('name'));
-        self::assertEquals(false, $this->field->hasOption('foo'));
+        self::assertFalse($this->field->hasOption('foo'));
     }
 
     /**
@@ -99,9 +100,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_supports_no_special_value_types_by_default()
     {
-        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
-        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON));
-        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH));
+        self::assertFalse($this->field->supportValueType(Range::class));
     }
 
     /**
@@ -109,13 +108,16 @@ final class SearchFieldTest extends TestCase
      */
     public function it_allows_configuring_value_support()
     {
-        $this->field->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, true);
-        self::assertEquals(true, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
-        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON));
+        $this->field->setValueTypeSupport(Range::class, true);
+
+        self::assertTrue($this->field->supportValueType(Range::class));
+        self::assertFalse($this->field->supportValueType(Compare::class));
 
         // And now disable it
-        $this->field->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false);
-        self::assertEquals(false, $this->field->supportValueType(ValuesBag::VALUE_TYPE_RANGE));
+        $this->field->setValueTypeSupport(Range::class, false);
+
+        self::assertFalse($this->field->supportValueType(Range::class));
+        self::assertFalse($this->field->supportValueType(Compare::class));
     }
 
     /**
@@ -159,9 +161,9 @@ final class SearchFieldTest extends TestCase
     /**
      * @test
      */
-    public function its_data_is_locked_by_default()
+    public function its_data_is_unlocked_by_default()
     {
-        self::assertEquals(false, $this->field->getDataLocked());
+        self::assertFalse($this->field->getDataLocked());
     }
 
     /**
@@ -170,7 +172,34 @@ final class SearchFieldTest extends TestCase
     public function its_data_is_lockable()
     {
         $this->field->setDataLocked();
-        self::assertEquals(true, $this->field->getDataLocked());
+        self::assertTrue($this->field->getDataLocked());
+    }
+
+    /**
+     * @test
+     */
+    public function it_ignores_comparator_requirement_for_non_implemented_or_disabled_types()
+    {
+        $this->field->setValueTypeSupport(PatternMatch::class, true);
+        $this->field->setValueTypeSupport(Range::class, false);
+        $this->field->setDataLocked();
+
+        self::assertTrue($this->field->getDataLocked());
+    }
+
+    /**
+     * @test
+     */
+    public function it_checks_comparator_requirements_and_throws_when_invalid()
+    {
+        $this->field->setValueTypeSupport(Range::class, true);
+
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage(
+            'Supported value-type "'.Range::class.'" requires a value comparator but none is set for field "foobar"'
+        );
+
+        $this->field->setDataLocked();
     }
 
     /**
@@ -180,10 +209,8 @@ final class SearchFieldTest extends TestCase
     {
         $this->field->setDataLocked();
 
-        $this->setExpectedException(
-            'Rollerworks\Component\Search\Exception\BadMethodCallException',
-            'SearchField setter methods cannot be accessed anymore once the data is locked.'
-        );
+        $this->expectException('Rollerworks\Component\Search\Exception\BadMethodCallException');
+        $this->expectExceptionMessage('SearchField setter methods cannot be accessed anymore once the data is locked.');
 
         $this->field->setDataLocked();
     }

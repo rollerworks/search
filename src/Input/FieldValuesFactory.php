@@ -95,7 +95,7 @@ class FieldValuesFactory
         $basePath = $this->createValuePath($path[0]);
 
         $this->increaseValuesCount($basePath);
-        $this->assertAcceptsType('range');
+        $this->assertAcceptsType(Range::class);
 
         $lowerNorm = $this->inputToNorm($lower, $basePath.$path[1]);
         $upperNorm = $this->inputToNorm($upper, $basePath.$path[2]);
@@ -120,7 +120,7 @@ class FieldValuesFactory
         $basePath = $this->createValuePath($path[0]);
 
         $this->increaseValuesCount($basePath);
-        $this->assertAcceptsType('range');
+        $this->assertAcceptsType(Range::class);
 
         $lowerNorm = $this->inputToNorm($lower, $basePath.$path[1]);
         $upperNorm = $this->inputToNorm($upper, $basePath.$path[2]);
@@ -138,7 +138,7 @@ class FieldValuesFactory
         $basePath = $this->createValuePath($path[0]);
 
         $this->increaseValuesCount($basePath);
-        $this->assertAcceptsType('comparison');
+        $this->assertAcceptsType(Compare::class);
 
         $modelVal = $this->inputToNorm($value, $basePath.$path[2]);
 
@@ -161,7 +161,7 @@ class FieldValuesFactory
         $valid = true;
 
         $this->increaseValuesCount($basePath);
-        $this->assertAcceptsType('pattern-match');
+        $this->assertAcceptsType(PatternMatch::class);
 
         if (!is_scalar($patternMatch)) {
             $this->addError(new ConditionErrorMessage($basePath.$path[1], 'PatternMatch value must a string.'));

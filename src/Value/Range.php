@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Value;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Range implements ValueHolder
+class Range implements RequiresComparatorValueHolder
 {
     private $lower;
     private $upper;
