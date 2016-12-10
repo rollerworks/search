@@ -45,14 +45,11 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         // And builds the comparators.
 
         foreach ($fieldSet->all() as $name => $field) {
-            $comparison = $field->getValueComparison();
-
-            if ($comparison instanceof ValueIncrementerInterface &&
-                $field->supportValueType(ValuesBag::VALUE_TYPE_RANGE)
-            ) {
-                $this->comparators[$name] = new ValueSortCompare($comparison, $field->getOptions());
+            if ($field->supportValueType(ValuesBag::VALUE_TYPE_RANGE)) {
+                $this->comparators[$name] = new ValueSortCompare($field->getValueComparison(), $field->getOptions());
 
                 $optimize = true;
+                break;
             }
         }
 
@@ -64,10 +61,6 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         $this->optimizeValuesInGroup($valuesGroup, $fieldSet);
     }
 
-    /**
-     * @param ValuesGroup $valuesGroup
-     * @param FieldSet    $fieldSet
-     */
     private function optimizeValuesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
@@ -82,18 +75,12 @@ class ValuesToRange implements SearchConditionOptimizerInterface
             }
         }
 
-        // Traverse the subgroups.
         foreach ($valuesGroup->getGroups() as $group) {
             $this->optimizeValuesInGroup($group, $fieldSet);
         }
     }
 
-    /**
-     * @param FieldConfigInterface $config
-     * @param                      $comparisonFunc
-     * @param ValuesBag            $valuesBag
-     */
-    private function optimizeValuesInValuesBag(FieldConfigInterface $config, $comparisonFunc, ValuesBag $valuesBag)
+    private function optimizeValuesInValuesBag(FieldConfigInterface $config, ValueSortCompare $comparisonFunc, ValuesBag $valuesBag)
     {
         if ($valuesBag->hasSimpleValues()) {
             $values = $valuesBag->getSimpleValues();
@@ -110,15 +97,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         }
     }
 
-    /**
-     * Converts a list of values to ranges.
-     *
-     * @param array                $values
-     * @param ValuesBag            $valuesBag
-     * @param FieldConfigInterface $config
-     * @param bool                 $exclude
-     */
-    private function listToRanges($values, ValuesBag $valuesBag, FieldConfigInterface $config, $exclude = false)
+    private function listToRanges(array $values, ValuesBag $valuesBag, FieldConfigInterface $config, bool $exclude = false)
     {
         $class = $exclude ? ExcludedRange::class : Range::class;
         /** @var ValueIncrementerInterface $comparison */
@@ -130,13 +109,18 @@ class ValuesToRange implements SearchConditionOptimizerInterface
 
         $rangeLower = null;
         $rangeUpper = null;
+        $valuesBetween = 0;
 
         $valuesCount = count($values);
         $curCount = 0;
 
+        $allRemoveIndexes = [];
+        $removeIndexes = [];
+
         foreach ($values as $valIndex => $value) {
             ++$curCount;
 
+            // No previous value exists, this is the initial phase of a search.
             if (null === $prevValue) {
                 $prevIndex = $valIndex;
                 $prevValue = $value;
@@ -144,7 +128,6 @@ class ValuesToRange implements SearchConditionOptimizerInterface
                 continue;
             }
 
-            $unsetIndex = null;
             $increasedValue = $comparison->getIncrementedValue($prevValue, $options);
 
             if ($comparison->isEqual($value, $increasedValue, $options)) {
@@ -152,41 +135,47 @@ class ValuesToRange implements SearchConditionOptimizerInterface
                     $rangeLower = $prevValue;
                 }
 
+                $removeIndexes[] = $prevIndex;
+
                 $rangeUpper = $value;
-            }
-
-            if (null !== $rangeUpper) {
-                $unsetIndex = $prevIndex;
-
-                if ($curCount === $valuesCount || !$comparison->isEqual($value, $increasedValue, $options)) {
-                    $range = new $class(
-                        $rangeLower,
-                        $rangeUpper,
-                        true,
-                        true
-                    );
-
-                    $valuesBag->add($range);
-
-                    $unsetIndex = $prevIndex;
-
-                    if ($curCount === $valuesCount) {
-                        $unsetIndex = $valIndex;
-                    }
-
-                    $rangeLower = $rangeUpper = null;
-                }
-
-                $prevIndex = $valIndex;
                 $prevValue = $value;
+                $prevIndex = $valIndex;
+                ++$valuesBetween;
+
+                // If this is not the last simple continue (looking for increments).
+                // If it is the last, the logic below will finish the range (instead
+                // of requiring a check after the loop).
+                if ($curCount < $valuesCount) {
+                    continue;
+                }
             }
 
-            if (null !== $unsetIndex) {
-                if ($exclude) {
-                    $valuesBag->removeExcludedSimpleValue($unsetIndex);
-                } else {
-                    $valuesBag->removeSimpleValue($unsetIndex);
-                }
+            // Value is no (longer) an increment or is the last one.
+
+            // if there are values, use the last matching value as upper bound.
+            // If not, ignore indexes that were previously marked for removal.
+            if ($valuesBetween > 1) {
+                $valuesBag->add(new $class($rangeLower, $rangeUpper, true, true));
+
+                $removeIndexes[] = $prevIndex;
+                $allRemoveIndexes = array_merge($allRemoveIndexes, $removeIndexes);
+            }
+
+            // Reset for a another search.
+            $valuesBetween = 0;
+            $rangeLower = null;
+            $rangeUpper = null;
+            $removeIndexes = [];
+
+            $prevIndex = $valIndex;
+            $prevValue = $value;
+        }
+
+        foreach ($allRemoveIndexes as $index) {
+            if ($exclude) {
+                $valuesBag->removeExcludedSimpleValue($index);
+            } else {
+                $valuesBag->removeSimpleValue($index);
             }
         }
     }
