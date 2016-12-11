@@ -81,7 +81,7 @@ class ValuesGroup implements \Serializable
      *
      * @return ValuesGroup
      */
-    public function getGroup(int $index)
+    public function getGroup(int $index): ValuesGroup
     {
         if (!isset($this->groups[$index])) {
             throw new InvalidArgumentException(
@@ -95,7 +95,7 @@ class ValuesGroup implements \Serializable
     /**
      * @return ValuesGroup[]
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->groups;
     }
@@ -132,7 +132,7 @@ class ValuesGroup implements \Serializable
      *
      * @return bool
      */
-    public function hasField(string $name)
+    public function hasField(string $name): bool
     {
         return isset($this->fields[$name]);
     }
@@ -140,7 +140,7 @@ class ValuesGroup implements \Serializable
     /**
      * @return ValuesBag[]
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
@@ -152,7 +152,7 @@ class ValuesGroup implements \Serializable
      *
      * @return ValuesBag
      */
-    public function getField(string $name)
+    public function getField(string $name): ValuesBag
     {
         if (!isset($this->fields[$name])) {
             throw new InvalidArgumentException(

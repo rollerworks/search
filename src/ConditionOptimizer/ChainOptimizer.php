@@ -71,7 +71,7 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
     /**
      * {@inheritdoc}
      */
-    public function getPriority()
+    public function getPriority(): int
     {
         return 0;
     }

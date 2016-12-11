@@ -68,7 +68,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function remove($name)
+    public function remove(string $name)
     {
         unset($this->fields[$name], $this->unresolvedFields[$name]);
 
@@ -78,7 +78,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function has($name)
+    public function has(string $name)
     {
         if (isset($this->unresolvedFields[$name])) {
             return true;
@@ -94,7 +94,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function get($name)
+    public function get(string $name)
     {
         if (isset($this->unresolvedFields[$name])) {
             $this->fields[$name] = $this->searchFactory->createField(
@@ -116,7 +116,7 @@ class FieldSetBuilder implements FieldSetBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getFieldSet(string $setName = null)
+    public function getFieldSet(string $setName = null): FieldSet
     {
         foreach ($this->unresolvedFields as $name => $field) {
             $this->fields[$name] = $this->searchFactory->createField(

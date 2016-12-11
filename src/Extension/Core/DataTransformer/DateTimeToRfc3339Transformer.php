@@ -29,13 +29,16 @@ class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
             return '';
         }
 
-        if (!$dateTime instanceof \DateTime) {
-            throw new TransformationFailedException('Expected a \DateTime.');
+        if (!$dateTime instanceof \DateTimeInterface) {
+            throw new TransformationFailedException('Expected a \DateTimeInterface.');
         }
 
         if ($this->inputTimezone !== $this->outputTimezone) {
-            $dateTime = clone $dateTime;
-            $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
+            if (!$dateTime instanceof \DateTimeImmutable) {
+                $dateTime = clone $dateTime;
+            }
+
+            $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
         }
 
         return preg_replace('/\+00:00$/', 'Z', $dateTime->format('c'));
@@ -51,7 +54,7 @@ class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
         }
 
         if ('' === $rfc3339) {
-            return;
+            return null;
         }
 
         try {

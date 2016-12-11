@@ -23,22 +23,22 @@ class DateTimeValueComparison extends DateValueComparison
      *
      * The value should returned in the normalized format.
      *
-     * @param \DateTime $value      The value to increment
-     * @param array     $options    Array of options passed with the field
-     * @param int       $increments Number of increments
+     * @param \DateTimeImmutable|\DateTime $value      The value to increment
+     * @param array                        $options    Array of options passed with the field
+     * @param int                          $increments Number of increments
      *
-     * @return \DateTime
+     * @return \DateTimeImmutable|\DateTime
      */
-    public function getIncrementedValue($value, array $options, $increments = 1)
+    public function getIncrementedValue($value, array $options, int $increments = 1)
     {
         $newValue = clone $value;
 
         if ($options['with_seconds']) {
-            $newValue->modify('+'.$increments.' seconds');
+            $newValue = $newValue->modify('+'.$increments.' seconds');
         } elseif ($options['with_minutes']) {
-            $newValue->modify('+'.$increments.' minutes');
+            $newValue = $newValue->modify('+'.$increments.' minutes');
         } else {
-            $newValue->modify('+'.$increments.' hours');
+            $newValue = $newValue->modify('+'.$increments.' hours');
         }
 
         return $newValue;

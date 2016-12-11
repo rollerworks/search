@@ -49,7 +49,7 @@ interface FieldSetBuilderInterface
      *
      * @return self
      */
-    public function remove($name);
+    public function remove(string $name);
 
     /**
      * Returns whether the set-builder has a field with the name.
@@ -58,7 +58,7 @@ interface FieldSetBuilderInterface
      *
      * @return bool
      */
-    public function has($name);
+    public function has(string $name);
 
     /**
      * Get a previously registered field from the set.
@@ -67,12 +67,14 @@ interface FieldSetBuilderInterface
      *
      * @return FieldConfigInterface
      */
-    public function get($name);
+    public function get(string $name);
 
     /**
      * Create the FieldSet using the fields set on the builder.
      *
+     * @param string $name
+     *
      * @return FieldSet
      */
-    public function getFieldSet(string $name = null);
+    public function getFieldSet(string $name = null): FieldSet;
 }

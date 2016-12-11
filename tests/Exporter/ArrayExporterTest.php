@@ -202,18 +202,12 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
         return ['groups' => [[]]];
     }
 
-    /**
-     * @return ExporterInterface
-     */
-    protected function getExporter()
+    protected function getExporter(): ExporterInterface
     {
         return new ArrayExporter();
     }
 
-    /**
-     * @return InputProcessorInterface
-     */
-    protected function getInputProcessor()
+    protected function getInputProcessor(): InputProcessorInterface
     {
         return new ArrayInput();
     }

@@ -46,7 +46,7 @@ final class Compare implements RequiresComparatorValueHolder
      *
      * @return string
      */
-    public function getOperator()
+    public function getOperator(): string
     {
         return $this->operator;
     }

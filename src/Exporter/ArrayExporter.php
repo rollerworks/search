@@ -65,13 +65,7 @@ class ArrayExporter extends AbstractExporter
         return $result;
     }
 
-    /**
-     * @param ValuesBag            $valuesBag
-     * @param FieldConfigInterface $field
-     *
-     * @return string
-     */
-    protected function exportValues(ValuesBag $valuesBag, FieldConfigInterface $field)
+    protected function exportValues(ValuesBag $valuesBag, FieldConfigInterface $field): array
     {
         $exportedValues = [];
 
@@ -109,13 +103,7 @@ class ArrayExporter extends AbstractExporter
         return $exportedValues;
     }
 
-    /**
-     * @param Range                $range
-     * @param FieldConfigInterface $field
-     *
-     * @return array
-     */
-    protected function exportRangeValue(Range $range, FieldConfigInterface $field)
+    protected function exportRangeValue(Range $range, FieldConfigInterface $field): array
     {
         $result = [
             'lower' => $this->modelToNorm($range->getLower(), $field),

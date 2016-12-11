@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Value\RequiresComparatorValueHolder;
 
@@ -73,10 +74,10 @@ class SearchField implements FieldConfigInterface
      *
      * @throws \InvalidArgumentException When the name is invalid
      */
-    public function __construct($name, ResolvedFieldTypeInterface $type, array $options = [])
+    public function __construct(string $name, ResolvedFieldTypeInterface $type, array $options = [])
     {
-        if ('' === $name || !preg_match('/^[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
-            throw new \InvalidArgumentException(
+        if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
+            throw new InvalidArgumentException(
                 sprintf(
                     'The name "%s" contains illegal characters. Name must start with a letter '.
                     'and only contain letters, digits, numbers, underscores ("_") and hyphens ("-").',
@@ -88,7 +89,6 @@ class SearchField implements FieldConfigInterface
         $this->name = $name;
         $this->type = $type;
         $this->options = $options;
-        $this->locked = false;
     }
 
     /**
@@ -120,7 +120,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -128,7 +128,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getType()
+    public function getType(): ResolvedFieldTypeInterface
     {
         return $this->type;
     }
@@ -244,7 +244,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function isConfigLocked()
+    public function isConfigLocked(): bool
     {
         return $this->locked;
     }
@@ -252,7 +252,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -260,7 +260,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function hasOption($name)
+    public function hasOption(string $name): bool
     {
         return array_key_exists($name, $this->options);
     }
@@ -268,7 +268,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getOption($name, $default = null)
+    public function getOption(string $name, $default = null)
     {
         if (array_key_exists($name, $this->options)) {
             return $this->options[$name];
@@ -280,7 +280,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function createView()
+    public function createView(): SearchFieldView
     {
         if (!$this->locked) {
             throw new BadMethodCallException(

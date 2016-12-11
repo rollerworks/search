@@ -90,7 +90,7 @@ final class ConditionErrorMessage
         $this->cause = $cause;
     }
 
-    public static function withMessageTemplate(string $path, string $messageTemplate, array $messageParameters, int $messagePluralization = null, $cause = null)
+    public static function withMessageTemplate(string $path, string $messageTemplate, array $messageParameters, int $messagePluralization = null, $cause = null): self
     {
         return new static(
             $path,
@@ -102,7 +102,7 @@ final class ConditionErrorMessage
         );
     }
 
-    public static function rawMessage(string $path, string $message, $cause = null)
+    public static function rawMessage(string $path, string $message, $cause = null): self
     {
         $obj = new static($path, $message, null, [], null, $cause);
         $obj->messageTemplate = null; // Mark as untranslated

@@ -32,7 +32,7 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Constructor.
      *
-     * @see BaseDateTimeTransformer::formats for available format options
+     * @see \IntlDateFormatter for available format options
      *
      * @param string $inputTimezone  The name of the input timezone
      * @param string $outputTimezone The name of the output timezone
@@ -43,34 +43,12 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      *
      * @throws UnexpectedTypeException If a format is not supported or if a timezone is not a string
      */
-    public function __construct($inputTimezone = null, $outputTimezone = null, $dateFormat = null, $timeFormat = null, $calendar = \IntlDateFormatter::GREGORIAN, $pattern = null)
+    public function __construct(string $inputTimezone = null, string $outputTimezone = null, int $dateFormat = null, int $timeFormat = null, int $calendar = \IntlDateFormatter::GREGORIAN, string $pattern = null)
     {
         parent::__construct($inputTimezone, $outputTimezone);
 
-        if (null === $dateFormat) {
-            $dateFormat = \IntlDateFormatter::MEDIUM;
-        }
-
-        if (null === $timeFormat) {
-            $timeFormat = \IntlDateFormatter::SHORT;
-        }
-
-        if (!in_array($dateFormat, self::$formats, true)) {
-            throw new UnexpectedTypeException(
-                $dateFormat,
-                self::$formats
-            );
-        }
-
-        if (!in_array($timeFormat, self::$formats, true)) {
-            throw new UnexpectedTypeException(
-                $timeFormat,
-                self::$formats
-            );
-        }
-
-        $this->dateFormat = $dateFormat;
-        $this->timeFormat = $timeFormat;
+        $this->dateFormat = $dateFormat ?? \IntlDateFormatter::MEDIUM;
+        $this->timeFormat = $timeFormat ?? \IntlDateFormatter::SHORT;
         $this->calendar = $calendar;
         $this->pattern = $pattern;
     }
@@ -78,13 +56,13 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a normalized date into a localized date string/array.
      *
-     * @param \DateTime $dateTime Normalized date
+     * @param \DateTimeInterface $dateTime
      *
      * @throws TransformationFailedException If the given value is not an instance
      *                                       of \DateTime or if the date could not
      *                                       be transformed
      *
-     * @return string|array Localized date string/array
+     * @return string Localized date string
      */
     public function transform($dateTime)
     {
@@ -92,16 +70,17 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             return '';
         }
 
-        if (!$dateTime instanceof \DateTime) {
-            throw new TransformationFailedException('Expected a \DateTime.');
+        if (!$dateTime instanceof \DateTimeInterface) {
+            throw new TransformationFailedException('Expected a \DateTimeInterface.');
         }
 
         // convert time to UTC before passing it to the formatter
-        $dateTime = clone $dateTime;
+        if (!$dateTime instanceof \DateTimeImmutable) {
+            $dateTime = clone $dateTime;
+        }
+
         if ('UTC' !== $this->inputTimezone) {
-            $dateTime->setTimezone(
-                new \DateTimeZone('UTC')
-            );
+            $dateTime = $dateTime->setTimezone(new \DateTimeZone('UTC'));
         }
 
         $value = $this->getIntlDateFormatter()->format(
@@ -133,7 +112,7 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         }
 
         if ('' === $value) {
-            return;
+            return null;
         }
 
         $timestamp = $this->getIntlDateFormatter()->parse($value);
@@ -144,9 +123,7 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         try {
             // read timestamp into DateTime object - the formatter delivers in UTC
-            $dateTime = new \DateTime(
-                sprintf('@%s UTC', $timestamp)
-            );
+            $dateTime = new \DateTime(sprintf('@%s UTC', $timestamp));
         } catch (\Exception $e) {
             throw new TransformationFailedException(
                 $e->getMessage(),
@@ -157,9 +134,7 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         if ('UTC' !== $this->inputTimezone) {
             try {
-                $dateTime->setTimezone(
-                    new \DateTimeZone($this->inputTimezone)
-                );
+                $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
             } catch (\Exception $e) {
                 throw new TransformationFailedException(
                     $e->getMessage(),
@@ -173,26 +148,23 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     }
 
     /**
-     * Returns a preconfigured IntlDateFormatter instance.
+     * Returns a pre-configured IntlDateFormatter instance.
      *
      * @return \IntlDateFormatter
      */
-    protected function getIntlDateFormatter()
+    protected function getIntlDateFormatter(): \IntlDateFormatter
     {
-        $dateFormat = $this->dateFormat;
-        $timeFormat = $this->timeFormat;
-        $timezone = $this->outputTimezone;
-        $calendar = $this->calendar;
-        $pattern = $this->pattern;
-
         $intlDateFormatter = new \IntlDateFormatter(
             \Locale::getDefault(),
-            $dateFormat,
-            $timeFormat,
-            $timezone,
-            $calendar,
-            $pattern
+            $this->dateFormat,
+            $this->timeFormat,
+            $this->outputTimezone,
+            $this->calendar
         );
+
+        if ($this->pattern) {
+            $intlDateFormatter->setPattern($this->pattern);
+        }
 
         $intlDateFormatter->setLenient(false);
 

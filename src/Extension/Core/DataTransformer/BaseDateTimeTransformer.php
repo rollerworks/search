@@ -23,17 +23,6 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 abstract class BaseDateTimeTransformer implements DataTransformerInterface
 {
     /**
-     * @var array
-     */
-    protected static $formats = [
-        \IntlDateFormatter::NONE,
-        \IntlDateFormatter::FULL,
-        \IntlDateFormatter::LONG,
-        \IntlDateFormatter::MEDIUM,
-        \IntlDateFormatter::SHORT,
-    ];
-
-    /**
      * @var string
      */
     protected $inputTimezone;
@@ -51,17 +40,9 @@ abstract class BaseDateTimeTransformer implements DataTransformerInterface
      *
      * @throws UnexpectedTypeException if a timezone is not a string
      */
-    public function __construct($inputTimezone = null, $outputTimezone = null)
+    public function __construct(string $inputTimezone = null, string $outputTimezone = null)
     {
-        if (null !== $inputTimezone && !is_string($inputTimezone)) {
-            throw new UnexpectedTypeException($inputTimezone, 'string');
-        }
-
-        if (null !== $outputTimezone && !is_string($outputTimezone)) {
-            throw new UnexpectedTypeException($outputTimezone, 'string');
-        }
-
-        $this->inputTimezone = $inputTimezone ?: date_default_timezone_get();
-        $this->outputTimezone = $outputTimezone ?: date_default_timezone_get();
+        $this->inputTimezone = $inputTimezone ?? date_default_timezone_get();
+        $this->outputTimezone = $outputTimezone ?? date_default_timezone_get();
     }
 }

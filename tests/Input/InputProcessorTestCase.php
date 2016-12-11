@@ -37,15 +37,12 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 {
-    /**
-     * @return InputProcessorInterface
-     */
-    abstract protected function getProcessor();
+    abstract protected function getProcessor(): InputProcessorInterface;
 
     /**
      * {@inheritdoc}
      */
-    protected function getFieldSet($build = true)
+    protected function getFieldSet(bool $build = true)
     {
         $fieldSet = new FieldSetBuilder($this->getFactory());
         $fieldSet->add('id', IntegerType::class);
@@ -301,7 +298,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      * @test
      * @dataProvider provideRootLogicalTests
      */
-    public function it_processes_root_logical($input, $logical = ValuesGroup::GROUP_LOGICAL_AND)
+    public function it_processes_root_logical($input, string $logical = ValuesGroup::GROUP_LOGICAL_AND)
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -440,7 +437,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideGroupsOverflowTests();
 
     /**
-     * @param mixed $input
+     * @param mixed  $input
+     * @param string $path
      *
      * @test
      * @dataProvider provideNestingLevelExceededTests
@@ -490,7 +488,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      * @test
      * @dataProvider provideUnsupportedValueTypeExceptionTests
      */
-    public function it_errors_when_the_field_does_not_support_the_value_type($input, $fieldName, $valueType)
+    public function it_errors_when_the_field_does_not_support_the_value_type($input, string $fieldName, string $valueType)
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -531,7 +529,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
     /**
      * @param mixed                   $input
-     * @param string                  $fieldName
      * @param ConditionErrorMessage[] $errors
      *
      * @test
@@ -572,7 +569,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      * @param ProcessorConfig         $config
      * @param ConditionErrorMessage[] $errors
      */
-    protected function assertConditionContainsErrorsWithoutCause($input, $config, array $errors)
+    protected function assertConditionContainsErrorsWithoutCause($input, ProcessorConfig $config, array $errors)
     {
         $processor = $this->getProcessor();
 

@@ -69,7 +69,7 @@ class TimeTypeTest extends SearchIntegrationTestCase
             'with_seconds' => true,
         ]);
 
-        $field->setDataLocked();
+        $field->finalizeConfig();
         $fieldView = $field->createView();
 
         self::assertArrayHasKey('pattern', $fieldView->vars);
@@ -86,7 +86,7 @@ class TimeTypeTest extends SearchIntegrationTestCase
             'with_seconds' => false,
         ]);
 
-        $field->setDataLocked();
+        $field->finalizeConfig();
         $fieldView = $field->createView();
 
         self::assertArrayHasKey('pattern', $fieldView->vars);
@@ -103,7 +103,7 @@ class TimeTypeTest extends SearchIntegrationTestCase
             'with_seconds' => false,
         ]);
 
-        $field->setDataLocked();
+        $field->finalizeConfig();
         $fieldView = $field->createView();
 
         self::assertArrayHasKey('pattern', $fieldView->vars);

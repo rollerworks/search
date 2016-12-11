@@ -29,7 +29,7 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * @return bool
      */
-    public function isHigher($higher, $lower, array $options)
+    public function isHigher($higher, $lower, array $options): bool
     {
         return $higher > $lower;
     }
@@ -43,7 +43,7 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * @return bool
      */
-    public function isLower($lower, $higher, $options)
+    public function isLower($lower, $higher, array $options): bool
     {
         return $lower < $higher;
     }
@@ -57,7 +57,7 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * @return bool
      */
-    public function isEqual($value, $nextValue, $options)
+    public function isEqual($value, $nextValue, array $options): bool
     {
         return $value === $nextValue;
     }
@@ -73,7 +73,7 @@ class NumberValueComparison implements ValueIncrementerInterface
      *
      * @return float
      */
-    public function getIncrementedValue($value, array $options, $increments = 1)
+    public function getIncrementedValue($value, array $options, int $increments = 1)
     {
         if (isset($options['increase_by_decimal'])) {
             return $value + (float) ("0.$increments");

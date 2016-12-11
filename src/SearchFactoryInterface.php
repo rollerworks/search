@@ -27,7 +27,7 @@ interface SearchFactoryInterface
      *
      * @return FieldSet
      */
-    public function createFieldSet($configurator);
+    public function createFieldSet($configurator): FieldSet;
 
     /**
      * Create a new search field.
@@ -38,14 +38,14 @@ interface SearchFactoryInterface
      *
      * @return FieldConfigInterface
      */
-    public function createField($name, string $type, array $options = []);
+    public function createField(string $name, string $type, array $options = []): FieldConfigInterface;
 
     /**
      * Create a new FieldSetBuilderInterface instance.
      *
      * @return FieldSetBuilderInterface
      */
-    public function createFieldSetBuilder();
+    public function createFieldSetBuilder(): FieldSetBuilderInterface;
 
     /**
      * Get the SearchConditionSerializer.

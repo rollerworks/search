@@ -25,7 +25,7 @@ class SimpleValueComparison implements ValueComparisonInterface
     /**
      * {@inheritdoc}
      */
-    public function isHigher($value, $nextValue, array $options)
+    public function isHigher($value, $nextValue, array $options): bool
     {
         return false;
     }
@@ -33,7 +33,7 @@ class SimpleValueComparison implements ValueComparisonInterface
     /**
      * {@inheritdoc}
      */
-    public function isLower($value, $nextValue, $options)
+    public function isLower($lower, $higher, array $options): bool
     {
         return false;
     }
@@ -41,7 +41,7 @@ class SimpleValueComparison implements ValueComparisonInterface
     /**
      * {@inheritdoc}
      */
-    public function isEqual($value, $nextValue, $options)
+    public function isEqual($value, $nextValue, array $options): bool
     {
         // This does not work for objects, so they should have
         // there own comparison classes.

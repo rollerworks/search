@@ -30,7 +30,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      *
      * @return bool
      */
-    public function isHigher($higher, $lower, array $options)
+    public function isHigher($higher, $lower, array $options): bool
     {
         if ($lower->currency !== $higher->currency) {
             return false;
@@ -48,7 +48,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      *
      * @return bool
      */
-    public function isLower($lower, $higher, $options)
+    public function isLower($lower, $higher, array $options): bool
     {
         if ($lower->currency !== $higher->currency) {
             return false;
@@ -66,7 +66,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      *
      * @return bool
      */
-    public function isEqual($value, $nextValue, $options)
+    public function isEqual($value, $nextValue, array $options): bool
     {
         return $value == $nextValue;
     }
@@ -82,7 +82,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      *
      * @return MoneyValue
      */
-    public function getIncrementedValue($value, array $options, $increments = 1)
+    public function getIncrementedValue($value, array $options, int $increments = 1)
     {
         $newValue = clone $value;
 

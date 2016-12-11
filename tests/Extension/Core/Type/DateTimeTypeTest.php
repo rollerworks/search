@@ -89,7 +89,7 @@ class DateTimeTypeTest extends SearchIntegrationTestCase
             'time_format' => \IntlDateFormatter::SHORT,
         ]);
 
-        $field->setDataLocked();
+        $field->finalizeConfig();
         $fieldView = $field->createView();
 
         self::assertArrayHasKey('timezone', $fieldView->vars);

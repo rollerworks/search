@@ -25,14 +25,7 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  */
 class MoneyToStringTransformer extends NumberToStringTransformer
 {
-    /**
-     * @var int|null
-     */
     private $divisor;
-
-    /**
-     * @var string
-     */
     private $defaultCurrency;
 
     /**
@@ -42,23 +35,11 @@ class MoneyToStringTransformer extends NumberToStringTransformer
      * @param int    $divisor
      * @param string $defaultCurrency
      */
-    public function __construct($precision = null, $grouping = null, $roundingMode = null, $divisor = null, $defaultCurrency = null)
+    public function __construct(int $precision = null, bool $grouping = null, int $roundingMode = null, int $divisor = null, string $defaultCurrency = null)
     {
-        if (null === $grouping) {
-            $grouping = true;
-        }
+        parent::__construct($precision ?? 2, $grouping ?? true, $roundingMode, \NumberFormatter::TYPE_CURRENCY);
 
-        if (null === $precision) {
-            $precision = 2;
-        }
-
-        parent::__construct($precision, $grouping, $roundingMode, \NumberFormatter::TYPE_CURRENCY);
-
-        if (null === $divisor) {
-            $divisor = 1;
-        }
-
-        $this->divisor = $divisor;
+        $this->divisor = $divisor ?? 1;
         $this->defaultCurrency = $defaultCurrency;
     }
 
@@ -112,8 +93,12 @@ class MoneyToStringTransformer extends NumberToStringTransformer
      *
      * @return MoneyValue Normalized number
      */
-    public function reverseTransform($value)
+    public function reverseTransform($value, &$currency = null)
     {
+        if (!is_string($value)) {
+            throw new TransformationFailedException('Expected a string value.');
+        }
+
         $value = str_replace(' ', "\xc2\xa0", $value);
 
         if (!preg_match('#\p{Sc}#u', $value)) {

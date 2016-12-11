@@ -46,7 +46,7 @@ abstract class AbstractExporter implements ExporterInterface
      *
      * @return string
      */
-    protected function getPatternMatchType(PatternMatch $patternMatch)
+    protected function getPatternMatchType(PatternMatch $patternMatch): string
     {
         $type = '';
 

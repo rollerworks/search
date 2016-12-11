@@ -45,7 +45,7 @@ class SearchConditionSerializer
      *
      * @return array [FieldSet-name, serialized ValuesGroup object]
      */
-    public function serialize(SearchCondition $searchCondition)
+    public function serialize(SearchCondition $searchCondition): array
     {
         $setName = $searchCondition->getFieldSet()->getSetName();
 
@@ -62,7 +62,7 @@ class SearchConditionSerializer
      *
      * @return SearchCondition
      */
-    public function unserialize($searchCondition)
+    public function unserialize(array $searchCondition): SearchCondition
     {
         if (2 !== count($searchCondition) || !isset($searchCondition[0], $searchCondition[1])) {
             throw new InvalidArgumentException(

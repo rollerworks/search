@@ -23,13 +23,13 @@ class DateValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value is higher then the second value.
      *
-     * @param \DateTime $higher
-     * @param \DateTime $lower
-     * @param array     $options
+     * @param \DateTimeInterface $higher
+     * @param \DateTimeInterface $lower
+     * @param array              $options
      *
      * @return bool
      */
-    public function isHigher($higher, $lower, array $options)
+    public function isHigher($higher, $lower, array $options): bool
     {
         return $higher > $lower;
     }
@@ -37,13 +37,13 @@ class DateValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value is lower then the second value.
      *
-     * @param \DateTime $lower
-     * @param \DateTime $higher
-     * @param array     $options
+     * @param \DateTimeInterface $lower
+     * @param \DateTimeInterface $higher
+     * @param array              $options
      *
      * @return bool
      */
-    public function isLower($lower, $higher, $options)
+    public function isLower($lower, $higher, array $options): bool
     {
         return $lower < $higher;
     }
@@ -51,13 +51,13 @@ class DateValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value equals the second value.
      *
-     * @param \DateTime $value
-     * @param \DateTime $nextValue
-     * @param array     $options
+     * @param \DateTimeInterface $value
+     * @param \DateTimeInterface $nextValue
+     * @param array              $options
      *
      * @return bool
      */
-    public function isEqual($value, $nextValue, $options)
+    public function isEqual($value, $nextValue, array $options): bool
     {
         return $value->getTimestamp() === $nextValue->getTimestamp();
     }
@@ -67,17 +67,20 @@ class DateValueComparison implements ValueIncrementerInterface
      *
      * The value should returned in the normalized format.
      *
-     * @param \DateTime $value      The value to increment
-     * @param array     $options    Array of options passed with the field
-     * @param int       $increments Number of increments
+     * @param \DateTimeImmutable|\DateTime $value      The value to increment
+     * @param array                        $options    Array of options passed with the field
+     * @param int                          $increments Number of increments
      *
-     * @return \DateTime
+     * @return \DateTimeInterface
      */
-    public function getIncrementedValue($value, array $options, $increments = 1)
+    public function getIncrementedValue($value, array $options, int $increments = 1)
     {
-        $newValue = clone $value;
-        $newValue->modify('+'.$increments.' days');
+        if (!$value instanceof \DateTimeImmutable) {
+            $value = clone $value;
+        }
 
-        return $newValue;
+        $value = $value->modify('+'.$increments.' days');
+
+        return $value;
     }
 }

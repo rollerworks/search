@@ -22,9 +22,6 @@ use Rollerworks\Component\Search\Value\ValuesBag;
  */
 class ValuesBagBuilder extends ValuesBag
 {
-    /**
-     * @var SearchConditionBuilder
-     */
     private $parent;
 
     /**
@@ -37,10 +34,7 @@ class ValuesBagBuilder extends ValuesBag
         $this->parent = $parent;
     }
 
-    /**
-     * @return SearchConditionBuilder
-     */
-    public function end()
+    public function end(): SearchConditionBuilder
     {
         return $this->parent;
     }

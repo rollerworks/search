@@ -13,51 +13,27 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchConditionBuilder
+final class SearchConditionBuilder
 {
     /**
      * @var ValuesGroup
      */
-    protected $valuesGroup;
+    private $valuesGroup;
 
     /**
      * @var SearchConditionBuilder
      */
-    protected $parent;
+    private $parent;
 
     /**
      * @var FieldSet
      */
-    protected $fieldSet;
-
-    /**
-     * Constructor.
-     *
-     * @param string                 $logical
-     * @param FieldSet               $fieldSet
-     * @param SearchConditionBuilder $parent
-     *
-     * @internal Usage of this method is protected as of v1.0.0-beta5 and access will be changed to protected
-     *           in 2.0. Use the static create() method instead
-     *
-     * @throws BadMethodCallException when no FieldSet is provided
-     */
-    public function __construct($logical = ValuesGroup::GROUP_LOGICAL_AND, FieldSet $fieldSet = null, SearchConditionBuilder $parent = null)
-    {
-        if (null === $fieldSet && null === $parent) {
-            throw new BadMethodCallException('Unable to create SearchCondition without FieldSet.');
-        }
-
-        $this->valuesGroup = new ValuesGroup($logical);
-        $this->parent = $parent;
-        $this->fieldSet = $fieldSet;
-    }
+    private $fieldSet;
 
     /**
      * Creates a new SearchConditionBuilder.
@@ -67,7 +43,7 @@ class SearchConditionBuilder
      *
      * @return SearchConditionBuilder
      */
-    public static function create(FieldSet $fieldSet, $logical = ValuesGroup::GROUP_LOGICAL_AND)
+    public static function create(FieldSet $fieldSet, string $logical = ValuesGroup::GROUP_LOGICAL_AND): SearchConditionBuilder
     {
         return new self($logical, $fieldSet);
     }
@@ -88,9 +64,9 @@ class SearchConditionBuilder
      *
      * @return SearchConditionBuilder
      */
-    public function group($logical = ValuesGroup::GROUP_LOGICAL_AND)
+    public function group(string $logical = ValuesGroup::GROUP_LOGICAL_AND): SearchConditionBuilder
     {
-        $builder = new self($logical, null, $this);
+        $builder = new self($logical, $this->fieldSet, $this);
         $this->valuesGroup->addGroup($builder->getGroup());
 
         return $builder;
@@ -98,6 +74,8 @@ class SearchConditionBuilder
 
     /**
      * Add/expend a field on this ValuesGroup and returns the object instance.
+     *
+     * Note. Values must be in the model format, they are not transformed!
      *
      * The object instance is a ValuesBagBuilder (subset of ValuesBag), which
      * allows to add extra values to the field:
@@ -115,7 +93,7 @@ class SearchConditionBuilder
      *
      * @return ValuesBagBuilder
      */
-    public function field($name, $forceNew = false)
+    public function field(string $name, bool $forceNew = false): ValuesBagBuilder
     {
         if (!$forceNew && $this->valuesGroup->hasField($name)) {
             $valuesBag = $this->valuesGroup->getField($name);
@@ -130,7 +108,7 @@ class SearchConditionBuilder
     /**
      * @return SearchConditionBuilder
      */
-    public function end()
+    public function end(): SearchConditionBuilder
     {
         return null !== $this->parent ? $this->parent : $this;
     }
@@ -138,7 +116,7 @@ class SearchConditionBuilder
     /**
      * @return ValuesGroup
      */
-    public function getGroup()
+    public function getGroup(): ValuesGroup
     {
         return $this->valuesGroup;
     }
@@ -148,7 +126,7 @@ class SearchConditionBuilder
      *
      * @return SearchCondition
      */
-    public function getSearchCondition()
+    public function getSearchCondition(): SearchCondition
     {
         if ($this->parent) {
             return $this->parent->getSearchCondition();
@@ -157,11 +135,10 @@ class SearchConditionBuilder
         return new SearchCondition($this->fieldSet, $this->valuesGroup);
     }
 
-    /**
-     * @return FieldSet
-     */
-    public function getFieldSet()
+    private function __construct(string $logical, FieldSet $fieldSet, SearchConditionBuilder $parent = null)
     {
-        return $this->fieldSet;
+        $this->valuesGroup = new ValuesGroup($logical);
+        $this->parent = $parent;
+        $this->fieldSet = $fieldSet;
     }
 }

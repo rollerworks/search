@@ -42,23 +42,11 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
      * @param int    $divisor
      * @param string $defaultCurrency
      */
-    public function __construct($precision = null, $grouping = null, $roundingMode = null, $divisor = null, $defaultCurrency = null)
+    public function __construct(int $precision = null, bool $grouping = null, int $roundingMode = null, int $divisor = null, string $defaultCurrency = null)
     {
-        if (null === $grouping) {
-            $grouping = true;
-        }
+        parent::__construct($precision ?? 2, $grouping ?? true, $roundingMode, \NumberFormatter::TYPE_CURRENCY);
 
-        if (null === $precision) {
-            $precision = 2;
-        }
-
-        parent::__construct($precision, $grouping, $roundingMode, \NumberFormatter::TYPE_CURRENCY);
-
-        if (null === $divisor) {
-            $divisor = 1;
-        }
-
-        $this->divisor = $divisor;
+        $this->divisor = $divisor ?? 1;
         $this->defaultCurrency = $defaultCurrency;
     }
 

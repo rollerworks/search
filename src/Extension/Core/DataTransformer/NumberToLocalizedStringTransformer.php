@@ -101,19 +101,11 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
      * @param int  $roundingMode
      * @param int  $type
      */
-    public function __construct($precision = null, $grouping = null, $roundingMode = null, $type = \NumberFormatter::TYPE_DOUBLE)
+    public function __construct(int $precision = null, bool $grouping = null, int $roundingMode = null, int $type = \NumberFormatter::TYPE_DOUBLE)
     {
-        if (null === $grouping) {
-            $grouping = false;
-        }
-
-        if (null === $roundingMode) {
-            $roundingMode = self::ROUND_HALF_UP;
-        }
-
         $this->precision = $precision;
-        $this->grouping = $grouping;
-        $this->roundingMode = $roundingMode;
+        $this->grouping = $grouping ?? false;
+        $this->roundingMode = $roundingMode ?? self::ROUND_HALF_UP;
         $this->type = $type;
     }
 
@@ -168,11 +160,11 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
         }
 
         if ('' === $value) {
-            return;
+            return null;
         }
 
         if ('NaN' === $value) {
-            throw new TransformationFailedException('"NaN" is not a valid number');
+            throw new TransformationFailedException('"NaN" is not a valid number.');
         }
 
         $position = 0;
@@ -199,29 +191,18 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
         }
 
         if ($result >= PHP_INT_MAX || $result <= -PHP_INT_MAX) {
-            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like');
+            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
         }
 
-        if (function_exists('mb_detect_encoding') && false !== $encoding = mb_detect_encoding($value, mb_detect_order(), true)) {
-            $strlen = function ($string) use ($encoding) {
-                return mb_strlen($string, $encoding);
-            };
-            $substr = function ($string, $offset, $length) use ($encoding) {
-                return mb_substr($string, $offset, $length, $encoding);
-            };
-        } else {
-            $strlen = 'strlen';
-            $substr = 'substr';
-        }
-
-        $length = $strlen($value);
+        $encoding = mb_detect_encoding($value, mb_detect_order(), true);
+        $length = mb_strlen($value, $encoding);
 
         // After parsing, position holds the index of the character where the
         // parsing stopped
         if ($position < $length) {
             // Check if there are unrecognized characters at the end of the
             // number (excluding whitespace characters)
-            $remainder = trim($substr($value, $position, $length), " \t\n\r\0\x0b\xc2\xa0");
+            $remainder = trim(mb_substr($value, $position, $length, $encoding), " \t\n\r\0\x0b\xc2\xa0");
 
             if ('' !== $remainder) {
                 throw new TransformationFailedException(
@@ -235,13 +216,13 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
     }
 
     /**
-     * Returns a preconfigured \NumberFormatter instance.
+     * Returns a pre-configured \NumberFormatter instance.
      *
      * @param int $type
      *
      * @return \NumberFormatter
      */
-    protected function getNumberFormatter($type = null)
+    protected function getNumberFormatter(int $type = null): \NumberFormatter
     {
         if (null === $type) {
             $type = \NumberFormatter::TYPE_CURRENCY === $this->type ? \NumberFormatter::CURRENCY : \NumberFormatter::DECIMAL;
@@ -297,7 +278,6 @@ class NumberToLocalizedStringTransformer implements DataTransformerInterface
                     break;
             }
 
-            /* @noinspection CallableParameterUseCaseInTypeContextInspection */
             $number /= $roundingCoef;
         }
 

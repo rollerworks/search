@@ -32,14 +32,14 @@ interface ResolvedFieldTypeInterface
      *
      * @return FieldTypeInterface The wrapped field type
      */
-    public function getInnerType();
+    public function getInnerType(): FieldTypeInterface;
 
     /**
      * Returns the extensions of the wrapped field type.
      *
      * @return FieldTypeExtensionInterface[]
      */
-    public function getTypeExtensions();
+    public function getTypeExtensions(): array;
 
     /**
      * Returns a new FieldConfigInterface instance.
@@ -49,7 +49,7 @@ interface ResolvedFieldTypeInterface
      *
      * @return FieldConfigInterface
      */
-    public function createField($name, array $options = []);
+    public function createField(string $name, array $options = []): FieldConfigInterface;
 
     /**
      * This configures the {@link FieldConfigInterface}.
@@ -85,5 +85,5 @@ interface ResolvedFieldTypeInterface
      *
      * @return OptionsResolver The options resolver
      */
-    public function getOptionsResolver();
+    public function getOptionsResolver(): OptionsResolver;
 }

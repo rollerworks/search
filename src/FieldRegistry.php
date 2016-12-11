@@ -30,7 +30,7 @@ class FieldRegistry implements FieldRegistryInterface
     private $extensions = [];
 
     /**
-     * @var FieldTypeInterface[]
+     * @var ResolvedFieldTypeInterface[]
      */
     private $types = [];
 

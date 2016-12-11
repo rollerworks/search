@@ -55,14 +55,14 @@ final class PatternMatch implements ValueHolder
      *
      * @throws \InvalidArgumentException When the pattern-match type is invalid
      */
-    public function __construct($value, $patternType, $caseInsensitive = false)
+    public function __construct($value, $patternType, bool $caseInsensitive = false)
     {
         if (!is_scalar($value)) {
             throw new \InvalidArgumentException('Value of PatternMatch must be a scalar value.');
         }
 
         if (is_string($patternType)) {
-            $typeConst = 'Rollerworks\\Component\\Search\\Value\\PatternMatch::PATTERN_'.strtoupper($patternType);
+            $typeConst = __CLASS__.'::PATTERN_'.strtoupper($patternType);
 
             if (defined($typeConst)) {
                 $patternType = constant($typeConst);
@@ -83,7 +83,7 @@ final class PatternMatch implements ValueHolder
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }

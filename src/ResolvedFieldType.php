@@ -75,7 +75,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function getInnerType()
+    public function getInnerType(): FieldTypeInterface
     {
         return $this->innerType;
     }
@@ -83,7 +83,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function getTypeExtensions()
+    public function getTypeExtensions(): array
     {
         return $this->typeExtensions;
     }
@@ -91,12 +91,11 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function createField($name, array $options = [])
+    public function createField(string $name, array $options = []): FieldConfigInterface
     {
         $options = $this->getOptionsResolver()->resolve($options);
-        $builder = $this->newField($name, $options);
 
-        return $builder;
+        return $this->newField($name, $options);
     }
 
     /**
@@ -150,7 +149,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptionsResolver()
+    public function getOptionsResolver(): OptionsResolver
     {
         if (null === $this->optionsResolver) {
             if (null !== $this->parent) {
@@ -177,9 +176,9 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
      * @param string $name    The name of the field
      * @param array  $options The builder options
      *
-     * @return SearchField The new field instance
+     * @return FieldConfigInterface The new field instance
      */
-    protected function newField($name, array $options)
+    protected function newField($name, array $options): FieldConfigInterface
     {
         return new SearchField($name, $this, $options);
     }
@@ -193,7 +192,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
      *
      * @return SearchFieldView The new view instance
      */
-    protected function newFieldView(FieldConfigInterface $config)
+    protected function newFieldView(FieldConfigInterface $config): SearchFieldView
     {
         return new SearchFieldView($config);
     }

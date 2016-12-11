@@ -19,6 +19,7 @@ use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
 use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\InputProcessorInterface;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -28,7 +29,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class FilterQueryInputTest extends InputProcessorTestCase
 {
-    protected function getProcessor(callable $labelResolver = null)
+    protected function getProcessor(callable $labelResolver = null): InputProcessorInterface
     {
         return new FilterQueryInput($labelResolver);
     }
@@ -132,7 +133,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
      * @test
      * @dataProvider provideQueryExceptionTests
      */
-    public function it_errors_when_the_syntax_is_invalid($input, $col, $line, $expected, $got)
+    public function it_errors_when_the_syntax_is_invalid(string $input, int $col, int $line, $expected, $got)
     {
         $fieldSet = $this->getFieldSet(false)->add('field1', TextType::class)->getFieldSet();
         $config = new ProcessorConfig($fieldSet);

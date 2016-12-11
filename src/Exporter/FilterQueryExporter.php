@@ -128,12 +128,7 @@ class FilterQueryExporter extends AbstractExporter
         throw new UnknownFieldException($name);
     }
 
-    /**
-     * @param ValuesBag $valuesBag
-     *
-     * @return string
-     */
-    private function exportValues(ValuesBag $valuesBag, FieldConfigInterface $field)
+    private function exportValues(ValuesBag $valuesBag, FieldConfigInterface $field): string
     {
         $exportedValues = '';
 
@@ -164,14 +159,7 @@ class FilterQueryExporter extends AbstractExporter
         return rtrim($exportedValues, ', ');
     }
 
-    /**
-     * @param PatternMatch $patternMatch
-     *
-     * @throws \RuntimeException When an unsupported pattern-match type is found
-     *
-     * @return string
-     */
-    private function getPatternMatchOperator(PatternMatch $patternMatch)
+    private function getPatternMatchOperator(PatternMatch $patternMatch): string
     {
         $operator = $patternMatch->isCaseInsensitive() ? '~i' : '~';
 
@@ -217,13 +205,7 @@ class FilterQueryExporter extends AbstractExporter
         return $operator;
     }
 
-    /**
-     * @param Range                $range
-     * @param FieldConfigInterface $field
-     *
-     * @return string
-     */
-    private function exportRangeValue(Range $range, FieldConfigInterface $field)
+    private function exportRangeValue(Range $range, FieldConfigInterface $field): string
     {
         $result = !$range->isLowerInclusive() ? ']' : '';
         $result .= $this->exportValuePart($this->modelToView($range->getLower(), $field));
@@ -243,9 +225,11 @@ class FilterQueryExporter extends AbstractExporter
      *
      * @return string When the passed value is null or none scalar
      */
-    private function exportValuePart($value)
+    private function exportValuePart($value): string
     {
-        if (!preg_match('/^([\p{L}\p{N}]+)$/siu', $value)) {
+        $value = (string) $value;
+
+        if (!preg_match('/^([\p{L}\p{N}]+)$/iu', $value)) {
             return '"'.str_replace('"', '""', $value).'"';
         }
 

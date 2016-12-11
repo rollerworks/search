@@ -57,15 +57,11 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
     /**
      * {@inheritdoc}
      */
-    public function getPriority()
+    public function getPriority(): int
     {
         return -5;
     }
 
-    /**
-     * @param ValuesGroup $valuesGroup
-     * @param FieldSet    $fieldSet
-     */
     private function normalizeRangesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
@@ -81,10 +77,6 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
         }
     }
 
-    /**
-     * @param FieldConfigInterface $config
-     * @param ValuesBag            $valuesBag
-     */
     private function normalizeRangesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
     {
         $comparison = $config->getValueComparison();
@@ -164,7 +156,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
         ValuesBag $valuesBag,
         ValueComparisonInterface $comparison,
         array $options,
-        $exclude = false
+        bool $exclude = false
     ) {
         foreach ($ranges as $i => $range) {
             foreach ($singleValues as $c => $value) {
@@ -225,13 +217,14 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
      * @param ValuesBag                $valuesBag
      * @param ValueComparisonInterface $comparison
      * @param array                    $options
+     * @param bool                     $exclude
      */
     private function optimizeConnectedRanges(
         array $ranges,
         ValuesBag $valuesBag,
         ValueComparisonInterface $comparison,
         array $options,
-        $exclude = false
+        bool $exclude = false
     ) {
         $class = $exclude ? ExcludedRange::class : Range::class;
 
@@ -270,17 +263,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
         }
     }
 
-    /**
-     * Returns whether $singeValue is overlapping in $range.
-     *
-     * @param mixed                    $value
-     * @param Range                    $range
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
-     *
-     * @return bool
-     */
-    private function isValInRange($value, Range $range, ValueComparisonInterface $comparison, $options)
+    private function isValInRange($value, Range $range, ValueComparisonInterface $comparison, array $options): bool
     {
         // Test it's not overlapping, when this fails then its save to assert there is an overlap.
 
@@ -294,17 +277,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
             (!$range->isUpperInclusive() xor !$comparison->isEqual($value, $range->getUpper(), $options)));
     }
 
-    /**
-     * Returns whether $range1 is overlapping in $range.
-     *
-     * @param Range                    $range1
-     * @param Range                    $range
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
-     *
-     * @return bool
-     */
-    private function isRangeInRange(Range $range1, Range $range, ValueComparisonInterface $comparison, $options)
+    private function isRangeInRange(Range $range1, Range $range, ValueComparisonInterface $comparison, array $options): bool
     {
         if (!$comparison->isHigher($range1->getLower(), $range->getLower(), $options) &&
             !$this->isBoundEqual(

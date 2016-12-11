@@ -68,7 +68,7 @@ class Range implements RequiresComparatorValueHolder
      *
      * @return bool
      */
-    public function isLowerInclusive()
+    public function isLowerInclusive(): bool
     {
         return $this->inclusiveLower;
     }
@@ -78,7 +78,7 @@ class Range implements RequiresComparatorValueHolder
      *
      * @return bool
      */
-    public function isUpperInclusive()
+    public function isUpperInclusive(): bool
     {
         return $this->inclusiveUpper;
     }

@@ -31,20 +31,14 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 // TODO Add some tests with empty fields and groups (and they should be able to process)
 abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 {
-    /**
-     * @return ExporterInterface
-     */
-    abstract protected function getExporter();
+    abstract protected function getExporter(): ExporterInterface;
 
-    /**
-     * @return InputProcessorInterface
-     */
-    abstract protected function getInputProcessor();
+    abstract protected function getInputProcessor(): InputProcessorInterface;
 
     /**
      * {@inheritdoc}
      */
-    protected function getFieldSet($build = true)
+    protected function getFieldSet(bool $build = true)
     {
         $fieldSet = new FieldSetBuilder($this->getFactory());
         $fieldSet->add('id', IntegerType::class);

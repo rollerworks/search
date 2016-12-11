@@ -50,10 +50,7 @@ abstract class SearchIntegrationTestCase extends TestCase
         $this->factoryBuilder = Searches::createSearchFactoryBuilder();
     }
 
-    /**
-     * @return SearchFactory
-     */
-    protected function getFactory()
+    protected function getFactory(): SearchFactory
     {
         if (null === $this->searchFactory) {
             $this->factoryBuilder->addExtensions($this->getExtensions());
@@ -66,17 +63,17 @@ abstract class SearchIntegrationTestCase extends TestCase
         return $this->searchFactory;
     }
 
-    protected function getExtensions()
+    protected function getExtensions(): array
     {
         return [];
     }
 
-    protected function getTypes()
+    protected function getTypes(): array
     {
         return [];
     }
 
-    protected function getTypeExtensions()
+    protected function getTypeExtensions(): array
     {
         return [];
     }
@@ -86,7 +83,7 @@ abstract class SearchIntegrationTestCase extends TestCase
      *
      * @return \Rollerworks\Component\Search\FieldSet|FieldSetBuilder
      */
-    protected function getFieldSet($build = true)
+    protected function getFieldSet(bool $build = true)
     {
         $fieldSet = new FieldSetBuilder($this->getFactory());
         $fieldSet->set($this->getFactory()->createField('id', IntegerType::class));

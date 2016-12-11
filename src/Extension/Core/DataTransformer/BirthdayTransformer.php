@@ -42,7 +42,7 @@ class BirthdayTransformer implements DataTransformerInterface
      * @param bool                     $allowAge
      * @param bool                     $allowFutureDate
      */
-    public function __construct($transformer, $allowAge, $allowFutureDate)
+    public function __construct(DataTransformerInterface $transformer, bool $allowAge, bool $allowFutureDate)
     {
         $this->transformer = $transformer;
         $this->allowFutureDate = $allowFutureDate;
@@ -55,14 +55,14 @@ class BirthdayTransformer implements DataTransformerInterface
     public function transform($value)
     {
         if (is_int($value)) {
+            if (!$this->allowAge) {
+                throw new TransformationFailedException('Age is not supported.');
+            }
+
             return $value;
         }
 
-        if ($transformer = $this->transformer) {
-            $value = $transformer->transform($value);
-        }
-
-        return $value;
+        return $this->transformer->transform($value);
     }
 
     /**
@@ -80,9 +80,7 @@ class BirthdayTransformer implements DataTransformerInterface
             return $value;
         }
 
-        if ($transformer = $this->transformer) {
-            $value = $transformer->reverseTransform($value);
-        }
+        $value = $this->transformer->reverseTransform($value);
 
         // Force the UTC timezone with 00:00:00 for correct comparison.
         $value = clone $value;
@@ -105,10 +103,7 @@ class BirthdayTransformer implements DataTransformerInterface
         return $value;
     }
 
-    /**
-     * @param \DateTime|\DateTimeInterface $value
-     */
-    private function validateDate($value)
+    private function validateDate(\DateTimeInterface $value)
     {
         static $currentDate;
 

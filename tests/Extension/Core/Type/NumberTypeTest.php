@@ -122,7 +122,7 @@ class NumberTypeTest extends SearchIntegrationTestCase
             'precision' => 0, 'grouping' => false,
         ]);
 
-        $field->setDataLocked();
+        $field->finalizeConfig();
         $fieldView = $field->createView();
 
         self::assertArrayHasKey('precision', $fieldView->vars);
