@@ -43,6 +43,16 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
                 ->addSimpleValue(5)
                 ->addSimpleValue(10)
                 ->addSimpleValue(7)
+                ->addSimpleValue(12)
+                ->addSimpleValue(13)
+                ->addSimpleValue(14)
+                ->addSimpleValue(15)
+                // edge-case where first non-previous increment, is the start of a new increment
+                ->addSimpleValue(17)
+                ->addSimpleValue(18)
+                ->addSimpleValue(19)
+                ->addSimpleValue(20)
+
             ->end()
             ->getSearchCondition()
         ;
@@ -55,6 +65,8 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
             ->addSimpleValue(10)
             ->addSimpleValue(7)
             ->add(new Range(1, 5))
+            ->add(new Range(12, 15))
+            ->add(new Range(17, 20))
         ;
 
         self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
