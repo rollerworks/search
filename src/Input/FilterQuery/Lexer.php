@@ -76,7 +76,7 @@ class Lexer extends AbstractLexer
         $tokens = (array) $tokens;
 
         if (null === $this->lookahead) {
-            return;
+            return null;
         }
 
         $index = array_search($this->lookahead['type'], $tokens, true);

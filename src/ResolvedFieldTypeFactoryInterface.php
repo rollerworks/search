@@ -25,10 +25,9 @@ interface ResolvedFieldTypeFactoryInterface
      * @param array                      $typeExtensions
      * @param ResolvedFieldTypeInterface $parent
      *
-     * @throws Exception\UnexpectedTypeException  if the types parent {@link FieldTypeInterface::getParent()} is not a string
      * @throws Exception\InvalidArgumentException if the types parent cannot be retrieved from any extension
      *
      * @return ResolvedFieldTypeInterface
      */
-    public function createResolvedType(FieldTypeInterface $type, array $typeExtensions, ResolvedFieldTypeInterface $parent = null);
+    public function createResolvedType(FieldTypeInterface $type, array $typeExtensions, ResolvedFieldTypeInterface $parent = null): ResolvedFieldTypeInterface;
 }

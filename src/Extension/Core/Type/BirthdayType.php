@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\LocalizedBirthdayTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
@@ -60,7 +61,7 @@ class BirthdayType extends AbstractFieldType
         );
 
         $config->setNormTransformer(
-            new LocalizedBirthdayTransformer(
+            new BirthdayTransformer(
                 $config->getNormTransformer(),
                 $options['allow_age'],
                 $options['allow_future_date']

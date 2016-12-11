@@ -109,18 +109,12 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
         return '();';
     }
 
-    /**
-     * @return ExporterInterface
-     */
-    protected function getExporter(callable $labelResolver = null)
+    protected function getExporter(callable $labelResolver = null): ExporterInterface
     {
         return new FilterQueryExporter($labelResolver);
     }
 
-    /**
-     * @return InputProcessorInterface
-     */
-    protected function getInputProcessor(callable $labelResolver = null)
+    protected function getInputProcessor(callable $labelResolver = null): InputProcessorInterface
     {
         return new FilterQueryInput($labelResolver);
     }

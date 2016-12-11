@@ -24,15 +24,15 @@ class MoneyValue
     public $currency;
 
     /**
-     * @var float
+     * @var float|string
      */
     public $value;
 
     /**
      * Constructor.
      *
-     * @param string $currency
-     * @param float  $value
+     * @param string       $currency
+     * @param float|string $value
      */
     public function __construct($currency, $value)
     {

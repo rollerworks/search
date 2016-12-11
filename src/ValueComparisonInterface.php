@@ -31,7 +31,7 @@ interface ValueComparisonInterface
      *
      * @return bool
      */
-    public function isHigher($higher, $lower, array $options);
+    public function isHigher($higher, $lower, array $options): bool;
 
     /**
      * Returns whether the first value is lower then the second value.
@@ -42,7 +42,7 @@ interface ValueComparisonInterface
      *
      * @return bool
      */
-    public function isLower($lower, $higher, $options);
+    public function isLower($lower, $higher, array $options): bool;
 
     /**
      * Returns whether the first value equals the second value.
@@ -53,5 +53,5 @@ interface ValueComparisonInterface
      *
      * @return bool
      */
-    public function isEqual($value, $nextValue, $options);
+    public function isEqual($value, $nextValue, array $options): bool;
 }

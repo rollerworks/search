@@ -35,5 +35,5 @@ interface ValueIncrementerInterface extends ValueComparisonInterface
      *
      * @return mixed
      */
-    public function getIncrementedValue($value, array $options, $increments = 1);
+    public function getIncrementedValue($value, array $options, int $increments = 1);
 }

@@ -42,7 +42,7 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
      * @param bool                     $allowAge
      * @param bool                     $allowFutureDate
      */
-    public function __construct($transformer, $allowAge, $allowFutureDate)
+    public function __construct(DataTransformerInterface $transformer, bool $allowAge, bool $allowFutureDate)
     {
         $this->transformer = $transformer;
         $this->allowFutureDate = $allowFutureDate;
@@ -98,17 +98,14 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
 
     private function transformWhenInteger($value)
     {
-        if (preg_match('/^\p{N}+$/', $value)) {
+        if (preg_match('/^\p{N}+$/', (string) $value)) {
             return $this->getNumberFormatter()->parse($value, \NumberFormatter::DECIMAL);
         }
 
         return $value;
     }
 
-    /**
-     * @param \DateTime|\DateTimeInterface $value
-     */
-    private function validateDate($value)
+    private function validateDate(\DateTimeInterface $value)
     {
         static $currentDate;
 
@@ -133,7 +130,7 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
      *
      * @return \NumberFormatter
      */
-    private function getNumberFormatter()
+    private function getNumberFormatter(): \NumberFormatter
     {
         /** @var \NumberFormatter $formatter */
         static $formatter;

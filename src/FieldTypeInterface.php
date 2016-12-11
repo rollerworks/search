@@ -31,8 +31,6 @@ interface FieldTypeInterface
      * Sets the default options for this type.
      *
      * @param OptionsResolver $resolver The resolver for the options
-     *
-     * @return
      */
     public function configureOptions(OptionsResolver $resolver);
 

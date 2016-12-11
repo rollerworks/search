@@ -305,18 +305,12 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         ;
     }
 
-    /**
-     * @return ExporterInterface
-     */
-    protected function getExporter()
+    protected function getExporter(): ExporterInterface
     {
         return new XmlExporter();
     }
 
-    /**
-     * @return InputProcessorInterface
-     */
-    protected function getInputProcessor()
+    protected function getInputProcessor(): InputProcessorInterface
     {
         return new XmlInput();
     }

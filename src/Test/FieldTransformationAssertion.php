@@ -143,7 +143,7 @@ final class FieldTransformationAssertion
             return (string) $value;
         }
 
-        return $transformer->transform($value);
+        return (string) $transformer->transform($value);
     }
 
     private function normToModel($value)
@@ -169,6 +169,6 @@ final class FieldTransformationAssertion
             return (string) $value;
         }
 
-        return $transformer->transform($value);
+        return (string) $transformer->transform($value);
     }
 }

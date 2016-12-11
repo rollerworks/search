@@ -25,7 +25,7 @@ class ProcessorConfig
     /**
      * @var int
      */
-    private $maxValues = 10000;
+    private $maxValues = 1000;
 
     /**
      * @var int
@@ -50,7 +50,7 @@ class ProcessorConfig
      *
      * @return FieldSet
      */
-    public function getFieldSet()
+    public function getFieldSet(): FieldSet
     {
         return $this->fieldSet;
     }
@@ -60,7 +60,7 @@ class ProcessorConfig
      *
      * @param int $maxNestingLevel
      */
-    public function setMaxNestingLevel($maxNestingLevel)
+    public function setMaxNestingLevel(int $maxNestingLevel)
     {
         $this->maxNestingLevel = $maxNestingLevel;
     }
@@ -70,7 +70,7 @@ class ProcessorConfig
      *
      * @return int
      */
-    public function getMaxNestingLevel()
+    public function getMaxNestingLevel(): int
     {
         return $this->maxNestingLevel;
     }
@@ -80,7 +80,7 @@ class ProcessorConfig
      *
      * @param int $maxValues
      */
-    public function setMaxValues($maxValues)
+    public function setMaxValues(int $maxValues)
     {
         $this->maxValues = $maxValues;
     }
@@ -90,7 +90,7 @@ class ProcessorConfig
      *
      * @return int
      */
-    public function getMaxValues()
+    public function getMaxValues(): int
     {
         return $this->maxValues;
     }
@@ -103,7 +103,7 @@ class ProcessorConfig
      *
      * @param int $maxGroups
      */
-    public function setMaxGroups($maxGroups)
+    public function setMaxGroups(int $maxGroups)
     {
         $this->maxGroups = $maxGroups;
     }
@@ -113,7 +113,7 @@ class ProcessorConfig
      *
      * @return int
      */
-    public function getMaxGroups()
+    public function getMaxGroups(): int
     {
         return $this->maxGroups;
     }

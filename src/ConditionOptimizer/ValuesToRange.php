@@ -61,6 +61,15 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         $this->optimizeValuesInGroup($valuesGroup, $fieldSet);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getPriority(): int
+    {
+        // run before range optimizer
+        return 4;
+    }
+
     private function optimizeValuesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
@@ -68,11 +77,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
                 continue;
             }
 
-            $config = $fieldSet->get($fieldName);
-
-            if ($values->hasSimpleValues() || $values->hasExcludedSimpleValues()) {
-                $this->optimizeValuesInValuesBag($config, $this->comparators[$fieldName], $values);
-            }
+            $this->optimizeValuesInValuesBag($fieldSet->get($fieldName), $this->comparators[$fieldName], $values);
         }
 
         foreach ($valuesGroup->getGroups() as $group) {
@@ -178,14 +183,5 @@ class ValuesToRange implements SearchConditionOptimizerInterface
                 $valuesBag->removeSimpleValue($index);
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPriority()
-    {
-        // run before range optimizer
-        return 4;
     }
 }

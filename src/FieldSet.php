@@ -70,7 +70,7 @@ class FieldSet implements \IteratorAggregate
      *
      * @return FieldConfigInterface[] [name] => {FieldConfigInterface object})
      */
-    public function all()
+    public function all(): array
     {
         return $this->fields;
     }
@@ -82,7 +82,7 @@ class FieldSet implements \IteratorAggregate
      *
      * @return bool
      */
-    public function has(string $name)
+    public function has(string $name): bool
     {
         return isset($this->fields[$name]);
     }

@@ -24,50 +24,43 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
 {
     /**
-     * Transforms a DateTime object into a timestamp in the configured timezone.
+     * Transforms a DateTimeInterface object into a timestamp.
      *
-     * @param \DateTime $value A \DateTime object
+     * @param \DateTimeInterface $dateTime
      *
      * @throws TransformationFailedException If the given value is not an instance
      *                                       of \DateTime or if the output
      *                                       timezone is not supported
      *
-     * @return int A timestamp
+     * @return int|null A timestamp
      */
-    public function transform($value)
+    public function transform($dateTime)
     {
-        if (null === $value) {
-            return;
+        if (null === $dateTime) {
+            return null;
         }
 
-        if (!$value instanceof \DateTime) {
+        if (!$dateTime instanceof \DateTimeInterface) {
             throw new TransformationFailedException('Expected a \DateTime.');
         }
 
-        $value = clone $value;
-        try {
-            $value->setTimezone(new \DateTimeZone($this->outputTimezone));
-        } catch (\Exception $e) {
-            throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
-        }
-
-        return (int) $value->format('U');
+        return $dateTime->getTimestamp();
     }
 
     /**
      * Transforms a timestamp in the configured timezone into a DateTime object.
      *
-     * @param string $value A timestamp
+     * @param string|int $value A timestamp
      *
      * @throws TransformationFailedException If the given value is not a timestamp
      *                                       or if the given timestamp is invalid
      *
-     * @return \DateTime A \DateTime object
+     * @return \DateTime|null
      */
     public function reverseTransform($value)
     {
         if (null === $value) {
-            return;
+            return null;
         }
 
         if (!is_numeric($value)) {

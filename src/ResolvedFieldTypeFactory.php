@@ -18,7 +18,7 @@ class ResolvedFieldTypeFactory implements ResolvedFieldTypeFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createResolvedType(FieldTypeInterface $type, array $typeExtensions, ResolvedFieldTypeInterface $parent = null)
+    public function createResolvedType(FieldTypeInterface $type, array $typeExtensions, ResolvedFieldTypeInterface $parent = null): ResolvedFieldTypeInterface
     {
         return new ResolvedFieldType($type, $typeExtensions, $parent);
     }

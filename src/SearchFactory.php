@@ -32,7 +32,7 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createFieldSet($configurator)
+    public function createFieldSet($configurator): FieldSet
     {
         if (!$configurator instanceof FieldSetConfiguratorInterface) {
             $configurator = $this->fieldSetRegistry->getConfigurator($configurator);
@@ -47,7 +47,7 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createField($name, string $type, array $options = [])
+    public function createField(string $name, string $type, array $options = []): FieldConfigInterface
     {
         $type = $this->registry->getType($type);
         $field = $type->createField($name, $options);
@@ -62,7 +62,7 @@ class SearchFactory implements SearchFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createFieldSetBuilder()
+    public function createFieldSetBuilder(): FieldSetBuilderInterface
     {
         return new FieldSetBuilder($this);
     }

@@ -28,13 +28,9 @@ class IntegerToLocalizedStringTransformer extends NumberToLocalizedStringTransfo
      * @param bool $grouping     Whether thousands should be grouped
      * @param int  $roundingMode One of the ROUND_ constants in this class
      */
-    public function __construct($precision = null, $grouping = null, $roundingMode = self::ROUND_DOWN)
+    public function __construct(int $precision = null, bool $grouping = null, int $roundingMode = null)
     {
-        if (null === $roundingMode) {
-            $roundingMode = self::ROUND_DOWN;
-        }
-
-        parent::__construct(0, $grouping, $roundingMode);
+        parent::__construct(0, $grouping, $roundingMode ?? self::ROUND_DOWN);
     }
 
     /**

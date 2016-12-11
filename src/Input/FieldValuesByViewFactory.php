@@ -53,7 +53,7 @@ final class FieldValuesByViewFactory extends FieldValuesFactory
 
             $this->addError($error);
 
-            return;
+            return null;
         }
     }
 }

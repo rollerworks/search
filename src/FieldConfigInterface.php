@@ -25,19 +25,19 @@ interface FieldConfigInterface
      *
      * @return string the Field name
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * Returns the field type used to construct the field.
      *
      * @return ResolvedFieldTypeInterface The field's type
      */
-    public function getType();
+    public function getType(): ResolvedFieldTypeInterface;
 
     /**
      * Returns whether value-type $type is accepted by the field.
      *
-     * Value must be a FQCN of a class implementing
+     * $type must be a FQCN of a class implementing
      * {@link \Rollerworks\Component\Search\Value\ValueHolder}.
      *
      * @param string $type
@@ -47,11 +47,10 @@ interface FieldConfigInterface
     public function supportValueType(string $type): bool;
 
     /**
-     * Set whether value-type $type is accepted by the field.
+     * Sets whether value-type $type is accepted by the field.
      *
-     * * ValuesBag::VALUE_TYPE_RANGE
-     * * ValuesBag::VALUE_TYPE_COMPARISON
-     * * ValuesBag::VALUE_TYPE_PATTERN_MATCH
+     * $type must be a FQCN of a class implementing
+     * {@link \Rollerworks\Component\Search\Value\ValueHolder}.
      *
      * @param string $type
      * @param bool   $enabled
@@ -69,7 +68,7 @@ interface FieldConfigInterface
     /**
      * Returns the configured {@link ValueComparisonInterface} instance.
      *
-     * @return ValueComparisonInterface
+     * @return ValueComparisonInterface|null
      */
     public function getValueComparison();
 
@@ -89,7 +88,7 @@ interface FieldConfigInterface
     /**
      * Returns the view transformer of the field.
      *
-     * @return DataTransformerInterface
+     * @return DataTransformerInterface|null
      */
     public function getViewTransformer();
 
@@ -109,7 +108,7 @@ interface FieldConfigInterface
     /**
      * Returns the normalize transformer of the field.
      *
-     * @return DataTransformerInterface
+     * @return DataTransformerInterface|null
      */
     public function getNormTransformer();
 
@@ -121,14 +120,14 @@ interface FieldConfigInterface
      *
      * @return bool Whether the data is locked
      */
-    public function isConfigLocked();
+    public function isConfigLocked(): bool;
 
     /**
      * Returns all options passed during the construction of the field.
      *
      * @return array The passed options
      */
-    public function getOptions();
+    public function getOptions(): array;
 
     /**
      * Returns whether a specific option exists.
@@ -137,7 +136,7 @@ interface FieldConfigInterface
      *
      * @return bool Whether the option exists
      */
-    public function hasOption($name);
+    public function hasOption(string $name): bool;
 
     /**
      * Returns the value of a specific option.
@@ -147,12 +146,12 @@ interface FieldConfigInterface
      *
      * @return mixed The option value
      */
-    public function getOption($name, $default = null);
+    public function getOption(string $name, $default = null);
 
     /**
      * Returns a new SearchFieldView for the SearchField.
      *
      * @return SearchFieldView
      */
-    public function createView();
+    public function createView(): SearchFieldView;
 }

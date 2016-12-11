@@ -97,7 +97,7 @@ final class FieldRegistryTest extends TestCase
         return $resolvedType;
     }
 
-    private function createTypeExtensionMock(string $name)
+    private function createTypeExtensionMock(string $name): FieldTypeExtensionInterface
     {
         $fieldExtension = $this->createMock(FieldTypeExtensionInterface::class);
         $fieldExtension->expects($this->any())->method('getExtendedType')->willReturn($name);

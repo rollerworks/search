@@ -54,7 +54,7 @@ class ChoiceToValueTransformer implements DataTransformerInterface
         // These are now valid ChoiceList values, so we can return null
         // right away
         if ('' === $value || null === $value) {
-            return;
+            return null;
         }
 
         $choice = $this->choiceList->getChoiceForValue($value);

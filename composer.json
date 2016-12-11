@@ -33,7 +33,8 @@
     "autoload": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\": "src/"
-        }
+        },
+        "exclude-from-classmap": ["Tests/", "test/"]
     },
     "autoload-dev": {
         "psr-4": {

@@ -41,8 +41,6 @@ class XmlExporter extends AbstractExporter
      * @param SearchCondition $condition    The SearchCondition to export
      * @param bool            $formatOutput Set whether to format the output (default true)
      *
-     * @throws \RuntimeException
-     *
      * @return string
      */
     public function exportCondition(SearchCondition $condition, bool $formatOutput = true)

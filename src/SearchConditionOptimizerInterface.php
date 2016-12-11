@@ -41,5 +41,5 @@ interface SearchConditionOptimizerInterface
      *
      * @return int
      */
-    public function getPriority();
+    public function getPriority(): int;
 }

@@ -218,18 +218,12 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
         return json_encode(['groups' => [[]]]);
     }
 
-    /**
-     * @return ExporterInterface
-     */
-    protected function getExporter()
+    protected function getExporter(): ExporterInterface
     {
         return new JsonExporter();
     }
 
-    /**
-     * @return InputProcessorInterface
-     */
-    protected function getInputProcessor()
+    protected function getInputProcessor(): InputProcessorInterface
     {
         return new JsonInput();
     }

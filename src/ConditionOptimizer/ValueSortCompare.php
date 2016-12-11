@@ -33,7 +33,7 @@ final class ValueSortCompare
         $this->options = $options;
     }
 
-    public function __invoke($a, $b)
+    public function __invoke($a, $b): int
     {
         if ($this->comparison->isEqual($a, $b, $this->options)) {
             return 0;

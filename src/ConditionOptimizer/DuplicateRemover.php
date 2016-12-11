@@ -48,6 +48,14 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
         $this->removeDuplicatesInGroup($condition->getValuesGroup(), $condition->getFieldSet());
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getPriority(): int
+    {
+        return 5;
+    }
+
     private function removeDuplicatesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
@@ -197,13 +205,5 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPriority()
-    {
-        return 5;
     }
 }

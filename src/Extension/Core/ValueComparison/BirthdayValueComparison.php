@@ -23,13 +23,13 @@ class BirthdayValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value is higher then the second value.
      *
-     * @param \DateTime|int $higher
-     * @param \DateTime|int $lower
-     * @param array         $options
+     * @param \DateTimeInterface|int $higher
+     * @param \DateTimeInterface|int $lower
+     * @param array                  $options
      *
      * @return bool
      */
-    public function isHigher($higher, $lower, array $options)
+    public function isHigher($higher, $lower, array $options): bool
     {
         if (!is_object($higher) xor !is_object($lower)) {
             return false;
@@ -41,13 +41,13 @@ class BirthdayValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value is lower then the second value.
      *
-     * @param \DateTime|int $lower
-     * @param \DateTime|int $higher
-     * @param array         $options
+     * @param \DateTimeInterface|int $lower
+     * @param \DateTimeInterface|int $higher
+     * @param array                  $options
      *
      * @return bool
      */
-    public function isLower($lower, $higher, $options)
+    public function isLower($lower, $higher, array $options): bool
     {
         if (!is_object($higher) xor !is_object($lower)) {
             return false;
@@ -59,13 +59,13 @@ class BirthdayValueComparison implements ValueIncrementerInterface
     /**
      * Returns whether the first value equals the second value.
      *
-     * @param \DateTime|int $value
-     * @param \DateTime|int $nextValue
-     * @param array         $options
+     * @param \DateTimeInterface|int $value
+     * @param \DateTimeInterface|int $nextValue
+     * @param array                  $options
      *
      * @return bool
      */
-    public function isEqual($value, $nextValue, $options)
+    public function isEqual($value, $nextValue, array $options): bool
     {
         if (!is_object($value) xor !is_object($nextValue)) {
             return false;
@@ -79,17 +79,17 @@ class BirthdayValueComparison implements ValueIncrementerInterface
      *
      * The value should returned in the normalized format.
      *
-     * @param \DateTime|int $value      The value to increment
-     * @param array         $options    Array of options passed with the field
-     * @param int           $increments Number of increments
+     * @param \DateTimeImmutable|\DateTime|int $value      The value to increment
+     * @param array                            $options    Array of options passed with the field
+     * @param int                              $increments Number of increments
      *
-     * @return \DateTime
+     * @return \DateTimeInterface|int
      */
-    public function getIncrementedValue($value, array $options, $increments = 1)
+    public function getIncrementedValue($value, array $options, int $increments = 1)
     {
         if (is_object($value)) {
             $newValue = clone $value;
-            $newValue->modify('+'.$increments.' days');
+            $newValue = $newValue->modify('+'.$increments.' days');
 
             return $newValue;
         }

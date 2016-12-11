@@ -150,7 +150,7 @@ class SearchFactoryBuilder
      *
      * @return SearchFactoryInterface The search factory
      */
-    public function getSearchFactory()
+    public function getSearchFactory(): SearchFactoryInterface
     {
         $extensions = $this->extensions;
 

@@ -56,5 +56,5 @@ interface FieldTypeExtensionInterface
      *
      * @return string The name of the type being extended
      */
-    public function getExtendedType();
+    public function getExtendedType(): string;
 }

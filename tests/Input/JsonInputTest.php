@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Input;
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Input\JsonInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\InputProcessorInterface;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -23,7 +24,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class JsonInputTest extends InputProcessorTestCase
 {
-    protected function getProcessor()
+    protected function getProcessor(): InputProcessorInterface
     {
         return new JsonInput();
     }
