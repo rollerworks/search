@@ -20,28 +20,9 @@ namespace Rollerworks\Component\Search\Value;
  */
 class ValuesBag implements \Countable, \Serializable
 {
-    /**
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
-     *             Use `Rollerworks\Component\Search\Value\Range::class` instead
-     */
-    const VALUE_TYPE_RANGE = Range::class;
-
-    /**
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
-     *             Use `Rollerworks\Component\Search\Value\Compare::class` instead
-     */
-    const VALUE_TYPE_COMPARISON = Compare::class;
-
-    /**
-     * @deprecated Deprecated since version 1.2, to be removed in 2.0.
-     *             Use `Rollerworks\Component\Search\Value\PatternMatch::class` instead
-     */
-    const VALUE_TYPE_PATTERN_MATCH = PatternMatch::class;
-
     private $valuesCount = 0;
     private $simpleValues = [];
     private $simpleExcludedValues = [];
-
     private $values = [];
 
     /**

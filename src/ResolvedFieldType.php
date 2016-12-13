@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -122,9 +124,9 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
         $view = $this->newFieldView($config);
         $view->vars = array_merge($view->vars, [
             'name' => $config->getName(),
-            'accept_ranges' => $config->supportValueType(ValuesBag::VALUE_TYPE_RANGE),
-            'accept_compares' => $config->supportValueType(ValuesBag::VALUE_TYPE_COMPARISON),
-            'accept_pattern_matchers' => $config->supportValueType(ValuesBag::VALUE_TYPE_PATTERN_MATCH),
+            'accept_ranges' => $config->supportValueType(Range::class),
+            'accept_compares' => $config->supportValueType(Compare::class),
+            'accept_pattern_matchers' => $config->supportValueType(PatternMatch::class),
         ]);
 
         return $view;
