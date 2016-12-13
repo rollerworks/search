@@ -32,7 +32,7 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Constructor.
      *
-     * @see \IntlDateFormatter for available format options
+     * @see BaseDateTimeTransformer::formats for available format options
      *
      * @param string $inputTimezone  The name of the input timezone
      * @param string $outputTimezone The name of the output timezone
@@ -47,8 +47,24 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     {
         parent::__construct($inputTimezone, $outputTimezone);
 
-        $this->dateFormat = $dateFormat ?? \IntlDateFormatter::MEDIUM;
-        $this->timeFormat = $timeFormat ?? \IntlDateFormatter::SHORT;
+        if (null === $dateFormat) {
+            $dateFormat = \IntlDateFormatter::MEDIUM;
+        }
+
+        if (null === $timeFormat) {
+            $timeFormat = \IntlDateFormatter::SHORT;
+        }
+
+        if (!in_array($dateFormat, self::$formats, true)) {
+            throw new UnexpectedTypeException($dateFormat, implode('", "', self::$formats));
+        }
+
+        if (!in_array($timeFormat, self::$formats, true)) {
+            throw new UnexpectedTypeException($timeFormat, implode('", "', self::$formats));
+        }
+
+        $this->dateFormat = $dateFormat;
+        $this->timeFormat = $timeFormat;
         $this->calendar = $calendar;
         $this->pattern = $pattern;
     }
@@ -56,13 +72,12 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a normalized date into a localized date string/array.
      *
-     * @param \DateTimeInterface $dateTime
+     * @param \DateTimeInterface $dateTime A DateTimeInterface object
      *
-     * @throws TransformationFailedException If the given value is not an instance
-     *                                       of \DateTime or if the date could not
-     *                                       be transformed
+     * @throws TransformationFailedException if the given value is not a \DateTimeInterface
+     *                                       or if the date could not be transformed
      *
-     * @return string Localized date string
+     * @return string
      */
     public function transform($dateTime)
     {
@@ -74,18 +89,7 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             throw new TransformationFailedException('Expected a \DateTimeInterface.');
         }
 
-        // convert time to UTC before passing it to the formatter
-        if (!$dateTime instanceof \DateTimeImmutable) {
-            $dateTime = clone $dateTime;
-        }
-
-        if ('UTC' !== $this->inputTimezone) {
-            $dateTime = $dateTime->setTimezone(new \DateTimeZone('UTC'));
-        }
-
-        $value = $this->getIntlDateFormatter()->format(
-            (int) $dateTime->format('U')
-        );
+        $value = $this->getIntlDateFormatter()->format($dateTime->getTimestamp());
 
         if (intl_get_error_code() !== 0) {
             throw new TransformationFailedException(intl_get_error_message());
@@ -100,10 +104,9 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      * @param string|array $value Localized date string/array
      *
      * @throws TransformationFailedException if the given value is not a string,
-     *                                       if the date could not be parsed or
-     *                                       if the input timezone is not supported
+     *                                       if the date could not be parsed
      *
-     * @return \DateTime|null Normalized date
+     * @return \DateTime|null
      */
     public function reverseTransform($value)
     {
@@ -115,33 +118,33 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             return null;
         }
 
-        $timestamp = $this->getIntlDateFormatter()->parse($value);
+        // date-only patterns require parsing to be done in UTC, as midnight might not exist in the local timezone due
+        // to DST changes
+        $dateOnly = $this->isPatternDateOnly();
+
+        $timestamp = $this->getIntlDateFormatter($dateOnly)->parse($value);
 
         if (intl_get_error_code() !== 0) {
             throw new TransformationFailedException(intl_get_error_message());
         }
 
         try {
-            // read timestamp into DateTime object - the formatter delivers in UTC
-            $dateTime = new \DateTime(sprintf('@%s UTC', $timestamp));
+            if ($dateOnly) {
+                // we only care about year-month-date, which has been delivered as a timestamp pointing to UTC midnight
+                return new \DateTime(gmdate('Y-m-d', $timestamp), new \DateTimeZone($this->inputTimezone));
+            }
+
+            // read timestamp into DateTime object - the formatter delivers a timestamp
+            $dateTime = new \DateTime(sprintf('@%s', $timestamp));
+            // set timezone separately, as it would be ignored if set via the constructor,
+            // see http://php.net/manual/en/datetime.construct.php
+            $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
         } catch (\Exception $e) {
-            throw new TransformationFailedException(
-                $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
+            throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ('UTC' !== $this->inputTimezone) {
-            try {
-                $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
-            } catch (\Exception $e) {
-                throw new TransformationFailedException(
-                    $e->getMessage(),
-                    $e->getCode(),
-                    $e
-                );
-            }
+        if ($this->outputTimezone !== $this->inputTimezone) {
+            $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
         }
 
         return $dateTime;
@@ -150,24 +153,51 @@ class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Returns a pre-configured IntlDateFormatter instance.
      *
+     * @param bool $ignoreTimezone use UTC regardless of the configured timezone
+     *
+     * @throws TransformationFailedException in case the date formatter can not be constructed
+     *
      * @return \IntlDateFormatter
      */
-    protected function getIntlDateFormatter(): \IntlDateFormatter
+    protected function getIntlDateFormatter(bool $ignoreTimezone = false): \IntlDateFormatter
     {
-        $intlDateFormatter = new \IntlDateFormatter(
-            \Locale::getDefault(),
-            $this->dateFormat,
-            $this->timeFormat,
-            $this->outputTimezone,
-            $this->calendar
-        );
+        $dateFormat = $this->dateFormat;
+        $timeFormat = $this->timeFormat;
+        $timezone = $ignoreTimezone ? 'UTC' : $this->outputTimezone;
+        $calendar = $this->calendar;
+        $pattern = $this->pattern;
 
-        if ($this->pattern) {
-            $intlDateFormatter->setPattern($this->pattern);
+        $intlDateFormatter = new \IntlDateFormatter(\Locale::getDefault(), $dateFormat, $timeFormat, $timezone, $calendar);
+
+        if ($pattern) {
+            $intlDateFormatter->setPattern($pattern);
+        }
+
+        // new \intlDateFormatter may return null instead of false in case of failure, see https://bugs.php.net/bug.php?id=66323
+        if (!$intlDateFormatter) {
+            throw new TransformationFailedException(intl_get_error_message(), intl_get_error_code());
         }
 
         $intlDateFormatter->setLenient(false);
 
         return $intlDateFormatter;
+    }
+
+    /**
+     * Checks if the pattern contains only a date.
+     *
+     * @return bool
+     */
+    protected function isPatternDateOnly(): bool
+    {
+        if (null === $this->pattern) {
+            return false;
+        }
+
+        // strip escaped text
+        $pattern = preg_replace("#'(.*?)'#", '', $this->pattern);
+
+        // check for the absence of time-related placeholders
+        return 0 === preg_match('#[ahHkKmsSAzZOvVxX]#', $pattern);
     }
 }

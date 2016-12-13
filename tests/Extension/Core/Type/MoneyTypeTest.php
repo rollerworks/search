@@ -25,7 +25,7 @@ class MoneyTypeTest extends SearchIntegrationTestCase
     {
         // we test against different locales, so we need the full
         // implementation
-        // IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '58.1');
 
         parent::setUp();
     }
@@ -37,14 +37,14 @@ class MoneyTypeTest extends SearchIntegrationTestCase
         $field = $this->getFactory()->createField('money', MoneyType::class);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('€ 12,00', '€12.00')
-            ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('€ 12,00', '€12.00');
+            ->withInput('€ 12,20', 'EUR 12.20')
+            ->successfullyTransformsTo(new MoneyValue('EUR', '12.20'))
+            ->andReverseTransformsTo('€ 12,20', 'EUR 12.2');
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('12,00')
+            ->withInput('12,00', '12.00')
             ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('€ 12,00', '€12.00');
+            ->andReverseTransformsTo('€ 12,00', 'EUR 12');
     }
 
     public function testPassMoneyDe()
@@ -54,14 +54,14 @@ class MoneyTypeTest extends SearchIntegrationTestCase
         $field = $this->getFactory()->createField('money', MoneyType::class);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('12,00 €', '€12.00')
+            ->withInput('12,00 €', 'EUR 12.00')
             ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('12,00 €', '€12.00');
+            ->andReverseTransformsTo('12,00 €', 'EUR 12');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00', '12.00')
             ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('12,00 €', '€12.00');
+            ->andReverseTransformsTo('12,00 €', 'EUR 12');
     }
 
     public function testMoneyPatternWorksForYen()
@@ -71,24 +71,24 @@ class MoneyTypeTest extends SearchIntegrationTestCase
         $field = $this->getFactory()->createField('money', MoneyType::class, ['default_currency' => 'JPY']);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('¥12,00')
+            ->withInput('¥12,00', 'JPY 12.00')
             ->successfullyTransformsTo(new MoneyValue('JPY', '12.00'))
-            ->andReverseTransformsTo('¥12', '¥12');
+            ->andReverseTransformsTo('¥12', 'JPY 12');
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('¥12')
+            ->withInput('¥12', 'JPY 12')
             ->successfullyTransformsTo(new MoneyValue('JPY', '12.00'))
-            ->andReverseTransformsTo('¥12', '¥12');
+            ->andReverseTransformsTo('¥12', 'JPY 12');
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('12')
+            ->withInput('12', '12.00')
             ->successfullyTransformsTo(new MoneyValue('JPY', '12.00'))
-            ->andReverseTransformsTo('¥12', '¥12');
+            ->andReverseTransformsTo('¥12', 'JPY 12');
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('€12.00')
+            ->withInput('€12.00', 'EUR 12.00')
             ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('€12.00', '€12.00');
+            ->andReverseTransformsTo('€12.00', 'EUR 12');
     }
 
     public function testViewIsConfiguredProperly()

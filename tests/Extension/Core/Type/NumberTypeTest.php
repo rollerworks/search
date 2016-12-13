@@ -61,12 +61,29 @@ class NumberTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,67890', '12345.67890')
             ->successfullyTransformsTo('12345.67890')
-            ->andReverseTransformsTo('12345,679', '12345.679');
+            ->andReverseTransformsTo('12345,679', '12345.67890');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,679', '12345.679')
             ->successfullyTransformsTo('12345.679')
             ->andReverseTransformsTo('12345,679', '12345.679');
+    }
+
+    public function testNonWesternFormatting()
+    {
+        \Locale::setDefault('ar');
+
+        $field = $this->getFactory()->createField('number', NumberType::class);
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('١٢٣٤٥٫٦٧٨٩٠', '12345.67890')
+            ->successfullyTransformsTo('12345.6789')
+            ->andReverseTransformsTo('١٢٣٤٥٫٦٧٩', '12345.6789');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('١٢٣٤٥٫٦٧٩', '12345.679')
+            ->successfullyTransformsTo('12345.679')
+            ->andReverseTransformsTo('١٢٣٤٥٫٦٧٩', '12345.679');
     }
 
     public function testDefaultFormattingWithGrouping()
@@ -76,12 +93,12 @@ class NumberTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12.345,679', '12345.679')
             ->successfullyTransformsTo('12345.679')
-            ->andReverseTransformsTo('12.345,679', '12,345.679');
+            ->andReverseTransformsTo('12.345,679', '12345.679');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,679', '12345.679')
             ->successfullyTransformsTo('12345.679')
-            ->andReverseTransformsTo('12.345,679', '12,345.679');
+            ->andReverseTransformsTo('12.345,679', '12345.679');
     }
 
     public function testDefaultFormattingWithPrecision()
@@ -137,7 +154,7 @@ class NumberTypeTest extends SearchIntegrationTestCase
         parent::setUp();
 
         // we test against "de_DE", so we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '58.1');
 
         \Locale::setDefault('de_DE');
     }

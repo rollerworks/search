@@ -101,7 +101,7 @@ class DateTimeTypeTest extends SearchIntegrationTestCase
 
     protected function setUp()
     {
-        IntlTestHelper::requireIntl($this);
+        IntlTestHelper::requireIntl($this, '58.1');
 
         parent::setUp();
     }

@@ -63,7 +63,6 @@ class NumberType extends AbstractFieldType
         $config->setNormTransformer(
             new NumberToStringTransformer(
                 $options['precision'],
-                $options['grouping'],
                 $options['rounding_mode']
             )
         );

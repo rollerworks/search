@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
+use Symfony\Component\Intl\Util\IntlTestHelper;
 
 class IntegerTypeTest extends SearchIntegrationTestCase
 {
@@ -44,6 +45,23 @@ class IntegerTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('-1');
     }
 
+    public function testNonWesternFormatting()
+    {
+        \Locale::setDefault('ar');
+
+        $field = $this->getFactory()->createField('number', IntegerType::class);
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('١٢٣٤٥٫٦٧٨٩٠', '12345')
+            ->successfullyTransformsTo(12345)
+            ->andReverseTransformsTo('١٢٣٤٥', '12345');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('١٢٣٤٥', '12345.679')
+            ->successfullyTransformsTo(12345)
+            ->andReverseTransformsTo('١٢٣٤٥', '12345');
+    }
+
     public function testWrongInputFails()
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
@@ -57,7 +75,6 @@ class IntegerTypeTest extends SearchIntegrationTestCase
             'integer',
             IntegerType::class,
             [
-                'precision' => 2,
                 'grouping' => false,
             ]
         );
@@ -65,10 +82,18 @@ class IntegerTypeTest extends SearchIntegrationTestCase
         $field->finalizeConfig();
         $fieldView = $field->createView();
 
-        self::assertArrayHasKey('precision', $fieldView->vars);
         self::assertArrayHasKey('grouping', $fieldView->vars);
-
-        self::assertEquals(2, $fieldView->vars['precision']);
+        self::assertArrayNotHasKey('precision', $fieldView->vars);
         self::assertFalse($fieldView->vars['grouping']);
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // we test against "ar", so we need the full implementation
+        IntlTestHelper::requireFullIntl($this, '58.1');
+
+        \Locale::setDefault('en_us');
     }
 }

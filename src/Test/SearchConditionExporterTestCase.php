@@ -44,7 +44,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $fieldSet->add('id', IntegerType::class);
         $fieldSet->add('name', TextType::class);
         $fieldSet->add('lastname', TextType::class);
-        $fieldSet->add('date', DateType::class, ['format' => 'MM-dd-yyyy']);
+        $fieldSet->add('date', DateType::class, ['pattern' => 'MM-dd-yyyy']);
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }

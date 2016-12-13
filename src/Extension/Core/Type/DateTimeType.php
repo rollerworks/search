@@ -13,22 +13,19 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
-use Rollerworks\Component\Search\AbstractFieldType;
-use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class DateTimeType extends AbstractFieldType
+class DateTimeType extends BaseDateTimeType
 {
     const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
     const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
@@ -56,31 +53,6 @@ class DateTimeType extends AbstractFieldType
      * is used when the format matches this constant.
      */
     const HTML5_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-
-    /**
-     * @var ValueComparisonInterface
-     */
-    private $valueComparison;
-
-    /**
-     * @var array
-     */
-    private static $acceptedFormats = [
-        \IntlDateFormatter::FULL,
-        \IntlDateFormatter::LONG,
-        \IntlDateFormatter::MEDIUM,
-        \IntlDateFormatter::SHORT,
-    ];
-
-    /**
-     * Constructor.
-     *
-     * @param ValueComparisonInterface $valueComparison
-     */
-    public function __construct(ValueComparisonInterface $valueComparison)
-    {
-        $this->valueComparison = $valueComparison;
-    }
 
     /**
      * {@inheritdoc}
@@ -163,15 +135,5 @@ class DateTimeType extends AbstractFieldType
         $resolver->setAllowedTypes('pattern', ['string', 'null']);
         $resolver->setAllowedTypes('date_format', ['int']);
         $resolver->setAllowedTypes('time_format', ['int']);
-    }
-
-    private function validateFormat(string $name, $value)
-    {
-        if (!in_array($value, self::$acceptedFormats, true)) {
-            throw new InvalidConfigurationException(
-                'The "'.$name.'" option must be one of the IntlDateFormatter constants '.
-                '(FULL, LONG, MEDIUM, SHORT) or the "pattern" option must be a string representing a custom format.'
-            );
-        }
     }
 }

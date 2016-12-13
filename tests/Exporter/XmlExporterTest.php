@@ -65,7 +65,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
                     </field>
                     <field name="date">
                         <simple-values>
-                            <value>2014-12-16T00:00:00Z</value>
+                            <value>2014-12-16</value>
                         </simple-values>
                     </field>
                 </fields>
@@ -110,8 +110,8 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
                     <field name="date">
                         <ranges>
                             <range>
-                                <lower>2014-12-16T00:00:00Z</lower>
-                                <upper>2014-12-20T00:00:00Z</upper>
+                                <lower>2014-12-16</lower>
+                                <upper>2014-12-20</upper>
                             </range>
                         </ranges>
                     </field>
@@ -138,7 +138,7 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
                     </field>
                     <field name="date">
                         <comparisons>
-                            <compare operator="&gt;=">2014-12-16T00:00:00Z</compare>
+                            <compare operator="&gt;=">2014-12-16</compare>
                         </comparisons>
                     </field>
                 </fields>

@@ -48,7 +48,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $fieldSet->add('id', IntegerType::class);
         $fieldSet->add('name', TextType::class);
         $fieldSet->add('lastname', TextType::class);
-        $fieldSet->add('date', DateType::class, ['format' => 'MM-dd-yyyy']);
+        $fieldSet->add('date', DateType::class, ['pattern' => 'MM-dd-yyyy']);
         $fieldSet->set(
             $this->getFactory()->createField('no-range-field', IntegerType::class)
                 ->setValueTypeSupport(Range::class, false)

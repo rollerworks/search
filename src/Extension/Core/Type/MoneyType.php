@@ -65,7 +65,6 @@ class MoneyType extends AbstractFieldType
         $config->setNormTransformer(
             new MoneyToStringTransformer(
                 $options['precision'],
-                $options['grouping'],
                 null,
                 $options['divisor'],
                 $options['default_currency']

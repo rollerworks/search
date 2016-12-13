@@ -13,51 +13,22 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
-use Rollerworks\Component\Search\AbstractFieldType;
-use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
-use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparisonInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class DateType extends AbstractFieldType
+class DateType extends BaseDateTimeType
 {
     const DEFAULT_FORMAT = \IntlDateFormatter::MEDIUM;
 
     const HTML5_FORMAT = 'yyyy-MM-dd';
-
-    /**
-     * @var array
-     */
-    private static $acceptedFormats = [
-        \IntlDateFormatter::FULL,
-        \IntlDateFormatter::LONG,
-        \IntlDateFormatter::MEDIUM,
-        \IntlDateFormatter::SHORT,
-    ];
-
-    /**
-     * @var ValueComparisonInterface
-     */
-    protected $valueComparison;
-
-    /**
-     * Constructor.
-     *
-     * @param ValueComparisonInterface $valueComparison
-     */
-    public function __construct(ValueComparisonInterface $valueComparison)
-    {
-        $this->valueComparison = $valueComparison;
-    }
 
     /**
      * {@inheritdoc}
@@ -68,44 +39,31 @@ class DateType extends AbstractFieldType
         $config->setValueTypeSupport(Range::class, true);
         $config->setValueTypeSupport(Compare::class, true);
 
-        $dateFormat = is_int($options['format']) ? $options['format'] : self::DEFAULT_FORMAT;
-        $timeFormat = \IntlDateFormatter::NONE;
-        $calendar = \IntlDateFormatter::GREGORIAN;
-        $format = is_string($options['format']) ? $options['format'] : null;
-
-        if (!in_array($dateFormat, self::$acceptedFormats, true)) {
-            throw new InvalidConfigurationException(
-                'The "format" option must be one of the IntlDateFormatter constants (FULL, LONG, MEDIUM, SHORT) '.
-                'or a string representing a custom format.'
-            );
-        }
-
-        if (null !== $format && (false === strpos($format, 'y') || false === strpos($format, 'M')
-            || false === strpos($format, 'd'))
-        ) {
-            throw new InvalidConfigurationException(
-                sprintf(
-                    'The "format" option should contain the letters "y", "M" and "d". Its current value is "%s".',
-                    $format
-                )
-            );
+        if (null === $options['pattern']) {
+            $this->validateFormat('format', $options['format']);
+        } else {
+            $this->validateDateFormat('pattern', $options['pattern']);
         }
 
         $config->setViewTransformer(
             new DateTimeToLocalizedStringTransformer(
-                'UTC',
-                'UTC',
-                $dateFormat,
-                $timeFormat,
-                $calendar,
-                $format
+                $options['model_timezone'],
+                $options['view_timezone'],
+                $options['format'],
+                \IntlDateFormatter::NONE,
+                \IntlDateFormatter::GREGORIAN,
+                $options['pattern']
             )
         );
 
         $config->setNormTransformer(
-            new DateTimeToRfc3339Transformer(
-                'UTC',
-                'UTC'
+            new DateTimeToLocalizedStringTransformer(
+                $options['model_timezone'],
+                $options['view_timezone'],
+                $options['format'],
+                \IntlDateFormatter::NONE,
+                \IntlDateFormatter::GREGORIAN,
+                self::HTML5_FORMAT
             )
         );
     }
@@ -115,19 +73,21 @@ class DateType extends AbstractFieldType
      */
     public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
     {
-        if (is_string($options['format'])) {
-            $format = $options['format'];
-        } else {
-            $format = \IntlDateFormatter::create(
+        $pattern = $options['pattern'];
+
+        if (null === $pattern) {
+            $pattern = \IntlDateFormatter::create(
                 \Locale::getDefault(),
-                is_int($options['format']) ? $options['format'] : self::DEFAULT_FORMAT,
+                $options['format'],
                 \IntlDateFormatter::NONE,
-                null,
+                $options['view_timezone'],
                 \IntlDateFormatter::GREGORIAN
             )->getPattern();
         }
 
-        $view->vars['format'] = $format;
+        $view->vars['html5'] = $options['html5'];
+        $view->vars['timezone'] = $options['view_timezone'] ?? date_default_timezone_get();
+        $view->vars['pattern'] = $pattern;
     }
 
     /**
@@ -137,10 +97,15 @@ class DateType extends AbstractFieldType
     {
         $resolver->setDefaults(
             [
+                'model_timezone' => null,
+                'view_timezone' => null,
+                'pattern' => null,
                 'format' => self::DEFAULT_FORMAT,
+                'html5' => true,
             ]
         );
 
-        $resolver->setAllowedTypes('format', ['int', 'string']);
+        $resolver->setAllowedTypes('format', ['int']);
+        $resolver->setAllowedTypes('pattern', ['string', 'null']);
     }
 }

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
@@ -32,6 +33,14 @@ abstract class BaseDateTimeTransformer implements DataTransformerInterface
      */
     protected $outputTimezone;
 
+    protected static $formats = [
+        \IntlDateFormatter::NONE,
+        \IntlDateFormatter::FULL,
+        \IntlDateFormatter::LONG,
+        \IntlDateFormatter::MEDIUM,
+        \IntlDateFormatter::SHORT,
+    ];
+
     /**
      * Constructor.
      *
@@ -44,5 +53,18 @@ abstract class BaseDateTimeTransformer implements DataTransformerInterface
     {
         $this->inputTimezone = $inputTimezone ?? date_default_timezone_get();
         $this->outputTimezone = $outputTimezone ?? date_default_timezone_get();
+
+        // Check if input and output timezones are valid
+        try {
+            new \DateTimeZone($this->inputTimezone);
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException(sprintf('Input timezone is invalid: %s.', $this->inputTimezone), $e->getCode(), $e);
+        }
+
+        try {
+            new \DateTimeZone($this->outputTimezone);
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException(sprintf('Output timezone is invalid: %s.', $this->outputTimezone), $e->getCode(), $e);
+        }
     }
 }

@@ -22,14 +22,14 @@ class BirthdayTypeTest extends SearchIntegrationTestCase
     public function testDateOnlyInput()
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
-            'format' => 'yyyy-MM-dd',
+            'pattern' => 'yyyy-MM-dd',
             'allow_age' => false,
         ]);
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02', '2010-06-02')
             ->successfullyTransformsTo(new \DateTime('2010-06-02'))
-            ->andReverseTransformsTo('2010-06-02', '2010-06-02T00:00:00Z');
+            ->andReverseTransformsTo('2010-06-02', '2010-06-02');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('21')
@@ -39,13 +39,13 @@ class BirthdayTypeTest extends SearchIntegrationTestCase
     public function testAllowAgeInput()
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
-            'format' => 'yyyy-MM-dd',
+            'pattern' => 'yyyy-MM-dd',
         ]);
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02', '2010-06-02')
             ->successfullyTransformsTo(new \DateTime('2010-06-02'))
-            ->andReverseTransformsTo('2010-06-02', '2010-06-02T00:00:00Z');
+            ->andReverseTransformsTo('2010-06-02', '2010-06-02');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('15')
@@ -67,7 +67,7 @@ class BirthdayTypeTest extends SearchIntegrationTestCase
     public function testAgeInTheFutureFails()
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
-            'format' => 'yyyy-MM-dd',
+            'pattern' => 'yyyy-MM-dd',
         ]);
 
         $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
@@ -78,7 +78,7 @@ class BirthdayTypeTest extends SearchIntegrationTestCase
     public function testAgeInFutureWorksWhenAllowed()
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
-            'format' => 'yyyy-MM-dd',
+            'pattern' => 'yyyy-MM-dd',
             'allow_future_date' => true,
         ]);
 
@@ -88,9 +88,6 @@ class BirthdayTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput($currentDate->format('Y-m-d'))
             ->successfullyTransformsTo($currentDate)
-            ->andReverseTransformsTo(
-                $currentDate->format('Y-m-d'),
-                preg_replace('/\+00:00$/', 'Z', $currentDate->format('c'))
-            );
+            ->andReverseTransformsTo($currentDate->format('Y-m-d'));
     }
 }

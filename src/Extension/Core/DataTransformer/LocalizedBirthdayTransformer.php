@@ -42,7 +42,7 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
      * @param bool                     $allowAge
      * @param bool                     $allowFutureDate
      */
-    public function __construct(DataTransformerInterface $transformer, bool $allowAge, bool $allowFutureDate)
+    public function __construct(DataTransformerInterface $transformer, bool $allowAge = true, bool $allowFutureDate = false)
     {
         $this->transformer = $transformer;
         $this->allowFutureDate = $allowFutureDate;
@@ -55,7 +55,18 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
     public function transform($value)
     {
         if (is_int($value)) {
-            return $this->getNumberFormatter()->format($value, \NumberFormatter::DECIMAL);
+            if (!$this->allowAge) {
+                throw new TransformationFailedException('Age support is not enabled.');
+            }
+
+            $formatter = $this->getNumberFormatter();
+            $result = $formatter->format($value);
+
+            if (intl_is_failure($formatter->getErrorCode())) {
+                throw new TransformationFailedException($formatter->getErrorMessage());
+            }
+
+            return $result;
         }
 
         if ($transformer = $this->transformer) {
@@ -74,7 +85,7 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
 
         if (is_int($value)) {
             if (!$this->allowAge) {
-                throw new TransformationFailedException('Age is not supported.');
+                throw new TransformationFailedException('Age support is not enabled.');
             }
 
             return $value;
@@ -98,11 +109,23 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
 
     private function transformWhenInteger($value)
     {
-        if (preg_match('/^\p{N}+$/', (string) $value)) {
-            return $this->getNumberFormatter()->parse($value, \NumberFormatter::DECIMAL);
+        if (!preg_match('/^\p{N}+$/u', (string) $value)) {
+            return $value;
         }
 
-        return $value;
+        $position = 0;
+        $formatter = $this->getNumberFormatter();
+        $result = $formatter->parse($value, \NumberFormatter::TYPE_INT32, $position);
+
+        if (intl_is_failure($formatter->getErrorCode())) {
+            throw new TransformationFailedException($formatter->getErrorMessage());
+        }
+
+        if ($result >= PHP_INT_MAX || $result <= -PHP_INT_MAX) {
+            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
+        }
+
+        return $result;
     }
 
     private function validateDate(\DateTimeInterface $value)
@@ -126,7 +149,7 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
     }
 
     /**
-     * Returns a pre-configured \NumberFormatter instance.
+     * Returns a preconfigured \NumberFormatter instance.
      *
      * @return \NumberFormatter
      */
@@ -136,7 +159,7 @@ class LocalizedBirthdayTransformer implements DataTransformerInterface
         static $formatter;
 
         if (!$formatter || $formatter->getLocale() !== \Locale::getDefault()) {
-            $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
+            $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::TYPE_INT32);
             $formatter->setAttribute(\NumberFormatter::GROUPING_USED, false);
         }
 
