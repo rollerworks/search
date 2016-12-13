@@ -45,7 +45,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         // And builds the comparators.
 
         foreach ($fieldSet->all() as $name => $field) {
-            if ($field->supportValueType(ValuesBag::VALUE_TYPE_RANGE)) {
+            if ($field->supportValueType(Range::class)) {
                 $this->comparators[$name] = new ValueSortCompare($field->getValueComparison(), $field->getOptions());
 
                 $optimize = true;

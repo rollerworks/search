@@ -51,19 +51,19 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $fieldSet->add('date', DateType::class, ['format' => 'MM-dd-yyyy']);
         $fieldSet->set(
             $this->getFactory()->createField('no-range-field', IntegerType::class)
-                ->setValueTypeSupport(ValuesBag::VALUE_TYPE_RANGE, false)
+                ->setValueTypeSupport(Range::class, false)
         );
 
         $fieldSet->set(
             $this->getFactory()->createField('no-compares-field', IntegerType::class)->setValueTypeSupport(
-                ValuesBag::VALUE_TYPE_COMPARISON,
+                Compare::class,
                 false
             )
         );
 
         $fieldSet->set(
             $this->getFactory()->createField('no-matchers-field', IntegerType::class)->setValueTypeSupport(
-                ValuesBag::VALUE_TYPE_PATTERN_MATCH,
+                PatternMatch::class,
                 false
             )
         );
