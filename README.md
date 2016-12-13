@@ -5,6 +5,7 @@ README
 [![Build Status](https://secure.travis-ci.org/rollerworks/search.png?branch=master)](http://travis-ci.org/rollerworks/search)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/92caf31d-dae6-49dd-9526-440d859daa31/mini.png)](https://insight.sensiolabs.com/projects/92caf31d-dae6-49dd-9526-440d859daa31)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/search/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/search/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/rollerworks/search/badge.svg?branch=master)](https://coveralls.io/github/rollerworks/search?branch=master)
 
 What is RollerworksSearch?
 --------------------------
