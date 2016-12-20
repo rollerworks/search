@@ -29,15 +29,14 @@ class MoneyToStringTransformer extends NumberToStringTransformer
     private $defaultCurrency;
 
     /**
-     * @param int    $precision
-     * @param bool   $grouping
+     * @param int    $scale
      * @param int    $roundingMode
      * @param int    $divisor
      * @param string $defaultCurrency
      */
-    public function __construct(int $precision = null, bool $grouping = null, int $roundingMode = null, int $divisor = null, string $defaultCurrency = null)
+    public function __construct(int $scale = null, int $roundingMode = null, int $divisor = null, string $defaultCurrency = null)
     {
-        parent::__construct($precision ?? 2, $grouping ?? true, $roundingMode, \NumberFormatter::TYPE_CURRENCY);
+        parent::__construct($scale ?? 2, $roundingMode, \NumberFormatter::TYPE_CURRENCY);
 
         $this->divisor = $divisor ?? 1;
         $this->defaultCurrency = $defaultCurrency;
@@ -51,7 +50,7 @@ class MoneyToStringTransformer extends NumberToStringTransformer
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed
      *
-     * @return string Localized money string
+     * @return string Normalized money string
      */
     public function transform($value)
     {
@@ -63,24 +62,11 @@ class MoneyToStringTransformer extends NumberToStringTransformer
             throw new TransformationFailedException('Expected a MoneyValue object.');
         }
 
-        if (!is_numeric($value->value)) {
-            throw new TransformationFailedException('Expected a numeric value.');
-        }
-
         $amountValue = $value->value;
         $amountValue /= $this->divisor;
+        $amountValue = parent::transform($amountValue);
 
-        $formatter = $this->getNumberFormatter();
-        $value = $formatter->formatCurrency($amountValue, $value->currency);
-
-        if (intl_is_failure($formatter->getErrorCode())) {
-            throw new TransformationFailedException($formatter->getErrorMessage());
-        }
-
-        // Convert fixed spaces to normal ones
-        $value = str_replace("\xc2\xa0", ' ', $value);
-
-        return $value;
+        return $value->currency.' '.$amountValue;
     }
 
     /**
@@ -97,12 +83,6 @@ class MoneyToStringTransformer extends NumberToStringTransformer
     {
         if (!is_string($value)) {
             throw new TransformationFailedException('Expected a string value.');
-        }
-
-        $value = str_replace(' ', "\xc2\xa0", $value);
-
-        if (!preg_match('#\p{Sc}#u', $value)) {
-            $currency = false;
         }
 
         $value = parent::reverseTransform($value, $currency);

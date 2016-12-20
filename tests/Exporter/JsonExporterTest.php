@@ -53,7 +53,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
                         'simple-values' => ['value', 'value2'],
                     ],
                     'date' => [
-                        'simple-values' => ['2014-12-16T00:00:00Z'],
+                        'simple-values' => ['2014-12-16'],
                     ],
                 ],
             ]
@@ -78,7 +78,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
                     ],
                     'date' => [
                         'ranges' => [
-                            ['lower' => '2014-12-16T00:00:00Z', 'upper' => '2014-12-20T00:00:00Z'],
+                            ['lower' => '2014-12-16', 'upper' => '2014-12-20'],
                         ],
                     ],
                 ],
@@ -101,7 +101,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
                     ],
                     'date' => [
                         'comparisons' => [
-                            ['operator' => '>=', 'value' => '2014-12-16T00:00:00Z'],
+                            ['operator' => '>=', 'value' => '2014-12-16'],
                         ],
                     ],
                 ],

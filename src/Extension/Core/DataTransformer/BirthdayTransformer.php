@@ -42,7 +42,7 @@ class BirthdayTransformer implements DataTransformerInterface
      * @param bool                     $allowAge
      * @param bool                     $allowFutureDate
      */
-    public function __construct(DataTransformerInterface $transformer, bool $allowAge, bool $allowFutureDate)
+    public function __construct(DataTransformerInterface $transformer, bool $allowAge = true, bool $allowFutureDate = false)
     {
         $this->transformer = $transformer;
         $this->allowFutureDate = $allowFutureDate;
@@ -56,7 +56,7 @@ class BirthdayTransformer implements DataTransformerInterface
     {
         if (is_int($value)) {
             if (!$this->allowAge) {
-                throw new TransformationFailedException('Age is not supported.');
+                throw new TransformationFailedException('Age support is not enabled.');
             }
 
             return $value;
@@ -74,7 +74,7 @@ class BirthdayTransformer implements DataTransformerInterface
 
         if (is_int($value)) {
             if (!$this->allowAge) {
-                throw new TransformationFailedException('Age is not supported.');
+                throw new TransformationFailedException('Age support is not enabled.');
             }
 
             return $value;

@@ -35,17 +35,11 @@ class CoreExtension extends AbstractExtension
             new Type\DateType(new ValueComparison\DateValueComparison()),
             new Type\DateTimeType($dateTimeComparison),
             new Type\TimeType($dateTimeComparison),
+            new Type\TimestampType($dateTimeComparison),
             new Type\BirthdayType(new ValueComparison\BirthdayValueComparison()),
-            new Type\ChoiceType(),
-            new Type\CountryType(),
             new Type\IntegerType($numberComparison),
-            new Type\LanguageType(),
-            new Type\LocaleType(),
             new Type\MoneyType(new ValueComparison\MoneyValueComparison()),
             new Type\NumberType($numberComparison),
-            new Type\TextType(),
-            new Type\TimezoneType(),
-            new Type\CurrencyType(),
         ];
     }
 }

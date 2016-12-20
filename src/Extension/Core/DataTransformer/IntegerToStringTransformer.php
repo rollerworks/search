@@ -24,13 +24,11 @@ class IntegerToStringTransformer extends NumberToStringTransformer
     /**
      * Constructs a transformer.
      *
-     * @param int  $precision    Unused
-     * @param bool $grouping     Whether thousands should be grouped
-     * @param int  $roundingMode One of the ROUND_ constants in this class
+     * @param int $roundingMode One of the ROUND_ constants in this class
      */
-    public function __construct(int $precision = null, bool $grouping = null, int $roundingMode = null)
+    public function __construct(int $roundingMode = null)
     {
-        parent::__construct(0, $grouping, $roundingMode ?? self::ROUND_DOWN);
+        parent::__construct(0, $roundingMode ?? self::ROUND_DOWN);
     }
 
     /**

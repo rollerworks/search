@@ -14,10 +14,8 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
-use Rollerworks\Component\Search\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer;
-use Rollerworks\Component\Search\Extension\Core\DataTransformer\IntegerToStringTransformer;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToTimestampTransformer;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\ValueComparisonInterface;
@@ -25,8 +23,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class IntegerType extends AbstractFieldType
+class TimestampType extends AbstractFieldType
 {
     /**
      * @var ValueComparisonInterface
@@ -52,18 +51,12 @@ class IntegerType extends AbstractFieldType
         $config->setValueTypeSupport(Range::class, true);
         $config->setValueTypeSupport(Compare::class, true);
 
-        $config->setNormTransformer(new IntegerToStringTransformer($options['rounding_mode']));
         $config->setViewTransformer(
-            new IntegerToLocalizedStringTransformer($options['grouping'], $options['rounding_mode'])
+            new DateTimeToTimestampTransformer(
+                $options['model_timezone'],
+                $options['view_timezone']
+            )
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
-    {
-        $view->vars['grouping'] = $options['grouping'];
     }
 
     /**
@@ -71,25 +64,9 @@ class IntegerType extends AbstractFieldType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'grouping' => false,
-                // Integer cast rounds towards 0, so do the same when displaying fractions
-                'rounding_mode' => \NumberFormatter::ROUND_DOWN,
-            ]
-        );
-
-        $resolver->setAllowedValues(
-            'rounding_mode',
-            [
-                \NumberFormatter::ROUND_FLOOR,
-                \NumberFormatter::ROUND_DOWN,
-                \NumberFormatter::ROUND_HALFDOWN,
-                \NumberFormatter::ROUND_HALFEVEN,
-                \NumberFormatter::ROUND_HALFUP,
-                \NumberFormatter::ROUND_UP,
-                \NumberFormatter::ROUND_CEILING,
-            ]
-        );
+        $resolver->setDefaults([
+            'model_timezone' => null,
+            'view_timezone' => null,
+        ]);
     }
 }
