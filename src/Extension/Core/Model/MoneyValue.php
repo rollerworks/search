@@ -13,30 +13,33 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Model;
 
+use Money\Money;
+
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class MoneyValue
 {
     /**
-     * @var string
-     */
-    public $currency;
-
-    /**
-     * @var float|string
+     * @var Money
      */
     public $value;
 
     /**
+     * @var bool
+     */
+    public $withCurrency;
+
+    /**
      * Constructor.
      *
-     * @param string       $currency
-     * @param float|string $value
+     * @param Money $value
+     * @param bool  $withCurrency Indicate the input was provided with a currency.
+     *                            This is only used for exporting
      */
-    public function __construct($currency, $value)
+    public function __construct(Money $value, bool $withCurrency = true)
     {
-        $this->currency = $currency;
+        $this->withCurrency = $withCurrency;
         $this->value = $value;
     }
 }

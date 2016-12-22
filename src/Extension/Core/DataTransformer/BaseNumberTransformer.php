@@ -90,11 +90,6 @@ abstract class BaseNumberTransformer implements DataTransformerInterface
     protected $roundingMode;
 
     /**
-     * @var int
-     */
-    protected $type;
-
-    /**
      * Rounds a number according to the configured scale and rounding mode.
      *
      * @param int|float $number A number
