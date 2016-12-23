@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSetBuilder;
+use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
+use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\SearchField;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
@@ -33,10 +35,10 @@ final class FieldSetBuilderTest extends TestCase
         // Prophecy binds the callback to the ObjectProphecy.
         $test = $this;
 
-        $factory = $this->prophesize('Rollerworks\Component\Search\SearchFactory');
+        $factory = $this->prophesize(SearchFactory::class);
         $factory->createField(Argument::cetera())->will(
             function ($args) use ($test) {
-                $type = $test->prophesize('Rollerworks\Component\Search\ResolvedFieldTypeInterface');
+                $type = $test->prophesize(ResolvedFieldTypeInterface::class);
                 $type->getInnerType()->willReturn(new $args[1]());
 
                 return new SearchField($args[0], $type->reveal(), $args[2]);
@@ -59,7 +61,7 @@ final class FieldSetBuilderTest extends TestCase
     {
         $this->builder->add('id', FooType::class, ['foo' => 'bar']);
 
-        self::assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
+        $this->assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
     }
 
     public function testSetPreConfiguredField()
@@ -100,13 +102,13 @@ final class FieldSetBuilderTest extends TestCase
 
     private function assertBuilderFieldConfigurationEquals(string $name, string $type, array $options = [])
     {
-        self::assertInstanceOf('Rollerworks\Component\Search\FieldConfigInterface', $field = $this->builder->get($name));
+        self::assertInstanceOf(FieldConfigInterface::class, $field = $this->builder->get($name));
         self::assertEquals($name, $field->getName());
         self::assertInstanceOf($type, $field->getType()->getInnerType());
         self::assertEquals($options, $field->getOptions());
     }
 
-    private function assertFieldConfigurationEquals(FieldConfigInterface $field, string $name, string $type, array $options = [])
+    private static function assertFieldConfigurationEquals(FieldConfigInterface $field, string $name, string $type, array $options = [])
     {
         self::assertEquals($name, $field->getName());
         self::assertInstanceOf($type, $field->getType()->getInnerType());

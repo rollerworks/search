@@ -29,7 +29,6 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
      * @param int  $scale
      * @param bool $grouping
      * @param int  $roundingMode
-     * @param int  $type
      */
     public function __construct(int $scale = null, bool $grouping = null, int $roundingMode = null)
     {

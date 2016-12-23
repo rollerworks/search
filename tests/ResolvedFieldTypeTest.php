@@ -14,9 +14,13 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Rollerworks\Component\Search\AbstractFieldType;
+use Rollerworks\Component\Search\AbstractFieldTypeExtension;
+use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldTypeExtensionInterface;
 use Rollerworks\Component\Search\FieldTypeInterface;
 use Rollerworks\Component\Search\ResolvedFieldType;
+use Rollerworks\Component\Search\SearchFieldView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ResolvedFieldTypeTest extends TestCase
@@ -118,7 +122,7 @@ final class ResolvedFieldTypeTest extends TestCase
         $resolvedOptions = ['a' => 'a_custom', 'b' => 'b_default', 'c' => 'c_custom', 'd' => 'd_default'];
         $optionsResolver = $this->createOptionsResolverMock();
 
-        $this->resolvedType = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldType')
+        $this->resolvedType = $this->getMockBuilder(ResolvedFieldType::class)
             ->setConstructorArgs([$this->type, [$this->extension1, $this->extension2], $this->parentResolvedType])
             ->setMethods(['getOptionsResolver'])
             ->getMock();
@@ -187,7 +191,7 @@ final class ResolvedFieldTypeTest extends TestCase
         $field = $this->createFieldMock();
         $view = $this->resolvedType->createFieldView($field);
 
-        self::assertInstanceOf('Rollerworks\Component\Search\SearchFieldView', $view);
+        self::assertInstanceOf(SearchFieldView::class, $view);
     }
 
     public function testBuildView()
@@ -237,7 +241,7 @@ final class ResolvedFieldTypeTest extends TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getMockFieldType($typeClass = 'Rollerworks\Component\Search\AbstractFieldType')
+    private function getMockFieldType($typeClass = AbstractFieldType::class)
     {
         return $this->getMockBuilder($typeClass)
             ->setMethods(['configureOptions', 'buildView', 'buildType'])
@@ -249,7 +253,7 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private function getMockFieldTypeExtension()
     {
-        return $this->getMockBuilder('Rollerworks\Component\Search\AbstractFieldTypeExtension')
+        return $this->getMockBuilder(AbstractFieldTypeExtension::class)
             ->setMethods(['getExtendedType', 'configureOptions', 'buildView', 'buildType']
         )->getMock();
     }
@@ -259,7 +263,7 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private function createOptionsResolverMock()
     {
-        return $this->getMockBuilder('Symfony\Component\OptionsResolver\OptionsResolver')
+        return $this->getMockBuilder(OptionsResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -269,7 +273,7 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private function createFieldMock()
     {
-        return $this->getMockBuilder('Rollerworks\Component\Search\FieldConfigInterface')->getMock();
+        return $this->getMockBuilder(FieldConfigInterface::class)->getMock();
     }
 
     /**
@@ -277,6 +281,6 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private function createSearchFieldViewMock()
     {
-        return $this->getMockBuilder('Rollerworks\Component\Search\SearchFieldView')->getMock();
+        return $this->getMockBuilder(SearchFieldView::class)->getMock();
     }
 }

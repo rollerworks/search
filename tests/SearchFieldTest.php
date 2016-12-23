@@ -14,11 +14,15 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
+use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
 use Rollerworks\Component\Search\SearchField;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
+use Rollerworks\Component\Search\ValueComparisonInterface;
 
 final class SearchFieldTest extends TestCase
 {
@@ -34,7 +38,7 @@ final class SearchFieldTest extends TestCase
 
     protected function setUp()
     {
-        $this->resolvedType = $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldTypeInterface')->getMock();
+        $this->resolvedType = $this->getMockBuilder(ResolvedFieldTypeInterface::class)->getMock();
         $this->field = new SearchField('foobar', $this->resolvedType, ['name' => 'value']);
     }
 
@@ -133,7 +137,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_allows_setting_a_comparison_class()
     {
-        $comparisonObj = $this->getMockBuilder('Rollerworks\Component\Search\ValueComparisonInterface')->getMock();
+        $comparisonObj = $this->getMockBuilder(ValueComparisonInterface::class)->getMock();
 
         $this->field->setValueComparison($comparisonObj);
         self::assertEquals($comparisonObj, $this->field->getValueComparison());
@@ -209,7 +213,7 @@ final class SearchFieldTest extends TestCase
     {
         $this->field->finalizeConfig();
 
-        $this->expectException('Rollerworks\Component\Search\Exception\BadMethodCallException');
+        $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('SearchField setter methods cannot be accessed anymore once the data is locked.');
 
         $this->field->setViewTransformer(null);
@@ -220,6 +224,6 @@ final class SearchFieldTest extends TestCase
      */
     private function createTransformerMock()
     {
-        return $this->getMockBuilder('Rollerworks\Component\Search\DataTransformerInterface')->getMock();
+        return $this->getMockBuilder(DataTransformerInterface::class)->getMock();
     }
 }
