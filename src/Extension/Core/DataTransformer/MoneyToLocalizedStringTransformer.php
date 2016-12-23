@@ -13,42 +13,37 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
+use Money\Currencies\ISOCurrencies;
+use Money\Exception\ParserException;
+use Money\Formatter\IntlMoneyFormatter;
+use Money\Parser\IntlMoneyParser;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
 /**
  * Transforms between a normalized format and a localized money string.
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
- * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
 {
-    /**
-     * @var int|null
-     */
-    private $divisor;
-
-    /**
-     * @var string
-     */
     private $defaultCurrency;
 
+    private static $patterns = [];
+
+    /** None-breaking line */
+    const NBL = "\xc2\xa0";
+
     /**
-     * @param int    $scale
-     * @param bool   $grouping
-     * @param int    $roundingMode
-     * @param int    $divisor
+     * Constructor.
+     *
      * @param string $defaultCurrency
+     * @param bool   $grouping
      */
-    public function __construct(int $scale = null, bool $grouping = null, int $roundingMode = null, int $divisor = null, string $defaultCurrency = null)
+    public function __construct(string $defaultCurrency, bool $grouping = false)
     {
-        $this->scale = $scale;
-        $this->grouping = $grouping ?? false;
-        $this->roundingMode = $roundingMode ?? self::ROUND_HALF_UP;
         $this->defaultCurrency = $defaultCurrency;
-        $this->divisor = $divisor ?? 1;
+        $this->grouping = $grouping;
     }
 
     /**
@@ -71,20 +66,16 @@ class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
             throw new TransformationFailedException('Expected a MoneyValue object.');
         }
 
-        $amountValue = $value->value;
-        $amountValue /= $this->divisor;
-
-        $formatter = $this->getNumberFormatter();
-        $value = $formatter->formatCurrency((float) $amountValue, $value->currency);
-
-        if (intl_is_failure($formatter->getErrorCode())) {
-            throw new TransformationFailedException($formatter->getErrorMessage());
-        }
+        $result = (new IntlMoneyFormatter($this->getNumberFormatter(), new ISOCurrencies()))->format($value->value);
 
         // Convert fixed spaces to normal ones
-        $value = str_replace("\xc2\xa0", ' ', $value);
+        $result = str_replace(self::NBL, ' ', $result);
 
-        return $value;
+        if (!$value->withCurrency) {
+            $result = $this->removeCurrencySymbol($result, (string) $value->value->getCurrency());
+        }
+
+        return $result;
     }
 
     /**
@@ -111,17 +102,24 @@ class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
             throw new TransformationFailedException('"NaN" is not a valid number');
         }
 
-        $value = str_replace(' ', "\xc2\xa0", $value);
-        $currency = '';
-
-        if (!preg_match('#\p{Sc}#u', $value)) {
-            $currency = false;
+        if (false !== mb_strpos($value, '∞')) {
+            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
         }
 
-        $position = 0;
-        $formatter = $this->getNumberFormatter(false === $currency ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
+        // Convert normal spaces to fixed spaces.
+        $value = str_replace(' ', self::NBL, $value);
+
+        $formatter = $this->getNumberFormatter();
+
         $groupSep = $formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
         $decSep = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+        $withCurrency = (bool) preg_match('#\p{Sc}#u', $value);
+
+        // Some locales use the space as group separation.
+        // The ICU data confirms this, but since v58.1 this can no longer be parsed
+        // in the currency format. Unless you use DECIMAL which doesn't work
+        // for currency. So... simple remove the spaces between numbers.
+        $value = preg_replace("/(\\p{N})\xc2\xa0(\\p{N})/u", '$1$2', $value);
 
         if ('.' !== $decSep && (!$this->grouping || '.' !== $groupSep)) {
             $value = str_replace('.', $decSep, $value);
@@ -131,68 +129,94 @@ class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
             $value = str_replace(',', $decSep, $value);
         }
 
-        if (false !== $currency) {
-            $result = $formatter->parseCurrency($value, $currency, $position);
-        } else {
-            $result = $formatter->parse($value, \NumberFormatter::TYPE_DOUBLE, $position);
+        if (!$withCurrency) {
+            $value = $this->addCurrencySymbol($value);
         }
 
-        if (intl_is_failure($formatter->getErrorCode())) {
-            throw new TransformationFailedException($formatter->getErrorMessage());
+        try {
+            $money = (new IntlMoneyParser($formatter, new ISOCurrencies()))->parse($value);
+
+            return new MoneyValue($money, $withCurrency);
+        } catch (ParserException $e) {
+            throw new TransformationFailedException($e->getMessage(), 0, $e);
+        } catch (\Exception $e) {
+            throw new TransformationFailedException($e->getMessage(), 0, $e);
+        }
+    }
+
+    private function getNumberFormatter(): \NumberFormatter
+    {
+        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::CURRENCY);
+        $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
+
+        return $formatter;
+    }
+
+    /**
+     * Adds the currency symbol when missing.
+     *
+     * ICU cannot parse() without a currency,
+     * and decimal doesn't include scale when 0.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private function addCurrencySymbol(string $value, string $currency = null): string
+    {
+        $currency = $currency ?? $this->defaultCurrency;
+        $locale = \Locale::getDefault();
+
+        if (!isset(self::$patterns[$locale])) {
+            self::$patterns[$locale] = [];
         }
 
-        if ($result >= PHP_INT_MAX || $result <= -PHP_INT_MAX) {
-            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
-        }
+        if (!isset(self::$patterns[$locale][$currency])) {
+            $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
+            $pattern = $formatter->formatCurrency(123.00, $currency);
 
-        if (is_int($result) && $result === (int) $float = (float) $result) {
-            $result = $float;
-        }
+            // 1=left-position currency, 2=left-space, 3=right-space, 4=left-position currency.
+            // With non latin number scripts.
+            preg_match(
+                '/^([^\s\xc2\xa0]*)([\s\xc2\xa0]*)\p{N}{3}(?:[,.]\p{N}+)?([\s\xc2\xa0]*)([^\s\xc2\xa0]*)$/iu',
+                $pattern,
+                $matches
+            );
 
-        if (false !== $encoding = mb_detect_encoding($value, null, true)) {
-            $length = mb_strlen($value, $encoding);
-            $remainder = mb_substr($value, $position, $length, $encoding);
-        } else {
-            $length = strlen($value);
-            $remainder = substr($value, $position, $length);
-        }
-
-        // After parsing, position holds the index of the character where the
-        // parsing stopped
-        if ($position < $length) {
-            // Check if there are unrecognized characters at the end of the
-            // number (excluding whitespace characters)
-            $remainder = trim($remainder, " \t\n\r\0\x0b\xc2\xa0");
-
-            if ('' !== $remainder) {
-                throw new TransformationFailedException(
-                    sprintf('The number contains unrecognized characters: "%s"', $remainder)
+            if (!empty($matches[1])) {
+                self::$patterns[$locale][$currency] = ['%1$s'.$matches[2].'%2$s', $matches[1]];
+            } elseif (!empty($matches[4])) {
+                self::$patterns[$locale][$currency] = ['%2$s'.$matches[3].'%1$s', $matches[4]];
+            } else {
+                throw new \InvalidArgumentException(
+                    sprintf('Locale "%s" with currency "%s" does not provide a currency position.', $locale, $currency)
                 );
             }
         }
 
-        // NumberFormatter::parse() does not round
-        $result = $this->round($result);
-        $result *= $this->divisor;
-
-        if (false === $currency) {
-            $currency = $this->defaultCurrency;
-        }
-
-        return new MoneyValue($currency, (string) $result);
+        return sprintf(self::$patterns[$locale][$currency][0], self::$patterns[$locale][$currency][1], $value);
     }
 
-    private function getNumberFormatter(int $type = \NumberFormatter::CURRENCY): \NumberFormatter
+    /**
+     * Removes the currency symbol.
+     *
+     * ICU cannot format() with currency, as this
+     * produces a number with the `¤` symbol.
+     * And, decimal doesn't include scale when 0.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private function removeCurrencySymbol(string $value, string $currency): string
     {
-        $formatter = new \NumberFormatter(\Locale::getDefault(), $type);
+        $locale = \Locale::getDefault();
 
-        if (null !== $this->scale) {
-            $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $this->scale);
-            $formatter->setAttribute(\NumberFormatter::ROUNDING_MODE, $this->roundingMode);
+        if (!isset(self::$patterns[$locale][$currency])) {
+            // Initialize the cache, ignore return.
+            $this->addCurrencySymbol('123', $currency);
         }
 
-        $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
-
-        return $formatter;
+        return preg_replace('#(\s?'.preg_quote(self::$patterns[$locale][$currency][1], '#').'\s?)#u', '', $value);
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
+use Money\Money;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
@@ -38,13 +39,13 @@ class MoneyTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('€ 12,20', 'EUR 12.20')
-            ->successfullyTransformsTo(new MoneyValue('EUR', '12.20'))
-            ->andReverseTransformsTo('€ 12,20', 'EUR 12.2');
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1220)))
+            ->andReverseTransformsTo('€ 12,20', 'EUR 12.20');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00', '12.00')
-            ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('€ 12,00', 'EUR 12');
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200), false))
+            ->andReverseTransformsTo('12,00', '12');
     }
 
     public function testPassMoneyDe()
@@ -55,13 +56,13 @@ class MoneyTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00 €', 'EUR 12.00')
-            ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('12,00 €', 'EUR 12');
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200)))
+            ->andReverseTransformsTo('12,00 €', 'EUR 12.00');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00', '12.00')
-            ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('12,00 €', 'EUR 12');
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200), false))
+            ->andReverseTransformsTo('12,00', '12.00');
     }
 
     public function testMoneyPatternWorksForYen()
@@ -72,45 +73,39 @@ class MoneyTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('¥12,00', 'JPY 12.00')
-            ->successfullyTransformsTo(new MoneyValue('JPY', '12.00'))
-            ->andReverseTransformsTo('¥12', 'JPY 12');
+            ->successfullyTransformsTo(new MoneyValue(Money::JPY(12)))
+            ->andReverseTransformsTo('¥12', 'JPY 12.');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('¥12', 'JPY 12')
-            ->successfullyTransformsTo(new MoneyValue('JPY', '12.00'))
-            ->andReverseTransformsTo('¥12', 'JPY 12');
+            ->successfullyTransformsTo(new MoneyValue(Money::JPY(12)))
+            ->andReverseTransformsTo('¥12', 'JPY 12.');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12', '12.00')
-            ->successfullyTransformsTo(new MoneyValue('JPY', '12.00'))
-            ->andReverseTransformsTo('¥12', 'JPY 12');
+            ->successfullyTransformsTo(new MoneyValue(Money::JPY(12), false))
+            ->andReverseTransformsTo('12', '12.00');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('€12.00', 'EUR 12.00')
-            ->successfullyTransformsTo(new MoneyValue('EUR', '12.00'))
-            ->andReverseTransformsTo('€12.00', 'EUR 12');
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200)))
+            ->andReverseTransformsTo('€12.00', 'EUR 12.00');
     }
 
     public function testViewIsConfiguredProperly()
     {
         $field = $this->getFactory()->createField('money', MoneyType::class, [
-            'precision' => 2,
             'grouping' => false,
-            'divisor' => 1,
             'default_currency' => 'EUR',
         ]);
 
         $field->finalizeConfig();
         $fieldView = $field->createView();
 
-        self::assertArrayHasKey('precision', $fieldView->vars);
         self::assertArrayHasKey('grouping', $fieldView->vars);
-        self::assertArrayHasKey('divisor', $fieldView->vars);
         self::assertArrayHasKey('default_currency', $fieldView->vars);
 
-        self::assertEquals(2, $fieldView->vars['precision']);
         self::assertFalse($fieldView->vars['grouping']);
-        self::assertEquals(1, $fieldView->vars['divisor']);
         self::assertEquals('EUR', $fieldView->vars['default_currency']);
     }
 }

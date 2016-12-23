@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
+use Money\Currencies\ISOCurrencies;
+use Money\Formatter\DecimalMoneyFormatter;
+use Money\Parser\DecimalMoneyParser;
+use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
@@ -23,22 +27,19 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class MoneyToStringTransformer extends NumberToStringTransformer
+class MoneyToStringTransformer implements DataTransformerInterface
 {
-    private $divisor;
     private $defaultCurrency;
+    private $moneyParser;
+    private $formatter;
 
     /**
-     * @param int    $scale
-     * @param int    $roundingMode
-     * @param int    $divisor
+     * Constructor.
+     *
      * @param string $defaultCurrency
      */
-    public function __construct(int $scale = null, int $roundingMode = null, int $divisor = null, string $defaultCurrency = null)
+    public function __construct(string $defaultCurrency)
     {
-        parent::__construct($scale ?? 2, $roundingMode, \NumberFormatter::TYPE_CURRENCY);
-
-        $this->divisor = $divisor ?? 1;
         $this->defaultCurrency = $defaultCurrency;
     }
 
@@ -62,11 +63,15 @@ class MoneyToStringTransformer extends NumberToStringTransformer
             throw new TransformationFailedException('Expected a MoneyValue object.');
         }
 
-        $amountValue = $value->value;
-        $amountValue /= $this->divisor;
-        $amountValue = parent::transform($amountValue);
+        if (!$this->formatter) {
+            $this->formatter = new DecimalMoneyFormatter(new ISOCurrencies());
+        }
 
-        return $value->currency.' '.$amountValue;
+        if (!$value->withCurrency) {
+            return $this->formatter->format($value->value);
+        }
+
+        return ((string) $value->value->getCurrency()).' '.$this->formatter->format($value->value);
     }
 
     /**
@@ -79,22 +84,42 @@ class MoneyToStringTransformer extends NumberToStringTransformer
      *
      * @return MoneyValue Normalized number
      */
-    public function reverseTransform($value, &$currency = null)
+    public function reverseTransform($value)
     {
         if (!is_string($value)) {
             throw new TransformationFailedException('Expected a string value.');
         }
 
-        $value = parent::reverseTransform($value, $currency);
-
-        if (null !== $value) {
-            $value *= $this->divisor;
+        if ('' === $value) {
+            return null;
         }
 
-        if (false === $currency) {
+        $withCurrency = true;
+        $result = $value;
+
+        if (false !== strpos($value, ' ')) {
+            list($currency, $result) = explode(' ', $value, 2);
+
+            if (strlen($currency) !== 3) {
+                throw new TransformationFailedException(
+                    sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
+                );
+            }
+        } else {
+            $withCurrency = false;
             $currency = $this->defaultCurrency;
         }
 
-        return new MoneyValue($currency, (string) $value);
+        if (!$this->moneyParser) {
+            $this->moneyParser = new DecimalMoneyParser(new ISOCurrencies());
+        }
+
+        try {
+            return new MoneyValue($this->moneyParser->parse($result, $currency), $withCurrency);
+        } catch (\Money\Exception $e) {
+            throw new TransformationFailedException(
+                sprintf($e->getMessage(), 0, $e)
+            );
+        }
     }
 }

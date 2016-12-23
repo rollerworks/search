@@ -54,21 +54,13 @@ class MoneyType extends AbstractFieldType
 
         $config->setViewTransformer(
             new MoneyToLocalizedStringTransformer(
-                $options['precision'],
-                $options['grouping'],
-                null,
-                $options['divisor'],
-                $options['default_currency']
+                $options['default_currency'],
+                $options['grouping']
             )
         );
 
         $config->setNormTransformer(
-            new MoneyToStringTransformer(
-                $options['precision'],
-                null,
-                $options['divisor'],
-                $options['default_currency']
-            )
+            new MoneyToStringTransformer($options['default_currency'])
         );
     }
 
@@ -77,10 +69,9 @@ class MoneyType extends AbstractFieldType
      */
     public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
     {
-        $view->vars['precision'] = $options['precision'];
         $view->vars['grouping'] = $options['grouping'];
-        $view->vars['divisor'] = $options['divisor'];
         $view->vars['default_currency'] = $options['default_currency'];
+        $view->vars['increase_by'] = $options['increase_by'];
     }
 
     /**
@@ -90,11 +81,12 @@ class MoneyType extends AbstractFieldType
     {
         $resolver->setDefaults(
             [
-                'precision' => 2,
                 'grouping' => false,
-                'divisor' => 1,
                 'default_currency' => 'EUR',
+                'increase_by' => 'cents',
             ]
         );
+
+        $resolver->setAllowedValues('increase_by', ['cents', 'amount']);
     }
 }

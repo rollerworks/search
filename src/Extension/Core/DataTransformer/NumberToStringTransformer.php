@@ -18,8 +18,6 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 /**
  * Transforms between a number type and a number with rounding.
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
- * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class NumberToStringTransformer extends BaseNumberTransformer
@@ -33,7 +31,6 @@ class NumberToStringTransformer extends BaseNumberTransformer
     {
         $this->scale = $scale;
         $this->roundingMode = $roundingMode ?? self::ROUND_HALF_UP;
-        $this->type = $type;
     }
 
     /**
@@ -66,15 +63,14 @@ class NumberToStringTransformer extends BaseNumberTransformer
     /**
      * Transforms a normalized number into an integer or float.
      *
-     * @param string $value    The localized value
-     * @param string $currency The parsed currency value
+     * @param string $value The localized value
      *
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed
      *
      * @return int|float|null The numeric value
      */
-    public function reverseTransform($value, &$currency = null)
+    public function reverseTransform($value)
     {
         if (!is_scalar($value)) {
             throw new TransformationFailedException('Expected a scalar.');
@@ -84,18 +80,7 @@ class NumberToStringTransformer extends BaseNumberTransformer
             return null;
         }
 
-        $currency = false;
         $result = $value;
-
-        if (\NumberFormatter::TYPE_CURRENCY === $this->type && false !== strpos($value, ' ')) {
-            list($currency, $result) = explode(' ', $value, 2);
-
-            if (strlen($currency) !== 3) {
-                throw new TransformationFailedException(
-                    sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
-                );
-            }
-        }
 
         if (!is_numeric($result)) {
             throw new TransformationFailedException('Value is not numeric.');

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
 
+use Money\Money;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 use Rollerworks\Component\Search\ValueIncrementerInterface;
 
@@ -32,11 +33,11 @@ class MoneyValueComparison implements ValueIncrementerInterface
      */
     public function isHigher($higher, $lower, array $options): bool
     {
-        if ($lower->currency !== $higher->currency) {
+        if (!$higher->value->isSameCurrency($lower->value)) {
             return false;
         }
 
-        return $higher->value > $lower->value;
+        return $higher->value->greaterThan($lower->value);
     }
 
     /**
@@ -50,11 +51,11 @@ class MoneyValueComparison implements ValueIncrementerInterface
      */
     public function isLower($lower, $higher, array $options): bool
     {
-        if ($lower->currency !== $higher->currency) {
+        if (!$higher->value->isSameCurrency($lower->value)) {
             return false;
         }
 
-        return $lower->value < $higher->value;
+        return $lower->value->lessThan($higher->value);
     }
 
     /**
@@ -68,7 +69,7 @@ class MoneyValueComparison implements ValueIncrementerInterface
      */
     public function isEqual($value, $nextValue, array $options): bool
     {
-        return $value == $nextValue;
+        return $value->value->equals($nextValue->value);
     }
 
     /**
@@ -84,14 +85,27 @@ class MoneyValueComparison implements ValueIncrementerInterface
      */
     public function getIncrementedValue($value, array $options, int $increments = 1)
     {
-        $newValue = clone $value;
-
-        if (isset($options['increase_by_decimal'])) {
-            $newValue->value += (float) ("0.$increments");
-        } else {
-            $newValue->value += $increments;
+        if (!isset($options['increase_by'])) {
+            $options['increase_by'] = 'cent';
         }
 
-        return $newValue;
+        // NB. Amount is in cents.
+        if ('amount' === $options['increase_by']) {
+            $amount = ceil($value->value->getAmount() / 100) * 100;
+
+            if ($increments > 1) {
+                $amount += ($increments - 1) * 100;
+            }
+
+            $newValue = new Money(
+                $amount,
+                $value->value->getCurrency()
+            );
+        } else {
+            // Increase with n cent.
+            $newValue = $value->value->add(new Money($increments, $value->value->getCurrency()));
+        }
+
+        return new MoneyValue($newValue, $value->withCurrency);
     }
 }
