@@ -15,6 +15,10 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldRegistryInterface;
+use Rollerworks\Component\Search\FieldSetRegistryInterface;
+use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
 use Rollerworks\Component\Search\SearchFactory;
 
 final class SearchFactoryTest extends TestCase
@@ -41,9 +45,9 @@ final class SearchFactoryTest extends TestCase
 
     protected function setUp()
     {
-        $this->fieldSetRegistry = $this->createMock('Rollerworks\Component\Search\FieldSetRegistryInterface');
-        $this->registry = $this->createMock('Rollerworks\Component\Search\FieldRegistryInterface');
-        $this->fieldConfig = $this->createMock('Rollerworks\Component\Search\FieldConfigInterface');
+        $this->fieldSetRegistry = $this->createMock(FieldSetRegistryInterface::class);
+        $this->registry = $this->createMock(FieldRegistryInterface::class);
+        $this->fieldConfig = $this->createMock(FieldConfigInterface::class);
 
         $this->factory = new SearchFactory($this->registry, $this->fieldSetRegistry);
     }
@@ -80,6 +84,6 @@ final class SearchFactoryTest extends TestCase
 
     private function getMockResolvedType()
     {
-        return $this->getMockBuilder('Rollerworks\Component\Search\ResolvedFieldTypeInterface')->getMock();
+        return $this->getMockBuilder(ResolvedFieldTypeInterface::class)->getMock();
     }
 }

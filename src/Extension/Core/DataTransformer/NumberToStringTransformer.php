@@ -25,9 +25,8 @@ class NumberToStringTransformer extends BaseNumberTransformer
     /**
      * @param int $scale
      * @param int $roundingMode
-     * @param int $type
      */
-    public function __construct(int $scale = null, int $roundingMode = null, int $type = \NumberFormatter::DECIMAL)
+    public function __construct(int $scale = null, int $roundingMode = null)
     {
         $this->scale = $scale;
         $this->roundingMode = $roundingMode ?? self::ROUND_HALF_UP;
