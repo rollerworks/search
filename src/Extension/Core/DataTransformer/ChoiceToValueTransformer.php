@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
-use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface;
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -27,9 +27,9 @@ class ChoiceToValueTransformer implements DataTransformerInterface
     /**
      * Constructor.
      *
-     * @param ChoiceListInterface $choiceList
+     * @param ChoiceList $choiceList
      */
-    public function __construct(ChoiceListInterface $choiceList)
+    public function __construct(ChoiceList $choiceList)
     {
         $this->choiceList = $choiceList;
     }
