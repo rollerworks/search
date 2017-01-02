@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -23,15 +24,18 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 class ChoiceToLabelTransformer implements DataTransformerInterface
 {
     private $choiceList;
+    private $choiceListView;
 
     /**
      * Constructor.
      *
-     * @param ChoiceList $choiceList
+     * @param ChoiceList     $choiceList
+     * @param ChoiceListView $choiceListView
      */
-    public function __construct(ChoiceList $choiceList)
+    public function __construct(ChoiceList $choiceList, ChoiceListView $choiceListView)
     {
         $this->choiceList = $choiceList;
+        $this->choiceListView = $choiceListView;
     }
 
     /**
@@ -39,7 +43,17 @@ class ChoiceToLabelTransformer implements DataTransformerInterface
      */
     public function transform($choice)
     {
-        return (string) $this->choiceList->getLabelForChoice($choice);
+        if (null === $this->choiceListView->choicesByLabel) {
+            $this->choiceListView->initChoicesByLabel();
+        }
+
+        $value = current($this->choiceList->getValuesForChoices([$choice]));
+
+        if (!array_key_exists($value, $this->choiceListView->labelsByValue)) {
+            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $choice));
+        }
+
+        return $this->choiceListView->labelsByValue[$value];
     }
 
     /**
@@ -47,24 +61,22 @@ class ChoiceToLabelTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        if (null !== $value && !is_scalar($value)) {
-            throw new TransformationFailedException('Expected a scalar.');
+        if (null !== $value && !is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
         }
 
-        // These are now valid ChoiceList values, so we can return null
-        // right away.
-        if ('' === $value || null === $value) {
+        if (null === $value || '' === $value) {
             return null;
         }
 
-        $choice = $this->choiceList->getChoiceForLabel($value);
-
-        if (null === $choice) {
-            throw new TransformationFailedException(
-                sprintf('The choice "%s" does not exist.', $value)
-            );
+        if (null === $this->choiceListView->choicesByLabel) {
+            $this->choiceListView->initChoicesByLabel();
         }
 
-        return '' === $choice ? null : $choice;
+        if (!array_key_exists($value, $this->choiceListView->choicesByLabel)) {
+            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $value));
+        }
+
+        return $this->choiceListView->choicesByLabel[$value]->data;
     }
 }

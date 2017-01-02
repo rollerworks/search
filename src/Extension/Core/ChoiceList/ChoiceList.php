@@ -115,4 +115,19 @@ interface ChoiceList
      * @return string[] An array of choice values
      */
     public function getValuesForChoices(array $choices): array;
+
+    /**
+     * Returns whether the values are constant (not dependent of there position).
+     *
+     * Whenever the 'generated' values are dependent on there position
+     * (like an incremented list). This method must return false.
+     *
+     * This method is used to determine whether the value or label must
+     * be used for the normalized input format. And ensures that input always
+     * relates to the correct choice and the value doesn't change whenever
+     * the provided order or length changes (between requests).
+     *
+     * @return bool
+     */
+    public function isValuesConstant(): bool;
 }

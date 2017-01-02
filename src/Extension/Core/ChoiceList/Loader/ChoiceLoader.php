@@ -23,6 +23,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
  * list is not necessary.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface ChoiceLoader
 {
@@ -75,4 +76,13 @@ interface ChoiceLoader
      * @return string[] An array of choice values
      */
     public function loadValuesForChoices(array $choices, callable $value = null): array;
+
+    /**
+     * Returns whether the values are constant (not dependent of there position).
+     *
+     * {@see \Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList::isValuesConstant}
+     *
+     * @return bool
+     */
+    public function isValuesConstant(): bool;
 }

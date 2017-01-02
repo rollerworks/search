@@ -54,6 +54,11 @@ class ArrayChoiceList implements ChoiceList
     protected $valueCallback;
 
     /**
+     * @var bool
+     */
+    protected $valuesAreConstant;
+
+    /**
      * Creates a list with the given choices and values.
      *
      * The given choice array must have the same array keys as the value array.
@@ -71,6 +76,7 @@ class ArrayChoiceList implements ChoiceList
         }
 
         if (null === $value && $this->castableToString($choices)) {
+            $this->valuesAreConstant = true;
             $value = function ($choice) {
                 return false === $choice ? '0' : (string) $choice;
             };
@@ -79,7 +85,9 @@ class ArrayChoiceList implements ChoiceList
         if (null !== $value) {
             // If a deterministic value generator was passed, use it later
             $this->valueCallback = $value;
+            $this->valuesAreConstant = true;
         } else {
+            $this->valuesAreConstant = false;
             // Otherwise simply generate incrementing integers as values
             $i = 0;
             $value = function () use (&$i) {
@@ -178,6 +186,14 @@ class ArrayChoiceList implements ChoiceList
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isValuesConstant(): bool
+    {
+        return $this->valuesAreConstant;
+    }
+
+    /**
      * Flattens an array into the given output variables.
      *
      * @param array    $choices          The array to flatten
@@ -188,7 +204,7 @@ class ArrayChoiceList implements ChoiceList
      *                                   corresponding values
      * @param array    $structuredValues The values indexed by the original keys
      */
-    private function flatten(array $choices, callable $value, array &$choicesByValues, array &$keysByValues, array &$structuredValues)
+    private function flatten(array $choices, callable $value, &$choicesByValues, &$keysByValues, &$structuredValues)
     {
         if (null === $choicesByValues) {
             $choicesByValues = [];

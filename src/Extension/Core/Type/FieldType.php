@@ -61,6 +61,7 @@ class FieldType extends AbstractFieldType
     {
         $resolver->setDefaults(
             [
+                'translation_domain' => 'messages',
                 'invalid_message' => 'This value is not valid.',
                 'invalid_message_parameters' => [],
             ]

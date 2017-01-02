@@ -33,11 +33,19 @@ class CallbackChoiceLoader implements ChoiceLoader
     private $choiceList;
 
     /**
-     * @param callable $callback The callable returning an array of choices
+     * @var bool
      */
-    public function __construct(callable $callback)
+    private $valuesAreConstant;
+
+    /**
+     * @param callable $callback          The callable returning an array of choices
+     * @param bool     $valuesAreConstant Indicate whether values are constant
+     *                                    (not dependent of there position)
+     */
+    public function __construct(callable $callback, bool $valuesAreConstant = false)
     {
         $this->callback = $callback;
+        $this->valuesAreConstant = $valuesAreConstant;
     }
 
     /**
@@ -76,5 +84,13 @@ class CallbackChoiceLoader implements ChoiceLoader
         }
 
         return $this->loadChoiceList($value)->getValuesForChoices($choices);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isValuesConstant(): bool
+    {
+        return $this->valuesAreConstant;
     }
 }
