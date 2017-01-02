@@ -15,10 +15,10 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
-use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceListInterface;
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 
 /**
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * @author Bernhard Schussek <bschussek@gmail.com>
  */
 class ChoiceToValueTransformer implements DataTransformerInterface
 {
@@ -27,44 +27,34 @@ class ChoiceToValueTransformer implements DataTransformerInterface
     /**
      * Constructor.
      *
-     * @param ChoiceListInterface $choiceList
+     * @param ChoiceList $choiceList
      */
-    public function __construct(ChoiceListInterface $choiceList)
+    public function __construct(ChoiceList $choiceList)
     {
         $this->choiceList = $choiceList;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transform($choice)
     {
-        return (string) $this->choiceList->getValueForChoice($choice);
+        return (string) current($this->choiceList->getValuesForChoices([$choice]));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($value)
     {
-        if (null !== $value && !is_scalar($value)) {
-            throw new TransformationFailedException('Expected a scalar.');
+        if (null !== $value && !is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
         }
 
-        // These are now valid ChoiceList values, so we can return null
-        // right away
-        if ('' === $value || null === $value) {
-            return null;
+        $choices = $this->choiceList->getChoicesForValues([(string) $value]);
+
+        if (1 !== count($choices)) {
+            if (null === $value || '' === $value) {
+                return;
+            }
+
+            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $value));
         }
 
-        $choice = $this->choiceList->getChoiceForValue($value);
-
-        if (null === $choice) {
-            throw new TransformationFailedException(
-                sprintf('The choice "%s" does not exist.', $value)
-            );
-        }
-
-        return '' === $choice ? null : $choice;
+        return current($choices);
     }
 }

@@ -13,30 +13,42 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
-use Rollerworks\Component\Search\Extension\Core\ChoiceList\ObjectChoiceList;
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceGroupView;
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 class ChoiceTypeTest extends SearchIntegrationTestCase
 {
     private $choices = [
-        'a' => 'Bernhard',
-        'b' => 'Fabien',
-        'c' => 'Kris',
-        'd' => 'Jon',
-        'e' => 'Roman',
+        'Bernhard' => 'a',
+        'Fabien' => 'b',
+        'Kris' => 'c',
+        'Jon' => 'd',
+        'Roman' => 'e',
     ];
 
-    private $numericChoices = [
-        0 => 'Bernhard',
-        1 => 'Fabien',
-        2 => 'Kris',
-        3 => 'Jon',
-        4 => 'Roman',
+    private $scalarChoices = [
+        'Yes' => true,
+        'No' => false,
+        'n/a' => '',
     ];
 
     private $objectChoices;
+
+    protected $groupedChoices = [
+        'Symfony' => [
+            'Bernhard' => 'a',
+            'Fabien' => 'b',
+            'Kris' => 'c',
+        ],
+        'Doctrine' => [
+            'Jon' => 'd',
+            'Roman' => 'e',
+        ],
+    ];
 
     protected function setUp()
     {
@@ -58,13 +70,21 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         $this->objectChoices = null;
     }
 
-    /**
-     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
-     */
+    public function testChoicesOptionExpectsArrayOrTraversable()
+    {
+        $this->expectException(InvalidOptionsException::class);
+
+        $this->getFactory()->createField('choice', ChoiceType::class, [
+            'choices' => new \stdClass(),
+        ]);
+    }
+
     public function testChoiceListOptionExpectsChoiceListInterface()
     {
+        $this->expectException(InvalidOptionsException::class);
+
         $this->getFactory()->createField('choice', ChoiceType::class, [
-            'choice_list' => ['foo' => 'foo'],
+            'choice_loader' => new \stdClass(),
         ]);
     }
 
@@ -73,48 +93,117 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         $this->getFactory()->createField('choice', ChoiceType::class);
     }
 
-    public function testSubmitSingleNonExpandedInvalidChoice()
+    public function testChoiceListWithScalarValues()
     {
-        $this->getFactory()->createField('choice', ChoiceType::class, [
-            'choices' => $this->choices,
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
+            'choices' => $this->scalarChoices,
         ]);
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('Yes', '1')
+            ->successfullyTransformsTo(true)
+            ->andReverseTransformsTo('Yes', '1');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('No', '0')
+            ->successfullyTransformsTo(false)
+            ->andReverseTransformsTo('No', '0');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('n/a', '')
+            ->successfullyTransformsTo('')
+            ->andReverseTransformsTo('n/a', '');
+
+        $field->finalizeConfig();
+        $view = $field->createView();
+
+        $this->assertSame('1', $view->vars['choices'][0]->value);
+        $this->assertSame('0', $view->vars['choices'][1]->value);
+        $this->assertSame('', $view->vars['choices'][2]->value);
+    }
+
+    public function testChoiceListWithScalarValuesAndNormFormatLabel()
+    {
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
+            'choices' => $this->scalarChoices,
+            'norm_format' => 'label',
+        ]);
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('Yes', 'Yes')
+            ->successfullyTransformsTo(true)
+            ->andReverseTransformsTo('Yes', 'Yes');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('No', 'No')
+            ->successfullyTransformsTo(false)
+            ->andReverseTransformsTo('No', 'No');
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput('n/a', 'n/a')
+            ->successfullyTransformsTo('')
+            ->andReverseTransformsTo('n/a', 'n/a');
+
+        $field->finalizeConfig();
+        $view = $field->createView();
+
+        $this->assertSame('1', $view->vars['choices'][0]->value);
+        $this->assertSame('0', $view->vars['choices'][1]->value);
+        $this->assertSame('', $view->vars['choices'][2]->value);
+    }
+
+    public function testChoiceListWithScalarValuesAndFalseAsPreferredChoice()
+    {
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
+            'choices' => $this->scalarChoices,
+            'preferred_choices' => [false],
+        ]);
+
+        $field->finalizeConfig();
+        $view = $field->createView();
+
+        $this->assertEquals('No', $view->vars['preferred_choices'][1]->label, 'False value should be preferred.');
     }
 
     public function testObjectChoices()
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
-            'choice_list' => new ObjectChoiceList(
-                $this->objectChoices,
-                // label path
-                'name',
-                // value path
-                'id'
-            ),
+            'choices' => $this->objectChoices,
+            'choice_label' => 'name',
+            'choice_value' => 'id',
+        ]);
+
+        FieldTransformationAssertion::assertThat($field)
+            ->withInput($this->objectChoices[2]->name, $this->objectChoices[2]->id)
+            ->successfullyTransformsTo($this->objectChoices[2])
+            ->andReverseTransformsTo($this->objectChoices[2]->name, $this->objectChoices[2]->id);
+    }
+
+    public function testValueViewFormatIsValue()
+    {
+        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
+            'choices' => $this->objectChoices,
+            'choice_label' => 'name',
+            'choice_value' => 'id',
+            'view_format' => 'value',
         ]);
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput($this->objectChoices[2]->id)
             ->successfullyTransformsTo($this->objectChoices[2])
             ->andReverseTransformsTo($this->objectChoices[2]->id);
-    }
 
-    public function testObjectChoicesByLabel()
-    {
-        $field = $this->getFactory()->createField('choice', ChoiceType::class, [
-            'label_as_value' => true,
-            'choice_list' => new ObjectChoiceList(
-                $this->objectChoices,
-                // label path
-                'name',
-                // value path
-                'id'
-            ),
-        ]);
+        $field->finalizeConfig();
+        $view = $field->createView();
 
-        FieldTransformationAssertion::assertThat($field)
-            ->withInput($this->objectChoices[2]->name, $this->objectChoices[2]->name)
-            ->successfullyTransformsTo($this->objectChoices[2])
-            ->andReverseTransformsTo($this->objectChoices[2]->name, $this->objectChoices[2]->name);
+        // Ensure widget views still have the label.
+        $this->assertEquals([
+            new ChoiceView($this->objectChoices[0], '1', 'Bernhard'),
+            new ChoiceView($this->objectChoices[1], '2', 'Fabien'),
+            new ChoiceView($this->objectChoices[2], '3', 'Kris'),
+            new ChoiceView($this->objectChoices[3], '4', 'Jon'),
+            new ChoiceView($this->objectChoices[4], '5', 'Roman'),
+        ], $view->vars['choices']);
     }
 
     public function testArrayChoices()
@@ -124,75 +213,78 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('b')
+            ->withInput('Fabien', 'b')
             ->successfullyTransformsTo('b')
-            ->andReverseTransformsTo('b');
+            ->andReverseTransformsTo('Fabien', 'b');
     }
 
-    public function testNumericChoices()
+    public function testPassChoicesToView()
     {
+        $choices = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'];
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
-            'choices' => $this->numericChoices,
+            'choices' => $choices,
         ]);
 
-        FieldTransformationAssertion::assertThat($field)
-            ->withInput(2)
-            ->successfullyTransformsTo(2)
-            ->andReverseTransformsTo('2');
+        $field->finalizeConfig();
+        $view = $field->createView();
+
+        $this->assertEquals([
+            new ChoiceView('a', 'a', 'A'),
+            new ChoiceView('b', 'b', 'B'),
+            new ChoiceView('c', 'c', 'C'),
+            new ChoiceView('d', 'd', 'D'),
+        ], $view->vars['choices']);
     }
 
-    public function testNumericChoicesByLabel()
+    public function testPassPreferredChoicesToView()
     {
+        $choices = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'];
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
-            'label_as_value' => true,
-            'choices' => $this->numericChoices,
+            'choices' => $choices,
+            'preferred_choices' => ['b', 'd'],
         ]);
 
-        FieldTransformationAssertion::assertThat($field)
-            ->withInput($this->numericChoices[2])
-            ->successfullyTransformsTo(2)
-            ->andReverseTransformsTo($this->numericChoices[2]);
+        $field->finalizeConfig();
+        $view = $field->createView();
+
+        $this->assertEquals([
+            0 => new ChoiceView('a', 'a', 'A'),
+            2 => new ChoiceView('c', 'c', 'C'),
+        ], $view->vars['choices']);
+
+        $this->assertEquals([
+            1 => new ChoiceView('b', 'b', 'B'),
+            3 => new ChoiceView('d', 'd', 'D'),
+        ], $view->vars['preferred_choices']);
     }
 
-    // https://github.com/symfony/symfony/issues/10409
-
-    public function testReuseNonUtf8ChoiceLists()
+    public function testPassHierarchicalChoicesToView()
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
-            'choices' => [
-                'meter' => 'm',
-                'millimeter' => 'mm',
-                'micrometer' => chr(181).'meter',
-            ],
+            'choices' => $this->groupedChoices,
+            'preferred_choices' => ['b', 'd'],
         ]);
 
-        $field2 = $this->getFactory()->createField('choice', ChoiceType::class, [
-            'choices' => [
-                'meter' => 'm',
-                'millimeter' => 'mm',
-                'micrometer' => chr(181).'meter',
-            ],
-        ]);
+        $field->finalizeConfig();
+        $view = $field->createView();
 
-        $field3 = $this->getFactory()->createField('choice', ChoiceType::class, [
-            'choices' => [
-                'meter' => 'm',
-                'millimeter' => 'mm',
-                'micrometer' => null,
-            ],
-        ]);
+        $this->assertEquals([
+            'Symfony' => new ChoiceGroupView('Symfony', [
+                0 => new ChoiceView('a', 'a', 'Bernhard'),
+                2 => new ChoiceView('c', 'c', 'Kris'),
+            ]),
+            'Doctrine' => new ChoiceGroupView('Doctrine', [
+                4 => new ChoiceView('e', 'e', 'Roman'),
+            ]),
+        ], $view->vars['choices']);
 
-        // $field1 and $field2 use the same ChoiceList
-        self::assertSame(
-            $field->getOption('choice_list'),
-            $field2->getOption('choice_list')
-        );
-
-        // $field3 doesn't, but used to use the same when using json_encode()
-        // instead of serialize for the hashing algorithm
-        self::assertNotSame(
-            $field->getOption('choice_list'),
-            $field3->getOption('choice_list')
-        );
+        $this->assertEquals([
+            'Symfony' => new ChoiceGroupView('Symfony', [
+                1 => new ChoiceView('b', 'b', 'Fabien'),
+            ]),
+            'Doctrine' => new ChoiceGroupView('Doctrine', [
+                3 => new ChoiceView('d', 'd', 'Jon'),
+            ]),
+        ], $view->vars['preferred_choices']);
     }
 }

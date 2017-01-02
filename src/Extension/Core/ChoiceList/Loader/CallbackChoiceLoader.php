@@ -11,49 +11,41 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Extension\Core\Type;
+namespace Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader;
 
-use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ArrayChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
-use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
-use Symfony\Component\Intl\Intl;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * Loads an {@link ArrayChoiceList} instance from a callable returning an array of choices.
+ *
+ * @author Jules Pietri <jules@heahprod.com>
  */
-class CurrencyType extends AbstractFieldType implements ChoiceLoader
+class CallbackChoiceLoader implements ChoiceLoader
 {
+    private $callback;
+
     /**
-     * Currency loaded choice list.
-     *
-     * The choices are lazy loaded and generated from the Intl component.
-     *
-     * {@link \Symfony\Component\Intl\Intl::getCurrencyBundle()}.
+     * The loaded choice list.
      *
      * @var ArrayChoiceList
      */
     private $choiceList;
 
     /**
-     * {@inheritdoc}
+     * @var bool
      */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'choice_loader' => $this,
-            'choice_translation_domain' => false,
-            'view_format' => 'value',
-        ]);
-    }
+    private $valuesAreConstant;
 
     /**
-     * {@inheritdoc}
+     * @param callable $callback          The callable returning an array of choices
+     * @param bool     $valuesAreConstant Indicate whether values are constant
+     *                                    (not dependent of there position)
      */
-    public function getParent()
+    public function __construct(callable $callback, bool $valuesAreConstant = false)
     {
-        return ChoiceType::class;
+        $this->callback = $callback;
+        $this->valuesAreConstant = $valuesAreConstant;
     }
 
     /**
@@ -65,7 +57,7 @@ class CurrencyType extends AbstractFieldType implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(array_flip(Intl::getCurrencyBundle()->getCurrencyNames()), $value);
+        return $this->choiceList = new ArrayChoiceList(call_user_func($this->callback), $value);
     }
 
     /**
@@ -76,11 +68,6 @@ class CurrencyType extends AbstractFieldType implements ChoiceLoader
         // Optimize
         if (empty($values)) {
             return [];
-        }
-
-        // If no callable is set, values are the same as choices
-        if (null === $value) {
-            return $values;
         }
 
         return $this->loadChoiceList($value)->getChoicesForValues($values);
@@ -96,11 +83,6 @@ class CurrencyType extends AbstractFieldType implements ChoiceLoader
             return [];
         }
 
-        // If no callable is set, choices are the same as values
-        if (null === $value) {
-            return $choices;
-        }
-
         return $this->loadChoiceList($value)->getValuesForChoices($choices);
     }
 
@@ -109,6 +91,6 @@ class CurrencyType extends AbstractFieldType implements ChoiceLoader
      */
     public function isValuesConstant(): bool
     {
-        return true;
+        return $this->valuesAreConstant;
     }
 }

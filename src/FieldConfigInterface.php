@@ -154,4 +154,45 @@ interface FieldConfigInterface
      * @return SearchFieldView
      */
     public function createView(): SearchFieldView;
+
+    /**
+     * Sets the value for an attribute.
+     *
+     * @param string $name  The name of the attribute
+     * @param mixed  $value The value of the attribute
+     */
+    public function setAttribute(string $name, $value);
+
+    /**
+     * Sets the attributes.
+     *
+     * @param array $attributes The attributes
+     */
+    public function setAttributes(array $attributes);
+
+    /**
+     * Returns additional attributes of the field.
+     *
+     * @return array An array of key-value combinations
+     */
+    public function getAttributes(): array;
+
+    /**
+     * Returns whether the attribute with the given name exists.
+     *
+     * @param string $name The attribute name
+     *
+     * @return bool
+     */
+    public function hasAttribute(string $name): bool;
+
+    /**
+     * Returns the value of the given attribute.
+     *
+     * @param string $name    The attribute name
+     * @param mixed  $default The value returned if the attribute does not exist
+     *
+     * @return mixed The attribute value
+     */
+    public function getAttribute(string $name, $default = null);
 }

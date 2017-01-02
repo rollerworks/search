@@ -13,96 +13,108 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
 
-use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 
 /**
- * A choice list that is loaded lazily.
+ * A choice list that loads its choices lazily.
  *
- * This list loads itself as soon as any of the getters is accessed for the
- * first time. You should implement loadChoiceList() in your child classes,
- * which should return a ChoiceListInterface instance.
+ * The choices are fetched using a {@link ChoiceLoaderInterface} instance.
+ * If only {@link getChoicesForValues()} or {@link getValuesForChoices()} is
+ * called, the choice list is only loaded partially for improved performance.
  *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * Once {@link getChoices()} or {@link getValues()} is called, the list is
+ * loaded fully.
+ *
+ * @author Bernhard Schussek <bschussek@gmail.com>
  */
-abstract class LazyChoiceList implements ChoiceListInterface
+class LazyChoiceList implements ChoiceList
 {
     /**
-     * The loaded choice list.
+     * The choice loader.
      *
-     * @var ChoiceListInterface
+     * @var ChoiceLoader
      */
-    private $choiceList;
+    private $loader;
 
     /**
-     * {@inheritdoc}
-     */
-    public function getChoices()
-    {
-        if (!$this->choiceList) {
-            $this->load();
-        }
-
-        return $this->choiceList->getChoices();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getValues()
-    {
-        if (!$this->choiceList) {
-            $this->load();
-        }
-
-        return $this->choiceList->getValues();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getChoiceForValue($value)
-    {
-        if (!$this->choiceList) {
-            $this->load();
-        }
-
-        return $this->choiceList->getChoiceForValue($value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getValueForChoice($choices)
-    {
-        if (!$this->choiceList) {
-            $this->load();
-        }
-
-        return $this->choiceList->getValueForChoice($choices);
-    }
-
-    /**
-     * Loads the choice list.
+     * The callable creating string values for each choice.
      *
-     * Should be implemented by child classes.
+     * If null, choices are simply cast to strings.
      *
-     * @return ChoiceListInterface The loaded choice list
+     * @var null|callable
      */
-    abstract protected function loadChoiceList();
+    private $value;
 
-    private function load()
+    /**
+     * Creates a lazily-loaded list using the given loader.
+     *
+     * Optionally, a callable can be passed for generating the choice values.
+     * The callable receives the choice as first and the array key as the second
+     * argument.
+     *
+     * @param ChoiceLoader  $loader The choice loader
+     * @param null|callable $value  The callable generating the choice
+     *                              values
+     */
+    public function __construct(ChoiceLoader $loader, callable $value = null)
     {
-        $choiceList = $this->loadChoiceList();
+        $this->loader = $loader;
+        $this->value = $value;
+    }
 
-        if (!$choiceList instanceof ChoiceListInterface) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'loadChoiceList() should return a ChoiceListInterface instance. Got %s',
-                    gettype($choiceList)
-                )
-            );
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function getChoices(): array
+    {
+        return $this->loader->loadChoiceList($this->value)->getChoices();
+    }
 
-        $this->choiceList = $choiceList;
+    /**
+     * {@inheritdoc}
+     */
+    public function getValues(): array
+    {
+        return $this->loader->loadChoiceList($this->value)->getValues();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStructuredValues(): array
+    {
+        return $this->loader->loadChoiceList($this->value)->getStructuredValues();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOriginalKeys(): array
+    {
+        return $this->loader->loadChoiceList($this->value)->getOriginalKeys();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getChoicesForValues(array $values): array
+    {
+        return $this->loader->loadChoicesForValues($values, $this->value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValuesForChoices(array $choices): array
+    {
+        return $this->loader->loadValuesForChoices($choices, $this->value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isValuesConstant(): bool
+    {
+        return $this->loader->isValuesConstant();
     }
 }

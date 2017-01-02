@@ -41,6 +41,11 @@ class SearchField implements FieldConfigInterface
     private $options;
 
     /**
+     * @var array
+     */
+    private $attributes = [];
+
+    /**
      * @var bool[]
      */
     private $supportedValueTypes = [];
@@ -293,5 +298,61 @@ class SearchField implements FieldConfigInterface
         $this->type->buildFieldView($view, $this, $this->options);
 
         return $view;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setAttribute(string $name, $value)
+    {
+        if ($this->locked) {
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
+        }
+
+        $this->attributes[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setAttributes(array $attributes)
+    {
+        if ($this->locked) {
+            throw new BadMethodCallException(
+                'SearchField setter methods cannot be accessed anymore once the data is locked.'
+            );
+        }
+
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasAttribute(string $name): bool
+    {
+        return array_key_exists($name, $this->attributes);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttribute(string $name, $default = null)
+    {
+        return array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
     }
 }
