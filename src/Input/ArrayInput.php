@@ -83,7 +83,7 @@ class ArrayInput extends AbstractInput
         $this->config = $config;
         $this->level = 0;
 
-        $this->valuesFactory = new FieldValuesFactory($this->errors, $this->config->getMaxValues());
+        $this->valuesFactory = new FieldValuesFactory($this->errors, $this->validator, $this->config->getMaxValues());
 
         try {
             $valuesGroup = new ValuesGroup($input['logical-case'] ?? ValuesGroup::GROUP_LOGICAL_AND);

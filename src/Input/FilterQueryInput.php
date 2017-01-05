@@ -156,18 +156,21 @@ class FilterQueryInput extends AbstractInput
     /**
      * Constructor.
      *
-     * @param callable|null $labelResolver A callable to resolve the actual label
-     *                                     of the field, receives a
-     *                                     FieldConfigInterface instance.
-     *                                     If null the `label` option value is
-     *                                     used instead
+     * @param Validator|null $validator
+     * @param callable|null  $labelResolver A callable to resolve the actual label
+     *                                      of the field, receives a
+     *                                      FieldConfigInterface instance.
+     *                                      If null the `label` option value is
+     *                                      used instead
      */
-    public function __construct(callable $labelResolver = null)
+    public function __construct(Validator $validator = null, callable $labelResolver = null)
     {
         $this->lexer = new Lexer();
         $this->labelResolver = $labelResolver ?? function (FieldConfigInterface $field) {
             return $field->getOption('label', $field->getName());
         };
+
+        parent::__construct($validator);
     }
 
     /**
@@ -198,7 +201,7 @@ class FilterQueryInput extends AbstractInput
         $this->fields = $this->resolveLabels($config->getFieldSet());
         $this->level = 0;
 
-        $this->valuesFactory = new FieldValuesByViewFactory($this->errors, $this->config->getMaxValues());
+        $this->valuesFactory = new FieldValuesByViewFactory($this->errors, $this->validator, $this->config->getMaxValues());
 
         try {
             $condition = new SearchCondition($config->getFieldSet(), $this->parse($config, $input));

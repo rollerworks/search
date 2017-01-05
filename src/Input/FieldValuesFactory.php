@@ -29,7 +29,7 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
 
 /**
  * The FieldValuesFactory works as a wrapper around the ValuesBag
- * transforming input and ensuring limits are honored.
+ * transforming input and ensuring restrictions are honored.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -54,6 +54,7 @@ class FieldValuesFactory
     private $maxCount;
     private $count = 0;
     private $checkedValueType = [];
+    private $validator;
 
     /**
      * @var ValuesBag
@@ -70,10 +71,11 @@ class FieldValuesFactory
      */
     private $path;
 
-    public function __construct(ErrorList $errorList, int $maxCount = 100)
+    public function __construct(ErrorList $errorList, Validator $validator, int $maxCount = 100)
     {
         $this->errorList = $errorList;
         $this->maxCount = $maxCount;
+        $this->validator = $validator;
     }
 
     public function initContext(FieldConfigInterface $field, ValuesBag $valuesBag, string $path)
@@ -83,9 +85,12 @@ class FieldValuesFactory
         $this->count = $valuesBag->count();
         $this->path = $path;
 
+        $this->valueComparison = $field->getValueComparison();
         $this->viewTransformer = $field->getViewTransformer();
         $this->normTransformer = $field->getNormTransformer() ?? $this->viewTransformer;
         $this->valueComparison = $field->getValueComparison();
+
+        $this->validator->initializeContext($field, $this->errorList);
     }
 
     public function addSimpleValue($value, string $path)
@@ -94,7 +99,9 @@ class FieldValuesFactory
 
         $this->increaseValuesCount($path);
 
-        if (null !== $modelVal = $this->inputToNorm($value, $path)) {
+        if (null !== ($modelVal = $this->inputToNorm($value, $path)) &&
+            $this->validator->validate($modelVal, 'simple', $value, $path)
+        ) {
             $this->valuesBag->addSimpleValue($modelVal);
         }
     }
@@ -104,7 +111,9 @@ class FieldValuesFactory
         $path = $this->createValuePath($path);
         $this->increaseValuesCount($path);
 
-        if (null !== $modelVal = $this->inputToNorm($value, $path)) {
+        if (null !== ($modelVal = $this->inputToNorm($value, $path)) &&
+            $this->validator->validate($modelVal, 'excluded-simple', $value, $path)
+        ) {
             $this->valuesBag->addExcludedSimpleValue($modelVal);
         }
     }
@@ -129,8 +138,9 @@ class FieldValuesFactory
         if (null !== $lowerNorm && null !== $upperNorm) {
             $range = new Range($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive);
 
-            $this->validateRangeBounds($range, $basePath, $lower, $upper);
-            $this->valuesBag->add($range);
+            if ($this->validateRangeBounds($range, $basePath, $lower, $upper)) {
+                $this->valuesBag->add($range);
+            }
         }
     }
 
@@ -154,8 +164,9 @@ class FieldValuesFactory
         if (null !== $lowerNorm && null !== $upperNorm) {
             $range = new ExcludedRange($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive);
 
-            $this->validateRangeBounds($range, $basePath, $lower, $upper);
-            $this->valuesBag->add($range);
+            if ($this->validateRangeBounds($range, $basePath, $lower, $upper)) {
+                $this->valuesBag->add($range);
+            }
         }
     }
 
@@ -176,7 +187,7 @@ class FieldValuesFactory
                     ['{{ operator }}' => is_scalar($operator) ? $operator : gettype($operator)]
                 )
             );
-        } elseif (null !== $modelVal) {
+        } elseif (null !== $modelVal && $this->validator->validate($modelVal, Compare::class, $value, $basePath.$path[2])) {
             $this->valuesBag->add(new Compare($modelVal, $operator));
         }
     }
@@ -208,6 +219,8 @@ class FieldValuesFactory
                 )
             );
 
+            $valid = false;
+        } elseif (!$this->validator->validate($patternMatch, PatternMatch::class, $patternMatch, $basePath.$path[2])) {
             $valid = false;
         }
 
@@ -296,7 +309,7 @@ class FieldValuesFactory
         $this->checkedValueType[$type] = true;
     }
 
-    private function validateRangeBounds(Range $range, string $path, $lower, $upper)
+    private function validateRangeBounds(Range $range, string $path, $lower, $upper): bool
     {
         if (!$this->valueComparison->isLower($range->getLower(), $range->getUpper(), $this->config->getOptions())) {
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';
@@ -306,6 +319,16 @@ class FieldValuesFactory
             ];
 
             $this->addError(ConditionErrorMessage::withMessageTemplate($path, $message, $params));
+
+            return false;
         }
+
+        $class = get_class($range);
+
+        // Perform validation for both bounds (don't move to condition as this returns early).
+        $lowerValid = $this->validator->validate($range->getLower(), $class, $lower, $path);
+        $upperValid = $this->validator->validate($range->getUpper(), $class, $upper, $path);
+
+        return $lowerValid && $upperValid;
     }
 }

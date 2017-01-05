@@ -31,7 +31,7 @@ final class FilterQueryInputTest extends InputProcessorTestCase
 {
     protected function getProcessor(callable $labelResolver = null): InputProcessorInterface
     {
-        return new FilterQueryInput($labelResolver);
+        return new FilterQueryInput(null, $labelResolver);
     }
 
     /**
