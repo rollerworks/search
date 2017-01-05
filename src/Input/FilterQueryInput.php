@@ -129,6 +129,11 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 class FilterQueryInput extends AbstractInput
 {
     /**
+     * @var FieldValuesByViewFactory
+     */
+    private $valuesFactory;
+
+    /**
      * @var Lexer
      */
     private $lexer;
@@ -193,11 +198,15 @@ class FilterQueryInput extends AbstractInput
         $this->fields = $this->resolveLabels($config->getFieldSet());
         $this->level = 0;
 
+        $this->valuesFactory = new FieldValuesByViewFactory($this->errors, $this->config->getMaxValues());
+
         try {
             $condition = new SearchCondition($config->getFieldSet(), $this->parse($config, $input));
             $this->assertLevel0();
         } catch (InputProcessorException $e) {
             $this->errors[] = $e->toErrorMessageObj();
+        } finally {
+            $this->valuesFactory = null;
         }
 
         if (count($this->errors)) {
@@ -411,39 +420,33 @@ class FilterQueryInput extends AbstractInput
     private function fieldValues(FieldConfigInterface $field, ValuesBag $valuesBag, string $path)
     {
         $hasValues = false;
-        $factory = new FieldValuesByViewFactory(
-            $field,
-            $valuesBag,
-            $this->errors,
-            $path,
-            $this->config->getMaxValues()
-        );
+        $this->valuesFactory->initContext($field, $valuesBag, $path);
 
         $pathVal = '['.$field->getName().'][%d]';
 
         while (null !== $this->lexer->lookahead) {
             switch ($this->lexer->lookahead['type']) {
                 case Lexer::T_STRING:
-                    $this->singleValueOrRange($factory, $pathVal);
+                    $this->singleValueOrRange($pathVal);
                     break;
 
                 case Lexer::T_OPEN_BRACE:
                 case Lexer::T_CLOSE_BRACE:
-                    $this->processRangeValue($factory, $pathVal);
+                    $this->processRangeValue($pathVal);
                     break;
 
                 case Lexer::T_NEGATE:
                     $this->match(Lexer::T_NEGATE);
-                    $this->singleValueOrRange($factory, $pathVal, true);
+                    $this->singleValueOrRange($pathVal, true);
                     break;
 
                 case Lexer::T_LOWER_THAN:
                 case Lexer::T_GREATER_THAN:
-                    $factory->addComparisonValue($this->comparisonOperator(), $this->stringValue(), [$pathVal, '', '']);
+                    $this->valuesFactory->addComparisonValue($this->comparisonOperator(), $this->stringValue(), [$pathVal, '', '']);
                     break;
 
                 case Lexer::T_TILDE:
-                    $this->processMatcher($factory, $pathVal.'.value');
+                    $this->processMatcher($pathVal.'.value');
                     break;
 
                 default:
@@ -483,11 +486,10 @@ class FilterQueryInput extends AbstractInput
     /**
      * RangeValue ::= [ "[" | "]" ] StringValue "-" StringValue [ "[" | "]" ].
      *
-     * @param FieldValuesByViewFactory $factory
-     * @param string                   $path
-     * @param bool                     $negative
+     * @param string $path
+     * @param bool   $negative
      */
-    private function processRangeValue(FieldValuesByViewFactory $factory, string $path, $negative = false)
+    private function processRangeValue(string $path, $negative = false)
     {
         $lowerInclusive = Lexer::T_CLOSE_BRACE !== $this->lexer->matchAndMoveNext([Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE]);
 
@@ -498,13 +500,13 @@ class FilterQueryInput extends AbstractInput
         $upperInclusive = Lexer::T_OPEN_BRACE !== $this->lexer->matchAndMoveNext([Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE]);
 
         if ($negative) {
-            $factory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive, [$path, '[lower]', '[upper]']);
+            $this->valuesFactory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive, [$path, '[lower]', '[upper]']);
         } else {
-            $factory->addRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive, [$path, '[lower]', '[upper]']);
+            $this->valuesFactory->addRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive, [$path, '[lower]', '[upper]']);
         }
     }
 
-    private function processMatcher(FieldValuesByViewFactory $factory, string $path)
+    private function processMatcher(string $path)
     {
         $this->match(Lexer::T_TILDE);
 
@@ -519,20 +521,20 @@ class FilterQueryInput extends AbstractInput
         $type = $this->getPatternMatchOperator();
         $value = $this->stringValue();
 
-        $factory->addPatterMatch($type, $value, $caseInsensitive, [$path, '', '']);
+        $this->valuesFactory->addPatterMatch($type, $value, $caseInsensitive, [$path, '', '']);
     }
 
-    private function singleValueOrRange(FieldValuesByViewFactory $factory, string $path, $negative = false)
+    private function singleValueOrRange(string $path, $negative = false)
     {
         if ($this->lexer->isNextTokenAny([Lexer::T_OPEN_BRACE, Lexer::T_CLOSE_BRACE])
-            || ($this->lexer->isGlimpse(Lexer::T_MINUS))
+            || $this->lexer->isGlimpse(Lexer::T_MINUS)
         ) {
-            $this->processRangeValue($factory, $path, $negative);
+            $this->processRangeValue($path, $negative);
         } else {
             if ($negative) {
-                $factory->addExcludedSimpleValue($this->stringValue(), $path);
+                $this->valuesFactory->addExcludedSimpleValue($this->stringValue(), $path);
             } else {
-                $factory->addSimpleValue($this->stringValue(), $path);
+                $this->valuesFactory->addSimpleValue($this->stringValue(), $path);
             }
         }
     }

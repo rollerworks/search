@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
@@ -24,6 +25,7 @@ use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\ValueComparisonInterface;
 
 /**
  * The FieldValuesFactory works as a wrapper around the ValuesBag
@@ -33,33 +35,57 @@ use Rollerworks\Component\Search\Value\ValuesBag;
  */
 class FieldValuesFactory
 {
+    /**
+     * @var FieldConfigInterface
+     */
     protected $config;
-    protected $fieldName;
-    protected $viewTransformer;
+
+    /**
+     * @var DataTransformerInterface|null
+     */
     protected $normTransformer;
 
-    private $path;
-    private $valuesBag;
+    /**
+     * @var DataTransformerInterface|null
+     */
+    protected $viewTransformer;
+
     private $errorList;
-    private $count = 0;
     private $maxCount;
+    private $count = 0;
     private $checkedValueType = [];
+
+    /**
+     * @var ValuesBag
+     */
+    private $valuesBag;
+
+    /**
+     * @var ValueComparisonInterface
+     */
     private $valueComparison;
 
-    public function __construct(FieldConfigInterface $field, ValuesBag $valuesBag, ErrorList $errorList, string $path, int $maxCount = 100)
+    /**
+     * @var string
+     */
+    private $path;
+
+    public function __construct(ErrorList $errorList, int $maxCount = 100)
+    {
+        $this->errorList = $errorList;
+        $this->maxCount = $maxCount;
+    }
+
+    public function initContext(FieldConfigInterface $field, ValuesBag $valuesBag, string $path)
     {
         $this->config = $field;
-        $this->valueComparison = $field->getValueComparison();
-        $this->fieldName = $this->config->getName();
         $this->valuesBag = $valuesBag;
-
-        $this->path = $path;
-        $this->errorList = $errorList;
         $this->count = $valuesBag->count();
-        $this->maxCount = $maxCount;
+        $this->path = $path;
 
         $this->viewTransformer = $field->getViewTransformer();
-        $this->normTransformer = $field->getNormTransformer() ?: $this->viewTransformer;
+        $this->normTransformer = $field->getNormTransformer() ?? $this->viewTransformer;
+        $this->valueComparison = $field->getValueComparison();
     }
 
     public function addSimpleValue($value, string $path)
@@ -209,7 +235,7 @@ class FieldValuesFactory
                         'Norm value of type %s is not a scalar value or null and not cannot be '.
                         'converted to a string. You must set a NormTransformer for field "%s" with type "%s".',
                         gettype($value),
-                        $this->fieldName,
+                        $this->config->getName(),
                         get_class($this->config->getType()->getInnerType())
                     )
                 );
@@ -253,7 +279,7 @@ class FieldValuesFactory
     private function increaseValuesCount(string $path)
     {
         if (++$this->count > $this->maxCount) {
-            throw new ValuesOverflowException($this->fieldName, $this->maxCount, $path);
+            throw new ValuesOverflowException($this->config->getName(), $this->maxCount, $path);
         }
     }
 
@@ -264,13 +290,13 @@ class FieldValuesFactory
         }
 
         if (!$this->config->supportValueType($type)) {
-            throw new UnsupportedValueTypeException($this->fieldName, $type);
+            throw new UnsupportedValueTypeException($this->config->getName(), $type);
         }
 
         $this->checkedValueType[$type] = true;
     }
 
-    private function validateRangeBounds(Range $range, $path, $lower, $upper)
+    private function validateRangeBounds(Range $range, string $path, $lower, $upper)
     {
         if (!$this->valueComparison->isLower($range->getLower(), $range->getUpper(), $this->config->getOptions())) {
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';

@@ -56,6 +56,11 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 class ArrayInput extends AbstractInput
 {
     /**
+     * @var FieldValuesFactory
+     */
+    private $valuesFactory;
+
+    /**
      * {@inheritdoc}
      *
      * @param ProcessorConfig $config
@@ -78,6 +83,8 @@ class ArrayInput extends AbstractInput
         $this->config = $config;
         $this->level = 0;
 
+        $this->valuesFactory = new FieldValuesFactory($this->errors, $this->config->getMaxValues());
+
         try {
             $valuesGroup = new ValuesGroup($input['logical-case'] ?? ValuesGroup::GROUP_LOGICAL_AND);
             $this->processGroup($input, $valuesGroup);
@@ -87,6 +94,8 @@ class ArrayInput extends AbstractInput
             $this->assertLevel0();
         } catch (InputProcessorException $e) {
             $this->errors[] = $e->toErrorMessageObj();
+        } finally {
+            $this->valuesFactory = null;
         }
 
         if (count($this->errors)) {
@@ -148,34 +157,34 @@ class ArrayInput extends AbstractInput
 
     private function valuesToBag(FieldConfigInterface $field, array $values, ValuesBag $valuesBag, string $path)
     {
-        $factory = new FieldValuesFactory($field, $valuesBag, $this->errors, $path, $this->config->getMaxValues());
+        $this->valuesFactory->initContext($field, $valuesBag, $path);
 
         foreach ($values['simple-values'] as $index => $value) {
-            $factory->addSimpleValue($value, "[simple-values][$index]");
+            $this->valuesFactory->addSimpleValue($value, "[simple-values][$index]");
         }
 
         foreach ($values['excluded-simple-values'] as $index => $value) {
-            $factory->addExcludedSimpleValue($value, "[excluded-simple-values][$index]");
+            $this->valuesFactory->addExcludedSimpleValue($value, "[excluded-simple-values][$index]");
         }
 
         foreach ($values['ranges'] as $index => $range) {
             $this->assertArrayKeysExists($range, ['lower', 'upper'], "{$path}[ranges][$index]");
-            $this->processRange($range, $factory, false, $index);
+            $this->processRange($range, false, $index);
         }
 
         foreach ($values['excluded-ranges'] as $index => $range) {
             $this->assertArrayKeysExists($range, ['lower', 'upper'], "{$path}[excluded-ranges][$index]");
-            $this->processRange($range, $factory, true, $index);
+            $this->processRange($range, true, $index);
         }
 
         foreach ($values['comparisons'] as $index => $comparison) {
             $this->assertArrayKeysExists($comparison, ['value', 'operator'], "{$path}[comparisons][$index]");
-            $factory->addComparisonValue($comparison['operator'], $comparison['value'], ["[comparisons][$index]", '[operator]', '[value]']);
+            $this->valuesFactory->addComparisonValue($comparison['operator'], $comparison['value'], ["[comparisons][$index]", '[operator]', '[value]']);
         }
 
         foreach ($values['pattern-matchers'] as $index => $matcher) {
             $this->assertArrayKeysExists($matcher, ['value', 'type'], "{$path}[pattern-matchers][$index]");
-            $factory->addPatterMatch(
+            $this->valuesFactory->addPatterMatch(
                 $matcher['type'],
                 $matcher['value'],
                 true === (bool) ($matcher['case-insensitive'] ?? false),
@@ -214,15 +223,15 @@ class ArrayInput extends AbstractInput
         }
     }
 
-    private function processRange(array $range, FieldValuesFactory $factory, bool $negative, int $index)
+    private function processRange(array $range, bool $negative, int $index)
     {
         $lowerInclusive = (bool) ($range['inclusive-lower'] ?? true);
         $upperInclusive = (bool) ($range['inclusive-upper'] ?? true);
 
         if ($negative) {
-            $factory->addExcludedRange($range['lower'], $range['upper'], $lowerInclusive, $upperInclusive, ["[excluded-ranges][$index]", '[lower]', '[upper]']);
+            $this->valuesFactory->addExcludedRange($range['lower'], $range['upper'], $lowerInclusive, $upperInclusive, ["[excluded-ranges][$index]", '[lower]', '[upper]']);
         } else {
-            $factory->addRange($range['lower'], $range['upper'], $lowerInclusive, $upperInclusive, ["[ranges][$index]", '[lower]', '[upper]']);
+            $this->valuesFactory->addRange($range['lower'], $range['upper'], $lowerInclusive, $upperInclusive, ["[ranges][$index]", '[lower]', '[upper]']);
         }
     }
 }

@@ -39,6 +39,11 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 class XmlInput extends AbstractInput
 {
     /**
+     * @var FieldValuesFactory
+     */
+    private $valuesFactory;
+
+    /**
      * {@inheritdoc}
      */
     public function process(ProcessorConfig $config, $input): SearchCondition
@@ -58,6 +63,8 @@ class XmlInput extends AbstractInput
         $this->config = $config;
         $this->level = 0;
 
+        $this->valuesFactory = new FieldValuesFactory($this->errors, $this->config->getMaxValues());
+
         try {
             $document = simplexml_import_dom(XmlUtil::parseXml($input, __DIR__.'/schema/dic/input/xml-input-2.0.xsd'));
 
@@ -71,6 +78,8 @@ class XmlInput extends AbstractInput
             $this->errors[] = $e->toErrorMessageObj();
         } catch (\InvalidArgumentException $e) {
             $this->errors[] = ConditionErrorMessage::rawMessage('', $e->getMessage(), $e);
+        } finally {
+            $this->valuesFactory = null;
         }
 
         if (count($this->errors)) {
@@ -134,13 +143,13 @@ class XmlInput extends AbstractInput
 
     private function valuesToBag(FieldConfigInterface $field, \SimpleXMLElement $values, ValuesBag $valuesBag, string $path)
     {
-        $factory = new FieldValuesFactory($field, $valuesBag, $this->errors, $path.'/', $this->config->getMaxValues());
+        $this->valuesFactory->initContext($field, $valuesBag, $path.'/');
 
         if (isset($values->{'simple-values'})) {
             $index = 1;
 
             foreach ($values->{'simple-values'}->children() as $value) {
-                $factory->addSimpleValue((string) $value, "simple-values/value[$index]");
+                $this->valuesFactory->addSimpleValue((string) $value, "simple-values/value[$index]");
                 ++$index;
             }
         }
@@ -149,7 +158,7 @@ class XmlInput extends AbstractInput
             $index = 1;
 
             foreach ($values->{'excluded-simple-values'}->children() as $value) {
-                $factory->addExcludedSimpleValue((string) $value, "excluded-simple-values/value[$index]");
+                $this->valuesFactory->addExcludedSimpleValue((string) $value, "excluded-simple-values/value[$index]");
                 ++$index;
             }
         }
@@ -158,7 +167,7 @@ class XmlInput extends AbstractInput
             $index = 1;
 
             foreach ($values->comparisons->children() as $comparison) {
-                $factory->addComparisonValue(
+                $this->valuesFactory->addComparisonValue(
                     (string) $comparison['operator'],
                     (string) $comparison,
                     ["comparisons/compare[$index]", '[@operator]', '']
@@ -171,7 +180,7 @@ class XmlInput extends AbstractInput
             $index = 1;
 
             foreach ($values->ranges->children() as $range) {
-                $this->processRange($range, $factory, "ranges/range[$index]");
+                $this->processRange($range, "ranges/range[$index]");
                 ++$index;
             }
         }
@@ -180,7 +189,7 @@ class XmlInput extends AbstractInput
             $index = 1;
 
             foreach ($values->{'excluded-ranges'}->children() as $range) {
-                $this->processRange($range, $factory, "excluded-ranges/range[$index]", true);
+                $this->processRange($range, "excluded-ranges/range[$index]", true);
                 ++$index;
             }
         }
@@ -189,7 +198,7 @@ class XmlInput extends AbstractInput
             $index = 1;
 
             foreach ($values->{'pattern-matchers'}->children() as $patternMatch) {
-                $factory->addPatterMatch(
+                $this->valuesFactory->addPatterMatch(
                     (string) $patternMatch['type'],
                     (string) $patternMatch,
                     'true' === strtolower((string) $patternMatch['case-insensitive']),
@@ -202,7 +211,7 @@ class XmlInput extends AbstractInput
         return $valuesBag;
     }
 
-    private function processRange($range, FieldValuesFactory $factory, string $path, bool $negative = false)
+    private function processRange($range, string $path, bool $negative = false)
     {
         $lowerInclusive = 'false' !== strtolower((string) $range->lower['inclusive']);
         $upperInclusive = 'false' !== strtolower((string) $range->upper['inclusive']);
@@ -211,9 +220,9 @@ class XmlInput extends AbstractInput
         $upperBound = (string) $range->upper;
 
         if ($negative) {
-            $factory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive, [$path, '/lower', '/upper']);
+            $this->valuesFactory->addExcludedRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive, [$path, '/lower', '/upper']);
         } else {
-            $factory->addRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive, [$path, '/lower', '/upper']);
+            $this->valuesFactory->addRange($lowerBound, $upperBound, $lowerInclusive, $upperInclusive, [$path, '/lower', '/upper']);
         }
     }
 }
