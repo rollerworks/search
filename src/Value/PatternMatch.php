@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Value;
 
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -60,7 +62,7 @@ final class PatternMatch implements ValueHolder
         $typeConst = __CLASS__.'::PATTERN_'.strtoupper($patternType);
 
         if (!defined($typeConst)) {
-            throw new \InvalidArgumentException(sprintf('Unknown PatternMatch type "%s".', $patternType));
+            throw new InvalidArgumentException(sprintf('Unknown PatternMatch type "%s".', $patternType));
         }
 
         $this->value = $value;
