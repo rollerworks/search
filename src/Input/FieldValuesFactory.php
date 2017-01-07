@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Input;
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\DataTransformerInterface;
 use Rollerworks\Component\Search\ErrorList;
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
@@ -127,18 +128,18 @@ class FieldValuesFactory
      */
     public function addRange($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path)
     {
-        $basePath = $this->createValuePath($path[0]);
+        $path[0] = $this->createValuePath($path[0]);
 
-        $this->increaseValuesCount($basePath);
+        $this->increaseValuesCount($path[0]);
         $this->assertAcceptsType(Range::class);
 
-        $lowerNorm = $this->inputToNorm($lower, $basePath.$path[1]);
-        $upperNorm = $this->inputToNorm($upper, $basePath.$path[2]);
+        $lowerNorm = $this->inputToNorm($lower, $path[0].$path[1]);
+        $upperNorm = $this->inputToNorm($upper, $path[0].$path[2]);
 
         if (null !== $lowerNorm && null !== $upperNorm) {
             $range = new Range($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive);
 
-            if ($this->validateRangeBounds($range, $basePath, $lower, $upper)) {
+            if ($this->validateRangeBounds($range, $path, $lower, $upper)) {
                 $this->valuesBag->add($range);
             }
         }
@@ -153,18 +154,18 @@ class FieldValuesFactory
      */
     public function addExcludedRange($lower, $upper, $lowerInclusive, $upperInclusive, array $path)
     {
-        $basePath = $this->createValuePath($path[0]);
+        $path[0] = $this->createValuePath($path[0]);
 
-        $this->increaseValuesCount($basePath);
+        $this->increaseValuesCount($path[0]);
         $this->assertAcceptsType(Range::class);
 
-        $lowerNorm = $this->inputToNorm($lower, $basePath.$path[1]);
-        $upperNorm = $this->inputToNorm($upper, $basePath.$path[2]);
+        $lowerNorm = $this->inputToNorm($lower, $path[0].$path[1]);
+        $upperNorm = $this->inputToNorm($upper, $path[0].$path[2]);
 
         if (null !== $lowerNorm && null !== $upperNorm) {
             $range = new ExcludedRange($lowerNorm, $upperNorm, $lowerInclusive, $upperInclusive);
 
-            if ($this->validateRangeBounds($range, $basePath, $lower, $upper)) {
+            if ($this->validateRangeBounds($range, $path, $lower, $upper)) {
                 $this->valuesBag->add($range);
             }
         }
@@ -192,7 +193,7 @@ class FieldValuesFactory
         }
     }
 
-    public function addPatterMatch($type, $patternMatch, $caseInsensitive, array $path)
+    public function addPatterMatch($type, $value, bool $caseInsensitive, array $path)
     {
         $basePath = $this->createValuePath($path[0]);
         $valid = true;
@@ -200,7 +201,7 @@ class FieldValuesFactory
         $this->increaseValuesCount($basePath);
         $this->assertAcceptsType(PatternMatch::class);
 
-        if (!is_scalar($patternMatch)) {
+        if (!is_scalar($value)) {
             $this->addError(new ConditionErrorMessage($basePath.$path[1], 'PatternMatch value must a string.'));
 
             $valid = false;
@@ -217,12 +218,14 @@ class FieldValuesFactory
         }
 
         try {
-            $patternMatch = new PatternMatch((string) $patternMatch, $type, $caseInsensitive);
+            $patternMatch = new PatternMatch((string) $value, $type, $caseInsensitive);
 
-            if (!$this->validator->validate($patternMatch, PatternMatch::class, $patternMatch, $basePath.$path[2])) {
+            if (!$this->validator->validate($value, PatternMatch::class, $value, $basePath.$path[1])) {
                 return;
             }
-        } catch (\Exception $e) {
+
+            $this->valuesBag->add($patternMatch);
+        } catch (InvalidArgumentException $e) {
             $this->addError(
                 ConditionErrorMessage::withMessageTemplate(
                     $basePath.$path[2],
@@ -233,14 +236,12 @@ class FieldValuesFactory
                 )
             );
         }
-
-        $this->valuesBag->add($patternMatch);
     }
 
     /**
      * Reverse transforms a value if a value transformer is set.
      *
-     * @param string $value The value to reverse transform
+     * @param mixed  $value The value to reverse transform
      * @param string $path
      *
      * @return mixed Returns null when the value is empty or invalid
@@ -249,7 +250,7 @@ class FieldValuesFactory
     {
         if (!$this->normTransformer) {
             if (null !== $value && !is_scalar($value)) {
-                throw new \RuntimeException(
+                $e = new \RuntimeException(
                     sprintf(
                         'Norm value of type %s is not a scalar value or null and not cannot be '.
                         'converted to a string. You must set a NormTransformer for field "%s" with type "%s".',
@@ -258,6 +259,19 @@ class FieldValuesFactory
                         get_class($this->config->getType()->getInnerType())
                     )
                 );
+
+                $error = new ConditionErrorMessage(
+                    $path,
+                    $this->config->getOption('invalid_message', $e->getMessage()),
+                    $this->config->getOption('invalid_message', $e->getMessage()),
+                    $this->config->getOption('invalid_message_parameters', []),
+                    null,
+                    $e
+                );
+
+                $this->addError($error);
+
+                return null;
             }
 
             return '' === $value ? null : $value;
@@ -315,7 +329,7 @@ class FieldValuesFactory
         $this->checkedValueType[$type] = true;
     }
 
-    private function validateRangeBounds(Range $range, string $path, $lower, $upper): bool
+    private function validateRangeBounds(Range $range, array $path, $lower, $upper): bool
     {
         if (!$this->valueComparison->isLower($range->getLower(), $range->getUpper(), $this->config->getOptions())) {
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';
@@ -324,7 +338,7 @@ class FieldValuesFactory
                 '{{ upper }}' => strpos((string) $upper, ' ') ? "'".$upper."'" : $upper,
             ];
 
-            $this->addError(ConditionErrorMessage::withMessageTemplate($path, $message, $params));
+            $this->addError(ConditionErrorMessage::withMessageTemplate($path[0], $message, $params));
 
             return false;
         }
@@ -332,8 +346,8 @@ class FieldValuesFactory
         $class = get_class($range);
 
         // Perform validation for both bounds (don't move to condition as this returns early).
-        $lowerValid = $this->validator->validate($range->getLower(), $class, $lower, $path);
-        $upperValid = $this->validator->validate($range->getUpper(), $class, $upper, $path);
+        $lowerValid = $this->validator->validate($range->getLower(), $class, $lower, $path[0].$path[1]);
+        $upperValid = $this->validator->validate($range->getUpper(), $class, $upper, $path[0].$path[2]);
 
         return $lowerValid && $upperValid;
     }
