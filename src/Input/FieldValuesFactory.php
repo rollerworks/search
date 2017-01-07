@@ -210,25 +210,31 @@ class FieldValuesFactory
             $this->addError(new ConditionErrorMessage($basePath.$path[2], 'PatternMatch type must a string.'));
 
             $valid = false;
-        } elseif (!defined(PatternMatch::class.'::PATTERN_'.strtoupper($type))) {
+        }
+
+        if (!$valid) {
+            return;
+        }
+
+        try {
+            $patternMatch = new PatternMatch((string) $patternMatch, $type, $caseInsensitive);
+
+            if (!$this->validator->validate($patternMatch, PatternMatch::class, $patternMatch, $basePath.$path[2])) {
+                return;
+            }
+        } catch (\Exception $e) {
             $this->addError(
                 ConditionErrorMessage::withMessageTemplate(
                     $basePath.$path[2],
                     'Unknown PatternMatch type "{{ type }}".',
-                    ['{{ type }}' => $type]
+                    ['{{ type }}' => $type],
+                    null,
+                    $e
                 )
             );
-
-            $valid = false;
-        } elseif (!$this->validator->validate($patternMatch, PatternMatch::class, $patternMatch, $basePath.$path[2])) {
-            $valid = false;
         }
 
-        if (false === $valid) {
-            return;
-        }
-
-        $this->valuesBag->add(new PatternMatch((string) $patternMatch, $type, $caseInsensitive));
+        $this->valuesBag->add($patternMatch);
     }
 
     /**
