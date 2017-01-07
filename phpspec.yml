@@ -1,8 +1,0 @@
-formatter.name: pretty
-
-suites:
-    search:
-        namespace: Rollerworks\Component\Search
-        psr4_prefix: Rollerworks\Component\Search
-        src_path: src/
-        spec_prefix: spec\
