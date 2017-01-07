@@ -116,6 +116,6 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
 
     protected function getInputProcessor(callable $labelResolver = null): InputProcessorInterface
     {
-        return new FilterQueryInput($labelResolver);
+        return new FilterQueryInput(null, $labelResolver);
     }
 }

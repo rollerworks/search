@@ -13,21 +13,23 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Value;
 
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 final class PatternMatch implements ValueHolder
 {
-    const PATTERN_CONTAINS = 1;
-    const PATTERN_STARTS_WITH = 2;
-    const PATTERN_ENDS_WITH = 3;
-    const PATTERN_REGEX = 4;
-    const PATTERN_NOT_CONTAINS = 5;
-    const PATTERN_NOT_STARTS_WITH = 6;
-    const PATTERN_NOT_ENDS_WITH = 7;
-    const PATTERN_NOT_REGEX = 8;
-    const PATTERN_EQUALS = 9;
-    const PATTERN_NOT_EQUALS = 10;
+    const PATTERN_CONTAINS = 'CONTAINS';
+    const PATTERN_STARTS_WITH = 'STARTS_WITH';
+    const PATTERN_ENDS_WITH = 'ENDS_WITH';
+    const PATTERN_REGEX = 'REGEX';
+    const PATTERN_NOT_CONTAINS = 'NOT_CONTAINS';
+    const PATTERN_NOT_STARTS_WITH = 'NOT_STARTS_WITH';
+    const PATTERN_NOT_ENDS_WITH = 'NOT_ENDS_WITH';
+    const PATTERN_NOT_REGEX = 'NOT_REGEX';
+    const PATTERN_EQUALS = 'EQUALS';
+    const PATTERN_NOT_EQUALS = 'NOT_EQUALS';
 
     /**
      * @var string
@@ -55,28 +57,16 @@ final class PatternMatch implements ValueHolder
      *
      * @throws \InvalidArgumentException When the pattern-match type is invalid
      */
-    public function __construct($value, $patternType, bool $caseInsensitive = false)
+    public function __construct(string $value, string $patternType, bool $caseInsensitive = false)
     {
-        if (!is_scalar($value)) {
-            throw new \InvalidArgumentException('Value of PatternMatch must be a scalar value.');
+        $typeConst = __CLASS__.'::PATTERN_'.strtoupper($patternType);
+
+        if (!defined($typeConst)) {
+            throw new InvalidArgumentException(sprintf('Unknown PatternMatch type "%s".', $patternType));
         }
 
-        if (is_string($patternType)) {
-            $typeConst = __CLASS__.'::PATTERN_'.strtoupper($patternType);
-
-            if (defined($typeConst)) {
-                $patternType = constant($typeConst);
-            } else {
-                $patternType = -1;
-            }
-        }
-
-        if ($patternType < 1 || $patternType > 10) {
-            throw new \InvalidArgumentException(sprintf('Unknown pattern-match type "%s".', $patternType));
-        }
-
-        $this->patternType = $patternType;
-        $this->value = (string) $value;
+        $this->value = $value;
+        $this->patternType = strtoupper($patternType);
         $this->caseInsensitive = $caseInsensitive;
     }
 
@@ -91,7 +81,7 @@ final class PatternMatch implements ValueHolder
     /**
      * Gets the pattern-match type.
      *
-     * @return int
+     * @return string
      */
     public function getType()
     {

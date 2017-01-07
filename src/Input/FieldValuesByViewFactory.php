@@ -25,7 +25,7 @@ final class FieldValuesByViewFactory extends FieldValuesFactory
     {
         if (!$this->viewTransformer) {
             if (null !== $value && !is_scalar($value)) {
-                throw new \RuntimeException(
+                $e = new \RuntimeException(
                     sprintf(
                         'View value of type %s is not a scalar value or null and not cannot be '.
                         'converted to a string. You must set a ViewTransformer for field "%s" with type "%s".',
@@ -34,6 +34,19 @@ final class FieldValuesByViewFactory extends FieldValuesFactory
                         get_class($this->config->getType()->getInnerType())
                     )
                 );
+
+                $error = new ConditionErrorMessage(
+                    $path,
+                    $this->config->getOption('invalid_message', $e->getMessage()),
+                    $this->config->getOption('invalid_message', $e->getMessage()),
+                    $this->config->getOption('invalid_message_parameters', []),
+                    null,
+                    $e
+                );
+
+                $this->addError($error);
+
+                return null;
             }
 
             return '' === $value ? null : $value;

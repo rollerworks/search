@@ -63,7 +63,7 @@ class XmlInput extends AbstractInput
         $this->config = $config;
         $this->level = 0;
 
-        $this->valuesFactory = new FieldValuesFactory($this->errors, $this->config->getMaxValues());
+        $this->valuesFactory = new FieldValuesFactory($this->errors, $this->validator, $this->config->getMaxValues());
 
         try {
             $document = simplexml_import_dom(XmlUtil::parseXml($input, __DIR__.'/schema/dic/input/xml-input-2.0.xsd'));

@@ -49,6 +49,21 @@ abstract class AbstractInput implements InputProcessorInterface
     protected $level = 0;
 
     /**
+     * @var Validator
+     */
+    protected $validator;
+
+    /**
+     * Constructor.
+     *
+     * @param Validator|null $validator
+     */
+    public function __construct(Validator $validator = null)
+    {
+        $this->validator = $validator ?? new NullValidator();
+    }
+
+    /**
      * Checks if the maximum group nesting level is exceeded.
      *
      * @param string $path

@@ -52,14 +52,6 @@ class PatternMatchTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_when_setting_an_invalid_value()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'Value of PatternMatch must be a scalar value.');
-
-        new PatternMatch(new \stdClass(), PatternMatch::PATTERN_CONTAINS);
-    }
-
-    /** @test */
     public function it_accepts_a_patternType_as_string()
     {
         $this->value = new PatternMatch('foo', 'CONTAINS');
