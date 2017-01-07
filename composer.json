@@ -12,7 +12,7 @@
         },
         {
             "name": "Community contributions",
-            "homepage": "https://github.com/Rollerworks/RollerworksSearch/contributors"
+            "homepage": "https://github.com/rollerworks/search/contributors"
         }
     ],
     "require": {
