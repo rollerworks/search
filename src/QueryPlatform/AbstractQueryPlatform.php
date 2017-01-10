@@ -130,8 +130,8 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
         ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = $this->connection->quote(sprintf($patternMap[$patternMatch->getType()], $value));
-        $escape = $this->connection->quote('\\');
+        $value = $this->quoteValue(sprintf($patternMap[$patternMatch->getType()], $value), Type::getType('text'));
+        $escape = $this->quoteValue('\\', Type::getType('text'));
 
         if ($patternMatch->isCaseInsensitive()) {
             $column = "LOWER($column)";
