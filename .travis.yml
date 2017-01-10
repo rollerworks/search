@@ -1,11 +1,7 @@
 language: php
 
-php:
-    - 5.4
-    - 5.5
-    - 5.6
-    - 7.0
-    - hhvm
+addons:
+    postgresql: "9.2"
 
 sudo: false
 
@@ -13,22 +9,45 @@ cache:
     directories:
         - $HOME/.composer/cache
 
+php:
+    - 5.4
+    - 5.5
+    - 5.6
+    - 7.0
+    - hhvm
+
+# Note. Only test databases with PHP5.5 because its the fastest
+# And we don't need to test for multiple DB versions as the Queries are very common.
 matrix:
     include:
         - php: 5.4
           env: DEPENDENCIES='low'
+        - php: 5.5
+          env: DB=pgsql
+        - php: 5.5
+          env: DB=sqlite
+        - php: 5.5
+          env: DB=mysql
         - php: 5.6
           env: DEPENDENCIES='dev'
     allow_failures:
         - env: DEPENDENCIES='dev'
     fast_finish: true
 
+before_script:
+    - if [ "$DB" == "mysql" ]; then mysql -e 'create database search_tests;'; fi;
+
+before_install:
+    - phpenv config-rm xdebug.ini || echo "xdebug not available"
+
 install:
+    - export SYMFONY_PHPUNIT_REMOVE=symfony/yaml
     - export SYMFONY_DEPRECATIONS_HELPER=weak
-    - export COMPOSER_ROOT_VERSION=dev-master
     - if [ "$DEPENDENCIES" == "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
-    - if [ "$DEPENDENCIES" != "low" ]; then travis_retry composer update --prefer-source; fi;
-    - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-source --prefer-lowest; fi;
+    - if [ "$DB" != "" ] ; then travis_retry composer update --prefer-source; fi;
+    - if [ "$DEPENDENCIES" != "low" ] && [ "$DB" == "" ] ; then travis_retry composer update --prefer-source; fi;
+    - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest --prefer-source; fi;
 
 script:
-    - phpunit --configuration phpunit.xml.dist --verbose
+    - vendor/bin/simple-phpunit --configuration phpunit.xml.dist
+    - if [ "$DB" != "" ]; then vendor/bin/simple-phpunit --configuration tests/travis/$DB.travis.xml; fi;

@@ -17,11 +17,11 @@
     "require": {
         "php": ">=5.4",
         "rollerworks/search": "^1.0.0",
-        "rollerworks/search-doctrine-dbal": "^1.1.0",
+        "rollerworks/search-doctrine-dbal": "^1.1.1",
         "doctrine/orm": "~2.4"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~2.7",
+        "symfony/phpunit-bridge": "^3.2.1",
         "sllh/php-cs-fixer-styleci-bridge": "^2.0"
     },
     "autoload": {

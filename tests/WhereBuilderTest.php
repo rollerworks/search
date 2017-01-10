@@ -267,6 +267,8 @@ class WhereBuilderTest extends OrmTestCase
             ->field('customer_name')
                 ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->addPatternMatch(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
+                ->addPatternMatch(new PatternMatch('fo\'o', PatternMatch::PATTERN_STARTS_WITH))
+                ->addPatternMatch(new PatternMatch('fo\'\'o', PatternMatch::PATTERN_STARTS_WITH))
                 ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
                 ->addPatternMatch(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
                 ->addPatternMatch(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
@@ -276,13 +278,24 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\''o' ESCAPE '\\' OR RW_SEARCH_MATCH(C.name, '(foo|bar)', false) = 1 OR RW_SEARCH_MATCH(C.name, '(doctor|who)', true) = 1) AND LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))",
+            "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\''o' ESCAPE '\\' OR C.name LIKE '%fo''o' ESCAPE '\\' OR C.name LIKE '%fo''''o' ESCAPE '\\' OR RW_SEARCH_MATCH(C.name, '(foo|bar)', false) = 1 OR RW_SEARCH_MATCH(C.name, '(doctor|who)', true) = 1) AND LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))",
             $whereBuilder->getWhereClause()
         );
-        $this->assertDqlCompiles(
-            $whereBuilder,
-            "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.name LIKE '%foo' ESCAPE '\\' OR c1_.name LIKE '%fo\\''o' ESCAPE '\\' OR (CASE WHEN RW_REGEXP('(foo|bar)', c1_.name, 'u') THEN 1 ELSE 0 END) = 1 OR (CASE WHEN RW_REGEXP('(doctor|who)', c1_.name, 'ui') THEN 1 ELSE 0 END) = 1) AND LOWER(c1_.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))"
-        );
+
+        if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
+            $this->assertDqlCompiles(
+                $whereBuilder,
+                "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.name LIKE '%foo' ESCAPE '\\' OR c1_.name LIKE '%fo\\''o' ESCAPE '\\' OR c1_.name LIKE '%fo''o' ESCAPE '\\' OR c1_.name LIKE '%fo''''o' ESCAPE '\\' OR (CASE WHEN RW_REGEXP('(foo|bar)', c1_.name, 'u') THEN 1 ELSE 0 END) = 1 OR (CASE WHEN RW_REGEXP('(doctor|who)', c1_.name, 'ui') THEN 1 ELSE 0 END) = 1) AND LOWER(c1_.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))"
+            );
+        } else {
+            $rexP = 'postgresql' === $this->conn->getDatabasePlatform()->getName() ? '~' : 'REGEXP';
+            $rexPInsensitive = 'postgresql' === $this->conn->getDatabasePlatform()->getName() ? '~*' : 'REGEXP BINARY';
+
+            $this->assertDqlCompiles(
+                $whereBuilder,
+                'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.name LIKE '.$this->conn->quote('%foo').' ESCAPE '.$this->conn->quote('\\').' OR c1_.name LIKE '.$this->conn->quote("%fo\\'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.name LIKE '.$this->conn->quote("%fo'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.name LIKE '.$this->conn->quote("%fo''o").' ESCAPE '.$this->conn->quote('\\').' OR (CASE WHEN c1_.name '.$rexP.' '.$this->conn->quote('(foo|bar)').' THEN 1 ELSE 0 END) = 1 OR (CASE WHEN c1_.name '.$rexPInsensitive.' '.$this->conn->quote('(doctor|who)').' THEN 1 ELSE 0 END) = 1) AND LOWER(c1_.name) NOT LIKE LOWER('.$this->conn->quote('bar%').') ESCAPE '.$this->conn->quote('\\').'))'
+            );
+        }
     }
 
     public function testSubGroups()
