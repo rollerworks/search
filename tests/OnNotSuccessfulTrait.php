@@ -12,7 +12,7 @@
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 // Type-hint was removed for PHP 7
-if (PHP_MAJOR_VERSION > 5) {
+if (\PHPUnit_Runner_Version::id()[0] === '5') {
     trait OnNotSuccessfulTrait
     {
         protected function onNotSuccessfulTest($e)

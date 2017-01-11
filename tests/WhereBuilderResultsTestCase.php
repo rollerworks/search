@@ -91,7 +91,7 @@ class WhereBuilderResultsTestCase extends OrmTestCase
             ->records()
                 ->add([1, 1, '2010-001', $date('2010-05-10'), 2]) // 'Peter', 'Pang'
                 ->add([2, 2, '2010-002', $date('2010-05-10'), 2]) // 'Leroy', 'Jenkins'
-                ->add([3, 2, null, null, '10.00']) // concept - 'Leroy', 'Jenkins'
+                ->add([3, 2, null, null, 0]) // concept - 'Leroy', 'Jenkins'
                 // unpaid //
                 ->add([4, 2, '2015-001', $date('2015-05-10'), 1]) // 'Leroy', 'Jenkins'
                 ->add([5, 3, '2015-002', $date('2015-05-01'), 1]) // 'Doctor', 'Who'
