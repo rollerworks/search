@@ -74,7 +74,7 @@ class InputProcessorException extends \InvalidArgumentException implements Excep
 
     /**
      * @param array $translatedParameters An array of parameter names that need
-     *                                    to be translated prior to there usage
+     *                                    to be translated prior to their usage
      */
     protected function setTranslatedParameters(array $translatedParameters)
     {
