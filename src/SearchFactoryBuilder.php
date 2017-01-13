@@ -44,6 +44,11 @@ class SearchFactoryBuilder
     private $fieldSetRegistry;
 
     /**
+     * @var SearchConditionOptimizerInterface
+     */
+    private $conditionOptimizer;
+
+    /**
      * Sets the factory for creating ResolvedFieldTypeInterface instances.
      *
      * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
@@ -53,6 +58,20 @@ class SearchFactoryBuilder
     public function setResolvedTypeFactory(ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
     {
         $this->resolvedTypeFactory = $resolvedTypeFactory;
+
+        return $this;
+    }
+
+    /**
+     * Sets the default SearchCondition optimizer.
+     *
+     * @param SearchConditionOptimizerInterface $conditionOptimizer
+     *
+     * @return $this The builder
+     */
+    public function setSearchConditionOptimizer(SearchConditionOptimizerInterface $conditionOptimizer)
+    {
+        $this->conditionOptimizer = $conditionOptimizer;
 
         return $this;
     }
@@ -158,9 +177,9 @@ class SearchFactoryBuilder
             $extensions[] = new PreloadedExtension($this->types, $this->typeExtensions);
         }
 
-        $resolvedTypeFactory = $this->resolvedTypeFactory ?: new ResolvedFieldTypeFactory();
+        $resolvedTypeFactory = $this->resolvedTypeFactory ?? new ResolvedFieldTypeFactory();
         $registry = new FieldRegistry($extensions, $resolvedTypeFactory);
 
-        return new SearchFactory($registry, $this->fieldSetRegistry ?: new FieldSetRegistry());
+        return new SearchFactory($registry, $this->fieldSetRegistry ?? new FieldSetRegistry(), $this->conditionOptimizer);
     }
 }
