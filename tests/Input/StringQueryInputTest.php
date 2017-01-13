@@ -16,9 +16,9 @@ namespace Rollerworks\Component\Search\Tests\Input;
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
-use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Input\StringQuery\QueryException;
+use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\InputProcessorInterface;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
@@ -27,11 +27,11 @@ use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-final class FilterQueryInputTest extends InputProcessorTestCase
+final class StringQueryInputTest extends InputProcessorTestCase
 {
     protected function getProcessor(callable $labelResolver = null): InputProcessorInterface
     {
-        return new FilterQueryInput(null, $labelResolver);
+        return new StringQueryInput(null, $labelResolver);
     }
 
     /**
