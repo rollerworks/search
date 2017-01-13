@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
+
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -21,12 +23,14 @@ class SearchFactory implements SearchFactoryInterface
     private $registry;
     private $fieldSetRegistry;
     private $serializer;
+    private $optimizer;
 
-    public function __construct(FieldRegistryInterface $registry, FieldSetRegistryInterface $fieldSetRegistry)
+    public function __construct(FieldRegistryInterface $registry, FieldSetRegistryInterface $fieldSetRegistry, SearchConditionOptimizerInterface $optimizer = null)
     {
         $this->registry = $registry;
         $this->fieldSetRegistry = $fieldSetRegistry;
         $this->serializer = new SearchConditionSerializer($this);
+        $this->optimizer = $optimizer ?? ChainOptimizer::create();
     }
 
     /**
@@ -73,5 +77,13 @@ class SearchFactory implements SearchFactoryInterface
     public function getSerializer(): SearchConditionSerializer
     {
         return $this->serializer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function optimizeCondition(SearchCondition $condition)
+    {
+        $this->optimizer->process($condition);
     }
 }

@@ -29,6 +29,22 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
     private $optimizers = [];
 
     /**
+     * Creates a new ChainOptimizer with the build-in
+     * optimizers already registered.
+     *
+     * @return ChainOptimizer
+     */
+    public static function create(): ChainOptimizer
+    {
+        $optimizer = new self();
+        $optimizer->addOptimizer(new DuplicateRemover());
+        $optimizer->addOptimizer(new ValuesToRange());
+        $optimizer->addOptimizer(new RangeOptimizer());
+
+        return $optimizer;
+    }
+
+    /**
      * @param SearchConditionOptimizerInterface $optimizer
      *
      * @throws \InvalidArgumentException
