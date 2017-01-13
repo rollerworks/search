@@ -1,186 +1,186 @@
-README
-======
+RollerworksSearch
+=================
 
 [![Join the chat at https://gitter.im/rollerworks/search](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rollerworks/search?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://secure.travis-ci.org/rollerworks/search.png?branch=master)](http://travis-ci.org/rollerworks/search)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/92caf31d-dae6-49dd-9526-440d859daa31/mini.png)](https://insight.sensiolabs.com/projects/92caf31d-dae6-49dd-9526-440d859daa31)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/search/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/search/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/rollerworks/search/badge.svg?branch=master)](https://coveralls.io/github/rollerworks/search?branch=master)
 
-What is RollerworksSearch?
---------------------------
+## About RollerworksSearch
 
-RollerworksSearch provides you with a powerful search system
-for your PHP applications.
-
-The system has a modular design and can work with any PHP framework,
-user locale, data format or storage system.
+RollerworksSearch is a powerful search-system for PHP.
+Created to make searching in a PHP powered application as simple and fast as possible.
 
 Whether you want to simply search for users in your SQL database, want to
 provide a powerful search system for searching products using an ElasticSearch
-back-end or are looking for an easy way to abstract filtering for a reporter,
-everything is possible.
+back-end or are looking for an easy way to abstract filtering for a reporter, 
+it is possible.
 
-And a complex data is structure is no problem, say your customer data is stored
+> **Note:** The master branch is currently undergoing some major changes and is not
+> considered ready for production usage yet, documentation is currently missing!
+> Use the 1.x branch for a stable code base and "proper" documentation.
+
+### How about complex data structures?
+
+A complex data is structure is no problem, say your customer data is stored
 in the "customer" table, the "invoices" data is stored in it's own table, and
-the details of the invoice also have there own table.
+the details of the invoices (obviously) have there own table.
 
-Searching (using the special FilterQuery syntax) can be as simple as:
-`invoice_price: >"$20.00" invoice_row_label: ~*"my cool product"; customer_type: !consumer`.
+Instead of writing a very verbose SQL query, your users can simple use 
+the user-friendly StringQuery syntax:
+
+> `invoice_price: >"$20.00" invoice_row_label: ~*"my cool product"; customer_type: !consumer`.
 
 You just searched in three relational tables using a single condition with a
-user-friendly syntax. And that is just the start, checkout all the cool and
-powerful features RollerworksSearch has to offer.
+user-friendly syntax. And that is just the start, RollerworksSearch can work with
+any local, custom input format, or storage system.
 
-**Note:** FilterQuery is just one of the supported input formats, you can use XML,
-JSON or simply build your own.
+**Coming-up:** SmartQuery, provide a number of terms and let the system
+handle the condition building.
 
-Features
---------
+## Features
 
 RollerworksSearch provides you with most of the features you would expect
-from a search system. Including input processing, condition optimizing and
-normalizing user input. With a high performance grade.
+from a search system, including:
+ 
+* Input processing for the most common formats (XML and JSON).
+  Plus, a special format called StringQuery with a user-friendly syntax.
+* Condition optimizing for smaller memory usage and faster results.
 
-All with complete flexibility and and extendability for your use-cases.
-
-Search conditions can be as simple or complex as you need them to be.
-Including grouping and nesting for the best possible result.
-
-## Input processors
-
-Input processing is provided for the most common formats.
-Including a special format called FilterQuery which provides
-a user-friendly syntax for creating any type of condition.
-
-Each input processor transforms the input to a normalized format,
-and ensures that no malformed data leaks to the storage layer.
-
-* JSON
-* XML
-* FilterQuery
-
-## Optimizers
-
-Optimizers help with optimizing SearchConditions for a better
-and faster search condition, removing duplicated values and
-normalizing redundant values.
-
-## Types
-
-The following types are provided out of the box, building your is also
-possible and very straightforward.
-
-**Tip:** All types listed below support localization.
-
-* Birthday (with optional support for Age conversion)
-* Choice
-* Country choice
-* Currency choice
-* Timezone choice
-* Language choice
-* Locale choice
-* DateTime
-* Date
-* Integer
-* Money
-* Number
-* Text
-
-## Storage/Index engines (condition processor)
-
-Condition processors for searching in the storage engines are provided
-as separate packages. Building your own condition processor is also possible.
+And support for the most poplar storage systems.
 
 * [Doctrine2 DBAL](https://github.com/rollerworks/search-doctrine-dbal)
 * [Doctrine2 ORM](https://github.com/rollerworks/search-doctrine-orm)
 * [Elasticsearch](https://github.com/rollerworks/search-elasticsearch) (coming soon)
 
-Requirements
-------------
+Search conditions can be as simple or complex as you need them to be.
+Including grouping and nesting for the best possible result.
 
-You need at least PHP 7.0, and Intl extension for international support.
+## Framework integration
 
-For framework integration you may use the following;
+RollerworksSearch can be used with any Framework of your choice, but for the best
+possible experience use the provided framework integration plug-ins.
 
 * [Symfony Bundle](https://github.com/rollerworks/SearchBundle)
-* [Symfony Validator](https://github.com/rollerworks/search-symfony-validator)
 * ZendFramework2 Plugin (coming soon)
 * Silex Plugin (coming soon)
 
-Installation
-------------
+Your favorite framework not listed? No problem, read the [Contributing Guidelines]
+on how you can help!
 
-For installing and integrating RollerworksSearch, you can find all the
-details in the manual.
+## Installation and usage
 
-[Installing](http://rollerworkssearch.readthedocs.org/en/latest/installing.html)
+*Please ignore the instructions below if your use a framework integration.*
+[Read the Documentation for master] for complete instructions and information. 
 
-Documentation
--------------
+Install the RollerworksSearch "core" library using [Composer]:
 
-[Read the Documentation for master][6]
+```bash
+$ composer install rollerworks/search
+```
 
-The documentation for RollerworksSearch is written in [reStructuredText][3] and can be built
-into standard HTML using [Sphinx][4].
+And create the `SearchFactory` to get started.
 
-To build the documentation do the following:
+```php
+use Rollerworks\Component\Search\Searches;
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\Input\StringQueryInput;
 
-1. Install [Spinx][4]
-2. Change to the `doc` directory on the command line
-3. Run `make html`
+// The factory is reusable, you create it only once.
+$searchFactory = Searches::createSearchFactory();
 
-This will build the documentation into the `doc/_build/html` directory.
+// Create a fieldset to inform the system about your configuration.
+// Uasully you will have a FieldSet for each data structure (users, invoices, etc).
+$userFieldSet = $searchFactory->createFieldSetBuilder()
+    ->add('firstName', TextType::class)
+    ->add('lastName', TextType::class)
+    ->add('age', IntegerType::class)
+    ->add('gender', ChoiceType::class, array(
+        'choices' => ['Female' => 'f', 'Male' => 'm'],
+    ))
+    ->getFieldSet('users');
+    
+// Now lets process a simple string query.
+// Tip: the input processor is reuable.
+$inputProcesor = new StringQueryInput();
 
-Further information can be found in The Symfony [documentation format][5] article.
+try {
+    // The ProcessorConfig allows to limit the amount of values, groups
+    // and maximum nesting level.
+    $processorConfig = new ProcessorConfig($userFieldSet);
+    
+    // The `process` method processes the input and produces 
+    // a valid SearchCondition (or throws an exception when something is wrong).
+    $condition = $inpurProcessor->process('firstName: sebastiaan, melany;');
 
-> The Sphinx extensions and theme are installed sing Git submodules
-> and don't need to be downloaded separately.
+    // Remove duplicate values and perform other optimizations (optional step).
+    $searchFactory->optimizeCondition($condition);
+} catch (InvalidSearchConditionException $e) {
+    // Each error message can be easily transformed to a localized version.
+    // Read the documentation for more details.
+    foreach ($e->getErrors() as $error) {
+       echo (string) $error.PHP_EOL;
+    }
+}
+```
 
-Versioning
-----------
+That's it! The `$condition` contains the search condition in a normalized
+data format which can be used in a condition processor (like ElasticSearch), 
+or be easily exported into another format like XML or JSON.
 
-For transparency and insight into the release cycle, and for striving
-to maintain backward compatibility, RollerworksSearch is maintained under
-the Semantic Versioning guidelines as much as possible.
+> **Note:** RollerworksSearch is composed of multiple separate packages (to keep the architecture slim), 
+> the "core" package provides everything you need to get started.
+>
+> To actually perform a search operation in a (web) application, you would properly
+> want to use the [rollerworks/http-search-processor](https://github.com/rollerworks/search-http-processor) 
+(coming soon) to take care of the heavy lifting.
 
-Releases will be numbered with the following format:
+### What about validation?
 
-`<major>.<minor>.<patch>`
+Each field type ensures the value is transformed to the correct format,
+eg. a date input is automatically transformed to a `DateTime` object.
 
-And constructed with the following guidelines:
+A field that expects an integer will fail when the provided input is not an integer.
 
-* Breaking backward compatibility bumps the major (and resets the minor and patch)
-* New additions without breaking backward compatibility bumps the minor (and resets the patch)
-* Bug fixes and misc changes bumps the patch
+To enforce more strict constraints like a maximum amount for an integer field you 
+can use a custom validator, read the documentation for supported implementations or creating
+your own.
 
-For more information on SemVer, please visit <http://semver.org/>.
+## Resources
 
-Credits
--------
+* [Read the Documentation for master]
+* RollerworksSearch is maintained under the [Semantic Versioning guidelines](http://semver.org/)
 
-The type extensions are largely inspired on the Symfony Form
-Component, and contain a good amount code originally developed by
-the amazing Symfony developers.
+## Who is behind RollerworksSearch?
 
-Documentation for types and chapters are also borrowed from the
-Symfony project.
+RollerworksSearch is brought to you by [Sebastiaan Stok](https://github.com/sstok).
 
-License
--------
+## License
 
-RollerworksSearch is provided under the [MIT license](LICENSE).
+RollerworksSearch is released under the [MIT license](LICENSE).
 
-Contributing
-------------
+The types and extensions are largely inspired on the Symfony Form Component, 
+and contain a big amount of code from the Symfony project.
+
+## Support
+
+[Join the chat] or use the issue tracker if your question is to complex for quick support.
+
+> **Note:** RollerworksSearch doesn't have a support forum at the moment, if you know
+> a good free service let us know by opening an issue :+1:
+
+## Contributing
 
 This is an open source project. If you'd like to contribute,
-please read the [Contributing Guidelines][1]. If you're submitting
-a pull request, please follow the guidelines in the [Submitting a Patch][2] section.
+please read the [Contributing Guidelines]. If you're submitting
+a pull request, please follow the guidelines in the [Submitting a Patch] section.
 
-[1]: https://github.com/rollerworks/contributing
-[2]: https://contributing.readthedocs.org/en/latest/code/patches.html
-[3]: http://docutils.sourceforge.net/rst.html
-[4]: http://sphinx-doc.org/
-[5]: https://contributing.readthedocs.org/en/latest/documentation/format.html
-[6]: http://rollerworkssearch.readthedocs.org/en/latest/
+[Join the chat at https://gitter.im/rollerworks/search](https://gitter.im/rollerworks/search?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[Composer]: https://getcomposer.org/doc/00-intro.md
+[Contributing Guidelines]: https://github.com/rollerworks/contributing
+[Submitting a Patch]: https://contributing.readthedocs.org/en/latest/code/patches.html
+[Read the Documentation for master]: http://rollerworkssearch.readthedocs.org/en/latest/
+[Join the chat]: https://gitter.im/rollerworks/search 
