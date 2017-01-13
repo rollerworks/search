@@ -25,11 +25,11 @@ use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
- * Exports the SearchCondition as FilterQuery string.
+ * Exports the SearchCondition as StringQuery string.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FilterQueryExporter extends AbstractExporter
+class StringQueryExporter extends AbstractExporter
 {
     private $labelResolver;
     private $fields = [];

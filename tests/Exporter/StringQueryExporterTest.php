@@ -13,18 +13,18 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Exporter;
 
-use Rollerworks\Component\Search\Exporter\FilterQueryExporter;
+use Rollerworks\Component\Search\Exporter\StringQueryExporter;
 use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\Input\FilterQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\InputProcessorInterface;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-final class FilterQueryExporterTest extends SearchConditionExporterTestCase
+final class StringQueryExporterTest extends SearchConditionExporterTestCase
 {
     /**
      * @test
@@ -111,11 +111,11 @@ final class FilterQueryExporterTest extends SearchConditionExporterTestCase
 
     protected function getExporter(callable $labelResolver = null): ExporterInterface
     {
-        return new FilterQueryExporter($labelResolver);
+        return new StringQueryExporter($labelResolver);
     }
 
     protected function getInputProcessor(callable $labelResolver = null): InputProcessorInterface
     {
-        return new FilterQueryInput(null, $labelResolver);
+        return new StringQueryInput(null, $labelResolver);
     }
 }

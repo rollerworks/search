@@ -20,18 +20,18 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\Input\FilterQuery\Lexer;
-use Rollerworks\Component\Search\Input\FilterQuery\QueryException;
+use Rollerworks\Component\Search\Input\StringQuery\Lexer;
+use Rollerworks\Component\Search\Input\StringQuery\QueryException;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
- * FilterQuery - processes input in the FilterQuery format.
+ * StringQuery - processes input in the StringQuery format.
  *
  * The formats works as follow (spaced are ignored).
  *
- * Every query-pair is a 'field-name: value1, value2;'.
+ * Each query-pair is a 'field-name: value1, value2;'.
  *
  *  Query-pairs can be nested inside a group "(field-name: value1, value2;)"
  *    Subgroups are threaded as AND-case to there parent,
@@ -69,10 +69,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * You can also the use '[' to mark it inclusive (explicitly).
  *
- *    ]1-100 is equal to (> 1 and <= 100)
- *    [1-100 is equal to (>= 1 and <= 100)
- *    [1-100[ is equal to (>= 1 and < 100)
- *    ]1-100[ is equal to (> 1 and < 100)
+ *    `]1-100` is equal to (> 1 and <= 100)
+ *    `[1-100` is equal to (>= 1 and <= 100)
+ *    `[1-100[` is equal to (>= 1 and < 100)
+ *    `]1-100[` is equal to (> 1 and < 100)
  *
  *   Example:
  *     field: ]1 - 100;
@@ -126,7 +126,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * Caution: Regex delimiters are not used.
  */
-class FilterQueryInput extends AbstractInput
+class StringQueryInput extends AbstractInput
 {
     /**
      * @var FieldValuesByViewFactory
