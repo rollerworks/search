@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchFactory implements SearchFactoryInterface
+final class GenericSearchFactory implements SearchFactoryInterface
 {
     private $registry;
     private $fieldSetRegistry;
@@ -68,7 +68,7 @@ class SearchFactory implements SearchFactoryInterface
      */
     public function createFieldSetBuilder(): FieldSetBuilderInterface
     {
-        return new FieldSetBuilder($this);
+        return new GenericFieldSetBuilder($this);
     }
 
     /**

@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldRegistry implements FieldRegistryInterface
+final class GenericTypeRegistry implements FieldRegistryInterface
 {
     /**
      * Extensions.

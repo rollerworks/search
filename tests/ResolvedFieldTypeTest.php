@@ -19,7 +19,7 @@ use Rollerworks\Component\Search\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldTypeExtensionInterface;
 use Rollerworks\Component\Search\FieldTypeInterface;
-use Rollerworks\Component\Search\ResolvedFieldType;
+use Rollerworks\Component\Search\GenericResolvedFieldType;
 use Rollerworks\Component\Search\SearchFieldView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -46,12 +46,12 @@ final class ResolvedFieldTypeTest extends TestCase
     private $extension2;
 
     /**
-     * @var ResolvedFieldType
+     * @var GenericResolvedFieldType
      */
     private $parentResolvedType;
 
     /**
-     * @var ResolvedFieldType
+     * @var GenericResolvedFieldType
      */
     private $resolvedType;
 
@@ -61,8 +61,8 @@ final class ResolvedFieldTypeTest extends TestCase
         $this->type = $this->getMockFieldType();
         $this->extension1 = $this->getMockFieldTypeExtension();
         $this->extension2 = $this->getMockFieldTypeExtension();
-        $this->parentResolvedType = new ResolvedFieldType($this->parentType);
-        $this->resolvedType = new ResolvedFieldType(
+        $this->parentResolvedType = new GenericResolvedFieldType($this->parentType);
+        $this->resolvedType = new GenericResolvedFieldType(
             $this->type,
             [$this->extension1, $this->extension2],
             $this->parentResolvedType
@@ -122,7 +122,7 @@ final class ResolvedFieldTypeTest extends TestCase
         $resolvedOptions = ['a' => 'a_custom', 'b' => 'b_default', 'c' => 'c_custom', 'd' => 'd_default'];
         $optionsResolver = $this->createOptionsResolverMock();
 
-        $this->resolvedType = $this->getMockBuilder(ResolvedFieldType::class)
+        $this->resolvedType = $this->getMockBuilder(GenericResolvedFieldType::class)
             ->setConstructorArgs([$this->type, [$this->extension1, $this->extension2], $this->parentResolvedType])
             ->setMethods(['getOptionsResolver'])
             ->getMock();

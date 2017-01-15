@@ -177,9 +177,9 @@ class SearchFactoryBuilder
             $extensions[] = new PreloadedExtension($this->types, $this->typeExtensions);
         }
 
-        $resolvedTypeFactory = $this->resolvedTypeFactory ?? new ResolvedFieldTypeFactory();
-        $registry = new FieldRegistry($extensions, $resolvedTypeFactory);
+        $resolvedTypeFactory = $this->resolvedTypeFactory ?? new GenericResolvedFieldTypeFactory();
+        $registry = new GenericTypeRegistry($extensions, $resolvedTypeFactory);
 
-        return new SearchFactory($registry, $this->fieldSetRegistry ?? new FieldSetRegistry(), $this->conditionOptimizer);
+        return new GenericSearchFactory($registry, $this->fieldSetRegistry ?? new LazyFieldSetRegistry(), $this->conditionOptimizer);
     }
 }

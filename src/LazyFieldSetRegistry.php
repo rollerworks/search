@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
-final class FieldSetRegistry implements FieldSetRegistryInterface
+final class LazyFieldSetRegistry implements FieldSetRegistryInterface
 {
     private $configurators;
 

@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-use Rollerworks\Component\Search\FieldSetBuilder;
+use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessorInterface;
 use Rollerworks\Component\Search\SearchCondition;
@@ -44,7 +44,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      */
     protected function getFieldSet(bool $build = true)
     {
-        $fieldSet = new FieldSetBuilder($this->getFactory());
+        $fieldSet = new GenericFieldSetBuilder($this->getFactory());
         $fieldSet->add('id', IntegerType::class);
         $fieldSet->add('name', TextType::class);
         $fieldSet->add('lastname', TextType::class);

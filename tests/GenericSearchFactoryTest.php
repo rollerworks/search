@@ -18,10 +18,10 @@ use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\FieldConfigInterface;
 use Rollerworks\Component\Search\FieldRegistryInterface;
 use Rollerworks\Component\Search\FieldSetRegistryInterface;
+use Rollerworks\Component\Search\GenericSearchFactory;
 use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
-use Rollerworks\Component\Search\SearchFactory;
 
-final class SearchFactoryTest extends TestCase
+final class GenericSearchFactoryTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -34,7 +34,7 @@ final class SearchFactoryTest extends TestCase
     private $fieldSetRegistry;
 
     /**
-     * @var SearchFactory
+     * @var GenericSearchFactory
      */
     private $factory;
 
@@ -49,7 +49,7 @@ final class SearchFactoryTest extends TestCase
         $this->registry = $this->createMock(FieldRegistryInterface::class);
         $this->fieldConfig = $this->createMock(FieldConfigInterface::class);
 
-        $this->factory = new SearchFactory($this->registry, $this->fieldSetRegistry);
+        $this->factory = new GenericSearchFactory($this->registry, $this->fieldSetRegistry);
     }
 
     /**

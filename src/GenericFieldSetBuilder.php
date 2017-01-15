@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldSetBuilder implements FieldSetBuilderInterface
+final class GenericFieldSetBuilder implements FieldSetBuilderInterface
 {
     /**
      * @var FieldConfigInterface[]

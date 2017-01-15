@@ -16,17 +16,17 @@ namespace Rollerworks\Component\Search\Tests;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldSetBuilder;
+use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
-use Rollerworks\Component\Search\SearchFactory;
+use Rollerworks\Component\Search\SearchFactoryInterface;
 use Rollerworks\Component\Search\SearchField;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
-final class FieldSetBuilderTest extends TestCase
+final class GenericFieldSetBuilderTest extends TestCase
 {
     /**
-     * @var FieldSetBuilder
+     * @var GenericFieldSetBuilder
      */
     private $builder;
 
@@ -35,7 +35,7 @@ final class FieldSetBuilderTest extends TestCase
         // Prophecy binds the callback to the ObjectProphecy.
         $test = $this;
 
-        $factory = $this->prophesize(SearchFactory::class);
+        $factory = $this->prophesize(SearchFactoryInterface::class);
         $factory->createField(Argument::cetera())->will(
             function ($args) use ($test) {
                 $type = $test->prophesize(ResolvedFieldTypeInterface::class);
@@ -45,7 +45,7 @@ final class FieldSetBuilderTest extends TestCase
             }
         );
 
-        $this->builder = new FieldSetBuilder($factory->reveal());
+        $this->builder = new GenericFieldSetBuilder($factory->reveal());
     }
 
     public function testAddFields()

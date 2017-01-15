@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ResolvedFieldType implements ResolvedFieldTypeInterface
+class GenericResolvedFieldType implements ResolvedFieldTypeInterface
 {
     /**
      * @var FieldTypeInterface
@@ -35,7 +35,7 @@ class ResolvedFieldType implements ResolvedFieldTypeInterface
     private $typeExtensions;
 
     /**
-     * @var ResolvedFieldType
+     * @var GenericResolvedFieldType
      */
     private $parent;
 

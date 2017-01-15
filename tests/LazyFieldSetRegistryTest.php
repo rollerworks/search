@@ -16,9 +16,9 @@ namespace Rollerworks\Component\Search\Tests;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\FieldSetConfiguratorInterface;
-use Rollerworks\Component\Search\FieldSetRegistry;
+use Rollerworks\Component\Search\LazyFieldSetRegistry;
 
-final class FieldSetRegistryTest extends TestCase
+final class LazyFieldSetRegistryTest extends TestCase
 {
     /** @test */
     public function it_loads_configurator_lazily()
@@ -26,7 +26,7 @@ final class FieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
         $configurator2 = $this->createMock(FieldSetConfiguratorInterface::class);
 
-        $registry = new FieldSetRegistry(
+        $registry = new LazyFieldSetRegistry(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
@@ -57,7 +57,7 @@ final class FieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
         $configurator2 = $this->createMock(FieldSetConfiguratorInterface::class);
 
-        $registry = new FieldSetRegistry(
+        $registry = new LazyFieldSetRegistry(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
@@ -82,7 +82,7 @@ final class FieldSetRegistryTest extends TestCase
         $configurator2 = $this->createMock(FieldSetConfiguratorInterface::class);
         $name = get_class($configurator2);
 
-        $registry = new FieldSetRegistry(
+        $registry = new LazyFieldSetRegistry(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
@@ -109,7 +109,7 @@ final class FieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
         $configurator2 = \stdClass::class;
 
-        $registry = new FieldSetRegistry(
+        $registry = new LazyFieldSetRegistry(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
@@ -135,7 +135,7 @@ final class FieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfiguratorInterface::class);
         $configurator2 = 'f4394832948_foobar_cow';
 
-        $registry = new FieldSetRegistry(
+        $registry = new LazyFieldSetRegistry(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
