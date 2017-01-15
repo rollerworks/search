@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 
 /**
  * Transforms between a number type and a number with grouping
@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\DataTransformerInterface;
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-abstract class BaseNumberTransformer implements DataTransformerInterface
+abstract class BaseNumberTransformer implements DataTransformer
 {
     /**
      * Rounds a number towards positive infinity.

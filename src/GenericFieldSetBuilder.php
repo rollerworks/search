@@ -20,10 +20,10 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class GenericFieldSetBuilder implements FieldSetBuilderInterface
+final class GenericFieldSetBuilder implements FieldSetBuilder
 {
     /**
-     * @var FieldConfigInterface[]
+     * @var FieldConfig[]
      */
     private $fields = [];
 
@@ -33,11 +33,11 @@ final class GenericFieldSetBuilder implements FieldSetBuilderInterface
     private $unresolvedFields = [];
 
     /**
-     * @var SearchFactoryInterface
+     * @var SearchFactory
      */
     private $searchFactory;
 
-    public function __construct(SearchFactoryInterface $searchFactory)
+    public function __construct(SearchFactory $searchFactory)
     {
         $this->searchFactory = $searchFactory;
     }
@@ -45,7 +45,7 @@ final class GenericFieldSetBuilder implements FieldSetBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function set(FieldConfigInterface $field)
+    public function set(FieldConfig $field)
     {
         $this->fields[$field->getName()] = $field;
 

@@ -13,17 +13,17 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ConditionOptimizer;
 
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizer;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * Removes duplicated values.
@@ -38,7 +38,7 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DuplicateRemover implements SearchConditionOptimizerInterface
+class DuplicateRemover implements SearchConditionOptimizer
 {
     /**
      * {@inheritdoc}
@@ -68,7 +68,7 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
         }
     }
 
-    private function removeDuplicatesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
+    private function removeDuplicatesInValuesBag(FieldConfig $config, ValuesBag $valuesBag)
     {
         $comparison = $config->getValueComparison();
         $options = $config->getOptions();
@@ -84,16 +84,16 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
     }
 
     /**
-     * @param array                    $values
-     * @param ValuesBag                $valuesBag
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
-     * @param bool                     $exclude
+     * @param array           $values
+     * @param ValuesBag       $valuesBag
+     * @param ValueComparator $comparison
+     * @param array           $options
+     * @param bool            $exclude
      */
     private function removeDuplicateValues(
         array $values,
         ValuesBag $valuesBag,
-        ValueComparisonInterface $comparison,
+        ValueComparator $comparison,
         array $options,
         $exclude = false
     ) {
@@ -115,16 +115,16 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
     }
 
     /**
-     * @param Range[]                  $ranges
-     * @param ValuesBag                $valuesBag
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
-     * @param bool                     $exclude
+     * @param Range[]         $ranges
+     * @param ValuesBag       $valuesBag
+     * @param ValueComparator $comparison
+     * @param array           $options
+     * @param bool            $exclude
      */
     private function removeDuplicateRanges(
         array $ranges,
         ValuesBag $valuesBag,
-        ValueComparisonInterface $comparison,
+        ValueComparator $comparison,
         array $options,
         $exclude = false
     ) {
@@ -155,11 +155,11 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
     }
 
     /**
-     * @param ValuesBag                $valuesBag
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
+     * @param ValuesBag       $valuesBag
+     * @param ValueComparator $comparison
+     * @param array           $options
      */
-    private function removeDuplicateComparisons(ValuesBag $valuesBag, ValueComparisonInterface $comparison, array $options)
+    private function removeDuplicateComparisons(ValuesBag $valuesBag, ValueComparator $comparison, array $options)
     {
         /** @var Compare[] $comparisons */
         $comparisons = $valuesBag->get(Compare::class);
@@ -181,11 +181,11 @@ class DuplicateRemover implements SearchConditionOptimizerInterface
     }
 
     /**
-     * @param ValuesBag                $valuesBag
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
+     * @param ValuesBag       $valuesBag
+     * @param ValueComparator $comparison
+     * @param array           $options
      */
-    private function removeDuplicateMatchers(ValuesBag $valuesBag, ValueComparisonInterface $comparison, array $options)
+    private function removeDuplicateMatchers(ValuesBag $valuesBag, ValueComparator $comparison, array $options)
     {
         /** @var PatternMatch[] $matchers */
         $matchers = $valuesBag->get(PatternMatch::class);

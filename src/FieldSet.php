@@ -28,8 +28,8 @@ class FieldSet implements \IteratorAggregate
     /**
      * Constructor.
      *
-     * @param FieldConfigInterface[] $fields
-     * @param string|null            $name   FQCN of the FieldSet configurator
+     * @param FieldConfig[] $fields
+     * @param string|null   $name   FQCN of the FieldSet configurator
      */
     public function __construct(array $fields, string $name = null)
     {
@@ -54,7 +54,7 @@ class FieldSet implements \IteratorAggregate
      *
      * @throws \RuntimeException When the field is not registered at this Fieldset
      *
-     * @return FieldConfigInterface
+     * @return FieldConfig
      */
     public function get(string $name)
     {
@@ -68,7 +68,7 @@ class FieldSet implements \IteratorAggregate
     /**
      * Returns all the registered fields in the set.
      *
-     * @return FieldConfigInterface[] [name] => {FieldConfigInterface object})
+     * @return FieldConfig[] [name] => {FieldConfigInterface object})
      */
     public function all(): array
     {

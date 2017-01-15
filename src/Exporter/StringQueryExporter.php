@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
@@ -45,7 +45,7 @@ class StringQueryExporter extends AbstractExporter
      */
     public function __construct(callable $labelResolver = null)
     {
-        $this->labelResolver = $labelResolver ?? function (FieldConfigInterface $field) {
+        $this->labelResolver = $labelResolver ?? function (FieldConfig $field) {
             return $field->getOption('label', $field->getName());
         };
     }
@@ -128,7 +128,7 @@ class StringQueryExporter extends AbstractExporter
         throw new UnknownFieldException($name);
     }
 
-    private function exportValues(ValuesBag $valuesBag, FieldConfigInterface $field): string
+    private function exportValues(ValuesBag $valuesBag, FieldConfig $field): string
     {
         $exportedValues = '';
 
@@ -205,7 +205,7 @@ class StringQueryExporter extends AbstractExporter
         return $operator;
     }
 
-    private function exportRangeValue(Range $range, FieldConfigInterface $field): string
+    private function exportRangeValue(Range $range, FieldConfig $field): string
     {
         $result = !$range->isLowerInclusive() ? ']' : '';
         $result .= $this->exportValuePart($this->modelToView($range->getLower(), $field));

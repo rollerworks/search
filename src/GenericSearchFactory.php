@@ -18,14 +18,14 @@ use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class GenericSearchFactory implements SearchFactoryInterface
+final class GenericSearchFactory implements SearchFactory
 {
     private $registry;
     private $fieldSetRegistry;
     private $serializer;
     private $optimizer;
 
-    public function __construct(FieldRegistryInterface $registry, FieldSetRegistryInterface $fieldSetRegistry, SearchConditionOptimizerInterface $optimizer = null)
+    public function __construct(TypeRegistry $registry, FieldSetRegistry $fieldSetRegistry, SearchConditionOptimizer $optimizer = null)
     {
         $this->registry = $registry;
         $this->fieldSetRegistry = $fieldSetRegistry;
@@ -38,7 +38,7 @@ final class GenericSearchFactory implements SearchFactoryInterface
      */
     public function createFieldSet($configurator): FieldSet
     {
-        if (!$configurator instanceof FieldSetConfiguratorInterface) {
+        if (!$configurator instanceof FieldSetConfigurator) {
             $configurator = $this->fieldSetRegistry->getConfigurator($configurator);
         }
 
@@ -51,7 +51,7 @@ final class GenericSearchFactory implements SearchFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createField(string $name, string $type, array $options = []): FieldConfigInterface
+    public function createField(string $name, string $type, array $options = []): FieldConfig
     {
         $type = $this->registry->getType($type);
         $field = $type->createField($name, $options);
@@ -66,7 +66,7 @@ final class GenericSearchFactory implements SearchFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createFieldSetBuilder(): FieldSetBuilderInterface
+    public function createFieldSetBuilder(): FieldSetBuilder
     {
         return new GenericFieldSetBuilder($this);
     }

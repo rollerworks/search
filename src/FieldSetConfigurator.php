@@ -24,14 +24,14 @@ namespace Rollerworks\Component\Search;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FieldSetConfiguratorInterface
+interface FieldSetConfigurator
 {
     /**
      * Configure the FieldSet builder.
      *
-     * @param FieldSetBuilderInterface $builder
+     * @param FieldSetBuilder $builder
      *
      * @return void
      */
-    public function buildFieldSet(FieldSetBuilderInterface $builder);
+    public function buildFieldSet(FieldSetBuilder $builder);
 }

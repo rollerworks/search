@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Test;
 
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizer;
 
 abstract class SearchConditionOptimizerTestCase extends SearchIntegrationTestCase
 {
@@ -24,7 +24,7 @@ abstract class SearchConditionOptimizerTestCase extends SearchIntegrationTestCas
     protected $fieldSet;
 
     /**
-     * @var SearchConditionOptimizerInterface
+     * @var SearchConditionOptimizer
      */
     protected $optimizer;
 

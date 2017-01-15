@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FieldTypeExtensionInterface
+interface FieldTypeExtension
 {
     /**
      * Builds the type.
@@ -26,12 +26,12 @@ interface FieldTypeExtensionInterface
      * This method is called after the extended type has built the type to
      * further modify it.
      *
-     * @see FieldTypeInterface::buildType()
+     * @see SearchFieldType::buildType()
      *
-     * @param FieldConfigInterface $builder The config builder
-     * @param array                $options The options
+     * @param FieldConfig $builder The config builder
+     * @param array       $options The options
      */
-    public function buildType(FieldConfigInterface $builder, array $options);
+    public function buildType(FieldConfig $builder, array $options);
 
     /**
      * Builds the SearchFieldView.
@@ -39,10 +39,10 @@ interface FieldTypeExtensionInterface
      * This method is called after the extended type has built the view to
      * further modify it.
      *
-     * @param FieldConfigInterface $config
-     * @param SearchFieldView      $view
+     * @param FieldConfig     $config
+     * @param SearchFieldView $view
      */
-    public function buildView(FieldConfigInterface $config, SearchFieldView $view);
+    public function buildView(FieldConfig $config, SearchFieldView $view);
 
     /**
      * Overrides the default options from the extended type.

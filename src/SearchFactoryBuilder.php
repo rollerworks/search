@@ -19,17 +19,17 @@ namespace Rollerworks\Component\Search;
 class SearchFactoryBuilder
 {
     /**
-     * @var ResolvedFieldTypeFactoryInterface
+     * @var ResolvedFieldTypeFactory
      */
     private $resolvedTypeFactory;
 
     /**
-     * @var SearchExtensionInterface[]
+     * @var SearchExtension[]
      */
     private $extensions = [];
 
     /**
-     * @var FieldTypeInterface[]
+     * @var FieldType[]
      */
     private $types = [];
 
@@ -39,23 +39,23 @@ class SearchFactoryBuilder
     private $typeExtensions = [];
 
     /**
-     * @var FieldSetRegistryInterface
+     * @var FieldSetRegistry
      */
     private $fieldSetRegistry;
 
     /**
-     * @var SearchConditionOptimizerInterface
+     * @var SearchConditionOptimizer
      */
     private $conditionOptimizer;
 
     /**
      * Sets the factory for creating ResolvedFieldTypeInterface instances.
      *
-     * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory
+     * @param ResolvedFieldTypeFactory $resolvedTypeFactory
      *
      * @return $this The builder
      */
-    public function setResolvedTypeFactory(ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
+    public function setResolvedTypeFactory(ResolvedFieldTypeFactory $resolvedTypeFactory)
     {
         $this->resolvedTypeFactory = $resolvedTypeFactory;
 
@@ -65,11 +65,11 @@ class SearchFactoryBuilder
     /**
      * Sets the default SearchCondition optimizer.
      *
-     * @param SearchConditionOptimizerInterface $conditionOptimizer
+     * @param SearchConditionOptimizer $conditionOptimizer
      *
      * @return $this The builder
      */
-    public function setSearchConditionOptimizer(SearchConditionOptimizerInterface $conditionOptimizer)
+    public function setSearchConditionOptimizer(SearchConditionOptimizer $conditionOptimizer)
     {
         $this->conditionOptimizer = $conditionOptimizer;
 
@@ -79,11 +79,11 @@ class SearchFactoryBuilder
     /**
      * Adds an extension to be loaded by the factory.
      *
-     * @param SearchExtensionInterface $extension The extension
+     * @param SearchExtension $extension The extension
      *
      * @return $this The builder
      */
-    public function addExtension(SearchExtensionInterface $extension)
+    public function addExtension(SearchExtension $extension)
     {
         $this->extensions[] = $extension;
 
@@ -93,7 +93,7 @@ class SearchFactoryBuilder
     /**
      * Adds a list of extensions to be loaded by the factory.
      *
-     * @param SearchExtensionInterface[] $extensions The extensions
+     * @param SearchExtension[] $extensions The extensions
      *
      * @return $this The builder
      */
@@ -107,11 +107,11 @@ class SearchFactoryBuilder
     /**
      * Adds a field type to the factory.
      *
-     * @param FieldTypeInterface $type The field type
+     * @param FieldType $type The field type
      *
      * @return $this The builder
      */
-    public function addType(FieldTypeInterface $type)
+    public function addType(FieldType $type)
     {
         $this->types[get_class($type)] = $type;
 
@@ -121,7 +121,7 @@ class SearchFactoryBuilder
     /**
      * Adds a list of field types to the factory.
      *
-     * @param FieldTypeInterface[] $types The field types
+     * @param FieldType[] $types The field types
      *
      * @return $this The builder
      */
@@ -137,11 +137,11 @@ class SearchFactoryBuilder
     /**
      * Adds a field type extension to the factory.
      *
-     * @param FieldTypeExtensionInterface $typeExtension The field type extension
+     * @param FieldTypeExtension $typeExtension The field type extension
      *
      * @return $this The builder
      */
-    public function addTypeExtension(FieldTypeExtensionInterface $typeExtension)
+    public function addTypeExtension(FieldTypeExtension $typeExtension)
     {
         $this->typeExtensions[$typeExtension->getExtendedType()][] = $typeExtension;
 
@@ -151,7 +151,7 @@ class SearchFactoryBuilder
     /**
      * Adds a list of field type extension to the factory.
      *
-     * @param FieldTypeExtensionInterface[] $typeExtensions The field type extension
+     * @param FieldTypeExtension[] $typeExtensions The field type extension
      *
      * @return $this The builder
      */
@@ -167,9 +167,9 @@ class SearchFactoryBuilder
     /**
      * Builds and returns the factory.
      *
-     * @return SearchFactoryInterface The search factory
+     * @return SearchFactory The search factory
      */
-    public function getSearchFactory(): SearchFactoryInterface
+    public function getSearchFactory(): SearchFactory
     {
         $extensions = $this->extensions;
 

@@ -22,15 +22,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class GenericResolvedFieldType implements ResolvedFieldTypeInterface
+class GenericResolvedFieldType implements ResolvedFieldType
 {
     /**
-     * @var FieldTypeInterface
+     * @var FieldType
      */
     private $innerType;
 
     /**
-     * @var FieldTypeExtensionInterface[]
+     * @var FieldTypeExtension[]
      */
     private $typeExtensions;
 
@@ -47,17 +47,17 @@ class GenericResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * Constructor.
      *
-     * @param FieldTypeInterface         $innerType
-     * @param array                      $typeExtensions
-     * @param ResolvedFieldTypeInterface $parent
+     * @param FieldType         $innerType
+     * @param array             $typeExtensions
+     * @param ResolvedFieldType $parent
      *
-     * @throws UnexpectedTypeException When at least one of the given extensions is not an FieldTypeExtensionInterface
+     * @throws UnexpectedTypeException When at least one of the given extensions is not an FieldTypeExtension
      */
-    public function __construct(FieldTypeInterface $innerType, array $typeExtensions = [], ResolvedFieldTypeInterface $parent = null)
+    public function __construct(FieldType $innerType, array $typeExtensions = [], ResolvedFieldType $parent = null)
     {
         foreach ($typeExtensions as $extension) {
-            if (!$extension instanceof FieldTypeExtensionInterface) {
-                throw new UnexpectedTypeException($extension, FieldTypeExtensionInterface::class);
+            if (!$extension instanceof FieldTypeExtension) {
+                throw new UnexpectedTypeException($extension, FieldTypeExtension::class);
             }
         }
 
@@ -77,7 +77,7 @@ class GenericResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function getInnerType(): FieldTypeInterface
+    public function getInnerType(): FieldType
     {
         return $this->innerType;
     }
@@ -93,7 +93,7 @@ class GenericResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function createField(string $name, array $options = []): FieldConfigInterface
+    public function createField(string $name, array $options = []): FieldConfig
     {
         $options = $this->getOptionsResolver()->resolve($options);
 
@@ -103,7 +103,7 @@ class GenericResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $config, array $options)
+    public function buildType(FieldConfig $config, array $options)
     {
         if (null !== $this->parent) {
             $this->parent->buildType($config, $options);
@@ -119,7 +119,7 @@ class GenericResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function createFieldView(FieldConfigInterface $config)
+    public function createFieldView(FieldConfig $config)
     {
         $view = $this->newFieldView($config);
         $view->vars = array_merge($view->vars, [
@@ -135,7 +135,7 @@ class GenericResolvedFieldType implements ResolvedFieldTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options)
     {
         if (null !== $this->parent) {
             $this->parent->buildFieldView($view, $config, $options);
@@ -178,9 +178,9 @@ class GenericResolvedFieldType implements ResolvedFieldTypeInterface
      * @param string $name    The name of the field
      * @param array  $options The builder options
      *
-     * @return FieldConfigInterface The new field instance
+     * @return FieldConfig The new field instance
      */
-    protected function newField($name, array $options): FieldConfigInterface
+    protected function newField($name, array $options): FieldConfig
     {
         return new SearchField($name, $this, $options);
     }
@@ -190,11 +190,11 @@ class GenericResolvedFieldType implements ResolvedFieldTypeInterface
      *
      * Override this method if you want to customize the view class.
      *
-     * @param FieldConfigInterface $config The search field
+     * @param FieldConfig $config The search field
      *
      * @return SearchFieldView The new view instance
      */
-    protected function newFieldView(FieldConfigInterface $config): SearchFieldView
+    protected function newFieldView(FieldConfig $config): SearchFieldView
     {
         return new SearchFieldView($config);
     }

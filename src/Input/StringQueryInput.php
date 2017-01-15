@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Input\StringQuery\Lexer;
 use Rollerworks\Component\Search\Input\StringQuery\QueryException;
@@ -166,7 +166,7 @@ class StringQueryInput extends AbstractInput
     public function __construct(Validator $validator = null, callable $labelResolver = null)
     {
         $this->lexer = new Lexer();
-        $this->labelResolver = $labelResolver ?? function (FieldConfigInterface $field) {
+        $this->labelResolver = $labelResolver ?? function (FieldConfig $field) {
             return $field->getOption('label', $field->getName());
         };
 
@@ -414,13 +414,13 @@ class StringQueryInput extends AbstractInput
      * FieldValues ::= [ "!" ] String {"," [ "!" ] String |
      *     [ "!" ] Range | Comparison | PatternMatch}* [ ";" ].
      *
-     * @param FieldConfigInterface $field
-     * @param ValuesBag            $valuesBag
-     * @param string               $path
+     * @param FieldConfig $field
+     * @param ValuesBag   $valuesBag
+     * @param string      $path
      *
      * @return ValuesBag
      */
-    private function fieldValues(FieldConfigInterface $field, ValuesBag $valuesBag, string $path)
+    private function fieldValues(FieldConfig $field, ValuesBag $valuesBag, string $path)
     {
         $hasValues = false;
         $this->valuesFactory->initContext($field, $valuesBag, $path);

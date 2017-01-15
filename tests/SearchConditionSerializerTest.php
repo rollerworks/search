@@ -15,11 +15,11 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionSerializer;
-use Rollerworks\Component\Search\SearchFactoryInterface;
+use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
@@ -35,12 +35,12 @@ final class SearchConditionSerializerTest extends TestCase
 
     protected function setUp()
     {
-        $field = $this->createMock(FieldConfigInterface::class);
+        $field = $this->createMock(FieldConfig::class);
         $field->expects(self::any())->method('getName')->willReturn('id');
 
         $this->fieldSet = new FieldSet(['id' => $field], 'foobar');
 
-        $factory = $this->prophesize(SearchFactoryInterface::class);
+        $factory = $this->prophesize(SearchFactory::class);
         $factory->createFieldSet('foobar')->willReturn($this->fieldSet);
 
         $this->serializer = new SearchConditionSerializer($factory->reveal());

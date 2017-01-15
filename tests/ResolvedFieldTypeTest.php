@@ -16,9 +16,9 @@ namespace Rollerworks\Component\Search\Tests;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\AbstractFieldTypeExtension;
-use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\FieldTypeExtensionInterface;
-use Rollerworks\Component\Search\FieldTypeInterface;
+use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\FieldType;
+use Rollerworks\Component\Search\FieldTypeExtension;
 use Rollerworks\Component\Search\GenericResolvedFieldType;
 use Rollerworks\Component\Search\SearchFieldView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,22 +26,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class ResolvedFieldTypeTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|FieldType
      */
     private $parentType;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|FieldType
      */
     private $type;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeExtensionInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeExtension
      */
     private $extension1;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeExtensionInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeExtension
      */
     private $extension2;
 
@@ -273,7 +273,7 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private function createFieldMock()
     {
-        return $this->getMockBuilder(FieldConfigInterface::class)->getMock();
+        return $this->getMockBuilder(FieldConfig::class)->getMock();
     }
 
     /**

@@ -14,20 +14,20 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
-use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
+use Rollerworks\Component\Search\ResolvedFieldType;
 use Rollerworks\Component\Search\SearchField;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 
 final class SearchFieldTest extends TestCase
 {
     /**
-     * @var \Rollerworks\Component\Search\ResolvedFieldTypeInterface
+     * @var \Rollerworks\Component\Search\ResolvedFieldType
      */
     private $resolvedType;
 
@@ -38,7 +38,7 @@ final class SearchFieldTest extends TestCase
 
     protected function setUp()
     {
-        $this->resolvedType = $this->getMockBuilder(ResolvedFieldTypeInterface::class)->getMock();
+        $this->resolvedType = $this->getMockBuilder(ResolvedFieldType::class)->getMock();
         $this->field = new SearchField('foobar', $this->resolvedType, ['name' => 'value']);
     }
 
@@ -137,7 +137,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_allows_setting_a_comparison_class()
     {
-        $comparisonObj = $this->getMockBuilder(ValueComparisonInterface::class)->getMock();
+        $comparisonObj = $this->getMockBuilder(ValueComparator::class)->getMock();
 
         $this->field->setValueComparison($comparisonObj);
         self::assertEquals($comparisonObj, $this->field->getValueComparison());
@@ -224,6 +224,6 @@ final class SearchFieldTest extends TestCase
      */
     private function createTransformerMock()
     {
-        return $this->getMockBuilder(DataTransformerInterface::class)->getMock();
+        return $this->getMockBuilder(DataTransformer::class)->getMock();
     }
 }

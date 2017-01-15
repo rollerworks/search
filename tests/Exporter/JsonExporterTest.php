@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Exporter;
 
+use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\JsonExporter;
-use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\Input\JsonInput;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
 final class JsonExporterTest extends SearchConditionExporterTestCase
@@ -218,12 +218,12 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
         return json_encode(['groups' => [[]]]);
     }
 
-    protected function getExporter(): ExporterInterface
+    protected function getExporter(): ConditionExporter
     {
         return new JsonExporter();
     }
 
-    protected function getInputProcessor(): InputProcessorInterface
+    protected function getInputProcessor(): InputProcessor
     {
         return new JsonInput();
     }

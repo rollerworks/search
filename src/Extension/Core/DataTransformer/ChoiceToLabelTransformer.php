@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ChoiceToLabelTransformer implements DataTransformerInterface
+class ChoiceToLabelTransformer implements DataTransformer
 {
     private $choiceList;
     private $choiceListView;

@@ -16,18 +16,18 @@ namespace Rollerworks\Component\Search;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface ResolvedFieldTypeFactoryInterface
+interface ResolvedFieldTypeFactory
 {
     /**
      * Resolves a field type.
      *
-     * @param FieldTypeInterface         $type
-     * @param array                      $typeExtensions
-     * @param ResolvedFieldTypeInterface $parent
+     * @param FieldType         $type
+     * @param array             $typeExtensions
+     * @param ResolvedFieldType $parent
      *
      * @throws Exception\InvalidArgumentException if the types parent cannot be retrieved from any extension
      *
-     * @return ResolvedFieldTypeInterface
+     * @return ResolvedFieldType
      */
-    public function createResolvedType(FieldTypeInterface $type, array $typeExtensions, ResolvedFieldTypeInterface $parent = null): ResolvedFieldTypeInterface;
+    public function createResolvedType(FieldType $type, array $typeExtensions, ResolvedFieldType $parent = null): ResolvedFieldType;
 }

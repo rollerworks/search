@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Test;
 
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\Exception\ExceptionInterface;
+use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\GenericSearchFactory;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
@@ -119,7 +119,7 @@ abstract class SearchIntegrationTestCase extends TestCase
     protected function assertConditionEquals(
         $input,
         SearchCondition $condition,
-        InputProcessorInterface $processor,
+        InputProcessor $processor,
         ProcessorConfig $config
     ) {
         try {
@@ -142,7 +142,7 @@ abstract class SearchIntegrationTestCase extends TestCase
 
     protected static function detectSystemException(\Exception $exception)
     {
-        if (!$exception instanceof ExceptionInterface) {
+        if (!$exception instanceof SearchException) {
             throw $exception;
         }
     }

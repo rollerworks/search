@@ -18,26 +18,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * A wrapper for a field type and its extensions.
  */
-interface ResolvedFieldTypeInterface
+interface ResolvedFieldType
 {
     /**
      * Returns the parent type.
      *
-     * @return ResolvedFieldTypeInterface|null The parent type or null
+     * @return ResolvedFieldType|null The parent type or null
      */
     public function getParent();
 
     /**
      * Returns the wrapped field type.
      *
-     * @return FieldTypeInterface The wrapped field type
+     * @return FieldType The wrapped field type
      */
-    public function getInnerType(): FieldTypeInterface;
+    public function getInnerType(): FieldType;
 
     /**
      * Returns the extensions of the wrapped field type.
      *
-     * @return FieldTypeExtensionInterface[]
+     * @return FieldTypeExtension[]
      */
     public function getTypeExtensions(): array;
 
@@ -47,9 +47,9 @@ interface ResolvedFieldTypeInterface
      * @param string $name
      * @param array  $options
      *
-     * @return FieldConfigInterface
+     * @return FieldConfig
      */
-    public function createField(string $name, array $options = []): FieldConfigInterface;
+    public function createField(string $name, array $options = []): FieldConfig;
 
     /**
      * This configures the {@link FieldConfigInterface}.
@@ -57,28 +57,28 @@ interface ResolvedFieldTypeInterface
      * This method is called for each type in the hierarchy starting from the
      * top most type. Type extensions can further modify the field.
      *
-     * @param FieldConfigInterface $config
-     * @param array                $options
+     * @param FieldConfig $config
+     * @param array       $options
      */
-    public function buildType(FieldConfigInterface $config, array $options);
+    public function buildType(FieldConfig $config, array $options);
 
     /**
      * Creates a new SearchFieldView for a field of this type.
      *
-     * @param FieldConfigInterface $config
+     * @param FieldConfig $config
      *
      * @return SearchFieldView
      */
-    public function createFieldView(FieldConfigInterface $config);
+    public function createFieldView(FieldConfig $config);
 
     /**
      * Configures a SearchFieldView for the type hierarchy.
      *
-     * @param SearchFieldView      $view
-     * @param FieldConfigInterface $config
-     * @param array                $options
+     * @param SearchFieldView $view
+     * @param FieldConfig     $config
+     * @param array           $options
      */
-    public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options);
+    public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options);
 
     /**
      * Returns the configured options resolver used for this type.

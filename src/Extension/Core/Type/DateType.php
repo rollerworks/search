@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
@@ -33,7 +33,7 @@ class DateType extends BaseDateTimeType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $config, array $options)
+    public function buildType(FieldConfig $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
         $config->setValueTypeSupport(Range::class, true);
@@ -71,7 +71,7 @@ class DateType extends BaseDateTimeType
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
     {
         $pattern = $options['pattern'];
 

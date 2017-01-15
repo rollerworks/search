@@ -27,7 +27,7 @@ class SearchConditionSerializer
 {
     private $searchFactory;
 
-    public function __construct(SearchFactoryInterface $searchFactory)
+    public function __construct(SearchFactory $searchFactory)
     {
         $this->searchFactory = $searchFactory;
     }

@@ -13,22 +13,22 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ConditionOptimizer;
 
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizer;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValueIncrementerInterface;
+use Rollerworks\Component\Search\ValueIncrementer;
 
 /**
  * Converts incremented values to inclusive ranges.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesToRange implements SearchConditionOptimizerInterface
+class ValuesToRange implements SearchConditionOptimizer
 {
     private $comparators = [];
 
@@ -85,7 +85,7 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         }
     }
 
-    private function optimizeValuesInValuesBag(FieldConfigInterface $config, ValueSortCompare $comparisonFunc, ValuesBag $valuesBag)
+    private function optimizeValuesInValuesBag(FieldConfig $config, ValueSortCompare $comparisonFunc, ValuesBag $valuesBag)
     {
         if ($valuesBag->hasSimpleValues()) {
             $values = $valuesBag->getSimpleValues();
@@ -102,10 +102,10 @@ class ValuesToRange implements SearchConditionOptimizerInterface
         }
     }
 
-    private function listToRanges(array $values, ValuesBag $valuesBag, FieldConfigInterface $config, bool $exclude = false)
+    private function listToRanges(array $values, ValuesBag $valuesBag, FieldConfig $config, bool $exclude = false)
     {
         $class = $exclude ? ExcludedRange::class : Range::class;
-        /** @var ValueIncrementerInterface $comparison */
+        /** @var ValueIncrementer $comparison */
         $comparison = $config->getValueComparison();
         $options = $config->getOptions();
 

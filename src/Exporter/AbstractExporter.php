@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exporter;
 
-use Rollerworks\Component\Search\ExporterInterface;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\ConditionExporter;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-abstract class AbstractExporter implements ExporterInterface
+abstract class AbstractExporter implements ConditionExporter
 {
     /**
      * Exports a search condition.
@@ -104,12 +104,12 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * Transforms the model value to a view representation.
      *
-     * @param mixed                $value
-     * @param FieldConfigInterface $field
+     * @param mixed       $value
+     * @param FieldConfig $field
      *
      * @return string
      */
-    protected function modelToView($value, FieldConfigInterface $field): string
+    protected function modelToView($value, FieldConfig $field): string
     {
         $transformer = $field->getViewTransformer();
 
@@ -137,12 +137,12 @@ abstract class AbstractExporter implements ExporterInterface
     /**
      * Transforms the model value to a normalized version.
      *
-     * @param mixed                $value
-     * @param FieldConfigInterface $field
+     * @param mixed       $value
+     * @param FieldConfig $field
      *
      * @return string
      */
-    protected function modelToNorm($value, FieldConfigInterface $field): string
+    protected function modelToNorm($value, FieldConfig $field): string
     {
         $transformer = $field->getNormTransformer();
 

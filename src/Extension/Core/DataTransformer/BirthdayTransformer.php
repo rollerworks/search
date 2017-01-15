@@ -13,17 +13,17 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
 /**
  * Transforms between a date string and a DateTime object
  * and between a ISO string and an integer.
  */
-class BirthdayTransformer implements DataTransformerInterface
+class BirthdayTransformer implements DataTransformer
 {
     /**
-     * @var DataTransformerInterface
+     * @var DataTransformer
      */
     private $transformer;
 
@@ -38,11 +38,11 @@ class BirthdayTransformer implements DataTransformerInterface
     private $allowFutureDate;
 
     /**
-     * @param DataTransformerInterface $transformer
-     * @param bool                     $allowAge
-     * @param bool                     $allowFutureDate
+     * @param DataTransformer $transformer
+     * @param bool            $allowAge
+     * @param bool            $allowFutureDate
      */
-    public function __construct(DataTransformerInterface $transformer, bool $allowAge = true, bool $allowFutureDate = false)
+    public function __construct(DataTransformer $transformer, bool $allowAge = true, bool $allowFutureDate = false)
     {
         $this->transformer = $transformer;
         $this->allowFutureDate = $allowFutureDate;

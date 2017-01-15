@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FieldSetBuilderInterface
+interface FieldSetBuilder
 {
     /**
      * Add a field to the builder.
@@ -34,11 +34,11 @@ interface FieldSetBuilderInterface
     /**
      * Set a field on the builder.
      *
-     * @param FieldConfigInterface $field
+     * @param FieldConfig $field
      *
-     * @return FieldSetBuilderInterface
+     * @return FieldSetBuilder
      */
-    public function set(FieldConfigInterface $field);
+    public function set(FieldConfig $field);
 
     /**
      * Remove a field from the set-builder.
@@ -65,7 +65,7 @@ interface FieldSetBuilderInterface
      *
      * @param string $name
      *
-     * @return FieldConfigInterface
+     * @return FieldConfig
      */
     public function get(string $name);
 

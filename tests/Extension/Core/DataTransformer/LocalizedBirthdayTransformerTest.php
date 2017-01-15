@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\LocalizedBirthdayTransformer;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -32,7 +32,7 @@ class LocalizedBirthdayTransformerTest extends TestCase
     /** @test */
     public function it_transforms_age_to_integer()
     {
-        $dateTransformer = $this->prophesize(DataTransformerInterface::class);
+        $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform(Argument::any())->shouldNotBeCalled();
         $dateTransformer->transform(Argument::any())->shouldNotBeCalled();
 
@@ -50,7 +50,7 @@ class LocalizedBirthdayTransformerTest extends TestCase
 
         \Locale::setDefault('ar');
 
-        $dateTransformer = $this->prophesize(DataTransformerInterface::class);
+        $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform(Argument::any())->shouldNotBeCalled();
         $dateTransformer->transform(Argument::any())->shouldNotBeCalled();
 
@@ -65,7 +65,7 @@ class LocalizedBirthdayTransformerTest extends TestCase
     {
         $date = new \DateTime('2010-03-05 00:00:00 UTC');
 
-        $dateTransformer = $this->prophesize(DataTransformerInterface::class);
+        $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform('2010-03-05')->willReturn($date);
         $dateTransformer->transform($date)->willReturn('2010-03-05');
 
@@ -83,7 +83,7 @@ class LocalizedBirthdayTransformerTest extends TestCase
     {
         $date = new \DateTime('2010-03-05 00:00:00 UTC');
 
-        $dateTransformer = $this->prophesize(DataTransformerInterface::class);
+        $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform('2010-03-05')->willReturn($date);
         $dateTransformer->transform($date)->willReturn('2010-03-05');
 
@@ -114,7 +114,7 @@ class LocalizedBirthdayTransformerTest extends TestCase
     {
         $dateObj = new \DateTime('tomorrow');
 
-        $dateTransformer = $this->prophesize(DataTransformerInterface::class);
+        $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform($dateObj->format('Y-m-d'))->willReturn($dateObj);
 
         $transformer = new LocalizedBirthdayTransformer($dateTransformer->reveal());
@@ -130,7 +130,7 @@ class LocalizedBirthdayTransformerTest extends TestCase
     {
         $dateObj = new \DateTime('tomorrow');
 
-        $dateTransformer = $this->prophesize(DataTransformerInterface::class);
+        $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform($dateObj->format('Y-m-d'))->willReturn($dateObj);
         $dateTransformer->transform($dateObj)->willReturn($dateObj->format('Y-m-d'));
 

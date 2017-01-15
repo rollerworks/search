@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
-interface FieldSetRegistryInterface
+interface FieldSetRegistry
 {
     /**
      * Returns a FieldSetConfiguratorInterface by name.
@@ -24,9 +24,9 @@ interface FieldSetRegistryInterface
      *
      * @throws InvalidArgumentException if the configurator can not be retrieved
      *
-     * @return FieldSetConfiguratorInterface
+     * @return FieldSetConfigurator
      */
-    public function getConfigurator(string $name): FieldSetConfiguratorInterface;
+    public function getConfigurator(string $name): FieldSetConfigurator;
 
     /**
      * Returns whether the given FieldSetConfigurator is supported.

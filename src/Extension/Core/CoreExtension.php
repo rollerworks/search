@@ -31,7 +31,7 @@ class CoreExtension extends AbstractExtension
         $numberComparison = new ValueComparison\NumberValueComparison();
 
         return [
-            new Type\FieldType(new ValueComparison\SimpleValueComparison()),
+            new Type\SearchFieldType(new ValueComparison\SimpleValueComparison()),
             new Type\DateType(new ValueComparison\DateValueComparison()),
             new Type\DateTimeType($dateTimeComparison),
             new Type\TimeType($dateTimeComparison),

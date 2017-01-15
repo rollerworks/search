@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
@@ -37,7 +37,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 {
-    abstract protected function getProcessor(): InputProcessorInterface;
+    abstract protected function getProcessor(): InputProcessor;
 
     /**
      * {@inheritdoc}

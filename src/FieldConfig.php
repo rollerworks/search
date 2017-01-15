@@ -18,7 +18,7 @@ namespace Rollerworks\Component\Search;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FieldConfigInterface
+interface FieldConfig
 {
     /**
      * Returns the name of field.
@@ -30,9 +30,9 @@ interface FieldConfigInterface
     /**
      * Returns the field type used to construct the field.
      *
-     * @return ResolvedFieldTypeInterface The field's type
+     * @return ResolvedFieldType The field's type
      */
-    public function getType(): ResolvedFieldTypeInterface;
+    public function getType(): ResolvedFieldType;
 
     /**
      * Returns whether value-type $type is accepted by the field.
@@ -61,14 +61,14 @@ interface FieldConfigInterface
      * Set the {@link ValueComparisonInterface} instance for optimizing
      * and validation.
      *
-     * @param ValueComparisonInterface $comparisonObj
+     * @param ValueComparator $comparisonObj
      */
-    public function setValueComparison(ValueComparisonInterface $comparisonObj);
+    public function setValueComparison(ValueComparator $comparisonObj);
 
     /**
      * Returns the configured {@link ValueComparisonInterface} instance.
      *
-     * @return ValueComparisonInterface|null
+     * @return ValueComparator|null
      */
     public function getValueComparison();
 
@@ -80,15 +80,15 @@ interface FieldConfigInterface
      * The transform method of the transformer is used to convert from the
      * view to the model format.
      *
-     * @param DataTransformerInterface|null $viewTransformer Use null to remove the
-     *                                                       transformer
+     * @param DataTransformer|null $viewTransformer Use null to remove the
+     *                                              transformer
      */
-    public function setViewTransformer(DataTransformerInterface $viewTransformer = null);
+    public function setViewTransformer(DataTransformer $viewTransformer = null);
 
     /**
      * Returns the view transformer of the field.
      *
-     * @return DataTransformerInterface|null
+     * @return DataTransformer|null
      */
     public function getViewTransformer();
 
@@ -100,15 +100,15 @@ interface FieldConfigInterface
      * The reverseTransform method of the transformer is used to convert from the
      * model to the normalized format.
      *
-     * @param DataTransformerInterface|null $viewTransformer Use null to remove the
-     *                                                       transformer
+     * @param DataTransformer|null $viewTransformer Use null to remove the
+     *                                              transformer
      */
-    public function setNormTransformer(DataTransformerInterface $viewTransformer = null);
+    public function setNormTransformer(DataTransformer $viewTransformer = null);
 
     /**
      * Returns the normalize transformer of the field.
      *
-     * @return DataTransformerInterface|null
+     * @return DataTransformer|null
      */
     public function getNormTransformer();
 

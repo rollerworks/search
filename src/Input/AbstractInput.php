@@ -17,14 +17,14 @@ use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 
 /**
  * AbstractInput provides the shared logic for the InputProcessors.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-abstract class AbstractInput implements InputProcessorInterface
+abstract class AbstractInput implements InputProcessor
 {
     /**
      * @var ProcessorConfig

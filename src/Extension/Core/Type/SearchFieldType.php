@@ -14,26 +14,26 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\AbstractFieldType;
-use Rollerworks\Component\Search\FieldConfigInterface;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldType extends AbstractFieldType
+class SearchFieldType extends AbstractFieldType
 {
     /**
-     * @var ValueComparisonInterface
+     * @var ValueComparator
      */
     private $valueComparison;
 
     /**
      * Constructor.
      *
-     * @param ValueComparisonInterface $valueComparison
+     * @param ValueComparator $valueComparison
      */
-    public function __construct(ValueComparisonInterface $valueComparison)
+    public function __construct(ValueComparator $valueComparison)
     {
         $this->valueComparison = $valueComparison;
     }
@@ -49,7 +49,7 @@ class FieldType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $config, array $options)
+    public function buildType(FieldConfig $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
     }

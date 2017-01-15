@@ -16,11 +16,11 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\LocalizedBirthdayTransformer;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -30,16 +30,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class BirthdayType extends AbstractFieldType
 {
     /**
-     * @var ValueComparisonInterface
+     * @var ValueComparator
      */
     private $valueComparison;
 
     /**
      * Constructor.
      *
-     * @param ValueComparisonInterface $valueComparison
+     * @param ValueComparator $valueComparison
      */
-    public function __construct(ValueComparisonInterface $valueComparison)
+    public function __construct(ValueComparator $valueComparison)
     {
         $this->valueComparison = $valueComparison;
     }
@@ -47,7 +47,7 @@ class BirthdayType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $config, array $options)
+    public function buildType(FieldConfig $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
         $config->setValueTypeSupport(Range::class, true);
@@ -73,7 +73,7 @@ class BirthdayType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
     {
         $view->vars['allow_age'] = $options['allow_age'];
         $view->vars['allow_future_date'] = $options['allow_future_date'];

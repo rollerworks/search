@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
 
-use Rollerworks\Component\Search\ValueIncrementerInterface;
+use Rollerworks\Component\Search\ValueIncrementer;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DateValueComparison implements ValueIncrementerInterface
+class DateValueComparison implements ValueIncrementer
 {
     /**
      * Returns whether the first value is higher then the second value.

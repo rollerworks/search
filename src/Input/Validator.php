@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\ErrorList;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 
 /**
  * The Validator validates input values according to a set of
@@ -29,12 +29,12 @@ interface Validator
      *
      * Whenever calling validate(), this context needs to be used.
      *
-     * @param FieldConfigInterface $field
-     * @param ErrorList            $errorList
+     * @param FieldConfig $field
+     * @param ErrorList   $errorList
      *
      * @return void
      */
-    public function initializeContext(FieldConfigInterface $field, ErrorList $errorList);
+    public function initializeContext(FieldConfig $field, ErrorList $errorList);
 
     /**
      * Validates and returns whether the value is valid.

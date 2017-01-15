@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exporter;
 
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
@@ -65,7 +65,7 @@ class ArrayExporter extends AbstractExporter
         return $result;
     }
 
-    protected function exportValues(ValuesBag $valuesBag, FieldConfigInterface $field): array
+    protected function exportValues(ValuesBag $valuesBag, FieldConfig $field): array
     {
         $exportedValues = [];
 
@@ -103,7 +103,7 @@ class ArrayExporter extends AbstractExporter
         return $exportedValues;
     }
 
-    protected function exportRangeValue(Range $range, FieldConfigInterface $field): array
+    protected function exportRangeValue(Range $range, FieldConfig $field): array
     {
         $result = [
             'lower' => $this->modelToNorm($range->getLower(), $field),

@@ -15,12 +15,12 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Rollerworks\Component\Search\FieldTypeExtensionInterface;
-use Rollerworks\Component\Search\FieldTypeInterface;
+use Rollerworks\Component\Search\FieldType;
+use Rollerworks\Component\Search\FieldTypeExtension;
 use Rollerworks\Component\Search\GenericResolvedFieldTypeFactory;
 use Rollerworks\Component\Search\GenericTypeRegistry;
 use Rollerworks\Component\Search\PreloadedExtension;
-use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
+use Rollerworks\Component\Search\ResolvedFieldType;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
@@ -49,9 +49,9 @@ final class TypeRegistryTest extends TestCase
         self::assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
         self::assertFalse($registry->hasType('text'));
 
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooSubType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(BarType::class));
     }
 
     /**
@@ -84,22 +84,22 @@ final class TypeRegistryTest extends TestCase
         self::assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
         self::assertFalse($registry->hasType('text'));
 
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooSubType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(BarType::class));
     }
 
-    private function createResolvedTypeMock(FieldTypeInterface $type): ResolvedFieldTypeInterface
+    private function createResolvedTypeMock(FieldType $type): ResolvedFieldType
     {
-        $resolvedType = $this->createMock(ResolvedFieldTypeInterface::class);
+        $resolvedType = $this->createMock(ResolvedFieldType::class);
         $resolvedType->expects($this->any())->method('getInnerType')->willReturn($type);
 
         return $resolvedType;
     }
 
-    private function createTypeExtensionMock(string $name): FieldTypeExtensionInterface
+    private function createTypeExtensionMock(string $name): FieldTypeExtension
     {
-        $fieldExtension = $this->createMock(FieldTypeExtensionInterface::class);
+        $fieldExtension = $this->createMock(FieldTypeExtension::class);
         $fieldExtension->expects($this->any())->method('getExtendedType')->willReturn($name);
 
         return $fieldExtension;

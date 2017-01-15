@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-class GenericResolvedFieldTypeFactory implements ResolvedFieldTypeFactoryInterface
+class GenericResolvedFieldTypeFactory implements ResolvedFieldTypeFactory
 {
     /**
      * {@inheritdoc}
      */
-    public function createResolvedType(FieldTypeInterface $type, array $typeExtensions, ResolvedFieldTypeInterface $parent = null): ResolvedFieldTypeInterface
+    public function createResolvedType(FieldType $type, array $typeExtensions, ResolvedFieldType $parent = null): ResolvedFieldType
     {
         return new GenericResolvedFieldType($type, $typeExtensions, $parent);
     }

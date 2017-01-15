@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\ErrorList;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 
 final class NullValidator implements Validator
 {
     /**
      * {@inheritdoc}
      */
-    public function initializeContext(FieldConfigInterface $field, ErrorList $errorList)
+    public function initializeContext(FieldConfig $field, ErrorList $errorList)
     {
         // no-op
     }

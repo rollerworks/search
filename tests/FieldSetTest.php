@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 
 final class FieldSetTest extends TestCase
@@ -44,7 +44,7 @@ final class FieldSetTest extends TestCase
      */
     private function createFieldMock(string $name)
     {
-        $field = $this->createMock(FieldConfigInterface::class);
+        $field = $this->createMock(FieldConfig::class);
         $field->expects(self::any())->method('getName')->willReturn($name);
 
         return $field;

@@ -79,7 +79,7 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
     }
 
-    public function testChoiceListOptionExpectsChoiceListInterface()
+    public function testChoiceListOptionExpectsChoiceList()
     {
         $this->expectException(InvalidOptionsException::class);
 

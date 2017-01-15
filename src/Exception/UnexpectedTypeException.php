@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Exception;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class UnexpectedTypeException extends \InvalidArgumentException implements ExceptionInterface
+class UnexpectedTypeException extends \InvalidArgumentException implements SearchException
 {
     /**
      * Constructor.

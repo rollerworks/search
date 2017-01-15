@@ -13,45 +13,45 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Exception\ExceptionInterface;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class GenericTypeRegistry implements FieldRegistryInterface
+final class GenericTypeRegistry implements TypeRegistry
 {
     /**
      * Extensions.
      *
-     * @var SearchExtensionInterface[]
+     * @var SearchExtension[]
      */
     private $extensions = [];
 
     /**
-     * @var ResolvedFieldTypeInterface[]
+     * @var ResolvedFieldType[]
      */
     private $types = [];
 
     /**
-     * @var ResolvedFieldTypeFactoryInterface
+     * @var ResolvedFieldTypeFactory
      */
     private $resolvedTypeFactory;
 
     /**
      * Constructor.
      *
-     * @param SearchExtensionInterface[]        $extensions          An array of SearchExtensionInterface
-     * @param ResolvedFieldTypeFactoryInterface $resolvedTypeFactory The factory for resolved field types
+     * @param SearchExtension[]        $extensions          An array of SearchExtension
+     * @param ResolvedFieldTypeFactory $resolvedTypeFactory The factory for resolved field types
      *
-     * @throws UnexpectedTypeException if an extension does not implement SearchExtensionInterface
+     * @throws UnexpectedTypeException if an extension does not implement SearchExtension
      */
-    public function __construct(array $extensions, ResolvedFieldTypeFactoryInterface $resolvedTypeFactory)
+    public function __construct(array $extensions, ResolvedFieldTypeFactory $resolvedTypeFactory)
     {
         foreach ($extensions as $extension) {
-            if (!$extension instanceof SearchExtensionInterface) {
-                throw new UnexpectedTypeException($extension, SearchExtensionInterface::class);
+            if (!$extension instanceof SearchExtension) {
+                throw new UnexpectedTypeException($extension, SearchExtension::class);
             }
         }
 
@@ -62,7 +62,7 @@ final class GenericTypeRegistry implements FieldRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getType(string $name): ResolvedFieldTypeInterface
+    public function getType(string $name): ResolvedFieldType
     {
         if (!isset($this->types[$name])) {
             $type = null;
@@ -77,7 +77,7 @@ final class GenericTypeRegistry implements FieldRegistryInterface
 
             if (!$type) {
                 // Support fully-qualified class names.
-                if (!class_exists($name) || !in_array(FieldTypeInterface::class, class_implements($name), true)) {
+                if (!class_exists($name) || !in_array(FieldType::class, class_implements($name), true)) {
                     throw new InvalidArgumentException(sprintf('Could not load type "%s"', $name));
                 }
 
@@ -101,7 +101,7 @@ final class GenericTypeRegistry implements FieldRegistryInterface
 
         try {
             $this->getType($name);
-        } catch (ExceptionInterface $e) {
+        } catch (SearchException $e) {
             return false;
         }
 
@@ -116,7 +116,7 @@ final class GenericTypeRegistry implements FieldRegistryInterface
         return $this->extensions;
     }
 
-    private function resolveType(FieldTypeInterface $type): ResolvedFieldTypeInterface
+    private function resolveType(FieldType $type): ResolvedFieldType
     {
         $parentType = $type->getParent();
         $fqcn = get_class($type);

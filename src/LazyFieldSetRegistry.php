@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
-final class LazyFieldSetRegistry implements FieldSetRegistryInterface
+final class LazyFieldSetRegistry implements FieldSetRegistry
 {
     private $configurators;
 
@@ -55,9 +55,9 @@ final class LazyFieldSetRegistry implements FieldSetRegistryInterface
      *
      * @throws InvalidArgumentException if the configurator can not be retrieved
      *
-     * @return FieldSetConfiguratorInterface
+     * @return FieldSetConfigurator
      */
-    public function getConfigurator(string $name): FieldSetConfiguratorInterface
+    public function getConfigurator(string $name): FieldSetConfigurator
     {
         if (!isset($this->configurators[$name])) {
             $configurator = null;
@@ -68,7 +68,7 @@ final class LazyFieldSetRegistry implements FieldSetRegistryInterface
 
             if (!$configurator) {
                 // Support fully-qualified class names.
-                if (!class_exists($name) || !in_array(FieldSetConfiguratorInterface::class, class_implements($name), true)) {
+                if (!class_exists($name) || !in_array(FieldSetConfigurator::class, class_implements($name), true)) {
                     throw new InvalidArgumentException(sprintf('Could not load FieldSet configurator "%s"', $name));
                 }
 
@@ -98,6 +98,6 @@ final class LazyFieldSetRegistry implements FieldSetRegistryInterface
             return true;
         }
 
-        return class_exists($name) && in_array(FieldSetConfiguratorInterface::class, class_implements($name), true);
+        return class_exists($name) && in_array(FieldSetConfigurator::class, class_implements($name), true);
     }
 }

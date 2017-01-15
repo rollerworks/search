@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Input\ArrayInput;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -31,7 +31,7 @@ final class ArrayInputTest extends InputProcessorTestCase
     /**
      * {@inheritdoc}
      */
-    protected function getProcessor(): InputProcessorInterface
+    protected function getProcessor(): InputProcessor
     {
         return new ArrayInput();
     }

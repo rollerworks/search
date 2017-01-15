@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ConditionOptimizer;
 
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * The ValueSortCompare compares value for the uasort() function.
@@ -27,7 +27,7 @@ final class ValueSortCompare
     private $comparison;
     private $options;
 
-    public function __construct(ValueComparisonInterface $comparison, array $options)
+    public function __construct(ValueComparator $comparison, array $options)
     {
         $this->comparison = $comparison;
         $this->options = $options;
