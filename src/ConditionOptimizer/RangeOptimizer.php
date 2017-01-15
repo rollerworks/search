@@ -13,22 +13,22 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ConditionOptimizer;
 
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizer;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * Removes overlapping ranges/values and merges connected ranges.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class RangeOptimizer implements SearchConditionOptimizerInterface
+class RangeOptimizer implements SearchConditionOptimizer
 {
     /**
      * {@inheritdoc}
@@ -77,7 +77,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
         }
     }
 
-    private function normalizeRangesInValuesBag(FieldConfigInterface $config, ValuesBag $valuesBag)
+    private function normalizeRangesInValuesBag(FieldConfig $config, ValuesBag $valuesBag)
     {
         $comparison = $config->getValueComparison();
         $options = $config->getOptions();
@@ -143,18 +143,18 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
      *
      * For example: 5 overlaps in 1 - 10
      *
-     * @param array                    $singleValues
-     * @param Range[]                  $ranges
-     * @param ValuesBag                $valuesBag
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
-     * @param bool                     $exclude
+     * @param array           $singleValues
+     * @param Range[]         $ranges
+     * @param ValuesBag       $valuesBag
+     * @param ValueComparator $comparison
+     * @param array           $options
+     * @param bool            $exclude
      */
     private function removeOverlappingSingleValues(
         array $singleValues,
         array $ranges,
         ValuesBag $valuesBag,
-        ValueComparisonInterface $comparison,
+        ValueComparator $comparison,
         array $options,
         bool $exclude = false
     ) {
@@ -176,15 +176,15 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
      *
      * For example: 5 - 10 overlaps in 1 - 20
      *
-     * @param Range[]                  $ranges
-     * @param ValuesBag                $valuesBag
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
+     * @param Range[]         $ranges
+     * @param ValuesBag       $valuesBag
+     * @param ValueComparator $comparison
+     * @param array           $options
      */
     private function removeOverlappingRanges(
         array $ranges,
         ValuesBag $valuesBag,
-        ValueComparisonInterface $comparison,
+        ValueComparator $comparison,
         array $options
     ) {
         foreach ($ranges as $i => $range) {
@@ -213,16 +213,16 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
      * A range is connected when the upper-bound is equal to the lower-bound of the
      * second range, but only when the bounds inclusiveness are equal they can be optimized.
      *
-     * @param Range[]                  $ranges
-     * @param ValuesBag                $valuesBag
-     * @param ValueComparisonInterface $comparison
-     * @param array                    $options
-     * @param bool                     $exclude
+     * @param Range[]         $ranges
+     * @param ValuesBag       $valuesBag
+     * @param ValueComparator $comparison
+     * @param array           $options
+     * @param bool            $exclude
      */
     private function optimizeConnectedRanges(
         array $ranges,
         ValuesBag $valuesBag,
-        ValueComparisonInterface $comparison,
+        ValueComparator $comparison,
         array $options,
         bool $exclude = false
     ) {
@@ -263,7 +263,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
         }
     }
 
-    private function isValInRange($value, Range $range, ValueComparisonInterface $comparison, array $options): bool
+    private function isValInRange($value, Range $range, ValueComparator $comparison, array $options): bool
     {
         // Test it's not overlapping, when this fails then its save to assert there is an overlap.
 
@@ -277,7 +277,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
             (!$range->isUpperInclusive() xor !$comparison->isEqual($value, $range->getUpper(), $options)));
     }
 
-    private function isRangeInRange(Range $range1, Range $range, ValueComparisonInterface $comparison, array $options): bool
+    private function isRangeInRange(Range $range1, Range $range, ValueComparator $comparison, array $options): bool
     {
         if (!$comparison->isHigher($range1->getLower(), $range->getLower(), $options) &&
             !$this->isBoundEqual(
@@ -305,7 +305,7 @@ class RangeOptimizer implements SearchConditionOptimizerInterface
     }
 
     private function isBoundEqual(
-        ValueComparisonInterface $comparison,
+        ValueComparator $comparison,
         $options,
         $value1,
         $value2,

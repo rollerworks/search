@@ -13,189 +13,77 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\Value\Compare;
-use Rollerworks\Component\Search\Value\PatternMatch;
-use Rollerworks\Component\Search\Value\Range;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * A wrapper for a field type and its extensions.
  */
-class ResolvedFieldType implements ResolvedFieldTypeInterface
+interface ResolvedFieldType
 {
     /**
-     * @var FieldTypeInterface
-     */
-    private $innerType;
-
-    /**
-     * @var FieldTypeExtensionInterface[]
-     */
-    private $typeExtensions;
-
-    /**
-     * @var ResolvedFieldType
-     */
-    private $parent;
-
-    /**
-     * @var OptionsResolver
-     */
-    private $optionsResolver;
-
-    /**
-     * Constructor.
+     * Returns the parent type.
      *
-     * @param FieldTypeInterface         $innerType
-     * @param array                      $typeExtensions
-     * @param ResolvedFieldTypeInterface $parent
+     * @return ResolvedFieldType|null The parent type or null
+     */
+    public function getParent();
+
+    /**
+     * Returns the wrapped field type.
      *
-     * @throws UnexpectedTypeException When at least one of the given extensions is not an FieldTypeExtensionInterface
+     * @return FieldType The wrapped field type
      */
-    public function __construct(FieldTypeInterface $innerType, array $typeExtensions = [], ResolvedFieldTypeInterface $parent = null)
-    {
-        foreach ($typeExtensions as $extension) {
-            if (!$extension instanceof FieldTypeExtensionInterface) {
-                throw new UnexpectedTypeException($extension, FieldTypeExtensionInterface::class);
-            }
-        }
-
-        $this->innerType = $innerType;
-        $this->typeExtensions = $typeExtensions;
-        $this->parent = $parent;
-    }
+    public function getInnerType(): FieldType;
 
     /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getInnerType(): FieldTypeInterface
-    {
-        return $this->innerType;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTypeExtensions(): array
-    {
-        return $this->typeExtensions;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createField(string $name, array $options = []): FieldConfigInterface
-    {
-        $options = $this->getOptionsResolver()->resolve($options);
-
-        return $this->newField($name, $options);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildType(FieldConfigInterface $config, array $options)
-    {
-        if (null !== $this->parent) {
-            $this->parent->buildType($config, $options);
-        }
-
-        $this->innerType->buildType($config, $options);
-
-        foreach ($this->typeExtensions as $extension) {
-            $extension->buildType($config, $options);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createFieldView(FieldConfigInterface $config)
-    {
-        $view = $this->newFieldView($config);
-        $view->vars = array_merge($view->vars, [
-            'name' => $config->getName(),
-            'accept_ranges' => $config->supportValueType(Range::class),
-            'accept_compares' => $config->supportValueType(Compare::class),
-            'accept_pattern_matchers' => $config->supportValueType(PatternMatch::class),
-        ]);
-
-        return $view;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildFieldView(SearchFieldView $view, FieldConfigInterface $config, array $options)
-    {
-        if (null !== $this->parent) {
-            $this->parent->buildFieldView($view, $config, $options);
-        }
-
-        $this->innerType->buildView($view, $config, $options);
-
-        foreach ($this->typeExtensions as $extension) {
-            $extension->buildView($config, $view);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOptionsResolver(): OptionsResolver
-    {
-        if (null === $this->optionsResolver) {
-            if (null !== $this->parent) {
-                $this->optionsResolver = clone $this->parent->getOptionsResolver();
-            } else {
-                $this->optionsResolver = new OptionsResolver();
-            }
-
-            $this->innerType->configureOptions($this->optionsResolver);
-
-            foreach ($this->typeExtensions as $extension) {
-                $extension->configureOptions($this->optionsResolver);
-            }
-        }
-
-        return $this->optionsResolver;
-    }
-
-    /**
-     * Creates a new SearchField instance.
+     * Returns the extensions of the wrapped field type.
      *
-     * Override this method if you want to customize the field class.
-     *
-     * @param string $name    The name of the field
-     * @param array  $options The builder options
-     *
-     * @return FieldConfigInterface The new field instance
+     * @return FieldTypeExtension[]
      */
-    protected function newField($name, array $options): FieldConfigInterface
-    {
-        return new SearchField($name, $this, $options);
-    }
+    public function getTypeExtensions(): array;
 
     /**
-     * Creates a new SearchFieldView instance.
+     * Returns a new FieldConfigInterface instance.
      *
-     * Override this method if you want to customize the view class.
+     * @param string $name
+     * @param array  $options
      *
-     * @param FieldConfigInterface $config The search field
-     *
-     * @return SearchFieldView The new view instance
+     * @return FieldConfig
      */
-    protected function newFieldView(FieldConfigInterface $config): SearchFieldView
-    {
-        return new SearchFieldView($config);
-    }
+    public function createField(string $name, array $options = []): FieldConfig;
+
+    /**
+     * This configures the {@link FieldConfigInterface}.
+     *
+     * This method is called for each type in the hierarchy starting from the
+     * top most type. Type extensions can further modify the field.
+     *
+     * @param FieldConfig $config
+     * @param array       $options
+     */
+    public function buildType(FieldConfig $config, array $options);
+
+    /**
+     * Creates a new SearchFieldView for a field of this type.
+     *
+     * @param FieldConfig $config
+     *
+     * @return SearchFieldView
+     */
+    public function createFieldView(FieldConfig $config);
+
+    /**
+     * Configures a SearchFieldView for the type hierarchy.
+     *
+     * @param SearchFieldView $view
+     * @param FieldConfig     $config
+     * @param array           $options
+     */
+    public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options);
+
+    /**
+     * Returns the configured options resolver used for this type.
+     *
+     * @return OptionsResolver The options resolver
+     */
+    public function getOptionsResolver(): OptionsResolver;
 }

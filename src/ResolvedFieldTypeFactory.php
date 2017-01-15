@@ -13,13 +13,21 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-class ResolvedFieldTypeFactory implements ResolvedFieldTypeFactoryInterface
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
+interface ResolvedFieldTypeFactory
 {
     /**
-     * {@inheritdoc}
+     * Resolves a field type.
+     *
+     * @param FieldType         $type
+     * @param array             $typeExtensions
+     * @param ResolvedFieldType $parent
+     *
+     * @throws Exception\InvalidArgumentException if the types parent cannot be retrieved from any extension
+     *
+     * @return ResolvedFieldType
      */
-    public function createResolvedType(FieldTypeInterface $type, array $typeExtensions, ResolvedFieldTypeInterface $parent = null): ResolvedFieldTypeInterface
-    {
-        return new ResolvedFieldType($type, $typeExtensions, $parent);
-    }
+    public function createResolvedType(FieldType $type, array $typeExtensions, ResolvedFieldType $parent = null): ResolvedFieldType;
 }

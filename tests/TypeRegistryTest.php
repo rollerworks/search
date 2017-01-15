@@ -15,17 +15,17 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Rollerworks\Component\Search\FieldRegistry;
-use Rollerworks\Component\Search\FieldTypeExtensionInterface;
-use Rollerworks\Component\Search\FieldTypeInterface;
+use Rollerworks\Component\Search\FieldType;
+use Rollerworks\Component\Search\FieldTypeExtension;
+use Rollerworks\Component\Search\GenericResolvedFieldTypeFactory;
+use Rollerworks\Component\Search\GenericTypeRegistry;
 use Rollerworks\Component\Search\PreloadedExtension;
-use Rollerworks\Component\Search\ResolvedFieldTypeFactory;
-use Rollerworks\Component\Search\ResolvedFieldTypeInterface;
+use Rollerworks\Component\Search\ResolvedFieldType;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
-final class FieldRegistryTest extends TestCase
+final class TypeRegistryTest extends TestCase
 {
     /**
      * @test
@@ -36,12 +36,12 @@ final class FieldRegistryTest extends TestCase
         $extension2 = new PreloadedExtension([FooSubType::class => $fooSubType = new FooSubType()]);
         $barType = new BarType();
 
-        $resolvedFieldTypeFactory = $this->prophesize(ResolvedFieldTypeFactory::class);
+        $resolvedFieldTypeFactory = $this->prophesize(GenericResolvedFieldTypeFactory::class);
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooType::class), [], null)->willReturn($resolvedFooType = $this->createResolvedTypeMock($fooType));
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooSubType::class), [], $resolvedFooType)->willReturn($this->createResolvedTypeMock($fooSubType));
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(BarType::class), [], null)->willReturn($this->createResolvedTypeMock($barType));
 
-        $registry = new FieldRegistry([$extension, $extension2], $resolvedFieldTypeFactory->reveal());
+        $registry = new GenericTypeRegistry([$extension, $extension2], $resolvedFieldTypeFactory->reveal());
 
         self::assertTrue($registry->hasType(FooType::class));
         self::assertTrue($registry->hasType(FooType::class)); // once the type is loaded it's cached internally
@@ -49,9 +49,9 @@ final class FieldRegistryTest extends TestCase
         self::assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
         self::assertFalse($registry->hasType('text'));
 
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooSubType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(BarType::class));
     }
 
     /**
@@ -72,34 +72,34 @@ final class FieldRegistryTest extends TestCase
 
         $barType = new BarType();
 
-        $resolvedFieldTypeFactory = $this->prophesize(ResolvedFieldTypeFactory::class);
+        $resolvedFieldTypeFactory = $this->prophesize(GenericResolvedFieldTypeFactory::class);
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooType::class), [], null)->willReturn($resolvedFooType = $this->createResolvedTypeMock($fooType));
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooSubType::class), [$fooSubTypeExtension], $resolvedFooType)->willReturn($this->createResolvedTypeMock($fooSubType));
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(BarType::class), [$barTypeExtension], null)->willReturn($this->createResolvedTypeMock($barType));
 
-        $registry = new FieldRegistry([$extension, $extension2], $resolvedFieldTypeFactory->reveal());
+        $registry = new GenericTypeRegistry([$extension, $extension2], $resolvedFieldTypeFactory->reveal());
 
         self::assertTrue($registry->hasType(FooType::class));
         self::assertTrue($registry->hasType(FooSubType::class));
         self::assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
         self::assertFalse($registry->hasType('text'));
 
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooType::class));
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(FooSubType::class));
-        self::assertInstanceOf(ResolvedFieldTypeInterface::class, $registry->getType(BarType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooSubType::class));
+        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(BarType::class));
     }
 
-    private function createResolvedTypeMock(FieldTypeInterface $type): ResolvedFieldTypeInterface
+    private function createResolvedTypeMock(FieldType $type): ResolvedFieldType
     {
-        $resolvedType = $this->createMock(ResolvedFieldTypeInterface::class);
+        $resolvedType = $this->createMock(ResolvedFieldType::class);
         $resolvedType->expects($this->any())->method('getInnerType')->willReturn($type);
 
         return $resolvedType;
     }
 
-    private function createTypeExtensionMock(string $name): FieldTypeExtensionInterface
+    private function createTypeExtensionMock(string $name): FieldTypeExtension
     {
-        $fieldExtension = $this->createMock(FieldTypeExtensionInterface::class);
+        $fieldExtension = $this->createMock(FieldTypeExtension::class);
         $fieldExtension->expects($this->any())->method('getExtendedType')->willReturn($name);
 
         return $fieldExtension;

@@ -15,13 +15,13 @@ namespace Rollerworks\Component\Search\Tests\Input;
 
 use Prophecy\Argument;
 use Rollerworks\Component\Search\ConditionErrorMessage;
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\Input\FieldValuesFactory;
 use Rollerworks\Component\Search\Input\NullValidator;
 use Rollerworks\Component\Search\Input\Validator;
@@ -32,7 +32,7 @@ use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 
 final class FieldValuesFactoryTest extends SearchIntegrationTestCase
 {
@@ -508,7 +508,7 @@ final class FieldValuesFactoryTest extends SearchIntegrationTestCase
         return $this->getFactory()->createField('field-name', $type ?? TextType::class, $options);
     }
 
-    private function initContext(FieldValuesFactory $factory, FieldConfigInterface $field = null): ValuesBag
+    private function initContext(FieldValuesFactory $factory, FieldConfig $field = null): ValuesBag
     {
         $factory->initContext($field ?? $this->createField(), $valuesBag = new ValuesBag(), 'root/');
 
@@ -549,7 +549,7 @@ final class FieldValuesFactoryTest extends SearchIntegrationTestCase
         $field->setValueTypeSupport(Range::class, true);
         $field->setValueTypeSupport(Compare::class, true);
         $field->setViewTransformer(
-            new class() implements DataTransformerInterface {
+            new class() implements DataTransformer {
                 public function transform($value)
                 {
                     return null;
@@ -562,7 +562,7 @@ final class FieldValuesFactoryTest extends SearchIntegrationTestCase
             }
         );
         $field->setValueComparison(
-            new class() implements ValueComparisonInterface {
+            new class() implements ValueComparator {
                 public function isHigher($higher, $lower, array $options): bool
                 {
                     return $higher > $lower;

@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Parser\DecimalMoneyParser;
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class MoneyToStringTransformer implements DataTransformerInterface
+class MoneyToStringTransformer implements DataTransformer
 {
     private $defaultCurrency;
     private $moneyParser;

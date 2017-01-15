@@ -13,77 +13,51 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
-
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchFactory implements SearchFactoryInterface
+interface SearchFactory
 {
-    private $registry;
-    private $fieldSetRegistry;
-    private $serializer;
-    private $optimizer;
-
-    public function __construct(FieldRegistryInterface $registry, FieldSetRegistryInterface $fieldSetRegistry, SearchConditionOptimizerInterface $optimizer = null)
-    {
-        $this->registry = $registry;
-        $this->fieldSetRegistry = $fieldSetRegistry;
-        $this->serializer = new SearchConditionSerializer($this);
-        $this->optimizer = $optimizer ?? ChainOptimizer::create();
-    }
+    /**
+     * Create a new FieldSet instance with the configurator name
+     * as FieldSet name.
+     *
+     * @param string|FieldSetConfigurator $configurator Configurator for building the FieldSet,
+     *                                                  a string will be resolved to a configurator
+     *
+     * @return FieldSet
+     */
+    public function createFieldSet($configurator): FieldSet;
 
     /**
-     * {@inheritdoc}
+     * Create a new search field.
+     *
+     * @param string $name    Name of the field
+     * @param string $type    Type of the field
+     * @param array  $options Array of options for building the field
+     *
+     * @return FieldConfig
      */
-    public function createFieldSet($configurator): FieldSet
-    {
-        if (!$configurator instanceof FieldSetConfiguratorInterface) {
-            $configurator = $this->fieldSetRegistry->getConfigurator($configurator);
-        }
-
-        $builder = $this->createFieldSetBuilder();
-        $configurator->buildFieldSet($builder);
-
-        return $builder->getFieldSet(get_class($configurator));
-    }
+    public function createField(string $name, string $type, array $options = []): FieldConfig;
 
     /**
-     * {@inheritdoc}
+     * Create a new FieldSetBuilderInterface instance.
+     *
+     * @return FieldSetBuilder
      */
-    public function createField(string $name, string $type, array $options = []): FieldConfigInterface
-    {
-        $type = $this->registry->getType($type);
-        $field = $type->createField($name, $options);
-
-        // Explicitly call buildType() in order to be able to override either
-        // createField() or buildType() in the resolved field type
-        $type->buildType($field, $field->getOptions());
-
-        return $field;
-    }
+    public function createFieldSetBuilder(): FieldSetBuilder;
 
     /**
-     * {@inheritdoc}
+     * Get the SearchConditionSerializer.
+     *
+     * @return SearchConditionSerializer
      */
-    public function createFieldSetBuilder(): FieldSetBuilderInterface
-    {
-        return new FieldSetBuilder($this);
-    }
+    public function getSerializer(): SearchConditionSerializer;
 
     /**
-     * {@inheritdoc}
+     * Tries to optimize the SearchCondition.
+     *
+     * @param SearchCondition $condition
      */
-    public function getSerializer(): SearchConditionSerializer
-    {
-        return $this->serializer;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function optimizeCondition(SearchCondition $condition)
-    {
-        $this->optimizer->process($condition);
-    }
+    public function optimizeCondition(SearchCondition $condition);
 }

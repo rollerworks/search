@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
 
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * Default ValueComparison implementation, only able to compare equality.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SimpleValueComparison implements ValueComparisonInterface
+class SimpleValueComparison implements ValueComparator
 {
     /**
      * {@inheritdoc}

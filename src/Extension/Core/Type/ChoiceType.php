@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTransformer;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\SearchFieldView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -53,7 +53,7 @@ class ChoiceType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $config, array $options)
+    public function buildType(FieldConfig $config, array $options)
     {
         $choiceList = $this->createChoiceList($options);
         $config->setAttribute('choice_list', $choiceList);
@@ -90,7 +90,7 @@ class ChoiceType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
     {
         /** @var ChoiceListView $choiceListView */
         $choiceListView = $config->getAttribute('choice_list_view');

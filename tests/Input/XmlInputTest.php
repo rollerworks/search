@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\XmlInput;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -26,7 +26,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class XmlInputTest extends InputProcessorTestCase
 {
-    protected function getProcessor(): InputProcessorInterface
+    protected function getProcessor(): InputProcessor
     {
         return new XmlInput();
     }

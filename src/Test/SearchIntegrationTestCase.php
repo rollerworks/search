@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Test;
 
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\Exception\ExceptionInterface;
+use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-use Rollerworks\Component\Search\FieldSetBuilder;
+use Rollerworks\Component\Search\GenericFieldSetBuilder;
+use Rollerworks\Component\Search\GenericSearchFactory;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Searches;
-use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\Tests\Input\InputProcessorTestCase;
 use Rollerworks\Component\Search\Value\Compare;
@@ -39,7 +39,7 @@ abstract class SearchIntegrationTestCase extends TestCase
     protected $factoryBuilder;
 
     /**
-     * @var SearchFactory
+     * @var GenericSearchFactory
      */
     private $searchFactory;
 
@@ -50,7 +50,7 @@ abstract class SearchIntegrationTestCase extends TestCase
         $this->factoryBuilder = Searches::createSearchFactoryBuilder();
     }
 
-    protected function getFactory(): SearchFactory
+    protected function getFactory(): GenericSearchFactory
     {
         if (null === $this->searchFactory) {
             $this->factoryBuilder->addExtensions($this->getExtensions());
@@ -81,11 +81,11 @@ abstract class SearchIntegrationTestCase extends TestCase
     /**
      * @param bool $build
      *
-     * @return \Rollerworks\Component\Search\FieldSet|FieldSetBuilder
+     * @return \Rollerworks\Component\Search\FieldSet|GenericFieldSetBuilder
      */
     protected function getFieldSet(bool $build = true)
     {
-        $fieldSet = new FieldSetBuilder($this->getFactory());
+        $fieldSet = new GenericFieldSetBuilder($this->getFactory());
         $fieldSet->set($this->getFactory()->createField('id', IntegerType::class));
         $fieldSet->add('name', TextType::class);
 
@@ -119,7 +119,7 @@ abstract class SearchIntegrationTestCase extends TestCase
     protected function assertConditionEquals(
         $input,
         SearchCondition $condition,
-        InputProcessorInterface $processor,
+        InputProcessor $processor,
         ProcessorConfig $config
     ) {
         try {
@@ -142,7 +142,7 @@ abstract class SearchIntegrationTestCase extends TestCase
 
     protected static function detectSystemException(\Exception $exception)
     {
-        if (!$exception instanceof ExceptionInterface) {
+        if (!$exception instanceof SearchException) {
             throw $exception;
         }
     }

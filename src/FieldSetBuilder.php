@@ -13,121 +13,68 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 
 /**
- * The FieldSetBuilder helps with building a {@link FieldSet}.
- *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldSetBuilder implements FieldSetBuilderInterface
+interface FieldSetBuilder
 {
     /**
-     * @var FieldConfigInterface[]
+     * Add a field to the builder.
+     *
+     * @param string $name    Name of search field
+     * @param string $type    The FQCN of the type
+     * @param array  $options Array of options for building the field
+     *
+     * @return self
      */
-    private $fields = [];
+    public function add(string $name, string $type, array $options = []);
 
     /**
-     * @var array[]
+     * Set a field on the builder.
+     *
+     * @param FieldConfig $field
+     *
+     * @return FieldSetBuilder
      */
-    private $unresolvedFields = [];
+    public function set(FieldConfig $field);
 
     /**
-     * @var SearchFactoryInterface
+     * Remove a field from the set-builder.
+     *
+     * @param string $name
+     *
+     * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
+     *
+     * @return self
      */
-    private $searchFactory;
-
-    public function __construct(SearchFactoryInterface $searchFactory)
-    {
-        $this->searchFactory = $searchFactory;
-    }
+    public function remove(string $name);
 
     /**
-     * {@inheritdoc}
+     * Returns whether the set-builder has a field with the name.
+     *
+     * @param string $name
+     *
+     * @return bool
      */
-    public function set(FieldConfigInterface $field)
-    {
-        $this->fields[$field->getName()] = $field;
-
-        return $this;
-    }
+    public function has(string $name);
 
     /**
-     * {@inheritdoc}
+     * Get a previously registered field from the set.
+     *
+     * @param string $name
+     *
+     * @return FieldConfig
      */
-    public function add(string $name, string $type, array $options = [])
-    {
-        $this->unresolvedFields[$name] = [
-            'type' => $type,
-            'options' => $options,
-        ];
-
-        return $this;
-    }
+    public function get(string $name);
 
     /**
-     * {@inheritdoc}
+     * Create the FieldSet using the fields set on the builder.
+     *
+     * @param string $name
+     *
+     * @return FieldSet
      */
-    public function remove(string $name)
-    {
-        unset($this->fields[$name], $this->unresolvedFields[$name]);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function has(string $name)
-    {
-        if (isset($this->unresolvedFields[$name])) {
-            return true;
-        }
-
-        if (isset($this->fields[$name])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function get(string $name)
-    {
-        if (isset($this->unresolvedFields[$name])) {
-            $this->fields[$name] = $this->searchFactory->createField(
-                $name,
-                $this->unresolvedFields[$name]['type'],
-                $this->unresolvedFields[$name]['options']
-            );
-
-            unset($this->unresolvedFields[$name]);
-        }
-
-        if (isset($this->fields[$name])) {
-            return $this->fields[$name];
-        }
-
-        throw new InvalidArgumentException(sprintf('The field with the name "%s" does not exist.', $name));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFieldSet(string $setName = null): FieldSet
-    {
-        foreach ($this->unresolvedFields as $name => $field) {
-            $this->fields[$name] = $this->searchFactory->createField(
-                $name,
-                $field['type'],
-                $field['options']
-            );
-
-            unset($this->unresolvedFields[$name]);
-        }
-
-        return new FieldSet($this->fields, $setName);
-    }
+    public function getFieldSet(string $name = null): FieldSet;
 }

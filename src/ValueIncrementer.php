@@ -21,12 +21,12 @@ namespace Rollerworks\Component\Search;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface ValueIncrementerInterface extends ValueComparisonInterface
+interface ValueIncrementer extends ValueComparator
 {
     /**
      * Returns the incremented value of the value.
      *
-     * The returned value must be returned in the "normalized" format,
+     * The returned value must be returned in the "model" format,
      * that is supported by the field type.
      *
      * @param mixed $value      The value to increment

@@ -20,15 +20,12 @@ namespace Rollerworks\Component\Search;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface SearchConditionOptimizerInterface
+interface SearchConditionOptimizer
 {
     /**
      * Optimizes a {@link \Rollerworks\Component\Search\SearchCondition} instance.
      *
      * Optimizing may remove duplicated values, normalize overlapping values, etc.
-     *
-     * If the search condition has errors the optimizer is should
-     * ignore the condition and do nothing.
      *
      * @param SearchCondition $condition
      */

@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface DataTransformerInterface
+interface DataTransformer
 {
     /**
      * Transforms a value from the original representation to a transformed representation.

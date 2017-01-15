@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
-class PreloadedExtension implements SearchExtensionInterface
+class PreloadedExtension implements SearchExtension
 {
     /**
      * @var array
@@ -30,8 +30,8 @@ class PreloadedExtension implements SearchExtensionInterface
     /**
      * Constructor.
      *
-     * @param FieldTypeInterface[]          $types          The types that the extension should support
-     * @param FieldTypeExtensionInterface[] $typeExtensions The type extensions that the extension should support
+     * @param FieldType[]          $types          The types that the extension should support
+     * @param FieldTypeExtension[] $typeExtensions The type extensions that the extension should support
      */
     public function __construct(array $types, array $typeExtensions = [])
     {
@@ -42,7 +42,7 @@ class PreloadedExtension implements SearchExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getType(string $name): FieldTypeInterface
+    public function getType(string $name): FieldType
     {
         if (!isset($this->types[$name])) {
             throw new InvalidArgumentException(

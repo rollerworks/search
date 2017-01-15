@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\ConditionOptimizer;
 
 use Prophecy\Prophecy\ObjectProphecy;
 use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
+use Rollerworks\Component\Search\SearchConditionOptimizer;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
@@ -41,8 +42,8 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 
         $this->optimizer = new ChainOptimizer();
 
-        $this->optimizer1 = $this->prophesize('Rollerworks\Component\Search\SearchConditionOptimizerInterface');
-        $this->optimizer2 = $this->prophesize('Rollerworks\Component\Search\SearchConditionOptimizerInterface');
+        $this->optimizer1 = $this->prophesize(SearchConditionOptimizer::class);
+        $this->optimizer2 = $this->prophesize(SearchConditionOptimizer::class);
         $this->optimizer1->getPriority()->willReturn(0);
         $this->optimizer2->getPriority()->willReturn(5);
     }
@@ -50,7 +51,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
     /**
      * @test
      */
-    public function it_allows_adding_formatters()
+    public function it_allows_adding_optimizers()
     {
         $this->optimizer->addOptimizer($this->optimizer1->reveal());
         $this->optimizer->addOptimizer($this->optimizer2->reveal());
@@ -59,7 +60,7 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
     /**
      * @test
      */
-    public function it_execute_the_registered_formatters_priority_order()
+    public function it_execute_the_registered_optimizers_priority_order()
     {
         $searchCondition = $this->prophesize('Rollerworks\Component\Search\SearchCondition');
         $searchCondition->getValuesGroup()->willReturn(new ValuesGroup());

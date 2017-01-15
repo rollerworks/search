@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Exporter;
 
+use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\ArrayExporter;
-use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\Input\ArrayInput;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
 final class ArrayExporterTest extends SearchConditionExporterTestCase
@@ -202,12 +202,12 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
         return ['groups' => [[]]];
     }
 
-    protected function getExporter(): ExporterInterface
+    protected function getExporter(): ConditionExporter
     {
         return new ArrayExporter();
     }
 
-    protected function getInputProcessor(): InputProcessorInterface
+    protected function getInputProcessor(): InputProcessor
     {
         return new ArrayInput();
     }

@@ -14,19 +14,19 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * The FieldValuesFactory works as a wrapper around the ValuesBag
@@ -37,17 +37,17 @@ use Rollerworks\Component\Search\ValueComparisonInterface;
 class FieldValuesFactory
 {
     /**
-     * @var FieldConfigInterface
+     * @var FieldConfig
      */
     protected $config;
 
     /**
-     * @var DataTransformerInterface|null
+     * @var DataTransformer|null
      */
     protected $normTransformer;
 
     /**
-     * @var DataTransformerInterface|null
+     * @var DataTransformer|null
      */
     protected $viewTransformer;
 
@@ -63,7 +63,7 @@ class FieldValuesFactory
     private $valuesBag;
 
     /**
-     * @var ValueComparisonInterface
+     * @var ValueComparator
      */
     private $valueComparison;
 
@@ -79,7 +79,7 @@ class FieldValuesFactory
         $this->validator = $validator;
     }
 
-    public function initContext(FieldConfigInterface $field, ValuesBag $valuesBag, string $path)
+    public function initContext(FieldConfig $field, ValuesBag $valuesBag, string $path)
     {
         $this->config = $field;
         $this->valuesBag = $valuesBag;

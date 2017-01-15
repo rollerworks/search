@@ -16,11 +16,11 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -29,16 +29,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TimeType extends AbstractFieldType
 {
     /**
-     * @var ValueComparisonInterface
+     * @var ValueComparator
      */
     private $valueComparison;
 
     /**
      * Constructor.
      *
-     * @param ValueComparisonInterface $valueComparison
+     * @param ValueComparator $valueComparison
      */
-    public function __construct(ValueComparisonInterface $valueComparison)
+    public function __construct(ValueComparator $valueComparison)
     {
         $this->valueComparison = $valueComparison;
     }
@@ -46,7 +46,7 @@ class TimeType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $config, array $options)
+    public function buildType(FieldConfig $config, array $options)
     {
         $format = 'H';
 
@@ -86,7 +86,7 @@ class TimeType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
     {
         $pattern = 'H';
 

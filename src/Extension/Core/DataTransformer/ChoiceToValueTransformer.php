@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class ChoiceToValueTransformer implements DataTransformerInterface
+class ChoiceToValueTransformer implements DataTransformer
 {
     private $choiceList;
 

@@ -15,12 +15,12 @@ namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
 
 use Money\Money;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
-use Rollerworks\Component\Search\ValueIncrementerInterface;
+use Rollerworks\Component\Search\ValueIncrementer;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class MoneyValueComparison implements ValueIncrementerInterface
+class MoneyValueComparison implements ValueIncrementer
 {
     /**
      * Returns whether the first value is higher then the second value.

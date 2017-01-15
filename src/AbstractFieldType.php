@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Extension\Core\Type\FieldType;
+use Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -25,19 +25,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-abstract class AbstractFieldType implements FieldTypeInterface
+abstract class AbstractFieldType implements FieldType
 {
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $config, array $options)
+    public function buildType(FieldConfig $config, array $options)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
     {
     }
 
@@ -53,6 +53,6 @@ abstract class AbstractFieldType implements FieldTypeInterface
      */
     public function getParent()
     {
-        return FieldType::class;
+        return SearchFieldType::class;
     }
 }

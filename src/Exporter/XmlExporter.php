@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exporter;
 
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
@@ -113,7 +113,7 @@ class XmlExporter extends AbstractExporter
         }
     }
 
-    private function exportValuesToNode(ValuesBag $valuesBag, \DOMNode $parent, FieldConfigInterface $field)
+    private function exportValuesToNode(ValuesBag $valuesBag, \DOMNode $parent, FieldConfig $field)
     {
         if ($valuesBag->hasSimpleValues()) {
             $valuesNode = $this->document->createElement('simple-values');
@@ -203,7 +203,7 @@ class XmlExporter extends AbstractExporter
         }
     }
 
-    private function exportRangeValueToNode(\DOMNode $parent, Range $range, FieldConfigInterface $field)
+    private function exportRangeValueToNode(\DOMNode $parent, Range $range, FieldConfig $field)
     {
         $rangeNode = $this->document->createElement('range');
 

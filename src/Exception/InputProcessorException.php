@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\ConditionErrorMessage;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class InputProcessorException extends \InvalidArgumentException implements ExceptionInterface
+class InputProcessorException extends \InvalidArgumentException implements SearchException
 {
     public $path = '';
     public $messageTemplate;

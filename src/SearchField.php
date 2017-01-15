@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\Value\RequiresComparatorValueHolder;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchField implements FieldConfigInterface
+class SearchField implements FieldConfig
 {
     /**
      * @var string
@@ -31,7 +31,7 @@ class SearchField implements FieldConfigInterface
     private $name;
 
     /**
-     * @var ResolvedFieldTypeInterface
+     * @var ResolvedFieldType
      */
     private $type;
 
@@ -51,7 +51,7 @@ class SearchField implements FieldConfigInterface
     private $supportedValueTypes = [];
 
     /**
-     * @var ValueComparisonInterface
+     * @var ValueComparator
      */
     private $valueComparison;
 
@@ -61,25 +61,25 @@ class SearchField implements FieldConfigInterface
     private $locked = false;
 
     /**
-     * @var DataTransformerInterface|null
+     * @var DataTransformer|null
      */
     private $viewTransformer;
 
     /**
-     * @var DataTransformerInterface|null
+     * @var DataTransformer|null
      */
     private $normTransformer;
 
     /**
      * Constructor.
      *
-     * @param string                     $name
-     * @param ResolvedFieldTypeInterface $type
-     * @param array                      $options
+     * @param string            $name
+     * @param ResolvedFieldType $type
+     * @param array             $options
      *
      * @throws \InvalidArgumentException When the name is invalid
      */
-    public function __construct(string $name, ResolvedFieldTypeInterface $type, array $options = [])
+    public function __construct(string $name, ResolvedFieldType $type, array $options = [])
     {
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
             throw new InvalidArgumentException(
@@ -133,7 +133,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getType(): ResolvedFieldTypeInterface
+    public function getType(): ResolvedFieldType
     {
         return $this->type;
     }
@@ -145,7 +145,7 @@ class SearchField implements FieldConfigInterface
      *
      * @return self
      */
-    public function setValueComparison(ValueComparisonInterface $comparisonObj)
+    public function setValueComparison(ValueComparator $comparisonObj)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -169,7 +169,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setViewTransformer(DataTransformerInterface $viewTransformer = null)
+    public function setViewTransformer(DataTransformer $viewTransformer = null)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -193,7 +193,7 @@ class SearchField implements FieldConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setNormTransformer(DataTransformerInterface $viewTransformer = null)
+    public function setNormTransformer(DataTransformer $viewTransformer = null)
     {
         if ($this->locked) {
             throw new BadMethodCallException(

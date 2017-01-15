@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Exporter;
 
+use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\XmlExporter;
-use Rollerworks\Component\Search\ExporterInterface;
 use Rollerworks\Component\Search\Input\XmlInput;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
 final class XmlExporterTest extends SearchConditionExporterTestCase
@@ -305,12 +305,12 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
         ;
     }
 
-    protected function getExporter(): ExporterInterface
+    protected function getExporter(): ConditionExporter
     {
         return new XmlExporter();
     }
 
-    protected function getInputProcessor(): InputProcessorInterface
+    protected function getInputProcessor(): InputProcessor
     {
         return new XmlInput();
     }

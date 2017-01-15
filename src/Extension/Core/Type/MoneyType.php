@@ -16,11 +16,11 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToStringTransformer;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparisonInterface;
+use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -29,16 +29,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MoneyType extends AbstractFieldType
 {
     /**
-     * @var ValueComparisonInterface
+     * @var ValueComparator
      */
     protected $valueComparison;
 
     /**
      * Constructor.
      *
-     * @param ValueComparisonInterface $valueComparison
+     * @param ValueComparator $valueComparison
      */
-    public function __construct(ValueComparisonInterface $valueComparison)
+    public function __construct(ValueComparator $valueComparison)
     {
         $this->valueComparison = $valueComparison;
     }
@@ -46,7 +46,7 @@ class MoneyType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $config, array $options)
+    public function buildType(FieldConfig $config, array $options)
     {
         $config->setValueComparison($this->valueComparison);
         $config->setValueTypeSupport(Range::class, true);
@@ -67,7 +67,7 @@ class MoneyType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
     {
         $view->vars['grouping'] = $options['grouping'];
         $view->vars['default_currency'] = $options['default_currency'];

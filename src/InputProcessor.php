@@ -16,11 +16,11 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 
 /**
- * The InputProcessorInterface must be implemented by all input-processor.
+ * The InputProcessor must be implemented by all input-processor.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface InputProcessorInterface
+interface InputProcessor
 {
     /**
      * Process the input and returns the result.

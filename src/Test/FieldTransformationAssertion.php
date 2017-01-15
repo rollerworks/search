@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Test;
 use PHPUnit_Framework_Assert;
 use PHPUnit_Framework_AssertionFailedError as AssertionFailedError;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 
 final class FieldTransformationAssertion
 {
@@ -26,12 +26,12 @@ final class FieldTransformationAssertion
     private $transformed = false;
     private $model;
 
-    private function __construct(FieldConfigInterface $field)
+    private function __construct(FieldConfig $field)
     {
         $this->field = $field;
     }
 
-    public static function assertThat(FieldConfigInterface $field): self
+    public static function assertThat(FieldConfig $field): self
     {
         return new self($field);
     }

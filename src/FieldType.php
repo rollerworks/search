@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FieldTypeInterface
+interface FieldType
 {
     /**
      * Returns the name of the parent type.
@@ -40,10 +40,10 @@ interface FieldTypeInterface
      * This method is called for each type in the hierarchy starting from the
      * top most type. Type extensions can further modify the field.
      *
-     * @param FieldConfigInterface $config
-     * @param array                $options
+     * @param FieldConfig $config
+     * @param array       $options
      */
-    public function buildType(FieldConfigInterface $config, array $options);
+    public function buildType(FieldConfig $config, array $options);
 
     /**
      * Configures the SearchFieldView instance.
@@ -51,11 +51,11 @@ interface FieldTypeInterface
      * This method is called for each type in the hierarchy starting from the
      * top most type. Type extensions can further modify the view.
      *
-     * @see FieldTypeExtensionInterface::buildView()
+     * @see FieldTypeExtension::buildView()
      *
-     * @param SearchFieldView      $view
-     * @param FieldConfigInterface $config
-     * @param array                $options
+     * @param SearchFieldView $view
+     * @param FieldConfig     $config
+     * @param array           $options
      */
-    public function buildView(SearchFieldView $view, FieldConfigInterface $config, array $options);
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options);
 }

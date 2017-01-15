@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 /**
- * ExporterInterface defines the interface for SearchCondition exporters.
+ * ConditionExporter defines the interface for SearchCondition exporters.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface ExporterInterface
+interface ConditionExporter
 {
     /**
      * Exports the SearchCondition to a portable format.

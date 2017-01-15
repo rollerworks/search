@@ -15,11 +15,11 @@ namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringQuery\QueryException;
 use Rollerworks\Component\Search\Input\StringQueryInput;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -29,7 +29,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class StringQueryInputTest extends InputProcessorTestCase
 {
-    protected function getProcessor(callable $labelResolver = null): InputProcessorInterface
+    protected function getProcessor(callable $labelResolver = null): InputProcessor
     {
         return new StringQueryInput(null, $labelResolver);
     }
@@ -42,7 +42,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
      */
     public function it_processes_aliased_fields($input)
     {
-        $labelResolver = function (FieldConfigInterface $field) {
+        $labelResolver = function (FieldConfig $field) {
             $name = $field->getName();
 
             if ($name === 'name') {

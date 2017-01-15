@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Test;
 
-use Rollerworks\Component\Search\ExporterInterface;
+use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-use Rollerworks\Component\Search\FieldSetBuilder;
+use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
@@ -31,16 +31,16 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 // TODO Add some tests with empty fields and groups (and they should be able to process)
 abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 {
-    abstract protected function getExporter(): ExporterInterface;
+    abstract protected function getExporter(): ConditionExporter;
 
-    abstract protected function getInputProcessor(): InputProcessorInterface;
+    abstract protected function getInputProcessor(): InputProcessor;
 
     /**
      * {@inheritdoc}
      */
     protected function getFieldSet(bool $build = true)
     {
-        $fieldSet = new FieldSetBuilder($this->getFactory());
+        $fieldSet = new GenericFieldSetBuilder($this->getFactory());
         $fieldSet->add('id', IntegerType::class);
         $fieldSet->add('name', TextType::class);
         $fieldSet->add('lastname', TextType::class);

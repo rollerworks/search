@@ -23,19 +23,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * {@link FieldTypeExtensionInterface} is that any new methods added the
  * FieldTypeExtensionInterface will not break existing implementations.
  */
-abstract class AbstractFieldTypeExtension implements FieldTypeExtensionInterface
+abstract class AbstractFieldTypeExtension implements FieldTypeExtension
 {
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfigInterface $builder, array $options)
+    public function buildType(FieldConfig $builder, array $options)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildView(FieldConfigInterface $config, SearchFieldView $view)
+    public function buildView(FieldConfig $config, SearchFieldView $view)
     {
     }
 

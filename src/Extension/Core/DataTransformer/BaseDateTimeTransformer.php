@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
-use Rollerworks\Component\Search\DataTransformerInterface;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  */
-abstract class BaseDateTimeTransformer implements DataTransformerInterface
+abstract class BaseDateTimeTransformer implements DataTransformer
 {
     /**
      * @var string

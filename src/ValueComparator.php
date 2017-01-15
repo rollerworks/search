@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 /**
- * ValueComparisonInterface.
+ * ValueComparator.
  *
- * Each ValueComparison class must implement this class.
+ * Each ValueComparator class must implement this interface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface ValueComparisonInterface
+interface ValueComparator
 {
     /**
      * Returns whether the first value is higher then the second value.

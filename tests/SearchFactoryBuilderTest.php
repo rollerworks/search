@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\SearchFactory;
+use Rollerworks\Component\Search\GenericSearchFactory;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
@@ -26,7 +26,7 @@ class SearchFactoryBuilderTest extends TestCase
 
     protected function setUp()
     {
-        $factory = new \ReflectionClass(SearchFactory::class);
+        $factory = new \ReflectionClass(GenericSearchFactory::class);
         $this->registry = $factory->getProperty('registry');
         $this->registry->setAccessible(true);
 

@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-abstract class AbstractExtension implements SearchExtensionInterface
+abstract class AbstractExtension implements SearchExtension
 {
     private $typesExtensions;
     private $types;
@@ -33,7 +33,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getType(string $name): FieldTypeInterface
+    public function getType(string $name): FieldType
     {
         if (null === $this->types) {
             $this->initTypes();
@@ -86,12 +86,12 @@ abstract class AbstractExtension implements SearchExtensionInterface
 
     /**
      * If extension needs to provide new field types this function
-     * should be overloaded in child class and return an array of FieldTypeInterface
+     * should be overloaded in child class and return an array of FieldType
      * instances.
      *
      * This is only required for types that have a constructor with (required) arguments.
      *
-     * @return FieldTypeInterface[]
+     * @return FieldType[]
      */
     protected function loadTypes(): array
     {
@@ -100,7 +100,7 @@ abstract class AbstractExtension implements SearchExtensionInterface
 
     /**
      * If extension needs to provide field type extensions this function
-     * should be overloaded in child class and return array of FieldTypeExtensionInterface
+     * should be overloaded in child class and return array of FieldTypeExtension
      * instances per type: `TypeClassName => [FieldTypeExtensionInterface, ...]`.
      *
      * @return array
@@ -115,8 +115,8 @@ abstract class AbstractExtension implements SearchExtensionInterface
         $this->types = [];
 
         foreach ($this->loadTypes() as $type) {
-            if (!$type instanceof FieldTypeInterface) {
-                throw new UnexpectedTypeException($type, FieldTypeInterface::class);
+            if (!$type instanceof FieldType) {
+                throw new UnexpectedTypeException($type, FieldType::class);
             }
 
             $this->types[get_class($type)] = $type;
@@ -128,8 +128,8 @@ abstract class AbstractExtension implements SearchExtensionInterface
         $this->typesExtensions = [];
 
         foreach ($this->loadTypesExtensions() as $extension) {
-            if (!$extension instanceof FieldTypeExtensionInterface) {
-                throw new UnexpectedTypeException($extension, FieldTypeExtensionInterface::class);
+            if (!$extension instanceof FieldTypeExtension) {
+                throw new UnexpectedTypeException($extension, FieldTypeExtension::class);
             }
 
             $this->typesExtensions[$extension->getExtendedType()][] = $extension;

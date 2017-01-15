@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface SearchExtensionInterface
+interface SearchExtension
 {
     /**
      * Returns a type by name.
@@ -25,9 +25,9 @@ interface SearchExtensionInterface
      *
      * @throws Exception\InvalidArgumentException if the given type is not supported by this extension
      *
-     * @return FieldTypeInterface
+     * @return FieldType
      */
-    public function getType(string $name): FieldTypeInterface;
+    public function getType(string $name): FieldType;
 
     /**
      * Returns whether the given type is supported.
@@ -43,7 +43,7 @@ interface SearchExtensionInterface
      *
      * @param string $name The name of the type
      *
-     * @return FieldTypeExtensionInterface[]
+     * @return FieldTypeExtension[]
      */
     public function getTypeExtensions(string $name): array;
 }

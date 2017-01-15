@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\ConditionOptimizer;
 
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\SearchConditionOptimizerInterface;
+use Rollerworks\Component\Search\SearchConditionOptimizer;
 
 /**
  * ChainOptimizer performs the registered optimizers in order of priority.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ChainOptimizer implements SearchConditionOptimizerInterface
+class ChainOptimizer implements SearchConditionOptimizer
 {
     /**
      * @var array<SearchConditionOptimizerInterface[]>
@@ -45,13 +45,13 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
     }
 
     /**
-     * @param SearchConditionOptimizerInterface $optimizer
+     * @param SearchConditionOptimizer $optimizer
      *
      * @throws \InvalidArgumentException
      *
      * @return self
      */
-    public function addOptimizer(SearchConditionOptimizerInterface $optimizer)
+    public function addOptimizer(SearchConditionOptimizer $optimizer)
     {
         // Ensure we got no end-less loops
         if ($optimizer === $this) {
@@ -77,7 +77,7 @@ class ChainOptimizer implements SearchConditionOptimizerInterface
         krsort($this->optimizers, SORT_NUMERIC);
 
         foreach ($this->optimizers as $optimizers) {
-            /** @var SearchConditionOptimizerInterface[] $optimizers */
+            /** @var SearchConditionOptimizer[] $optimizers */
             foreach ($optimizers as $optimizer) {
                 $optimizer->process($condition);
             }

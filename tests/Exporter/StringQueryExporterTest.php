@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Exporter;
 
+use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\StringQueryExporter;
-use Rollerworks\Component\Search\ExporterInterface;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\FieldConfig;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringQueryInput;
-use Rollerworks\Component\Search\InputProcessorInterface;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
@@ -31,7 +31,7 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
      */
     public function it_exporters_with_field_label()
     {
-        $labelResolver = function (FieldConfigInterface $field) {
+        $labelResolver = function (FieldConfig $field) {
             $name = $field->getName();
 
             if ($name === 'name') {
@@ -109,12 +109,12 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         return '();';
     }
 
-    protected function getExporter(callable $labelResolver = null): ExporterInterface
+    protected function getExporter(callable $labelResolver = null): ConditionExporter
     {
         return new StringQueryExporter($labelResolver);
     }
 
-    protected function getInputProcessor(callable $labelResolver = null): InputProcessorInterface
+    protected function getInputProcessor(callable $labelResolver = null): InputProcessor
     {
         return new StringQueryInput(null, $labelResolver);
     }

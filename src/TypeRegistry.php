@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface FieldRegistryInterface
+interface TypeRegistry
 {
     /**
      * Returns a field type by name.
@@ -27,9 +27,9 @@ interface FieldRegistryInterface
      *
      * @throws Exception\InvalidArgumentException if the type cannot be retrieved from any extension
      *
-     * @return ResolvedFieldTypeInterface
+     * @return ResolvedFieldType
      */
-    public function getType(string $name): ResolvedFieldTypeInterface;
+    public function getType(string $name): ResolvedFieldType;
 
     /**
      * Returns whether the given field type is supported.
@@ -43,7 +43,7 @@ interface FieldRegistryInterface
     /**
      * Returns the extensions loaded on the registry.
      *
-     * @return SearchExtensionInterface[]
+     * @return SearchExtension[]
      */
     public function getExtensions(): array;
 }
