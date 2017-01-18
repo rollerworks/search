@@ -49,6 +49,11 @@ class SearchProcessorFactory implements SearchProcessorFactoryInterface
     private $validator;
 
     /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * @var UriEncoderInterface
      */
     private $uirEncoder;
