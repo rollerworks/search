@@ -31,9 +31,9 @@ final class SearchController extends Controller
         $searchProcessor->processRequest($request);
 
         if (method_exists('\Symfony\Component\Form\AbstractType', 'getName')) {
-            $form = $this->createForm(new SearchFormType(), ['filter' => $searchProcessor->exportSearchCondition('filter_query')], ['csrf_protection' => false]);
+            $form = $this->createForm(new SearchFormType(), ['filter' => $searchProcessor->exportSearchCondition('filter_query')]);
         } else {
-            $form = $this->createForm('Rollerworks\Bundle\SearchBundle\Form\Type\SearchFormType', ['filter' => $searchProcessor->exportSearchCondition('filter_query')], ['csrf_protection' => false]);
+            $form = $this->createForm('Rollerworks\Bundle\SearchBundle\Form\Type\SearchFormType', ['filter' => $searchProcessor->exportSearchCondition('filter_query')]);
         }
 
         $form->handleRequest($request);
