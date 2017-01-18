@@ -12,7 +12,7 @@ with any Symfony based application.
 Requirements
 ------------
 
-You need at least the Symfony 2.3 (Symfony FrameworkBundle)
+You need at least the Symfony 2.3 or 3.0 (Symfony FrameworkBundle)
 and the Composer package manager for installing dependencies.
 
 For searching in storage engines you need install the additional search extensions.
