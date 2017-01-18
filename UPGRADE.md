@@ -6,7 +6,7 @@ UPGRADE
 The Doctrine ORM configuring and related services are moved to a new package
 at https://github.com/rollerworks/rollerworks-search-doctrine-orm-bundle.
 
-If you are using Doctrine ORM then install the new package and update you're
+If you are using Doctrine ORM then install the new package and update your
 application configuration as follow.
 
 Before:
