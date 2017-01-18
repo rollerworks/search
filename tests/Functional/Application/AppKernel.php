@@ -70,6 +70,10 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->config);
+
+        if (Kernel::MAJOR_VERSION > 2 || (Kernel::MAJOR_VERSION === 2 && Kernel::MINOR_VERSION >= 7)) {
+            $loader->load(__DIR__.'/config/sf27.yml');
+        }
     }
 
     public function getCacheDir()

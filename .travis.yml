@@ -37,7 +37,7 @@ before_install:
 
 install:
     - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
-    - export SYMFONY_DEPRECATIONS_HELPER=strong
+    - export SYMFONY_DEPRECATIONS_HELPER=weak
     - if [ "$DEPENDENCIES" == "dev" ]; then composer config minimum-stability dev; fi;
     - if [ "$DEPENDENCIES" != "low" ]; then composer update --prefer-dist --no-progress --no-suggest --ansi; fi;
     - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-dist --no-progress --no-suggest --ansi --prefer-lowest; fi;

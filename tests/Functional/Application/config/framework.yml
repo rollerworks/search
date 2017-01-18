@@ -5,9 +5,9 @@ framework:
         resource: %kernel.root_dir%/config/routing.yml
         strict_requirements: %kernel.debug%
     form:                true
-    csrf_protection:     true
+    csrf_protection:     false
     validation:          { enable_annotations: false }
-    templating:          { engines: [php] }
+    templating:          false
     default_locale:      en
     trusted_proxies:     []
     session:
