@@ -22,18 +22,9 @@
             <argument id="validator" type="service" />
         </service>
 
-        <service id="rollerworks_search.uri_encoder" class="Rollerworks\Component\UriEncoder\Encoder\CacheEncoderDecorator" public="false">
+        <service id="rollerworks_search.uri_encoder" class="Rollerworks\Component\UriEncoder\Encoder\GZipCompressionDecorator" public="false">
             <argument type="service">
-                <service class="Rollerworks\Component\UriEncoder\Cache\DoctrineCache">
-                    <argument id="rollerworks_cache.driver.session_driver" type="service" />
-                </service>
-            </argument>
-            <argument type="service">
-                <service class="Rollerworks\Component\UriEncoder\Encoder\GZipCompressionDecorator" public="false">
-                    <argument type="service">
-                        <service class="Rollerworks\Component\UriEncoder\Encoder\Base64UriEncoder"/>
-                    </argument>
-                </service>
+                <service class="Rollerworks\Component\UriEncoder\Encoder\Base64UriEncoder"/>
             </argument>
         </service>
 
