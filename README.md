@@ -71,7 +71,7 @@ on how you can help!
 ## Installation and usage
 
 *Please ignore the instructions below if your use a framework integration.*
-[Read the Documentation for master] for complete instructions and information. 
+[Read the Documentation for master] for complete instructions and information.
 
 Install the RollerworksSearch "core" library using [Composer]:
 
