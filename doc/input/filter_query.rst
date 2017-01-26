@@ -235,25 +235,25 @@ to mark the group as logical AND.
 
 .. code-block:: php
 
-    &(field1=values; field2=values);
+    &(field1: values; field2: values);
 
 To change a group and make it OR'ed (at least one field must give a positive
 match), prefix the group with an ``*`` character.
 
 .. code-block:: php
 
-    *(field1=values; field2=values);
+    *(field1: values; field2: values);
 
 If you want to head-group (the condition itself) OR'ed or AND (default) use
 ``*`` or ``&`` as the first character in the condition.
 
 .. code-block:: php
 
-    *field1=values; field2=values;
+    *field1: values; field2: values;
 
 .. code-block:: php
 
-    &field1=values; field2=values;
+    &field1: values; field2: values;
 
 .. caution::
 
