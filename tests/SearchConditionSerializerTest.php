@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\FieldConfig;
-use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionSerializer;
 use Rollerworks\Component\Search\SearchFactory;
@@ -30,7 +30,7 @@ final class SearchConditionSerializerTest extends TestCase
      */
     private $serializer;
 
-    /** @var FieldSet */
+    /** @var GenericFieldSet */
     private $fieldSet;
 
     protected function setUp()
@@ -38,7 +38,7 @@ final class SearchConditionSerializerTest extends TestCase
         $field = $this->createMock(FieldConfig::class);
         $field->expects(self::any())->method('getName')->willReturn('id');
 
-        $this->fieldSet = new FieldSet(['id' => $field], 'foobar');
+        $this->fieldSet = new GenericFieldSet(['id' => $field], 'foobar');
 
         $factory = $this->prophesize(SearchFactory::class);
         $factory->createFieldSet('foobar')->willReturn($this->fieldSet);

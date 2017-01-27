@@ -128,6 +128,6 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
             unset($this->unresolvedFields[$name]);
         }
 
-        return new FieldSet($this->fields, $setName);
+        return new GenericFieldSet($this->fields, $setName);
     }
 }

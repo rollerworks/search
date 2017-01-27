@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\FieldConfig;
-use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\GenericFieldSet;
 
 final class FieldSetTest extends TestCase
 {
@@ -24,7 +24,7 @@ final class FieldSetTest extends TestCase
      */
     public function it_gets_a_field()
     {
-        $fieldSet = new FieldSet([
+        $fieldSet = new GenericFieldSet([
             'id' => $idField = $this->createFieldMock('id'),
             'name' => $nameField = $this->createFieldMock('name'),
         ]);
