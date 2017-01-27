@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 use Rollerworks\Component\Search\Extension\Core\Type\CurrencyType;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -39,7 +40,7 @@ final class CurrencyTypeTest extends SearchIntegrationTestCase
             ->successfullyTransformsTo('EUR')
             ->andReverseTransformsTo('EUR');
 
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $choices = $view->vars['choices'];
 

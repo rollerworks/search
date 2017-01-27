@@ -285,7 +285,7 @@ class SearchField implements FieldConfig
     /**
      * {@inheritdoc}
      */
-    public function createView(): SearchFieldView
+    public function createView(FieldSetView $fieldSet): SearchFieldView
     {
         if (!$this->locked) {
             throw new BadMethodCallException(
@@ -293,7 +293,7 @@ class SearchField implements FieldConfig
             );
         }
 
-        $view = new SearchFieldView();
+        $view = new SearchFieldView($fieldSet);
 
         $this->type->buildFieldView($view, $this, $this->options);
 

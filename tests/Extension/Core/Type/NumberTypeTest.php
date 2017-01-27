@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\Type\NumberType;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -140,7 +141,7 @@ class NumberTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $fieldView = $field->createView();
+        $fieldView = $field->createView(new FieldSetView());
 
         self::assertArrayHasKey('precision', $fieldView->vars);
         self::assertArrayHasKey('grouping', $fieldView->vars);

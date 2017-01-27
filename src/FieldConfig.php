@@ -151,9 +151,11 @@ interface FieldConfig
     /**
      * Returns a new SearchFieldView for the SearchField.
      *
+     * @param FieldSetView $fieldSet
+     *
      * @return SearchFieldView
      */
-    public function createView(): SearchFieldView;
+    public function createView(FieldSetView $fieldSet): SearchFieldView;
 
     /**
      * Sets the value for an attribute.

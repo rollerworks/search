@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 use Rollerworks\Component\Search\Extension\Core\Type\TimezoneType;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -38,7 +39,7 @@ final class TimezoneTypeTest extends SearchIntegrationTestCase
             ->successfullyTransformsTo('Africa/Kinshasa')
             ->andReverseTransformsTo('Kinshasa', 'Africa/Kinshasa');
 
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $choices = $view->vars['choices'];
 

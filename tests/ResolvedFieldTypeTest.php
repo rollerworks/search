@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\FieldType;
 use Rollerworks\Component\Search\FieldTypeExtension;
 use Rollerworks\Component\Search\GenericResolvedFieldType;
@@ -189,7 +190,7 @@ final class ResolvedFieldTypeTest extends TestCase
     public function testCreateView()
     {
         $field = $this->createFieldMock();
-        $view = $this->resolvedType->createFieldView($field);
+        $view = $this->resolvedType->createFieldView($field, new FieldSetView());
 
         self::assertInstanceOf(SearchFieldView::class, $view);
     }
@@ -281,6 +282,6 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private function createSearchFieldViewMock()
     {
-        return $this->getMockBuilder(SearchFieldView::class)->getMock();
+        return $this->createMock(SearchFieldView::class);
     }
 }

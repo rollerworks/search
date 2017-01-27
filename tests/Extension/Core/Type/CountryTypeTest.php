@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 use Rollerworks\Component\Search\Extension\Core\Type\CountryType;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -38,7 +39,7 @@ final class CountryTypeTest extends SearchIntegrationTestCase
             ->successfullyTransformsTo('DE')
             ->andReverseTransformsTo('Germany', 'DE');
 
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
         $choices = $view->vars['choices'];
 
         // Don't check objects for identity
@@ -54,7 +55,7 @@ final class CountryTypeTest extends SearchIntegrationTestCase
         $field = $field = $this->getFactory()->createField('choice', CountryType::class);
         $field->finalizeConfig();
 
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $choices = $view->vars['choices'];
 

@@ -65,11 +65,12 @@ interface ResolvedFieldType
     /**
      * Creates a new SearchFieldView for a field of this type.
      *
-     * @param FieldConfig $config
+     * @param FieldConfig  $config
+     * @param FieldSetView $view
      *
      * @return SearchFieldView
      */
-    public function createFieldView(FieldConfig $config);
+    public function createFieldView(FieldConfig $config, FieldSetView $view);
 
     /**
      * Configures a SearchFieldView for the type hierarchy.
