@@ -15,7 +15,6 @@ enabled:
 
 disabled:
     - phpdoc_no_empty_return
-    - simplified_null_return
 
 finder:
     path:
