@@ -20,60 +20,32 @@ use Rollerworks\Component\Search\Exception\UnknownFieldException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldSet implements \IteratorAggregate
+interface FieldSet
 {
-    private $fields = [];
-    private $name;
-
-    /**
-     * Constructor.
-     *
-     * @param FieldConfig[] $fields
-     * @param string|null   $name   FQCN of the FieldSet configurator
-     */
-    public function __construct(array $fields, string $name = null)
-    {
-        $this->fields = $fields;
-        $this->name = $name;
-    }
-
     /**
      * Returns the name of the set.
      *
      * @return null|string
      */
-    public function getSetName()
-    {
-        return $this->name;
-    }
+    public function getSetName();
 
     /**
      * Returns the {@link FieldConfigInterface} object of the search field.
      *
      * @param string $name
      *
-     * @throws \RuntimeException When the field is not registered at this Fieldset
+     * @throws UnknownFieldException When the field is not registered at this Fieldset
      *
      * @return FieldConfig
      */
-    public function get(string $name)
-    {
-        if (!isset($this->fields[$name])) {
-            throw new UnknownFieldException($name);
-        }
-
-        return $this->fields[$name];
-    }
+    public function get(string $name): FieldConfig;
 
     /**
      * Returns all the registered fields in the set.
      *
      * @return FieldConfig[] [name] => {FieldConfigInterface object})
      */
-    public function all(): array
-    {
-        return $this->fields;
-    }
+    public function all(): array;
 
     /**
      * Returns whether the field is registered in the set.
@@ -82,20 +54,5 @@ class FieldSet implements \IteratorAggregate
      *
      * @return bool
      */
-    public function has(string $name): bool
-    {
-        return isset($this->fields[$name]);
-    }
-
-    /**
-     * Returns the current FieldSet as an Iterator that includes all Fields.
-     *
-     * @see all()
-     *
-     * @return \ArrayIterator An \ArrayIterator object for iterating over fields
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->fields);
-    }
+    public function has(string $name): bool;
 }
