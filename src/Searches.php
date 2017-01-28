@@ -22,17 +22,48 @@ use Rollerworks\Component\Search\Extension\Core\CoreExtension;
  *
  * <code>
  * use Rollerworks\Component\Search\Searches;
+ * use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+ * use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+ * use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+ * use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+ * use Rollerworks\Component\Search\Input\StringQueryInput;
  *
+ * // The factory is reusable, you create it only once.
  * $searchFactory = Searches::createSearchFactory();
  *
- * $fieldSet = $searchFactory->createFieldSetBuilder()
- *     ->add('firstName', 'text')
- *     ->add('lastName', 'text')
- *     ->add('age', 'integer')
- *     ->add('gender', 'choice', array(
- *         'choices' => array('m' => 'Male', 'f' => 'Female'),
- *     ))
- *     ->getFieldSet('fieldset-name');
+ * // Create a fieldset to inform the system about your configuration.
+ * // Usually you will have a FieldSet for each data structure (users, invoices, etc).
+ * $userFieldSet = $searchFactory->createFieldSetBuilder()
+ *     ->add('firstName', TextType::class)
+ *     ->add('lastName', TextType::class)
+ *     ->add('age', IntegerType::class)
+ *     ->add('gender', ChoiceType::class, [
+ *         'choices' => ['Female' => 'f', 'Male' => 'm'],
+ *     ])
+ *     ->getFieldSet('users');
+ *
+ * // Now lets process a simple string query.
+ * // Tip: the input processor is reusable.
+ * $inputProcessor = new StringQueryInput();
+ *
+ * try {
+ *     // The ProcessorConfig allows to limit the amount of values, groups
+ *     // and maximum nesting level.
+ *     $processorConfig = new ProcessorConfig($userFieldSet);
+ *
+ *     // The `process` method processes the input and produces
+ *     // a valid SearchCondition (or throws an exception when something is wrong).
+ *     $condition = $inputProcessor->process('firstName: sebastiaan, melany;');
+ *
+ *     // Remove duplicate values and perform other optimizations (optional step).
+ *     $searchFactory->optimizeCondition($condition);
+ * } catch (InvalidSearchConditionException $e) {
+ *     // Each error message can be easily transformed to a localized version.
+ *     // Read the documentation for more details.
+ *     foreach ($e->getErrors() as $error) {
+ *         echo (string) $error.PHP_EOL;
+ *     }
+ * }
  * </code>
  *
  * You can also add custom extensions to the search factory:
@@ -59,20 +90,30 @@ use Rollerworks\Component\Search\Extension\Core\CoreExtension;
  *     ->getSearchFactory();
  * </code>
  *
- * Support for the Validator component is provided by ValidatorExtension.
+ * Tip: Field types without dependency injection don't have to be
+ * registered with the factory and can be loaded by there FQCN.
+ * Field type-extensions must always be registered.
+ *
+ * Support for the Validator component is provided by ValidatorExtension,
+ * located in another repository.
+ *
  * This extension needs a Validator object to function properly:
  *
  * <code>
  * use Rollerworks\Component\Search\Searches;
  * use Rollerworks\Component\Search\Extension\Validator\ValidatorExtension;
+ * use Rollerworks\Component\Search\Extension\Validator\InputValidator;
+ * use Rollerworks\Component\Search\Input\StringQueryInput;
  * use Symfony\Component\Validator\Validation;
+ *
+ * $searchFactory = Searches::createSearchFactoryBuilder();
+ *     ->addExtension(new ValidatorExtension())
+ *     ->getSearchFactory();
  *
  * $validatorBuilder = Validation::createValidatorBuilder();
  * $validator = $validatorBuilder->getValidator();
  *
- * $searchFactory = Searches::createSearchFactoryBuilder();
- *     ->addExtension(new ValidatorExtension($validator))
- *     ->getSearchFactory();
+ * $inputProcessor = new StringQueryInput(new InputValidator($validator));
  * </code>
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -80,16 +121,26 @@ use Rollerworks\Component\Search\Extension\Core\CoreExtension;
 final class Searches
 {
     /**
-     * Creates a search factory builder with the default configuration.
+     * Creates a SearchFactoryBuilder with the default configuration.
      *
      * @return SearchFactoryBuilder The search factory builder
      */
-    public static function createSearchFactoryBuilder()
+    public static function createSearchFactoryBuilder(): SearchFactoryBuilder
     {
         $builder = new SearchFactoryBuilder();
         $builder->addExtension(new CoreExtension());
 
         return $builder;
+    }
+
+    /**
+     * Creates a new GenericSearchFactory with the default configuration.
+     *
+     * @return SearchFactory
+     */
+    public static function createSearchFactory(): SearchFactory
+    {
+        return self::createSearchFactoryBuilder()->getSearchFactory();
     }
 
     /**
