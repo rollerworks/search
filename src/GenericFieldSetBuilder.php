@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
  * The FieldSetBuilder helps with building a {@link FieldSet}.

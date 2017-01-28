@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\ErrorList;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
  * The Validator validates input values according to a set of

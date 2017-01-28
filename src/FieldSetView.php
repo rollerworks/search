@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Field\SearchFieldView;
+
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

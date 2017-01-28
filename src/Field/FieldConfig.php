@@ -11,7 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search;
+namespace Rollerworks\Component\Search\Field;
+
+use Rollerworks\Component\Search\DataTransformer;
+use Rollerworks\Component\Search\FieldSetView;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * The configuration of a SearchField.

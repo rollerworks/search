@@ -15,8 +15,8 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
-use Rollerworks\Component\Search\FieldConfig;
-use Rollerworks\Component\Search\SearchFieldView;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
 use Symfony\Component\OptionsResolver\OptionsResolver;

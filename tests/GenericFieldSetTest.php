@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\GenericFieldSet;
-use Rollerworks\Component\Search\SearchFieldView;
 
 final class GenericFieldSetTest extends TestCase
 {

@@ -15,11 +15,11 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\ResolvedFieldType;
+use Rollerworks\Component\Search\Field\SearchField;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
-use Rollerworks\Component\Search\ResolvedFieldType;
 use Rollerworks\Component\Search\SearchFactory;
-use Rollerworks\Component\Search\SearchField;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 

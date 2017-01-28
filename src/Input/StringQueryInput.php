@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Input\StringQuery\Lexer;
 use Rollerworks\Component\Search\Input\StringQuery\QueryException;

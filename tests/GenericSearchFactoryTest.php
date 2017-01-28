@@ -15,11 +15,11 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\ResolvedFieldType;
+use Rollerworks\Component\Search\Field\TypeRegistry;
 use Rollerworks\Component\Search\FieldSetRegistry;
 use Rollerworks\Component\Search\GenericSearchFactory;
-use Rollerworks\Component\Search\ResolvedFieldType;
-use Rollerworks\Component\Search\TypeRegistry;
 
 final class GenericSearchFactoryTest extends TestCase
 {

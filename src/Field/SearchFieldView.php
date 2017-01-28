@@ -11,7 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search;
+namespace Rollerworks\Component\Search\Field;
+
+use Rollerworks\Component\Search\FieldSetView;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

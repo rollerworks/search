@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Exporter;
 
 use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\StringQueryExporter;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\InputProcessor;
