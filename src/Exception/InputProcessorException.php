@@ -59,10 +59,14 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
      *
      * @param array $translatedParameters An array of parameter names that need
      *                                    to be translated prior to their usage
+     *
+     * @return InputProcessorException
      */
-    protected function setTranslatedParameters(array $translatedParameters)
+    protected function setTranslatedParameters(array $translatedParameters): self
     {
         $this->translatedParameters = $translatedParameters;
+
+        return $this;
     }
 
     private function formatParameters(array $messageParameters): array
