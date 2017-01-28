@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 use Rollerworks\Component\Search\Extension\Core\Type\LanguageType;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -38,7 +39,7 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
             ->successfullyTransformsTo('en_GB')
             ->andReverseTransformsTo('British English', 'en_GB');
 
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $choices = $view->vars['choices'];
 
@@ -54,7 +55,7 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
         $field = $field = $this->getFactory()->createField('choice', LanguageType::class);
         $field->finalizeConfig();
 
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
         $choices = $view->vars['choices'];
 
         $this->assertNotContains(new ChoiceView('mul', 'mul', 'Mehrsprachig'), $choices, '', false, false);

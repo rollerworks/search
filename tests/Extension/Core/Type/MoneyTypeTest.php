@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 use Money\Money;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -100,7 +101,7 @@ class MoneyTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $fieldView = $field->createView();
+        $fieldView = $field->createView(new FieldSetView());
 
         self::assertArrayHasKey('grouping', $fieldView->vars);
         self::assertArrayHasKey('default_currency', $fieldView->vars);

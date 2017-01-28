@@ -119,9 +119,9 @@ class GenericResolvedFieldType implements ResolvedFieldType
     /**
      * {@inheritdoc}
      */
-    public function createFieldView(FieldConfig $config)
+    public function createFieldView(FieldConfig $config, FieldSetView $view)
     {
-        $view = $this->newFieldView($config);
+        $view = $this->newView($view);
         $view->vars = array_merge($view->vars, [
             'name' => $config->getName(),
             'accept_ranges' => $config->supportValueType(Range::class),
@@ -190,12 +190,12 @@ class GenericResolvedFieldType implements ResolvedFieldType
      *
      * Override this method if you want to customize the view class.
      *
-     * @param FieldConfig $config The search field
+     * @param FieldSetView $view
      *
      * @return SearchFieldView The new view instance
      */
-    protected function newFieldView(FieldConfig $config): SearchFieldView
+    protected function newView(FieldSetView $view): SearchFieldView
     {
-        return new SearchFieldView($config);
+        return new SearchFieldView($view);
     }
 }

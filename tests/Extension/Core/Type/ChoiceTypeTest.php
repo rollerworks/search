@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceGroupView;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -115,7 +116,7 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('n/a', '');
 
         $field->finalizeConfig();
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $this->assertSame('1', $view->vars['choices'][0]->value);
         $this->assertSame('0', $view->vars['choices'][1]->value);
@@ -145,7 +146,7 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('n/a', 'n/a');
 
         $field->finalizeConfig();
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $this->assertSame('1', $view->vars['choices'][0]->value);
         $this->assertSame('0', $view->vars['choices'][1]->value);
@@ -160,7 +161,7 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $this->assertEquals('No', $view->vars['preferred_choices'][1]->label, 'False value should be preferred.');
     }
@@ -194,7 +195,7 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo($this->objectChoices[2]->id);
 
         $field->finalizeConfig();
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         // Ensure widget views still have the label.
         $this->assertEquals([
@@ -226,7 +227,7 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $this->assertEquals([
             new ChoiceView('a', 'a', 'A'),
@@ -245,7 +246,7 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $this->assertEquals([
             0 => new ChoiceView('a', 'a', 'A'),
@@ -266,7 +267,7 @@ class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $view = $field->createView();
+        $view = $field->createView(new FieldSetView());
 
         $this->assertEquals([
             'Symfony' => new ChoiceGroupView('Symfony', [

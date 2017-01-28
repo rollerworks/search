@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchFieldView
+class FieldSetView
 {
     /**
      * The variables assigned to this view.
@@ -28,17 +28,7 @@ class SearchFieldView
     ];
 
     /**
-     * @var FieldSetView
+     * @var SearchFieldView[]
      */
-    public $fieldSet;
-
-    /**
-     * Constructor.
-     *
-     * @param FieldSetView $fieldSet
-     */
-    public function __construct(FieldSetView $fieldSet)
-    {
-        $this->fieldSet = $fieldSet;
-    }
+    public $fields;
 }

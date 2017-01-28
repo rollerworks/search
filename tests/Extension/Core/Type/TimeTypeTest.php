@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\Type\TimeType;
+use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -70,7 +71,7 @@ class TimeTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $fieldView = $field->createView();
+        $fieldView = $field->createView(new FieldSetView());
 
         self::assertArrayHasKey('pattern', $fieldView->vars);
         self::assertArrayHasKey('with_seconds', $fieldView->vars);
@@ -87,7 +88,7 @@ class TimeTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $fieldView = $field->createView();
+        $fieldView = $field->createView(new FieldSetView());
 
         self::assertArrayHasKey('pattern', $fieldView->vars);
         self::assertArrayHasKey('with_seconds', $fieldView->vars);
@@ -104,7 +105,7 @@ class TimeTypeTest extends SearchIntegrationTestCase
         ]);
 
         $field->finalizeConfig();
-        $fieldView = $field->createView();
+        $fieldView = $field->createView(new FieldSetView());
 
         self::assertArrayHasKey('pattern', $fieldView->vars);
         self::assertArrayHasKey('with_seconds', $fieldView->vars);
