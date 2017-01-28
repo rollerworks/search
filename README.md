@@ -51,7 +51,7 @@ And support for the most poplar storage systems.
 
 * [Doctrine2 DBAL](https://github.com/rollerworks/search-doctrine-dbal)
 * [Doctrine2 ORM](https://github.com/rollerworks/search-doctrine-orm)
-* [Elasticsearch](https://github.com/rollerworks/search-elasticsearch) (coming soon)
+* [ElasticSearch](https://github.com/rollerworks/search-elasticsearch) (coming soon)
 
 Search conditions can be as simple or complex as you need them to be.
 Including grouping and nesting for the best possible result.
@@ -93,19 +93,19 @@ use Rollerworks\Component\Search\Input\StringQueryInput;
 $searchFactory = Searches::createSearchFactory();
 
 // Create a fieldset to inform the system about your configuration.
-// Uasully you will have a FieldSet for each data structure (users, invoices, etc).
+// Usually you will have a FieldSet for each data structure (users, invoices, etc).
 $userFieldSet = $searchFactory->createFieldSetBuilder()
     ->add('firstName', TextType::class)
     ->add('lastName', TextType::class)
     ->add('age', IntegerType::class)
-    ->add('gender', ChoiceType::class, array(
+    ->add('gender', ChoiceType::class, [
         'choices' => ['Female' => 'f', 'Male' => 'm'],
-    ))
+    ])
     ->getFieldSet('users');
     
 // Now lets process a simple string query.
-// Tip: the input processor is reuable.
-$inputProcesor = new StringQueryInput();
+// Tip: the input processor is reusable.
+$inputProcessor = new StringQueryInput();
 
 try {
     // The ProcessorConfig allows to limit the amount of values, groups
