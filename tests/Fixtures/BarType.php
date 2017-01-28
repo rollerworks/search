@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Fixtures;
 
-use Rollerworks\Component\Search\AbstractFieldType;
+use Rollerworks\Component\Search\Field\AbstractFieldType;
 
 /**
  * @internal

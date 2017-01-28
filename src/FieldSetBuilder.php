@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

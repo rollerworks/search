@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
-use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\Factory\CachingFactoryDecorator;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\Factory\ChoiceListFactory;
@@ -23,8 +22,9 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTransformer;
-use Rollerworks\Component\Search\FieldConfig;
-use Rollerworks\Component\Search\SearchFieldView;
+use Rollerworks\Component\Search\Field\AbstractFieldType;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\SearchFieldView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyPath;

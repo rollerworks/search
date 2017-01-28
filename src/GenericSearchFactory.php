@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\TypeRegistry;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

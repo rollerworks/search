@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
-use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
+use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\ValueComparator;
 
 /**

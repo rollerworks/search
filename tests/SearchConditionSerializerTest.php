@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionSerializer;

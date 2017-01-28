@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
-use Rollerworks\Component\Search\AbstractFieldType;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\NumberToStringTransformer;
-use Rollerworks\Component\Search\FieldConfig;
-use Rollerworks\Component\Search\SearchFieldView;
+use Rollerworks\Component\Search\Field\AbstractFieldType;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\ValueComparator;

@@ -13,6 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Field\FieldType;
+use Rollerworks\Component\Search\Field\FieldTypeExtension;
+use Rollerworks\Component\Search\Field\GenericResolvedFieldTypeFactory;
+use Rollerworks\Component\Search\Field\GenericTypeRegistry;
+use Rollerworks\Component\Search\Field\ResolvedFieldTypeFactory;
+
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */

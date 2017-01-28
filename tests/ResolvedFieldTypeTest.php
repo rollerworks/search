@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\AbstractFieldType;
-use Rollerworks\Component\Search\AbstractFieldTypeExtension;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\AbstractFieldType;
+use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldType;
+use Rollerworks\Component\Search\Field\FieldTypeExtension;
+use Rollerworks\Component\Search\Field\GenericResolvedFieldType;
+use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\FieldSetView;
-use Rollerworks\Component\Search\FieldType;
-use Rollerworks\Component\Search\FieldTypeExtension;
-use Rollerworks\Component\Search\GenericResolvedFieldType;
-use Rollerworks\Component\Search\SearchFieldView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ResolvedFieldTypeTest extends TestCase

@@ -11,11 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search;
+namespace Rollerworks\Component\Search\Field;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Rollerworks\Component\Search\SearchExtension;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

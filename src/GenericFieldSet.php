@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
+use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
  * A FieldSet holds all the search fields and there configuration.

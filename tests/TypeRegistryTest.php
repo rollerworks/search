@@ -15,12 +15,12 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Rollerworks\Component\Search\FieldType;
-use Rollerworks\Component\Search\FieldTypeExtension;
-use Rollerworks\Component\Search\GenericResolvedFieldTypeFactory;
-use Rollerworks\Component\Search\GenericTypeRegistry;
+use Rollerworks\Component\Search\Field\FieldType;
+use Rollerworks\Component\Search\Field\FieldTypeExtension;
+use Rollerworks\Component\Search\Field\GenericResolvedFieldTypeFactory;
+use Rollerworks\Component\Search\Field\GenericTypeRegistry;
+use Rollerworks\Component\Search\Field\ResolvedFieldType;
 use Rollerworks\Component\Search\PreloadedExtension;
-use Rollerworks\Component\Search\ResolvedFieldType;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;

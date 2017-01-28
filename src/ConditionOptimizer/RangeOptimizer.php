@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ConditionOptimizer;
 
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionOptimizer;

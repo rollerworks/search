@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exporter;
 
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;

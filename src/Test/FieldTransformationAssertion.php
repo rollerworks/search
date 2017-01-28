@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Test;
 use PHPUnit_Framework_Assert;
 use PHPUnit_Framework_AssertionFailedError as AssertionFailedError;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
-use Rollerworks\Component\Search\FieldConfig;
+use Rollerworks\Component\Search\Field\FieldConfig;
 
 final class FieldTransformationAssertion
 {
