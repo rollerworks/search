@@ -209,7 +209,7 @@ class StringQueryExporter extends AbstractExporter
     {
         $result = !$range->isLowerInclusive() ? ']' : '';
         $result .= $this->exportValuePart($this->modelToView($range->getLower(), $field));
-        $result .= '-';
+        $result .= ' ~ ';
         $result .= $this->exportValuePart($this->modelToView($range->getUpper(), $field));
         $result .= !$range->isUpperInclusive() ? '[' : '';
 

@@ -14,10 +14,11 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\Exception\StringLexerException;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
-use Rollerworks\Component\Search\Input\StringQuery\QueryException;
 use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
@@ -64,6 +65,20 @@ final class StringQueryInputTest extends InputProcessorTestCase
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
         self::assertEquals($condition, $processor->process($config, $input));
+    }
+
+    /**
+     * @test
+     */
+    public function it_expects_a_string_input()
+    {
+        $processor = $this->getProcessor();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $this->expectException(UnexpectedTypeException::class);
+        $this->expectExceptionMessage((new UnexpectedTypeException([], 'string'))->getMessage());
+
+        $processor->process($config, []);
     }
 
     /**
@@ -115,32 +130,25 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
-        $e = QueryException::syntaxError(8, 0, ['*', '>', '<', '?', '!*', '!>', '!<', '!?', '=', '!='], '!');
+        $e = StringLexerException::formatError(7, 1, 'Unknown operator flag, expected "i" and/or "!"');
         $error = $e->toErrorMessageObj();
 
         $this->assertConditionContainsErrors('name: ~!!*"value";', $config, [$error]);
     }
 
     /**
-     * @param string   $input
-     * @param int      $col
-     * @param int      $line
-     * @param string[] $expected
-     * @param string   $got
-     *
-     * @throws \Exception When an unmatched exception is thrown
+     * @param string               $input
+     * @param StringLexerException $exception
      *
      * @test
      * @dataProvider provideQueryExceptionTests
      */
-    public function it_errors_when_the_syntax_is_invalid(string $input, int $col, int $line, $expected, $got)
+    public function it_errors_when_the_syntax_is_invalid(string $input, StringLexerException $exception)
     {
         $fieldSet = $this->getFieldSet(false)->add('field1', TextType::class)->getFieldSet();
         $config = new ProcessorConfig($fieldSet);
 
-        $e = QueryException::syntaxError($col, $line, $expected, $got);
-        $error = $e->toErrorMessageObj();
-
+        $error = $exception->toErrorMessageObj();
         $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
@@ -149,25 +157,39 @@ final class StringQueryInputTest extends InputProcessorTestCase
         return [
             [
                 'field1: value, value2, value3, value4, value5;)',
-                46,
-                0,
-                ['(', 'FieldIdentification'],
-                ')',
+                StringLexerException::formatError(46, 1, 'Cannot close group as this field is not in a group'),
+            ],
+            [
+                'field1: value; field1: ;',
+                StringLexerException::formatError(23, 1, 'A field must have at least one value'),
+            ],
+            [
+                'field1: value , ;',
+                StringLexerException::formatError(16, 1, 'Values must be separated by a ",". A values list must end with ";" or ")"'),
+            ],
+            [
+                '(field1: value, value2, value3, value4, value5;))',
+                StringLexerException::formatError(48, 1, 'Cannot close group as this field is not in a group'),
+            ],
+            [
+                '(field1: value, value2, value3, value4, value5;);)',
+                StringLexerException::formatError(49, 1, 'Cannot close group as this field is not in a group'),
+            ],
+            [
+                'field1: value, value2, value3, value4, value5; &',
+                StringLexerException::formatError(47, 1, 'A group logical operator can only be used at the start of the input or before a group opening'),
+            ],
+            [
+                "(field1: value, value2, value3, value4, value5; ); \n&",
+                StringLexerException::formatError(52, 2, 'A group logical operator can only be used at the start of the input or before a group opening'),
             ],
             [
                 'field1: value value2)',
-                14,
-                0,
-                [';', '|', ',', '|', ')'],
-                'value2',
+                StringLexerException::formatError(20, 1, 'A value containing spaces must be surrounded by quotes'),
             ],
-            // Ensure Rollerworks\Component\Search\Input\FilterQuery\Lexer::T_OPEN_PARENTHESIS is converted to '('
             [
                 'field1: value, value2; *',
-                -1,
-                0,
-                ['('],
-                'end of string',
+                StringLexerException::formatError(23, 1, 'A group logical operator can only be used at the start of the input or before a group opening'),
             ],
         ];
     }
@@ -191,22 +213,22 @@ final class StringQueryInputTest extends InputProcessorTestCase
     public function provideMultipleValues()
     {
         return [
-            ['name: value, value2; date:"12-16-2014";'],
-            ['name: value, value2; date:"12-16-2014"'],
+            ['name: value, value2; date: "12-16-2014";'],
+            ['name: value, value2; date: "12-16-2014"'],
         ];
     }
 
     public function provideRangeValues()
     {
         return [
-            ['id: 1-10, 15 - 30, ]100-200], 310-400[, !50-70; date:["12-16-2014"-"12-20-2014"];'],
+            ['id: 1~10, 15 ~ 30, ] 100~200 ], 310~400[, !50~70; date: [12-16-2014 ~ 12-20-2014];'],
         ];
     }
 
     public function provideComparisonValues()
     {
         return [
-            ['id: >1, <2, <=5, >=8, <>20; date:>="12-16-2014";'],
+            ['id: >1, <2, <=5, >=8, <>20; date: >="12-16-2014";'],
         ];
     }
 
@@ -294,7 +316,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
     public function provideUnsupportedValueTypeExceptionTests()
     {
         return [
-            ['no-range-field: 1-12;', 'no-range-field', Range::class],
+            ['no-range-field: 1~12;', 'no-range-field', Range::class],
             ['no-compares-field: >12;', 'no-compares-field', Compare::class],
             ['no-matchers-field: ~>12;', 'no-matchers-field', PatternMatch::class],
         ];
@@ -303,8 +325,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
     public function provideInvalidRangeTests()
     {
         return [
-            ['id: 30-10, 50-60, 40-20;', ['[id][0]', '[id][2]']],
-            ['id: !30-10, !50-60, !40-20;', ['[id][0]', '[id][2]']],
+            ['id: 30~10, 50~60, 40~20;', ['[id][0]', '[id][2]']],
+            ['id: !30~10, !50~60, !40~20;', ['[id][0]', '[id][2]']],
         ];
     }
 
@@ -320,7 +342,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
                 ],
             ],
             [
-                'id: foo-10, 50-60, 50-bar;',
+                'id: foo~10, 50~60, 50~bar;',
                 [
                     new ConditionErrorMessage('[id][0][lower]', 'This value is not valid.'),
                     new ConditionErrorMessage('[id][2][upper]', 'This value is not valid.'),

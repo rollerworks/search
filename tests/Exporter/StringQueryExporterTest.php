@@ -71,7 +71,7 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
 
     public function provideRangeValuesTest()
     {
-        return 'id: 1-10, 15-30, ]100-200, 310-400[, !50-70; date: "12-16-2014"-"12-20-2014";';
+        return 'id: 1 ~ 10, 15 ~ 30, ]100 ~ 200, 310 ~ 400[, !50 ~ 70; date: "12-16-2014" ~ "12-20-2014";';
     }
 
     public function provideComparisonValuesTest()

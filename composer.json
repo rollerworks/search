@@ -21,7 +21,6 @@
         "symfony/property-access": "^3.2.1",
         "symfony/intl": "^3.2.1",
         "seld/jsonlint": "^1.5.0",
-        "doctrine/lexer": "^1.0.1",
         "moneyphp/money": "^3.0.0"
     },
     "require-dev": {
