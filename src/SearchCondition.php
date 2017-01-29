@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\UnsupportedFieldSetException;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -37,5 +38,18 @@ class SearchCondition
     public function getValuesGroup(): ValuesGroup
     {
         return $this->values;
+    }
+
+    /**
+     * Checks that the FieldSet of this condition is supported
+     * by the contexts it's used in.
+     *
+     * @param \string[] ...$name One or more FieldSet names to check for
+     */
+    public function assertFieldSetName(string ...$name)
+    {
+        if (!in_array($providedName = $this->fieldSet->getSetName(), $name, true)) {
+            throw new UnsupportedFieldSetException($name, $providedName);
+        }
     }
 }
