@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the RollerworksSearch package.
+ *
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace Rollerworks\Component\Search\Tests;
+
+use PHPUnit\Framework\TestCase;
+use Rollerworks\Component\Search\Exception\UnsupportedFieldSetException;
+use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\Value\ValuesGroup;
+
+class SearchConditionTest extends TestCase
+{
+    /** @test */
+    public function it_can_check_if_FieldSet_is_supported()
+    {
+        $fieldSet = $this->createMock(FieldSet::class);
+        $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
+
+        $condition = new SearchCondition($fieldSet, new ValuesGroup());
+        $condition->assertFieldSetName('test');
+        $condition->assertFieldSetName('test', 'foo');
+
+        // Dummy tests, no error means it works.
+        self::assertEquals(new ValuesGroup(), $condition->getValuesGroup());
+    }
+
+    /** @test */
+    public function it_gives_an_exception_when_checked_FieldSet_is_not_supported()
+    {
+        $fieldSet = $this->createMock(FieldSet::class);
+        $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
+
+        $condition = new SearchCondition($fieldSet, new ValuesGroup());
+
+        $this->expectException(UnsupportedFieldSetException::class);
+        $this->expectExceptionMessage((new UnsupportedFieldSetException(['bar', 'foo'], 'test'))->getMessage());
+
+        $condition->assertFieldSetName('bar', 'foo');
+    }
+}
