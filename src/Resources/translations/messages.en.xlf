@@ -4,35 +4,93 @@
         <body>
             <trans-unit id="1">
                 <source>FieldIdentification</source>
-                <target>FieldIdentification</target>
+                <target>Field identification</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>String</source>
-                <target>String</target>
+                <source>StringValue</source>
+                <target>String value</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>QuotedString</source>
-                <target>QuotedString</target>
+                <source>CompareOperator</source>
+                <target>Compare operator</target>
             </trans-unit>
             <trans-unit id="4">
+                <source>end of string</source>
+                <target>end of string</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>line end</source>
+                <target>line end</target>
+            </trans-unit>
+            <trans-unit id="6">
                 <source>Range</source>
                 <target>Range</target>
             </trans-unit>
-            <trans-unit id="5">
+            <trans-unit id="7">
                 <source>ExcludedValue</source>
                 <target>ExcludedValue</target>
             </trans-unit>
-            <trans-unit id="6">
+            <trans-unit id="8">
                 <source>ExcludedRange</source>
                 <target>ExcludedRange</target>
             </trans-unit>
-            <trans-unit id="7">
+            <trans-unit id="9">
                 <source>Comparison</source>
                 <target>Comparison</target>
             </trans-unit>
-            <trans-unit id="8">
+            <trans-unit id="10">
                 <source>PatternMatch</source>
                 <target>PatternMatcher</target>
+            </trans-unit>
+
+            <!-- Extracted from \Rollerworks\Component\Search\Exception\StringLexerException -->
+            <trans-unit id="FIELD_REQUIRES_VALUES">
+                <source>A field must have at least one value</source>
+                <target>A field must have at least one value</target>
+            </trans-unit>
+            <trans-unit id="INCORRECT_VALUES_SEPARATOR">
+                <source>Values must be separated by a ",". A values list must end with ";" or ")"</source>
+                <target>Values must be separated by a ",". A values list must end with ";" or ")"</target>
+            </trans-unit>
+            <trans-unit id="CANNOT_CLOSE_UNOPENED_GROUP">
+                <source>Cannot close group as this field is not in a group</source>
+                <target>Cannot close group as this field is not in a group</target>
+            </trans-unit>
+            <trans-unit id="GROUP_LOGICAL_WITHOUT_GROUP">
+                <source>A group logical operator can only be used at the start of the input or before a group opening</source>
+                <target>A group logical operator can only be used at the start of the input or before a group opening</target>
+            </trans-unit>
+            <trans-unit id="UNKNOWN_PATTERN_MATCH_FLAG">
+                <source>Unknown operator flag, expected "i" and/or "!"</source>
+                <target>Unknown operator flag, expected "i" and/or "!"</target>
+            </trans-unit>
+            <trans-unit id="NO_SPACES_IN_OPERATOR">
+                <source>Spaces are not allowed within an operator</source>
+                <target>Spaces are not allowed within an operator</target>
+            </trans-unit>
+            <trans-unit id="INCOMPLETE_VALUE_PATTERN">
+                <source>Missing operator and value pattern</source>
+                <target>Missing operator and value pattern</target>
+            </trans-unit>
+            <trans-unit id="SPACES_REQ_QUOTING">
+                <source>A value containing spaces must be surrounded by quotes</source>
+                <target>A value containing spaces must be surrounded by quotes</target>
+            </trans-unit>
+            <trans-unit id="SPECIAL_CHARS_REQ_QUOTING">
+                <source>A value containing special characters must be surrounded by quotes</source>
+                <target>A value containing special characters must be surrounded by quotes</target>
+            </trans-unit>
+            <trans-unit id="QUOTED_VALUE_REQUIRE_QUOTING">
+                <source>A value containing quotes must be surrounded by quotes</source>
+                <target>A value containing quotes must be surrounded by quotes</target>
+            </trans-unit>
+            <trans-unit id="VALUE_QUOTES_MUST_ESCAPE">
+                <source>Quotes in a quoted value must be escaped</source>
+                <target>Quotes in a quoted value must be escaped</target>
+            </trans-unit>
+            <trans-unit id="MISSING_END_QUOTE">
+                <source>Missing quote to end the value</source>
+                <target>Missing quote to end the value</target>
             </trans-unit>
         </body>
     </file>

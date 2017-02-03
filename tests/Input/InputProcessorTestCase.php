@@ -72,6 +72,23 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     }
 
     /**
+     * @param mixed $input
+     *
+     * @test
+     * @dataProvider provideEmptyInputTests
+     */
+    public function it_processes_an_empty_input($input)
+    {
+        $processor = $this->getProcessor();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertConditionEquals($input, $condition, $processor, $config);
+    }
+
+    /**
      * @return array[]
      */
     abstract public function provideEmptyInputTests();
