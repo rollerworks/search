@@ -93,9 +93,9 @@ class StringQueryExporter extends AbstractExporter
         }
 
         foreach ($valuesGroup->getGroups() as $group) {
-            $exportedGroup = '('.trim($this->exportGroup($group, $fieldSet), ' ;').'); ';
+            $exportedGroup = '( '.trim($this->exportGroup($group, $fieldSet), ' ;').' ); ';
 
-            if ('(); ' !== $exportedGroup && ValuesGroup::GROUP_LOGICAL_OR === $group->getGroupLogical()) {
+            if ('(  ); ' !== $exportedGroup && ValuesGroup::GROUP_LOGICAL_OR === $group->getGroupLogical()) {
                 $exportedGroups .= '*';
             }
 
@@ -149,11 +149,11 @@ class StringQueryExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->get(Compare::class) as $value) {
-            $exportedValues .= $value->getOperator().$this->exportValuePart($this->modelToView($value->getValue(), $field)).', ';
+            $exportedValues .= $value->getOperator().' '.$this->exportValuePart($this->modelToView($value->getValue(), $field)).', ';
         }
 
         foreach ($valuesBag->get(PatternMatch::class) as $value) {
-            $exportedValues .= $this->getPatternMatchOperator($value).$this->exportValuePart($value->getValue()).', ';
+            $exportedValues .= $this->getPatternMatchOperator($value).' '.$this->exportValuePart($value->getValue()).', ';
         }
 
         return rtrim($exportedValues, ', ');
@@ -216,20 +216,11 @@ class StringQueryExporter extends AbstractExporter
         return $result;
     }
 
-    /**
-     * Exports the value-part.
-     *
-     * If the value needs escaping/quotation this is performed.
-     *
-     * @param mixed $value
-     *
-     * @return string When the passed value is null or none scalar
-     */
     private function exportValuePart($value): string
     {
         $value = (string) $value;
 
-        if (!preg_match('/^([\p{L}\p{N}]+)$/iu', $value)) {
+        if (preg_match('/[<>[\](),;~!*?=&*"\s]/u', $value)) {
             return '"'.str_replace('"', '""', $value).'"';
         }
 

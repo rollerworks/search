@@ -28,7 +28,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 /**
  * StringQuery - processes input in the StringQuery format.
  *
- * The formats works as follow (spaced are ignored).
+ * The formats works as follow (whitespace between values is ignored).
  *
  * Caution: The error message reports the character position not the byte position.
  * Multi byte may cause some problems when using substr() rather then mb_substr().
@@ -107,8 +107,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  * PatternMatch
  * ============
  *
- * PatternMatch works similar to Comparison,
- * everything that starts with tilde (~) is considered a pattern match.
+ * PatternMatch works similar to Comparison, everything that starts with a tilde (~)
+ * is considered a pattern match. Spaces in the operator are not allowed.
  *
  * Supported operators are:
  *
@@ -124,7 +124,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *     ~!< (does not end with)
  *     ~!? (does not match regex)
  *
- * Example: field: ~>foo, ~*"bar", ~?"^foo|bar$";
+ * Example: field: ~> foo, ~*"bar", ~? ^foo|bar$;
  *
  * To mark the pattern case insensitive add an 'i' directly after the '~'.
  *
