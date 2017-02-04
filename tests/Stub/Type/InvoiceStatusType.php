@@ -11,7 +11,8 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type;
 
-use Rollerworks\Component\Search\AbstractFieldType;
+use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class InvoiceStatusType extends AbstractFieldType
@@ -19,17 +20,12 @@ final class InvoiceStatusType extends AbstractFieldType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            ['choices' => [0 => 'concept', 1 => 'publish', 2 => 'paid']]
+            ['choices' => ['concept' => 0, 'publish' => 1, 'paid' => 2]]
         );
-    }
-
-    public function getName()
-    {
-        return 'invoice_status';
     }
 
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
     }
 }

@@ -11,8 +11,9 @@
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
-use Rollerworks\Component\Search\AbstractFieldTypeExtension;
+use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\AgeDateConversion;
+use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -48,8 +49,8 @@ class BirthdayTypeExtension extends AbstractFieldTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function getExtendedType()
+    public function getExtendedType(): string
     {
-        return 'birthday';
+        return BirthdayType::class;
     }
 }

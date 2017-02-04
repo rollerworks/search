@@ -15,12 +15,14 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "rollerworks/search": "^1.0.0",
-        "doctrine/dbal": "~2.4"
+        "php": "^7.1",
+        "rollerworks/search": "^2.0@dev",
+        "doctrine/dbal": "^2.5.5"
     },
     "require-dev": {
-        "sllh/php-cs-fixer-styleci-bridge": "^2.0"
+        "sllh/php-cs-fixer-styleci-bridge": "^2.0",
+        "symfony/phpunit-bridge": "^3.2.2",
+        "symfony/var-dumper": "^3.2.2"
     },
     "autoload": {
         "psr-4": {
@@ -36,7 +38,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }

@@ -10,28 +10,23 @@ cache:
         - $HOME/.composer/cache
 
 php:
-    - 5.4
-    - 5.5
-    - 5.6
-    - 7.0
+    - 7.1
     - hhvm
 
 # Note. Only test databases with PHP5.5 because its the fastest
 # And we don't need to test for multiple DB versions as the Queries are very common.
 matrix:
     include:
-        - php: 5.4
+        - php: 7.1
           env: DEPENDENCIES='low'
-        - php: 5.5
+        - php: 7.1
           env: DB=pgsql
-        - php: 5.5
+        - php: 7.1
           env: DB=sqlite
-        - php: 5.5
+        - php: 7.1
           env: DB=mysql
-        - php: 5.6
+        - php: 7.1
           env: DEPENDENCIES='dev'
-    allow_failures:
-        - env: DEPENDENCIES='dev'
     fast_finish: true
 
 before_script:
@@ -39,11 +34,13 @@ before_script:
 
 install:
     - export COMPOSER_ROOT_VERSION=dev-master
+    - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
+    - export SYMFONY_PHPUNIT_VERSION=5.4.8
     - if [ "$DEPENDENCIES" == "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
     - if [ "$DB" != "" ] ; then travis_retry composer update --prefer-source; fi;
     - if [ "$DEPENDENCIES" != "low" ] && [ "$DB" == "" ] ; then travis_retry composer update; fi;
     - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest; fi;
 
 script:
-    - phpunit --configuration phpunit.xml.dist
-    - if [ "$DB" != "" ]; then phpunit --configuration tests/travis/$DB.travis.xml; fi;
+    - vendor/bin/simple-phpunit --configuration phpunit.xml.dist
+    - if [ "$DB" != "" ]; then vendor/bin/simple-phpunit --configuration tests/travis/$DB.travis.xml; fi;

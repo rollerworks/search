@@ -11,8 +11,11 @@
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
-use Rollerworks\Component\Search\AbstractFieldTypeExtension;
-use Symfony\Component\OptionsResolver\Options;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
+use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
+use Rollerworks\Component\Search\Field\FieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -31,37 +34,23 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
             ['doctrine_dbal_conversion' => null]
         );
 
-        if ($resolver instanceof Options) {
-            $resolver->setAllowedTypes(
-                'doctrine_dbal_conversion',
-                [
-                    'null',
-                    'Closure',
-                    'Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface',
-                    'Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface',
-                    'Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface',
-                ]
-            );
-        } else {
-            $resolver->setAllowedTypes(
-                [
-                    'doctrine_dbal_conversion' => [
-                        'null',
-                        'Closure',
-                        'Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface',
-                        'Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface',
-                        'Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface',
-                    ],
-                ]
-            );
-        }
+        $resolver->setAllowedTypes(
+            'doctrine_dbal_conversion',
+            [
+                'null',
+                'Closure',
+                SqlFieldConversionInterface::class,
+                SqlValueConversionInterface::class,
+                ValueConversionInterface::class,
+            ]
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getExtendedType()
+    public function getExtendedType(): string
     {
-        return 'field';
+        return FieldType::class;
     }
 }

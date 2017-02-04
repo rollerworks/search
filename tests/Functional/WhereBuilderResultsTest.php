@@ -13,12 +13,15 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
-use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
-use Rollerworks\Component\Search\FieldAliasResolver\NoopAliasResolver;
-use Rollerworks\Component\Search\Input\FilterQueryInput;
+use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
+use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
-use Rollerworks\Component\Search\ValuesGroup;
 
 /**
  * Ensures the expected results are actually found.
@@ -40,7 +43,7 @@ use Rollerworks\Component\Search\ValuesGroup;
 final class WhereBuilderResultsTest extends FunctionalDbalTestCase
 {
     /**
-     * @var FilterQueryInput
+     * @var StringQueryInput
      */
     private $inputProcessor;
 
@@ -48,7 +51,7 @@ final class WhereBuilderResultsTest extends FunctionalDbalTestCase
     {
         parent::setUp();
 
-        $this->inputProcessor = new FilterQueryInput(new NoopAliasResolver());
+        $this->inputProcessor = new StringQueryInput();
     }
 
     protected function setUpDbSchema(DbSchema $schema)
@@ -210,32 +213,32 @@ SQL;
         $whereBuilder->setField('row-total', 'total', 'decimal', 'ir');
     }
 
-    protected function getFieldSet($build = true)
+    protected function getFieldSet(bool $build = true)
     {
-        $fieldSet = $this->getFactory()->createFieldSetBuilder('invoice');
+        $fieldSet = $this->getFactory()->createFieldSetBuilder();
 
         // Customer (by invoice relation)
-        $fieldSet->add('customer-first-name', 'text');
-        $fieldSet->add('customer-last-name', 'text');
-        $fieldSet->add('customer-name', 'text');
-        $fieldSet->add('customer-birthday', 'birthday', ['format' => 'yyyy-MM-dd']);
-        $fieldSet->add('customer-regdate', 'date', ['format' => 'yyyy-MM-dd']);
+        $fieldSet->add('customer-first-name', TextType::class);
+        $fieldSet->add('customer-last-name', TextType::class);
+        $fieldSet->add('customer-name', TextType::class);
+        $fieldSet->add('customer-birthday', BirthdayType::class, ['pattern' => 'yyyy-MM-dd']);
+        $fieldSet->add('customer-regdate', DateType::class, ['pattern' => 'yyyy-MM-dd']);
 
         // Invoice
-        $fieldSet->add('id', 'integer');
-        $fieldSet->add('customer', 'integer');
-        $fieldSet->add('label', 'text');
-        $fieldSet->add('pub-date', 'date', ['format' => 'yyyy-MM-dd']);
-        $fieldSet->add('status', 'choice', ['label_as_value' => true, 'choices' => [0 => 'concept', 1 => 'published', 2 => 'paid']]);
-        $fieldSet->add('total', 'money');
+        $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('customer', IntegerType::class);
+        $fieldSet->add('label', TextType::class);
+        $fieldSet->add('pub-date', DateType::class, ['pattern' => 'yyyy-MM-dd']);
+        $fieldSet->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2]]);
+        $fieldSet->add('total', MoneyType::class);
 
         // Invoice Details
-        $fieldSet->add('row-label', 'text');
-        $fieldSet->add('row-quantity', 'integer');
-        $fieldSet->add('row-price', 'money');
-        $fieldSet->add('row-total', 'money');
+        $fieldSet->add('row-label', TextType::class);
+        $fieldSet->add('row-quantity', IntegerType::class);
+        $fieldSet->add('row-price', MoneyType::class);
+        $fieldSet->add('row-total', MoneyType::class);
 
-        return $build ? $fieldSet->getFieldSet() : $fieldSet;
+        return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
     }
 
     /**
@@ -259,7 +262,7 @@ SQL;
      */
     public function it_finds_with_range_and_excluding()
     {
-        $this->makeTest('id: 1-7, !2;', [1, 3, 4, 5, 6]);
+        $this->makeTest('id: 1~7, !2;', [1, 3, 4, 5, 6]);
     }
 
     /**
@@ -354,39 +357,19 @@ SQL;
         try {
             $condition = $this->inputProcessor->process($config, $input);
             $this->assertRecordsAreFound($condition, $expectedRows);
-        } catch (InvalidSearchConditionException $e) {
-            $this->fail(
-                $e->getMessage()."\n".
-                $this->renderSearchErrors($e->getCondition()->getValuesGroup())
-            );
-        }
-    }
+        } catch (\Exception $e) {
+            self::detectSystemException($e);
 
-    private function renderSearchErrors(ValuesGroup $group, $nestingLevel = 0)
-    {
-        if (!$group->hasErrors(true)) {
-            return '';
-        }
+            if (function_exists('dump')) {
+                dump($e);
+            } else {
+                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.'.PHP_EOL;
 
-        $fields = $group->getFields();
-        $output = '';
-
-        foreach ($fields as $fieldName => $values) {
-            $errors = $values->getErrors();
-
-            if ($values->hasErrors()) {
-                $output .= str_repeat(' ', $nestingLevel * 2).$fieldName.' has the following errors: '."\n";
-
-                foreach ($errors as $valueError) {
-                    $output .= str_repeat(' ', $nestingLevel * 2).' - '.$valueError->getMessage()."\n";
-                }
+                // Don't use var-dump or print-r as this crashes php...
+                echo get_class($e).'::'.(string) $e;
             }
 
-            foreach ($group->getGroups() as $subGroup) {
-                $output .= $this->renderSearchErrors($subGroup, ++$nestingLevel)."\n";
-            }
+            $this->fail('Condition contains errors.');
         }
-
-        return $output;
     }
 }

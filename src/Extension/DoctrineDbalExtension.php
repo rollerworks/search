@@ -26,7 +26,7 @@ class DoctrineDbalExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    protected function loadTypeExtensions()
+    protected function loadTypesExtensions(): array
     {
         return [
             new Type\FieldTypeExtension(),
@@ -35,7 +35,7 @@ class DoctrineDbalExtension extends AbstractExtension
         ];
     }
 
-    protected function loadTypes()
+    protected function loadTypes(): array
     {
         return [
             new Type\ChildCountType(),
