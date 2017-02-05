@@ -16,7 +16,6 @@ cache:
 
 php:
     - 7.1
-    - hhvm
 
 # Note. Only test databases with PHP (latest) because its the fastest
 # And we don't need to test for multiple DB versions as the Queries are very common.
