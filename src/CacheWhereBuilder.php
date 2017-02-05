@@ -57,11 +57,6 @@ class CacheWhereBuilder implements WhereBuilderInterface
     /**
      * @var string
      */
-    private $keySuffix = '';
-
-    /**
-     * @var string
-     */
     private $whereClause;
 
     /**
@@ -108,27 +103,6 @@ class CacheWhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * Set an extra suffix for the caching key.
-     *
-     * This allows to make the key more unique.
-     * For example, you can set the key to calculate automatically,
-     * and add this suffix to ensure there is no problem with different mapping.
-     *
-     * @param string $key
-     *
-     * @return self
-     *
-     * @deprecated since version 1.0.0-beta7, to be removed in 2.0.
-     *             Use setCacheKey() instead with a unique key
-     */
-    public function setCacheKeySuffix($key)
-    {
-        $this->keySuffix = $key.'_';
-
-        return $this;
-    }
-
-    /**
      * Returns the generated/cached where-clause.
      *
      * @see WhereBuilder::getWhereClause()
@@ -141,7 +115,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
     public function getWhereClause($prependQuery = '')
     {
         if (null === $this->whereClause) {
-            $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->keySuffix.$this->cacheKey;
+            $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->cacheKey;
 
             if ($this->cacheDriver->contains($cacheKey)) {
                 $this->whereClause = $this->cacheDriver->fetch($cacheKey);
