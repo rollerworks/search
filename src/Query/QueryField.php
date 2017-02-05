@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -45,28 +47,22 @@ class QueryField
         $this->valueConversion = $valueConversion;
     }
 
-    /**
-     * @return FieldConfig
-     */
-    public function getFieldConfig()
+    public function getFieldConfig(): FieldConfig
     {
         return $this->fieldConfig;
     }
 
-    /**
-     * @return DbType
-     */
-    public function getDbType()
+    public function getDbType(): DbType
     {
         return $this->dbType;
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return $this->alias;
     }
 
-    public function getColumn($withAlias = true)
+    public function getColumn(bool $withAlias = true): string
     {
         return $withAlias ? $this->resolvedColumn : $this->column;
     }
@@ -90,7 +86,7 @@ class QueryField
     /**
      * @return bool
      */
-    public function hasConversionStrategy()
+    public function hasConversionStrategy(): bool
     {
         return $this->fieldConversion instanceof ConversionStrategyInterface || $this->valueConversion instanceof ConversionStrategyInterface;
     }

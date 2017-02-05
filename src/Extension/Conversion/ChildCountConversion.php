@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -23,7 +25,7 @@ use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
  */
 class ChildCountConversion implements SqlFieldConversionInterface
 {
-    public function convertSqlField($column, array $options, ConversionHints $hints)
+    public function convertSqlField(string $column, array $options, ConversionHints $hints): string
     {
         return '(SELECT COUNT(*) FROM '.$options['table_name'].' WHERE '.$options['table_column']." = $column)";
     }

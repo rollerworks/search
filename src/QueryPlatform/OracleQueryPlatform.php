@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -16,7 +18,7 @@ class OracleQueryPlatform extends AbstractQueryPlatform
     /**
      * {@inheritdoc}
      */
-    public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
+    public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string
     {
         return ($negative ? 'NOT ' : '').sprintf(
             "REGEXP_LIKE(%s, %s, '%s')",

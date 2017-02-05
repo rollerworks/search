@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -24,19 +26,19 @@ interface QueryPlatformInterface
      *
      * @return string
      */
-    public function getFieldColumn($fieldName, $strategy = 0, $column = '');
+    public function getFieldColumn(string $fieldName, int $strategy = 0, string $column = ''): string;
 
     /**
      * Returns either the converted value.
      *
-     * @param string $value
+     * @param mixed  $value
      * @param string $fieldName
      * @param string $column
      * @param int    $strategy
      *
-     * @return string
+     * @return string|int
      */
-    public function getValueAsSql($value, $fieldName, $column, $strategy = 0);
+    public function getValueAsSql($value, string $fieldName, string $column, int $strategy = 0);
 
     /**
      * Returns the formatted PatternMatch query.
@@ -46,7 +48,7 @@ interface QueryPlatformInterface
      *
      * @return string Some like: u.name LIKE '%foo%'
      */
-    public function getPatternMatcher(PatternMatch $patternMatch, $column);
+    public function getPatternMatcher(PatternMatch $patternMatch, string $column): string;
 
     /**
      * @param mixed  $value
@@ -54,9 +56,9 @@ interface QueryPlatformInterface
      * @param string $column
      * @param int    $strategy
      *
-     * @return string
+     * @return string|int
      */
-    public function convertSqlValue($value, $fieldName, $column, $strategy = 0);
+    public function convertSqlValue($value, string $fieldName, string $column, int $strategy = 0);
 
     /**
      * Returns the SQL for the match (regexp).
@@ -68,5 +70,5 @@ interface QueryPlatformInterface
      *
      * @return string
      */
-    public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative);
+    public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string;
 }
