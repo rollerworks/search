@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -13,6 +15,7 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\Common\Cache\Cache;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\SearchCondition;
 
 /***
  * Handles caching of the Doctrine DBAL WhereBuilder.
@@ -57,11 +60,6 @@ class CacheWhereBuilder implements WhereBuilderInterface
     /**
      * @var string
      */
-    private $keySuffix = '';
-
-    /**
-     * @var string
-     */
     private $whereClause;
 
     /**
@@ -72,7 +70,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
      * @param int                   $lifeTime     Lifetime in seconds after which the cache is expired
      *                                            Set this 0 to never expire
      */
-    public function __construct(WhereBuilderInterface $whereBuilder, Cache $cacheDriver, $lifeTime = 0)
+    public function __construct(WhereBuilderInterface $whereBuilder, Cache $cacheDriver, int $lifeTime = 0)
     {
         $this->cacheDriver = $cacheDriver;
         $this->cacheLifeTime = (int) $lifeTime;
@@ -92,9 +90,9 @@ class CacheWhereBuilder implements WhereBuilderInterface
      *
      * @return self
      */
-    public function setCacheKey($key = null, $callback = null)
+    public function setCacheKey(string $key = null, callable $callback = null)
     {
-        if ((null === $key && null === $callback) || ($callback && !is_callable($callback))) {
+        if (null === $key && null === $callback) {
             throw new BadMethodCallException('Either a key or legal callback must be given.');
         }
 
@@ -103,27 +101,6 @@ class CacheWhereBuilder implements WhereBuilderInterface
         }
 
         $this->cacheKey = (string) $key;
-
-        return $this;
-    }
-
-    /**
-     * Set an extra suffix for the caching key.
-     *
-     * This allows to make the key more unique.
-     * For example, you can set the key to calculate automatically,
-     * and add this suffix to ensure there is no problem with different mapping.
-     *
-     * @param string $key
-     *
-     * @return self
-     *
-     * @deprecated since version 1.0.0-beta7, to be removed in 2.0.
-     *             Use setCacheKey() instead with a unique key
-     */
-    public function setCacheKeySuffix($key)
-    {
-        $this->keySuffix = $key.'_';
 
         return $this;
     }
@@ -138,10 +115,10 @@ class CacheWhereBuilder implements WhereBuilderInterface
      *
      * @return string
      */
-    public function getWhereClause($prependQuery = '')
+    public function getWhereClause(string $prependQuery = ''): string
     {
         if (null === $this->whereClause) {
-            $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->keySuffix.$this->cacheKey;
+            $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->cacheKey;
 
             if ($this->cacheDriver->contains($cacheKey)) {
                 $this->whereClause = $this->cacheDriver->fetch($cacheKey);
@@ -169,7 +146,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
      *
      * @return WhereBuilderInterface
      */
-    public function getInnerWhereBuilder()
+    public function getInnerWhereBuilder(): WhereBuilderInterface
     {
         return $this->whereBuilder;
     }
@@ -177,7 +154,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getSearchCondition()
+    public function getSearchCondition(): SearchCondition
     {
         return $this->whereBuilder->getSearchCondition();
     }

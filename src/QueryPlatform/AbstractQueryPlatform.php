@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -52,7 +54,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function getValueAsSql($value, $fieldName, $column, $strategy = 0)
+    public function getValueAsSql($value, string $fieldName, string $column, int $strategy = 0)
     {
         $converter = $this->fields[$fieldName]->getValueConversion();
         $type = $this->fields[$fieldName]->getDbType();
@@ -70,7 +72,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function getFieldColumn($fieldName, $strategy = 0, $column = '')
+    public function getFieldColumn(string $fieldName, int $strategy = 0, string $column = ''): string
     {
         if (isset($this->fieldsMappingCache[$fieldName][$strategy])) {
             return $this->fieldsMappingCache[$fieldName][$strategy];
@@ -98,7 +100,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function getPatternMatcher(PatternMatch $patternMatch, $column)
+    public function getPatternMatcher(PatternMatch $patternMatch, string $column): string
     {
         if ($patternMatch->isRegex()) {
             return $this->getMatchSqlRegex(
@@ -144,7 +146,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function convertSqlValue($value, $fieldName, $column, $strategy = 0)
+    public function convertSqlValue($value, string $fieldName, string $column, int $strategy = 0)
     {
         $field = $this->fields[$fieldName];
 
@@ -161,7 +163,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
      *
      * @return string
      */
-    protected function quoteValue($value, Type $type)
+    protected function quoteValue($value, Type $type): string
     {
         // Don't quote numbers as some don't follow standards for casting
         if (is_scalar($value) && ctype_digit((string) $value)) {
@@ -178,7 +180,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
      *
      * @return string
      */
-    protected function getLikeEscapeChars()
+    protected function getLikeEscapeChars(): string
     {
         return '%_';
     }
@@ -190,7 +192,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
      *
      * @return ConversionHints
      */
-    protected function getConversionHints($fieldName, $column, $strategy = 0)
+    protected function getConversionHints($fieldName, $column, $strategy = 0): ConversionHints
     {
         $hints = new ConversionHints();
         $hints->field = $this->fields[$fieldName];
@@ -209,7 +211,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
      *
      * @return string
      */
-    protected function convertValue($value, $fieldName, $column, $strategy = 0)
+    protected function convertValue($value, string $fieldName, string $column, int $strategy = 0)
     {
         $field = $this->fields[$fieldName];
         $converter = $field->getValueConversion();

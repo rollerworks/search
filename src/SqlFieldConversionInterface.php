@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -32,5 +34,5 @@ interface SqlFieldConversionInterface
      *
      * @return string
      */
-    public function convertSqlField($column, array $options, ConversionHints $hints);
+    public function convertSqlField(string $column, array $options, ConversionHints $hints): string;
 }

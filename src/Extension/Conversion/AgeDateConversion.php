@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -35,7 +37,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     /**
      * {@inheritdoc}
      */
-    public function getConversionStrategy($value, array $options, ConversionHints $hints)
+    public function getConversionStrategy($value, array $options, ConversionHints $hints): int
     {
         if (!$value instanceof \DateTimeInterface && !is_int($value)) {
             throw new UnexpectedTypeException($value, '\DateTimeInterface object or integer');
@@ -51,7 +53,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     /**
      * {@inheritdoc}
      */
-    public function convertSqlField($column, array $options, ConversionHints $hints)
+    public function convertSqlField(string $column, array $options, ConversionHints $hints): string
     {
         if (3 === $hints->conversionStrategy) {
             return $column;

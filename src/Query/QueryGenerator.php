@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -294,7 +296,7 @@ final class QueryGenerator
      *
      * @return int
      */
-    private function getConversionStrategy($fieldName, $value)
+    private function getConversionStrategy($fieldName, $value): int
     {
         if ($this->fields[$fieldName]->getValueConversion() instanceof ConversionStrategyInterface) {
             return $this->fields[$fieldName]->getValueConversion()->getConversionStrategy(
@@ -311,6 +313,8 @@ final class QueryGenerator
                 $this->getConversionHints($fieldName)
             );
         }
+
+        return 0;
     }
 
     /**

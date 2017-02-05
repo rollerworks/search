@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -15,6 +17,9 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 
+/**
+ * @internal
+ */
 interface SqlConversionStrategyInterface extends ConversionStrategyInterface, SqlFieldConversionInterface, SqlValueConversionInterface
 {
 }

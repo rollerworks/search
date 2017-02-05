@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -60,7 +62,7 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
     /**
      * {@inheritdoc}
      */
-    public function convertSqlField($column, array $options, ConversionHints $hints)
+    public function convertSqlField(string $column, array $options, ConversionHints $hints): string
     {
         if (DbType::DECIMAL === $hints->field->getDbType()->getName()) {
             return $column;
@@ -83,7 +85,7 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
     /**
      * {@inheritdoc}
      */
-    public function getConversionStrategy($value, array $options, ConversionHints $hints)
+    public function getConversionStrategy($value, array $options, ConversionHints $hints): int
     {
         if (!$value instanceof MoneyValue) {
             throw new UnexpectedTypeException($value, MoneyValue::class);
@@ -92,7 +94,7 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
         return $this->currencies->subunitFor($value->value->getCurrency());
     }
 
-    private function getCastType($scale, ConversionHints $hints)
+    private function getCastType(int $scale, ConversionHints $hints): string
     {
         if (false !== strpos($hints->connection->getDatabasePlatform()->getName(), 'mysql')) {
             return "DECIMAL(10, {$scale})";

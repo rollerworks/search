@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -122,37 +124,6 @@ class CacheWhereBuilderTest extends DbalTestCase
                 return 'invoice2';
             }
         );
-
-        $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
-    }
-
-    /**
-     * @deprecated This needs to be removed in 2.0
-     */
-    public function testGetWhereClauseWithKeySuffix()
-    {
-        $this->cacheDriver
-            ->expects($this->once())
-            ->method('contains')
-            ->with('rw_search.doctrine.dbal.where.new_invoice')
-            ->will($this->returnValue(true));
-
-        $this->cacheDriver
-            ->expects($this->once())
-            ->method('fetch')
-            ->with('rw_search.doctrine.dbal.where.new_invoice')
-            ->will($this->returnValue("me = 'foo'"));
-
-        $this->whereBuilder
-            ->expects($this->never())
-            ->method('getWhereClause');
-
-        $this->cacheDriver
-            ->expects($this->never())
-            ->method('save');
-
-        $this->cacheWhereBuilder->setCacheKey('invoice');
-        $this->cacheWhereBuilder->setCacheKeySuffix('new');
 
         $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
     }

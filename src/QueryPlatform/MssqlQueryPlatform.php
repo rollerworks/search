@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -16,7 +18,7 @@ class MssqlQueryPlatform extends AbstractQueryPlatform
     /**
      * {@inheritdoc}
      */
-    public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
+    public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string
     {
         throw new \RuntimeException(
             "MSSQL doesn't have support for regexes out-of-the box.\n".
@@ -29,7 +31,7 @@ class MssqlQueryPlatform extends AbstractQueryPlatform
      *
      * @return string
      */
-    protected function getLikeEscapeChars()
+    protected function getLikeEscapeChars(): string
     {
         return '%_[]';
     }

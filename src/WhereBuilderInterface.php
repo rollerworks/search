@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -23,10 +25,10 @@ interface WhereBuilderInterface
      *
      * @return string
      */
-    public function getWhereClause();
+    public function getWhereClause(): string;
 
     /**
      * @return SearchCondition
      */
-    public function getSearchCondition();
+    public function getSearchCondition(): SearchCondition;
 }

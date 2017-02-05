@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -105,7 +107,7 @@ class WhereBuilder implements WhereBuilderInterface
      *
      * @return self
      */
-    public function setField($fieldName, $column, $type = 'string', $alias = null)
+    public function setField(string $fieldName, string $column, $type = 'string', string $alias = null)
     {
         if ($this->whereClause) {
             throw new BadMethodCallException(
@@ -134,7 +136,7 @@ class WhereBuilder implements WhereBuilderInterface
      *
      * @return self
      */
-    public function setCombinedField($fieldName, array $mappings = null)
+    public function setCombinedField(string $fieldName, array $mappings = null)
     {
         if ($this->whereClause) {
             throw new BadMethodCallException(
@@ -186,7 +188,7 @@ class WhereBuilder implements WhereBuilderInterface
      *
      * @return self
      */
-    public function setConverter($fieldName, $converter)
+    public function setConverter(string $fieldName, $converter)
     {
         if ($this->whereClause) {
             throw new BadMethodCallException('WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.');
@@ -220,7 +222,7 @@ class WhereBuilder implements WhereBuilderInterface
      *
      * @return string
      */
-    public function getWhereClause($prependQuery = '')
+    public function getWhereClause(string $prependQuery = ''): string
     {
         if (null === $this->whereClause) {
             $fields = $this->processFields();
@@ -244,7 +246,7 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @return SearchCondition
      */
-    public function getSearchCondition()
+    public function getSearchCondition(): SearchCondition
     {
         return $this->searchCondition;
     }
@@ -303,7 +305,7 @@ class WhereBuilder implements WhereBuilderInterface
         return $fields;
     }
 
-    private function getQueryPlatform(array $fields)
+    private function getQueryPlatform(array $fields): QueryPlatformInterface
     {
         $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';
