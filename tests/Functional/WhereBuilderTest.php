@@ -352,12 +352,6 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
 
         $converter
             ->expects($this->atLeastOnce())
-            ->method('requiresBaseConversion')
-            ->will($this->returnValue(false))
-        ;
-
-        $converter
-            ->expects($this->atLeastOnce())
             ->method('convertValue')
             ->will($this->returnArgument(0))
         ;
