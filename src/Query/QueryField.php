@@ -16,7 +16,7 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
-use Rollerworks\Component\Search\FieldConfigInterface;
+use Rollerworks\Component\Search\Field\FieldConfig;
 
 class QueryField
 {
@@ -29,7 +29,7 @@ class QueryField
     protected $valueConversion;
 
     public function __construct(
-        FieldConfigInterface $fieldConfigInterface,
+        FieldConfig $fieldConfigInterface,
         DbType $dbType,
         $alias,
         $column,
@@ -46,7 +46,7 @@ class QueryField
     }
 
     /**
-     * @return FieldConfigInterface
+     * @return FieldConfig
      */
     public function getFieldConfig()
     {

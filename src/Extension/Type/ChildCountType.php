@@ -11,8 +11,9 @@
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
-use Rollerworks\Component\Search\AbstractFieldType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\ChildCountConversion;
+use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -49,16 +50,8 @@ class ChildCountType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'doctrine_dbal_child_count';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getParent()
     {
-        return 'integer';
+        return IntegerType::class;
     }
 }

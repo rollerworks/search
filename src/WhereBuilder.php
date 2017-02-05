@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * SearchCondition Doctrine DBAL WhereBuilder.
@@ -38,7 +38,7 @@ use Rollerworks\Component\Search\SearchConditionInterface;
 class WhereBuilder implements WhereBuilderInterface
 {
     /**
-     * @var SearchConditionInterface
+     * @var SearchCondition
      */
     private $searchCondition;
 
@@ -80,19 +80,13 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * Constructor.
      *
-     * @param Connection               $connection      Doctrine DBAL Connection object
-     * @param SearchConditionInterface $searchCondition SearchCondition object
+     * @param Connection      $connection      Doctrine DBAL Connection object
+     * @param SearchCondition $searchCondition SearchCondition object
      *
      * @throws BadMethodCallException When SearchCondition contains errors
      */
-    public function __construct(Connection $connection, SearchConditionInterface $searchCondition)
+    public function __construct(Connection $connection, SearchCondition $searchCondition)
     {
-        if ($searchCondition->getValuesGroup()->hasErrors(true)) {
-            throw new BadMethodCallException(
-                'Unable to generate the where-clause with a SearchCondition that contains errors.'
-            );
-        }
-
         $this->searchCondition = $searchCondition;
         $this->fieldSet = $searchCondition->getFieldSet();
         $this->connection = $connection;
@@ -248,7 +242,7 @@ class WhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * @return SearchConditionInterface
+     * @return SearchCondition
      */
     public function getSearchCondition()
     {

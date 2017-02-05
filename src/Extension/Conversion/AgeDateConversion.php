@@ -37,11 +37,11 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
      */
     public function getConversionStrategy($value, array $options, ConversionHints $hints)
     {
-        if (!$value instanceof \DateTime && !ctype_digit((string) $value)) {
-            throw new UnexpectedTypeException($value, '\DateTime object or integer');
+        if (!$value instanceof \DateTimeInterface && !is_int($value)) {
+            throw new UnexpectedTypeException($value, '\DateTimeInterface object or integer');
         }
 
-        if ($value instanceof \DateTime) {
+        if ($value instanceof \DateTimeInterface) {
             return $hints->field->getDbType()->getName() !== 'date' ? 2 : 3;
         }
 

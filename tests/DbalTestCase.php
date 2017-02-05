@@ -13,6 +13,9 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as PDOSqlite;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\DoctrineDbalExtension;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks\ConnectionMock;
@@ -21,32 +24,24 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type\InvoiceStatusType
 
 abstract class DbalTestCase extends SearchIntegrationTestCase
 {
-    protected function getFieldSet($build = true)
+    protected function getFieldSet(bool $build = true)
     {
-        $fieldSet = $this->getFactory()->createFieldSetBuilder('invoice');
+        $fieldSet = $this->getFactory()->createFieldSetBuilder();
 
-        $fieldSet->add('id', 'integer');
-        $fieldSet->add('label', 'invoice_label');
-        $fieldSet->add('status', 'invoice_status');
+        $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('label', InvoiceLabelType::class);
+        $fieldSet->add('status', InvoiceStatusType::class);
 
-        $fieldSet->add('customer', 'integer');
-        $fieldSet->add('customer_name', 'text');
-        $fieldSet->add('customer_birthday', 'date');
+        $fieldSet->add('customer', IntegerType::class);
+        $fieldSet->add('customer_name', TextType::class);
+        $fieldSet->add('customer_birthday', DateType::class);
 
-        return $build ? $fieldSet->getFieldSet() : $fieldSet;
+        return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
     }
 
-    protected function getExtensions()
+    protected function getExtensions(): array
     {
         return [new DoctrineDbalExtension()];
-    }
-
-    protected function getTypes()
-    {
-        return [
-            new InvoiceLabelType(),
-            new InvoiceStatusType(),
-        ];
     }
 
     protected function getDbalFactory()

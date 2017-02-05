@@ -12,14 +12,27 @@
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 
 use Doctrine\DBAL\Types\Type as DbType;
+use Money\Currencies\ISOCurrencies;
+use Money\Formatter\DecimalMoneyFormatter;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
-class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConversionInterface
+class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConversionInterface, ConversionStrategyInterface
 {
+    private $formatter;
+
+    private $currencies;
+
+    public function __construct()
+    {
+        $this->currencies = new ISOCurrencies();
+        $this->formatter = new DecimalMoneyFormatter($this->currencies);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -33,11 +46,15 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
      */
     public function convertSqlValue($value, array $options, ConversionHints $hints)
     {
-        $value = $hints->connection->quote($value);
-        $castType = $this->getCastType($options['precision'], $hints);
+        if (!$value instanceof MoneyValue) {
+            throw new UnexpectedTypeException($value, MoneyValue::class);
+        }
+
+        $sqlValue = $hints->connection->quote($this->formatter->format($value->value));
+        $castType = $this->getCastType($hints->conversionStrategy, $hints);
 
         // https://github.com/rollerworks/rollerworks-search-doctrine-dbal/issues/9
-        return "CAST({$value} AS {$castType})";
+        return "CAST({$sqlValue} AS {$castType})";
     }
 
     /**
@@ -50,7 +67,7 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
         }
 
         $substr = $hints->connection->getDatabasePlatform()->getSubstringExpression($column, 5);
-        $castType = $this->getCastType($options['precision'], $hints);
+        $castType = $this->getCastType($hints->conversionStrategy, $hints);
 
         return "CAST($substr AS $castType)";
     }
@@ -60,11 +77,19 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
      */
     public function convertValue($input, array $options, ConversionHints $hints)
     {
-        if (!$input instanceof MoneyValue) {
-            throw new UnexpectedTypeException($input, 'Rollerworks\Component\Search\Extension\Core\Model\MoneyValue');
+        return $input;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConversionStrategy($value, array $options, ConversionHints $hints)
+    {
+        if (!$value instanceof MoneyValue) {
+            throw new UnexpectedTypeException($value, MoneyValue::class);
         }
 
-        return $input->value;
+        return $this->currencies->subunitFor($value->value->getCurrency());
     }
 
     private function getCastType($scale, ConversionHints $hints)

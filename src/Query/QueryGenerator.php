@@ -17,11 +17,11 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
-use Rollerworks\Component\Search\ValuesBag;
-use Rollerworks\Component\Search\ValuesGroup;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * Doctrine QueryGenerator.
@@ -125,10 +125,10 @@ final class QueryGenerator
     /**
      * Processes the single-values and returns an SQL statement query result.
      *
-     * @param SingleValue[] $values
-     * @param string        $fieldName
-     * @param array         $query
-     * @param bool          $exclude
+     * @param array  $values
+     * @param string $fieldName
+     * @param array  $query
+     * @param bool   $exclude
      *
      * @return string
      */
@@ -138,7 +138,7 @@ final class QueryGenerator
         $column = $this->queryPlatform->getFieldColumn($fieldName);
 
         foreach ($values as $value) {
-            $valuesQuery[] = $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column);
+            $valuesQuery[] = $this->queryPlatform->getValueAsSql($value, $fieldName, $column);
         }
 
         $patterns = ['%s IN(%s)', '%s NOT IN(%s)'];
@@ -155,10 +155,10 @@ final class QueryGenerator
     /**
      * Processes the single-values and returns an SQL statement query result.
      *
-     * @param SingleValue[] $values
-     * @param string        $fieldName
-     * @param array         $query
-     * @param bool          $exclude
+     * @param array  $values
+     * @param string $fieldName
+     * @param array  $query
+     * @param bool   $exclude
      */
     private function processSingleValues(array $values, $fieldName, array &$query, $exclude = false)
     {
@@ -175,13 +175,13 @@ final class QueryGenerator
         $patterns = ['%s = %s', '%s <> %s'];
 
         foreach ($values as $value) {
-            $strategy = $this->getConversionStrategy($fieldName, $value->getValue());
+            $strategy = $this->getConversionStrategy($fieldName, $value);
             $column = $this->queryPlatform->getFieldColumn($fieldName, $strategy);
 
             $query[] = sprintf(
                 $patterns[(int) $exclude],
                 $column,
-                $this->queryPlatform->getValueAsSql($value->getValue(), $fieldName, $column, $strategy)
+                $this->queryPlatform->getValueAsSql($value, $fieldName, $column, $strategy)
             );
         }
     }
@@ -350,52 +350,52 @@ final class QueryGenerator
     private function processFieldValues(ValuesBag $values, $fieldName, array &$inclusiveSqlGroup, array &$exclusiveSqlGroup)
     {
         $this->processSingleValues(
-            $values->getSingleValues(),
+            $values->getSimpleValues(),
             $fieldName,
             $inclusiveSqlGroup
         );
 
         $this->processRanges(
-            $values->getRanges(),
+            $values->get(Range::class),
             $fieldName,
             $inclusiveSqlGroup
         );
 
         $this->processCompares(
-            $values->getComparisons(),
+            $values->get(Compare::class),
             $fieldName,
             $inclusiveSqlGroup
         );
 
         $this->processPatternMatchers(
-            $values->getPatternMatchers(),
+            $values->get(PatternMatch::class),
             $fieldName,
             $inclusiveSqlGroup
         );
 
         $this->processSingleValues(
-            $values->getExcludedValues(),
+            $values->getExcludedSimpleValues(),
             $fieldName,
             $exclusiveSqlGroup,
             true
         );
 
         $this->processRanges(
-            $values->getExcludedRanges(),
+            $values->get(ExcludedRange::class),
             $fieldName,
             $exclusiveSqlGroup,
             true
         );
 
         $this->processPatternMatchers(
-            $values->getPatternMatchers(),
+            $values->get(PatternMatch::class),
             $fieldName,
             $exclusiveSqlGroup,
             true
         );
 
         $this->processCompares(
-            $values->getComparisons(),
+            $values->get(Compare::class),
             $fieldName,
             $exclusiveSqlGroup,
             true

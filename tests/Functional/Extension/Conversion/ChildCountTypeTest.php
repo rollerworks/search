@@ -13,10 +13,11 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\Extension\
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type\ChildCountType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\FunctionalDbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
-use Rollerworks\Component\Search\Value\SingleValue;
 
 /**
  * @group functional
@@ -65,23 +66,23 @@ final class ChildCountTypeTest extends FunctionalDbalTestCase
         $whereBuilder->setField('contact_count', 'id', 'integer', 'u');
     }
 
-    protected function getFieldSet($build = true)
+    protected function getFieldSet(bool $build = true)
     {
-        $fieldSet = $this->getFactory()->createFieldSetBuilder('user');
-        $fieldSet->add('id', 'integer');
-        $fieldSet->add('contact_count', 'doctrine_dbal_child_count', [
+        $fieldSet = $this->getFactory()->createFieldSetBuilder();
+        $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('contact_count', ChildCountType::class, [
             'table_name' => 'user_contact',
             'table_column' => 'user_id',
         ]);
 
-        return $build ? $fieldSet->getFieldSet() : $fieldSet;
+        return $build ? $fieldSet->getFieldSet('user') : $fieldSet;
     }
 
     public function testMatchesCount()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('contact_count')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
             ->getSearchCondition()
         ;

@@ -13,10 +13,11 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\Extension\
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\FunctionalDbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
-use Rollerworks\Component\Search\Value\SingleValue;
 
 /**
  * @group functional
@@ -55,21 +56,21 @@ final class AgeConversionTest extends FunctionalDbalTestCase
         $whereBuilder->setField('birthday', 'birthday', 'date', 'u');
     }
 
-    protected function getFieldSet($build = true)
+    protected function getFieldSet(bool $build = true)
     {
-        $fieldSet = $this->getFactory()->createFieldSetBuilder('user');
-        $fieldSet->add('id', 'integer');
-        $fieldSet->add('birthday', 'birthday');
+        $fieldSet = $this->getFactory()->createFieldSetBuilder();
+        $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('birthday', BirthdayType::class);
 
-        return $build ? $fieldSet->getFieldSet() : $fieldSet;
+        return $build ? $fieldSet->getFieldSet('user') : $fieldSet;
     }
 
     public function testWithDate()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('birthday')
-                ->addSingleValue(new SingleValue(new \DateTime('2001-01-15', new \DateTimeZone('UTC')), '2001-01-15'))
-                ->addSingleValue(new SingleValue(new \DateTime('2001-10-15', new \DateTimeZone('UTC')), '2001-10-15'))
+                ->addSimpleValue(new \DateTime('2001-01-15', new \DateTimeZone('UTC')))
+                ->addSimpleValue(new \DateTime('2001-10-15', new \DateTimeZone('UTC')))
             ->end()
             ->getSearchCondition()
         ;
@@ -81,7 +82,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('birthday')
-                ->addSingleValue(new SingleValue(5))
+                ->addSimpleValue(5)
             ->end()
             ->getSearchCondition()
         ;

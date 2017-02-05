@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type;
 
-use Rollerworks\Component\Search\AbstractFieldType;
+use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type\Doctrine\Conversion\InvoiceLabelConverter;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

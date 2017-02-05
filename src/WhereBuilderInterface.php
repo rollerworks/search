@@ -11,7 +11,7 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -26,7 +26,7 @@ interface WhereBuilderInterface
     public function getWhereClause();
 
     /**
-     * @return SearchConditionInterface
+     * @return SearchCondition
      */
     public function getSearchCondition();
 }

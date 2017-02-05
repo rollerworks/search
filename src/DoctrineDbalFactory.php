@@ -13,7 +13,7 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -40,12 +40,12 @@ class DoctrineDbalFactory
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option (when present).
      *
-     * @param Connection               $connection      Doctrine DBAL Connection object
-     * @param SearchConditionInterface $searchCondition SearchCondition object
+     * @param Connection      $connection      Doctrine DBAL Connection object
+     * @param SearchCondition $searchCondition SearchCondition object
      *
      * @return WhereBuilder
      */
-    public function createWhereBuilder(Connection $connection, SearchConditionInterface $searchCondition)
+    public function createWhereBuilder(Connection $connection, SearchCondition $searchCondition)
     {
         $whereBuilder = new WhereBuilder($connection, $searchCondition);
 

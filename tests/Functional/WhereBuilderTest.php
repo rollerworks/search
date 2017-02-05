@@ -13,13 +13,14 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\InvoiceNumber;
 use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
-use Rollerworks\Component\Search\ValuesGroup;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * Functional WhereBuilderTest, ensures queries are executable.
@@ -69,8 +70,8 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
-                ->addSingleValue(new SingleValue(5))
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
             ->end()
         ->getSearchCondition();
 
@@ -81,8 +82,8 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
-                ->addSingleValue(new SingleValue(5))
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
             ->end()
         ->getSearchCondition();
 
@@ -93,8 +94,8 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addExcludedValue(new SingleValue(2))
-                ->addExcludedValue(new SingleValue(5))
+                ->addExcludedSimpleValue(2)
+                ->addExcludedSimpleValue(5)
             ->end()
         ->getSearchCondition();
 
@@ -105,8 +106,8 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
-                ->addExcludedValue(new SingleValue(5))
+                ->addSimpleValue(2)
+                ->addExcludedSimpleValue(5)
             ->end()
         ->getSearchCondition();
 
@@ -117,10 +118,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addRange(new Range(2, 5))
-                ->addRange(new Range(10, 20))
-                ->addRange(new Range(60, 70, false))
-                ->addRange(new Range(100, 150, true, false))
+                ->add(new Range(2, 5))
+                ->add(new Range(10, 20))
+                ->add(new Range(60, 70, false))
+                ->add(new Range(100, 150, true, false))
             ->end()
         ->getSearchCondition();
 
@@ -131,10 +132,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addExcludedRange(new Range(2, 5))
-                ->addExcludedRange(new Range(10, 20))
-                ->addExcludedRange(new Range(60, 70, false))
-                ->addExcludedRange(new Range(100, 150, true, false))
+                ->add(new ExcludedRange(2, 5))
+                ->add(new ExcludedRange(10, 20))
+                ->add(new ExcludedRange(60, 70, false))
+                ->add(new ExcludedRange(100, 150, true, false))
             ->end()
         ->getSearchCondition();
 
@@ -145,7 +146,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(2, '>'))
+                ->add(new Compare(2, '>'))
             ->end()
         ->getSearchCondition();
 
@@ -156,8 +157,8 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(2, '>'))
-                ->addComparison(new Compare(10, '<'))
+                ->add(new Compare(2, '>'))
+                ->add(new Compare(10, '<'))
             ->end()
         ->getSearchCondition();
 
@@ -171,13 +172,13 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->group()
                 ->field('customer')
-                    ->addComparison(new Compare(2, '>'))
-                    ->addComparison(new Compare(10, '<'))
+                    ->add(new Compare(2, '>'))
+                    ->add(new Compare(10, '<'))
                 ->end()
             ->end()
             ->group()
                 ->field('customer')
-                    ->addComparison(new Compare(30, '>'))
+                    ->add(new Compare(30, '>'))
                 ->end()
             ->end()
         ->getSearchCondition();
@@ -189,8 +190,8 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(2, '<>'))
-                ->addComparison(new Compare(5, '<>'))
+                ->add(new Compare(2, '<>'))
+                ->add(new Compare(5, '<>'))
             ->end()
         ->getSearchCondition();
 
@@ -201,9 +202,9 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(2, '<>'))
-                ->addComparison(new Compare(5, '<>'))
-                ->addComparison(new Compare(30, '>'))
+                ->add(new Compare(2, '<>'))
+                ->add(new Compare(5, '<>'))
+                ->add(new Compare(30, '>'))
             ->end()
         ->getSearchCondition();
 
@@ -214,11 +215,11 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer_name')
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
-                ->addPatternMatch(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
-                ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
-                ->addPatternMatch(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
-                ->addPatternMatch(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                ->add(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
+                ->add(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
+                ->add(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
+                ->add(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
             ->end()
         ->getSearchCondition();
 
@@ -229,10 +230,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->group()
-                ->field('customer')->addSingleValue(new SingleValue(2))->end()
+                ->field('customer')->addSimpleValue(2)->end()
             ->end()
             ->group()
-                ->field('customer')->addSingleValue(new SingleValue(3))->end()
+                ->field('customer')->addSimpleValue(3)->end()
             ->end()
         ->getSearchCondition();
 
@@ -243,11 +244,11 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
             ->group()
                 ->field('customer_name')
-                    ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                    ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->end()
             ->end()
         ->getSearchCondition();
@@ -259,10 +260,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet(), ValuesGroup::GROUP_LOGICAL_OR)
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
             ->field('customer_name')
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
             ->end()
         ->getSearchCondition();
 
@@ -275,10 +276,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             ->group()
                 ->group(ValuesGroup::GROUP_LOGICAL_OR)
                     ->field('customer')
-                        ->addSingleValue(new SingleValue(2))
+                        ->addSimpleValue(2)
                     ->end()
                     ->field('customer_name')
-                        ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                        ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                     ->end()
                 ->end()
             ->end()
@@ -291,8 +292,8 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('label')
-                ->addSingleValue(new SingleValue(InvoiceNumber::createFromString('2015-001')))
-                ->addSingleValue(new SingleValue(InvoiceNumber::createFromString('2015-005')))
+                ->addSimpleValue(InvoiceNumber::createFromString('2015-001'))
+                ->addSimpleValue(InvoiceNumber::createFromString('2015-005'))
             ->end()
         ->getSearchCondition();
 
@@ -303,7 +304,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
         ->getSearchCondition();
 
@@ -329,7 +330,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $fieldSet = $this->getFieldSet();
         $condition = SearchConditionBuilder::create($fieldSet)
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
         ->getSearchCondition();
 
@@ -368,14 +369,14 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $date = new \DateTime('2001-01-15', new \DateTimeZone('UTC'));
 
         $fieldSet = $this->getFieldSet(false);
-        $fieldSet->add('customer_birthday', 'birthday');
+        $fieldSet->add('customer_birthday', BirthdayType::class);
 
         $fieldSet = $fieldSet->getFieldSet();
 
         $condition = SearchConditionBuilder::create($fieldSet)
             ->field('customer_birthday')
-                ->addSingleValue(new SingleValue(18))
-                ->addSingleValue(new SingleValue($date, '2001-01-15'))
+                ->addSimpleValue(18)
+                ->addSimpleValue($date)
             ->end()
         ->getSearchCondition();
 
