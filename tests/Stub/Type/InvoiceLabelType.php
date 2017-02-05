@@ -25,9 +25,4 @@ final class InvoiceLabelType extends AbstractFieldType
             ['doctrine_dbal_conversion' => new InvoiceLabelConverter()]
         );
     }
-
-    public function getName()
-    {
-        return 'invoice_label';
-    }
 }
