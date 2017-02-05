@@ -38,7 +38,7 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
             'doctrine_dbal_conversion',
             [
                 'null',
-                'Closure',
+                \Closure::class,
                 SqlFieldConversionInterface::class,
                 SqlValueConversionInterface::class,
                 ValueConversionInterface::class,

@@ -11,7 +11,9 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
+use Doctrine\Common\Cache\Cache;
 use Rollerworks\Component\Search\Doctrine\Dbal\CacheWhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
@@ -213,8 +215,8 @@ class CacheWhereBuilderTest extends DbalTestCase
     {
         parent::setUp();
 
-        $this->cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
-        $this->whereBuilder = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface')->getMock();
+        $this->cacheDriver = $this->getMockBuilder(Cache::class)->getMock();
+        $this->whereBuilder = $this->createMock(WhereBuilderInterface::class);
 
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
