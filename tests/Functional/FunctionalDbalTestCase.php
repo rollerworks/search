@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Doctrine\Tests\TestUtil;
+use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
@@ -55,7 +56,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         parent::setUp();
 
         if (!isset(self::$sharedConn)) {
-            $GLOBALS['db_event_subscribers'] = 'Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber';
+            $GLOBALS['db_event_subscribers'] = SqliteConnectionSubscriber::class;
 
             self::$sharedConn = TestUtil::getConnection();
 

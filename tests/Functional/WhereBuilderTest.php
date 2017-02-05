@@ -12,6 +12,8 @@
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -87,7 +89,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $this->assertQueryIsExecutable($condition, true);
+        $this->assertQueryIsExecutable($condition);
     }
 
     public function testExcludes()
@@ -312,7 +314,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->configureWhereBuilder($whereBuilder);
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface')->getMock();
+        $converter = $this->createMock(SqlFieldConversionInterface::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
@@ -339,7 +341,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
 
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface')->getMock();
+        $converter = $this->createMock(SqlValueConversionInterface::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlValue')

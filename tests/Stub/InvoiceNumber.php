@@ -24,7 +24,7 @@ class InvoiceNumber
 
     public static function createFromString($input)
     {
-        if (!is_string($input) || !preg_match('/^(?P<year>\d{4})-(?P<number>\d+)$/s', $input, $matches)) {
+        if (!is_string($input) || !preg_match('/^(?P<year>\d{4})-(?P<number>\d+)$/', $input, $matches)) {
             throw new \InvalidArgumentException('This not a valid invoice number.');
         }
 

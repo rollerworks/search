@@ -13,6 +13,8 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -442,7 +444,7 @@ final class WhereBuilderTest extends DbalTestCase
         $passedOptions = $options;
         $test = $this;
 
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface')->getMock();
+        $converter = $this->createMock(SqlFieldConversionInterface::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
@@ -473,7 +475,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
         $test = $this;
 
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface')->getMock();
+        $converter = $this->createMock(SqlValueConversionInterface::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlValue')
@@ -517,7 +519,7 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
         $test = $this;
 
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlConversionStrategyInterface')->getMock();
+        $converter = $this->createMock(SqlConversionStrategyInterface::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
@@ -636,7 +638,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $test = $this;
 
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlFieldConversionStrategyInterface')->getMock();
+        $converter = $this->createMock(SqlFieldConversionStrategyInterface::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
