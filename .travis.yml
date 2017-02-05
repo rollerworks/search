@@ -1,9 +1,14 @@
 language: php
 
+sudo: false
+
+branches:
+    only:
+        - master
+        - 1.x
+
 addons:
     postgresql: "9.2"
-
-sudo: false
 
 cache:
     directories:
@@ -13,12 +18,12 @@ php:
     - 7.1
     - hhvm
 
-# Note. Only test databases with PHP5.5 because its the fastest
+# Note. Only test databases with PHP (latest) because its the fastest
 # And we don't need to test for multiple DB versions as the Queries are very common.
 matrix:
     include:
         - php: 7.1
-          env: DEPENDENCIES='low'
+          env: deps='low'
         - php: 7.1
           env: DB=pgsql
         - php: 7.1
@@ -26,21 +31,23 @@ matrix:
         - php: 7.1
           env: DB=mysql
         - php: 7.1
-          env: DEPENDENCIES='dev'
+          env: deps='dev'
     fast_finish: true
 
-before_script:
-    - if [ "$DB" == "mysql" ]; then mysql -e 'create database search_tests;'; fi;
+before_install:
+    - phpenv config-rm xdebug.ini || echo "xdebug not available"
 
 install:
     - export COMPOSER_ROOT_VERSION=dev-master
     - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
     - export SYMFONY_PHPUNIT_VERSION=5.4.8
-    - if [ "$DEPENDENCIES" == "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
-    - if [ "$DB" != "" ] ; then travis_retry composer update --prefer-source; fi;
-    - if [ "$DEPENDENCIES" != "low" ] && [ "$DB" == "" ] ; then travis_retry composer update; fi;
-    - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest; fi;
+    - if [[ ! $deps ]]; then composer update --prefer-source --no-progress --no-suggest --ansi; fi
+    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --prefer-source --no-progress --no-suggest --ansi ; fi
+    - if [[ $deps = 'low' ]]; then composer update --prefer-source --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
+
+before_script:
+    - if [ "$DB" == "mysql" ]; then mysql -e 'create database search_tests;'; fi;
 
 script:
-    - vendor/bin/simple-phpunit --configuration phpunit.xml.dist
+    - vendor/bin/simple-phpunit --verbose
     - if [ "$DB" != "" ]; then vendor/bin/simple-phpunit --configuration tests/travis/$DB.travis.xml; fi;
