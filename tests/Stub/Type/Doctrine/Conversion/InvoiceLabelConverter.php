@@ -16,11 +16,6 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
 
 final class InvoiceLabelConverter implements ValueConversionInterface
 {
-    public function requiresBaseConversion($input, array $options, ConversionHints $hints)
-    {
-        return false;
-    }
-
     public function convertValue($input, array $options, ConversionHints $hints)
     {
         return (string) $input;

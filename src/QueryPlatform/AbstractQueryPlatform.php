@@ -218,11 +218,6 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
 
         $convertedValue = $value;
         $hints = $this->getConversionHints($fieldName, $column, $strategy);
-
-        if ($converter->requiresBaseConversion($value, $options, $hints)) {
-            $convertedValue = $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform());
-        }
-
         $convertedValue = $converter->convertValue($convertedValue, $options, $hints);
 
         if ($converter instanceof SqlValueConversionInterface) {

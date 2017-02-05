@@ -488,12 +488,6 @@ final class WhereBuilderTest extends DbalTestCase
 
         $converter
             ->expects($this->atLeastOnce())
-            ->method('requiresBaseConversion')
-            ->will($this->returnValue(false))
-        ;
-
-        $converter
-            ->expects($this->atLeastOnce())
             ->method('convertValue')
             ->will($this->returnArgument(0))
         ;
@@ -602,12 +596,6 @@ final class WhereBuilderTest extends DbalTestCase
                     }
                 )
             )
-        ;
-
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('requiresBaseConversion')
-            ->will($this->returnValue(false))
         ;
 
         $whereBuilder->setConverter('customer_birthday', $converter);

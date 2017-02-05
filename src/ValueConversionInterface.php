@@ -19,20 +19,6 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 interface ValueConversionInterface
 {
     /**
-     * Returns whether the base-conversion of the value is required.
-     *
-     * The base conversion uses the convertToDatabaseValue()
-     * of the database type.
-     *
-     * @param string          $input   Input value
-     * @param array           $options Options of the Field configuration
-     * @param ConversionHints $hints   Special information for the conversion process
-     *
-     * @return bool
-     */
-    public function requiresBaseConversion($input, array $options, ConversionHints $hints);
-
-    /**
      * Returns the converted input.
      *
      * @param mixed           $input   Input value
