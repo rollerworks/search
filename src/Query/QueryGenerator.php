@@ -32,6 +32,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  * and is considered internal.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @internal
  */
 final class QueryGenerator
 {
