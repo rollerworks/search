@@ -191,28 +191,27 @@ SQL;
     protected function configureWhereBuilder(WhereBuilder $whereBuilder)
     {
         // Customer (by invoice relation)
-        $whereBuilder->setField('customer-first-name', 'first_name', 'string', 'c');
-        $whereBuilder->setField('customer-last-name', 'last_name', 'string', 'c');
-        $whereBuilder->setField('customer-birthday', 'birthday', 'date', 'c');
-        $whereBuilder->setField('customer-regdate', 'regdate', 'date', 'c');
-        $whereBuilder->setCombinedField('customer-name', [
-            ['column' => 'first_name', 'type' => 'string', 'alias' => 'c'],
-            ['column' => 'last_name', 'type' => 'string', 'alias' => 'c'],
-        ]);
+        $whereBuilder->setField('customer-first-name', 'first_name', 'c', 'string');
+        $whereBuilder->setField('customer-last-name', 'last_name', 'c', 'string');
+        $whereBuilder->setField('customer-birthday', 'birthday', 'c', 'date');
+        $whereBuilder->setField('customer-regdate', 'regdate', 'c', 'date');
+
+        $whereBuilder->setField('customer-name#first_name', 'first_name', 'c', 'string');
+        $whereBuilder->setField('customer-name#last_name', 'last_name', 'c', 'string');
 
         // Invoice
-        $whereBuilder->setField('id', 'id', 'integer', 'i');
-        $whereBuilder->setField('customer', 'customer', 'integer', 'i');
-        $whereBuilder->setField('label', 'label', 'string', 'i');
-        $whereBuilder->setField('pub-date', 'pub_date', 'date', 'i');
-        $whereBuilder->setField('status', 'status', 'integer', 'i');
-        $whereBuilder->setField('total', 'price_total', 'decimal', 'i');
+        $whereBuilder->setField('id', 'id', 'i', 'integer');
+        $whereBuilder->setField('customer', 'customer', 'i', 'integer');
+        $whereBuilder->setField('label', 'label', 'i', 'string');
+        $whereBuilder->setField('pub-date', 'pub_date', 'i', 'date');
+        $whereBuilder->setField('status', 'status', 'i', 'integer');
+        $whereBuilder->setField('total', 'price_total', 'i', 'decimal');
 
         // Invoice Details
-        $whereBuilder->setField('row-label', 'label', 'string', 'ir');
-        $whereBuilder->setField('row-quantity', 'quantity', 'integer', 'ir');
-        $whereBuilder->setField('row-price', 'price', 'decimal', 'ir');
-        $whereBuilder->setField('row-total', 'total', 'decimal', 'ir');
+        $whereBuilder->setField('row-label', 'label', 'ir', 'string');
+        $whereBuilder->setField('row-quantity', 'quantity', 'ir', 'integer');
+        $whereBuilder->setField('row-price', 'price', 'ir', 'decimal');
+        $whereBuilder->setField('row-total', 'total', 'ir', 'decimal');
     }
 
     protected function getFieldSet(bool $build = true)

@@ -64,7 +64,7 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
      */
     public function convertSqlField(string $column, array $options, ConversionHints $hints): string
     {
-        if (DbType::DECIMAL === $hints->field->getDbType()->getName()) {
+        if (DbType::DECIMAL === $hints->field->dbType->getName()) {
             return $column;
         }
 

@@ -54,47 +54,41 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function getValueAsSql($value, string $fieldName, string $column, int $strategy = 0)
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0)
     {
-        $converter = $this->fields[$fieldName]->getValueConversion();
-        $type = $this->fields[$fieldName]->getDbType();
-
-        if (null !== $converter) {
-            return $this->convertValue($value, $fieldName, $column, $strategy);
+        if ($mappingConfig->valueConversion) {
+            return $this->convertValue($value, $mappingConfig, $column, $strategy);
         }
 
         return $this->quoteValue(
-            $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
-            $type
+            $mappingConfig->dbType->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
+            $mappingConfig->dbType
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFieldColumn(string $fieldName, int $strategy = 0, string $column = ''): string
+    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0): string
     {
-        if (isset($this->fieldsMappingCache[$fieldName][$strategy])) {
-            return $this->fieldsMappingCache[$fieldName][$strategy];
+        $mappingName = $mappingConfig->mappingName;
+
+        if (isset($this->fieldsMappingCache[$mappingName][$strategy])) {
+            return $this->fieldsMappingCache[$mappingName][$strategy];
         }
 
-        $field = $this->fields[$fieldName];
+        $column = $mappingConfig->column;
+        $this->fieldsMappingCache[$mappingName][$strategy] = $column;
 
-        if ('' === $column) {
-            $column = $field->getColumn();
-        }
-
-        $this->fieldsMappingCache[$fieldName][$strategy] = $column;
-
-        if ($field->getFieldConversion() instanceof SqlFieldConversionInterface) {
-            $this->fieldsMappingCache[$fieldName][$strategy] = $field->getFieldConversion()->convertSqlField(
+        if ($mappingConfig->fieldConversion instanceof SqlFieldConversionInterface) {
+            $this->fieldsMappingCache[$mappingName][$strategy] = $mappingConfig->fieldConversion->convertSqlField(
                 $column,
-                $field->getFieldConfig()->getOptions(),
-                $this->getConversionHints($fieldName, $column, $strategy)
+                $mappingConfig->fieldConfig->getOptions(),
+                $this->getConversionHints($mappingConfig, $column, $strategy)
             );
         }
 
-        return $this->fieldsMappingCache[$fieldName][$strategy];
+        return $this->fieldsMappingCache[$mappingName][$strategy];
     }
 
     /**
@@ -146,14 +140,12 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function convertSqlValue($value, string $fieldName, string $column, int $strategy = 0)
+    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0)
     {
-        $field = $this->fields[$fieldName];
-
-        return $field->getValueConversion()->convertSqlValue(
+        return $mappingConfig->valueConversion->convertSqlValue(
             $value,
-            $field->getFieldConfig()->getOptions(),
-            $this->getConversionHints($fieldName, $column, $strategy)
+            $mappingConfig->fieldConfig->getOptions(),
+            $this->getConversionHints($mappingConfig, $column, $strategy)
         );
     }
 
@@ -186,16 +178,16 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     }
 
     /**
-     * @param string $fieldName
-     * @param string $column
-     * @param int    $strategy
+     * @param QueryField $mappingConfig
+     * @param string     $column
+     * @param int        $strategy
      *
      * @return ConversionHints
      */
-    protected function getConversionHints($fieldName, $column, $strategy = 0): ConversionHints
+    protected function getConversionHints($mappingConfig, $column, $strategy = 0): ConversionHints
     {
         $hints = new ConversionHints();
-        $hints->field = $this->fields[$fieldName];
+        $hints->field = $mappingConfig;
         $hints->column = $column;
         $hints->connection = $this->connection;
         $hints->conversionStrategy = $strategy;
@@ -204,28 +196,24 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     }
 
     /**
-     * @param mixed  $value
-     * @param string $fieldName
-     * @param string $column
-     * @param int    $strategy
+     * @param mixed      $value
+     * @param QueryField $mappingConfig
+     * @param string     $column
+     * @param int        $strategy
      *
      * @return string
      */
-    protected function convertValue($value, string $fieldName, string $column, int $strategy = 0)
+    protected function convertValue($value, QueryField $mappingConfig, string $column, int $strategy = 0)
     {
-        $field = $this->fields[$fieldName];
-        $converter = $field->getValueConversion();
-        $options = $field->getFieldConfig()->getOptions();
-        $type = $field->getDbType();
+        $options = $mappingConfig->fieldConfig->getOptions();
 
-        $convertedValue = $value;
-        $hints = $this->getConversionHints($fieldName, $column, $strategy);
-        $convertedValue = $converter->convertValue($convertedValue, $options, $hints);
+        $hints = $this->getConversionHints($mappingConfig, $column, $strategy);
+        $convertedValue = $mappingConfig->valueConversion->convertValue($value, $options, $hints);
 
-        if ($converter instanceof SqlValueConversionInterface) {
-            return $this->convertSqlValue($convertedValue, $fieldName, $column, $strategy);
+        if ($mappingConfig->valueConversion instanceof SqlValueConversionInterface) {
+            return $this->convertSqlValue($convertedValue, $mappingConfig, $column, $strategy);
         }
 
-        return $this->quoteValue($convertedValue, $type);
+        return $this->quoteValue($convertedValue, $mappingConfig->dbType);
     }
 }

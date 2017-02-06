@@ -36,11 +36,11 @@ final class WhereBuilderTest extends DbalTestCase
             $condition
         );
 
-        $whereBuilder->setField('customer', 'customer', 'integer', 'I');
-        $whereBuilder->setField('customer_name', 'name', 'string', 'C');
-        $whereBuilder->setField('customer_birthday', 'birthday', 'date', 'C');
-        $whereBuilder->setField('status', 'status', 'integer', 'I');
-        $whereBuilder->setField('label', 'label', 'string', 'I');
+        $whereBuilder->setField('customer', 'customer', 'I', 'integer');
+        $whereBuilder->setField('customer_name', 'name', 'C', 'string');
+        $whereBuilder->setField('customer_birthday', 'birthday', 'C', 'date');
+        $whereBuilder->setField('status', 'status', 'I', 'integer');
+        $whereBuilder->setField('label', 'label', 'I', 'string');
 
         return $whereBuilder;
     }
@@ -115,7 +115,8 @@ final class WhereBuilderTest extends DbalTestCase
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
-        $whereBuilder->setCombinedField('customer', [['column' => 'id'], ['column' => 'number2']]);
+        $whereBuilder->setField('customer#1', 'id');
+        $whereBuilder->setField('customer#2', 'number2');
 
         $this->assertEquals('(((id IN(2, 5) OR number2 IN(2, 5))))', $whereBuilder->getWhereClause());
     }
@@ -130,7 +131,8 @@ final class WhereBuilderTest extends DbalTestCase
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
-        $whereBuilder->setCombinedField('customer', [['column' => 'id'], ['column' => 'number2', 'alias' => 'C']]);
+        $whereBuilder->setField('customer#1', 'id');
+        $whereBuilder->setField('customer#2', 'number2', 'C', 'string');
 
         $this->assertEquals('(((id IN(2, 5) OR C.number2 IN(2, 5))))', $whereBuilder->getWhereClause());
     }
@@ -452,7 +454,6 @@ final class WhereBuilderTest extends DbalTestCase
             ->method('convertSqlField')
             ->will($this->returnCallback(function ($column, array $options, ConversionHints $hints) use ($test, $passedOptions) {
                 $test->assertEquals($options, $options);
-                $test->assertEquals('I', $hints->field->getAlias());
                 $test->assertEquals('I.customer', $hints->column);
 
                 return "CAST($column AS customer_type)";
@@ -624,7 +625,7 @@ final class WhereBuilderTest extends DbalTestCase
         $options = $fieldSet->get('customer_birthday')->getOptions();
 
         $whereBuilder = $this->getWhereBuilder($condition);
-        $whereBuilder->setField('customer_birthday', 'birthday', 'string', 'C');
+        $whereBuilder->setField('customer_birthday', 'birthday', 'C', 'string');
 
         $test = $this;
 
