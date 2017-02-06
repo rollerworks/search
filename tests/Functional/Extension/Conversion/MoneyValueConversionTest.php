@@ -60,8 +60,8 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
 
     protected function configureWhereBuilder(WhereBuilder $whereBuilder)
     {
-        $whereBuilder->setField('price', 'price', 'string', 'p');
-        $whereBuilder->setField('total', 'total', 'decimal', 'p');
+        $whereBuilder->setField('price', 'price', 'p', 'string');
+        $whereBuilder->setField('total', 'total', 'p', 'decimal');
     }
 
     protected function getFieldSet(bool $build = true)

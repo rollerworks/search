@@ -65,7 +65,7 @@ final class ChildCountTypeTest extends FunctionalDbalTestCase
 
     protected function configureWhereBuilder(WhereBuilder $whereBuilder)
     {
-        $whereBuilder->setField('contact_count', 'id', 'integer', 'u');
+        $whereBuilder->setField('contact_count', 'id', 'u', 'integer');
     }
 
     protected function getFieldSet(bool $build = true)

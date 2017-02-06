@@ -55,7 +55,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
 
     protected function configureWhereBuilder(WhereBuilder $whereBuilder)
     {
-        $whereBuilder->setField('birthday', 'birthday', 'date', 'u');
+        $whereBuilder->setField('birthday', 'birthday', 'u', 'date');
     }
 
     protected function getFieldSet(bool $build = true)

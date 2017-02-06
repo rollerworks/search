@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
 interface QueryPlatformInterface
@@ -20,25 +21,24 @@ interface QueryPlatformInterface
     /**
      * Returns the correct column (with SQLField conversions applied).
      *
-     * @param string $fieldName
-     * @param int    $strategy
-     * @param string $column
+     * @param QueryField $mappingConfig
+     * @param int        $strategy
      *
      * @return string
      */
-    public function getFieldColumn(string $fieldName, int $strategy = 0, string $column = ''): string;
+    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0): string;
 
     /**
      * Returns either the converted value.
      *
-     * @param mixed  $value
-     * @param string $fieldName
-     * @param string $column
-     * @param int    $strategy
+     * @param mixed      $value
+     * @param QueryField $mappingConfig
+     * @param string     $column
+     * @param int        $strategy
      *
      * @return string|int
      */
-    public function getValueAsSql($value, string $fieldName, string $column, int $strategy = 0);
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0);
 
     /**
      * Returns the formatted PatternMatch query.
@@ -51,14 +51,14 @@ interface QueryPlatformInterface
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string;
 
     /**
-     * @param mixed  $value
-     * @param string $fieldName
-     * @param string $column
-     * @param int    $strategy
+     * @param mixed      $value
+     * @param QueryField $mappingConfig
+     * @param string     $column
+     * @param int        $strategy
      *
      * @return string|int
      */
-    public function convertSqlValue($value, string $fieldName, string $column, int $strategy = 0);
+    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0);
 
     /**
      * Returns the SQL for the match (regexp).

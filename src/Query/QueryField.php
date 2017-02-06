@@ -20,74 +20,91 @@ use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
-class QueryField
+/**
+ * The QueryField holds the mapping information of a field.
+ *
+ * Information is provided in public properties for better performance.
+ * This information is read-only and should not be changed afterwards.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
+final class QueryField
 {
-    protected $fieldConfig;
-    protected $dbType;
-    protected $alias;
-    protected $column;
-    protected $resolvedColumn;
-    protected $fieldConversion;
-    protected $valueConversion;
+    /**
+     * @var string
+     */
+    public $mappingName;
 
-    public function __construct(
-        FieldConfig $fieldConfigInterface,
-        DbType $dbType,
-        $alias,
-        $column,
-        $fieldConversion,
-        $valueConversion
-    ) {
-        $this->fieldConfig = $fieldConfigInterface;
-        $this->dbType = $dbType;
+    /**
+     * @var FieldConfig
+     */
+    public $fieldConfig;
+
+    /**
+     * @var DbType
+     */
+    public $dbType;
+
+    /**
+     * @var string
+     */
+    public $column;
+
+    /**
+     * @var SqlFieldConversionInterface|ConversionStrategyInterface|null
+     */
+    public $fieldConversion;
+
+    /**
+     * @var SqlValueConversionInterface|ValueConversionInterface|null
+     */
+    public $valueConversion;
+
+    /**
+     * @var bool
+     */
+    public $strategyEnabled;
+
+    /**
+     * @var string
+     */
+    public $alias;
+
+    /**
+     * @var string
+     */
+    public $tableColumn;
+
+    /**
+     * QueryField constructor.
+     *
+     * @param string      $mappingName
+     * @param FieldConfig $fieldConfig
+     * @param DbType      $dbType
+     * @param string      $column
+     * @param string      $alias
+     * @param object      $converter
+     */
+    public function __construct(string $mappingName, FieldConfig $fieldConfig, DbType $dbType, string $column, string $alias = null, $converter = null)
+    {
+        $this->mappingName = $mappingName;
+        $this->fieldConfig = $fieldConfig;
+
         $this->alias = $alias;
-        $this->column = $column;
-        $this->resolvedColumn = ($alias ? $alias.'.' : '').$column;
-        $this->fieldConversion = $fieldConversion;
-        $this->valueConversion = $valueConversion;
-    }
+        $this->tableColumn = $column;
+        $this->column = ($alias ? $alias.'.' : '').$column;
+        $this->dbType = $dbType;
 
-    public function getFieldConfig(): FieldConfig
-    {
-        return $this->fieldConfig;
-    }
+        $converter = $converter ?? $fieldConfig->getOption('doctrine_dbal_conversion');
 
-    public function getDbType(): DbType
-    {
-        return $this->dbType;
-    }
+        if ($converter instanceof SqlFieldConversionInterface) {
+            $this->fieldConversion = $converter;
+        }
 
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
+        if ($converter instanceof ValueConversionInterface) {
+            $this->valueConversion = $converter;
+        }
 
-    public function getColumn(bool $withAlias = true): string
-    {
-        return $withAlias ? $this->resolvedColumn : $this->column;
-    }
-
-    /**
-     * @return SqlFieldConversionInterface|ConversionStrategyInterface
-     */
-    public function getFieldConversion()
-    {
-        return $this->fieldConversion;
-    }
-
-    /**
-     * @return ConversionStrategyInterface|ValueConversionInterface|SqlValueConversionInterface
-     */
-    public function getValueConversion()
-    {
-        return $this->valueConversion;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasConversionStrategy(): bool
-    {
-        return $this->fieldConversion instanceof ConversionStrategyInterface || $this->valueConversion instanceof ConversionStrategyInterface;
+        $this->strategyEnabled = $converter instanceof ConversionStrategyInterface || $converter instanceof ConversionStrategyInterface;
     }
 }

@@ -63,8 +63,6 @@ class DoctrineDbalFactoryTest extends DbalTestCase
         $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
 
         $this->assertInstanceOf(WhereBuilder::class, $whereBuilder);
-        $this->assertEquals(['invoice_label' => $conversion], $whereBuilder->getValueConversions());
-        $this->assertCount(0, $whereBuilder->getFieldConversions());
     }
 
     public function testCreateWhereBuilderWithLazyConversionSetting()
@@ -94,8 +92,6 @@ class DoctrineDbalFactoryTest extends DbalTestCase
         $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
 
         $this->assertInstanceOf(WhereBuilder::class, $whereBuilder);
-        $this->assertEquals(['invoice_label' => $conversion], $whereBuilder->getValueConversions());
-        $this->assertCount(0, $whereBuilder->getFieldConversions());
     }
 
     public function testCreateCacheWhereBuilder()

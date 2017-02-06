@@ -63,11 +63,11 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
      */
     protected function configureWhereBuilder(WhereBuilder $whereBuilder)
     {
-        $whereBuilder->setField('customer', 'customer', 'integer', 'i');
-        $whereBuilder->setField('customer_name', 'name', 'string', 'c');
-        $whereBuilder->setField('customer_birthday', 'birthday', 'string', 'c'); // don't use date as this breaks the binding
-        $whereBuilder->setField('status', 'status', 'integer', 'i');
-        $whereBuilder->setField('label', 'label', 'string', 'i');
+        $whereBuilder->setField('customer', 'customer', 'i', 'integer');
+        $whereBuilder->setField('customer_name', 'name', 'c', 'string');
+        $whereBuilder->setField('customer_birthday', 'birthday', 'c', 'string'); // don't use date as this breaks the binding
+        $whereBuilder->setField('status', 'status', 'i', 'integer');
+        $whereBuilder->setField('label', 'label', 'i', 'string');
     }
 
     public function testSimpleQuery()

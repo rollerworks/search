@@ -44,7 +44,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
         }
 
         if ($value instanceof \DateTimeInterface) {
-            return $hints->field->getDbType()->getName() !== 'date' ? 2 : 3;
+            return $hints->field->dbType->getName() !== 'date' ? 2 : 3;
         }
 
         return 1;

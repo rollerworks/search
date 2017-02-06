@@ -75,8 +75,8 @@ final class QueryGenerator
     {
         $query = [];
 
-        foreach ($valuesGroup->getFields() as $fieldName => $values) {
-            if (!isset($this->fields[$fieldName])) {
+        foreach ($valuesGroup->getFields() as $mappingConfig => $values) {
+            if (!isset($this->fields[$mappingConfig])) {
                 continue;
             }
 
@@ -84,12 +84,8 @@ final class QueryGenerator
             $inclusiveSqlGroup = [];
             $exclusiveSqlGroup = [];
 
-            if (is_array($this->fields[$fieldName])) {
-                foreach ($this->fields[$fieldName] as $n) {
-                    $this->processFieldValues($values, $n, $inclusiveSqlGroup, $exclusiveSqlGroup);
-                }
-            } else {
-                $this->processFieldValues($values, $fieldName, $inclusiveSqlGroup, $exclusiveSqlGroup);
+            foreach ($this->fields[$mappingConfig] as $mappingsConfig) {
+                $this->processFieldValues($values, $mappingsConfig, $inclusiveSqlGroup, $exclusiveSqlGroup);
             }
 
             $groupSql[] = self::implodeWithValue(' OR ', $inclusiveSqlGroup, ['(', ')']);
@@ -129,20 +125,20 @@ final class QueryGenerator
     /**
      * Processes the single-values and returns an SQL statement query result.
      *
-     * @param array  $values
-     * @param string $fieldName
-     * @param array  $query
-     * @param bool   $exclude
+     * @param array      $values
+     * @param QueryField $mappingConfig
+     * @param array      $query
+     * @param bool       $exclude
      *
      * @return string
      */
-    private function processSingleValuesInList(array $values, $fieldName, array &$query, $exclude = false)
+    private function processSingleValuesInList(array $values, QueryField $mappingConfig, array &$query, $exclude = false)
     {
         $valuesQuery = [];
-        $column = $this->queryPlatform->getFieldColumn($fieldName);
+        $column = $this->queryPlatform->getFieldColumn($mappingConfig);
 
         foreach ($values as $value) {
-            $valuesQuery[] = $this->queryPlatform->getValueAsSql($value, $fieldName, $column);
+            $valuesQuery[] = $this->queryPlatform->getValueAsSql($value, $mappingConfig, $column);
         }
 
         $patterns = ['%s IN(%s)', '%s NOT IN(%s)'];
@@ -159,19 +155,17 @@ final class QueryGenerator
     /**
      * Processes the single-values and returns an SQL statement query result.
      *
-     * @param array  $values
-     * @param string $fieldName
-     * @param array  $query
-     * @param bool   $exclude
+     * @param array      $values
+     * @param QueryField $mappingConfig
+     * @param array      $query
+     * @param bool       $exclude
      */
-    private function processSingleValues(array $values, $fieldName, array &$query, $exclude = false)
+    private function processSingleValues(array $values, QueryField $mappingConfig, array &$query, $exclude = false)
     {
-        if (!$this->fields[$fieldName]->hasConversionStrategy() &&
-            !$this->fields[$fieldName]->getValueConversion() instanceof SqlValueConversionInterface
-        ) {
+        if (!$mappingConfig->strategyEnabled && !$mappingConfig->valueConversion instanceof SqlValueConversionInterface) {
             // Don't use IN() with a custom SQL-statement for better compatibility
             // Always using OR seems to decrease the performance on some DB engines
-            $this->processSingleValuesInList($values, $fieldName, $query, $exclude);
+            $this->processSingleValuesInList($values, $mappingConfig, $query, $exclude);
 
             return;
         }
@@ -179,35 +173,35 @@ final class QueryGenerator
         $patterns = ['%s = %s', '%s <> %s'];
 
         foreach ($values as $value) {
-            $strategy = $this->getConversionStrategy($fieldName, $value);
-            $column = $this->queryPlatform->getFieldColumn($fieldName, $strategy);
+            $strategy = $this->getConversionStrategy($mappingConfig, $value);
+            $column = $this->queryPlatform->getFieldColumn($mappingConfig, $strategy);
 
             $query[] = sprintf(
                 $patterns[(int) $exclude],
                 $column,
-                $this->queryPlatform->getValueAsSql($value, $fieldName, $column, $strategy)
+                $this->queryPlatform->getValueAsSql($value, $mappingConfig, $column, $strategy)
             );
         }
     }
 
     /**
-     * @param Range[] $ranges
-     * @param string  $fieldName
-     * @param array   $query
-     * @param bool    $exclude
+     * @param Range[]    $ranges
+     * @param QueryField $mappingConfig
+     * @param array      $query
+     * @param bool       $exclude
      */
-    private function processRanges(array $ranges, $fieldName, array &$query, $exclude = false)
+    private function processRanges(array $ranges, QueryField $mappingConfig, array &$query, $exclude = false)
     {
         foreach ($ranges as $range) {
-            $strategy = $this->getConversionStrategy($fieldName, $range->getLower());
-            $column = $this->queryPlatform->getFieldColumn($fieldName, $strategy);
+            $strategy = $this->getConversionStrategy($mappingConfig, $range->getLower());
+            $column = $this->queryPlatform->getFieldColumn($mappingConfig, $strategy);
 
             $query[] = sprintf(
                 $this->getRangePattern($range, $exclude),
                 $column,
-                $this->queryPlatform->getValueAsSql($range->getLower(), $fieldName, $column, $strategy),
+                $this->queryPlatform->getValueAsSql($range->getLower(), $mappingConfig, $column, $strategy),
                 $column,
-                $this->queryPlatform->getValueAsSql($range->getUpper(), $fieldName, $column, $strategy)
+                $this->queryPlatform->getValueAsSql($range->getUpper(), $mappingConfig, $column, $strategy)
             );
         }
     }
@@ -240,12 +234,12 @@ final class QueryGenerator
     }
 
     /**
-     * @param Compare[] $compares
-     * @param string    $fieldName
-     * @param array     $query
-     * @param bool      $exclude
+     * @param Compare[]  $compares
+     * @param QueryField $mappingConfig
+     * @param array      $query
+     * @param bool       $exclude
      */
-    private function processCompares(array $compares, $fieldName, array &$query, $exclude = false)
+    private function processCompares(array $compares, QueryField $mappingConfig, array &$query, $exclude = false)
     {
         $valuesQuery = [];
 
@@ -254,14 +248,14 @@ final class QueryGenerator
                 continue;
             }
 
-            $strategy = $this->getConversionStrategy($fieldName, $comparison->getValue());
-            $column = $this->queryPlatform->getFieldColumn($fieldName, $strategy);
+            $strategy = $this->getConversionStrategy($mappingConfig, $comparison->getValue());
+            $column = $this->queryPlatform->getFieldColumn($mappingConfig, $strategy);
 
             $valuesQuery[] = sprintf(
                 '%s %s %s',
                 $column,
                 $comparison->getOperator(),
-                $this->queryPlatform->getValueAsSql($comparison->getValue(), $fieldName, $column, $strategy)
+                $this->queryPlatform->getValueAsSql($comparison->getValue(), $mappingConfig, $column, $strategy)
             );
         }
 
@@ -274,11 +268,11 @@ final class QueryGenerator
 
     /**
      * @param PatternMatch[] $patternMatchers
-     * @param string         $fieldName
+     * @param QueryField     $mappingConfig
      * @param array          $query
      * @param bool           $exclude
      */
-    private function processPatternMatchers(array $patternMatchers, $fieldName, array &$query, $exclude = false)
+    private function processPatternMatchers(array $patternMatchers, QueryField $mappingConfig, array &$query, $exclude = false)
     {
         foreach ($patternMatchers as $patternMatch) {
             if ($exclude !== $patternMatch->isExclusive()) {
@@ -287,32 +281,32 @@ final class QueryGenerator
 
             $query[] = $this->queryPlatform->getPatternMatcher(
                 $patternMatch,
-                $this->queryPlatform->getFieldColumn($fieldName)
+                $this->queryPlatform->getFieldColumn($mappingConfig)
             );
         }
     }
 
     /**
-     * @param string $fieldName
-     * @param mixed  $value
+     * @param QueryField $mappingConfig
+     * @param mixed      $value
      *
      * @return int
      */
-    private function getConversionStrategy($fieldName, $value): int
+    private function getConversionStrategy(QueryField $mappingConfig, $value): int
     {
-        if ($this->fields[$fieldName]->getValueConversion() instanceof ConversionStrategyInterface) {
-            return $this->fields[$fieldName]->getValueConversion()->getConversionStrategy(
+        if ($mappingConfig->valueConversion instanceof ConversionStrategyInterface) {
+            return $mappingConfig->valueConversion->getConversionStrategy(
                 $value,
-                $this->fields[$fieldName]->getFieldConfig()->getOptions(),
-                $this->getConversionHints($fieldName)
+                $mappingConfig->fieldConfig->getOptions(),
+                $this->getConversionHints($mappingConfig)
             );
         }
 
-        if ($this->fields[$fieldName]->getFieldConversion() instanceof ConversionStrategyInterface) {
-            return $this->fields[$fieldName]->getFieldConversion()->getConversionStrategy(
+        if ($mappingConfig->fieldConversion instanceof ConversionStrategyInterface) {
+            return $mappingConfig->fieldConversion->getConversionStrategy(
                 $value,
-                $this->fields[$fieldName]->getFieldConfig()->getOptions(),
-                $this->getConversionHints($fieldName)
+                $mappingConfig->fieldConfig->getOptions(),
+                $this->getConversionHints($mappingConfig)
             );
         }
 
@@ -320,15 +314,15 @@ final class QueryGenerator
     }
 
     /**
-     * @param string $fieldName
+     * @param string $mappingConfig
      * @param string $column
      *
      * @return ConversionHints
      */
-    private function getConversionHints($fieldName, $column = null)
+    private function getConversionHints(QueryField $mappingConfig, $column = null)
     {
         $hints = new ConversionHints();
-        $hints->field = $this->fields[$fieldName];
+        $hints->field = $mappingConfig;
         $hints->column = $column;
         $hints->connection = $this->connection;
 
@@ -353,56 +347,56 @@ final class QueryGenerator
         return $value;
     }
 
-    private function processFieldValues(ValuesBag $values, $fieldName, array &$inclusiveSqlGroup, array &$exclusiveSqlGroup)
+    private function processFieldValues(ValuesBag $values, QueryField $mappingConfig, array &$inclusiveSqlGroup, array &$exclusiveSqlGroup)
     {
         $this->processSingleValues(
             $values->getSimpleValues(),
-            $fieldName,
+            $mappingConfig,
             $inclusiveSqlGroup
         );
 
         $this->processRanges(
             $values->get(Range::class),
-            $fieldName,
+            $mappingConfig,
             $inclusiveSqlGroup
         );
 
         $this->processCompares(
             $values->get(Compare::class),
-            $fieldName,
+            $mappingConfig,
             $inclusiveSqlGroup
         );
 
         $this->processPatternMatchers(
             $values->get(PatternMatch::class),
-            $fieldName,
+            $mappingConfig,
             $inclusiveSqlGroup
         );
 
         $this->processSingleValues(
             $values->getExcludedSimpleValues(),
-            $fieldName,
+            $mappingConfig,
             $exclusiveSqlGroup,
             true
         );
 
         $this->processRanges(
             $values->get(ExcludedRange::class),
-            $fieldName,
+            $mappingConfig,
             $exclusiveSqlGroup,
             true
         );
 
         $this->processPatternMatchers(
             $values->get(PatternMatch::class),
-            $fieldName,
+            $mappingConfig,
             $exclusiveSqlGroup,
             true
         );
 
         $this->processCompares(
             $values->get(Compare::class),
-            $fieldName,
+            $mappingConfig,
             $exclusiveSqlGroup,
             true
         );
