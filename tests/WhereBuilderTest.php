@@ -17,6 +17,7 @@ use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -438,7 +439,10 @@ final class WhereBuilderTest extends DbalTestCase
      */
     public function testFieldConversion($expectWhereCase, array $options = [])
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', IntegerType::class, $options);
+
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
             ->field('customer')
                 ->addSimpleValue(2)
             ->end()
@@ -446,15 +450,15 @@ final class WhereBuilderTest extends DbalTestCase
 
         $whereBuilder = $this->getWhereBuilder($condition);
         $passedOptions = $options;
-        $test = $this;
 
         $converter = $this->createMock(SqlFieldConversionInterface::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
-            ->will($this->returnCallback(function ($column, array $options, ConversionHints $hints) use ($test, $passedOptions) {
-                $test->assertEquals($options, $options);
-                $test->assertEquals('I.customer', $hints->column);
+            ->will($this->returnCallback(function ($column, array $options, ConversionHints $hints) use ($passedOptions) {
+                self::assertArraySubset($passedOptions, $options);
+                self::assertEquals('I', $hints->field->alias);
+                self::assertEquals('I.customer', $hints->column);
 
                 return "CAST($column AS customer_type)";
             }))
@@ -686,7 +690,7 @@ final class WhereBuilderTest extends DbalTestCase
             ],
             [
                 '((CAST(I.customer AS customer_type) IN(2)))',
-                ['active' => true],
+                ['grouping' => true],
             ],
         ];
     }
