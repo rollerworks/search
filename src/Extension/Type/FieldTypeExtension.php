@@ -13,9 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\Field\FieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -41,9 +40,8 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
             [
                 'null',
                 \Closure::class,
-                SqlFieldConversionInterface::class,
-                SqlValueConversionInterface::class,
-                ValueConversionInterface::class,
+                ColumnConversion::class,
+                ValueConversion::class,
             ]
         );
     }

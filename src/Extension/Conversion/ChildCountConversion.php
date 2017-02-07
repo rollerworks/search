@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
 
 /**
  * ItemCountConversion.
@@ -23,9 +23,9 @@ use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ChildCountConversion implements SqlFieldConversionInterface
+class ChildCountConversion implements ColumnConversion
 {
-    public function convertSqlField(string $column, array $options, ConversionHints $hints): string
+    public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
         return '(SELECT COUNT(*) FROM '.$options['table_name'].' WHERE '.$options['table_column']." = $column)";
     }

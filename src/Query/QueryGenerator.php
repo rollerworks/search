@@ -15,9 +15,9 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
-use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -162,7 +162,7 @@ final class QueryGenerator
      */
     private function processSingleValues(array $values, QueryField $mappingConfig, array &$query, $exclude = false)
     {
-        if (!$mappingConfig->strategyEnabled && !$mappingConfig->valueConversion instanceof SqlValueConversionInterface) {
+        if (!$mappingConfig->strategyEnabled && !$mappingConfig->valueConversion instanceof ValueConversion) {
             // Don't use IN() with a custom SQL-statement for better compatibility
             // Always using OR seems to decrease the performance on some DB engines
             $this->processSingleValuesInList($values, $mappingConfig, $query, $exclude);
@@ -294,7 +294,7 @@ final class QueryGenerator
      */
     private function getConversionStrategy(QueryField $mappingConfig, $value): int
     {
-        if ($mappingConfig->valueConversion instanceof ConversionStrategyInterface) {
+        if ($mappingConfig->valueConversion instanceof StrategySupportedConversion) {
             return $mappingConfig->valueConversion->getConversionStrategy(
                 $value,
                 $mappingConfig->fieldConfig->getOptions(),
@@ -302,7 +302,7 @@ final class QueryGenerator
             );
         }
 
-        if ($mappingConfig->fieldConversion instanceof ConversionStrategyInterface) {
+        if ($mappingConfig->fieldConversion instanceof StrategySupportedConversion) {
             return $mappingConfig->fieldConversion->getConversionStrategy(
                 $value,
                 $mappingConfig->fieldConfig->getOptions(),
