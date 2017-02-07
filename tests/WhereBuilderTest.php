@@ -432,21 +432,25 @@ final class WhereBuilderTest extends DbalTestCase
      */
     public function testFieldConversion($expectWhereCase, array $options = [])
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', 'integer', $options);
+
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
             ->field('customer')
                 ->addSingleValue(new SingleValue(2))
             ->end()
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
+        $passedOptions = $options;
         $test = $this;
 
         $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface')->getMock();
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertSqlField')
-            ->will($this->returnCallback(function ($column, array $options, ConversionHints $hints) use ($test, $options) {
-                $test->assertEquals($options, $options);
+            ->will($this->returnCallback(function ($column, array $options, ConversionHints $hints) use ($test, $passedOptions) {
+                $test->assertArraySubset($passedOptions, $options);
                 $test->assertEquals('I', $hints->field->getAlias());
                 $test->assertEquals('I.customer', $hints->column);
 
@@ -692,7 +696,7 @@ final class WhereBuilderTest extends DbalTestCase
             ],
             [
                 '((CAST(I.customer AS customer_type) IN(2)))',
-                ['active' => true],
+                ['grouping' => true],
             ],
         ];
     }
