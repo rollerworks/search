@@ -16,17 +16,16 @@ namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 use Doctrine\DBAL\Types\Type as DbType;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
-use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
-class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConversionInterface, ConversionStrategyInterface
+class MoneyValueConversion implements ValueConversion, ColumnConversion, StrategySupportedConversion
 {
     private $formatter;
-
     private $currencies;
 
     public function __construct()
@@ -38,15 +37,7 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
     /**
      * {@inheritdoc}
      */
-    public function requiresBaseConversion($input, array $options, ConversionHints $hints)
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function convertSqlValue($value, array $options, ConversionHints $hints)
+    public function convertValue($value, array $options, ConversionHints $hints)
     {
         if (!$value instanceof MoneyValue) {
             throw new UnexpectedTypeException($value, MoneyValue::class);
@@ -62,7 +53,7 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
     /**
      * {@inheritdoc}
      */
-    public function convertSqlField(string $column, array $options, ConversionHints $hints): string
+    public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
         if (DbType::DECIMAL === $hints->field->dbType->getName()) {
             return $column;
@@ -72,14 +63,6 @@ class MoneyValueConversion implements SqlValueConversionInterface, SqlFieldConve
         $castType = $this->getCastType($hints->conversionStrategy, $hints);
 
         return "CAST($substr AS $castType)";
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function convertValue($input, array $options, ConversionHints $hints)
-    {
-        return $input;
     }
 
     /**

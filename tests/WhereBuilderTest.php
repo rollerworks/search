@@ -14,14 +14,13 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\InvoiceNumber;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -417,20 +416,6 @@ final class WhereBuilderTest extends DbalTestCase
         );
     }
 
-    public function testValueConversion()
-    {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('label')
-                ->addSimpleValue(InvoiceNumber::createFromString('2015-001'))
-                ->addSimpleValue(InvoiceNumber::createFromString('2015-005'))
-            ->end()
-        ->getSearchCondition();
-
-        $whereBuilder = $this->getWhereBuilder($condition);
-
-        $this->assertEquals("((I.label IN('2015-0001', '2015-0005')))", $whereBuilder->getWhereClause());
-    }
-
     /**
      * @dataProvider provideFieldConversionTests
      *
@@ -451,10 +436,10 @@ final class WhereBuilderTest extends DbalTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
         $passedOptions = $options;
 
-        $converter = $this->createMock(SqlFieldConversionInterface::class);
+        $converter = $this->createMock(ColumnConversion::class);
         $converter
             ->expects($this->atLeastOnce())
-            ->method('convertSqlField')
+            ->method('convertColumn')
             ->will($this->returnCallback(function ($column, array $options, ConversionHints $hints) use ($passedOptions) {
                 self::assertArraySubset($passedOptions, $options);
                 self::assertEquals('I', $hints->field->alias);
@@ -469,7 +454,7 @@ final class WhereBuilderTest extends DbalTestCase
         $this->assertEquals($expectWhereCase, $whereBuilder->getWhereClause());
     }
 
-    public function testSqlValueConversion()
+    public function testValueConversion()
     {
         $fieldSet = $this->getFieldSet();
         $condition = SearchConditionBuilder::create($fieldSet)
@@ -480,16 +465,15 @@ final class WhereBuilderTest extends DbalTestCase
 
         $options = $fieldSet->get('customer')->getOptions();
         $whereBuilder = $this->getWhereBuilder($condition);
-        $test = $this;
 
-        $converter = $this->createMock(SqlValueConversionInterface::class);
+        $converter = $this->createMock(ValueConversion::class);
         $converter
             ->expects($this->atLeastOnce())
-            ->method('convertSqlValue')
-            ->will($this->returnCallback(function ($input, array $passedOptions) use ($test, $options) {
-                $test->assertEquals($options, $passedOptions);
+            ->method('convertValue')
+            ->will($this->returnCallback(function ($value, array $passedOptions) use ($options) {
+                self::assertEquals($options, $passedOptions);
 
-                return "get_customer_type($input)";
+                return "get_customer_type($value)";
             }))
         ;
 
@@ -518,9 +502,8 @@ final class WhereBuilderTest extends DbalTestCase
 
         $options = $fieldSet->get('customer_birthday')->getOptions();
         $whereBuilder = $this->getWhereBuilder($condition);
-        $test = $this;
 
-        $converter = $this->createMock(SqlConversionStrategyInterface::class);
+        $converter = $this->createMock(ValueConversionStrategy::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
@@ -543,39 +526,19 @@ final class WhereBuilderTest extends DbalTestCase
 
         $converter
             ->expects($this->atLeastOnce())
-            ->method('convertSqlField')
+            ->method('convertColumn')
             ->will(
                 $this->returnCallback(
-                    function ($column, array $passedOptions, ConversionHints $hints) use ($test, $options) {
-                        $test->assertEquals($options, $passedOptions);
+                    function ($column, array $passedOptions, ConversionHints $hints) use ($options) {
+                        self::assertEquals($options, $passedOptions);
 
                         if (2 === $hints->conversionStrategy) {
                             return "search_conversion_age($column)";
                         }
 
-                        $test->assertEquals(1, $hints->conversionStrategy);
+                        self::assertEquals(1, $hints->conversionStrategy);
 
                         return $column;
-                    }
-                )
-            )
-        ;
-
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('convertSqlValue')
-            ->will(
-                $this->returnCallback(
-                    function ($input, array $passedOptions, ConversionHints $hints) use ($test, $options) {
-                        $test->assertEquals($options, $passedOptions);
-
-                        if (2 === $hints->conversionStrategy) {
-                            return 'CAST('.$hints->connection->quote($input).' AS DATE)';
-                        }
-
-                        $test->assertEquals(1, $hints->conversionStrategy);
-
-                        return $input;
                     }
                 )
             )
@@ -586,20 +549,22 @@ final class WhereBuilderTest extends DbalTestCase
             ->method('convertValue')
             ->will(
                 $this->returnCallback(
-                    function ($input, array $passedOptions, ConversionHints $hints) use ($test, $options) {
-                        $test->assertEquals($options, $passedOptions);
+                    function ($value, array $passedOptions, ConversionHints $hints) use ($options) {
+                        self::assertEquals($options, $passedOptions);
 
-                        if ($input instanceof \DateTime) {
-                            $test->assertEquals(2, $hints->conversionStrategy);
+                        if ($value instanceof \DateTime) {
+                            self::assertEquals(2, $hints->conversionStrategy);
                         } else {
-                            $test->assertEquals(1, $hints->conversionStrategy);
+                            self::assertEquals(1, $hints->conversionStrategy);
                         }
 
-                        if ($input instanceof \DateTime) {
-                            $input = $input->format('Y-m-d');
+                        if (2 === $hints->conversionStrategy) {
+                            return 'CAST('.$hints->connection->quote($value->format('Y-m-d')).' AS DATE)';
                         }
 
-                        return $input;
+                        self::assertEquals(1, $hints->conversionStrategy);
+
+                        return $value;
                     }
                 )
             )
@@ -633,7 +598,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $test = $this;
 
-        $converter = $this->createMock(SqlFieldConversionStrategyInterface::class);
+        $converter = $this->createMock(ColumnConversionStrategy::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
@@ -656,7 +621,7 @@ final class WhereBuilderTest extends DbalTestCase
 
         $converter
             ->expects($this->atLeastOnce())
-            ->method('convertSqlField')
+            ->method('convertColumn')
             ->will(
                 $this->returnCallback(
                     function ($column, array $passedOptions, ConversionHints $hints) use ($test, $options) {

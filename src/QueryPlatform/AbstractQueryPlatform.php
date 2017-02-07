@@ -15,13 +15,19 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
+/**
+ * The AbstractQueryPlatform provides a shared base functionality
+ * for all the query platforms.
+ *
+ * Note that is class is also used by the Doctrine ORM processor and therefor
+ * methods and properties must be protected and easy to overwrite.
+ */
 abstract class AbstractQueryPlatform implements QueryPlatformInterface
 {
     /**
@@ -57,7 +63,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0)
     {
         if ($mappingConfig->valueConversion) {
-            return $this->convertValue($value, $mappingConfig, $column, $strategy);
+            return $this->convertSqlValue($value, $mappingConfig, $column, $strategy);
         }
 
         return $this->quoteValue(
@@ -80,8 +86,8 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
         $column = $mappingConfig->column;
         $this->fieldsMappingCache[$mappingName][$strategy] = $column;
 
-        if ($mappingConfig->fieldConversion instanceof SqlFieldConversionInterface) {
-            $this->fieldsMappingCache[$mappingName][$strategy] = $mappingConfig->fieldConversion->convertSqlField(
+        if ($mappingConfig->fieldConversion instanceof ColumnConversion) {
+            $this->fieldsMappingCache[$mappingName][$strategy] = $mappingConfig->fieldConversion->convertColumn(
                 $column,
                 $mappingConfig->fieldConfig->getOptions(),
                 $this->getConversionHints($mappingConfig, $column, $strategy)
@@ -142,7 +148,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
      */
     public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0)
     {
-        return $mappingConfig->valueConversion->convertSqlValue(
+        return $mappingConfig->valueConversion->convertValue(
             $value,
             $mappingConfig->fieldConfig->getOptions(),
             $this->getConversionHints($mappingConfig, $column, $strategy)
@@ -157,14 +163,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
      */
     protected function quoteValue($value, Type $type): string
     {
-        // Don't quote numbers as some don't follow standards for casting
-        if (is_scalar($value) && ctype_digit((string) $value)) {
-            return (string) $value;
-        }
-
-        return $this->connection->quote($value,
-            $type->getBindingType()
-        );
+        return (string) $this->connection->quote($value, $type->getBindingType());
     }
 
     /**
@@ -193,27 +192,5 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
         $hints->conversionStrategy = $strategy;
 
         return $hints;
-    }
-
-    /**
-     * @param mixed      $value
-     * @param QueryField $mappingConfig
-     * @param string     $column
-     * @param int        $strategy
-     *
-     * @return string
-     */
-    protected function convertValue($value, QueryField $mappingConfig, string $column, int $strategy = 0)
-    {
-        $options = $mappingConfig->fieldConfig->getOptions();
-
-        $hints = $this->getConversionHints($mappingConfig, $column, $strategy);
-        $convertedValue = $mappingConfig->valueConversion->convertValue($value, $options, $hints);
-
-        if ($mappingConfig->valueConversion instanceof SqlValueConversionInterface) {
-            return $this->convertSqlValue($convertedValue, $mappingConfig, $column, $strategy);
-        }
-
-        return $this->quoteValue($convertedValue, $mappingConfig->dbType);
     }
 }

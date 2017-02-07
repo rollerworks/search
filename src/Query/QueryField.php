@@ -14,10 +14,9 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\DBAL\Types\Type as DbType;
-use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
@@ -51,12 +50,12 @@ final class QueryField
     public $column;
 
     /**
-     * @var SqlFieldConversionInterface|ConversionStrategyInterface|null
+     * @var ColumnConversion|StrategySupportedConversion|null
      */
     public $fieldConversion;
 
     /**
-     * @var SqlValueConversionInterface|ValueConversionInterface|null
+     * @var ValueConversion|StrategySupportedConversion|null
      */
     public $valueConversion;
 
@@ -97,14 +96,14 @@ final class QueryField
 
         $converter = $converter ?? $fieldConfig->getOption('doctrine_dbal_conversion');
 
-        if ($converter instanceof SqlFieldConversionInterface) {
+        if ($converter instanceof ColumnConversion) {
             $this->fieldConversion = $converter;
         }
 
-        if ($converter instanceof ValueConversionInterface) {
+        if ($converter instanceof ValueConversion) {
             $this->valueConversion = $converter;
         }
 
-        $this->strategyEnabled = $converter instanceof ConversionStrategyInterface || $converter instanceof ConversionStrategyInterface;
+        $this->strategyEnabled = $converter instanceof StrategySupportedConversion;
     }
 }

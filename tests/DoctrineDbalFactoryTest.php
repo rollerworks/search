@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 use Doctrine\Common\Cache\Cache;
 use Rollerworks\Component\Search\Doctrine\Dbal\CacheWhereBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\GenericFieldSet;
@@ -42,7 +42,7 @@ class DoctrineDbalFactoryTest extends DbalTestCase
 
     public function testCreateWhereBuilderWithConversionSetting()
     {
-        $conversion = $this->createMock(ValueConversionInterface::class);
+        $conversion = $this->createMock(ValueConversion::class);
 
         $fieldLabel = $this->getMockBuilder(FieldConfig::class)->getMock();
         $fieldLabel->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(true));
@@ -68,7 +68,7 @@ class DoctrineDbalFactoryTest extends DbalTestCase
     public function testCreateWhereBuilderWithLazyConversionSetting()
     {
         $test = $this;
-        $conversion = $test->getMockBuilder(ValueConversionInterface::class)->getMock();
+        $conversion = $test->getMockBuilder(ValueConversion::class)->getMock();
         $lazyConversion = function () use ($conversion) {
             return $conversion;
         };

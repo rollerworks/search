@@ -14,15 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type;
 
 use Rollerworks\Component\Search\Field\AbstractFieldType;
-use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type\Doctrine\Conversion\InvoiceLabelConverter;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class InvoiceLabelType extends AbstractFieldType
 {
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(
-            ['doctrine_dbal_conversion' => new InvoiceLabelConverter()]
-        );
-    }
 }

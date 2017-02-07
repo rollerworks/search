@@ -14,12 +14,11 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\InvoiceNumber;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -292,18 +291,6 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->assertQueryIsExecutable($condition);
     }
 
-    public function testValueConversion()
-    {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('label')
-                ->addSimpleValue(InvoiceNumber::createFromString('2015-001'))
-                ->addSimpleValue(InvoiceNumber::createFromString('2015-005'))
-            ->end()
-        ->getSearchCondition();
-
-        $this->assertQueryIsExecutable($condition);
-    }
-
     public function testFieldConversion()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
@@ -316,10 +303,10 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->configureWhereBuilder($whereBuilder);
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
-        $converter = $this->createMock(SqlFieldConversionInterface::class);
+        $converter = $this->createMock(ColumnConversion::class);
         $converter
             ->expects($this->atLeastOnce())
-            ->method('convertSqlField')
+            ->method('convertColumn')
             ->will($this->returnCallback(function ($column) use ($type) {
                 return "CAST($column AS $type)";
             }))
@@ -329,7 +316,7 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->assertQueryIsExecutable($whereBuilder);
     }
 
-    public function testSqlValueConversion()
+    public function testValueConversion()
     {
         $fieldSet = $this->getFieldSet();
         $condition = SearchConditionBuilder::create($fieldSet)
@@ -343,19 +330,13 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
 
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
 
-        $converter = $this->createMock(SqlValueConversionInterface::class);
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('convertSqlValue')
-            ->will($this->returnCallback(function ($input) use ($type) {
-                return "CAST($input AS $type)";
-            }))
-        ;
-
+        $converter = $this->createMock(ValueConversion::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertValue')
-            ->will($this->returnArgument(0))
+            ->will($this->returnCallback(function ($input) use ($type) {
+                return "CAST($input AS $type)";
+            }))
         ;
 
         $whereBuilder->setConverter('customer', $converter);

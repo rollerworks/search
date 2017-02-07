@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
+use Doctrine\DBAL\Types\Type;
+
 final class SqliteQueryPlatform extends AbstractQueryPlatform
 {
     /**
@@ -26,5 +28,19 @@ final class SqliteQueryPlatform extends AbstractQueryPlatform
             $column,
             ($caseInsensitive ? 'ui' : 'u')
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function quoteValue($value, Type $type): string
+    {
+        // Don't quote numbers as SQLite doesn't follow the standards.
+        // PDO::quote() should not actually quote them for int, but it does.
+        if (is_scalar($value) && ctype_digit((string) $value)) {
+            return (string) $value;
+        }
+
+        return $this->connection->quote($value, $type->getBindingType());
     }
 }

@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 
 use Doctrine\DBAL\Types\Type as DBALType;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
-use Rollerworks\Component\Search\Doctrine\Dbal\ConversionStrategyInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
@@ -32,7 +32,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversionInterface, ValueConversionInterface
+class AgeDateConversion implements StrategySupportedConversion, ColumnConversion, ValueConversion
 {
     /**
      * {@inheritdoc}
@@ -53,7 +53,7 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     /**
      * {@inheritdoc}
      */
-    public function convertSqlField(string $column, array $options, ConversionHints $hints): string
+    public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
         if (3 === $hints->conversionStrategy) {
             return $column;
@@ -86,21 +86,10 @@ class AgeDateConversion implements ConversionStrategyInterface, SqlFieldConversi
     /**
      * {@inheritdoc}
      */
-    public function requiresBaseConversion($input, array $options, ConversionHints $hints)
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function convertValue($value, array $options, ConversionHints $hints)
     {
         if (2 === $hints->conversionStrategy || 3 === $hints->conversionStrategy) {
-            return DBALType::getType('date')->convertToDatabaseValue(
-                $value,
-                $hints->connection->getDatabasePlatform()
-            );
+            return $hints->connection->quote($value, DBALType::getType('date'));
         }
 
         return (int) $value;

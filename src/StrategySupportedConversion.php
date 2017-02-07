@@ -14,12 +14,11 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 /**
- * ConversionStrategyInterface, allows for different
- * conversion strategies.
+ * StrategySupportedConversion, allows for different conversion strategies.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface ConversionStrategyInterface
+interface StrategySupportedConversion
 {
     /**
      * Returns the conversion strategy.
@@ -34,7 +33,7 @@ interface ConversionStrategyInterface
      * The conversion strategy is available as the `conversionStrategy` property
      * of the ConversionHints object.
      *
-     * @param mixed           $value   Input value
+     * @param mixed           $value   The "model" value format
      * @param array           $options Options of the Field configuration
      * @param ConversionHints $hints   Special information for the conversion process
      *

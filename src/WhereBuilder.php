@@ -140,8 +140,8 @@ class WhereBuilder implements WhereBuilderInterface
      *
      * Setting is done per type (field or value), any existing conversions are overwritten.
      *
-     * @param string                                               $fieldName
-     * @param ValueConversionInterface|SqlFieldConversionInterface $converter
+     * @param string                           $fieldName
+     * @param ValueConversion|ColumnConversion $converter
      *
      * @throws UnknownFieldException  When the field is not registered in the fieldset
      * @throws BadMethodCallException When the where-clause is already generated
