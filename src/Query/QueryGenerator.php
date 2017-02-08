@@ -71,7 +71,7 @@ final class QueryGenerator
      *
      * @return string
      */
-    public function getGroupQuery(ValuesGroup $valuesGroup)
+    public function getGroupQuery(ValuesGroup $valuesGroup): string
     {
         $query = [];
 
@@ -123,8 +123,6 @@ final class QueryGenerator
     }
 
     /**
-     * Processes the single-values and returns an SQL statement query result.
-     *
      * @param array      $values
      * @param QueryField $mappingConfig
      * @param array      $query
@@ -132,7 +130,7 @@ final class QueryGenerator
      *
      * @return string
      */
-    private function processSingleValuesInList(array $values, QueryField $mappingConfig, array &$query, $exclude = false)
+    private function processSingleValuesInList(array $values, QueryField $mappingConfig, array &$query, bool $exclude = false)
     {
         $valuesQuery = [];
         $column = $this->queryPlatform->getFieldColumn($mappingConfig);
@@ -153,14 +151,12 @@ final class QueryGenerator
     }
 
     /**
-     * Processes the single-values and returns an SQL statement query result.
-     *
      * @param array      $values
      * @param QueryField $mappingConfig
      * @param array      $query
      * @param bool       $exclude
      */
-    private function processSingleValues(array $values, QueryField $mappingConfig, array &$query, $exclude = false)
+    private function processSingleValues(array $values, QueryField $mappingConfig, array &$query, bool $exclude = false)
     {
         if (!$mappingConfig->strategyEnabled && !$mappingConfig->valueConversion instanceof ValueConversion) {
             // Don't use IN() with a custom SQL-statement for better compatibility
@@ -190,7 +186,7 @@ final class QueryGenerator
      * @param array      $query
      * @param bool       $exclude
      */
-    private function processRanges(array $ranges, QueryField $mappingConfig, array &$query, $exclude = false)
+    private function processRanges(array $ranges, QueryField $mappingConfig, array &$query, bool $exclude = false)
     {
         foreach ($ranges as $range) {
             $strategy = $this->getConversionStrategy($mappingConfig, $range->getLower());
@@ -212,7 +208,7 @@ final class QueryGenerator
      *
      * @return string eg. "(%s >= %s AND %s <= %s)"
      */
-    private function getRangePattern(Range $range, $exclude = false)
+    private function getRangePattern(Range $range, bool $exclude = false): string
     {
         $pattern = '(%s ';
 
@@ -239,7 +235,7 @@ final class QueryGenerator
      * @param array      $query
      * @param bool       $exclude
      */
-    private function processCompares(array $compares, QueryField $mappingConfig, array &$query, $exclude = false)
+    private function processCompares(array $compares, QueryField $mappingConfig, array &$query, bool $exclude = false)
     {
         $valuesQuery = [];
 
@@ -272,7 +268,7 @@ final class QueryGenerator
      * @param array          $query
      * @param bool           $exclude
      */
-    private function processPatternMatchers(array $patternMatchers, QueryField $mappingConfig, array &$query, $exclude = false)
+    private function processPatternMatchers(array $patternMatchers, QueryField $mappingConfig, array &$query, bool $exclude = false)
     {
         foreach ($patternMatchers as $patternMatch) {
             if ($exclude !== $patternMatch->isExclusive()) {
@@ -286,12 +282,6 @@ final class QueryGenerator
         }
     }
 
-    /**
-     * @param QueryField $mappingConfig
-     * @param mixed      $value
-     *
-     * @return int
-     */
     private function getConversionStrategy(QueryField $mappingConfig, $value): int
     {
         if ($mappingConfig->valueConversion instanceof StrategySupportedConversion) {
@@ -313,13 +303,7 @@ final class QueryGenerator
         return 0;
     }
 
-    /**
-     * @param string $mappingConfig
-     * @param string $column
-     *
-     * @return ConversionHints
-     */
-    private function getConversionHints(QueryField $mappingConfig, $column = null)
+    private function getConversionHints(QueryField $mappingConfig, string $column = null): ConversionHints
     {
         $hints = new ConversionHints();
         $hints->field = $mappingConfig;
