@@ -36,9 +36,9 @@ interface QueryPlatformInterface
      * @param string     $column
      * @param int        $strategy
      *
-     * @return string|int
+     * @return string
      */
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0);
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string;
 
     /**
      * Returns the formatted PatternMatch query.
@@ -56,9 +56,9 @@ interface QueryPlatformInterface
      * @param string     $column
      * @param int        $strategy
      *
-     * @return string|int
+     * @return string
      */
-    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0);
+    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0): string;
 
     /**
      * Returns the SQL for the match (regexp).
