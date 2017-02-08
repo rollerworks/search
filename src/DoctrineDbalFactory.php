@@ -79,7 +79,7 @@ class DoctrineDbalFactory
      *
      * @return CacheWhereBuilder
      */
-    public function createCacheWhereBuilder(WhereBuilderInterface $whereBuilder, $lifetime = 0)
+    public function createCacheWhereBuilder(WhereBuilderInterface $whereBuilder, int $lifetime = 0)
     {
         if (null === $this->cacheDriver) {
             throw new \RuntimeException('Unable to create CacheWhereBuilder, no CacheDriver is configured.');

@@ -60,13 +60,13 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0)
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
     {
         if ($mappingConfig->valueConversion) {
             return $this->convertSqlValue($value, $mappingConfig, $column, $strategy);
         }
 
-        return $this->quoteValue(
+        return (string) $this->quoteValue(
             $mappingConfig->dbType->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
             $mappingConfig->dbType
         );
@@ -146,9 +146,9 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * {@inheritdoc}
      */
-    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0)
+    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
     {
-        return $mappingConfig->valueConversion->convertValue(
+        return (string) $mappingConfig->valueConversion->convertValue(
             $value,
             $mappingConfig->fieldConfig->getOptions(),
             $this->getConversionHints($mappingConfig, $column, $strategy)
@@ -183,7 +183,7 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
      *
      * @return ConversionHints
      */
-    protected function getConversionHints($mappingConfig, $column, $strategy = 0): ConversionHints
+    protected function getConversionHints(QueryField $mappingConfig, string $column, int $strategy = 0): ConversionHints
     {
         $hints = new ConversionHints();
         $hints->field = $mappingConfig;
