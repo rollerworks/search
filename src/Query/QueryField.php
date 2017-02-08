@@ -52,7 +52,7 @@ final class QueryField
     /**
      * @var ColumnConversion|StrategySupportedConversion|null
      */
-    public $fieldConversion;
+    public $columnConversion;
 
     /**
      * @var ValueConversion|StrategySupportedConversion|null
@@ -97,7 +97,7 @@ final class QueryField
         $converter = $converter ?? $fieldConfig->getOption('doctrine_dbal_conversion');
 
         if ($converter instanceof ColumnConversion) {
-            $this->fieldConversion = $converter;
+            $this->columnConversion = $converter;
         }
 
         if ($converter instanceof ValueConversion) {

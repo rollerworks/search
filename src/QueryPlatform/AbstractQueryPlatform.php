@@ -86,8 +86,8 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
         $column = $mappingConfig->column;
         $this->fieldsMappingCache[$mappingName][$strategy] = $column;
 
-        if ($mappingConfig->fieldConversion instanceof ColumnConversion) {
-            $this->fieldsMappingCache[$mappingName][$strategy] = $mappingConfig->fieldConversion->convertColumn(
+        if ($mappingConfig->columnConversion instanceof ColumnConversion) {
+            $this->fieldsMappingCache[$mappingName][$strategy] = $mappingConfig->columnConversion->convertColumn(
                 $column,
                 $mappingConfig->fieldConfig->getOptions(),
                 $this->getConversionHints($mappingConfig, $column, $strategy)
