@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Doctrine\Tests\TestUtil;
 use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -128,9 +128,9 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     /**
      * Configure fields of the WhereBuilder.
      *
-     * @param WhereBuilder $whereBuilder
+     * @param WhereBuilderInterface $whereBuilder
      */
-    protected function configureWhereBuilder(WhereBuilder $whereBuilder)
+    protected function configureWhereBuilder(WhereBuilderInterface $whereBuilder)
     {
     }
 
@@ -177,7 +177,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
         $whereClause = $whereBuilder->getWhereClause();
 
-        $this->assertNotNull($this->conn->query($this->getQuery().$whereClause));
+        self::assertNotEmpty($this->conn->query($this->getQuery().$whereClause));
     }
 
     protected function onNotSuccessfulTest($e)

@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\Field\FieldConfig;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class QueryField
+final class QueryField implements \Serializable
 {
     /**
      * @var string
@@ -82,9 +82,8 @@ final class QueryField
      * @param DbType      $dbType
      * @param string      $column
      * @param string      $alias
-     * @param object      $converter
      */
-    public function __construct(string $mappingName, FieldConfig $fieldConfig, DbType $dbType, string $column, string $alias = null, $converter = null)
+    public function __construct(string $mappingName, FieldConfig $fieldConfig, DbType $dbType, string $column, string $alias = null)
     {
         $this->mappingName = $mappingName;
         $this->fieldConfig = $fieldConfig;
@@ -94,7 +93,11 @@ final class QueryField
         $this->column = ($alias ? $alias.'.' : '').$column;
         $this->dbType = $dbType;
 
-        $converter = $converter ?? $fieldConfig->getOption('doctrine_dbal_conversion');
+        $converter = $fieldConfig->getOption('doctrine_dbal_conversion');
+
+        if ($converter instanceof \Closure) {
+            $converter = $converter();
+        }
 
         if ($converter instanceof ColumnConversion) {
             $this->columnConversion = $converter;
@@ -105,5 +108,21 @@ final class QueryField
         }
 
         $this->strategyEnabled = $converter instanceof StrategySupportedConversion;
+    }
+
+    public function serialize()
+    {
+        return serialize(
+            [
+                'mapping_name' => $this->mappingName,
+                'field' => $this->fieldConfig->getName(),
+                'db_type' => $this->dbType->getName(),
+            ]
+        );
+    }
+
+    public function unserialize($serialized)
+    {
+        // noop
     }
 }

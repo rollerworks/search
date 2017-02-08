@@ -31,11 +31,6 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 abstract class AbstractQueryPlatform implements QueryPlatformInterface
 {
     /**
-     * @var QueryField[]
-     */
-    protected $fields = [];
-
-    /**
      * @var array[]
      */
     protected $fieldsMappingCache = [];
@@ -48,13 +43,11 @@ abstract class AbstractQueryPlatform implements QueryPlatformInterface
     /**
      * Constructor.
      *
-     * @param Connection   $connection
-     * @param QueryField[] $fields
+     * @param Connection $connection
      */
-    public function __construct(Connection $connection, array $fields)
+    public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->fields = $fields;
     }
 
     /**

@@ -17,6 +17,7 @@ use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
@@ -416,247 +417,199 @@ final class WhereBuilderTest extends DbalTestCase
         );
     }
 
-    /**
-     * @dataProvider provideFieldConversionTests
-     *
-     * @param string $expectWhereCase
-     * @param array  $options
-     */
-    public function testFieldConversion($expectWhereCase, array $options = [])
+    public function testColumnConversion()
     {
-        $fieldSetBuilder = $this->getFieldSet(false);
-        $fieldSetBuilder->add('customer', IntegerType::class, $options);
-
-        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
-            ->field('customer')
-                ->addSimpleValue(2)
-            ->end()
-        ->getSearchCondition();
-
-        $whereBuilder = $this->getWhereBuilder($condition);
-        $passedOptions = $options;
-
         $converter = $this->createMock(ColumnConversion::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertColumn')
-            ->will($this->returnCallback(function ($column, array $options, ConversionHints $hints) use ($passedOptions) {
-                self::assertArraySubset($passedOptions, $options);
+            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+                self::assertArraySubset(['grouping' => true], $options);
                 self::assertEquals('I', $hints->field->alias);
                 self::assertEquals('I.customer', $hints->column);
 
                 return "CAST($column AS customer_type)";
-            }))
+            })
         ;
 
-        $whereBuilder->setConverter('customer', $converter);
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
 
-        $this->assertEquals($expectWhereCase, $whereBuilder->getWhereClause());
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        self::assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $whereBuilder->getWhereClause());
     }
 
     public function testValueConversion()
     {
-        $fieldSet = $this->getFieldSet();
-        $condition = SearchConditionBuilder::create($fieldSet)
-            ->field('customer')
-                ->addSimpleValue(2)
-            ->end()
-        ->getSearchCondition();
-
-        $options = $fieldSet->get('customer')->getOptions();
-        $whereBuilder = $this->getWhereBuilder($condition);
-
         $converter = $this->createMock(ValueConversion::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertValue')
-            ->will($this->returnCallback(function ($value, array $passedOptions) use ($options) {
-                self::assertEquals($options, $passedOptions);
+            ->willReturnCallback(function ($value, array $options) {
+                self::assertArraySubset(['grouping' => true], $options);
 
                 return "get_customer_type($value)";
-            }))
+            })
+        ;
+
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
+
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        self::assertEquals('(((I.customer = get_customer_type(2) OR I.customer = get_customer_type(5))))', $whereBuilder->getWhereClause());
+    }
+
+    public function testConversionStrategyValue()
+    {
+        $converter = $this->createMock(ValueConversionStrategy::class);
+        $converter
+            ->expects($this->atLeastOnce())
+            ->method('getConversionStrategy')
+            ->willReturnCallback(function ($value) {
+                if (!$value instanceof \DateTime && !is_int($value)) {
+                    throw new \InvalidArgumentException('Only integer/string and DateTime are accepted.');
+                }
+
+                if ($value instanceof \DateTime) {
+                    return 2;
+                }
+
+                return 1;
+            })
         ;
 
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertValue')
-            ->will($this->returnArgument(0))
+            ->willReturnCallback(function ($value, array $passedOptions, ConversionHints $hints) {
+                self::assertArraySubset(['pattern' => 'dd-MM-yy'], $passedOptions);
+
+                if ($value instanceof \DateTime) {
+                    self::assertEquals(2, $hints->conversionStrategy);
+
+                    return 'CAST('.$hints->connection->quote($value->format('Y-m-d')).' AS AGE)';
+                }
+
+                self::assertEquals(1, $hints->conversionStrategy);
+
+                return $value;
+            })
         ;
 
-        $whereBuilder->setConverter('customer', $converter);
+        $fieldSet = $this->getFieldSet(false);
+        $fieldSet->add('customer_birthday', DateType::class, ['doctrine_dbal_conversion' => $converter, 'pattern' => 'dd-MM-yy']);
 
-        $this->assertEquals('((I.customer = get_customer_type(2)))', $whereBuilder->getWhereClause());
-    }
-
-    public function testConversionStrategyValue()
-    {
-        $date = new \DateTime('2001-01-15', new \DateTimeZone('UTC'));
-
-        $fieldSet = $this->getFieldSet();
-        $condition = SearchConditionBuilder::create($fieldSet)
+        $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
             ->field('customer_birthday')
                 ->addSimpleValue(18)
-                ->addSimpleValue($date)
+                ->addSimpleValue(new \DateTime('2001-01-15', new \DateTimeZone('UTC')))
             ->end()
         ->getSearchCondition();
 
-        $options = $fieldSet->get('customer_birthday')->getOptions();
         $whereBuilder = $this->getWhereBuilder($condition);
+        self::assertEquals(
+            "(((C.birthday = 18 OR C.birthday = CAST('2001-01-15' AS AGE))))",
+            $whereBuilder->getWhereClause()
+        );
+    }
 
-        $converter = $this->createMock(ValueConversionStrategy::class);
+    public function testConversionStrategyColumn()
+    {
+        $converter = $this->createMock(ColumnConversionStrategy::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
-            ->will(
-                $this->returnCallback(
-                    function ($value) {
-                        if (!$value instanceof \DateTime && !is_int($value)) {
-                            throw new \InvalidArgumentException('Only integer/string and DateTime are accepted.');
-                        }
+            ->willReturnCallback(function ($value) {
+                if (!is_string($value) && !is_int($value)) {
+                    throw new \InvalidArgumentException('Only integer/string is accepted.');
+                }
 
-                        if ($value instanceof \DateTime) {
-                            return 2;
-                        }
+                if (is_string($value)) {
+                    return 2;
+                }
 
-                        return 1;
-                    }
-                )
-            )
+                return 1;
+            })
         ;
 
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertColumn')
-            ->will(
-                $this->returnCallback(
-                    function ($column, array $passedOptions, ConversionHints $hints) use ($options) {
-                        self::assertEquals($options, $passedOptions);
+            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+                if (2 === $hints->conversionStrategy) {
+                    return "search_conversion_age($column)";
+                }
 
-                        if (2 === $hints->conversionStrategy) {
-                            return "search_conversion_age($column)";
-                        }
+                self::assertEquals(1, $hints->conversionStrategy);
 
-                        self::assertEquals(1, $hints->conversionStrategy);
-
-                        return $column;
-                    }
-                )
-            )
+                return $column;
+            })
         ;
 
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('convertValue')
-            ->will(
-                $this->returnCallback(
-                    function ($value, array $passedOptions, ConversionHints $hints) use ($options) {
-                        self::assertEquals($options, $passedOptions);
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer_birthday', TextType::class, ['doctrine_dbal_conversion' => $converter]);
 
-                        if ($value instanceof \DateTime) {
-                            self::assertEquals(2, $hints->conversionStrategy);
-                        } else {
-                            self::assertEquals(1, $hints->conversionStrategy);
-                        }
-
-                        if (2 === $hints->conversionStrategy) {
-                            return 'CAST('.$hints->connection->quote($value->format('Y-m-d')).' AS DATE)';
-                        }
-
-                        self::assertEquals(1, $hints->conversionStrategy);
-
-                        return $value;
-                    }
-                )
-            )
-        ;
-
-        $whereBuilder->setConverter('customer_birthday', $converter);
-
-        $this->assertEquals(
-            "(((C.birthday = 18 OR search_conversion_age(C.birthday) = CAST('2001-01-15' AS DATE))))",
-            $whereBuilder->getWhereClause()
-        );
-    }
-
-    public function testConversionStrategyField()
-    {
-        $fieldSet = $this->getFieldSet(false);
-        $fieldSet->add('customer_birthday', TextType::class);
-        $fieldSet = $fieldSet->getFieldSet();
-
-        $condition = SearchConditionBuilder::create($fieldSet)
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
             ->field('customer_birthday')
                 ->addSimpleValue(18)
                 ->addSimpleValue('2001-01-15')
             ->end()
         ->getSearchCondition();
 
-        $options = $fieldSet->get('customer_birthday')->getOptions();
-
         $whereBuilder = $this->getWhereBuilder($condition);
         $whereBuilder->setField('customer_birthday', 'birthday', 'C', 'string');
 
-        $test = $this;
-
-        $converter = $this->createMock(ColumnConversionStrategy::class);
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('getConversionStrategy')
-            ->will(
-                $this->returnCallback(
-                    function ($value) {
-                        if (!is_string($value) && !is_int($value)) {
-                            throw new \InvalidArgumentException('Only integer/string is accepted.');
-                        }
-
-                        if (is_string($value)) {
-                            return 2;
-                        }
-
-                        return 1;
-                    }
-                )
-            )
-        ;
-
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('convertColumn')
-            ->will(
-                $this->returnCallback(
-                    function ($column, array $passedOptions, ConversionHints $hints) use ($test, $options) {
-                        $test->assertEquals($options, $passedOptions);
-
-                        if (2 === $hints->conversionStrategy) {
-                            return "search_conversion_age($column)";
-                        }
-
-                        $test->assertEquals(1, $hints->conversionStrategy);
-
-                        return $column;
-                    }
-                )
-            )
-        ;
-
-        $whereBuilder->setConverter('customer_birthday', $converter);
-
-        $this->assertEquals(
+        self::assertEquals(
             "(((C.birthday = 18 OR search_conversion_age(C.birthday) = '2001-01-15')))",
             $whereBuilder->getWhereClause()
         );
     }
 
-    public static function provideFieldConversionTests()
+    public function testLazyConversionLoading()
     {
-        return [
-            [
-                '((CAST(I.customer AS customer_type) IN(2)))',
-            ],
-            [
-                '((CAST(I.customer AS customer_type) IN(2)))',
-                ['grouping' => true],
-            ],
-        ];
+        $converter = $this->createMock(ColumnConversion::class);
+        $converter
+            ->expects($this->atLeastOnce())
+            ->method('convertColumn')
+            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+                self::assertArraySubset(['grouping' => true], $options);
+                self::assertEquals('I', $hints->field->alias);
+                self::assertEquals('I.customer', $hints->column);
+
+                return "CAST($column AS customer_type)";
+            })
+        ;
+
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', IntegerType::class, [
+            'grouping' => true,
+            'doctrine_dbal_conversion' => function () use ($converter) {
+                return $converter;
+            },
+        ]);
+
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        self::assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $whereBuilder->getWhereClause());
     }
 }

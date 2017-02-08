@@ -17,7 +17,9 @@ use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
@@ -58,9 +60,9 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     /**
      * Configure fields of the WhereBuilder.
      *
-     * @param WhereBuilder $whereBuilder
+     * @param WhereBuilderInterface $whereBuilder
      */
-    protected function configureWhereBuilder(WhereBuilder $whereBuilder)
+    protected function configureWhereBuilder(WhereBuilderInterface $whereBuilder)
     {
         $whereBuilder->setField('customer', 'customer', 'i', 'integer');
         $whereBuilder->setField('customer_name', 'name', 'c', 'string');
@@ -291,18 +293,9 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
         $this->assertQueryIsExecutable($condition);
     }
 
-    public function testFieldConversion()
+    public function testColumnConversion()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('customer')
-                ->addSimpleValue(2)
-            ->end()
-        ->getSearchCondition();
-
-        $whereBuilder = $this->getDbalFactory()->createWhereBuilder($this->conn, $condition);
-        $this->configureWhereBuilder($whereBuilder);
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
-
         $converter = $this->createMock(ColumnConversion::class);
         $converter
             ->expects($this->atLeastOnce())
@@ -312,24 +305,22 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             }))
         ;
 
-        $whereBuilder->setConverter('customer', $converter);
-        $this->assertQueryIsExecutable($whereBuilder);
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
+
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $this->assertQueryIsExecutable($condition);
     }
 
     public function testValueConversion()
     {
-        $fieldSet = $this->getFieldSet();
-        $condition = SearchConditionBuilder::create($fieldSet)
-            ->field('customer')
-                ->addSimpleValue(2)
-            ->end()
-        ->getSearchCondition();
-
-        $whereBuilder = $this->getDbalFactory()->createWhereBuilder($this->conn, $condition);
-        $this->configureWhereBuilder($whereBuilder);
-
         $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
-
         $converter = $this->createMock(ValueConversion::class);
         $converter
             ->expects($this->atLeastOnce())
@@ -339,8 +330,17 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
             }))
         ;
 
-        $whereBuilder->setConverter('customer', $converter);
-        $this->assertQueryIsExecutable($whereBuilder);
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
+
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $this->assertQueryIsExecutable($condition);
     }
 
     public function testConversionStrategy()

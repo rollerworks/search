@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\Extension\Conversion;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -53,7 +53,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
         return 'SELECT id FROM site_user AS u WHERE ';
     }
 
-    protected function configureWhereBuilder(WhereBuilder $whereBuilder)
+    protected function configureWhereBuilder(WhereBuilderInterface $whereBuilder)
     {
         $whereBuilder->setField('birthday', 'birthday', 'u', 'date');
     }

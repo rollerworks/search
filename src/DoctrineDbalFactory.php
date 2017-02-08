@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
+use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
@@ -40,33 +40,16 @@ class DoctrineDbalFactory
     /**
      * Creates a new WhereBuilder for the SearchCondition.
      *
-     * Conversions are applied using the 'doctrine_dbal_conversion' option (when present).
+     * Conversions are applied using the 'doctrine_dbal_conversion' option.
      *
      * @param Connection      $connection      Doctrine DBAL Connection object
      * @param SearchCondition $searchCondition SearchCondition object
      *
-     * @return WhereBuilder
+     * @return WhereBuilderInterface
      */
-    public function createWhereBuilder(Connection $connection, SearchCondition $searchCondition)
+    public function createWhereBuilder(Connection $connection, SearchCondition $searchCondition): WhereBuilderInterface
     {
-        $whereBuilder = new WhereBuilder($connection, $searchCondition);
-
-        foreach ($searchCondition->getFieldSet()->all() as $name => $field) {
-            if (!$field->hasOption('doctrine_dbal_conversion')) {
-                continue;
-            }
-
-            $conversion = $field->getOption('doctrine_dbal_conversion');
-
-            // Lazy loaded
-            if ($conversion instanceof \Closure) {
-                $conversion = $conversion();
-            }
-
-            $whereBuilder->setConverter($name, $conversion);
-        }
-
-        return $whereBuilder;
+        return new WhereBuilder($connection, $searchCondition);
     }
 
     /**
@@ -75,14 +58,12 @@ class DoctrineDbalFactory
      * @param WhereBuilderInterface $whereBuilder
      * @param int                   $lifetime
      *
-     * @throws \RuntimeException when no cache-driver is configured
-     *
-     * @return CacheWhereBuilder
+     * @return WhereBuilderInterface
      */
-    public function createCacheWhereBuilder(WhereBuilderInterface $whereBuilder, int $lifetime = 0)
+    public function createCacheWhereBuilder(WhereBuilderInterface $whereBuilder, int $lifetime = 0): WhereBuilderInterface
     {
         if (null === $this->cacheDriver) {
-            throw new \RuntimeException('Unable to create CacheWhereBuilder, no CacheDriver is configured.');
+            return $whereBuilder;
         }
 
         return new CacheWhereBuilder($whereBuilder, $this->cacheDriver, $lifetime);

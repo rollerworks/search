@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
-use Doctrine\Common\Cache\Cache;
+use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\Doctrine\Dbal\CacheWhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 class CacheWhereBuilderTest extends DbalTestCase
@@ -39,159 +41,211 @@ class CacheWhereBuilderTest extends DbalTestCase
 
     public function testGetWhereClauseNoCache()
     {
+        $cacheKey = '';
+
         $this->cacheDriver
             ->expects($this->once())
-            ->method('contains')
-            ->with('rw_search.doctrine.dbal.where.invoice')
-            ->will($this->returnValue(false));
+            ->method('has')
+            ->with(
+                self::callback(function (string $key) use (&$cacheKey) {
+                    $cacheKey = $key;
+
+                    return true;
+                })
+            )
+            ->willReturn(false);
 
         $this->cacheDriver
             ->expects($this->never())
-            ->method('fetch');
+            ->method('get');
 
         $this->whereBuilder
             ->expects($this->once())
             ->method('getWhereClause')
-            ->will($this->returnValue("me = 'foo'"));
+            ->willReturn("me = 'foo'");
 
         $this->cacheDriver
             ->expects($this->once())
-            ->method('save')
-            ->with('rw_search.doctrine.dbal.where.invoice', "me = 'foo'", 60);
+            ->method('set')
+            ->with(
+                self::callback(
+                    function (string $key) use (&$cacheKey) {
+                        return $cacheKey === $key;
+                    }
+                ),
+                "me = 'foo'",
+                60
+            );
 
-        $this->cacheWhereBuilder->setCacheKey('invoice');
-
-        $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
+        self::assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
     }
 
     public function testGetWhereClauseWithCache()
     {
-        $this->cacheDriver
-            ->expects($this->once())
-            ->method('contains')
-            ->with('rw_search.doctrine.dbal.where.invoice')
-            ->will($this->returnValue(true));
+        $cacheKey = '';
 
         $this->cacheDriver
-            ->expects($this->once())
-            ->method('fetch')
-            ->with('rw_search.doctrine.dbal.where.invoice')
-            ->will($this->returnValue("me = 'foo'"));
+            ->expects(self::once())
+            ->method('has')
+            ->with(
+                self::callback(function (string $key) use (&$cacheKey) {
+                    $cacheKey = $key;
+
+                    return true;
+                })
+            )
+            ->willReturn(true);
+
+        $this->cacheDriver
+            ->expects(self::once())
+            ->method('get')
+            ->with(
+                self::callback(function (string $key) use (&$cacheKey) {
+                    return $cacheKey === $key;
+                })
+            )
+            ->willReturn("me = 'foo'");
 
         $this->whereBuilder
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('getWhereClause');
 
         $this->cacheDriver
-            ->expects($this->never())
-            ->method('save');
+            ->expects(self::never())
+            ->method('set');
 
-        $this->cacheWhereBuilder->setCacheKey('invoice');
-
-        $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
-    }
-
-    public function testGetWhereClauseWithCallbackKeyProvider()
-    {
-        $this->cacheDriver
-            ->expects($this->once())
-            ->method('contains')
-            ->with('rw_search.doctrine.dbal.where.invoice2')
-            ->will($this->returnValue(true));
-
-        $this->cacheDriver
-            ->expects($this->once())
-            ->method('fetch')
-            ->with('rw_search.doctrine.dbal.where.invoice2')
-            ->will($this->returnValue("me = 'foo'"));
-
-        $this->whereBuilder
-            ->expects($this->never())
-            ->method('getWhereClause');
-
-        $this->cacheDriver
-            ->expects($this->never())
-            ->method('save');
-
-        $test = $this;
-        $mockWhereBuilder = $test->whereBuilder;
-
-        $this->cacheWhereBuilder->setCacheKey(
-            null,
-            function ($whereBuilder) use ($test, $mockWhereBuilder) {
-                $test->assertSame($mockWhereBuilder, $whereBuilder);
-
-                return 'invoice2';
-            }
-        );
-
-        $this->assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
+        self::assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
     }
 
     public function testGetWhereWithPrepend()
     {
-        $this->cacheDriver
-            ->expects($this->once())
-            ->method('contains')
-            ->with('rw_search.doctrine.dbal.where.invoice')
-            ->will($this->returnValue(true));
+        $cacheKey = '';
 
         $this->cacheDriver
-            ->expects($this->once())
-            ->method('fetch')
-            ->with('rw_search.doctrine.dbal.where.invoice')
-            ->will($this->returnValue("me = 'foo'"));
+            ->expects(self::once())
+            ->method('has')
+            ->with(
+                self::callback(function (string $key) use (&$cacheKey) {
+                    $cacheKey = $key;
+
+                    return true;
+                })
+            )
+            ->willReturn(true);
+
+        $this->cacheDriver
+            ->expects(self::once())
+            ->method('get')
+            ->with(
+                self::callback(function (string $key) use (&$cacheKey) {
+                    return $cacheKey === $key;
+                })
+            )
+            ->willReturn("me = 'foo'");
 
         $this->whereBuilder
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('getWhereClause');
 
         $this->cacheDriver
-            ->expects($this->never())
-            ->method('save');
+            ->expects(self::never())
+            ->method('set');
 
-        $this->cacheWhereBuilder->setCacheKey('invoice');
-
-        $this->assertEquals("WHERE me = 'foo'", $this->cacheWhereBuilder->getWhereClause('WHERE '));
+        self::assertEquals("WHERE me = 'foo'", $this->cacheWhereBuilder->getWhereClause('WHERE '));
     }
 
     public function testGetEmptyWhereWithPrepend()
     {
         $this->cacheDriver
-            ->expects($this->once())
-            ->method('contains')
-            ->with('rw_search.doctrine.dbal.where.invoice')
-            ->will($this->returnValue(true));
+            ->expects(self::once())
+            ->method('has')
+            ->with(
+                self::callback(function (string $key) use (&$cacheKey) {
+                    $cacheKey = $key;
+
+                    return true;
+                })
+            )
+            ->willReturn(true);
 
         $this->cacheDriver
-            ->expects($this->once())
-            ->method('fetch')
-            ->with('rw_search.doctrine.dbal.where.invoice')
-            ->will($this->returnValue(''));
+            ->expects(self::once())
+            ->method('get')
+            ->with(
+                self::callback(function (string $key) use (&$cacheKey) {
+                    return $cacheKey === $key;
+                })
+            )
+            ->willReturn('');
 
         $this->whereBuilder
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('getWhereClause');
 
         $this->cacheDriver
+            ->expects(self::never())
+            ->method('set');
+
+        self::assertEquals('', $this->cacheWhereBuilder->getWhereClause('WHERE '));
+    }
+
+    public function testFieldMappingDelegation()
+    {
+        $cacheKey = '';
+
+        $this->cacheDriver
+            ->expects($this->once())
+            ->method('has')
+            ->with(
+                self::callback(function (string $key) use (&$cacheKey) {
+                    $cacheKey = $key;
+
+                    return true;
+                })
+            )
+            ->willReturn(false);
+
+        $this->cacheDriver
             ->expects($this->never())
-            ->method('save');
+            ->method('get');
 
-        $this->cacheWhereBuilder->setCacheKey('invoice');
+        $this->cacheDriver
+            ->expects($this->once())
+            ->method('set')
+            ->with(
+                self::callback(
+                    function (string $key) use (&$cacheKey) {
+                        return $cacheKey === $key;
+                    }
+                ),
+                '((I.id IN(18)))',
+                60
+            );
 
-        $this->assertEquals('', $this->cacheWhereBuilder->getWhereClause('WHERE '));
+        $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(18)
+            ->end()
+        ->getSearchCondition();
+
+        $this->whereBuilder = new WhereBuilder($this->getConnectionMock(), $searchCondition);
+
+        $this->cacheWhereBuilder = new CacheWhereBuilder($this->whereBuilder, $this->cacheDriver, 60);
+        $this->cacheWhereBuilder->setField('customer', 'id', 'I', 'integer');
+
+        self::assertEquals('((I.id IN(18)))', $this->cacheWhereBuilder->getWhereClause());
     }
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->cacheDriver = $this->getMockBuilder(Cache::class)->getMock();
+        $this->cacheDriver = $this->createMock(Cache::class);
         $this->whereBuilder = $this->createMock(WhereBuilderInterface::class);
 
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
-        $this->whereBuilder->expects($this->any())->method('getSearchCondition')->will($this->returnValue($searchCondition));
+        $this->whereBuilder->expects(self::any())->method('getSearchCondition')->willReturn($searchCondition);
         $this->cacheWhereBuilder = new CacheWhereBuilder($this->whereBuilder, $this->cacheDriver, 60);
     }
 }
