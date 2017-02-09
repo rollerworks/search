@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
-interface QueryPlatformInterface
+interface QueryPlatform
 {
     /**
      * Returns the correct column (with SQLField conversions applied).

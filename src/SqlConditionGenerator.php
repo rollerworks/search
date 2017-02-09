@@ -142,7 +142,7 @@ final class SqlConditionGenerator implements ConditionGenerator
         return $this->searchCondition;
     }
 
-    private function getQueryPlatform(): QueryPlatformInterface
+    private function getQueryPlatform(): QueryPlatform
     {
         $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';
