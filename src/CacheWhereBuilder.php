@@ -13,29 +13,24 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\Common\Cache\Cache;
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
 /***
- * Handles caching of the Doctrine DBAL WhereBuilder.
+ * Handles caching of a Doctrine DBAL WhereBuilder.
  *
- * Note. For best performance caching of the WhereClause should be done on a
- * per user-session FieldSet basis. This ensures enough uniqueness and
- * no complex serialization.
+ * Instead of using the WhereBuilder directly you should use the CacheWhereBuilder
+ * as all related calls are delegated.
  *
- * This checks if there is a cached result, if not it delegates
- * the creating to the parent and caches the result.
+ * The cache-key is a hashed (sha256) combination of the SearchCondition
+ * (root ValuesGroup and FieldSet name) and configured field mappings.
  *
- * Instead of calling getWhereClause() on the WhereBuilder class
- * you should call getWhereClause() on this class instead.
- *
- * WARNING. Any changes to the mapping-data should invalidate the cache,
- * the system doesn't do this automatically.
+ * Caution: Any noticeable changes to your (FieldSet's) configuration
+ * should purge all cached entries.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class CacheWhereBuilder implements WhereBuilderInterface
+final class CacheWhereBuilder implements WhereBuilderInterface
 {
     /**
      * @var Cache
@@ -53,7 +48,7 @@ class CacheWhereBuilder implements WhereBuilderInterface
     private $whereBuilder;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $cacheKey;
 
@@ -65,44 +60,17 @@ class CacheWhereBuilder implements WhereBuilderInterface
     /**
      * Constructor.
      *
-     * @param WhereBuilderInterface $whereBuilder The WhereBuilder to use for generating and updating the query
-     * @param Cache                 $cacheDriver  Doctrine Cache instance
-     * @param int                   $lifeTime     Lifetime in seconds after which the cache is expired
-     *                                            Set this 0 to never expire
+     * @param WhereBuilderInterface $whereBuilder The actual WhereBuilder to use when no cache exists
+     * @param Cache                 $cacheDriver  PSR-16 SimpleCache instance. Use a custom pool to ease
+     *                                            purging invalidated items
+     * @param int                   $lifeTime     Lifetime in seconds after which the cache is expired.
+     *                                            Set this 0 to never expire (not recommended)
      */
     public function __construct(WhereBuilderInterface $whereBuilder, Cache $cacheDriver, int $lifeTime = 0)
     {
         $this->cacheDriver = $cacheDriver;
-        $this->cacheLifeTime = (int) $lifeTime;
+        $this->cacheLifeTime = $lifeTime;
         $this->whereBuilder = $whereBuilder;
-    }
-
-    /**
-     * Set the cache key.
-     *
-     * This method also accepts a callback that can calculate the key for you.
-     * The callback will receive wherebuilder.
-     *
-     * @param string   $key
-     * @param callable $callback
-     *
-     * @throws BadMethodCallException
-     *
-     * @return self
-     */
-    public function setCacheKey(string $key = null, callable $callback = null)
-    {
-        if (null === $key && null === $callback) {
-            throw new BadMethodCallException('Either a key or legal callback must be given.');
-        }
-
-        if ($callback) {
-            $key = call_user_func($callback, $this->whereBuilder);
-        }
-
-        $this->cacheKey = (string) $key;
-
-        return $this;
     }
 
     /**
@@ -118,18 +86,13 @@ class CacheWhereBuilder implements WhereBuilderInterface
     public function getWhereClause(string $prependQuery = ''): string
     {
         if (null === $this->whereClause) {
-            $cacheKey = 'rw_search.doctrine.dbal.where.'.$this->cacheKey;
+            $cacheKey = $this->getCacheKey();
 
-            if ($this->cacheDriver->contains($cacheKey)) {
-                $this->whereClause = $this->cacheDriver->fetch($cacheKey);
+            if ($this->cacheDriver->has($cacheKey)) {
+                $this->whereClause = $this->cacheDriver->get($cacheKey);
             } else {
                 $this->whereClause = $this->whereBuilder->getWhereClause();
-
-                $this->cacheDriver->save(
-                    $cacheKey,
-                    $this->whereClause,
-                    $this->cacheLifeTime
-                );
+                $this->cacheDriver->set($cacheKey, $this->whereClause, $this->cacheLifeTime);
             }
         }
 
@@ -141,21 +104,45 @@ class CacheWhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * Returns the original WhereBuilder that is used for generating
-     * the where-clause.
-     *
-     * @return WhereBuilderInterface
-     */
-    public function getInnerWhereBuilder(): WhereBuilderInterface
-    {
-        return $this->whereBuilder;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getSearchCondition(): SearchCondition
     {
         return $this->whereBuilder->getSearchCondition();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string')
+    {
+        $this->whereBuilder->setField($fieldName, $column, $alias, $type);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFieldsMapping(): array
+    {
+        return $this->whereBuilder->getFieldsMapping();
+    }
+
+    private function getCacheKey(): string
+    {
+        if (null === $this->cacheKey) {
+            $searchCondition = $this->whereBuilder->getSearchCondition();
+            $this->cacheKey = hash(
+                'sha256',
+                $searchCondition->getFieldSet()->getSetName().
+                "\n".
+                serialize($searchCondition->getValuesGroup()).
+                "\n".
+                serialize($this->whereBuilder->getFieldsMapping())
+            );
+        }
+
+        return $this->cacheKey;
     }
 }

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
-use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as PDOSqlite;
+use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
@@ -49,7 +49,7 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
 
     protected function getDbalFactory()
     {
-        $cacheDriver = $this->getMockBuilder(Cache::class)->getMock();
+        $cacheDriver = $this->getMockBuilder(CacheInterface::class)->getMock();
 
         return new DoctrineDbalFactory($cacheDriver);
     }

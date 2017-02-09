@@ -15,8 +15,8 @@ namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type;
 
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
+use Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
-use Rollerworks\Component\Search\Field\FieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -51,6 +51,6 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
      */
     public function getExtendedType(): string
     {
-        return FieldType::class;
+        return SearchFieldType::class;
     }
 }

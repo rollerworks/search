@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\Extension\
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Money\Money;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
@@ -58,7 +58,7 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
         return 'SELECT id FROM product AS p WHERE ';
     }
 
-    protected function configureWhereBuilder(WhereBuilder $whereBuilder)
+    protected function configureWhereBuilder(WhereBuilderInterface $whereBuilder)
     {
         $whereBuilder->setField('price', 'price', 'p', 'string');
         $whereBuilder->setField('total', 'total', 'p', 'decimal');

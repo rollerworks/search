@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
-use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 
 /**
  * @internal
  */
-interface ValueConversionStrategy extends StrategySupportedConversion, ColumnConversion, ValueConversion
+interface ValueConversionStrategy extends StrategySupportedConversion, ValueConversion
 {
 }

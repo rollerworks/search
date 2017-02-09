@@ -292,8 +292,8 @@ final class QueryGenerator
             );
         }
 
-        if ($mappingConfig->fieldConversion instanceof StrategySupportedConversion) {
-            return $mappingConfig->fieldConversion->getConversionStrategy(
+        if ($mappingConfig->columnConversion instanceof StrategySupportedConversion) {
+            return $mappingConfig->columnConversion->getConversionStrategy(
                 $value,
                 $mappingConfig->fieldConfig->getOptions(),
                 $this->getConversionHints($mappingConfig)

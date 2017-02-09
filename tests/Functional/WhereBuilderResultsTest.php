@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
@@ -188,7 +188,7 @@ WHERE
 SQL;
     }
 
-    protected function configureWhereBuilder(WhereBuilder $whereBuilder)
+    protected function configureWhereBuilder(WhereBuilderInterface $whereBuilder)
     {
         // Customer (by invoice relation)
         $whereBuilder->setField('customer-first-name', 'first_name', 'c', 'string');

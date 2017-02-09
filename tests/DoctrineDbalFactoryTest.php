@@ -13,12 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
-use Doctrine\Common\Cache\Cache;
+use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\Doctrine\Dbal\CacheWhereBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
-use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
@@ -37,61 +35,7 @@ class DoctrineDbalFactoryTest extends DbalTestCase
 
         $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
 
-        $this->assertInstanceOf(WhereBuilder::class, $whereBuilder);
-    }
-
-    public function testCreateWhereBuilderWithConversionSetting()
-    {
-        $conversion = $this->createMock(ValueConversion::class);
-
-        $fieldLabel = $this->getMockBuilder(FieldConfig::class)->getMock();
-        $fieldLabel->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(true));
-        $fieldLabel->expects($this->once())->method('getOption')->with('doctrine_dbal_conversion')->will($this->returnValue($conversion));
-
-        $fieldCustomer = $this->getMockBuilder(FieldConfig::class)->getMock();
-        $fieldCustomer->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(false));
-        $fieldCustomer->expects($this->never())->method('getOption');
-
-        $fieldSet = new GenericFieldSet(
-            ['invoice_label' => $fieldLabel, 'invoice_customer' => $fieldCustomer],
-            'invoice'
-        );
-
-        $connection = $this->getConnectionMock();
-        $searchCondition = new SearchCondition($fieldSet, new ValuesGroup());
-
-        $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
-
-        $this->assertInstanceOf(WhereBuilder::class, $whereBuilder);
-    }
-
-    public function testCreateWhereBuilderWithLazyConversionSetting()
-    {
-        $test = $this;
-        $conversion = $test->getMockBuilder(ValueConversion::class)->getMock();
-        $lazyConversion = function () use ($conversion) {
-            return $conversion;
-        };
-
-        $fieldLabel = $this->getMockBuilder(FieldConfig::class)->getMock();
-        $fieldLabel->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(true));
-        $fieldLabel->expects($this->once())->method('getOption')->with('doctrine_dbal_conversion')->will($this->returnValue($lazyConversion));
-
-        $fieldCustomer = $this->getMockBuilder(FieldConfig::class)->getMock();
-        $fieldCustomer->expects($this->once())->method('hasOption')->with('doctrine_dbal_conversion')->will($this->returnValue(false));
-        $fieldCustomer->expects($this->never())->method('getOption');
-
-        $fieldSet = new GenericFieldSet(
-            ['invoice_label' => $fieldLabel, 'invoice_customer' => $fieldCustomer],
-            'invoice'
-        );
-
-        $connection = $this->getConnectionMock();
-        $searchCondition = new SearchCondition($fieldSet, new ValuesGroup());
-
-        $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
-
-        $this->assertInstanceOf(WhereBuilder::class, $whereBuilder);
+        self::assertSame($searchCondition, $whereBuilder->getSearchCondition());
     }
 
     public function testCreateCacheWhereBuilder()
