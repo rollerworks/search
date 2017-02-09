@@ -29,7 +29,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class StringQueryExporter extends AbstractExporter
+final class StringQueryExporter extends AbstractExporter
 {
     private $labelResolver;
     private $fields = [];

@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ArrayExporter extends AbstractExporter
+final class ArrayExporter extends AbstractExporter
 {
     /**
      * @param ValuesGroup $valuesGroup

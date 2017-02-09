@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exporter;
 
+use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
@@ -20,8 +21,20 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class JsonExporter extends ArrayExporter
+final class JsonExporter implements ConditionExporter
 {
+    private $exporter;
+
+    /**
+     * Constructor.
+     *
+     * @param ArrayExporter $arrayExporter
+     */
+    public function __construct(ArrayExporter $arrayExporter = null)
+    {
+        $this->exporter = $arrayExporter ?? new ArrayExporter();
+    }
+
     /**
      * Exports the SearchCondition.
      *
@@ -31,6 +44,6 @@ class JsonExporter extends ArrayExporter
      */
     public function exportCondition(SearchCondition $condition)
     {
-        return json_encode(parent::exportCondition($condition));
+        return json_encode($this->exporter->exportCondition($condition));
     }
 }
