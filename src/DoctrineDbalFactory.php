@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\SearchCondition;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DoctrineDbalFactory
+final class DoctrineDbalFactory
 {
     /**
      * @var Cache
@@ -38,34 +38,34 @@ class DoctrineDbalFactory
     }
 
     /**
-     * Creates a new WhereBuilder for the SearchCondition.
+     * Creates a new SqlConditionGenerator for the SearchCondition.
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option.
      *
      * @param Connection      $connection      Doctrine DBAL Connection object
      * @param SearchCondition $searchCondition SearchCondition object
      *
-     * @return WhereBuilderInterface
+     * @return ConditionGenerator
      */
-    public function createWhereBuilder(Connection $connection, SearchCondition $searchCondition): WhereBuilderInterface
+    public function createConditionGenerator(Connection $connection, SearchCondition $searchCondition): ConditionGenerator
     {
-        return new WhereBuilder($connection, $searchCondition);
+        return new SqlConditionGenerator($connection, $searchCondition);
     }
 
     /**
-     * Creates a new CacheWhereBuilder instance for the given WhereBuilder.
+     * Creates a new CachedConditionGenerator instance for the given ConditionGenerator.
      *
-     * @param WhereBuilderInterface $whereBuilder
-     * @param int                   $lifetime
+     * @param ConditionGenerator $whereBuilder
+     * @param int                $lifetime
      *
-     * @return WhereBuilderInterface
+     * @return ConditionGenerator
      */
-    public function createCacheWhereBuilder(WhereBuilderInterface $whereBuilder, int $lifetime = 0): WhereBuilderInterface
+    public function createCachedConditionGenerator(ConditionGenerator $whereBuilder, int $lifetime = 0): ConditionGenerator
     {
         if (null === $this->cacheDriver) {
             return $whereBuilder;
         }
 
-        return new CacheWhereBuilder($whereBuilder, $this->cacheDriver, $lifetime);
+        return new CachedConditionGenerator($whereBuilder, $this->cacheDriver, $lifetime);
     }
 }

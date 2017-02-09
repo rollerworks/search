@@ -26,7 +26,7 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface WhereBuilderInterface
+interface ConditionGenerator
 {
     /**
      * Returns the generated where-clause.

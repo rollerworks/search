@@ -39,7 +39,7 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class WhereBuilder implements WhereBuilderInterface
+final class SqlConditionGenerator implements ConditionGenerator
 {
     /**
      * @var SearchCondition

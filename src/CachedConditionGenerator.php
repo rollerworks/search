@@ -30,7 +30,7 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class CacheWhereBuilder implements WhereBuilderInterface
+final class CachedConditionGenerator implements ConditionGenerator
 {
     /**
      * @var Cache
@@ -43,7 +43,7 @@ final class CacheWhereBuilder implements WhereBuilderInterface
     private $cacheLifeTime;
 
     /**
-     * @var WhereBuilderInterface
+     * @var ConditionGenerator
      */
     private $whereBuilder;
 
@@ -60,13 +60,13 @@ final class CacheWhereBuilder implements WhereBuilderInterface
     /**
      * Constructor.
      *
-     * @param WhereBuilderInterface $whereBuilder The actual WhereBuilder to use when no cache exists
-     * @param Cache                 $cacheDriver  PSR-16 SimpleCache instance. Use a custom pool to ease
-     *                                            purging invalidated items
-     * @param int                   $lifeTime     Lifetime in seconds after which the cache is expired.
-     *                                            Set this 0 to never expire (not recommended)
+     * @param ConditionGenerator $whereBuilder The actual WhereBuilder to use when no cache exists
+     * @param Cache              $cacheDriver  PSR-16 SimpleCache instance. Use a custom pool to ease
+     *                                         purging invalidated items
+     * @param int                $lifeTime     Lifetime in seconds after which the cache is expired.
+     *                                         Set this 0 to never expire (not recommended)
      */
-    public function __construct(WhereBuilderInterface $whereBuilder, Cache $cacheDriver, int $lifeTime = 0)
+    public function __construct(ConditionGenerator $whereBuilder, Cache $cacheDriver, int $lifeTime = 0)
     {
         $this->cacheDriver = $cacheDriver;
         $this->cacheLifeTime = $lifeTime;
@@ -76,7 +76,7 @@ final class CacheWhereBuilder implements WhereBuilderInterface
     /**
      * Returns the generated/cached where-clause.
      *
-     * @see WhereBuilder::getWhereClause()
+     * @see SqlConditionGenerator::getWhereClause()
      *
      * @param string $prependQuery Prepends this string to the where-clause
      *                             (" WHERE " or " AND " for example)
