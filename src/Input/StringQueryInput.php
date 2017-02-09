@@ -135,7 +135,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * Caution: Regex delimiters are not used.
  */
-class StringQueryInput extends AbstractInput
+final class StringQueryInput extends AbstractInput
 {
     /**
      * @var FieldValuesByViewFactory

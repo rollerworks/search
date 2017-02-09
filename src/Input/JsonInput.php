@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Input;
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 use Seld\JsonLint\JsonParser;
@@ -31,8 +32,20 @@ use Seld\JsonLint\ParsingException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class JsonInput extends ArrayInput
+final class JsonInput implements InputProcessor
 {
+    private $processor;
+
+    /**
+     * Constructor.
+     *
+     * @param Validator|null $validator
+     */
+    public function __construct(Validator $validator = null)
+    {
+        $this->processor = new ArrayInput($validator);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -63,6 +76,6 @@ class JsonInput extends ArrayInput
             throw new InvalidSearchConditionException($errors);
         }
 
-        return parent::process($config, $array);
+        return $this->processor->process($config, $array);
     }
 }

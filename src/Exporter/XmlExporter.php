@@ -28,7 +28,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class XmlExporter extends AbstractExporter
+final class XmlExporter extends AbstractExporter
 {
     /**
      * @var \DOMDocument
