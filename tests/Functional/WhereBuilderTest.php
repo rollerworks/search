@@ -15,9 +15,8 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -60,9 +59,9 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     /**
      * Configure fields of the WhereBuilder.
      *
-     * @param WhereBuilderInterface $whereBuilder
+     * @param ConditionGenerator $whereBuilder
      */
-    protected function configureWhereBuilder(WhereBuilderInterface $whereBuilder)
+    protected function configureWhereBuilder(ConditionGenerator $whereBuilder)
     {
         $whereBuilder->setField('customer', 'customer', 'i', 'integer');
         $whereBuilder->setField('customer_name', 'name', 'c', 'string');

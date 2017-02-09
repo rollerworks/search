@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Value\Compare;
@@ -48,18 +48,18 @@ final class QueryGenerator
     private $connection;
 
     /**
-     * @var QueryPlatformInterface
+     * @var QueryPlatform
      */
     private $queryPlatform;
 
     /**
      * Constructor.
      *
-     * @param Connection             $connection
-     * @param QueryPlatformInterface $queryPlatform
-     * @param array                  $fields
+     * @param Connection    $connection
+     * @param QueryPlatform $queryPlatform
+     * @param array         $fields
      */
-    public function __construct(Connection $connection, QueryPlatformInterface $queryPlatform, array $fields)
+    public function __construct(Connection $connection, QueryPlatform $queryPlatform, array $fields)
     {
         $this->connection = $connection;
         $this->queryPlatform = $queryPlatform;

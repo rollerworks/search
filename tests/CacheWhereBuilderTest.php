@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Psr\SimpleCache\CacheInterface as Cache;
-use Rollerworks\Component\Search\Doctrine\Dbal\CacheWhereBuilder;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\CachedConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlConditionGenerator;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 class CacheWhereBuilderTest extends DbalTestCase
 {
     /**
-     * @var CacheWhereBuilder
+     * @var CachedConditionGenerator
      */
     private $cacheWhereBuilder;
 
@@ -228,9 +228,9 @@ class CacheWhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $this->whereBuilder = new WhereBuilder($this->getConnectionMock(), $searchCondition);
+        $this->whereBuilder = new SqlConditionGenerator($this->getConnectionMock(), $searchCondition);
 
-        $this->cacheWhereBuilder = new CacheWhereBuilder($this->whereBuilder, $this->cacheDriver, 60);
+        $this->cacheWhereBuilder = new CachedConditionGenerator($this->whereBuilder, $this->cacheDriver, 60);
         $this->cacheWhereBuilder->setField('customer', 'id', 'I', 'integer');
 
         self::assertEquals('((I.id IN(18)))', $this->cacheWhereBuilder->getWhereClause());
@@ -241,11 +241,11 @@ class CacheWhereBuilderTest extends DbalTestCase
         parent::setUp();
 
         $this->cacheDriver = $this->createMock(Cache::class);
-        $this->whereBuilder = $this->createMock(WhereBuilderInterface::class);
+        $this->whereBuilder = $this->createMock(ConditionGenerator::class);
 
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
         $this->whereBuilder->expects(self::any())->method('getSearchCondition')->willReturn($searchCondition);
-        $this->cacheWhereBuilder = new CacheWhereBuilder($this->whereBuilder, $this->cacheDriver, 60);
+        $this->cacheWhereBuilder = new CachedConditionGenerator($this->whereBuilder, $this->cacheDriver, 60);
     }
 }

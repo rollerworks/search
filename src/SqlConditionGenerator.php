@@ -39,7 +39,7 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class WhereBuilder implements WhereBuilderInterface
+final class SqlConditionGenerator implements ConditionGenerator
 {
     /**
      * @var SearchCondition
@@ -142,7 +142,7 @@ final class WhereBuilder implements WhereBuilderInterface
         return $this->searchCondition;
     }
 
-    private function getQueryPlatform(): QueryPlatformInterface
+    private function getQueryPlatform(): QueryPlatform
     {
         $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';

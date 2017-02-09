@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Psr\SimpleCache\CacheInterface as Cache;
-use Rollerworks\Component\Search\Doctrine\Dbal\CacheWhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\CachedConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Dbal\SqlConditionGenerator;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
@@ -33,7 +33,7 @@ class DoctrineDbalFactoryTest extends DbalTestCase
         $connection = $this->getConnectionMock();
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
-        $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
+        $whereBuilder = $this->factory->createConditionGenerator($connection, $searchCondition);
 
         self::assertSame($searchCondition, $whereBuilder->getSearchCondition());
     }
@@ -43,11 +43,11 @@ class DoctrineDbalFactoryTest extends DbalTestCase
         $connection = $this->getConnectionMock();
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
-        $whereBuilder = $this->factory->createWhereBuilder($connection, $searchCondition);
-        $this->assertInstanceOf(WhereBuilder::class, $whereBuilder);
+        $whereBuilder = $this->factory->createConditionGenerator($connection, $searchCondition);
+        $this->assertInstanceOf(SqlConditionGenerator::class, $whereBuilder);
 
-        $cacheWhereBuilder = $this->factory->createCacheWhereBuilder($whereBuilder);
-        $this->assertInstanceOf(CacheWhereBuilder::class, $cacheWhereBuilder);
+        $cacheWhereBuilder = $this->factory->createCachedConditionGenerator($whereBuilder);
+        $this->assertInstanceOf(CachedConditionGenerator::class, $cacheWhereBuilder);
     }
 
     protected function setUp()

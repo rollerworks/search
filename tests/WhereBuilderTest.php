@@ -32,7 +32,7 @@ final class WhereBuilderTest extends DbalTestCase
 {
     private function getWhereBuilder(SearchCondition $condition, Connection $connection = null)
     {
-        $whereBuilder = $this->getDbalFactory()->createWhereBuilder(
+        $whereBuilder = $this->getDbalFactory()->createConditionGenerator(
             $connection ?: $this->getConnectionMock(),
             $condition
         );

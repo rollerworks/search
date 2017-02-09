@@ -18,7 +18,7 @@ use Doctrine\DBAL\Types\Type;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
 /**
@@ -28,7 +28,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
  * Note that is class is also used by the Doctrine ORM processor and therefor
  * methods and properties must be protected and easy to overwrite.
  */
-abstract class AbstractQueryPlatform implements QueryPlatformInterface
+abstract class AbstractQueryPlatform implements QueryPlatform
 {
     /**
      * @var array[]

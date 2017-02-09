@@ -15,8 +15,8 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Doctrine\Tests\TestUtil;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
-use Rollerworks\Component\Search\Doctrine\Dbal\WhereBuilderInterface;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -128,9 +128,9 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     /**
      * Configure fields of the WhereBuilder.
      *
-     * @param WhereBuilderInterface $whereBuilder
+     * @param ConditionGenerator $whereBuilder
      */
-    protected function configureWhereBuilder(WhereBuilderInterface $whereBuilder)
+    protected function configureWhereBuilder(ConditionGenerator $whereBuilder)
     {
     }
 
@@ -142,7 +142,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
      */
     protected function assertRecordsAreFound(SearchCondition $condition, array $ids)
     {
-        $whereBuilder = $this->getDbalFactory()->createWhereBuilder($this->conn, $condition);
+        $whereBuilder = $this->getDbalFactory()->createConditionGenerator($this->conn, $condition);
         $this->configureWhereBuilder($whereBuilder);
 
         $whereClause = $whereBuilder->getWhereClause();
@@ -169,7 +169,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     protected function assertQueryIsExecutable($conditionOrWhere)
     {
         if ($conditionOrWhere instanceof SearchCondition) {
-            $whereBuilder = $this->getDbalFactory()->createWhereBuilder($this->conn, $conditionOrWhere);
+            $whereBuilder = $this->getDbalFactory()->createConditionGenerator($this->conn, $conditionOrWhere);
             $this->configureWhereBuilder($whereBuilder);
         } else {
             $whereBuilder = $conditionOrWhere;
