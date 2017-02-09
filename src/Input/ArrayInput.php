@@ -53,7 +53,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ArrayInput extends AbstractInput
+final class ArrayInput extends AbstractInput
 {
     /**
      * @var FieldValuesFactory
