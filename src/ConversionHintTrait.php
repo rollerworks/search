@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -12,12 +14,13 @@
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\ORM\Query\SqlWalker;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
 trait ConversionHintTrait
 {
     /**
-     * @var QueryPlatformInterface
+     * @var QueryPlatform
      */
     protected $nativePlatform;
 
@@ -27,20 +30,22 @@ trait ConversionHintTrait
     protected $parameters = [];
 
     /**
+     * @var QueryField[]
+     */
+    protected $fields = [];
+
+    /**
      * @param SqlWalker $sqlWalker
      */
     protected function loadConversionHints(SqlWalker $sqlWalker)
     {
-        /* @var SqlConversionInfo|\Closure $hintsValue */
+        /* @var SqlConversionInfo $hintsValue */
         if (!($hintsValue = $sqlWalker->getQuery()->getHint('rws_conversion_hint'))) {
             throw new \LogicException('Missing "rws_conversion_hint" hint for '.get_class($this));
         }
 
-        if ($hintsValue instanceof SqlConversionInfo) {
-            $this->nativePlatform = $hintsValue->nativePlatform;
-            $this->parameters = $hintsValue->parameters;
-        } else {
-            list($this->nativePlatform, $this->parameters) = $hintsValue();
-        }
+        $this->nativePlatform = $hintsValue->nativePlatform;
+        $this->parameters = $hintsValue->parameters;
+        $this->fields = $hintsValue->fields;
     }
 }

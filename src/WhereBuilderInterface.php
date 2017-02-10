@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -13,7 +15,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -33,7 +35,7 @@ interface WhereBuilderInterface
     public function updateQuery();
 
     /**
-     * @return SearchConditionInterface
+     * @return SearchCondition
      */
     public function getSearchCondition();
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -13,10 +15,10 @@ namespace Rollerworks\Component\Search\Doctrine\Orm\QueryPlatform;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\AbstractQueryPlatform;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 
 final class DqlQueryPlatform extends AbstractQueryPlatform
 {
@@ -34,87 +36,77 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
      * Constructor.
      *
      * @param EntityManagerInterface $entityManager
-     * @param QueryField[]           $fields
      */
-    public function __construct(EntityManagerInterface $entityManager, array $fields)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        parent::__construct($entityManager->getConnection(), $fields);
+        parent::__construct($entityManager->getConnection());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFieldColumn($fieldName, $strategy = 0, $column = '')
+    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0, string $column = null): string
     {
-        if (isset($this->fieldsMappingCache[$fieldName][$strategy])) {
-            return $this->fieldsMappingCache[$fieldName][$strategy];
+        $mappingName = $mappingConfig->mappingName;
+
+        if (isset($this->fieldsMappingCache[$mappingName][$strategy])) {
+            return $this->fieldsMappingCache[$mappingName][$strategy];
         }
 
-        $field = $this->fields[$fieldName];
-        $column = $field->getColumn();
+        if (null === $column) {
+            $column = $mappingConfig->column;
+        }
 
-        $this->fieldsMappingCache[$fieldName][$strategy] = $column;
+        $this->fieldsMappingCache[$mappingName][$strategy] = $column;
 
-        if ($field->getFieldConversion() instanceof SqlFieldConversionInterface) {
-            $this->fieldsMappingCache[$fieldName][$strategy] = sprintf(
+        if ($mappingConfig->columnConversion instanceof ColumnConversion) {
+            $this->fieldsMappingCache[$mappingName][$strategy] = sprintf(
                 "RW_SEARCH_FIELD_CONVERSION('%s', %s, %s)",
-                $fieldName,
+                $mappingName,
                 $column,
-                (int) $strategy
+                $strategy
             );
         }
 
-        return $this->fieldsMappingCache[$fieldName][$strategy];
+        return $this->fieldsMappingCache[$mappingName][$strategy];
     }
 
     /**
      * @return mixed[]
+     *
+     * @internal
      */
     public function getEmbeddedValues()
     {
         return $this->embeddedValues;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function convertValue($value, $fieldName, $column, $strategy = 0)
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, $strategy = 0): string
     {
-        $field = $this->fields[$fieldName];
-        $converter = $field->getValueConversion();
-        $options = $field->getFieldConfig()->getOptions();
-        $type = $field->getDbType();
-
-        $convertedValue = $value;
-        $hints = $this->getConversionHints($fieldName, $column, $strategy);
-
-        if ($converter->requiresBaseConversion($value, $options, $hints)) {
-            $convertedValue = $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform());
-        }
-
-        $convertedValue = $converter->convertValue($convertedValue, $options, $hints);
-
-        if ($converter instanceof SqlValueConversionInterface) {
-            $this->embeddedValues[++$this->valuesIndex] = $convertedValue;
+        if ($mappingConfig->valueConversion instanceof ValueConversion) {
+            $this->embeddedValues[++$this->valuesIndex] = $value;
 
             return sprintf(
                 "RW_SEARCH_VALUE_CONVERSION('%s', %s, %s, %s)",
-                $fieldName,
+                $mappingConfig->mappingName,
                 $column,
                 $this->valuesIndex,
-                (int) $strategy
+                $strategy
             );
         }
 
-        return $this->quoteValue($convertedValue, $type);
+        return (string) $this->quoteValue(
+            $mappingConfig->dbType->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
+            $mappingConfig->dbType
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function quoteValue($value, Type $type)
+    protected function quoteValue($value, Type $type): string
     {
-        if (is_numeric($value) && !is_string($value)) {
+        if (is_scalar($value) && ctype_digit((string) $value)) {
             return (string) $value;
         } elseif (is_bool($value)) {
             return $value ? 'true' : 'false';
@@ -126,13 +118,13 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
     /**
      * {@inheritdoc}
      */
-    public function getMatchSqlRegex($column, $value, $caseInsensitive, $negative)
+    public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string
     {
         return sprintf(
             'RW_SEARCH_MATCH(%s, %s, %s) %s 1',
             $column,
             $value,
-            $this->quoteValue($caseInsensitive, Type::getType(Type::BOOLEAN)),
+            $caseInsensitive ? 'true' : 'false',
             ($negative ? '<>' : '=')
         );
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -11,8 +13,10 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+// \PHPUnit\Runner\Version
+
 // Type-hint was removed for PHP 7
-if (\PHPUnit_Runner_Version::id()[0] === '5') {
+if (class_exists('PHPUnit_Runner_Version') && \PHPUnit_Runner_Version::id()[0] === '5') {
     trait OnNotSuccessfulTrait
     {
         protected function onNotSuccessfulTest($e)
@@ -76,7 +80,7 @@ if (\PHPUnit_Runner_Version::id()[0] === '5') {
 } else {
     trait OnNotSuccessfulTrait
     {
-        protected function onNotSuccessfulTest(\Exception $e)
+        protected function onNotSuccessfulTest(\Throwable $e)
         {
             if ($e instanceof \PHPUnit_Framework_AssertionFailedError) {
                 throw $e;

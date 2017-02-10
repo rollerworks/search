@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -12,12 +14,11 @@
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\ORM\Query as DqlQuery;
-use Doctrine\ORM\Version as OrmVersion;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Rollerworks\Component\Search\Doctrine\Orm\QueryPlatform\DqlQueryPlatform;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * SearchCondition Doctrine ORM WhereBuilder.
@@ -46,19 +47,19 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     private $parameters = [];
 
     /**
-     * @var QueryPlatformInterface
+     * @var QueryPlatform
      */
     private $nativePlatform;
 
     /**
      * Constructor.
      *
-     * @param DqlQuery                 $query           Doctrine ORM Query object
-     * @param SearchConditionInterface $searchCondition SearchCondition object
+     * @param DqlQuery        $query           Doctrine ORM Query object
+     * @param SearchCondition $searchCondition SearchCondition object
      *
      * @throws BadMethodCallException When SearchCondition contains errors
      */
-    public function __construct(DqlQuery $query, SearchConditionInterface $searchCondition)
+    public function __construct(DqlQuery $query, SearchCondition $searchCondition)
     {
         parent::__construct($searchCondition, $query->getEntityManager());
 
@@ -83,7 +84,7 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     {
         if (null === $this->whereClause) {
             $fields = $this->fieldsConfig->getFields();
-            $platform = new DqlQueryPlatform($this->entityManager, $fields);
+            $platform = new DqlQueryPlatform($this->entityManager);
 
             $queryGenerator = new QueryGenerator(
                 $this->entityManager->getConnection(), $platform, $fields
@@ -151,23 +152,13 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
             );
         }
 
-        // As of Doctrine ORM 2.5 hints as serialized and not exported,
-        // but closures can't serialized, and our object can't be exported
-        // due to recursion. Plus we can't use Version::compare method
-        // as 2.5.0-DEV and 2.4.0-DEV give the same result!
-        //
-        // Our minimum version is 2.4, so anything then else is higher
-        if (0 === strpos(OrmVersion::VERSION, '2.4')) {
-            return function () {
-                return [$this->nativePlatform, $this->parameters];
-            };
-        }
-
-        return new SqlConversionInfo($this->nativePlatform, $this->parameters);
+        return new SqlConversionInfo($this->nativePlatform, $this->parameters, $this->fieldsConfig->getFieldsForHint());
     }
 
     /**
      * @return array
+     *
+     * @internal
      */
     public function getParameters()
     {

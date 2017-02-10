@@ -15,10 +15,10 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "rollerworks/search": "^1.0.0",
-        "rollerworks/search-doctrine-dbal": "^1.1.1",
-        "doctrine/orm": "~2.4"
+        "php": "^7.1",
+        "rollerworks/search": "^2.0@dev",
+        "rollerworks/search-doctrine-dbal": "^2.0@dev",
+        "doctrine/orm": "^2.5"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.2.1",
@@ -39,7 +39,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.2-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }

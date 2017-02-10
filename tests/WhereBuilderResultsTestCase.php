@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -12,12 +14,15 @@
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Rollerworks\Component\Search\Doctrine\Orm\AbstractWhereBuilder;
-use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
-use Rollerworks\Component\Search\FieldAliasResolver\NoopAliasResolver;
-use Rollerworks\Component\Search\Input\FilterQueryInput;
+use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
+use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
-use Rollerworks\Component\Search\ValuesGroup;
 
 /**
  * Ensures the expected results are actually found.
@@ -40,7 +45,7 @@ use Rollerworks\Component\Search\ValuesGroup;
 class WhereBuilderResultsTestCase extends OrmTestCase
 {
     /**
-     * @var FilterQueryInput
+     * @var StringQueryInput
      */
     private $inputProcessor;
 
@@ -48,7 +53,7 @@ class WhereBuilderResultsTestCase extends OrmTestCase
     {
         parent::setUp();
 
-        $this->inputProcessor = new FilterQueryInput(new NoopAliasResolver());
+        $this->inputProcessor = new StringQueryInput();
     }
 
     /**
@@ -86,16 +91,17 @@ class WhereBuilderResultsTestCase extends OrmTestCase
                     'label' => 'string',
                     'pubdate' => 'date',
                     'status' => 'integer',
+                    'price_total' => 'decimal',
                 ]
             )
             ->records()
-                ->add([1, 1, '2010-001', $date('2010-05-10'), 2]) // 'Peter', 'Pang'
-                ->add([2, 2, '2010-002', $date('2010-05-10'), 2]) // 'Leroy', 'Jenkins'
-                ->add([3, 2, null, null, 0]) // concept - 'Leroy', 'Jenkins'
+                ->add([1, 1, '2010-001', $date('2010-05-10'), 2, '100.00']) // 'Peter', 'Pang'
+                ->add([2, 2, '2010-002', $date('2010-05-10'), 2, '90.00']) // 'Leroy', 'Jenkins'
+                ->add([3, 2, null, null, 0, '10.00']) // concept - 'Leroy', 'Jenkins'
                 // unpaid //
-                ->add([4, 2, '2015-001', $date('2015-05-10'), 1]) // 'Leroy', 'Jenkins'
-                ->add([5, 3, '2015-002', $date('2015-05-01'), 1]) // 'Doctor', 'Who'
-                ->add([6, 4, '2015-003', $date('2015-05-05'), 1]) // 'Spider', 'Pig'
+                ->add([4, 2, '2015-001', $date('2015-05-10'), 1, '50.00']) // 'Leroy', 'Jenkins'
+                ->add([5, 3, '2015-002', $date('2015-05-01'), 1, '215.00']) // 'Doctor', 'Who'
+                ->add([6, 4, '2015-003', $date('2015-05-05'), 1, '55.00']) // 'Spider', 'Pig'
             ->end(),
 
             SchemaRecord::create(
@@ -104,51 +110,81 @@ class WhereBuilderResultsTestCase extends OrmTestCase
                     'id' => 'integer',
                     'invoice' => 'integer',
                     'label' => 'string',
+                    'quantity' => 'integer',
                     'price' => 'decimal',
+                    'total' => 'decimal',
                 ]
             )
             ->records()
                 // invoice 1
-                ->add([1, 1, 'Electric Guitar', '200.00'])
+                ->add([1, 1, 'Electric Guitar', 1, '200.00', '100.00'])
                 // invoice 2
-                ->add([2, 2, 'Sword', '15.00'])
-                ->add([3, 2, 'Shield', '20.00'])
-                ->add([4, 2, 'Armor', '55.00'])
+                ->add([2, 2, 'Sword', 1, '15.00', '15.00'])
+                ->add([3, 2, 'Shield', 1, '20.00', '20.00'])
+                ->add([4, 2, 'Armor', 1, '55.00', '55.00'])
                 // invoice 3
-                ->add([5, 3, 'Sword', '10.00'])
+                ->add([5, 3, 'Sword', 1, '10.00', '10.00'])
                 // invoice 4
-                ->add([6, 4, 'Armor repair kit', '50.00'])
+                ->add([6, 4, 'Armor repair kit', 2, '50.00', '100.00'])
                 // invoice 5
-                ->add([7, 5, 'TARDIS Chameleon circuit', '15.00'])
-                ->add([8, 5, 'Sonic Screwdriver', '20.00'])
+                ->add([7, 5, 'TARDIS Chameleon circuit', 1, '15.00', '15.00'])
+                ->add([8, 5, 'Sonic Screwdriver', 10, '20.00', '200.00'])
                 // invoice 6
-                ->add([9, 6, 'Web shooter', '10.00'])
-                ->add([10, 6, 'Cape', '10.00'])
-                ->add([11, 6, 'Cape repair manual', '10.00'])
-                ->add([12, 6, 'Hoof polish', '10.00'])
+                ->add([9, 6, 'Web shooter', 1, '10.00', '10.00'])
+                ->add([10, 6, 'Cape', 1, '10.00', '10.00'])
+                ->add([11, 6, 'Cape repair manual', 1, '10.00', '10.00'])
+                ->add([12, 6, 'Hoof polish', 3, '10.00', '30.00'])
             ->end(),
         ];
     }
 
     protected function configureWhereBuilder(AbstractWhereBuilder $whereBuilder)
     {
-        $whereBuilder->setEntityMapping(
-            'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice',
-            'I'
-        );
-        $whereBuilder->setEntityMapping(
-            'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer',
-            'C'
-        );
-        $whereBuilder->setEntityMapping(
-            'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoiceRow',
-            'R'
-        );
-        $whereBuilder->setField('credit_parent', 'IP', null, 'id');
-        $whereBuilder->setCombinedField('customer-name', [
-            ['property' => 'firstName', 'type' => 'string', 'alias' => 'C'],
-            ['property' => 'lastName', 'alias' => 'C'],
-        ]);
+        $whereBuilder->setDefaultEntity(self::INVOICE_CLASS, 'I');
+        $whereBuilder->setField('id', 'id');
+        $whereBuilder->setField('label', 'label');
+        $whereBuilder->setField('pub-date', 'date');
+        $whereBuilder->setField('status', 'status');
+        $whereBuilder->setField('total', 'total');
+
+        $whereBuilder->setDefaultEntity(Fixtures\Entity\ECommerceInvoiceRow::class, 'R');
+        $whereBuilder->setField('row-label', 'label');
+        $whereBuilder->setField('row-price', 'price');
+        $whereBuilder->setField('row-quantity', 'quantity');
+        $whereBuilder->setField('row-total', 'total');
+
+        $whereBuilder->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
+        $whereBuilder->setField('customer', 'id');
+        $whereBuilder->setField('customer-name#first_name', 'firstName');
+        $whereBuilder->setField('customer-name#last_name', 'lastName');
+        $whereBuilder->setField('customer-birthday', 'birthday');
+    }
+
+    protected function getFieldSet(bool $build = true)
+    {
+        $fieldSet = $this->getFactory()->createFieldSetBuilder();
+
+        // Customer (by invoice relation)
+        $fieldSet->add('customer-first-name', TextType::class);
+        $fieldSet->add('customer-last-name', TextType::class);
+        $fieldSet->add('customer-name', TextType::class);
+        $fieldSet->add('customer-birthday', BirthdayType::class, ['pattern' => 'yyyy-MM-dd']);
+
+        // Invoice
+        $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('customer', IntegerType::class);
+        $fieldSet->add('label', TextType::class);
+        $fieldSet->add('pub-date', DateType::class, ['pattern' => 'yyyy-MM-dd']);
+        $fieldSet->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2]]);
+        $fieldSet->add('total', MoneyType::class);
+
+        // Invoice Details
+        $fieldSet->add('row-label', TextType::class);
+        $fieldSet->add('row-quantity', IntegerType::class);
+        $fieldSet->add('row-price', MoneyType::class);
+        $fieldSet->add('row-total', MoneyType::class);
+
+        return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
     }
 
     /**
@@ -172,7 +208,7 @@ class WhereBuilderResultsTestCase extends OrmTestCase
      */
     public function it_finds_with_range_and_excluding()
     {
-        $this->makeTest('id: 1-7, !2;', [1, 3, 4, 5, 6]);
+        $this->makeTest('id: 1~7, !2;', [1, 3, 4, 5, 6]);
     }
 
     /**
@@ -180,7 +216,7 @@ class WhereBuilderResultsTestCase extends OrmTestCase
      */
     public function it_finds_by_customer_birthday()
     {
-        $this->makeTest('customer_birthday: "2000-05-15";', range(2, 4));
+        $this->makeTest('customer-birthday: "2000-05-15";', range(2, 4));
     }
 
     /**
@@ -188,7 +224,56 @@ class WhereBuilderResultsTestCase extends OrmTestCase
      */
     public function it_finds_by_customer_birthdays()
     {
-        $this->makeTest('customer_birthday: "2000-05-15", "1980-06-10";', [2, 3, 4]);
+        $this->makeTest('customer-birthday: "2000-05-15", "1980-06-10";', [2, 3, 4]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_with_or_group()
+    {
+        $this->makeTest('* customer-birthday: "1980-11-20"; pub-date: "2015-05-01";', [1, 5]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_pubDate_limited_by_price()
+    {
+        $this->makeTest('pub-date: "2015-05-10"; total: "50.00"', [4]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_customer_and_status()
+    {
+        $this->makeTest('customer: 2; status: concept;', [3]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_customer_and_status_and_total()
+    {
+        $this->makeTest('customer: 2; status: paid; total: "90.00";', [2]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_customer_and_status_or_price()
+    {
+        $this->makeTest('customer: 2; *(status: paid; total: "50.00";)', [2, 4]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_status_and_label_or_quantity_limited_by_price()
+    {
+        // Note there is no row with quantity 5, which is resolved as its in an OR'ed group
+        $this->makeTest('status: published; *(row-quantity: 5; row-label: ~*"repair"; (row-price: "50.00"));', [4]);
     }
 
     /**
@@ -196,7 +281,19 @@ class WhereBuilderResultsTestCase extends OrmTestCase
      */
     public function it_finds_by_excluding_regex_pattern()
     {
-        $this->makeTest('status: 1; row_label: ~*"repair", ~!?"Armor";', [6]);
+        $this->makeTest('status: published; row-label: ~*"repair", ~!?"Armor";', [6]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_excluding_equals_pattern()
+    {
+        $this->makeTest('row-label: ~=Armor, ~=sword;', [2]); // Invoice 3 doesn't match as "sword" is lowercase
+        $this->makeTest('row-price: "15.00"; row-label: ~!=Sword;', [5]);
+
+        // Lowercase
+        $this->makeTest('row-label: ~=Armor, ~i=sword;', [2, 3]);
     }
 
     private function makeTest($input, array $expectedRows)
@@ -206,39 +303,19 @@ class WhereBuilderResultsTestCase extends OrmTestCase
         try {
             $condition = $this->inputProcessor->process($config, $input);
             $this->assertRecordsAreFound($condition, $expectedRows);
-        } catch (InvalidSearchConditionException $e) {
-            $this->fail(
-                $e->getMessage()."\n".
-                $this->renderSearchErrors($e->getCondition()->getValuesGroup())
-            );
-        }
-    }
+        } catch (\Exception $e) {
+            self::detectSystemException($e);
 
-    private function renderSearchErrors(ValuesGroup $group, $nestingLevel = 0)
-    {
-        if (!$group->hasErrors(true)) {
-            return '';
-        }
+            if (function_exists('dump')) {
+                dump($e);
+            } else {
+                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.'.PHP_EOL;
 
-        $fields = $group->getFields();
-        $output = '';
-
-        foreach ($fields as $fieldName => $values) {
-            $errors = $values->getErrors();
-
-            if ($values->hasErrors()) {
-                $output .= str_repeat(' ', $nestingLevel * 2).$fieldName.' has the following errors: '."\n";
-
-                foreach ($errors as $valueError) {
-                    $output .= str_repeat(' ', $nestingLevel * 2).' - '.$valueError->getMessage()."\n";
-                }
+                // Don't use var-dump or print-r as this crashes php...
+                echo get_class($e).'::'.(string) $e;
             }
 
-            foreach ($group->getGroups() as $subGroup) {
-                $output .= $this->renderSearchErrors($subGroup, ++$nestingLevel)."\n";
-            }
+            $this->fail('Condition contains errors.');
         }
-
-        return $output;
     }
 }

@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="customers")
+ * @ORM\Table(name="customers", options={"collate"="utf8_bin"})
  */
 class ECommerceCustomer
 {
@@ -24,27 +24,20 @@ class ECommerceCustomer
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
-
-    /**
-     * @deprecated
-     *
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $name;
+    public $id;
 
     /**
      * @ORM\Column(type="string", name="first_name")
      */
-    private $firstName;
+    public $firstName;
 
     /**
      * @ORM\Column(type="string", name="last_name")
      */
-    private $lastName;
+    public $lastName;
 
     /**
      * @ORM\Column(type="date")
      */
-    private $birthday;
+    public $birthday;
 }

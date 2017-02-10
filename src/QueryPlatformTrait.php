@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -12,8 +14,11 @@
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\DBAL\Connection;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
+/**
+ * @internal
+ */
 trait QueryPlatformTrait
 {
     /**
@@ -22,7 +27,7 @@ trait QueryPlatformTrait
      * @param Connection $connection
      * @param array      $fields
      *
-     * @return QueryPlatformInterface
+     * @return QueryPlatform
      */
     protected function getQueryPlatform(Connection $connection, array $fields)
     {

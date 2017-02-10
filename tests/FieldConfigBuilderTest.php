@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -11,16 +13,20 @@
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+use Doctrine\DBAL\Types\Type as DbType;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Orm\FieldConfigBuilder;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\SearchFactory;
 
-final class FieldConfigBuilderTest extends \PHPUnit_Framework_TestCase
+final class FieldConfigBuilderTest extends TestCase
 {
-    const CUSTOMER_CLASS = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer';
-    const INVOICE_CLASS = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice';
-    const INVOICE_CLASS2 = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice2';
+    const CUSTOMER_CLASS = Fixtures\Entity\ECommerceCustomer::class;
+    const INVOICE_CLASS = Fixtures\Entity\ECommerceInvoice::class;
 
     /**
      * @var ObjectProphecy
@@ -42,22 +48,18 @@ final class FieldConfigBuilderTest extends \PHPUnit_Framework_TestCase
 
     private function getFieldSet($build = true)
     {
-        $fieldSet = $this->searchFactory->createFieldSetBuilder('invoice');
+        $fieldSet = $this->searchFactory->createFieldSetBuilder();
 
-        $fieldSet->add('id', 'integer', [], false, self::INVOICE_CLASS, 'id');
-        $fieldSet->add('credit_parent', 'integer', [], false, self::INVOICE_CLASS, 'parent');
+        $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('credit_parent', IntegerType::class);
 
-        $fieldSet->add('customer', 'integer', [], false, self::CUSTOMER_CLASS, 'id');
-        $fieldSet->add('customer_name', 'text', [], false, self::CUSTOMER_CLASS, 'name');
+        $fieldSet->add('customer', IntegerType::class);
+        $fieldSet->add('customer_name', TextType::class);
 
-        return $build ? $fieldSet->getFieldSet() : $fieldSet;
+        return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
     }
 
-    /**
-     * @param string $entityClass
-     * @param array  $fields
-     */
-    private function getClassMetadata($entityClass, array $fields)
+    private function getClassMetadata(string $entityClass, array $fields): void
     {
         $classMetadata = $this->prophesize('Doctrine\ORM\Mapping\ClassMetadata');
         $classMetadata->getName()->willReturn($entityClass);
@@ -92,7 +94,7 @@ final class FieldConfigBuilderTest extends \PHPUnit_Framework_TestCase
         $this->em->getClassMetadata($entityClass)->willReturn($classMetadata->reveal());
     }
 
-    public function testResolveWithEntityMapping()
+    public function testResolveWithDefaultEntity()
     {
         $this->getClassMetadata(self::INVOICE_CLASS, [
             'id' => ['type' => 'integer'],
@@ -101,55 +103,31 @@ final class FieldConfigBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->getClassMetadata(self::CUSTOMER_CLASS, [
             'id' => ['type' => 'integer'],
-            'name' => ['type' => 'string'],
+            'first_name' => ['type' => 'string'],
+            'last_name' => ['type' => 'string'],
         ]);
 
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setEntityMapping(self::INVOICE_CLASS, 'I');
-        $fieldConfigBuilder->setEntityMapping(self::CUSTOMER_CLASS, 'C');
+        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $fieldSet = $this->getFieldSet());
+
+        $fieldConfigBuilder->setDefaultEntity(self::INVOICE_CLASS, 'I');
+        $fieldConfigBuilder->setField('id', 'id', null, null, 'smallint');
+        $fieldConfigBuilder->setField('credit_parent#0', 'parent');
+
+        $fieldConfigBuilder->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
+        $fieldConfigBuilder->setField('customer', 'id');
+        $fieldConfigBuilder->setField('customer_name#first_name', 'first_name');
+        $fieldConfigBuilder->setField('customer_name#last_name', 'last_name');
 
         $fields = $fieldConfigBuilder->getFields();
 
-        $this->assertArrayHasKey('id', $fields);
-        $this->assertArrayHasKey('customer_name', $fields);
+        // Invoice
+        self::assertEquals(new QueryField('id', $fieldSet->get('id'), DbType::getType('smallint'), 'id', 'I'), $fields['id'][null]);
+        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), DbType::getType('integer'), 'parent', 'I'), $fields['credit_parent'][0]);
 
-        // Alias
-        $this->assertEquals('I', $fields['id']->getAlias());
-        $this->assertEquals('C', $fields['customer_name']->getAlias());
-
-        // Column
-        $this->assertEquals('id', $fields['id']->getColumn(false));
-        $this->assertEquals('name', $fields['customer_name']->getColumn(false));
-
-        // Type
-        $this->assertEquals('integer', $fields['id']->getDbType()->getName());
-        $this->assertEquals('string', $fields['customer_name']->getDbType()->getName());
-    }
-
-    public function testResolveWithFieldMapping()
-    {
-        $this->getClassMetadata(self::INVOICE_CLASS, [
-            'id' => ['type' => 'integer'],
-            'parent' => ['type' => 'integer'],
-        ]);
-
-        $this->getClassMetadata(self::CUSTOMER_CLASS, [
-            'id' => ['type' => 'integer'],
-            'name' => ['type' => 'string'],
-        ]);
-
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setField('id', 'I');
-
-        $fields = $fieldConfigBuilder->getFields();
-
-        $this->assertArrayHasKey('id', $fields);
-        $this->assertArrayNotHasKey('parent', $fields);
-        $this->assertArrayNotHasKey('customer_name', $fields);
-
-        $this->assertEquals('I', $fields['id']->getAlias());
-        $this->assertEquals('id', $fields['id']->getColumn(false));
-        $this->assertEquals('integer', $fields['id']->getDbType()->getName());
+        // Customer
+        self::assertEquals(new QueryField('customer', $fieldSet->get('customer'), DbType::getType('integer'), 'id', 'C'), $fields['customer'][null]);
+        self::assertEquals(new QueryField('customer_name#first_name', $fieldSet->get('customer_name'), DbType::getType('string'), 'first_name', 'C'), $fields['customer_name']['first_name']);
+        self::assertEquals(new QueryField('customer_name#last_name', $fieldSet->get('customer_name'), DbType::getType('string'), 'last_name', 'C'), $fields['customer_name']['last_name']);
     }
 
     public function testResolveWithFullFieldMapping()
@@ -163,102 +141,22 @@ final class FieldConfigBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->getClassMetadata(self::CUSTOMER_CLASS, [
             'id' => ['type' => 'integer'],
-            'name' => ['type' => 'string'],
+            'first_name' => ['type' => 'string'],
+            'last_name' => ['type' => 'string'],
         ]);
 
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setField('id', 'I', self::INVOICE_CLASS, 'invoice_id', 'string');
-        $fieldConfigBuilder->setField('credit_parent', 'I', null, 'parent_id', 'integer');
+        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $fieldSet = $this->getFieldSet());
+        $fieldConfigBuilder->setField('id', 'id', 'I', self::INVOICE_CLASS, 'smallint');
+        $fieldConfigBuilder->setField('credit_parent#0', 'parent', 'I', self::INVOICE_CLASS);
 
         $fields = $fieldConfigBuilder->getFields();
 
-        $this->assertArrayHasKey('id', $fields);
-        $this->assertEquals('I', $fields['id']->getAlias());
-        $this->assertEquals('invoice_id', $fields['id']->getColumn(false));
-        $this->assertEquals('string', $fields['id']->getDbType()->getName());
-
-        $this->assertArrayHasKey('credit_parent', $fields);
-        $this->assertEquals('I', $fields['credit_parent']->getAlias());
-        $this->assertEquals('parent_id', $fields['credit_parent']->getColumn(false));
-        $this->assertEquals('integer', $fields['credit_parent']->getDbType()->getName());
+        // Invoice
+        self::assertEquals(new QueryField('id', $fieldSet->get('id'), DbType::getType('smallint'), 'id', 'I'), $fields['id'][null]);
+        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), DbType::getType('integer'), 'parent', 'I'), $fields['credit_parent'][0]);
     }
 
-    public function testResolveWithEntityMappingAndFieldMapping()
-    {
-        $this->getClassMetadata(self::INVOICE_CLASS, [
-            'id' => ['type' => 'integer'],
-            'parent' => ['type' => 'integer'],
-        ]);
-
-        $this->getClassMetadata(self::CUSTOMER_CLASS, [
-            'id' => ['type' => 'integer'],
-            'name' => ['type' => 'string'],
-        ]);
-
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setEntityMapping(self::CUSTOMER_CLASS, 'C');
-        $fieldConfigBuilder->setField('id', 'I');
-
-        $fields = $fieldConfigBuilder->getFields();
-
-        $this->assertArrayHasKey('id', $fields);
-        $this->assertArrayHasKey('customer', $fields);
-        $this->assertArrayHasKey('customer_name', $fields);
-        $this->assertArrayNotHasKey('credit_parent', $fields);
-
-        // Alias
-        $this->assertEquals('I', $fields['id']->getAlias());
-        $this->assertEquals('C', $fields['customer_name']->getAlias());
-
-        // Column
-        $this->assertEquals('id', $fields['id']->getColumn(false));
-        $this->assertEquals('name', $fields['customer_name']->getColumn(false));
-
-        // Type
-        $this->assertEquals('integer', $fields['id']->getDbType()->getName());
-        $this->assertEquals('string', $fields['customer_name']->getDbType()->getName());
-    }
-
-    public function testResolveWithEntityMappingAnExplicitFieldMapping()
-    {
-        $this->getClassMetadata(self::INVOICE_CLASS, [
-            'id' => ['type' => 'integer'],
-            'parent' => ['type' => 'integer'],
-        ]);
-
-        $this->getClassMetadata(self::CUSTOMER_CLASS, [
-            'id' => ['type' => 'integer'],
-            'name' => ['type' => 'string'],
-        ]);
-
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setEntityMapping(self::INVOICE_CLASS, 'I');
-        $fieldConfigBuilder->setEntityMapping(self::CUSTOMER_CLASS, 'C');
-        $fieldConfigBuilder->setField('credit_parent', 'PI');
-
-        $fields = $fieldConfigBuilder->getFields();
-
-        $this->assertArrayHasKey('id', $fields);
-        $this->assertArrayHasKey('customer_name', $fields);
-        $this->assertArrayHasKey('credit_parent', $fields);
-
-        // Alias
-        $this->assertEquals('I', $fields['id']->getAlias());
-        $this->assertEquals('C', $fields['customer_name']->getAlias());
-        $this->assertEquals('PI', $fields['credit_parent']->getAlias());
-
-        // Column
-        $this->assertEquals('id', $fields['id']->getColumn(false));
-        $this->assertEquals('name', $fields['customer_name']->getColumn(false));
-        $this->assertEquals('parent', $fields['credit_parent']->getColumn(false));
-
-        // Type
-        $this->assertEquals('integer', $fields['id']->getDbType()->getName());
-        $this->assertEquals('string', $fields['customer_name']->getDbType()->getName());
-        $this->assertEquals('integer', $fields['credit_parent']->getDbType()->getName());
-    }
-
-    public function testResolveWithSingleJoinAssociation()
+    public function testFailsToResolveWithJoinAssociation()
     {
         $this->getClassMetadata(
             self::INVOICE_CLASS,
@@ -266,103 +164,11 @@ final class FieldConfigBuilderTest extends \PHPUnit_Framework_TestCase
                 'id' => ['type' => 'integer'],
                 'parent' => [
                     'join' => [
-                        'class' => self::INVOICE_CLASS2,
-                        'column' => 'invoice_id',
+                        'class' => self::INVOICE_CLASS,
                         'property' => 'id',
                         'type' => 'integer',
-                    ],
-                ],
-            ]
-        );
-
-        $this->getClassMetadata(self::CUSTOMER_CLASS, [
-            'id' => ['type' => 'integer'],
-            'name' => ['type' => 'string'],
-        ]);
-
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setEntityMapping(self::INVOICE_CLASS, 'I');
-        $fieldConfigBuilder->setEntityMapping(self::INVOICE_CLASS2, 'P');
-        $fieldConfigBuilder->setEntityMapping(self::CUSTOMER_CLASS, 'C');
-
-        $fields = $fieldConfigBuilder->getFields();
-
-        $this->assertArrayHasKey('id', $fields);
-        $this->assertArrayHasKey('customer_name', $fields);
-
-        // Alias
-        $this->assertEquals('I', $fields['id']->getAlias());
-        $this->assertEquals('C', $fields['customer_name']->getAlias());
-
-        // Column
-        $this->assertEquals('id', $fields['id']->getColumn(false));
-        $this->assertEquals('name', $fields['customer_name']->getColumn(false));
-
-        // Type
-        $this->assertEquals('integer', $fields['id']->getDbType()->getName());
-        $this->assertEquals('string', $fields['customer_name']->getDbType()->getName());
-    }
-
-    public function testFailureResolveWithMultiColumnJoinAssociationAndNoFieldMapping()
-    {
-        $this->getClassMetadata(
-            self::INVOICE_CLASS,
-            [
-                'id' => ['type' => 'integer'],
-                'parent' => [
-                    'join_multi' => true,
-                ],
-            ]
-        );
-
-        $this->getClassMetadata(self::CUSTOMER_CLASS, [
-            'id' => ['type' => 'integer'],
-            'name' => ['type' => 'string'],
-        ]);
-
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setEntityMapping(self::INVOICE_CLASS, 'I');
-        $fieldConfigBuilder->setEntityMapping(self::CUSTOMER_CLASS, 'C');
-
-        $this->setExpectedException('RuntimeException', '#parent is a JOIN association with multiple columns');
-        $fieldConfigBuilder->getFields();
-    }
-
-    public function testFailureResolveWithExplicitFieldMappingToJoinAssociation()
-    {
-        $this->getClassMetadata(
-            self::INVOICE_CLASS,
-            [
-                'id' => ['type' => 'integer'],
-                'parent' => [
-                    'join_multi' => true,
-                ],
-                'parent_id' => [
-                    'join' => [
-                        'class' => self::INVOICE_CLASS2,
                         'column' => 'invoice_id',
-                        'property' => 'id',
-                        'type' => 'integer',
                     ],
-                ],
-            ]
-        );
-
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setField('credit_parent', 'I', null, 'parent_id');
-
-        $this->setExpectedException('RuntimeException', 'Search field "credit_parent" is explicitly mapped');
-        $fieldConfigBuilder->getFields();
-    }
-
-    public function testResolveWithMultiColumnJoinAssociationAndFieldMapping()
-    {
-        $this->getClassMetadata(
-            self::INVOICE_CLASS,
-            [
-                'id' => ['type' => 'integer'],
-                'parent' => [
-                    'join_multi' => true,
                 ],
                 'parent_id' => ['type' => 'integer'],
             ]
@@ -373,55 +179,40 @@ final class FieldConfigBuilderTest extends \PHPUnit_Framework_TestCase
             'name' => ['type' => 'string'],
         ]);
 
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
-        $fieldConfigBuilder->setEntityMapping(self::INVOICE_CLASS, 'I');
-        $fieldConfigBuilder->setEntityMapping(self::CUSTOMER_CLASS, 'C');
-        $fieldConfigBuilder->setField('credit_parent', 'PI', null, 'parent_id');
+        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $fieldSet = $this->getFieldSet());
 
-        $fields = $fieldConfigBuilder->getFields();
+        $fieldConfigBuilder->setDefaultEntity(self::INVOICE_CLASS, 'I');
+        $fieldConfigBuilder->setField('id', 'id', null, null, 'smallint');
 
-        $this->assertArrayHasKey('id', $fields);
-        $this->assertArrayHasKey('customer_name', $fields);
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Entity field "'.self::INVOICE_CLASS.'"#parent is a JOIN association');
 
-        // Alias
-        $this->assertEquals('I', $fields['id']->getAlias());
-        $this->assertEquals('C', $fields['customer_name']->getAlias());
-        $this->assertEquals('PI', $fields['credit_parent']->getAlias());
-
-        // Column
-        $this->assertEquals('id', $fields['id']->getColumn(false));
-        $this->assertEquals('name', $fields['customer_name']->getColumn(false));
-        $this->assertEquals('parent_id', $fields['credit_parent']->getColumn(false));
-
-        // Type
-        $this->assertEquals('integer', $fields['id']->getDbType()->getName());
-        $this->assertEquals('string', $fields['customer_name']->getDbType()->getName());
-        $this->assertEquals('integer', $fields['credit_parent']->getDbType()->getName());
+        $fieldConfigBuilder->setField('credit_parent', 'parent', 'I', null, 'parent_id');
     }
 
-    public function testResolveWithFieldsNoModelIsIgnored()
+    public function testFailsToResolveWithMultiColumnJoinAssociation()
     {
-        $this->getClassMetadata(self::INVOICE_CLASS, [
-            'id' => ['type' => 'integer'],
-            'parent' => ['type' => 'integer'],
-        ]);
+        $this->getClassMetadata(
+            self::INVOICE_CLASS,
+            [
+                'id' => ['type' => 'integer'],
+                'parent' => [
+                    'join_multi' => true,
+                ],
+            ]
+        );
 
         $this->getClassMetadata(self::CUSTOMER_CLASS, [
             'id' => ['type' => 'integer'],
             'name' => ['type' => 'string'],
         ]);
 
-        $fieldSet = $this->getFieldSet(false);
-        $fieldSet->add('customer_birthday', 'date');
+        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $this->getFieldSet());
+        $fieldConfigBuilder->setField('id', 'id', 'I', self::INVOICE_CLASS, 'smallint');
 
-        $fieldConfigBuilder = new FieldConfigBuilder($this->em->reveal(), $fieldSet->getFieldSet());
-        $fieldConfigBuilder->setEntityMapping(self::INVOICE_CLASS, 'I');
-        $fieldConfigBuilder->setEntityMapping(self::CUSTOMER_CLASS, 'C');
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Entity field "'.self::INVOICE_CLASS.'"#parent is a JOIN association');
 
-        $fields = $fieldConfigBuilder->getFields();
-
-        $this->assertArrayHasKey('id', $fields);
-        $this->assertArrayHasKey('customer_name', $fields);
-        $this->assertArrayNotHasKey('customer_birthday', $fields);
+        $fieldConfigBuilder->setField('credit_parent#0', 'parent', 'I', self::INVOICE_CLASS);
     }
 }

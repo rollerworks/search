@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -13,16 +15,11 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\Version as OrmVersion;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 
 /**
  * Handles caching of the Doctrine ORM WhereBuilder.
- *
- * Note. For best performance caching of the WhereClause should be done on a
- * per user-session fieldset basis. This ensures enough uniqueness and
- * no complex serialization.
  *
  * This checks if there is a cached result, if not it delegates
  * the creating to the parent and caches the result.
@@ -32,9 +29,6 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
  *
  * Caution: You must call the getQueryHintValue() on the this object and not
  * the WhereBuilder as the WhereBuilder is not executed.
- *
- * WARNING. Any changes to the entities mapping should invalidate the cache
- * the system does not do this automatically.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -53,7 +47,7 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder
     private $query;
 
     /**
-     * @var QueryPlatformInterface
+     * @var QueryPlatform
      */
     private $nativePlatform;
 
@@ -155,11 +149,11 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder
     /**
      * Returns the Query hint value for the final query object.
      *
-     * The Query hint is used for sql-value-conversions.
+     * The Query hint is used for value-conversions.
      *
-     * @return \Closure|SqlConversionInfo
+     * @return SqlConversionInfo
      */
-    public function getQueryHintValue()
+    public function getQueryHintValue(): SqlConversionInfo
     {
         if (null === $this->whereClause) {
             throw new BadMethodCallException(
@@ -167,18 +161,10 @@ class CacheWhereBuilder extends AbstractCacheWhereBuilder
             );
         }
 
-        // As of Doctrine ORM 2.5 hints as serialized and not exported,
-        // but closures can't serialized, and our object can't be exported
-        // due to recursion. Plus we can't use Version::compare method
-        // as 2.5.0-DEV and 2.4.0-DEV give the same result!
-        //
-        // Our minimum version is 2.4, so anything then else is higher
-        if (0 === strpos(OrmVersion::VERSION, '2.4')) {
-            return function () {
-                return [$this->nativePlatform, $this->parameters];
-            };
-        }
-
-        return new SqlConversionInfo($this->nativePlatform, $this->parameters);
+        return new SqlConversionInfo(
+            $this->nativePlatform,
+            $this->parameters,
+            $this->whereBuilder->getFieldsConfig()->getFields()
+        );
     }
 }

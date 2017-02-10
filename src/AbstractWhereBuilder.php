@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -14,7 +16,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 use Doctrine\ORM\EntityManagerInterface;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * Handles abstracted handling of the Doctrine WhereBuilder.
@@ -26,7 +28,7 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     use QueryPlatformTrait;
 
     /**
-     * @var SearchConditionInterface
+     * @var SearchCondition
      */
     protected $searchCondition;
 
@@ -53,17 +55,11 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     /**
      * Constructor.
      *
-     * @param SearchConditionInterface $searchCondition SearchCondition object
-     * @param EntityManagerInterface   $entityManager
+     * @param SearchCondition        $searchCondition SearchCondition object
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(SearchConditionInterface $searchCondition, EntityManagerInterface $entityManager)
+    public function __construct(SearchCondition $searchCondition, EntityManagerInterface $entityManager)
     {
-        if ($searchCondition->getValuesGroup()->hasErrors(true)) {
-            throw new BadMethodCallException(
-                'Unable to generate the where-clause, because the SearchCondition contains errors.'
-            );
-        }
-
         $this->searchCondition = $searchCondition;
         $this->fieldset = $searchCondition->getFieldSet();
 
@@ -73,75 +69,22 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws BadMethodCallException When the where-clause is already generated
-     *
-     * @return self
      */
-    public function setEntityMapping($entityName, $alias)
+    public function setDefaultEntity(string $entity, string $alias)
     {
         $this->guardNotGenerated();
-        $this->fieldsConfig->setEntityMapping($entityName, $alias);
+        $this->fieldsConfig->setDefaultEntity($entity, $alias);
 
         return $this;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @throws BadMethodCallException When the where-clause is already generated
-     *
-     * @return self
      */
-    public function setEntityMappings(array $mapping)
+    public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null)
     {
         $this->guardNotGenerated();
-        $this->fieldsConfig->setEntityMappings($mapping);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @throws BadMethodCallException When the where-clause is already generated
-     *
-     * @return self
-     */
-    public function setField($fieldName, $alias, $entity = null, $property = null, $mappingType = null)
-    {
-        $this->guardNotGenerated();
-        $this->fieldsConfig->setField($fieldName, $alias, $entity, $property, $mappingType);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @throws BadMethodCallException When the where-clause is already generated
-     *
-     * @return self
-     */
-    public function setCombinedField($fieldName, array $mappings)
-    {
-        $this->guardNotGenerated();
-        $this->fieldsConfig->setCombinedField($fieldName, $mappings);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @throws BadMethodCallException When the where-clause is already generated
-     *
-     * @return self
-     */
-    public function setConverter($fieldName, $converter)
-    {
-        $this->guardNotGenerated();
-        $this->fieldsConfig->setConverter($fieldName, $converter);
+        $this->fieldsConfig->setField($fieldName, $property, $alias, $entity, $dbType);
 
         return $this;
     }

@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="invoice_rows")
+ * @ORM\Table(name="invoice_rows", options={"collate"="utf8_bin"})
  */
 class ECommerceInvoiceRow
 {
@@ -24,21 +24,31 @@ class ECommerceInvoiceRow
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    public $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="ECommerceInvoice", inversedBy="rows")
      * @ORM\JoinColumn(name="invoice", referencedColumnName="invoice_id")
      */
-    private $invoice;
+    public $invoice;
 
     /**
      * @ORM\Column(type="string")
      */
-    private $label;
+    public $label;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    public $quantity;
 
     /**
      * @ORM\Column(name="price", type="decimal", precision=0, scale=2)
      */
-    private $price;
+    public $price;
+
+    /**
+     * @ORM\Column(name="total", type="decimal", precision=0, scale=2)
+     */
+    public $total;
 }

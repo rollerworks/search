@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -25,6 +27,9 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 
 class OrmTestCase extends DbalTestCase
 {
+    const CUSTOMER_CLASS = Fixtures\Entity\ECommerceCustomer::class;
+    const INVOICE_CLASS = Fixtures\Entity\ECommerceInvoice::class;
+
     use OnNotSuccessfulTrait;
 
     /**
@@ -118,29 +123,6 @@ class OrmTestCase extends DbalTestCase
     {
         // Ensure the connection is reset between class-runs
         self::resetSharedConn();
-    }
-
-    protected function getFieldSet($build = true)
-    {
-        $fieldSet = $this->getFactory()->createFieldSetBuilder('invoice');
-
-        $invoiceClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice';
-        $invoiceRowClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoiceRow';
-        $customerClass = 'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer';
-
-        $fieldSet->add('id', 'integer', [], false, $invoiceClass, 'id');
-        $fieldSet->add('label', 'invoice_label', [], false, $invoiceClass, 'label');
-        $fieldSet->add('status', 'integer', [], false, $invoiceClass, 'status');
-        $fieldSet->add('credit_parent', 'integer', [], false, $invoiceClass, 'parent');
-
-        $fieldSet->add('row_label', 'text', [], false, $invoiceRowClass, 'label');
-
-        $fieldSet->add('customer', 'integer', [], false, $customerClass, 'id');
-        $fieldSet->add('customer_name', 'text', [], false, $customerClass, 'name'); // deprecated
-        $fieldSet->add('customer-name', 'text', [], false, $customerClass, 'id'); // property is wrong here, but ignored later
-        $fieldSet->add('customer_birthday', 'birthday', ['format' => 'yyyy-MM-dd'], false, $customerClass, 'birthday');
-
-        return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
     protected function getOrmFactory()

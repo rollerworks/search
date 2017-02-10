@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -14,7 +16,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 use Doctrine\ORM\NativeQuery;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * SearchCondition Doctrine ORM WhereBuilder for NativeQuery.
@@ -40,15 +42,18 @@ class NativeWhereBuilder extends AbstractWhereBuilder implements WhereBuilderInt
     /**
      * Constructor.
      *
-     * @param NativeQuery              $query           Doctrine ORM NativeQuery object
-     * @param SearchConditionInterface $searchCondition SearchCondition object
+     * @param NativeQuery     $query           Doctrine ORM NativeQuery object
+     * @param SearchCondition $searchCondition SearchCondition object
      *
      * @throws BadMethodCallException When SearchCondition contains errors
      */
-    public function __construct(NativeQuery $query, SearchConditionInterface $searchCondition)
+    public function __construct(NativeQuery $query, SearchCondition $searchCondition)
     {
-        parent::__construct($searchCondition, $query->getEntityManager());
+        $this->fieldset = $searchCondition->getFieldSet();
+        $this->searchCondition = $searchCondition;
 
+        $this->entityManager = $query->getEntityManager();
+        $this->fieldsConfig = new FieldConfigBuilder($this->entityManager, $this->fieldset, true);
         $this->query = $query;
     }
 
@@ -66,7 +71,7 @@ class NativeWhereBuilder extends AbstractWhereBuilder implements WhereBuilderInt
     public function getWhereClause($prependQuery = '')
     {
         if (null === $this->whereClause) {
-            $fields = $this->fieldsConfig->getFields(true);
+            $fields = $this->fieldsConfig->getFields();
             $connection = $this->entityManager->getConnection();
 
             $queryGenerator = new QueryGenerator(

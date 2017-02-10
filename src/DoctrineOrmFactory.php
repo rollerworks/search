@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -14,7 +16,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
-use Rollerworks\Component\Search\SearchConditionInterface;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -41,39 +43,22 @@ class DoctrineOrmFactory
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option (when present).
      *
-     * @param NativeQuery|Query        $query           Doctrine ORM (Native)Query object
-     * @param SearchConditionInterface $searchCondition SearchCondition object
+     * @param NativeQuery|Query $query           Doctrine ORM (Native)Query object
+     * @param SearchCondition   $searchCondition SearchCondition object
      *
      * @return NativeWhereBuilder|WhereBuilder
      */
-    public function createWhereBuilder($query, SearchConditionInterface $searchCondition)
+    public function createWhereBuilder($query, SearchCondition $searchCondition)
     {
         if ($query instanceof NativeQuery) {
-            $whereBuilder = new NativeWhereBuilder($query, $searchCondition);
+            return new NativeWhereBuilder($query, $searchCondition);
         } elseif ($query instanceof Query) {
-            $whereBuilder = new WhereBuilder($query, $searchCondition);
-        } else {
-            throw new \InvalidArgumentException(
-                sprintf('Query "%s" is not supported by the DoctrineOrmFactory.', get_class($query))
-            );
+            return new WhereBuilder($query, $searchCondition);
         }
 
-        foreach ($searchCondition->getFieldSet()->all() as $name => $field) {
-            if (!$field->hasOption('doctrine_dbal_conversion')) {
-                continue;
-            }
-
-            $conversion = $field->getOption('doctrine_dbal_conversion');
-
-            // Lazy loaded
-            if ($conversion instanceof \Closure) {
-                $conversion = $conversion();
-            }
-
-            $whereBuilder->setConverter($name, $conversion);
-        }
-
-        return $whereBuilder;
+        throw new \InvalidArgumentException(
+            sprintf('Query "%s" is not supported by the DoctrineOrmFactory.', get_class($query))
+        );
     }
 
     /**
