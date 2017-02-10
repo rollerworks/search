@@ -53,7 +53,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
     /**
      * {@inheritdoc}
      */
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, $strategy = 0): string
     {
         if ($mappingConfig->valueConversion) {
             return $this->convertSqlValue($value, $mappingConfig, $column, $strategy);
@@ -68,7 +68,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
     /**
      * {@inheritdoc}
      */
-    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0): string
+    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0): string
     {
         $mappingName = $mappingConfig->mappingName;
 
@@ -139,7 +139,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
     /**
      * {@inheritdoc}
      */
-    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
+    public function convertSqlValue($value, QueryField $mappingConfig, string $column, $strategy = 0): string
     {
         return (string) $mappingConfig->valueConversion->convertValue(
             $value,

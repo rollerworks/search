@@ -22,11 +22,11 @@ interface QueryPlatform
      * Returns the correct column (with SQLField conversions applied).
      *
      * @param QueryField $mappingConfig
-     * @param int        $strategy
+     * @param string|int $strategy
      *
      * @return string
      */
-    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0): string;
+    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0): string;
 
     /**
      * Returns either the converted value.
@@ -34,11 +34,11 @@ interface QueryPlatform
      * @param mixed      $value
      * @param QueryField $mappingConfig
      * @param string     $column
-     * @param int        $strategy
+     * @param string|int $strategy
      *
      * @return string
      */
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string;
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, $strategy = 0): string;
 
     /**
      * Returns the formatted PatternMatch query.
@@ -54,11 +54,11 @@ interface QueryPlatform
      * @param mixed      $value
      * @param QueryField $mappingConfig
      * @param string     $column
-     * @param int        $strategy
+     * @param string|int $strategy
      *
      * @return string
      */
-    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0): string;
+    public function convertSqlValue($value, QueryField $mappingConfig, string $column, $strategy = 0): string;
 
     /**
      * Returns the SQL for the match (regexp).
