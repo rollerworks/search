@@ -1,41 +1,39 @@
 language: php
 
-php:
-    - 5.4
-    - 5.5
-    - 5.6
-    - 7.0
-    - hhvm
+sudo: false
+
+branches:
+    only:
+        - master
+        - 1.x
 
 matrix:
     include:
-        - php: 5.4
-          env: DEPENDENCIES='low'
-        - php: 5.6
-          env: DEPENDENCIES='dev'
-        - php: 5.6
-          env: SYMFONY_VERSION=3.0.*
-    allow_failures:
-        - php: 7.0
-        - env: DEPENDENCIES='dev'
-    fast_finish: true
-
-sudo: false
+        - php: '7.1'
+          #env: coverage=1
+        - php: '7.1'
+          env: deps='low'
 
 cache:
     directories:
-        - $HOME/.composer/cache/files
+        - $HOME/.composer/cache
 
 before_install:
-    - composer selfupdate
-    - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
+    - phpenv config-rm xdebug.ini || echo "xdebug not available"
+    - if [[ $coverage = 1 ]]; then mkdir -p build/logs build/cov; fi
+    - if [[ $coverage = 1 ]]; then wget https://phar.phpunit.de/phpcov.phar; fi
+    - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar; fi
+    - export PATH="$PATH:$HOME/.composer/vendor/bin"
 
 install:
-    - export SYMFONY_DEPRECATIONS_HELPER=weak
-    - export COMPOSER_ROOT_VERSION=dev-master
-    - if [ "$DEPENDENCIES" == "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
-    - if [ "$DEPENDENCIES" != "low" ]; then travis_retry composer update; fi;
-    - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --prefer-lowest; fi;
+    - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^4.0.1'; fi
+    - if [[ ! $deps ]]; then composer update --prefer-dist --no-progress --no-suggest --ansi; fi
+    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --prefer-dist --no-progress --no-suggest --ansi ; fi
+    - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
-    - phpunit --configuration phpunit.xml.dist --verbose
+    - if [[ $coverage = 1 ]]; then phpdbg -qrr -dmemory_limit=-1 vendor/bin/simple-phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov; else vendor/bin/simple-phpunit --verbose; fi
+    - if [[ $coverage = 1 ]]; then phpdbg -qrr phpcov.phar merge --clover build/logs/clover.xml build/cov; fi
+
+after_success:
+    - if [[ $coverage = 1 ]]; then travis_retry php coveralls.phar; fi
