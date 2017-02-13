@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -12,36 +14,19 @@
 namespace Rollerworks\Component\Search\Extension\Symfony\Validator;
 
 use Rollerworks\Component\Search\AbstractExtension;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Validator\ValidatorInterface as LegacyValidatorInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValidatorExtension extends AbstractExtension
+final class ValidatorExtension extends AbstractExtension
 {
-    /**
-     * @var ValidatorInterface|LegacyValidatorInterface
-     */
-    private $validator;
-
-    /**
-     * Constructor.
-     *
-     * @param ValidatorInterface|LegacyValidatorInterface $metadataFactory
-     */
-    public function __construct($metadataFactory)
-    {
-        $this->validator = $metadataFactory;
-    }
-
     /**
      * {@inheritdoc}
      */
-    protected function loadTypeExtensions()
+    protected function loadTypesExtensions(): array
     {
         return [
-            new Type\FieldTypeValidatorExtension($this->validator),
+            new Type\FieldTypeValidatorExtension(),
         ];
     }
 }

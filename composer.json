@@ -15,15 +15,12 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "rollerworks/search": "^1.0.1",
-        "symfony/validator": "^2.3.3|~3.0",
-        "symfony/translation": "^2.3.3|~3.0"
+        "php": "^7.1",
+        "rollerworks/search": "^2.0@dev",
+        "symfony/validator": "^3.2.3"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~2.7|~3.0",
-        "doctrine/annotations": "~1.2",
-        "doctrine/cache": "~1.4"
+        "symfony/phpunit-bridge": "^3.2.3"
     },
     "autoload": {
         "psr-4": {
@@ -32,12 +29,12 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Tests\\Extension\\Validator\\Fixtures\\": "tests/Fixtures"
+            "Rollerworks\\Component\\Search\\Tests\\Extension\\Validator\\": "tests"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }
