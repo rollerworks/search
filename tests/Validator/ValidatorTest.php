@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -11,18 +13,17 @@
 
 namespace Rollerworks\Component\Search\Tests\Extension\Validator;
 
-use Rollerworks\Component\Search\Extension\Symfony\Validator\Validator;
+use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\ErrorList;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\Extension\Symfony\Validator\InputValidator;
 use Rollerworks\Component\Search\Extension\Symfony\Validator\ValidatorExtension;
-use Rollerworks\Component\Search\FieldSetBuilder;
-use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
-use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
-use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
-use Rollerworks\Component\Search\ValuesBag;
-use Rollerworks\Component\Search\ValuesError;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validation;
 
 final class ValidatorTest extends SearchIntegrationTestCase
@@ -30,7 +31,7 @@ final class ValidatorTest extends SearchIntegrationTestCase
     private $sfValidator;
 
     /**
-     * @var Validator
+     * @var InputValidator
      */
     private $validator;
 
@@ -39,38 +40,30 @@ final class ValidatorTest extends SearchIntegrationTestCase
         parent::setUp();
 
         $validatorBuilder = Validation::createValidatorBuilder();
-        $validatorBuilder->enableAnnotationMapping();
-
-        if (method_exists($validatorBuilder, 'setApiVersion')) {
-            $validatorBuilder->setApiVersion(Validation::API_VERSION_2_5_BC);
-        }
+        $validatorBuilder->disableAnnotationMapping();
 
         $this->sfValidator = $validatorBuilder->getValidator();
-        $this->validator = new Validator($this->sfValidator);
+        $this->validator = new InputValidator($this->sfValidator);
     }
 
-    protected function getFieldSet($build = true)
+    protected function getFieldSet(bool $build = true)
     {
-        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('id', 'integer', ['constraints' => new Assert\Range(['min' => 5])]);
-        $fieldSet->add(
-            'date',
-            'date',
-            [
-                'constraints' => [
-                    new Assert\Date(),
-                    new Assert\Range(
-                        ['min' => new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC'))]
-                    ),
-                ],
-            ]
-        );
-        $fieldSet->add('type', 'text');
+        $fieldSet = $this->getFactory()->createFieldSetBuilder();
+        $fieldSet->add('id', IntegerType::class, ['constraints' => new Assert\Range(['min' => 5])]);
+        $fieldSet->add('date', DateType::class, [
+            'constraints' => [
+                new Assert\Date(),
+                new Assert\Range(
+                    ['min' => new \DateTime('2014-12-20 14:35:05 UTC')]
+                ),
+            ],
+        ]);
+        $fieldSet->add('type', TextType::class);
 
-        return $fieldSet->getFieldSet();
+        return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
-    protected function getExtensions()
+    protected function getExtensions(): array
     {
         return [new ValidatorExtension($this->sfValidator)];
     }
@@ -80,217 +73,46 @@ final class ValidatorTest extends SearchIntegrationTestCase
      */
     public function it_validates_fields_with_constraints()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('id')
-                ->addSingleValue(new SingleValue(10))
-                ->addSingleValue(new SingleValue(3))
-                ->addSingleValue(new SingleValue(4))
-                ->addRange(new Range(20, 50))
-                ->addRange(new Range(4, 8))
-                ->addRange(new Range(1, 4))
-                ->addExcludedRange(new Range(2, 3))
-                ->addExcludedRange(new Range(15, 18))
-                ->addComparison(new Compare(10, '>'))
-                ->addComparison(new Compare(3, '>'))
-            ->end()
-            ->field('type')
-                ->addSingleValue(new SingleValue('foo'))
-            ->end()
-            ->getSearchCondition()
-        ;
+        $fieldSet = $this->getFieldSet();
 
-        $this->validator->validate($condition);
-        $valuesGroup = $condition->getValuesGroup();
+        $errorList = new ErrorList();
+        $this->validator->initializeContext($fieldSet->get('id'), $errorList);
 
-        $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[1].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[2].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => '1', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'ranges[2].upper', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'excludedRanges[0].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => '2', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'excludedRanges[0].upper', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'comparisons[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 5]);
+        $this->validator->validate(10, 'simple', 10, 'simpleValues[0]');
+        $this->validator->validate(3, 'simple', 3, 'simpleValues[1]');
+        $this->validator->validate(4, 'simple', 4, 'simpleValues[2]');
 
-        // No more errors then asserted
-        $this->assertCount(8, $valuesGroup->getField('id')->getErrors());
-        $this->assertCount(0, $valuesGroup->getField('type')->getErrors());
-    }
+        $errorList2 = new ErrorList();
+        $this->validator->initializeContext($fieldSet->get('date'), $errorList2);
 
-    /**
-     * @test
-     */
-    public function it_loads_constraints_from_metadata()
-    {
-        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('type', 'text');
-        $fieldSet->add(
-            'id',
-            'text',
+        $this->validator->validate($d1 = new \DateTime('2014-12-13 14:35:05 UTC'), 'simple', '2014-12-13 14:35:05', 'simpleValues[0]');
+        $this->validator->validate($d2 = new \DateTime('2014-12-21 14:35:05 UTC'), 'simple', '2014-12-17 14:35:05', 'simpleValues[1]');
+        $this->validator->validate($d3 = new \DateTime('2014-12-10 14:35:05 UTC'), 'simple', '2014-12-10 14:35:05', 'simpleValues[2]');
+
+        $errorList3 = new ErrorList();
+        $this->validator->initializeContext($fieldSet->get('type'), $errorList3);
+
+        $this->validator->validate('something', 'simple', 'something', 'simpleValues[0]');
+
+        $this->assertContainsErrors(
             [
-                'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
-                'model_property' => 'id',
-            ]
+                new ConditionErrorMessage('simpleValues[1]', 'This value should be 5 or more.', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => '5']),
+                new ConditionErrorMessage('simpleValues[2]', 'This value should be 5 or more.', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => '5']),
+            ],
+            $errorList
         );
 
-        $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
-            ->field('id')
-                ->addSingleValue(new SingleValue(10))
-                ->addSingleValue(new SingleValue(3))
-                ->addSingleValue(new SingleValue(4))
-            ->end()
-            ->field('type')
-                ->addSingleValue(new SingleValue('foo'))
-            ->end()
-            ->getSearchCondition()
-        ;
+        $minDate = self::formatDateTime(new \DateTime('2014-12-20 14:35:05 UTC'));
 
-        $this->validator->validate($condition);
-        $valuesGroup = $condition->getValuesGroup();
-
-        $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 6]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 6]);
-
-        // No more errors then asserted
-        $this->assertCount(2, $valuesGroup->getField('id')->getErrors());
-        $this->assertCount(0, $valuesGroup->getField('type')->getErrors());
-    }
-
-    /**
-     * @test
-     */
-    public function it_allows_overwritten_constraints_from_metadata()
-    {
-        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('type', 'text');
-        $fieldSet->add(
-            'id',
-            'text',
+        $this->assertContainsErrors(
             [
-                'constraints' => new Assert\Range(['min' => 5, 'max' => 10]),
-                'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
-                'model_property' => 'id',
-            ]
+                new ConditionErrorMessage('simpleValues[0]', 'This value should be '.$minDate.' or more.', 'This value should be {{ limit }} or more.', ['{{ value }}' => self::formatDateTime($d1), '{{ limit }}' => $minDate]),
+                new ConditionErrorMessage('simpleValues[2]', 'This value should be '.$minDate.' or more.', 'This value should be {{ limit }} or more.', ['{{ value }}' => self::formatDateTime($d3), '{{ limit }}' => $minDate]),
+            ],
+            $errorList2
         );
 
-        $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
-            ->field('id')
-                ->addSingleValue(new SingleValue(10))
-                ->addSingleValue(new SingleValue(3))
-                ->addSingleValue(new SingleValue(4))
-                ->addSingleValue(new SingleValue(6))
-                ->addSingleValue(new SingleValue(20))
-            ->end()
-            ->field('type')
-                ->addSingleValue(new SingleValue('foo'))
-            ->end()
-            ->getSearchCondition()
-        ;
-
-        $this->validator->validate($condition);
-        $valuesGroup = $condition->getValuesGroup();
-
-        $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '3', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => '4', '{{ limit }}' => 5]);
-        $this->assertSearchError($valuesGroup->getField('id'), 'singleValues[4].value', 'This value should be {{ limit }} or less.', ['{{ value }}' => '20', '{{ limit }}' => 10]);
-
-        // No more errors then asserted
-        $this->assertCount(3, $valuesGroup->getField('id')->getErrors());
-        $this->assertCount(0, $valuesGroup->getField('type')->getErrors());
-    }
-
-    /**
-     * @test
-     */
-    public function it_allows_disabling_constraints_from_metadata()
-    {
-        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('type', 'text');
-        $fieldSet->add(
-            'id',
-            'text',
-            [
-                'constraints' => [],
-                'model_class' => 'Rollerworks\Component\Search\Tests\Extension\Validator\Fixtures\UserModel',
-                'model_property' => 'id',
-            ]
-        );
-
-        $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
-            ->field('id')
-                ->addSingleValue(new SingleValue(10))
-                ->addSingleValue(new SingleValue(3))
-                ->addSingleValue(new SingleValue(4))
-                ->addSingleValue(new SingleValue(6))
-                ->addSingleValue(new SingleValue(20))
-            ->end()
-            ->field('type')
-                ->addSingleValue(new SingleValue('foo'))
-            ->end()
-            ->getSearchCondition()
-        ;
-
-        $this->assertTrue($this->validator->validate($condition));
-        $this->assertFalse($condition->getValuesGroup()->hasErrors());
-    }
-
-    /**
-     * @test
-     */
-    public function it_validates_object_values()
-    {
-        if (!interface_exists('Symfony\Component\Validator\Validator\ValidatorInterface')) {
-            $this->markTestSkipped('This test requires at least Symfony 2.4');
-        }
-
-        $date = new \DateTime('2014-12-13 14:35:05', new \DateTimeZone('UTC'));
-        $date2 = new \DateTime('2014-12-10 14:35:05', new \DateTimeZone('UTC'));
-        $date3 = new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC'));
-        $date4 = new \DateTime('2014-12-17 14:35:05', new \DateTimeZone('UTC'));
-
-        $startTime = new \DateTime('2014-12-15 14:35:05', new \DateTimeZone('UTC'));
-        $endTime = clone $startTime;
-        $endTime->modify('+1 day');
-
-        $startTime2 = new \DateTime('2014-12-18 14:35:05', new \DateTimeZone('UTC'));
-        $endTime2 = clone $startTime2;
-        $endTime2->modify('+2 days');
-
-        $startTime3 = new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC'));
-        $endTime3 = clone $startTime3;
-        $endTime3->modify('+1 day');
-
-        $dateLimit = $this->formatDateTime(new \DateTime('2014-12-20 14:35:05', new \DateTimeZone('UTC')));
-
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('date')
-                ->addSingleValue(new SingleValue($date3, $date3->format('m/d/Y')))
-                ->addSingleValue(new SingleValue($date, $date->format('m/d/Y')))
-                ->addSingleValue(new SingleValue($date2, $date2->format('m/d/Y')))
-                ->addRange(new Range($startTime, $endTime, true, true, $startTime->format('m/d/Y'), $endTime->format('m/d/Y')))
-                ->addExcludedRange(new Range($startTime2, $endTime2, true, true, $startTime2->format('m/d/Y'), $endTime2->format('m/d/Y')))
-                ->addExcludedRange(new Range($startTime3, $endTime3, true, true, $startTime3->format('m/d/Y'), $endTime3->format('m/d/Y')))
-                ->addComparison(new Compare($date3, '>', $date3->format('m/d/Y')))
-                ->addComparison(new Compare($date4, '>', $date4->format('m/d/Y')))
-            ->end()
-            ->getSearchCondition()
-        ;
-
-        $this->validator->validate($condition);
-        $valuesGroup = $condition->getValuesGroup();
-
-        $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => $date->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
-        $this->assertSearchError($valuesGroup->getField('date'), 'singleValues[2].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => $date2->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
-        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => $startTime->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
-        $this->assertSearchError($valuesGroup->getField('date'), 'ranges[0].upper', 'This value should be {{ limit }} or more.', ['{{ value }}' => $endTime->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
-        $this->assertSearchError($valuesGroup->getField('date'), 'excludedRanges[0].lower', 'This value should be {{ limit }} or more.', ['{{ value }}' => $startTime2->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
-        $this->assertSearchError($valuesGroup->getField('date'), 'comparisons[1].value', 'This value should be {{ limit }} or more.', ['{{ value }}' => $date4->format('m/d/Y'), '{{ limit }}' => $dateLimit]);
-
-        // No more errors then asserted
-        $this->assertCount(6, $valuesGroup->getField('date')->getErrors());
+        self::assertEmpty($errorList3);
     }
 
     /**
@@ -298,143 +120,43 @@ final class ValidatorTest extends SearchIntegrationTestCase
      */
     public function it_validates_matchers()
     {
-        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('username', 'text', ['constraints' => new Assert\NotBlank()]);
-
+        $fieldSet = $this->getFieldSet(false);
+        $fieldSet->add('username', TextType::class, ['constraints' => new Assert\NotBlank()]);
         $fieldSet = $fieldSet->getFieldSet();
 
-        $condition = SearchConditionBuilder::create($fieldSet)
-            ->field('username')
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
-                ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_ENDS_WITH))
-                ->addPatternMatch(new PatternMatch('', PatternMatch::PATTERN_ENDS_WITH))
-            ->end()
-            ->getSearchCondition()
-        ;
+        $errorList = new ErrorList();
+        $this->validator->initializeContext($fieldSet->get('username'), $errorList);
 
-        $this->assertFalse($this->validator->validate($condition));
-        $valuesGroup = $condition->getValuesGroup();
+        $this->validator->validate('foo', PatternMatch::class, 'foo', 'patternMatch[0].value');
+        $this->validator->validate('bar', PatternMatch::class, 'foo', 'patternMatch[1].value');
+        $this->validator->validate('', PatternMatch::class, 'foo', 'patternMatch[2].value');
 
-        $this->assertTrue($valuesGroup->hasErrors());
-        $this->assertSearchError($valuesGroup->getField('username'), 'patternMatchers[2].value', 'This value should not be blank.', ['{{ value }}' => '""']);
-
-        // No more errors then asserted
-        $this->assertCount(1, $valuesGroup->getField('username')->getErrors());
-    }
-
-    /**
-     * @test
-     */
-    public function it_cannot_validate_a_locked_valuesGroup()
-    {
-        $fieldSet = new FieldSetBuilder('test', $this->getFactory());
-        $fieldSet->add('username', 'text', ['constraints' => new Assert\NotBlank()]);
-
-        $fieldSet = $fieldSet->getFieldSet();
-
-        $condition = SearchConditionBuilder::create($fieldSet)
-            ->field('username')
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
-                ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_ENDS_WITH))
-                ->addPatternMatch(new PatternMatch('', PatternMatch::PATTERN_ENDS_WITH))
-            ->end()
-            ->getSearchCondition()
-        ;
-
-        $condition->getValuesGroup()->setDataLocked();
-
-        $this->setExpectedException('\RuntimeException', 'Unable to validate locked ValuesGroup.');
-        $this->validator->validate($condition);
-    }
-
-    private function assertSearchError(
-        ValuesBag $valuesBag,
-        $subPath,
-        $messageTemplate,
-        array $messageParameters = [],
-        $messagePluralization = null
-    ) {
-        $this->assertTrue($valuesBag->hasErrors());
-
-        $expectedError = new ValuesError(
-            $subPath,
-            null, // use empty message to prevent object casting (use template when checking instead)
-            $messageTemplate,
-            $messageParameters,
-            $messagePluralization
+        $this->assertContainsErrors(
+            [
+                new ConditionErrorMessage('patternMatch[2].value', 'This value should not be blank.', 'This value should not be blank.', ['{{ value }}' => '""']),
+            ],
+            $errorList
         );
-
-        if (!$this->containsError($expectedError, $valuesBag->getErrors())) {
-            $this->fail(
-                sprintf(
-                    "Does not contain expected error: \n%s\n\nIn collection: \n%s",
-                    print_r($expectedError, true),
-                    print_r($valuesBag->getErrors(), true)
-                )
-            );
-        }
     }
 
-    /**
-     * @param ValuesError   $expectedError
-     * @param ValuesError[] $errors
-     *
-     * @return bool
-     */
-    private function containsError($expectedError, array $errors)
+    private function assertContainsErrors(array $expectedErrors, ErrorList $errors)
     {
         foreach ($errors as $error) {
-            if ($error->getMessageTemplate() !== $expectedError->getMessageTemplate()) {
-                continue;
-            }
+            self::assertInstanceOf(ConstraintViolation::class, $error->cause);
 
-            // Don't use strict comparison because values are casted to strings by the Symfony validator
-            // And we can't use a loose comparison because then objects are casted to integers!
-            // sometimes I hate type casting...
-            $expectedErrorParams = $expectedError->getMessageParameters();
-
-            foreach ($error->getMessageParameters() as $name => $param) {
-                if (!array_key_exists($name, $expectedErrorParams)) {
-                    continue 2;
-                }
-
-                $expectedValue = $expectedErrorParams[$name];
-
-                if ((is_object($expectedValue) xor is_object($param)) || (is_scalar($expectedValue) xor is_scalar($param))) {
-                    continue 2;
-                }
-
-                if (is_object($expectedValue)) {
-                    if (get_class($expectedValue) !== get_class($param)) {
-                        continue 2;
-                    }
-
-                    if ($expectedValue !== $param) {
-                        continue 2;
-                    }
-                }
-
-                if ((string) $expectedValue !== (string) $param) {
-                    continue 2;
-                }
-            }
-
-            if ($error->getSubPath() !== $expectedError->getSubPath()) {
-                continue;
-            }
-
-            return true;
+            // Remove cause to make assertion possible.
+            $error->cause = null;
         }
 
-        return false;
+        self::assertEquals($expectedErrors, $errors->getArrayCopy());
     }
 
     /**
-     * @param \DateTime|\DateTimeInterface $value
+     * @param \DateTimeInterface $value
      *
      * @return string
      */
-    private function formatDateTime($value)
+    private static function formatDateTime($value)
     {
         if (class_exists('IntlDateFormatter')) {
             $locale = \Locale::getDefault();

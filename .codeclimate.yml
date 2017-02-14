@@ -1,0 +1,34 @@
+---
+engines:
+  duplication:
+    enabled: true
+    checks:
+      "Similar code":
+        enabled: false
+    config:
+      languages:
+      - javascript
+      - php
+  phpcodesniffer:
+    enabled: false
+  fixme:
+    enabled: true
+  phpmd:
+    enabled: true
+    checks:
+      CleanCode/StaticAccess:
+        enabled: false
+      CleanCode/ElseExpression:
+        enabled: false
+      Naming/ShortVariable:
+        enabled: false
+ratings:
+  paths:
+  - "**.inc"
+  - "**.js"
+  - "**.jsx"
+  - "**.php"
+exclude_paths:
+  - tests/
+  - src/Test
+  - doc/

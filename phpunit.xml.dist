@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/5.7/phpunit.xsd"
          backupGlobals="false"
          colors="true"
          bootstrap="vendor/autoload.php"
-         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutTestsThatDoNotTestAnything="false"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
 >
@@ -18,7 +18,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="RollerworksSearch Symfony-validator Test Suite">
+        <testsuite name="RollerworksSearch Test Suite">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
@@ -29,7 +29,6 @@
             <exclude>
                 <directory>./vendor/</directory>
                 <directory>./tests/</directory>
-                <directory>./doc/</directory>
             </exclude>
         </whitelist>
     </filter>
