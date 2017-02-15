@@ -29,7 +29,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Tests\\Extension\\Validator\\": "tests"
+            "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\Tests\\": "tests"
         }
     },
     "extra": {

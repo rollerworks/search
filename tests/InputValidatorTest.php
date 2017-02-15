@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\Extension\Validator;
+namespace Rollerworks\Component\Search\Extension\Symfony\Validator\Tests;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\ErrorList;
@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validation;
 
-final class ValidatorTest extends SearchIntegrationTestCase
+final class InputValidatorTest extends SearchIntegrationTestCase
 {
     private $sfValidator;
 
