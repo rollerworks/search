@@ -13,15 +13,30 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use Psr\Container\ContainerInterface;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
+use Rollerworks\Component\Search\Loader\ClosureContainer;
 
+/**
+ * LazyFieldSetRegistry tries to lazily load the FieldSetConfigurator
+ * from s PSR-11 compatible Container or by FQCN.
+ */
 final class LazyFieldSetRegistry implements FieldSetRegistry
 {
-    private $configurators;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    /** @var \Closure[] */
-    private $lazyConfigurators = [];
+    /**
+     * @var FieldSetConfigurator[]
+     */
+    private $configurators = [];
+
+    /**
+     * @var array
+     */
+    private $serviceIds;
 
     /**
      * Constructor.
@@ -30,22 +45,30 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
      * or setter dependencies. You can simple use the FQCN of the configurator class,
      * and will be initialized upon first usage.
      *
-     * @param \Closure[] $configurators An array of lazy loading configurators.
-     *                                  The Closure when called it expected to return
-     *                                  the FieldSetConfiguratorInterface object
-     *
-     * @throws UnexpectedTypeException
+     * @param ContainerInterface $container  A Service locator able to lazily load
+     *                                       the FieldSet configurators
+     * @param array              $serviceIds Configurator name (FQCN) to service-id mapping
      */
-    public function __construct(array $configurators = [])
+    public function __construct(ContainerInterface $container, array $serviceIds)
     {
-        /** @var string $name */
-        foreach ($configurators as $name => $configurator) {
-            if (!$configurator instanceof \Closure) {
-                throw new UnexpectedTypeException($configurator, \Closure::class);
-            }
+        $this->container = $container;
+        $this->serviceIds = $serviceIds;
+    }
 
-            $this->lazyConfigurators[$name] = $configurator;
-        }
+    /**
+     * Creates a new LazyFieldSetRegistry with easy factories for loading.
+     *
+     * @param \Closure[] $configurators An array of lazy loading configurators.
+     *                                  The Closure when called is expected to return
+     *                                  a FieldSetConfiguratorInterface object
+     *
+     * @return LazyFieldSetRegistry
+     */
+    public static function create(array $configurators = []): LazyFieldSetRegistry
+    {
+        $names = array_keys($configurators);
+
+        return new self(new ClosureContainer($configurators), array_combine($names, $names));
     }
 
     /**
@@ -60,19 +83,17 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
     public function getConfigurator(string $name): FieldSetConfigurator
     {
         if (!isset($this->configurators[$name])) {
-            $configurator = null;
-
-            if (isset($this->lazyConfigurators[$name])) {
-                $configurator = $this->lazyConfigurators[$name]();
+            if (isset($this->serviceIds[$name])) {
+                $configurator = $this->container->get($this->serviceIds[$name]);
+            } elseif (class_exists($name)) {
+                // Support fully-qualified class names.
+                $configurator = new $name();
+            } else {
+                throw new InvalidArgumentException(sprintf('Could not load FieldSet configurator "%s".', $name));
             }
 
-            if (!$configurator) {
-                // Support fully-qualified class names.
-                if (!class_exists($name) || !in_array(FieldSetConfigurator::class, class_implements($name), true)) {
-                    throw new InvalidArgumentException(sprintf('Could not load FieldSet configurator "%s"', $name));
-                }
-
-                $configurator = new $name();
+            if (!$configurator instanceof FieldSetConfigurator) {
+                throw new InvalidArgumentException(sprintf('Configurator class "%s" is expected to be an instance of '.FieldSetConfigurator::class, $name));
             }
 
             $this->configurators[$name] = $configurator;
@@ -94,7 +115,7 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
             return true;
         }
 
-        if (isset($this->lazyConfigurators[$name])) {
+        if (isset($this->serviceIds[$name])) {
             return true;
         }
 

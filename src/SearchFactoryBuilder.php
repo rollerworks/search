@@ -186,6 +186,6 @@ class SearchFactoryBuilder
         $resolvedTypeFactory = $this->resolvedTypeFactory ?? new GenericResolvedFieldTypeFactory();
         $registry = new GenericTypeRegistry($extensions, $resolvedTypeFactory);
 
-        return new GenericSearchFactory($registry, $this->fieldSetRegistry ?? new LazyFieldSetRegistry(), $this->conditionOptimizer);
+        return new GenericSearchFactory($registry, $this->fieldSetRegistry ?? LazyFieldSetRegistry::create(), $this->conditionOptimizer);
     }
 }
