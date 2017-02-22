@@ -75,12 +75,12 @@ class MoneyTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('¥12,00', 'JPY 12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::JPY(12)))
-            ->andReverseTransformsTo('¥12', 'JPY 12.');
+            ->andReverseTransformsTo('¥12', 'JPY 12');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('¥12', 'JPY 12')
             ->successfullyTransformsTo(new MoneyValue(Money::JPY(12)))
-            ->andReverseTransformsTo('¥12', 'JPY 12.');
+            ->andReverseTransformsTo('¥12', 'JPY 12');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12', '12.00')
