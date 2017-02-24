@@ -26,7 +26,7 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
 
-        $registry = new LazyFieldSetRegistry(
+        $registry = LazyFieldSetRegistry::create(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
@@ -57,7 +57,7 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
 
-        $registry = new LazyFieldSetRegistry(
+        $registry = LazyFieldSetRegistry::create(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
@@ -82,7 +82,7 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
         $name = get_class($configurator2);
 
-        $registry = new LazyFieldSetRegistry(
+        $registry = LazyFieldSetRegistry::create(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
@@ -109,7 +109,7 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = \stdClass::class;
 
-        $registry = new LazyFieldSetRegistry(
+        $registry = LazyFieldSetRegistry::create(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
@@ -124,7 +124,7 @@ final class LazyFieldSetRegistryTest extends TestCase
         self::assertSame($configurator, $registry->getConfigurator('set'));
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Could not load FieldSet configurator "stdClass"');
+        $this->expectExceptionMessage('Configurator class "stdClass" is expected to be an instance of ');
 
         $registry->getConfigurator($configurator2);
     }
@@ -135,7 +135,7 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = 'f4394832948_foobar_cow';
 
-        $registry = new LazyFieldSetRegistry(
+        $registry = LazyFieldSetRegistry::create(
             [
                 'set' => function () use ($configurator) {
                     return $configurator;
