@@ -1,5 +1,5 @@
-RollerworksSearch SearchProcess
-===============================
+RollerworksSearch SearchProcessor
+=================================
 
 This package provides SearchProcess request handlers for [RollerworksSearch][1].
 You need a PSR-7 compatible library to provide Request information to the processor.
