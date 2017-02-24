@@ -13,7 +13,7 @@
         "php": "^7.1",
         "rollerworks/search": "^2.0@dev",
         "rollerworks/uri-encoder": "^1.1.0",
-        "psr/http-message": "1.0.1"
+        "psr/http-message": "^1.0.1"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.2.4",
@@ -34,6 +34,11 @@
     "autoload-dev": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Processor\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
         }
     }
 }
