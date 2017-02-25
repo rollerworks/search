@@ -43,7 +43,6 @@ register the new bundle:
 // in AppKernel::registerBundles()
 $bundles = [
     // ...
-    new Rollerworks\Bundle\CacheBundle\RollerworksCacheBundle(),
     new Rollerworks\Bundle\SearchBundle\RollerworksSearchBundle(),
 ];
 ```

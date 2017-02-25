@@ -4,43 +4,33 @@ sudo: false
 
 branches:
     only:
+        - 1.x
         - master
 
 matrix:
     include:
-        # Use the newer stack for HHVM as HHVM does not support Precise anymore since a long time and so Precise has an outdated version
-        - php: hhvm-3.15
-          sudo: required
-          dist: trusty
-          group: edge
-        - php: 5.5
-          env: SKIP_OEL=true
-        - php: 5.4
-          env: SKIP_OEL=true
-        - php: 5.6
-        - php: 7.0
-          env: DEPENDENCIES='dev'
-        - php: 7.1
-          env: DEPENDENCIES='low'
-    fast_finish: true
+        - php: '7.1'
+        - php: '7.1'
+          env: deps='low'
+env:
+    global:
+        - TMPDIR=/tmp
 
 cache:
     directories:
         - $HOME/.composer/cache
 
 before_install:
-    # Matrix lines for OEL PHP versions are skipped for pull requests
-    - PHP=$TRAVIS_PHP_VERSION
-    - if [[ $SKIP_OEL && $TRAVIS_PULL_REQUEST != false ]]; then echo "Version ${PHP} is skipped for this pull request" && exit 0; fi
-    - if [[ ! $PHP = hhvm* ]]; then phpenv config-rm xdebug.ini || echo "xdebug not available"; fi
-    - composer selfupdate --stable
+    - phpenv config-rm xdebug.ini || echo "xdebug not available"
+    - export PATH="$PATH:$HOME/.composer/vendor/bin"
 
 install:
     - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
-    - export SYMFONY_DEPRECATIONS_HELPER=weak
-    - if [ "$DEPENDENCIES" == "dev" ]; then composer config minimum-stability dev; fi;
-    - if [ "$DEPENDENCIES" != "low" ]; then composer update --prefer-dist --no-progress --no-suggest --ansi; fi;
-    - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-dist --no-progress --no-suggest --ansi --prefer-lowest; fi;
+    - export SYMFONY_PHPUNIT_VERSION=5.4.8
+    - export SYMFONY_DEPRECATIONS_HELPER=strict
+    - if [[ ! $deps ]]; then composer update --prefer-source --no-progress --no-suggest --ansi; fi
+    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --prefer-source --no-progress --no-suggest --ansi ; fi
+    - if [[ $deps = 'low' ]]; then composer update --prefer-source --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
     - vendor/bin/simple-phpunit --verbose

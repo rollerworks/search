@@ -1,14 +1,8 @@
 imports:
     - { resource: framework.yml }
 
-rollerworks_search:
-    fieldsets:
-        users:
-            fields:
-                id:
-                    type:           integer
-                    required:       false
-                    options:        []
-                username:
-                    type:           text
-                    required:       false
+# Register the Controller as service to ensure autowiring can work
+services:
+    'Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Controller\SearchController':
+        autowire: true
+        public: true
