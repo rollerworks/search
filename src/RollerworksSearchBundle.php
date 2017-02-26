@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -11,9 +13,7 @@
 
 namespace Rollerworks\Bundle\SearchBundle;
 
-use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\DoctrineCacheWrapperPass;
-use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler\FieldSetRegisterPass;
-use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\Compiler;
+use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -21,11 +21,6 @@ class RollerworksSearchBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new DoctrineCacheWrapperPass());
-        $container->addCompilerPass(new FieldSetRegisterPass());
-
-        $container->addCompilerPass(new Compiler\ChainFieldAliasResolverPass());
-        $container->addCompilerPass(new Compiler\ChainFieldLabelResolverPass());
         $container->addCompilerPass(new Compiler\ExtensionPass());
         $container->addCompilerPass(new Compiler\InputProcessorPass());
         $container->addCompilerPass(new Compiler\ExporterPass());

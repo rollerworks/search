@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -24,7 +26,7 @@ abstract class FunctionalTestCase extends WebTestCase
 
     protected static function getKernelClass()
     {
-        return 'Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppKernel';
+        return Application\AppKernel::class;
     }
 
     /**

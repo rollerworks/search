@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -17,7 +19,6 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\DependencyInjection\MergeExtensionConfigurationPass;
 use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
@@ -50,7 +51,6 @@ class AppKernel extends Kernel
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             //new \Symfony\Bundle\TwigBundle\TwigBundle(),
 
-            new \Rollerworks\Bundle\CacheBundle\RollerworksCacheBundle(),
             new \Rollerworks\Bundle\SearchBundle\RollerworksSearchBundle(),
             new AppBundle\AppBundle(),
         ];
@@ -70,15 +70,15 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->config);
-
-        if (Kernel::MAJOR_VERSION > 2 || (Kernel::MAJOR_VERSION === 2 && Kernel::MINOR_VERSION >= 7)) {
-            $loader->load(__DIR__.'/config/sf27.yml');
-        }
     }
 
     public function getCacheDir()
     {
-        return getenv('TMPDIR').'/RSearch/'.substr(sha1($this->config), 0, 6);
+        if (false === $tmpDir = getenv('TMPDIR')) {
+            $tmpDir = sys_get_temp_dir();
+        }
+
+        return rtrim($tmpDir, '/\\').'/RSearch/'.substr(sha1($this->config), 0, 6);
     }
 
     public function serialize()
@@ -91,32 +91,7 @@ class AppKernel extends Kernel
         call_user_func_array([$this, '__construct'], unserialize($str));
     }
 
-    protected function prepareContainer(ContainerBuilder $container)
-    {
-        $extensions = [];
-
-        foreach ($this->bundles as $bundle) {
-            if ($extension = $bundle->getContainerExtension()) {
-                $container->registerExtension($extension);
-                $extensions[] = $extension->getAlias();
-            }
-
-            if ($this->debug) {
-                $container->addObjectResource($bundle);
-            }
-        }
-
-        foreach ($this->bundles as $bundle) {
-            $bundle->build($container);
-        }
-
-        $this->buildBundleless($container);
-
-        // ensure these extensions are implicitly loaded
-        $container->getCompilerPassConfig()->setMergePass(new MergeExtensionConfigurationPass($extensions));
-    }
-
-    private function buildBundleless(ContainerBuilder $container)
+    protected function build(ContainerBuilder $container)
     {
         if ($container->getParameter('kernel.debug')) {
             $configuration = new Configuration();

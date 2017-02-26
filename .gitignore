@@ -2,7 +2,4 @@
 /composer.lock
 *.phar
 /vendor/
-
-# Translations are stored in the core rollerworks/search package
-# and are mirror by the RollerworksSearchExtension
-/src/Resources/translations
+/.php_cs.cache

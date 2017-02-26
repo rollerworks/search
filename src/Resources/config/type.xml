@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="false" />
+
+        <instanceof id="\Rollerworks\Component\Search\Field\FieldType">
+            <tag name="rollerworks_search.type" />
+        </instanceof>
+
+        <!-- CoreExtension -->
+        <service id="rollerworks_search.value_comparison.simple" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\SimpleValueComparison" />
+        <service id="rollerworks_search.value_comparison.date_time" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\DateTimeValueComparison" />
+        <service id="rollerworks_search.value_comparison.number" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\NumberValueComparison" />
+        <service id="rollerworks_search.value_comparison.birthday" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\BirthdayValueComparison" />
+        <service id="rollerworks_search.value_comparison.money" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\MoneyValueComparison" />
+
+        <service id="Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType">
+            <argument type="service" id="rollerworks_search.value_comparison.simple" />
+        </service>
+        <service id="Rollerworks\Component\Search\Extension\Core\Type\DateType">
+            <argument type="service" id="rollerworks_search.value_comparison.date_time" />
+        </service>
+        <service id="Rollerworks\Component\Search\Extension\Core\Type\DateTimeType">
+            <argument type="service" id="rollerworks_search.value_comparison.date_time" />
+        </service>
+        <service id="Rollerworks\Component\Search\Extension\Core\Type\TimeType">
+            <argument type="service" id="rollerworks_search.value_comparison.date_time" />
+        </service>
+        <service id="Rollerworks\Component\Search\Extension\Core\Type\BirthdayType">
+            <argument type="service" id="rollerworks_search.value_comparison.birthday" />
+        </service>
+        <service id="Rollerworks\Component\Search\Extension\Core\Type\IntegerType">
+            <argument type="service" id="rollerworks_search.value_comparison.number" />
+        </service>
+        <service id="Rollerworks\Component\Search\Extension\Core\Type\MoneyType">
+            <argument type="service" id="rollerworks_search.value_comparison.money" />
+        </service>
+        <service id="Rollerworks\Component\Search\Extension\Core\Type\NumberType">
+            <argument type="service" id="rollerworks_search.value_comparison.number" />
+        </service>
+    </services>
+</container>

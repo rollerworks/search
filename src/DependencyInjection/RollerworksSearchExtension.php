@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -11,198 +13,90 @@
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
-use Rollerworks\Component\Search\Extension\Symfony\DependencyInjection\ServiceLoader;
+use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\Processor\CachedSearchProcessor;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class RollerworksSearchExtension extends Extension
+class RollerworksSearchExtension extends Extension implements PrependExtensionInterface
 {
-    public function load(array $config, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $config);
-
-        $serviceLoader = new ServiceLoader($container);
-        $serviceLoader->loadFile('input_processor');
-        $serviceLoader->loadFile('exporter');
-        $serviceLoader->loadFile('condition_optimizers');
-
-        $this->mirrorTranslations();
-
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+        $loader->load('type.xml');
+        $loader->load('input_processor.xml');
+        $loader->load('condition_exporter.xml');
+        $loader->load('condition_optimizers.xml');
 
-        if (isset($config['metadata'])) {
-            $this->registerMetadata($container, $loader, $config['metadata']);
+        $configuration = $this->getConfiguration($configs, $container);
+        $config = $this->processConfiguration($configuration, $configs);
+
+        if ($this->isConfigEnabled($container, $config['processor'])) {
+            $loader->load('search_processor.xml');
+
+            $this->configureProcessor($container, $config);
         }
 
-        if (!empty($config['fieldsets'])) {
-            $container->setParameter('rollerworks_search.fieldsets_configuration', $config['fieldsets']);
-        }
-    }
-
-    public function getXsdValidationBasePath()
-    {
-        return __DIR__.'/../Resources/config/schema';
-    }
-
-    public function getNamespace()
-    {
-        return 'http://rollerworks.github.io/schema/search/sf-dic/rollerworks-search';
-    }
-
-    private function mirrorTranslations()
-    {
-        $r = new \ReflectionClass('Rollerworks\Component\Search\FieldSet');
-        $dir = dirname($r->getFilename()).'/Resources/translations';
-
-        $fs = new Filesystem();
-        $fs->mirror($dir, __DIR__.'/../Resources/translations', null, ['copy_on_windows' => true]);
-    }
-
-    /**
-     * Register the Metadata component.
-     *
-     * @param ContainerBuilder $container
-     * @param XmlFileLoader    $loader
-     * @param array            $config
-     *
-     * @throws \RuntimeException
-     */
-    private function registerMetadata(ContainerBuilder $container, XmlFileLoader $loader, array $config)
-    {
-        $loader->load('metadata.xml');
-
-        $container->setParameter('rollerworks_search.metadata.directories', $this->getMetadataMappingInformation($config, $container));
-        $container->setParameter('rollerworks_search.metadata.cache_directory', $config['cache_dir']);
-
-        $container->setAlias('rollerworks_search.metadata.cache_driver', $config['cache_driver']);
-        $container->setAlias('rollerworks_search.metadata.freshness_validator', $config['cache_freshness_validator']);
-    }
-
-    /**
-     * Returns the processed metadata mapping information.
-     *
-     * @param array            $config    A configured object manager.
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return array
-     */
-    private function getMetadataMappingInformation(array $config, ContainerBuilder $container)
-    {
-        $mappingDirectories = [];
-
-        if ($config['auto_mapping']) {
-            // automatically register bundle metadata
-            foreach ($container->getParameter('kernel.bundles') as $bundleName => $bundleObj) {
-                if (!isset($config['mappings'][$bundleName])) {
-                    $config['mappings'][$bundleName] = [
-                        'mapping' => true,
-                        'is_bundle' => true,
-                    ];
-                }
-            }
+        if (interface_exists(ValidatorInterface::class)) {
+            $loader->load('input_validator.xml');
         }
 
-        foreach ($config['mappings'] as $mappingName => $mappingConfig) {
-            if (null !== $mappingConfig && false === $mappingConfig['mapping']) {
-                continue;
-            }
-
-            $mappingConfig = array_replace([
-                'dir' => false,
-                'prefix' => false,
-            ], (array) $mappingConfig);
-
-            $mappingConfig['dir'] = $container->getParameterBag()->resolveValue($mappingConfig['dir']);
-            // a bundle configuration is detected by realizing that the specified dir is not absolute and existing
-            if (!isset($mappingConfig['is_bundle'])) {
-                $mappingConfig['is_bundle'] = !is_dir($mappingConfig['dir']);
-            }
-
-            if ($mappingConfig['is_bundle']) {
-                $bundle = null;
-
-                foreach ($container->getParameter('kernel.bundles') as $name => $class) {
-                    if ($mappingName === $name) {
-                        $bundle = new \ReflectionClass($class);
-
-                        break;
-                    }
-                }
-
-                if (null === $bundle) {
-                    throw new \InvalidArgumentException(sprintf('Bundle "%s" does not exist or it is not enabled.', $mappingName));
-                }
-
-                $mappingConfig = $this->getMetadataDriverConfigDefaults($mappingConfig, $bundle);
-
-                if (!$mappingConfig) {
-                    continue;
-                }
-
-                $container->addResource(new DirectoryResource($mappingConfig['dir']));
-            }
-
-            $this->assertValidMappingConfiguration($mappingConfig);
-            $mappingDirectories[rtrim($mappingConfig['prefix'], '\\')] = $mappingConfig['dir'];
-        }
-
-        return $mappingDirectories;
-    }
-
-    /**
-     * Assertion if the specified mapping information is valid.
-     *
-     * @param array $mappingConfig
-     *
-     * @throws \InvalidArgumentException
-     */
-    private function assertValidMappingConfiguration(array $mappingConfig)
-    {
-        if (!$mappingConfig['dir'] || !$mappingConfig['prefix']) {
-            throw new \InvalidArgumentException(sprintf('Metadata mapping definitions require at least the "dir" and "prefix" options.'));
-        }
-
-        if (!is_dir($mappingConfig['dir'])) {
-            throw new \InvalidArgumentException(sprintf('Specified non-existing directory "%s" as Metadata mapping source.', $mappingConfig['dir']));
+        if (class_exists(Translator::class)) {
+            $loader->load('translator_alias_resolver.xml');
         }
     }
 
-    /**
-     * All the missing information can be autodetected by this method.
-     *
-     * Returns false when autodetection failed, or an array of the completed information otherwise.
-     *
-     * @param array            $bundleConfig
-     * @param \ReflectionClass $bundle
-     *
-     * @return array|false
-     */
-    private function getMetadataDriverConfigDefaults(array $bundleConfig, \ReflectionClass $bundle)
+    public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        $bundleDir = dirname($bundle->getFileName());
+        return new Configuration();
+    }
 
-        if (!$bundleConfig['dir']) {
-            $bundleConfig['dir'] = $bundleDir.'/Resources/config/rollerworks_search';
+    public function prepend(ContainerBuilder $container)
+    {
+        if (class_exists(CachedSearchProcessor::class)) {
+            $container->prependExtensionConfig('framework', [
+                'cache' => [
+                    'pools' => [
+                        'rollerworks.search_processor.cache' => [
+                            'adapter' => 'cache.system',
+                        ],
+                    ],
+                ],
+            ]);
+        }
+
+        if (class_exists(Translator::class)) {
+            $container->prependExtensionConfig('framework', [
+                'translator' => [
+                    'paths' => [
+                        dirname((new \ReflectionClass(FieldSet::class))->getFilename()).'/Resources/translations',
+                    ],
+                ],
+            ]);
+        }
+    }
+
+    private function configureProcessor(ContainerBuilder $container, array $config)
+    {
+        if (!interface_exists(\Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface::class)) {
+            throw new LogicException('SearchProcessor support cannot be enabled as the Symfony PsrHttpMessage Bridge is not installed.');
+        }
+
+        if (!class_exists(\Zend\Diactoros\ServerRequest::class)) {
+            throw new LogicException('SearchProcessor support cannot be enabled as the Zend Diactoros component is not installed.');
+        }
+
+        if ($config['processor']['disable_cache']) {
+            $container->setAlias('rollerworks_search.default_search_processor', 'rollerworks_search.psr7_search_processor');
         } else {
-            $bundleConfig['dir'] = $bundleDir.'/'.$bundleConfig['dir'];
+            $container->setAlias('rollerworks_search.default_search_processor', 'rollerworks_search.cached_search_processor');
         }
-
-        if (!is_dir($bundleConfig['dir'])) {
-            return false;
-        }
-
-        if (!$bundleConfig['prefix']) {
-            $bundleConfig['prefix'] = $bundle->getNamespaceName();
-        }
-
-        return $bundleConfig;
     }
 }

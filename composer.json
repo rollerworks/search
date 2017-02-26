@@ -11,26 +11,27 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "rollerworks/search": "^1.2.1",
-        "rollerworks/search-symfony-di": "^1.1.0",
-        "rollerworks/search-symfony-validator": "^1.0.1",
-        "rollerworks/search-metadata": "^1.0.3",
-        "rollerworks/metadata-doctrine-cache": ">=0.2,<2.0",
-        "rollerworks/exception-parser": "^1.0.1",
+        "php": "^7.1",
+        "psr/simple-cache": "^1.0.0",
+        "rollerworks/search": "^2.0@dev",
         "rollerworks/uri-encoder": "^1.1.0",
-        "rollerworks/cache-bundle": "^1.2.0",
-        "symfony/framework-bundle": "^2.3.30|~3.0",
-        "symfony/property-access": "^2.3.30|~3.0",
-        "symfony/finder": "^2.3.24|~3.0",
-        "symfony/form": "^2.3.24|~3.0"
+        "symfony/framework-bundle": "^3.3@dev"
     },
     "require-dev": {
-        "symfony/browser-kit": "~2.3|~3.0",
-        "doctrine/common": "~2.4",
-        "symfony/phpunit-bridge": "^3.2",
-        "matthiasnoback/symfony-dependency-injection-test": "^0.7.4",
-        "matthiasnoback/symfony-service-definition-validator": "^1.2.2"
+        "matthiasnoback/symfony-dependency-injection-test": "^1.1.0",
+        "matthiasnoback/symfony-service-definition-validator": "^1.2.7",
+        "rollerworks/search-processor": "^1.0@dev",
+        "rollerworks/search-symfony-validator": "^2.0@dev",
+        "symfony/browser-kit": "^3.2.4",
+        "symfony/routing": "^3.2.4",
+        "symfony/dom-crawler": "^3.2.4",
+        "symfony/phpunit-bridge": "^3.2.4",
+        "symfony/psr-http-message-bridge": "^1.0.0",
+        "zendframework/zend-diactoros": "^1.3.9"
+    },
+    "conflict": {
+        "symfony/psr-http-message-bridge": "<1.0.0",
+        "rollerworks/search-symfony-validator": "<2.0"
     },
     "autoload": {
         "psr-4": {
@@ -44,7 +45,12 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1-dev"
+            "dev-master": "2.0-dev"
         }
-    }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
