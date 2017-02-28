@@ -68,7 +68,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
     /**
      * {@inheritdoc}
      */
-    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0): string
+    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0, string $column = null): string
     {
         $mappingName = $mappingConfig->mappingName;
 
@@ -76,7 +76,10 @@ abstract class AbstractQueryPlatform implements QueryPlatform
             return $this->fieldsMappingCache[$mappingName][$strategy];
         }
 
-        $column = $mappingConfig->column;
+        if (null === $column) {
+            $column = $mappingConfig->column;
+        }
+
         $this->fieldsMappingCache[$mappingName][$strategy] = $column;
 
         if ($mappingConfig->columnConversion instanceof ColumnConversion) {
@@ -172,11 +175,11 @@ abstract class AbstractQueryPlatform implements QueryPlatform
     /**
      * @param QueryField $mappingConfig
      * @param string     $column
-     * @param int        $strategy
+     * @param string|int $strategy
      *
      * @return ConversionHints
      */
-    protected function getConversionHints(QueryField $mappingConfig, string $column, int $strategy = 0): ConversionHints
+    protected function getConversionHints(QueryField $mappingConfig, string $column, $strategy = 0): ConversionHints
     {
         $hints = new ConversionHints();
         $hints->field = $mappingConfig;
