@@ -23,10 +23,11 @@ interface QueryPlatform
      *
      * @param QueryField $mappingConfig
      * @param string|int $strategy
+     * @param string     $column
      *
      * @return string
      */
-    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0): string;
+    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0, string $column = null): string;
 
     /**
      * Returns either the converted value.
