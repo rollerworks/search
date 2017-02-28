@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -11,85 +13,62 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
-use Doctrine\DBAL\Types\Type as MappingType;
-use Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversionInterface;
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 
 /**
- * The ConfigurableWhereBuilderInterface allows to configure a WhereBuilder's
- * mapping-data and set conversions.
+ * The ConfigurableWhereBuilderInterface allows to set a WhereBuilder's
+ * mapping configuration.
  */
 interface ConfigurableWhereBuilderInterface extends WhereBuilderInterface
 {
     /**
-     * Set the entity mapping per class.
+     * Set the default entity mapping configuration, only for fields
+     * configured *after* this method.
      *
-     * @param string $entityName class or Doctrine alias
-     * @param string $alias      Entity alias as used in the query.
-     *                           Set to the null to remove the mapping
+     * Note: Calling this method after calling setField() will not affect
+     * fields that were already configured. Which means you can use this
+     * method to configure chunks of configuration.
+     *
+     * @param string $entity Entity name (FQCN or Doctrine aliased)
+     * @param string $alias  Table alias as used in the query "u" for `FROM Acme:Users AS u`
+     *
+     * @return $this
      */
-    public function setEntityMapping($entityName, $alias);
+    public function setDefaultEntity(string $entity, string $alias);
 
     /**
-     * Set the entity mappings.
+     * Set the search field to Entity mapping mapping configuration.
      *
-     * Mapping is set as [class] => in-query-entity-alias.
+     * To map a search field to more then one entity field use `field-name#mapping-name`
+     * for the $fieldName argument. The `field-name` is the search field name as registered
+     * in the FieldSet, `mapping-name` allows to configure a (secondary) mapping for a field.
      *
-     * Caution. This will overwrite any configured entity-mappings.
+     * Caution: A search field can only have multiple mappings or one, omitting `#` will remove
+     * any existing mappings for that field. Registering the field without `#` first and then
+     * setting multiple mappings for that field will reset the single mapping.
      *
-     * @param array $mapping
+     * Tip: The `mapping-name` doesn't have to be same as $property, but using a clear name
+     * will help with trouble shooting.
      *
-     * @return self
-     */
-    public function setEntityMappings(array $mapping);
-
-    /**
-     * Set Field configuration for the query-generation.
+     * Note: Associations are automatically resolved, but can only work for a single
+     * property reference. If resolving is not possible the property must be owned by
+     * the entity (not reference another entity).
      *
-     * Note: The property must be owned by the entity (not reference another entity).
      * If the entity field is used in a many-to-many relation you must to reference the
      * targetEntity that is set on the ManyToMany mapping and use the entity field of that entity.
      *
-     * @param string             $fieldName   Name of the Search field
-     * @param string             $alias       Entity alias as used in the query
-     * @param string             $entity      Entity name (FQCN or Doctrine aliased)
-     * @param string             $property    Entity field name
-     * @param string|MappingType $mappingType Doctrine Mapping-type
+     * @param string $fieldName Name of the search field as registered in the FieldSet or
+     *                          `field-name#mapping-name` to configure a secondary mapping
+     * @param string $property  Entity field name
+     * @param string $alias     Table alias as used in the query "u" for `FROM Acme:Users AS u`
+     * @param string $entity    Entity name (FQCN or Doctrine aliased)
+     * @param string $dbType    Doctrine DBAL supported type, eg. string (not text)
      *
-     * @throws UnknownFieldException When the field is not registered in the fieldset
+     * @throws UnknownFieldException  When the field is not registered in the fieldset
+     * @throws BadMethodCallException When the where-clause is already generated
      *
-     * @return self
+     * @return $this
      */
-    public function setField($fieldName, $alias, $entity = null, $property = null, $mappingType = null);
-
-    /**
-     * Set a CombinedField configuration for the query-generation.
-     *
-     * The $mappings expects an array with one or more mappings.
-     * Each mapping must have a `property`, all other keys are optional.
-     *
-     * @param string     $fieldName Name of the Search-field
-     * @param array|null $mappings  ['mapping-name' => ['property' => '...', 'class' => '...', 'type' => 'string',
-     *                              'alias' => null], ...]
-     *
-     * @throws UnknownFieldException When the field is not registered in the fieldset
-     *
-     * @return self
-     */
-    public function setCombinedField($fieldName, array $mappings);
-
-    /**
-     * Set the converters for a field.
-     *
-     * Setting is done per type (field or value), any existing conversions are overwritten.
-     *
-     * @param string                                               $fieldName
-     * @param ValueConversionInterface|SqlFieldConversionInterface $converter
-     *
-     * @throws UnknownFieldException When the field is not registered in the fieldset
-     *
-     * @return self
-     */
-    public function setConverter($fieldName, $converter);
+    public function setField(string $fieldName, string $property, string $alias, string $entity = null, string $dbType = null);
 }

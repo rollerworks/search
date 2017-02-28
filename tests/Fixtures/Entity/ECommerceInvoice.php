@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="invoices")
+ * @ORM\Table(name="invoices", options={"collate"="utf8_bin"})
  */
 class ECommerceInvoice
 {
@@ -24,42 +24,47 @@ class ECommerceInvoice
      * @ORM\Column(type="integer", name="invoice_id")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    public $id;
 
     /**
      * @ORM\Column(type="string", unique=true, nullable=true)
      */
-    private $label;
+    public $label;
 
     /**
      * @ORM\Column(name="pubdate", type="date", nullable=true)
      */
-    private $date;
+    public $date;
 
     /**
      * @ORM\ManyToOne(targetEntity="ECommerceCustomer")
      * @ORM\JoinColumn(name="customer", referencedColumnName="id")
      */
-    private $customer;
+    public $customer;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $status;
+    public $status;
+
+    /**
+     * @ORM\Column(name="price_total", type="decimal", precision=0, scale=2)
+     */
+    public $total;
 
     /**
      * @ORM\OneToMany(targetEntity="ECommerceInvoiceRow", mappedBy="invoice", cascade={"persist"})
      */
-    private $rows;
+    public $rows;
 
     /**
      * @ORM\ManyToOne(targetEntity="ECommerceInvoice", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="invoice_id")
      */
-    private $parent;
+    public $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="ECommerceInvoice", mappedBy="parent")
      */
-    private $children;
+    public $children;
 }

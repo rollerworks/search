@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -45,21 +47,6 @@ SQL;
             'I',
             'rows',
             ['label' => 'rows_label']
-        );
-
-        $rsm->addJoinedEntityFromClassMetadata(
-            'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice',
-            'IP',
-            'I',
-            'children',
-            [
-                'invoice_id' => 'credit_id',
-                'label' => 'credit_label',
-                'pubdate' => 'credit_pubdate',
-                'customer' => 'credit_customer',
-                'status' => 'credit_status',
-                'parent_id' => 'credit_parent_id',
-            ]
         );
 
         $rsm->addJoinedEntityFromClassMetadata(

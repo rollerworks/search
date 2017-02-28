@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -11,12 +13,12 @@
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatformInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
 final class SqlConversionInfo implements \Serializable
 {
     /**
-     * @var QueryPlatformInterface
+     * @var QueryPlatform
      */
     public $nativePlatform;
 
@@ -25,10 +27,16 @@ final class SqlConversionInfo implements \Serializable
      */
     public $parameters;
 
-    public function __construct(QueryPlatformInterface $nativePlatform, array $parameters)
+    /**
+     * @var array
+     */
+    public $fields;
+
+    public function __construct(QueryPlatform $nativePlatform, array $parameters, array $fields)
     {
         $this->nativePlatform = $nativePlatform;
         $this->parameters = $parameters;
+        $this->fields = $fields;
     }
 
     public function serialize()

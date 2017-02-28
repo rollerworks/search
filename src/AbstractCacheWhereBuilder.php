@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -18,10 +20,6 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
 
 /***
  * Handles caching of the Doctrine ORM WhereBuilder.
- *
- * Note. For best performance caching of the WhereClause should be done on a
- * per user-session fieldset basis. This ensures enough uniqueness and
- * no complex serialization.
  *
  * This checks if there is a cached result, if not it delegates
  * the creating to the parent and caches the result.

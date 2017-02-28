@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -21,7 +23,7 @@ use Rollerworks\Component\Search\Doctrine\Orm\ConversionHintTrait;
  * "RW_SEARCH_FIELD_CONVERSION(FieldName, Column, Strategy)".
  *
  * SearchFieldConversion ::=
- *     "RW_SEARCH_FIELD_CONVERSION" "(" StringPrimary, StateFieldPathExpression "," [ Integer ] ")"
+ *     "RW_SEARCH_FIELD_CONVERSION" "(" StringPrimary, StateFieldPathExpression "," Literal ")"
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -40,7 +42,7 @@ class SqlFieldConversion extends FunctionNode
     private $columnExpression;
 
     /**
-     * @var int|null
+     * @var int|string|null
      */
     private $strategy;
 
@@ -52,7 +54,7 @@ class SqlFieldConversion extends FunctionNode
         $this->loadConversionHints($sqlWalker);
 
         return $this->nativePlatform->getFieldColumn(
-            $this->fieldName,
+            $this->fields[$this->fieldName],
             $this->strategy,
             $this->columnExpression->dispatch($sqlWalker)
         );
@@ -70,7 +72,11 @@ class SqlFieldConversion extends FunctionNode
         $parser->match(Lexer::T_COMMA);
         $this->columnExpression = $parser->StateFieldPathExpression();
         $parser->match(Lexer::T_COMMA);
-        $this->strategy = (int) $parser->Literal()->value;
+        $this->strategy = $parser->Literal()->value;
+
+        if (ctype_digit((string) $this->strategy)) {
+            $this->strategy = (int) $this->strategy;
+        }
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }

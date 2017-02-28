@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -13,19 +15,33 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\QueryException;
+use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
+use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder;
+use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
+use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\InvoiceNumber;
 use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\SingleValue;
-use Rollerworks\Component\Search\ValuesGroup;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
-class WhereBuilderTest extends OrmTestCase
+final class WhereBuilderTest extends OrmTestCase
 {
+    protected function getFieldSet(bool $build = true)
+    {
+        $fieldSet = parent::getFieldSet(false);
+        $fieldSet->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2]]);
+        $fieldSet->add('customer_first_name', TextType::class);
+
+        return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
+    }
+
     private function getWhereBuilder(SearchCondition $condition, Query $query = null, $noMapping = false)
     {
         if (null === $query) {
@@ -35,8 +51,17 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = $this->getOrmFactory()->createWhereBuilder($query, $condition);
 
         if (!$noMapping) {
-            $whereBuilder->setEntityMapping('Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice', 'I');
-            $whereBuilder->setEntityMapping('Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer', 'C');
+            $whereBuilder->setDefaultEntity(self::INVOICE_CLASS, 'I');
+            $whereBuilder->setField('id', 'id', null, null, 'smallint');
+            $whereBuilder->setField('status', 'status');
+            //$whereBuilder->setField('credit_parent#0', 'parent');
+
+            $whereBuilder->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
+            $whereBuilder->setField('customer', 'id');
+            $whereBuilder->setField('customer_name#first_name', 'firstName');
+            $whereBuilder->setField('customer_name#last_name', 'lastName');
+            $whereBuilder->setField('customer_first_name', 'firstName');
+            $whereBuilder->setField('customer_birthday', 'birthday');
         }
 
         return $whereBuilder;
@@ -46,8 +71,8 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
-                ->addSingleValue(new SingleValue(5))
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
             ->end()
         ->getSearchCondition();
 
@@ -56,7 +81,7 @@ class WhereBuilderTest extends OrmTestCase
         $this->assertEquals('((C.id IN(2, 5)))', $whereBuilder->getWhereClause());
         $this->assertDqlCompiles(
             $whereBuilder,
-            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2, 5)))'
+            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2, 5)))'
         );
     }
 
@@ -64,12 +89,12 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
-                ->addSingleValue(new SingleValue(5))
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
             ->end()
             ->field('status')
-                ->addSingleValue(new SingleValue(2))
-                ->addSingleValue(new SingleValue(5))
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
             ->end()
         ->getSearchCondition();
 
@@ -78,7 +103,7 @@ class WhereBuilderTest extends OrmTestCase
         $this->assertEquals('((C.id IN(2, 5)) AND (I.status IN(2, 5)))', $whereBuilder->getWhereClause());
         $this->assertDqlCompiles(
             $whereBuilder,
-            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2, 5)) AND (i0_.status IN (2, 5)))'
+            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2, 5)) AND (i0_.status IN (2, 5)))'
         );
     }
 
@@ -95,8 +120,8 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addExcludedValue(new SingleValue(2))
-                ->addExcludedValue(new SingleValue(5))
+                ->addExcludedSimpleValue(2)
+                ->addExcludedSimpleValue(5)
             ->end()
         ->getSearchCondition();
 
@@ -110,8 +135,8 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
-                ->addExcludedValue(new SingleValue(5))
+                ->addSimpleValue(2)
+                ->addExcludedSimpleValue(5)
             ->end()
         ->getSearchCondition();
 
@@ -125,10 +150,10 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addRange(new Range(2, 5))
-                ->addRange(new Range(10, 20))
-                ->addRange(new Range(60, 70, false))
-                ->addRange(new Range(100, 150, true, false))
+                ->add(new Range(2, 5))
+                ->add(new Range(10, 20))
+                ->add(new Range(60, 70, false))
+                ->add(new Range(100, 150, true, false))
             ->end()
         ->getSearchCondition();
 
@@ -146,10 +171,10 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addExcludedRange(new Range(2, 5))
-                ->addExcludedRange(new Range(10, 20))
-                ->addExcludedRange(new Range(60, 70, false))
-                ->addExcludedRange(new Range(100, 150, true, false))
+                ->add(new ExcludedRange(2, 5))
+                ->add(new ExcludedRange(10, 20))
+                ->add(new ExcludedRange(60, 70, false))
+                ->add(new ExcludedRange(100, 150, true, false))
             ->end()
         ->getSearchCondition();
 
@@ -167,7 +192,7 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(2, '>'))
+                ->add(new Compare(2, '>'))
             ->end()
         ->getSearchCondition();
 
@@ -181,8 +206,8 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(2, '>'))
-                ->addComparison(new Compare(10, '<'))
+                ->add(new Compare(2, '>'))
+                ->add(new Compare(10, '<'))
             ->end()
         ->getSearchCondition();
 
@@ -202,14 +227,14 @@ class WhereBuilderTest extends OrmTestCase
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->group()
                 ->field('customer')
-                    ->addComparison(new Compare(2, '>'))
-                    ->addComparison(new Compare(10, '<'))
-                    ->addSingleValue(new SingleValue(20))
+                    ->add(new Compare(2, '>'))
+                    ->add(new Compare(10, '<'))
+                    ->addSimpleValue(20)
                 ->end()
             ->end()
             ->group()
                 ->field('customer')
-                    ->addComparison(new Compare(30, '>'))
+                    ->add(new Compare(30, '>'))
                 ->end()
             ->end()
         ->getSearchCondition();
@@ -227,8 +252,8 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(2, '<>'))
-                ->addComparison(new Compare(5, '<>'))
+                ->add(new Compare(2, '<>'))
+                ->add(new Compare(5, '<>'))
             ->end()
         ->getSearchCondition();
 
@@ -245,10 +270,10 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addComparison(new Compare(35, '<>'))
-                ->addComparison(new Compare(45, '<>'))
-                ->addComparison(new Compare(30, '>'))
-                ->addComparison(new Compare(50, '<'))
+                ->add(new Compare(35, '<>'))
+                ->add(new Compare(45, '<>'))
+                ->add(new Compare(30, '>'))
+                ->add(new Compare(50, '<'))
             ->end()
         ->getSearchCondition();
 
@@ -264,28 +289,28 @@ class WhereBuilderTest extends OrmTestCase
     public function testPatternMatchers()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('customer_name')
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
-                ->addPatternMatch(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
-                ->addPatternMatch(new PatternMatch('fo\'o', PatternMatch::PATTERN_STARTS_WITH))
-                ->addPatternMatch(new PatternMatch('fo\'\'o', PatternMatch::PATTERN_STARTS_WITH))
-                ->addPatternMatch(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
-                ->addPatternMatch(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
-                ->addPatternMatch(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
+            ->field('customer_first_name')
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                ->add(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
+                ->add(new PatternMatch('fo\'o', PatternMatch::PATTERN_STARTS_WITH))
+                ->add(new PatternMatch('fo\'\'o', PatternMatch::PATTERN_STARTS_WITH))
+                ->add(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
+                ->add(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
+                ->add(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
             ->end()
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\''o' ESCAPE '\\' OR C.name LIKE '%fo''o' ESCAPE '\\' OR C.name LIKE '%fo''''o' ESCAPE '\\' OR RW_SEARCH_MATCH(C.name, '(foo|bar)', false) = 1 OR RW_SEARCH_MATCH(C.name, '(doctor|who)', true) = 1) AND LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))",
+            "(((C.firstName LIKE '%foo' ESCAPE '\\' OR C.firstName LIKE '%fo\\''o' ESCAPE '\\' OR C.firstName LIKE '%fo''o' ESCAPE '\\' OR C.firstName LIKE '%fo''''o' ESCAPE '\\' OR RW_SEARCH_MATCH(C.firstName, '(foo|bar)', false) = 1 OR RW_SEARCH_MATCH(C.firstName, '(doctor|who)', true) = 1) AND LOWER(C.firstName) NOT LIKE LOWER('bar%') ESCAPE '\\'))",
             $whereBuilder->getWhereClause()
         );
 
         if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
             $this->assertDqlCompiles(
                 $whereBuilder,
-                "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.name LIKE '%foo' ESCAPE '\\' OR c1_.name LIKE '%fo\\''o' ESCAPE '\\' OR c1_.name LIKE '%fo''o' ESCAPE '\\' OR c1_.name LIKE '%fo''''o' ESCAPE '\\' OR (CASE WHEN RW_REGEXP('(foo|bar)', c1_.name, 'u') THEN 1 ELSE 0 END) = 1 OR (CASE WHEN RW_REGEXP('(doctor|who)', c1_.name, 'ui') THEN 1 ELSE 0 END) = 1) AND LOWER(c1_.name) NOT LIKE LOWER('bar%') ESCAPE '\\'))"
+                "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.first_name LIKE '%foo' ESCAPE '\\' OR c1_.first_name LIKE '%fo\\''o' ESCAPE '\\' OR c1_.first_name LIKE '%fo''o' ESCAPE '\\' OR c1_.first_name LIKE '%fo''''o' ESCAPE '\\' OR (CASE WHEN RW_REGEXP('(foo|bar)', c1_.first_name, 'u') THEN 1 ELSE 0 END) = 1 OR (CASE WHEN RW_REGEXP('(doctor|who)', c1_.first_name, 'ui') THEN 1 ELSE 0 END) = 1) AND LOWER(c1_.first_name) NOT LIKE LOWER('bar%') ESCAPE '\\'))"
             );
         } else {
             $rexP = 'postgresql' === $this->conn->getDatabasePlatform()->getName() ? '~' : 'REGEXP';
@@ -293,7 +318,7 @@ class WhereBuilderTest extends OrmTestCase
 
             $this->assertDqlCompiles(
                 $whereBuilder,
-                'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.name LIKE '.$this->conn->quote('%foo').' ESCAPE '.$this->conn->quote('\\').' OR c1_.name LIKE '.$this->conn->quote("%fo\\'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.name LIKE '.$this->conn->quote("%fo'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.name LIKE '.$this->conn->quote("%fo''o").' ESCAPE '.$this->conn->quote('\\').' OR (CASE WHEN c1_.name '.$rexP.' '.$this->conn->quote('(foo|bar)').' THEN 1 ELSE 0 END) = 1 OR (CASE WHEN c1_.name '.$rexPInsensitive.' '.$this->conn->quote('(doctor|who)').' THEN 1 ELSE 0 END) = 1) AND LOWER(c1_.name) NOT LIKE LOWER('.$this->conn->quote('bar%').') ESCAPE '.$this->conn->quote('\\').'))'
+                'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.first_name LIKE '.$this->conn->quote('%foo').' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo\\'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo''o").' ESCAPE '.$this->conn->quote('\\').' OR (CASE WHEN c1_.first_name '.$rexP.' '.$this->conn->quote('(foo|bar)').' THEN 1 ELSE 0 END) = 1 OR (CASE WHEN c1_.first_name '.$rexPInsensitive.' '.$this->conn->quote('(doctor|who)').' THEN 1 ELSE 0 END) = 1) AND LOWER(c1_.first_name) NOT LIKE LOWER('.$this->conn->quote('bar%').') ESCAPE '.$this->conn->quote('\\').'))'
             );
         }
     }
@@ -302,10 +327,14 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->group()
-                ->field('customer')->addSingleValue(new SingleValue(2))->end()
+                ->field('customer')
+                    ->addSimpleValue(2)
+                ->end()
             ->end()
             ->group()
-                ->field('customer')->addSingleValue(new SingleValue(3))->end()
+                ->field('customer')
+                    ->addSimpleValue(3)
+                ->end()
             ->end()
         ->getSearchCondition();
 
@@ -322,11 +351,11 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
             ->group()
                 ->field('customer_name')
-                    ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                    ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->end()
             ->end()
         ->getSearchCondition();
@@ -334,7 +363,7 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "(((C.id IN(2))) AND (((C.name LIKE '%foo' ESCAPE '\\'))))",
+            "(((C.id IN(2))) AND ((((C.firstName LIKE '%foo' ESCAPE '\\' OR C.lastName LIKE '%foo' ESCAPE '\\')))))",
             $whereBuilder->getWhereClause()
         );
         $this->assertDqlCompiles($whereBuilder);
@@ -344,17 +373,17 @@ class WhereBuilderTest extends OrmTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet(), ValuesGroup::GROUP_LOGICAL_OR)
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
-            ->field('customer_name')
-                ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+            ->field('customer_first_name')
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
             ->end()
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "((C.id IN(2)) OR (C.name LIKE '%foo' ESCAPE '\\'))",
+            "((C.id IN(2)) OR (C.firstName LIKE '%foo' ESCAPE '\\'))",
             $whereBuilder->getWhereClause()
         );
         $this->assertDqlCompiles($whereBuilder);
@@ -366,10 +395,10 @@ class WhereBuilderTest extends OrmTestCase
             ->group()
                 ->group(ValuesGroup::GROUP_LOGICAL_OR)
                     ->field('customer')
-                        ->addSingleValue(new SingleValue(2))
+                        ->addSimpleValue(2)
                     ->end()
-                    ->field('customer_name')
-                        ->addPatternMatch(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
+                    ->field('customer_first_name')
+                        ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                     ->end()
                 ->end()
             ->end()
@@ -378,247 +407,191 @@ class WhereBuilderTest extends OrmTestCase
         $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals(
-            "((((C.id IN(2)) OR (C.name LIKE '%foo' ESCAPE '\\'))))",
+            "((((C.id IN(2)) OR (C.firstName LIKE '%foo' ESCAPE '\\'))))",
             $whereBuilder->getWhereClause()
         );
         $this->assertDqlCompiles($whereBuilder);
     }
 
-    public function testValueConversion()
+    public function testColumnConversion()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('label')
-                ->addSingleValue(new SingleValue(InvoiceNumber::createFromString('2015-001')))
-                ->addSingleValue(new SingleValue(InvoiceNumber::createFromString('2015-005')))
-            ->end()
-        ->getSearchCondition();
-
-        $whereBuilder = $this->getWhereBuilder($condition);
-
-        $this->assertEquals("((I.label IN('2015-0001', '2015-0005')))", $whereBuilder->getWhereClause());
-        $this->assertDqlCompiles(
-            $whereBuilder,
-            "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((i0_.label IN ('2015-0001', '2015-0005')))"
-        );
-    }
-
-    /**
-     * @dataProvider provideFieldConversionTests
-     *
-     * @param string $expectWhereCase
-     * @param array  $options
-     * @param string $expectedSql
-     */
-    public function testFieldConversion($expectWhereCase, array $options, $expectedSql)
-    {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
-            ->field('customer')
-                ->addSingleValue(new SingleValue(2))
-            ->end()
-        ->getSearchCondition();
-
-        $whereBuilder = $this->getWhereBuilder($condition);
-        $test = $this;
-
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlFieldConversionInterface')->getMock();
+        $converter = $this->createMock(ColumnConversion::class);
         $converter
             ->expects($this->atLeastOnce())
-            ->method('convertSqlField')
-            ->will($this->returnCallback(function ($column, array $options) use ($test, $options) {
-                $test->assertEquals($options, $options);
+            ->method('convertColumn')
+            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+                self::assertArraySubset(['grouping' => true], $options);
+                self::assertEquals('C', $hints->field->alias); // FIXME This is wrong, but the mapping system doesn't know of final aliases until processing
+                self::assertEquals('c1_.id', $hints->column);
 
                 return "CAST($column AS customer_type)";
-            }))
+            })
         ;
 
-        $whereBuilder->setConverter('customer', $converter);
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
 
-        $this->assertEquals($expectWhereCase, $whereBuilder->getWhereClause());
-        $this->assertDqlCompiles($whereBuilder, $expectedSql);
-    }
-
-    public function testSqlValueConversion()
-    {
-        $fieldSet = $this->getFieldSet();
-        $condition = SearchConditionBuilder::create($fieldSet)
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
         ->getSearchCondition();
 
-        $options = $fieldSet->get('customer')->getOptions();
         $whereBuilder = $this->getWhereBuilder($condition);
-        $test = $this;
+        self::assertEquals("((RW_SEARCH_FIELD_CONVERSION('customer', C.id, 0) IN(2)))", $whereBuilder->getWhereClause());
+        $this->assertDqlCompiles($whereBuilder, 'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((CAST(c1_.id AS customer_type) IN (2)))');
+    }
 
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Dbal\SqlValueConversionInterface')->getMock();
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('convertSqlValue')
-            ->will($this->returnCallback(function ($input, array $passedOptions) use ($test, $options) {
-                $test->assertEquals($options, $passedOptions);
-
-                return "get_customer_type($input)";
-            }))
-        ;
-
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('requiresBaseConversion')
-            ->will($this->returnValue(false))
-        ;
-
+    public function testValueConversion()
+    {
+        $converter = $this->createMock(ValueConversion::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertValue')
-            ->will($this->returnArgument(0))
+            ->willReturnCallback(function ($value, array $options) {
+                self::assertArraySubset(['grouping' => true], $options);
+
+                return "get_customer_type($value)";
+            })
         ;
 
-        $whereBuilder->setConverter('customer', $converter);
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
+
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
 
         $this->assertEquals("((C.id = RW_SEARCH_VALUE_CONVERSION('customer', C.id, 1, 0)))", $whereBuilder->getWhereClause());
         $this->assertDqlCompiles(
             $whereBuilder,
-            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id = get_customer_type(2)))'
+            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id = get_customer_type(2)))'
         );
     }
 
-    public function testConversionStrategy()
+    public function testConversionStrategyValue()
     {
-        $date = new \DateTime('2001-01-15', new \DateTimeZone('UTC'));
-
-        $fieldSet = $this->getFieldSet();
-        $condition = SearchConditionBuilder::create($fieldSet)
-            ->field('customer_birthday')
-                ->addSingleValue(new SingleValue(18))
-                ->addSingleValue(new SingleValue($date, '2001-01-15'))
-            ->end()
-        ->getSearchCondition();
-
-        $options = $fieldSet->get('customer_birthday')->getOptions();
-        $whereBuilder = $this->getWhereBuilder($condition);
-        $test = $this;
-
-        $converter = $this->getMockBuilder('Rollerworks\Component\Search\Tests\Doctrine\Dbal\SqlConversionStrategyInterface')->getMock();
+        $converter = $this->createMock(ValueConversionStrategy::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
-            ->will(
-                $this->returnCallback(
-                    function ($value) {
-                        if (!$value instanceof \DateTime && !is_int($value)) {
-                            throw new \InvalidArgumentException('Only integer/string and DateTime are accepted.');
-                        }
+            ->willReturnCallback(function ($value) {
+                if (!$value instanceof \DateTime && !is_int($value)) {
+                    throw new \InvalidArgumentException('Only integer/string and DateTime are accepted.');
+                }
 
-                        if ($value instanceof \DateTime) {
-                            return 2;
-                        }
+                if ($value instanceof \DateTime) {
+                    return 2;
+                }
 
-                        return 1;
-                    }
-                )
-            )
-        ;
-
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('convertSqlField')
-            ->will(
-                $this->returnCallback(
-                    function ($column, array $passedOptions, ConversionHints $hints) use ($test, $options) {
-                        $test->assertEquals($options, $passedOptions);
-
-                        if (2 === $hints->conversionStrategy) {
-                            return "search_conversion_age($column)";
-                        }
-
-                        $test->assertEquals(1, $hints->conversionStrategy);
-
-                        return $column;
-                    }
-                )
-            )
-        ;
-
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('convertSqlValue')
-            ->will(
-                $this->returnCallback(
-                    function ($input, array $passedOptions, ConversionHints $hints) use ($test, $options) {
-                        $test->assertEquals($options, $passedOptions);
-
-                        if (2 === $hints->conversionStrategy) {
-                            return 'CAST('.$hints->connection->quote($input).' AS DATE)';
-                        }
-
-                        $test->assertEquals(1, $hints->conversionStrategy);
-
-                        return $input;
-                    }
-                )
-            )
+                return 1;
+            })
         ;
 
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertValue')
-            ->will(
-                $this->returnCallback(
-                    function ($input, array $passedOptions, ConversionHints $hints) use ($test, $options) {
-                        $test->assertEquals($options, $passedOptions);
+            ->willReturnCallback(function ($value, array $passedOptions, ConversionHints $hints) {
+                self::assertArraySubset(['pattern' => 'dd-MM-yy'], $passedOptions);
 
-                        if ($input instanceof \DateTime) {
-                            $test->assertEquals(2, $hints->conversionStrategy);
-                        } else {
-                            $test->assertEquals(1, $hints->conversionStrategy);
-                        }
+                if ($value instanceof \DateTime) {
+                    self::assertEquals(2, $hints->conversionStrategy);
 
-                        if ($input instanceof \DateTime) {
-                            $input = $input->format('Y-m-d');
-                        }
+                    return 'CAST('.$hints->connection->quote($value->format('Y-m-d')).' AS AGE)';
+                }
 
-                        return $input;
-                    }
-                )
-            )
+                self::assertEquals(1, $hints->conversionStrategy);
+
+                return $value;
+            })
+        ;
+
+        $fieldSet = $this->getFieldSet(false);
+        $fieldSet->add('customer_birthday', DateType::class, ['doctrine_dbal_conversion' => $converter, 'pattern' => 'dd-MM-yy']);
+
+        $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
+            ->field('customer_birthday')
+                ->addSimpleValue(18)
+                ->addSimpleValue(new \DateTime('2001-01-15', new \DateTimeZone('UTC')))
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        self::assertEquals(
+            "(((C.birthday = RW_SEARCH_VALUE_CONVERSION('customer_birthday', C.birthday, 1, 1) OR C.birthday = RW_SEARCH_VALUE_CONVERSION('customer_birthday', C.birthday, 2, 2))))",
+            $whereBuilder->getWhereClause()
+        );
+        $this->assertDqlCompiles(
+            $whereBuilder,
+            "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.birthday = 18 OR c1_.birthday = CAST('2001-01-15' AS AGE))))"
+        );
+    }
+
+    public function testConversionStrategyColumn()
+    {
+        $converter = $this->createMock(ColumnConversionStrategy::class);
+        $converter
+            ->expects($this->atLeastOnce())
+            ->method('getConversionStrategy')
+            ->willReturnCallback(function ($value) {
+                if (!is_string($value) && !is_int($value)) {
+                    throw new \InvalidArgumentException('Only integer/string is accepted.');
+                }
+
+                if (is_string($value)) {
+                    return 2;
+                }
+
+                return 1;
+            })
         ;
 
         $converter
             ->expects($this->atLeastOnce())
-            ->method('requiresBaseConversion')
-            ->will($this->returnValue(false))
+            ->method('convertColumn')
+            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+                if (2 === (int) $hints->conversionStrategy) {
+                    return "search_conversion_age($column)";
+                }
+
+                self::assertEquals(1, $hints->conversionStrategy);
+
+                return $column;
+            })
         ;
 
-        $whereBuilder->setConverter('customer_birthday', $converter);
+        $fieldSetBuilder = $this->getFieldSet(false);
+        $fieldSetBuilder->add('customer_birthday', TextType::class, ['doctrine_dbal_conversion' => $converter]);
 
-        $this->assertEquals(
-            "(((RW_SEARCH_FIELD_CONVERSION('customer_birthday', C.birthday, 1) = RW_SEARCH_VALUE_CONVERSION('customer_birthday', RW_SEARCH_FIELD_CONVERSION('customer_birthday', C.birthday, 1), 1, 1) OR RW_SEARCH_FIELD_CONVERSION('customer_birthday', C.birthday, 2) = RW_SEARCH_VALUE_CONVERSION('customer_birthday', RW_SEARCH_FIELD_CONVERSION('customer_birthday', C.birthday, 2), 2, 2))))",
+        $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
+            ->field('customer_birthday')
+                ->addSimpleValue(18)
+                ->addSimpleValue('2001-01-15')
+            ->end()
+        ->getSearchCondition();
+
+        $whereBuilder = $this->getWhereBuilder($condition);
+        $whereBuilder->setField('customer_birthday', 'birthday', 'C', self::CUSTOMER_CLASS, 'string');
+
+        self::assertEquals(
+            "(((RW_SEARCH_FIELD_CONVERSION('customer_birthday', C.birthday, 1) = 18 OR RW_SEARCH_FIELD_CONVERSION('customer_birthday', C.birthday, 2) = '2001-01-15')))",
             $whereBuilder->getWhereClause()
         );
-        $this->assertDqlCompiles($whereBuilder, "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.birthday = 18 OR search_conversion_age(c1_.birthday) = CAST('2001-01-15' AS DATE))))");
-    }
-
-    public static function provideFieldConversionTests()
-    {
-        return [
-            [
-                "((RW_SEARCH_FIELD_CONVERSION('customer', C.id, 0) IN(2)))",
-                [],
-                'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((CAST(c1_.id AS customer_type) IN (2)))',
-            ],
-            [
-                "((RW_SEARCH_FIELD_CONVERSION('customer', C.id, 0) IN(2)))",
-                ['active' => true],
-                'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((CAST(c1_.id AS customer_type) IN (2)))',
-            ],
-        ];
+        $this->assertDqlCompiles(
+            $whereBuilder,
+            "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.birthday = 18 OR search_conversion_age(c1_.birthday) = '2001-01-15')))"
+        );
     }
 
     public function testUpdateQuery()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
         ->getSearchCondition();
 
@@ -634,7 +607,7 @@ class WhereBuilderTest extends OrmTestCase
         );
         $this->assertDqlCompiles(
             $whereBuilder,
-            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2)))',
+            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2)))',
             false
         );
     }
@@ -664,27 +637,29 @@ class WhereBuilderTest extends OrmTestCase
 
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
-                ->addSingleValue(new SingleValue(2))
+                ->addSimpleValue(2)
             ->end()
         ->getSearchCondition();
 
         $whereBuilder = $this->getWhereBuilder($condition, $query, true);
-        $whereBuilder->setEntityMappings([
-            'ECommerce:ECommerceInvoice' => 'I',
-            'ECommerce:ECommerceCustomer' => 'C',
-        ]);
+
+        $whereBuilder->setDefaultEntity('ECommerce:ECommerceInvoice', 'I');
+        $whereBuilder->setField('id', 'id', null, null, 'smallint');
+        $whereBuilder->setField('status', 'status');
+
+        $whereBuilder->setDefaultEntity('ECommerce:ECommerceCustomer', 'C');
+        $whereBuilder->setField('customer', 'id');
+        $whereBuilder->setField('customer_name#first_name', 'firstName');
+        $whereBuilder->setField('customer_name#last_name', 'lastName');
+        $whereBuilder->setField('customer_birthday', 'birthday');
 
         $whereCase = $whereBuilder->getWhereClause();
 
         $this->assertEquals('((C.id IN(2)))', $whereCase);
-        $this->assertDqlCompiles($whereBuilder, 'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.customer AS customer4, i0_.parent_id AS parent_id5 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2)))');
+        $this->assertDqlCompiles($whereBuilder, 'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2)))');
     }
 
-    /**
-     * @param WhereBuilder $whereBuilder
-     * @param string       $expectedSql
-     */
-    private function assertDqlCompiles(WhereBuilder $whereBuilder, $expectedSql = '', $updateQuery = true)
+    private function assertDqlCompiles(WhereBuilder $whereBuilder, string $expectedSql = '', bool $updateQuery = true)
     {
         if ($updateQuery) {
             $whereBuilder->updateQuery();

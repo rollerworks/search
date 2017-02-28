@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -14,9 +16,8 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Rollerworks\Component\Search\Doctrine\Orm\CacheNativeWhereBuilder;
 use Rollerworks\Component\Search\Doctrine\Orm\NativeWhereBuilder;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\ValuesGroup;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 class CacheNativeWhereBuilderTest extends OrmTestCase
 {
@@ -113,7 +114,7 @@ class CacheNativeWhereBuilderTest extends OrmTestCase
     {
         parent::setUp();
 
-        $fieldSet = new FieldSet('invoice');
+        $fieldSet = $this->getFieldSet();
 
         $this->cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
         $this->whereBuilder = $this->getMockBuilder('Rollerworks\Component\Search\Doctrine\Orm\NativeWhereBuilder')
