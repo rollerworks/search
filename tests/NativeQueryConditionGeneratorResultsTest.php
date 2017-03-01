@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
-final class NativeWhereBuilderResultsTest extends WhereBuilderResultsTestCase
+final class NativeQueryConditionGeneratorResultsTest extends ConditionGeneratorResultsTestCase
 {
     protected function getQuery()
     {

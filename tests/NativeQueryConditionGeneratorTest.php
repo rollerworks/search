@@ -24,17 +24,17 @@ use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
- * NativeWhereBuilderTest.
+ * NativeQueryConditionGeneratorTest.
  *
- * This doesn't do extensive query tests as this handled by the QueryPlatform,
- * and is already tested in DBAL package.
+ * This doesn't do extensive query tests as this is handled by the QueryPlatform,
+ * and is already tested in the DBAL package.
  *
  * Note: In DQL it's not possible to reference a JOINED property (I.customer),
  * while in the NativeQuery it is possible and the preferred method.
  */
-class NativeWhereBuilderTest extends OrmTestCase
+class NativeQueryConditionGeneratorTest extends OrmTestCase
 {
-    private function getWhereBuilder(SearchCondition $condition)
+    private function getConditionGenerator(SearchCondition $condition)
     {
         $rsm = new ResultSetMappingBuilder($this->em);
         $rsm->addRootEntityFromClassMetadata(
@@ -55,18 +55,18 @@ class NativeWhereBuilderTest extends OrmTestCase
             $rsm
         );
 
-        $whereBuilder = $this->getOrmFactory()->createWhereBuilder($querySmt, $condition);
-        $whereBuilder->setDefaultEntity(self::INVOICE_CLASS, 'I');
-        $whereBuilder->setField('id', 'id', null, null, 'smallint');
-        $whereBuilder->setField('customer', 'customer', null, null, 'integer');
-        //$whereBuilder->setField('credit_parent#0', 'parent');
+        $conditionGenerator = $this->getOrmFactory()->createConditionGenerator($querySmt, $condition);
+        $conditionGenerator->setDefaultEntity(self::INVOICE_CLASS, 'I');
+        $conditionGenerator->setField('id', 'id', null, null, 'smallint');
+        $conditionGenerator->setField('customer', 'customer', null, null, 'integer');
+        //$conditionGenerator->setField('credit_parent#0', 'parent');
 
-        $whereBuilder->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
-        $whereBuilder->setField('customer_name#first_name', 'firstName');
-        $whereBuilder->setField('customer_name#last_name', 'lastName');
-        $whereBuilder->setField('customer_birthday', 'birthday');
+        $conditionGenerator->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
+        $conditionGenerator->setField('customer_name#first_name', 'firstName');
+        $conditionGenerator->setField('customer_name#last_name', 'lastName');
+        $conditionGenerator->setField('customer_birthday', 'birthday');
 
-        return $whereBuilder;
+        return $conditionGenerator;
     }
 
     public function testSimpleQuery()
@@ -78,21 +78,21 @@ class NativeWhereBuilderTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
-            $this->assertEquals('((I.customer IN(2, 5)))', $whereBuilder->getWhereClause());
+            $this->assertEquals('((I.customer IN(2, 5)))', $conditionGenerator->getWhereClause());
         } else {
-            $this->assertEquals("((I.customer IN('2', '5')))", $whereBuilder->getWhereClause());
+            $this->assertEquals("((I.customer IN('2', '5')))", $conditionGenerator->getWhereClause());
         }
     }
 
     public function testEmptyResult()
     {
         $condition = new SearchCondition($this->getFieldSet(), new ValuesGroup());
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('', $whereBuilder->getWhereClause());
+        $this->assertEquals('', $conditionGenerator->getWhereClause());
     }
 
     public function testColumnConversion()
@@ -120,12 +120,12 @@ class NativeWhereBuilderTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
-            $this->assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $whereBuilder->getWhereClause());
+            $this->assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $conditionGenerator->getWhereClause());
         } else {
-            $this->assertEquals("((CAST(I.customer AS customer_type) IN('2', '5')))", $whereBuilder->getWhereClause());
+            $this->assertEquals("((CAST(I.customer AS customer_type) IN('2', '5')))", $conditionGenerator->getWhereClause());
         }
     }
 
@@ -152,8 +152,9 @@ class NativeWhereBuilderTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
-        self::assertEquals('(((I.customer = get_customer_type(2) OR I.customer = get_customer_type(5))))', $whereBuilder->getWhereClause());
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        self::assertEquals('(((I.customer = get_customer_type(2) OR I.customer = get_customer_type(5))))', $conditionGenerator->getWhereClause(
+        ));
     }
 
     public function testConversionStrategyValue()
@@ -203,10 +204,10 @@ class NativeWhereBuilderTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
         self::assertEquals(
             "(((C.birthday = 18 OR C.birthday = CAST('2001-01-15' AS AGE))))",
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -218,22 +219,22 @@ class NativeWhereBuilderTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $whereCase = $whereBuilder->getWhereClause();
-        $whereBuilder->updateQuery();
+        $whereCase = $conditionGenerator->getWhereClause();
+        $conditionGenerator->updateQuery();
 
         if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
             $this->assertEquals('((I.customer IN(2)))', $whereCase);
             $this->assertEquals(
             'SELECT I FROM Invoice I JOIN customer AS C ON I.customer = C.id WHERE ((I.customer IN(2)))',
-            $whereBuilder->getQuery()->getSQL()
+            $conditionGenerator->getQuery()->getSQL()
         );
         } else {
             $this->assertEquals("((I.customer IN('2')))", $whereCase);
             $this->assertEquals(
                 "SELECT I FROM Invoice I JOIN customer AS C ON I.customer = C.id WHERE ((I.customer IN('2')))",
-                $whereBuilder->getQuery()->getSQL()
+                $conditionGenerator->getQuery()->getSQL()
             );
         }
     }
@@ -241,15 +242,15 @@ class NativeWhereBuilderTest extends OrmTestCase
     public function testUpdateQueryWithNoResult()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())->getSearchCondition();
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $whereCase = $whereBuilder->getWhereClause();
-        $whereBuilder->updateQuery();
+        $whereCase = $conditionGenerator->getWhereClause();
+        $conditionGenerator->updateQuery();
 
         $this->assertEquals('', $whereCase);
         $this->assertEquals(
             'SELECT I FROM Invoice I JOIN customer AS C ON I.customer = C.id',
-            $whereBuilder->getQuery()->getSQL()
+            $conditionGenerator->getQuery()->getSQL()
         );
     }
 }

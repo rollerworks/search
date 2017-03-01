@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Rollerworks\Component\Search\Doctrine\Orm\AbstractWhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Orm\AbstractConditionGenerator;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
@@ -42,7 +42,7 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
  * Complex structure tests are not done here as these tests are more about
  * "doesn't error".
  */
-class WhereBuilderResultsTestCase extends OrmTestCase
+class ConditionGeneratorResultsTestCase extends OrmTestCase
 {
     /**
      * @var StringQueryInput
@@ -138,26 +138,26 @@ class WhereBuilderResultsTestCase extends OrmTestCase
         ];
     }
 
-    protected function configureWhereBuilder(AbstractWhereBuilder $whereBuilder)
+    protected function configureConditionGenerator(AbstractConditionGenerator $conditionGenerator)
     {
-        $whereBuilder->setDefaultEntity(self::INVOICE_CLASS, 'I');
-        $whereBuilder->setField('id', 'id');
-        $whereBuilder->setField('label', 'label');
-        $whereBuilder->setField('pub-date', 'date');
-        $whereBuilder->setField('status', 'status');
-        $whereBuilder->setField('total', 'total');
+        $conditionGenerator->setDefaultEntity(self::INVOICE_CLASS, 'I');
+        $conditionGenerator->setField('id', 'id');
+        $conditionGenerator->setField('label', 'label');
+        $conditionGenerator->setField('pub-date', 'date');
+        $conditionGenerator->setField('status', 'status');
+        $conditionGenerator->setField('total', 'total');
 
-        $whereBuilder->setDefaultEntity(Fixtures\Entity\ECommerceInvoiceRow::class, 'R');
-        $whereBuilder->setField('row-label', 'label');
-        $whereBuilder->setField('row-price', 'price');
-        $whereBuilder->setField('row-quantity', 'quantity');
-        $whereBuilder->setField('row-total', 'total');
+        $conditionGenerator->setDefaultEntity(Fixtures\Entity\ECommerceInvoiceRow::class, 'R');
+        $conditionGenerator->setField('row-label', 'label');
+        $conditionGenerator->setField('row-price', 'price');
+        $conditionGenerator->setField('row-quantity', 'quantity');
+        $conditionGenerator->setField('row-total', 'total');
 
-        $whereBuilder->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
-        $whereBuilder->setField('customer', 'id');
-        $whereBuilder->setField('customer-name#first_name', 'firstName');
-        $whereBuilder->setField('customer-name#last_name', 'lastName');
-        $whereBuilder->setField('customer-birthday', 'birthday');
+        $conditionGenerator->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
+        $conditionGenerator->setField('customer', 'id');
+        $conditionGenerator->setField('customer-name#first_name', 'firstName');
+        $conditionGenerator->setField('customer-name#last_name', 'lastName');
+        $conditionGenerator->setField('customer-birthday', 'birthday');
     }
 
     protected function getFieldSet(bool $build = true)

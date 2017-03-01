@@ -14,14 +14,18 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Rollerworks\Component\Search\Doctrine\Orm\CacheWhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Orm\CachedNativeQueryConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
-use Rollerworks\Component\Search\Doctrine\Orm\NativeWhereBuilder;
-use Rollerworks\Component\Search\Doctrine\Orm\WhereBuilder;
+use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Orm\NativeQueryConditionGenerator;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @group non-functional
+ */
 class DoctrineOrmFactoryTest extends OrmTestCase
 {
     /**
@@ -29,16 +33,16 @@ class DoctrineOrmFactoryTest extends OrmTestCase
      */
     protected $factory;
 
-    public function testCreateWhereBuilder()
+    public function testCreateConditionGenerator()
     {
         $condition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
         $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
 
-        $whereBuilder = $this->factory->createWhereBuilder($query, $condition);
-        $this->assertInstanceOf(WhereBuilder::class, $whereBuilder);
+        $conditionGenerator = $this->factory->createConditionGenerator($query, $condition);
+        $this->assertInstanceOf(DqlConditionGenerator::class, $conditionGenerator);
     }
 
-    public function testCreateNativeWhereBuilder()
+    public function testCreateNativeConditionGenerator()
     {
         $rsm = new ResultSetMappingBuilder($this->em);
         $rsm->addRootEntityFromClassMetadata(
@@ -61,27 +65,59 @@ class DoctrineOrmFactoryTest extends OrmTestCase
             $rsm
         );
 
-        $whereBuilder = $this->factory->createWhereBuilder($query, $condition);
-        $this->assertInstanceOf(NativeWhereBuilder::class, $whereBuilder);
+        $conditionGenerator = $this->factory->createConditionGenerator($query, $condition);
+        $this->assertInstanceOf(NativeQueryConditionGenerator::class, $conditionGenerator);
     }
 
-    public function testCreateCacheWhereBuilder()
+    public function testCachedDqlConditionGenerator()
     {
         $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
         $searchCondition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
 
-        $whereBuilder = $this->factory->createWhereBuilder($query, $searchCondition);
-        $this->assertInstanceOf(WhereBuilder::class, $whereBuilder);
+        $conditionGenerator = $this->factory->createConditionGenerator($query, $searchCondition);
+        $this->assertInstanceOf(DqlConditionGenerator::class, $conditionGenerator);
 
-        $cacheWhereBuilder = $this->factory->createCacheWhereBuilder($whereBuilder);
-        $this->assertInstanceOf(CacheWhereBuilder::class, $cacheWhereBuilder);
+        $cachedConditionGenerator = $this->factory->createCachedConditionGenerator($conditionGenerator);
+        $this->assertInstanceOf(CachedDqlConditionGenerator::class, $cachedConditionGenerator);
     }
+
+    public function testCachedNativeQueryConditionGenerator()
+    {
+        $rsm = new ResultSetMappingBuilder($this->em);
+        $rsm->addRootEntityFromClassMetadata(
+            'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice',
+            'I',
+            ['id' => 'invoice_id']
+        );
+
+        $rsm->addJoinedEntityFromClassMetadata(
+            'Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer',
+            'C',
+            'I',
+            'customer',
+            ['id' => 'customer_id']
+        );
+
+        $condition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
+        $query = $this->em->createNativeQuery(
+            'SELECT I FROM Invoice I JOIN customer AS C ON I.customer = C.id',
+            $rsm
+        );
+
+        $conditionGenerator = $this->factory->createConditionGenerator($query, $condition);
+        $this->assertInstanceOf(NativeQueryConditionGenerator::class, $conditionGenerator);
+
+        $cachedConditionGenerator = $this->factory->createCachedConditionGenerator($conditionGenerator);
+        $this->assertInstanceOf(CachedNativeQueryConditionGenerator::class, $cachedConditionGenerator);
+    }
+
+    // Missing Test for CachedNativeQueryConditionGenerator
 
     protected function setUp()
     {
         parent::setUp();
 
-        $cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
+        $cacheDriver = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
         $this->factory = new DoctrineOrmFactory($cacheDriver);
     }
 }

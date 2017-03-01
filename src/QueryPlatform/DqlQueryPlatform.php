@@ -106,10 +106,10 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
      */
     protected function quoteValue($value, Type $type): string
     {
-        if (is_scalar($value) && ctype_digit((string) $value)) {
-            return (string) $value;
-        } elseif (is_bool($value)) {
+        if (is_bool($value)) {
             return $value ? 'true' : 'false';
+        } elseif (is_scalar($value) && ctype_digit((string) $value)) {
+            return (string) $value;
         } else {
             return "'".str_replace("'", "''", $value)."'";
         }
@@ -124,7 +124,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
             'RW_SEARCH_MATCH(%s, %s, %s) %s 1',
             $column,
             $value,
-            $caseInsensitive ? 'true' : 'false',
+            $this->quoteValue($caseInsensitive, Type::getType(Type::BOOLEAN)),
             ($negative ? '<>' : '=')
         );
     }

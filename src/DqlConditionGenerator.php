@@ -21,20 +21,25 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
- * SearchCondition Doctrine ORM WhereBuilder.
+ * SearchCondition Doctrine ORM DQL ConditionGenerator.
  *
- * This class provides the functionality for creating an DQL WHERE-clause
- * based on the provided SearchCondition.
+ * This class provides the functionality for creating a DQL
+ * WHERE-clause based on the provided SearchCondition.
+ *
+ * Note that only fields that have been configured with `setField()`
+ * will be actually used in the generated query.
  *
  * Keep the following in mind when using conversions.
  *
- *  * Conversions are performed per field and must be stateless,
- *    they receive the type and connection information for the conversion process.
+ *  * Conversions are performed per search field and must be stateless,
+ *    they receive the db-type and connection information for the conversion process.
  *  * Conversions apply at the SQL level, meaning they must be platform specific.
+ *  * Conversion results must be properly escaped to prevent SQL injections.
+ *  * Conversions require the correct query-hint to be set.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
+final class DqlConditionGenerator extends AbstractConditionGenerator
 {
     /**
      * @var DqlQuery
@@ -56,8 +61,6 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      *
      * @param DqlQuery        $query           Doctrine ORM Query object
      * @param SearchCondition $searchCondition SearchCondition object
-     *
-     * @throws BadMethodCallException When SearchCondition contains errors
      */
     public function __construct(DqlQuery $query, SearchCondition $searchCondition)
     {
@@ -80,17 +83,15 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
      *
      * @return string
      */
-    public function getWhereClause($prependQuery = '')
+    public function getWhereClause(string $prependQuery = ''): string
     {
         if (null === $this->whereClause) {
             $fields = $this->fieldsConfig->getFields();
             $platform = new DqlQueryPlatform($this->entityManager);
+            $connection = $this->entityManager->getConnection();
+            $queryGenerator = new QueryGenerator($connection, $platform, $fields);
 
-            $queryGenerator = new QueryGenerator(
-                $this->entityManager->getConnection(), $platform, $fields
-            );
-
-            $this->nativePlatform = $this->getQueryPlatform($this->entityManager->getConnection(), $fields);
+            $this->nativePlatform = $this->getQueryPlatform($connection, $fields);
             $this->whereClause = $queryGenerator->getGroupQuery($this->searchCondition->getValuesGroup());
             $this->parameters = $platform->getEmbeddedValues();
         }
@@ -105,30 +106,28 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     /**
      * Updates the configured query object with the where-clause and query-hints.
      *
-     * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example)
+     * @param string $prependQuery Prepend before the generated WHERE clause
+     *                             Eg. " WHERE " or " AND ", ignored when WHERE
+     *                             clause is empty. Default is ' WHERE '
      *
-     * @return self
+     * @return DqlConditionGenerator
      */
-    public function updateQuery($prependQuery = ' WHERE ')
+    public function updateQuery(string $prependQuery = ' WHERE ')
     {
         $whereCase = $this->getWhereClause($prependQuery);
 
         if ('' !== $whereCase) {
             $this->query->setDQL($this->query->getDQL().$whereCase);
-            $this->query->setHint(
-                $this->getQueryHintName(),
-                $this->getQueryHintValue()
-            );
+            $this->query->setHint($this->getQueryHintName(), $this->getQueryHintValue());
         }
 
         return $this;
     }
 
     /**
-     * Returns the Query hint name for the final query object.
+     * Returns the Query-hint name for the query object.
      *
-     * The Query hint is used for conversions.
+     * The Query-hint is used for conversions.
      *
      * @return string
      */
@@ -138,17 +137,17 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * Returns the Query hint value for the final query object.
+     * Returns the Query-hint value for the query object.
      *
-     * The Query hint is used for sql-value-conversions.
+     * The Query hint is used for conversions.
      *
-     * @return SqlConversionInfo|\Closure
+     * @return SqlConversionInfo
      */
-    public function getQueryHintValue()
+    public function getQueryHintValue(): SqlConversionInfo
     {
         if (null === $this->whereClause) {
             throw new BadMethodCallException(
-                'Unable to get query-hint value for WhereBuilder. Call getWhereClause() before calling this method.'
+                'Unable to get query-hint value for ConditionGenerator. Call getWhereClause() before calling this method.'
             );
         }
 
@@ -156,19 +155,17 @@ class WhereBuilder extends AbstractWhereBuilder implements WhereBuilderInterface
     }
 
     /**
-     * @return array
-     *
      * @internal
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
     /**
-     * @return DqlQuery
+     * @internal
      */
-    public function getQuery()
+    public function getQuery(): DqlQuery
     {
         return $this->query;
     }

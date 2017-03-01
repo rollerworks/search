@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-final class WhereBuilderResultsTest extends WhereBuilderResultsTestCase
+final class DqlConditionGeneratorResultsTest extends ConditionGeneratorResultsTestCase
 {
     protected function getQuery()
     {

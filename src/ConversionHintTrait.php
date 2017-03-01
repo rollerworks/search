@@ -17,6 +17,9 @@ use Doctrine\ORM\Query\SqlWalker;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
+/**
+ * @internal
+ */
 trait ConversionHintTrait
 {
     /**
