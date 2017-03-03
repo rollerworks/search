@@ -29,7 +29,7 @@ the details of the invoices (obviously) have there own table.
 Instead of writing a very verbose SQL query, your users can simple use 
 the user-friendly StringQuery syntax:
 
-> `invoice_price: >"$20.00" invoice_row_label: ~*"my cool product"; customer_type: !consumer`.
+> `invoice_price: > $20.00; invoice_row_label: ~*"my cool product"; customer_type: !consumer`.
 
 You just searched in three relational tables using a single condition with a
 user-friendly syntax. And that is just the start, RollerworksSearch can work with
