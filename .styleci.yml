@@ -11,12 +11,16 @@ enabled:
 
     # Strict
     - strict_param
-    #- declare_strict_types
+    - declare_strict_types
+
+disabled:
+    - phpdoc_no_empty_return
 
 finder:
     path:
         - 'src/'
         - 'tests/'
     not-path:
+        - 'spec/'
         - 'Fixtures'
         - 'doc'

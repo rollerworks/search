@@ -21,8 +21,7 @@
         "doctrine/orm": "^2.5"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.2.1",
-        "sllh/php-cs-fixer-styleci-bridge": "^2.0"
+        "symfony/phpunit-bridge": "^3.2.1"
     },
     "autoload": {
         "psr-4": {
