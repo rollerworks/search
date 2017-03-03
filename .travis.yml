@@ -47,4 +47,5 @@ before_script:
 
 script:
     - vendor/bin/simple-phpunit --verbose
-    - if [ "$DB" != "" ]; then vendor/bin/simple-phpunit --configuration tests/travis/$DB.travis.xml; fi;
+    - if [ "$DB" != "" ] && [ "$DB" != "sqlite" ]; then vendor/bin/simple-phpunit --configuration tests/travis/$DB.travis.xml --exclude-group non-functional; fi;
+    - if [ "$DB" = "sqlite" ]; then vendor/bin/simple-phpunit --configuration tests/travis/sqlite.travis.xml; fi;

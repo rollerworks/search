@@ -29,7 +29,7 @@ trait QueryPlatformTrait
      *
      * @return QueryPlatform
      */
-    protected function getQueryPlatform(Connection $connection, array $fields)
+    protected function getQueryPlatform(Connection $connection, array $fields): QueryPlatform
     {
         $dbPlatform = ucfirst($connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';

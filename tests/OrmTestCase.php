@@ -19,7 +19,8 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Tests\TestUtil;
-use Rollerworks\Component\Search\Doctrine\Orm\AbstractWhereBuilder;
+use Psr\SimpleCache\CacheInterface;
+use Rollerworks\Component\Search\Doctrine\Orm\AbstractConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
@@ -58,11 +59,6 @@ class OrmTestCase extends DbalTestCase
      * @var \Doctrine\ORM\EntityManager
      */
     private static $sharedEm;
-
-    /**
-     * @var string|null
-     */
-    protected $query;
 
     protected function setUp()
     {
@@ -127,7 +123,7 @@ class OrmTestCase extends DbalTestCase
 
     protected function getOrmFactory()
     {
-        return new DoctrineOrmFactory($this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock());
+        return new DoctrineOrmFactory($this->createMock(CacheInterface::class));
     }
 
     /**
@@ -139,7 +135,7 @@ class OrmTestCase extends DbalTestCase
     }
 
     /**
-     * Returns the string for the WhereBuilder.
+     * Returns the string for the ConditionGenerator.
      *
      * @return Query|NativeQuery
      */
@@ -148,11 +144,11 @@ class OrmTestCase extends DbalTestCase
     }
 
     /**
-     * Configure fields of the WhereBuilder.
+     * Configure fields of the ConditionGenerator.
      *
-     * @param AbstractWhereBuilder $whereBuilder
+     * @param AbstractConditionGenerator $conditionGenerator
      */
-    protected function configureWhereBuilder(AbstractWhereBuilder $whereBuilder)
+    protected function configureConditionGenerator(AbstractConditionGenerator $conditionGenerator)
     {
     }
 
@@ -166,11 +162,11 @@ class OrmTestCase extends DbalTestCase
     {
         $query = $this->getQuery();
 
-        $whereBuilder = $this->getOrmFactory()->createWhereBuilder($query, $condition);
-        $this->configureWhereBuilder($whereBuilder);
+        $conditionGenerator = $this->getOrmFactory()->createConditionGenerator($query, $condition);
+        $this->configureConditionGenerator($conditionGenerator);
 
-        $whereClause = $whereBuilder->getWhereClause();
-        $whereBuilder->updateQuery();
+        $whereClause = $conditionGenerator->getWhereClause();
+        $conditionGenerator->updateQuery();
 
         $rows = $query->getArrayResult();
         $idRows = array_map(

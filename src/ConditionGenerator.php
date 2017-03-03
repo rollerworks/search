@@ -17,10 +17,15 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 
 /**
- * The ConfigurableWhereBuilderInterface allows to set a WhereBuilder's
- * mapping configuration.
+ * A Doctrine ORM ConditionGenerator generates an DQL/SQL WHERE-clause
+ * based on the provided SearchCondition.
+ *
+ * This interface is provided for type hinting it should not
+ * be implemented in external code.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-interface ConfigurableWhereBuilderInterface extends WhereBuilderInterface
+interface ConditionGenerator
 {
     /**
      * Set the default entity mapping configuration, only for fields
@@ -32,6 +37,8 @@ interface ConfigurableWhereBuilderInterface extends WhereBuilderInterface
      *
      * @param string $entity Entity name (FQCN or Doctrine aliased)
      * @param string $alias  Table alias as used in the query "u" for `FROM Acme:Users AS u`
+     *
+     * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return $this
      */
@@ -70,5 +77,28 @@ interface ConfigurableWhereBuilderInterface extends WhereBuilderInterface
      *
      * @return $this
      */
-    public function setField(string $fieldName, string $property, string $alias, string $entity = null, string $dbType = null);
+    public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null);
+
+    /**
+     * Returns the generated where-clause.
+     *
+     * The Where-clause is wrapped inside a group so it can be safely used
+     * with other conditions.
+     *
+     * @param string $prependQuery Prepend before the generated WHERE clause
+     *                             Eg. " WHERE " or " AND ", ignored when WHERE
+     *                             clause is empty.
+     *
+     * @return string
+     */
+    public function getWhereClause(string $prependQuery = ''): string;
+
+    /**
+     * Updates the configured query object with the where-clause.
+     *
+     * @param string $prependQuery Prepend before the generated WHERE clause
+     *                             Eg. " WHERE " or " AND ", ignored when WHERE
+     *                             clause is empty. Default is ' WHERE '
+     */
+    public function updateQuery(string $prependQuery = ' WHERE ');
 }

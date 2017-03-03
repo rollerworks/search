@@ -19,11 +19,14 @@ use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
- * Handles abstracted handling of the Doctrine WhereBuilder.
+ * Handles abstracted logic of a Doctrine ORM ConditionGenerator.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @internal this class should not be relied upon, use the ConditionGenerator
+ *           interface instead for type hinting
  */
-abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
+abstract class AbstractConditionGenerator implements ConditionGenerator
 {
     use QueryPlatformTrait;
 
@@ -90,27 +93,25 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @internal
      */
-    public function getSearchCondition()
+    public function getSearchCondition(): SearchCondition
     {
         return $this->searchCondition;
     }
 
     /**
-     * @return EntityManagerInterface
+     * @internal
      */
-    public function getEntityManager()
+    public function getEntityManager(): EntityManagerInterface
     {
         return $this->entityManager;
     }
 
     /**
-     * @return FieldConfigBuilder
-     *
      * @internal
      */
-    public function getFieldsConfig()
+    public function getFieldsConfig(): FieldConfigBuilder
     {
         return $this->fieldsConfig;
     }
@@ -122,7 +123,7 @@ abstract class AbstractWhereBuilder implements ConfigurableWhereBuilderInterface
     {
         if (null !== $this->whereClause) {
             throw new BadMethodCallException(
-                'WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.'
+                'ConditionGenerator configuration methods cannot be accessed anymore once the where-clause is generated.'
             );
         }
     }
