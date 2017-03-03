@@ -83,6 +83,20 @@ class SearchFactoryBuilder
     }
 
     /**
+     * Set the FieldSetRegistry to use for loading FieldSetConfigurators.
+     *
+     * @param FieldSetRegistry $fieldSetRegistry
+     *
+     * @return SearchFactoryBuilder
+     */
+    public function setFieldSetRegistry(FieldSetRegistry $fieldSetRegistry): SearchFactoryBuilder
+    {
+        $this->fieldSetRegistry = $fieldSetRegistry;
+
+        return $this;
+    }
+
+    /**
      * Adds an extension to be loaded by the factory.
      *
      * @param SearchExtension $extension The extension
