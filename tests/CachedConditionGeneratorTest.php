@@ -22,12 +22,12 @@ use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-class CacheWhereBuilderTest extends DbalTestCase
+final class CachedConditionGeneratorTest extends DbalTestCase
 {
     /**
      * @var CachedConditionGenerator
      */
-    private $cacheWhereBuilder;
+    private $cachedConditionGenerator;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -37,7 +37,7 @@ class CacheWhereBuilderTest extends DbalTestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $whereBuilder;
+    private $conditionGenerator;
 
     public function testGetWhereClauseNoCache()
     {
@@ -59,7 +59,7 @@ class CacheWhereBuilderTest extends DbalTestCase
             ->expects($this->never())
             ->method('get');
 
-        $this->whereBuilder
+        $this->conditionGenerator
             ->expects($this->once())
             ->method('getWhereClause')
             ->willReturn("me = 'foo'");
@@ -77,7 +77,7 @@ class CacheWhereBuilderTest extends DbalTestCase
                 60
             );
 
-        self::assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
+        self::assertEquals("me = 'foo'", $this->cachedConditionGenerator->getWhereClause());
     }
 
     public function testGetWhereClauseWithCache()
@@ -106,7 +106,7 @@ class CacheWhereBuilderTest extends DbalTestCase
             )
             ->willReturn("me = 'foo'");
 
-        $this->whereBuilder
+        $this->conditionGenerator
             ->expects(self::never())
             ->method('getWhereClause');
 
@@ -114,7 +114,7 @@ class CacheWhereBuilderTest extends DbalTestCase
             ->expects(self::never())
             ->method('set');
 
-        self::assertEquals("me = 'foo'", $this->cacheWhereBuilder->getWhereClause());
+        self::assertEquals("me = 'foo'", $this->cachedConditionGenerator->getWhereClause());
     }
 
     public function testGetWhereWithPrepend()
@@ -143,7 +143,7 @@ class CacheWhereBuilderTest extends DbalTestCase
             )
             ->willReturn("me = 'foo'");
 
-        $this->whereBuilder
+        $this->conditionGenerator
             ->expects(self::never())
             ->method('getWhereClause');
 
@@ -151,7 +151,7 @@ class CacheWhereBuilderTest extends DbalTestCase
             ->expects(self::never())
             ->method('set');
 
-        self::assertEquals("WHERE me = 'foo'", $this->cacheWhereBuilder->getWhereClause('WHERE '));
+        self::assertEquals("WHERE me = 'foo'", $this->cachedConditionGenerator->getWhereClause('WHERE '));
     }
 
     public function testGetEmptyWhereWithPrepend()
@@ -178,7 +178,7 @@ class CacheWhereBuilderTest extends DbalTestCase
             )
             ->willReturn('');
 
-        $this->whereBuilder
+        $this->conditionGenerator
             ->expects(self::never())
             ->method('getWhereClause');
 
@@ -186,7 +186,7 @@ class CacheWhereBuilderTest extends DbalTestCase
             ->expects(self::never())
             ->method('set');
 
-        self::assertEquals('', $this->cacheWhereBuilder->getWhereClause('WHERE '));
+        self::assertEquals('', $this->cachedConditionGenerator->getWhereClause('WHERE '));
     }
 
     public function testFieldMappingDelegation()
@@ -228,12 +228,12 @@ class CacheWhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $this->whereBuilder = new SqlConditionGenerator($this->getConnectionMock(), $searchCondition);
+        $this->conditionGenerator = new SqlConditionGenerator($this->getConnectionMock(), $searchCondition);
 
-        $this->cacheWhereBuilder = new CachedConditionGenerator($this->whereBuilder, $this->cacheDriver, 60);
-        $this->cacheWhereBuilder->setField('customer', 'id', 'I', 'integer');
+        $this->cachedConditionGenerator = new CachedConditionGenerator($this->conditionGenerator, $this->cacheDriver, 60);
+        $this->cachedConditionGenerator->setField('customer', 'id', 'I', 'integer');
 
-        self::assertEquals('((I.id IN(18)))', $this->cacheWhereBuilder->getWhereClause());
+        self::assertEquals('((I.id IN(18)))', $this->cachedConditionGenerator->getWhereClause());
     }
 
     protected function setUp()
@@ -241,11 +241,11 @@ class CacheWhereBuilderTest extends DbalTestCase
         parent::setUp();
 
         $this->cacheDriver = $this->createMock(Cache::class);
-        $this->whereBuilder = $this->createMock(ConditionGenerator::class);
+        $this->conditionGenerator = $this->createMock(ConditionGenerator::class);
 
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
-        $this->whereBuilder->expects(self::any())->method('getSearchCondition')->willReturn($searchCondition);
-        $this->cacheWhereBuilder = new CachedConditionGenerator($this->whereBuilder, $this->cacheDriver, 60);
+        $this->conditionGenerator->expects(self::any())->method('getSearchCondition')->willReturn($searchCondition);
+        $this->cachedConditionGenerator = new CachedConditionGenerator($this->conditionGenerator, $this->cacheDriver, 60);
     }
 }

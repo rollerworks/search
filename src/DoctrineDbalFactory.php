@@ -55,17 +55,19 @@ final class DoctrineDbalFactory
     /**
      * Creates a new CachedConditionGenerator instance for the given ConditionGenerator.
      *
-     * @param ConditionGenerator $whereBuilder
-     * @param int                $lifetime
+     * @param ConditionGenerator     $conditionGenerator
+     * @param null|int|\DateInterval $ttl                Optional. The TTL value of this item. If no value is sent and
+     *                                                   the driver supports TTL then the library may set a default value
+     *                                                   for it or let the driver take care of that.
      *
      * @return ConditionGenerator
      */
-    public function createCachedConditionGenerator(ConditionGenerator $whereBuilder, int $lifetime = 0): ConditionGenerator
+    public function createCachedConditionGenerator(ConditionGenerator $conditionGenerator, $ttl = 0): ConditionGenerator
     {
         if (null === $this->cacheDriver) {
-            return $whereBuilder;
+            return $conditionGenerator;
         }
 
-        return new CachedConditionGenerator($whereBuilder, $this->cacheDriver, $lifetime);
+        return new CachedConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
     }
 }

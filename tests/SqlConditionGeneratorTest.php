@@ -28,22 +28,22 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-final class WhereBuilderTest extends DbalTestCase
+final class SqlConditionGeneratorTest extends DbalTestCase
 {
-    private function getWhereBuilder(SearchCondition $condition, Connection $connection = null)
+    private function getConditionGenerator(SearchCondition $condition, Connection $connection = null)
     {
-        $whereBuilder = $this->getDbalFactory()->createConditionGenerator(
+        $conditionGenerator = $this->getDbalFactory()->createConditionGenerator(
             $connection ?: $this->getConnectionMock(),
             $condition
         );
 
-        $whereBuilder->setField('customer', 'customer', 'I', 'integer');
-        $whereBuilder->setField('customer_name', 'name', 'C', 'string');
-        $whereBuilder->setField('customer_birthday', 'birthday', 'C', 'date');
-        $whereBuilder->setField('status', 'status', 'I', 'integer');
-        $whereBuilder->setField('label', 'label', 'I', 'string');
+        $conditionGenerator->setField('customer', 'customer', 'I', 'integer');
+        $conditionGenerator->setField('customer_name', 'name', 'C', 'string');
+        $conditionGenerator->setField('customer_birthday', 'birthday', 'C', 'date');
+        $conditionGenerator->setField('status', 'status', 'I', 'integer');
+        $conditionGenerator->setField('label', 'label', 'I', 'string');
 
-        return $whereBuilder;
+        return $conditionGenerator;
     }
 
     public function testSimpleQuery()
@@ -55,9 +55,9 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer IN(2, 5)))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer IN(2, 5)))', $conditionGenerator->getWhereClause());
     }
 
     public function testQueryWithPrepend()
@@ -69,9 +69,9 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('WHERE ((I.customer IN(2, 5)))', $whereBuilder->getWhereClause('WHERE '));
+        $this->assertEquals('WHERE ((I.customer IN(2, 5)))', $conditionGenerator->getWhereClause('WHERE '));
     }
 
     public function testEmptyQueryWithPrepend()
@@ -83,9 +83,9 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('', $whereBuilder->getWhereClause('WHERE '));
+        $this->assertEquals('', $conditionGenerator->getWhereClause('WHERE '));
     }
 
     public function testQueryWithMultipleFields()
@@ -101,9 +101,9 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer IN(2, 5)) AND (I.status IN(2, 5)))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer IN(2, 5)) AND (I.status IN(2, 5)))', $conditionGenerator->getWhereClause());
     }
 
     public function testQueryWithCombinedField()
@@ -115,11 +115,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
-        $whereBuilder->setField('customer#1', 'id');
-        $whereBuilder->setField('customer#2', 'number2');
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        $conditionGenerator->setField('customer#1', 'id');
+        $conditionGenerator->setField('customer#2', 'number2');
 
-        $this->assertEquals('(((id IN(2, 5) OR number2 IN(2, 5))))', $whereBuilder->getWhereClause());
+        $this->assertEquals('(((id IN(2, 5) OR number2 IN(2, 5))))', $conditionGenerator->getWhereClause());
     }
 
     public function testQueryWithCombinedFieldAndCustomAlias()
@@ -131,20 +131,20 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
-        $whereBuilder->setField('customer#1', 'id');
-        $whereBuilder->setField('customer#2', 'number2', 'C', 'string');
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        $conditionGenerator->setField('customer#1', 'id');
+        $conditionGenerator->setField('customer#2', 'number2', 'C', 'string');
 
-        $this->assertEquals('(((id IN(2, 5) OR C.number2 IN(2, 5))))', $whereBuilder->getWhereClause());
+        $this->assertEquals('(((id IN(2, 5) OR C.number2 IN(2, 5))))', $conditionGenerator->getWhereClause());
     }
 
     public function testEmptyResult()
     {
         $connection = $this->getConnectionMock();
         $condition = new SearchCondition($this->getFieldSet(), new ValuesGroup());
-        $whereBuilder = $this->getWhereBuilder($condition, $connection);
+        $conditionGenerator = $this->getConditionGenerator($condition, $connection);
 
-        $this->assertEquals('', $whereBuilder->getWhereClause());
+        $this->assertEquals('', $conditionGenerator->getWhereClause());
     }
 
     public function testExcludes()
@@ -156,9 +156,9 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer NOT IN(2, 5)))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer NOT IN(2, 5)))', $conditionGenerator->getWhereClause());
     }
 
     public function testIncludesAndExcludes()
@@ -170,9 +170,9 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer IN(2) AND I.customer NOT IN(5)))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer IN(2) AND I.customer NOT IN(5)))', $conditionGenerator->getWhereClause());
     }
 
     public function testRanges()
@@ -186,12 +186,12 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             '((((I.customer >= 2 AND I.customer <= 5) OR (I.customer >= 10 AND I.customer <= 20) OR '.
             '(I.customer > 60 AND I.customer <= 70) OR (I.customer >= 100 AND I.customer < 150))))',
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -206,12 +206,12 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             '((((I.customer <= 2 OR I.customer >= 5) AND (I.customer <= 10 OR I.customer >= 20) AND '.
             '(I.customer < 60 OR I.customer >= 70) AND (I.customer <= 100 OR I.customer > 150))))',
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -223,9 +223,9 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer > 2))', $whereBuilder->getWhereClause());
+        $this->assertEquals('((I.customer > 2))', $conditionGenerator->getWhereClause());
     }
 
     public function testMultipleComparisons()
@@ -237,11 +237,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             '(((I.customer > 2 AND I.customer < 10)))',
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -264,11 +264,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             '((((I.customer IN(20) OR (I.customer > 2 AND I.customer < 10)))) OR ((I.customer > 30)))',
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -281,11 +281,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             '((I.customer <> 2 AND I.customer <> 5))',
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -300,11 +300,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             '(((I.customer > 30 AND I.customer < 50) AND I.customer <> 35 AND I.customer <> 45))',
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -324,14 +324,14 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\'o' ESCAPE '\\' OR ".
             "RW_REGEXP('(foo|bar)', C.name, 'u') OR RW_REGEXP('(doctor|who)', C.name, 'ui') OR C.name = 'My name' OR ".
             "LOWER(C.name) = LOWER('Spider')) AND (LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\' AND C.name <> 'Last' ".
             "AND LOWER(C.name) <> LOWER('Piggy'))))",
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -346,11 +346,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             '(((I.customer IN(2))) OR ((I.customer IN(3))))',
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -367,11 +367,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             "(((I.customer IN(2))) AND (((C.name LIKE '%foo' ESCAPE '\\'))))",
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -386,11 +386,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             "((I.customer IN(2)) OR (C.name LIKE '%foo' ESCAPE '\\'))",
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -409,11 +409,11 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
             "((((I.customer IN(2)) OR (C.name LIKE '%foo' ESCAPE '\\'))))",
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -442,8 +442,8 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
-        self::assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $whereBuilder->getWhereClause());
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        self::assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $conditionGenerator->getWhereClause());
     }
 
     public function testValueConversion()
@@ -469,8 +469,8 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
-        self::assertEquals('(((I.customer = get_customer_type(2) OR I.customer = get_customer_type(5))))', $whereBuilder->getWhereClause());
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        self::assertEquals('(((I.customer = get_customer_type(2) OR I.customer = get_customer_type(5))))', $conditionGenerator->getWhereClause());
     }
 
     public function testConversionStrategyValue()
@@ -520,10 +520,10 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
+        $conditionGenerator = $this->getConditionGenerator($condition);
         self::assertEquals(
             "(((C.birthday = 18 OR C.birthday = CAST('2001-01-15' AS AGE))))",
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -570,12 +570,12 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
-        $whereBuilder->setField('customer_birthday', 'birthday', 'C', 'string');
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        $conditionGenerator->setField('customer_birthday', 'birthday', 'C', 'string');
 
         self::assertEquals(
             "(((C.birthday = 18 OR search_conversion_age(C.birthday) = '2001-01-15')))",
-            $whereBuilder->getWhereClause()
+            $conditionGenerator->getWhereClause()
         );
     }
 
@@ -609,7 +609,7 @@ final class WhereBuilderTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $whereBuilder = $this->getWhereBuilder($condition);
-        self::assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $whereBuilder->getWhereClause());
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        self::assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $conditionGenerator->getWhereClause());
     }
 }

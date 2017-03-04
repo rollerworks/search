@@ -63,9 +63,9 @@ final class ChildCountTypeTest extends FunctionalDbalTestCase
         return 'SELECT id FROM site_user AS u WHERE ';
     }
 
-    protected function configureWhereBuilder(ConditionGenerator $whereBuilder)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
-        $whereBuilder->setField('contact_count', 'id', 'u', 'integer');
+        $conditionGenerator->setField('contact_count', 'id', 'u', 'integer');
     }
 
     protected function getFieldSet(bool $build = true)

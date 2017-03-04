@@ -117,7 +117,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     }
 
     /**
-     * Returns the string for the WhereBuilder.
+     * Returns the string for the ConditionGenerator.
      *
      * @return string
      */
@@ -126,11 +126,11 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     }
 
     /**
-     * Configure fields of the WhereBuilder.
+     * Configure fields of the ConditionGenerator.
      *
-     * @param ConditionGenerator $whereBuilder
+     * @param ConditionGenerator $conditionGenerator
      */
-    protected function configureWhereBuilder(ConditionGenerator $whereBuilder)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
     }
 
@@ -142,10 +142,10 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
      */
     protected function assertRecordsAreFound(SearchCondition $condition, array $ids)
     {
-        $whereBuilder = $this->getDbalFactory()->createConditionGenerator($this->conn, $condition);
-        $this->configureWhereBuilder($whereBuilder);
+        $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->conn, $condition);
+        $this->configureConditionGenerator($conditionGenerator);
 
-        $whereClause = $whereBuilder->getWhereClause();
+        $whereClause = $conditionGenerator->getWhereClause();
         $statement = $this->conn->query($this->getQuery().$whereClause);
 
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -169,13 +169,13 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     protected function assertQueryIsExecutable($conditionOrWhere)
     {
         if ($conditionOrWhere instanceof SearchCondition) {
-            $whereBuilder = $this->getDbalFactory()->createConditionGenerator($this->conn, $conditionOrWhere);
-            $this->configureWhereBuilder($whereBuilder);
+            $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->conn, $conditionOrWhere);
+            $this->configureConditionGenerator($conditionGenerator);
         } else {
-            $whereBuilder = $conditionOrWhere;
+            $conditionGenerator = $conditionOrWhere;
         }
 
-        $whereClause = $whereBuilder->getWhereClause();
+        $whereClause = $conditionGenerator->getWhereClause();
 
         self::assertNotEmpty($this->conn->query($this->getQuery().$whereClause));
     }

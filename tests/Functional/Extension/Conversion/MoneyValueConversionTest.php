@@ -58,10 +58,10 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
         return 'SELECT id FROM product AS p WHERE ';
     }
 
-    protected function configureWhereBuilder(ConditionGenerator $whereBuilder)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
-        $whereBuilder->setField('price', 'price', 'p', 'string');
-        $whereBuilder->setField('total', 'total', 'p', 'decimal');
+        $conditionGenerator->setField('price', 'price', 'p', 'string');
+        $conditionGenerator->setField('total', 'total', 'p', 'decimal');
     }
 
     protected function getFieldSet(bool $build = true)

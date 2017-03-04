@@ -27,13 +27,13 @@ use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
- * Functional WhereBuilderTest, ensures queries are executable.
+ * Functional ConditionGeneratorTest, ensures queries are executable.
  * This tests does not ensure the correct result is returned,
  * this handled by another test-class.
  *
  * @group functional
  */
-final class WhereBuilderTest extends FunctionalDbalTestCase
+final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
 {
     protected function setUpDbSchema(DbSchema $schema)
     {
@@ -57,17 +57,17 @@ final class WhereBuilderTest extends FunctionalDbalTestCase
     }
 
     /**
-     * Configure fields of the WhereBuilder.
+     * Configure fields of the ConditionGenerator.
      *
-     * @param ConditionGenerator $whereBuilder
+     * @param ConditionGenerator $conditionGenerator
      */
-    protected function configureWhereBuilder(ConditionGenerator $whereBuilder)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
-        $whereBuilder->setField('customer', 'customer', 'i', 'integer');
-        $whereBuilder->setField('customer_name', 'name', 'c', 'string');
-        $whereBuilder->setField('customer_birthday', 'birthday', 'c', 'string'); // don't use date as this breaks the binding
-        $whereBuilder->setField('status', 'status', 'i', 'integer');
-        $whereBuilder->setField('label', 'label', 'i', 'string');
+        $conditionGenerator->setField('customer', 'customer', 'i', 'integer');
+        $conditionGenerator->setField('customer_name', 'name', 'c', 'string');
+        $conditionGenerator->setField('customer_birthday', 'birthday', 'c', 'string'); // don't use date as this breaks the binding
+        $conditionGenerator->setField('status', 'status', 'i', 'integer');
+        $conditionGenerator->setField('label', 'label', 'i', 'string');
     }
 
     public function testSimpleQuery()

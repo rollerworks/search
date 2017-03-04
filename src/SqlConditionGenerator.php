@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
- * SearchCondition Doctrine DBAL WhereBuilder.
+ * SearchCondition Doctrine DBAL ConditionGenerator.
  *
  * This class provides the functionality for creating an SQL WHERE-clause
  * based on the provided SearchCondition.
@@ -86,7 +86,7 @@ final class SqlConditionGenerator implements ConditionGenerator
     {
         if ($this->whereClause) {
             throw new BadMethodCallException(
-                'WhereBuilder configuration methods cannot be accessed anymore once the where-clause is generated.'
+                'ConditionGenerator configuration methods cannot be accessed anymore once the where-clause is generated.'
             );
         }
 

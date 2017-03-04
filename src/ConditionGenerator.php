@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
- * A Doctrine DBAL WhereBuilder generates WHERE an SQL WHERE-clause
+ * A Doctrine DBAL ConditionGenerator generates WHERE an SQL WHERE-clause
  * based on the provided SearchCondition.
  *
  * This interface is provided for type hinting it should not

@@ -28,8 +28,8 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 /**
  * Ensures the expected results are actually found.
  *
- * Uses the FilterQuery input-processor for a readable condition
- * and ensures the input values are properly formatted.
+ * Uses the StringQuery input-processor for a readable condition
+ * and ensures the input values are properly transformed.
  *
  * This example uses a 'classic' invoice system
  * with three tables:
@@ -42,7 +42,7 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
  *
  * @group functional
  */
-final class WhereBuilderResultsTest extends FunctionalDbalTestCase
+final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
 {
     /**
      * @var StringQueryInput
@@ -188,30 +188,30 @@ WHERE
 SQL;
     }
 
-    protected function configureWhereBuilder(ConditionGenerator $whereBuilder)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
         // Customer (by invoice relation)
-        $whereBuilder->setField('customer-first-name', 'first_name', 'c', 'string');
-        $whereBuilder->setField('customer-last-name', 'last_name', 'c', 'string');
-        $whereBuilder->setField('customer-birthday', 'birthday', 'c', 'date');
-        $whereBuilder->setField('customer-regdate', 'regdate', 'c', 'date');
+        $conditionGenerator->setField('customer-first-name', 'first_name', 'c', 'string');
+        $conditionGenerator->setField('customer-last-name', 'last_name', 'c', 'string');
+        $conditionGenerator->setField('customer-birthday', 'birthday', 'c', 'date');
+        $conditionGenerator->setField('customer-regdate', 'regdate', 'c', 'date');
 
-        $whereBuilder->setField('customer-name#first_name', 'first_name', 'c', 'string');
-        $whereBuilder->setField('customer-name#last_name', 'last_name', 'c', 'string');
+        $conditionGenerator->setField('customer-name#first_name', 'first_name', 'c', 'string');
+        $conditionGenerator->setField('customer-name#last_name', 'last_name', 'c', 'string');
 
         // Invoice
-        $whereBuilder->setField('id', 'id', 'i', 'integer');
-        $whereBuilder->setField('customer', 'customer', 'i', 'integer');
-        $whereBuilder->setField('label', 'label', 'i', 'string');
-        $whereBuilder->setField('pub-date', 'pub_date', 'i', 'date');
-        $whereBuilder->setField('status', 'status', 'i', 'integer');
-        $whereBuilder->setField('total', 'price_total', 'i', 'decimal');
+        $conditionGenerator->setField('id', 'id', 'i', 'integer');
+        $conditionGenerator->setField('customer', 'customer', 'i', 'integer');
+        $conditionGenerator->setField('label', 'label', 'i', 'string');
+        $conditionGenerator->setField('pub-date', 'pub_date', 'i', 'date');
+        $conditionGenerator->setField('status', 'status', 'i', 'integer');
+        $conditionGenerator->setField('total', 'price_total', 'i', 'decimal');
 
         // Invoice Details
-        $whereBuilder->setField('row-label', 'label', 'ir', 'string');
-        $whereBuilder->setField('row-quantity', 'quantity', 'ir', 'integer');
-        $whereBuilder->setField('row-price', 'price', 'ir', 'decimal');
-        $whereBuilder->setField('row-total', 'total', 'ir', 'decimal');
+        $conditionGenerator->setField('row-label', 'label', 'ir', 'string');
+        $conditionGenerator->setField('row-quantity', 'quantity', 'ir', 'integer');
+        $conditionGenerator->setField('row-price', 'price', 'ir', 'decimal');
+        $conditionGenerator->setField('row-total', 'total', 'ir', 'decimal');
     }
 
     protected function getFieldSet(bool $build = true)

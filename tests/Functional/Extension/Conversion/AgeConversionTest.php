@@ -53,9 +53,9 @@ final class AgeConversionTest extends FunctionalDbalTestCase
         return 'SELECT id FROM site_user AS u WHERE ';
     }
 
-    protected function configureWhereBuilder(ConditionGenerator $whereBuilder)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
-        $whereBuilder->setField('birthday', 'birthday', 'u', 'date');
+        $conditionGenerator->setField('birthday', 'birthday', 'u', 'date');
     }
 
     protected function getFieldSet(bool $build = true)

@@ -17,10 +17,10 @@ use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
 /***
- * Handles caching of a Doctrine DBAL WhereBuilder.
+ * Handles caching of a Doctrine DBAL ConditionGenerator.
  *
- * Instead of using the WhereBuilder directly you should use the CacheWhereBuilder
- * as all related calls are delegated.
+ * Instead of using the ConditionGenerator directly you should use the
+ * CachedConditionGenerator as all related calls are delegated.
  *
  * The cache-key is a hashed (sha256) combination of the SearchCondition
  * (root ValuesGroup and FieldSet name) and configured field mappings.
@@ -45,7 +45,7 @@ final class CachedConditionGenerator implements ConditionGenerator
     /**
      * @var ConditionGenerator
      */
-    private $whereBuilder;
+    private $conditionGenerator;
 
     /**
      * @var string|null
@@ -60,17 +60,18 @@ final class CachedConditionGenerator implements ConditionGenerator
     /**
      * Constructor.
      *
-     * @param ConditionGenerator $whereBuilder The actual WhereBuilder to use when no cache exists
-     * @param Cache              $cacheDriver  PSR-16 SimpleCache instance. Use a custom pool to ease
-     *                                         purging invalidated items
-     * @param int                $lifeTime     Lifetime in seconds after which the cache is expired.
-     *                                         Set this 0 to never expire (not recommended)
+     * @param ConditionGenerator     $conditionGenerator The actual ConditionGenerator to use when no cache exists
+     * @param Cache                  $cacheDriver        PSR-16 SimpleCache instance. Use a custom pool to ease
+     *                                                   purging invalidated items
+     * @param null|int|\DateInterval $ttl                Optional. The TTL value of this item. If no value is sent and
+     *                                                   the driver supports TTL then the library may set a default value
+     *                                                   for it or let the driver take care of that.
      */
-    public function __construct(ConditionGenerator $whereBuilder, Cache $cacheDriver, int $lifeTime = 0)
+    public function __construct(ConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = 0)
     {
         $this->cacheDriver = $cacheDriver;
-        $this->cacheLifeTime = $lifeTime;
-        $this->whereBuilder = $whereBuilder;
+        $this->cacheLifeTime = $ttl;
+        $this->conditionGenerator = $conditionGenerator;
     }
 
     /**
@@ -91,7 +92,7 @@ final class CachedConditionGenerator implements ConditionGenerator
             if ($this->cacheDriver->has($cacheKey)) {
                 $this->whereClause = $this->cacheDriver->get($cacheKey);
             } else {
-                $this->whereClause = $this->whereBuilder->getWhereClause();
+                $this->whereClause = $this->conditionGenerator->getWhereClause();
                 $this->cacheDriver->set($cacheKey, $this->whereClause, $this->cacheLifeTime);
             }
         }
@@ -108,7 +109,7 @@ final class CachedConditionGenerator implements ConditionGenerator
      */
     public function getSearchCondition(): SearchCondition
     {
-        return $this->whereBuilder->getSearchCondition();
+        return $this->conditionGenerator->getSearchCondition();
     }
 
     /**
@@ -116,7 +117,7 @@ final class CachedConditionGenerator implements ConditionGenerator
      */
     public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string')
     {
-        $this->whereBuilder->setField($fieldName, $column, $alias, $type);
+        $this->conditionGenerator->setField($fieldName, $column, $alias, $type);
 
         return $this;
     }
@@ -126,20 +127,20 @@ final class CachedConditionGenerator implements ConditionGenerator
      */
     public function getFieldsMapping(): array
     {
-        return $this->whereBuilder->getFieldsMapping();
+        return $this->conditionGenerator->getFieldsMapping();
     }
 
     private function getCacheKey(): string
     {
         if (null === $this->cacheKey) {
-            $searchCondition = $this->whereBuilder->getSearchCondition();
+            $searchCondition = $this->conditionGenerator->getSearchCondition();
             $this->cacheKey = hash(
                 'sha256',
                 $searchCondition->getFieldSet()->getSetName().
                 "\n".
                 serialize($searchCondition->getValuesGroup()).
                 "\n".
-                serialize($this->whereBuilder->getFieldsMapping())
+                serialize($this->conditionGenerator->getFieldsMapping())
             );
         }
 
