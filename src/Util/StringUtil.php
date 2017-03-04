@@ -17,7 +17,7 @@ namespace Rollerworks\Component\Search\Util;
  * @author Issei Murasawa <issei.m7@gmail.com>
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class StringUtil
+final class StringUtil
 {
     /**
      * This class should not be instantiated.
