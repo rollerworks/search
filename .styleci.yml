@@ -1,5 +1,6 @@
 preset: symfony
 
+risky: true
 linting: true
 
 enabled:
@@ -21,6 +22,4 @@ finder:
         - 'src/'
         - 'tests/'
     not-path:
-        - 'spec/'
         - 'Fixtures'
-        - 'doc'
