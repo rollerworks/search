@@ -136,4 +136,12 @@ class DateTimeType extends BaseDateTimeType
         $resolver->setAllowedTypes('date_format', ['int']);
         $resolver->setAllowedTypes('time_format', ['int']);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'datetime';
+    }
 }

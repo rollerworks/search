@@ -115,4 +115,12 @@ class TimeType extends AbstractFieldType
             ]
         );
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'time';
+    }
 }

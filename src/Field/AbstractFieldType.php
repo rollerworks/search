@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Field;
 
 use Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType;
+use Rollerworks\Component\Search\Util\StringUtil;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -54,5 +55,13 @@ abstract class AbstractFieldType implements FieldType
     public function getParent()
     {
         return SearchFieldType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return StringUtil::fqcnToBlockPrefix(get_class($this));
     }
 }

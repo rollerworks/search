@@ -83,6 +83,13 @@ interface ResolvedFieldType
     public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options);
 
     /**
+     * Returns the prefix of the template block name for this type.
+     *
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix(): string;
+
+    /**
      * Returns the configured options resolver used for this type.
      *
      * @return OptionsResolver The options resolver

@@ -89,4 +89,12 @@ class MoneyType extends AbstractFieldType
 
         $resolver->setAllowedValues('increase_by', ['cents', 'amount']);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'money';
+    }
 }

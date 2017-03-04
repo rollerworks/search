@@ -152,6 +152,14 @@ class GenericResolvedFieldType implements ResolvedFieldType
     /**
      * {@inheritdoc}
      */
+    public function getBlockPrefix(): string
+    {
+        return $this->innerType->getBlockPrefix();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getOptionsResolver(): OptionsResolver
     {
         if (null === $this->optionsResolver) {

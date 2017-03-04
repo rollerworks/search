@@ -109,4 +109,12 @@ class BirthdayType extends AbstractFieldType
     {
         return DateType::class;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'birthday';
+    }
 }

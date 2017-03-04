@@ -29,4 +29,12 @@ class TextType extends AbstractFieldType
     {
         $config->setValueTypeSupport(PatternMatch::class, true);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'text';
+    }
 }

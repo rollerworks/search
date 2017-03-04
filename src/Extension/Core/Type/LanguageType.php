@@ -114,4 +114,12 @@ class LanguageType extends AbstractFieldType implements ChoiceLoader
     {
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'language';
+    }
 }

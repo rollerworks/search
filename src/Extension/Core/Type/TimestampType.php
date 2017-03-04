@@ -69,4 +69,12 @@ class TimestampType extends AbstractFieldType
             'view_timezone' => null,
         ]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'timestamp';
+    }
 }

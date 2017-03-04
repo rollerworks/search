@@ -104,4 +104,12 @@ class NumberType extends AbstractFieldType
             ]
         );
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'number';
+    }
 }
