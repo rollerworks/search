@@ -94,7 +94,7 @@ final class ArrayExporter extends AbstractExporter
 
         foreach ($valuesBag->get(PatternMatch::class) as $value) {
             $exportedValues['pattern-matchers'][] = [
-                'type' => $this->getPatternMatchType($value),
+                'type' => $value->getType(),
                 'value' => $value->getValue(),
                 'case-insensitive' => $value->isCaseInsensitive(),
             ];

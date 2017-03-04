@@ -17,7 +17,6 @@ use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -37,59 +36,6 @@ abstract class AbstractExporter implements ConditionExporter
     public function exportCondition(SearchCondition $condition)
     {
         return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
-    }
-
-    /**
-     * @param PatternMatch $patternMatch
-     *
-     * @throws \RuntimeException When an unsupported pattern-match type is provided
-     *
-     * @return string
-     */
-    protected function getPatternMatchType(PatternMatch $patternMatch): string
-    {
-        $type = '';
-
-        if ($patternMatch->isExclusive()) {
-            $type .= 'NOT_';
-        }
-
-        switch ($patternMatch->getType()) {
-            case PatternMatch::PATTERN_CONTAINS:
-            case PatternMatch::PATTERN_NOT_CONTAINS:
-                $type .= 'CONTAINS';
-                break;
-
-            case PatternMatch::PATTERN_STARTS_WITH:
-            case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                $type .= 'STARTS_WITH';
-                break;
-
-            case PatternMatch::PATTERN_ENDS_WITH:
-            case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                $type .= 'ENDS_WITH';
-                break;
-
-            case PatternMatch::PATTERN_REGEX:
-            case PatternMatch::PATTERN_NOT_REGEX:
-                $type .= 'REGEX';
-                break;
-
-            case PatternMatch::PATTERN_EQUALS:
-            case PatternMatch::PATTERN_NOT_EQUALS:
-                $type .= 'EQUALS';
-                break;
-
-            default:
-                throw new \RuntimeException(
-                    sprintf(
-                        'Unsupported pattern-match type "%s" found. Please report this bug.',
-                        $patternMatch->getType()
-                    )
-                );
-        }
-
-        return $type;
     }
 
     /**
@@ -144,7 +90,7 @@ abstract class AbstractExporter implements ConditionExporter
      */
     protected function modelToNorm($value, FieldConfig $field): string
     {
-        $transformer = $field->getNormTransformer();
+        $transformer = $field->getNormTransformer() ?? $field->getViewTransformer();
 
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
@@ -153,7 +99,7 @@ abstract class AbstractExporter implements ConditionExporter
                 throw new \RuntimeException(
                     sprintf(
                         'Model value of type %s is not a scalar value or null and not cannot be '.
-                        'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
+                        'converted to a string. You must set a normTransformer for field "%s" with type "%s".',
                         gettype($value),
                         $field->getName(),
                         get_class($field->getType()->getInnerType())
