@@ -131,7 +131,7 @@ final class DqlConditionGenerator extends AbstractConditionGenerator
      *
      * @return string
      */
-    public function getQueryHintName()
+    public function getQueryHintName(): string
     {
         return 'rws_conversion_hint';
     }
