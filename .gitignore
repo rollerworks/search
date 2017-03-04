@@ -1,7 +1,6 @@
 /phpunit.xml
 /composer.lock
 *.phar
-.php_cs.cache
 /vendor/
-/bin/
 /doc/_build
+/.php_cs.cache
