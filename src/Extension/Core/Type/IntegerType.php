@@ -92,4 +92,12 @@ class IntegerType extends AbstractFieldType
             ]
         );
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'integer';
+    }
 }

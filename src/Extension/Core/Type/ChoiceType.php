@@ -160,6 +160,14 @@ class ChoiceType extends AbstractFieldType
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'choice';
+    }
+
     private function createChoiceList(array $options): ChoiceList
     {
         if (null !== $options['choice_loader']) {

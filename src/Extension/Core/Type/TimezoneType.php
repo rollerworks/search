@@ -109,6 +109,14 @@ class TimezoneType extends AbstractFieldType implements ChoiceLoader
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'timezone';
+    }
+
+    /**
      * Returns a normalized array of timezone choices.
      *
      * @return array The timezone choices

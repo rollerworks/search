@@ -58,4 +58,14 @@ interface FieldType
      * @param array           $options
      */
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options);
+
+    /**
+     * Returns the prefix of the template block name for this type.
+     *
+     * The block prefix defaults to the underscored short class name with
+     * the "Type" suffix removed (e.g. "UserIdType" => "user_id").
+     *
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix(): string;
 }

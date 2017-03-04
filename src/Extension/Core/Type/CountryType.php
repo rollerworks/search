@@ -110,4 +110,12 @@ class CountryType extends AbstractFieldType implements ChoiceLoader
     {
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'country';
+    }
 }

@@ -111,4 +111,12 @@ class LocaleType extends AbstractFieldType implements ChoiceLoader
     {
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'locale';
+    }
 }

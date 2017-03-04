@@ -195,6 +195,16 @@ final class ResolvedFieldTypeTest extends TestCase
         self::assertInstanceOf(SearchFieldView::class, $view);
     }
 
+    public function testGetBlockPrefix()
+    {
+        $this->type->expects(self::once())
+            ->method('getBlockPrefix')
+            ->willReturn('my_prefix');
+
+        $resolvedType = new GenericResolvedFieldType($this->type);
+        $this->assertSame('my_prefix', $resolvedType->getBlockPrefix());
+    }
+
     public function testBuildView()
     {
         $options = ['a' => '1', 'b' => '2'];
@@ -245,7 +255,7 @@ final class ResolvedFieldTypeTest extends TestCase
     private function getMockFieldType($typeClass = AbstractFieldType::class)
     {
         return $this->getMockBuilder($typeClass)
-            ->setMethods(['configureOptions', 'buildView', 'buildType'])
+            ->setMethods(['configureOptions', 'buildView', 'buildType', 'getBlockPrefix'])
             ->getMock();
     }
 

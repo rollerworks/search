@@ -70,4 +70,12 @@ class SearchFieldType extends AbstractFieldType
         $resolver->setAllowedTypes('invalid_message', ['string']);
         $resolver->setAllowedTypes('invalid_message_parameters', ['array']);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'field';
+    }
 }
