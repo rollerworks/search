@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
+use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
+use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\Processor\Psr7SearchProcessor;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -34,13 +37,46 @@ final class Configuration implements ConfigurationInterface
                 ->arrayNode('processor')
                     ->info('SearchProcessor configuration')
                     ->{class_exists(Psr7SearchProcessor::class) ? 'canBeDisabled' : 'canBeEnabled'}()
-                    ->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('disable_cache')->defaultFalse()->end()
                     ->end()
                 ->end()
             ->end();
 
+        $this->addDoctrineSection($rootNode);
+
         return $treeBuilder;
+    }
+
+    private function addDoctrineSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+             ->children()
+                 ->arrayNode('doctrine')
+                     ->validate()
+                         ->ifTrue(
+                             function (array $nodes) {
+                                 return $nodes['orm']['enabled'] && !$nodes['dbal']['enabled'];
+                             }
+                         )
+                         ->thenInvalid('rollerworks_search.dbal must be enabled when rollerworks_search.orm is enabled')
+                     ->end()
+                     ->addDefaultsIfNotSet()
+                     ->children()
+                         ->arrayNode('dbal')
+                             ->{class_exists(DoctrineDbalFactory::class) ? 'canBeDisabled' : 'canBeEnabled'}()
+                         ->end()
+                         ->arrayNode('orm')
+                             ->{class_exists(DoctrineOrmFactory::class) ? 'canBeDisabled' : 'canBeEnabled'}()
+                             ->fixXmlConfig('entity_manager')
+                             ->children()
+                                 ->arrayNode('entity_managers')
+                                     ->prototype('scalar')->end()
+                                 ->end()
+                             ->end()
+                         ->end()
+                     ->end()
+                 ->end()
+             ->end();
     }
 }

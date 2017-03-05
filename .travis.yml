@@ -12,6 +12,10 @@ matrix:
         - php: '7.1'
         - php: '7.1'
           env: deps='low'
+        - php: '7.1'
+          env: doctrine='dbal'
+        - php: '7.1'
+          env: doctrine='orm'
 env:
     global:
         - TMPDIR=/tmp
@@ -23,6 +27,16 @@ cache:
 before_install:
     - phpenv config-rm xdebug.ini || echo "xdebug not available"
     - export PATH="$PATH:$HOME/.composer/vendor/bin"
+    - |
+        if [[ $doctrine = 'dbal' ]]; then
+            composer require --no-update "doctrine/doctrine-bundle:^1.1"
+            composer require --no-update "rollerworks/search-doctrine-dbal:^2.0@dev"
+        fi;
+
+        if [[ $doctrine = 'orm' ]]; then
+            composer require --no-update "doctrine/doctrine-bundle:^1.1"
+            composer require --no-update "rollerworks/search-doctrine-orm:^2.0@dev"
+        fi
 
 install:
     - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"

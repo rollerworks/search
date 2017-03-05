@@ -44,6 +44,18 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
             $this->configureProcessor($container, $config);
         }
 
+        if ($this->isConfigEnabled($container, $config['doctrine']['dbal'])) {
+            $loader->load('doctrine_dbal.xml');
+
+            if ($this->isConfigEnabled($container, $config['doctrine']['orm'])) {
+                $loader->load('doctrine_orm.xml');
+                $container->setParameter(
+                    'rollerworks_search.doctrine.orm.entity_managers',
+                    $config['doctrine']['orm']['entity_managers'] ?: ['default']
+                );
+            }
+        }
+
         if (interface_exists(ValidatorInterface::class)) {
             $loader->load('input_validator.xml');
         }
