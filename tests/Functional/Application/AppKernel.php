@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle;
 use Matthias\SymfonyServiceDefinitionValidator\Compiler\ValidateServiceDefinitionsPass;
 use Matthias\SymfonyServiceDefinitionValidator\Configuration;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -27,8 +29,6 @@ class AppKernel extends Kernel
 
     public function __construct($config, $debug = true)
     {
-        parent::__construct('test', $debug);
-
         if (!(new Filesystem())->isAbsolutePath($config)) {
             $config = __DIR__.'/config/'.$config;
         }
@@ -38,11 +38,13 @@ class AppKernel extends Kernel
         }
 
         $this->config = $config;
+
+        parent::__construct('test', $debug);
     }
 
     public function getName()
     {
-        return 'RSearch';
+        return 'RSearch'.substr(sha1($this->config), 0, 3);
     }
 
     public function registerBundles()
@@ -54,6 +56,11 @@ class AppKernel extends Kernel
             new \Rollerworks\Bundle\SearchBundle\RollerworksSearchBundle(),
             new AppBundle\AppBundle(),
         ];
+
+        if (class_exists(DoctrineBundle::class)) {
+            $bundles[] = new DoctrineCacheBundle();
+            $bundles[] = new DoctrineBundle();
+        }
 
         return $bundles;
     }
@@ -93,14 +100,15 @@ class AppKernel extends Kernel
 
     protected function build(ContainerBuilder $container)
     {
+        // Temp disabled due to incompatibility
         if ($container->getParameter('kernel.debug')) {
             $configuration = new Configuration();
             $configuration->setEvaluateExpressions(true);
-
-            $container->addCompilerPass(
-                new ValidateServiceDefinitionsPass($configuration),
-                PassConfig::TYPE_AFTER_REMOVING
-            );
+//
+//            $container->addCompilerPass(
+//                new ValidateServiceDefinitionsPass($configuration),
+//                PassConfig::TYPE_AFTER_REMOVING
+//            );
         }
     }
 }

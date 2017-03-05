@@ -26,5 +26,6 @@ class RollerworksSearchBundle extends Bundle
         $container->addCompilerPass(new Compiler\ExporterPass());
         $container->addCompilerPass(new Compiler\ConditionOptimizerPass());
         $container->addCompilerPass(new Compiler\FieldSetRegistryPass());
+        $container->addCompilerPass(new Compiler\DoctrineOrmPass());
     }
 }
