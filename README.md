@@ -1,40 +1,28 @@
 RollerworksSearchBundle
 =======================
 
-Main purpose of this bundle is to integrate [RollerworksSearch](https://github.com/rollerworks/RollerworksSearch)
+The main purpose of this bundle is to integrate [RollerworksSearch](https://github.com/rollerworks/RollerworksSearch)
 with any Symfony based application.
 
     RollerworksSearch provides a powerful searching system.
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/3a327c61-805f-4b58-b5bf-afd4a6e4ab7f/mini.png)](https://insight.sensiolabs.com/projects/3a327c61-805f-4b58-b5bf-afd4a6e4ab7f)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearchBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rollerworks/RollerworksSearchBundle/?branch=master)
-
 Requirements
 ------------
 
-You need at least the Symfony 2.3 or 3.0 (Symfony FrameworkBundle)
-and the Composer package manager for installing dependencies.
+You need at least Symfony 3.3 (Symfony FrameworkBundle) and the Composer package
+manager for installing dependencies.
 
 For searching in storage engines you need install the additional search extensions.
-See the documentation in the main package for more information.
+They are then automatically enabled for you, but can be disabled with ease.
 
 Documentation
 -------------
 
-* [Installation](doc/installing.md)
-* [Configuration reference](doc/configuration_reference.md)
-* [Basic Usage](doc/basic_usage.md)
-* [Extensions](doc/extensions.md)
+The documentation for RollerworksSearch and this integration bundle
+can be found at [ReadTheDocs.io](http://rollerworkssearch.readthedocs.org/en/latest/)
 
-Storage bundles
----------------
-
-The following bundles are provided for enabling the described storage
-engines with the RollerworksSearchBundle bundle.
-*These bundles are extensions, you still need the RollerworksSearchBundle!.*
-
-* [Doctrine DBAL](https://github.com/rollerworks/rollerworks-search-doctrine-dbal-bundle)
-* [Doctrine ORM](https://github.com/rollerworks/rollerworks-search-doctrine-orm-bundle)
+**Note:** RollerworksSearch v2.0 is currently in ALPHA phase and documentation
+is not fully updated yet.
 
 License
 -------
