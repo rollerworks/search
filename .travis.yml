@@ -13,9 +13,11 @@ matrix:
         - php: '7.1'
           env: deps='low'
         - php: '7.1'
-          env: doctrine='dbal'
+          env: testcase='doctrine_dbal'
         - php: '7.1'
-          env: doctrine='orm'
+          env: testcase='doctrine_orm'
+        - php: '7.1'
+          env: testcase='search_processor'
 env:
     global:
         - TMPDIR=/tmp
@@ -28,15 +30,21 @@ before_install:
     - phpenv config-rm xdebug.ini || echo "xdebug not available"
     - export PATH="$PATH:$HOME/.composer/vendor/bin"
     - |
-        if [[ $doctrine = 'dbal' ]]; then
+        if [[ $testcase = 'doctrine_dbal' ]]; then
             composer require --no-update "doctrine/doctrine-bundle:^1.1"
             composer require --no-update "rollerworks/search-doctrine-dbal:^2.0@dev"
         fi;
 
-        if [[ $doctrine = 'orm' ]]; then
+        if [[ $testcase = 'doctrine_orm' ]]; then
             composer require --no-update "doctrine/doctrine-bundle:^1.1"
             composer require --no-update "rollerworks/search-doctrine-orm:^2.0@dev"
-        fi
+        fi;
+
+        if [[ $testcase = 'search_processor' ]]; then
+            composer require --no-update "rollerworks/search-processor:^1.0@dev"
+            composer require --no-update "symfony/psr-http-message-bridge:^1.0.0"
+            composer require --no-update "zendframework/zend-diactoros:^1.3.9"
+        fi;
 
 install:
     - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
