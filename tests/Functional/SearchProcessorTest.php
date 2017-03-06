@@ -13,8 +13,17 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional;
 
+use Rollerworks\Component\Search\Processor\Psr7SearchProcessor;
+
 final class SearchProcessorTest extends FunctionalTestCase
 {
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists(Psr7SearchProcessor::class)) {
+            self::markTestSkipped('rollerworks/search-processor is not installed.');
+        }
+    }
+
     public function testEmptySearchCodeIsValid()
     {
         $client = self::newClient();
