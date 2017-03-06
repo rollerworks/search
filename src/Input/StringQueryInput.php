@@ -153,11 +153,6 @@ final class StringQueryInput extends AbstractInput
     private $labelResolver;
 
     /**
-     * @var string
-     */
-    private $input;
-
-    /**
      * @var array
      */
     private $fields = [];
@@ -261,8 +256,6 @@ final class StringQueryInput extends AbstractInput
     private function parse(ProcessorConfig $config, $input)
     {
         $this->config = $config;
-        $this->input = $input;
-
         $this->lexer->parse($input);
 
         if (null !== $this->lexer->matchOptional('*')) {
