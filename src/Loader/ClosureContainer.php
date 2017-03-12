@@ -29,9 +29,9 @@ final class ClosureContainer implements ContainerInterface
     private $values = [];
 
     /**
-     * @param \Closure[] $factories
+     * @param \Closure[]|iterable $factories
      */
-    public function __construct(array $factories)
+    public function __construct(iterable $factories)
     {
         $this->factories = $factories;
     }
