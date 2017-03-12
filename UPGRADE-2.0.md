@@ -1,5 +1,14 @@
-UPGRADE FROM 1.x to 2.0
-=======================
+UPGRADE FROM 2.0-ALPHA1 to 2.0-ALPHA2
+=====================================
+
+* The `ValueComparison` namespaces and classes were renamed to `ValueComparator`
+
+* The `FieldConfig::setValueComparison` method was renamed to `setValueComparator`
+
+* The `FieldConfig::getValueComparison` method was renamed to `getValueComparator`
+
+UPGRADE FROM 1.x to 2.0-ALPHA1
+==============================
 
 * Support PHP 5 is dropped you need at least PHP 7.1
 
