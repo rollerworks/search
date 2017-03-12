@@ -31,16 +31,16 @@ class TimeType extends AbstractFieldType
     /**
      * @var ValueComparator
      */
-    private $valueComparison;
+    private $valueComparator;
 
     /**
      * Constructor.
      *
-     * @param ValueComparator $valueComparison
+     * @param ValueComparator $valueComparator
      */
-    public function __construct(ValueComparator $valueComparison)
+    public function __construct(ValueComparator $valueComparator)
     {
-        $this->valueComparison = $valueComparison;
+        $this->valueComparator = $valueComparator;
     }
 
     /**
@@ -64,7 +64,7 @@ class TimeType extends AbstractFieldType
 
         $config->setValueTypeSupport(Range::class, true);
         $config->setValueTypeSupport(Compare::class, true);
-        $config->setValueComparison($this->valueComparison);
+        $config->setValueComparator($this->valueComparator);
 
         $config->setViewTransformer(
             new DateTimeToStringTransformer(

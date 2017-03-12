@@ -24,21 +24,21 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class ValueSortCompare
 {
-    private $comparison;
+    private $comparator;
     private $options;
 
-    public function __construct(ValueComparator $comparison, array $options)
+    public function __construct(ValueComparator $comparator, array $options)
     {
-        $this->comparison = $comparison;
+        $this->comparator = $comparator;
         $this->options = $options;
     }
 
     public function __invoke($a, $b): int
     {
-        if ($this->comparison->isEqual($a, $b, $this->options)) {
+        if ($this->comparator->isEqual($a, $b, $this->options)) {
             return 0;
         }
 
-        return $this->comparison->isLower($a, $b, $this->options) ? -1 : 1;
+        return $this->comparator->isLower($a, $b, $this->options) ? -1 : 1;
     }
 }

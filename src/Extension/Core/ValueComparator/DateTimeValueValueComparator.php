@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
+namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DateTimeValueComparison extends DateValueComparison
+class DateTimeValueValueComparator extends DateValueComparator
 {
     /**
      * Returns the incremented value of the input.

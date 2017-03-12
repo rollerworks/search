@@ -79,7 +79,7 @@ class RangeOptimizer implements SearchConditionOptimizer
 
     private function normalizeRangesInValuesBag(FieldConfig $config, ValuesBag $valuesBag)
     {
-        $comparison = $config->getValueComparison();
+        $comparator = $config->getValueComparator();
         $options = $config->getOptions();
 
         // Optimize the ranges before simple values, so we have less ranges to loop trough.
@@ -91,14 +91,14 @@ class RangeOptimizer implements SearchConditionOptimizer
             $this->removeOverlappingRanges(
                 $valuesBag->get(Range::class),
                 $valuesBag,
-                $comparison,
+                $comparator,
                 $options
             );
 
             $this->optimizeConnectedRanges(
                 $valuesBag->get(Range::class),
                 $valuesBag,
-                $comparison,
+                $comparator,
                 $options
             );
 
@@ -106,7 +106,7 @@ class RangeOptimizer implements SearchConditionOptimizer
                 $valuesBag->getSimpleValues(),
                 $valuesBag->get(Range::class),
                 $valuesBag,
-                $comparison,
+                $comparator,
                 $options
             );
         }
@@ -115,14 +115,14 @@ class RangeOptimizer implements SearchConditionOptimizer
             $this->removeOverlappingRanges(
                 $valuesBag->get(ExcludedRange::class),
                 $valuesBag,
-                $comparison,
+                $comparator,
                 $options
             );
 
             $this->optimizeConnectedRanges(
                 $valuesBag->get(ExcludedRange::class),
                 $valuesBag,
-                $comparison,
+                $comparator,
                 $options,
                 true
             );
@@ -131,7 +131,7 @@ class RangeOptimizer implements SearchConditionOptimizer
                 $valuesBag->getExcludedSimpleValues(),
                 $valuesBag->get(ExcludedRange::class),
                 $valuesBag,
-                $comparison,
+                $comparator,
                 $options,
                 true
             );
@@ -146,7 +146,7 @@ class RangeOptimizer implements SearchConditionOptimizer
      * @param array           $singleValues
      * @param Range[]         $ranges
      * @param ValuesBag       $valuesBag
-     * @param ValueComparator $comparison
+     * @param ValueComparator $comparator
      * @param array           $options
      * @param bool            $exclude
      */
@@ -154,13 +154,13 @@ class RangeOptimizer implements SearchConditionOptimizer
         array $singleValues,
         array $ranges,
         ValuesBag $valuesBag,
-        ValueComparator $comparison,
+        ValueComparator $comparator,
         array $options,
         bool $exclude = false
     ) {
         foreach ($ranges as $i => $range) {
             foreach ($singleValues as $c => $value) {
-                if ($this->isValInRange($value, $range, $comparison, $options)) {
+                if ($this->isValInRange($value, $range, $comparator, $options)) {
                     if ($exclude) {
                         $valuesBag->removeExcludedSimpleValue($c);
                     } else {
@@ -178,13 +178,13 @@ class RangeOptimizer implements SearchConditionOptimizer
      *
      * @param Range[]         $ranges
      * @param ValuesBag       $valuesBag
-     * @param ValueComparator $comparison
+     * @param ValueComparator $comparator
      * @param array           $options
      */
     private function removeOverlappingRanges(
         array $ranges,
         ValuesBag $valuesBag,
-        ValueComparator $comparison,
+        ValueComparator $comparator,
         array $options
     ) {
         foreach ($ranges as $i => $range) {
@@ -198,7 +198,7 @@ class RangeOptimizer implements SearchConditionOptimizer
                     continue;
                 }
 
-                if ($this->isRangeInRange($value, $range, $comparison, $options)) {
+                if ($this->isRangeInRange($value, $range, $comparator, $options)) {
                     $valuesBag->remove(get_class($range), $c);
 
                     unset($ranges[$c]);
@@ -215,14 +215,14 @@ class RangeOptimizer implements SearchConditionOptimizer
      *
      * @param Range[]         $ranges
      * @param ValuesBag       $valuesBag
-     * @param ValueComparator $comparison
+     * @param ValueComparator $comparator
      * @param array           $options
      * @param bool            $exclude
      */
     private function optimizeConnectedRanges(
         array $ranges,
         ValuesBag $valuesBag,
-        ValueComparator $comparison,
+        ValueComparator $comparator,
         array $options,
         bool $exclude = false
     ) {
@@ -245,7 +245,7 @@ class RangeOptimizer implements SearchConditionOptimizer
                     continue;
                 }
 
-                if ($comparison->isEqual($range->getUpper(), $value->getLower(), $options)) {
+                if ($comparator->isEqual($range->getUpper(), $value->getLower(), $options)) {
                     $newRange = new $class(
                         $range->getLower(),
                         $value->getUpper(),
@@ -263,25 +263,25 @@ class RangeOptimizer implements SearchConditionOptimizer
         }
     }
 
-    private function isValInRange($value, Range $range, ValueComparator $comparison, array $options): bool
+    private function isValInRange($value, Range $range, ValueComparator $comparator, array $options): bool
     {
         // Test it's not overlapping, when this fails then its save to assert there is an overlap.
 
-        if (!$comparison->isHigher($value, $range->getLower(), $options) &&
-            (!$range->isLowerInclusive() xor !$comparison->isEqual($value, $range->getLower(), $options))
+        if (!$comparator->isHigher($value, $range->getLower(), $options) &&
+            (!$range->isLowerInclusive() xor !$comparator->isEqual($value, $range->getLower(), $options))
         ) {
             return false;
         }
 
-        return !(!$comparison->isLower($value, $range->getUpper(), $options) &&
-            (!$range->isUpperInclusive() xor !$comparison->isEqual($value, $range->getUpper(), $options)));
+        return !(!$comparator->isLower($value, $range->getUpper(), $options) &&
+            (!$range->isUpperInclusive() xor !$comparator->isEqual($value, $range->getUpper(), $options)));
     }
 
-    private function isRangeInRange(Range $range1, Range $range, ValueComparator $comparison, array $options): bool
+    private function isRangeInRange(Range $range1, Range $range, ValueComparator $comparator, array $options): bool
     {
-        if (!$comparison->isHigher($range1->getLower(), $range->getLower(), $options) &&
+        if (!$comparator->isHigher($range1->getLower(), $range->getLower(), $options) &&
             !$this->isBoundEqual(
-                $comparison,
+                $comparator,
                 $options,
                 $range1->getLower(),
                 $range->getLower(),
@@ -292,9 +292,9 @@ class RangeOptimizer implements SearchConditionOptimizer
             return false;
         }
 
-        return !(!$comparison->isLower($range1->getUpper(), $range->getUpper(), $options) &&
+        return !(!$comparator->isLower($range1->getUpper(), $range->getUpper(), $options) &&
             !$this->isBoundEqual(
-                $comparison,
+                $comparator,
                 $options,
                 $range1->getUpper(),
                 $range->getUpper(),
@@ -305,14 +305,14 @@ class RangeOptimizer implements SearchConditionOptimizer
     }
 
     private function isBoundEqual(
-        ValueComparator $comparison,
+        ValueComparator $comparator,
         $options,
         $value1,
         $value2,
         $value1Inclusive,
         $value2Inclusive
     ) {
-        if (!$comparison->isEqual($value1, $value2, $options)) {
+        if (!$comparator->isEqual($value1, $value2, $options)) {
             return false;
         }
 

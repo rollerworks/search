@@ -11,14 +11,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
+namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 
 use Rollerworks\Component\Search\ValueIncrementer;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class NumberValueComparison implements ValueIncrementer
+class NumberValueComparator implements ValueIncrementer
 {
     /**
      * Returns whether the first value is higher then the second value.

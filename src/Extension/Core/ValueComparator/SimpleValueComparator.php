@@ -11,16 +11,16 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
+namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 
 use Rollerworks\Component\Search\ValueComparator;
 
 /**
- * Default ValueComparison implementation, only able to compare equality.
+ * Default ValueComparator implementation, only able to compare equality.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SimpleValueComparison implements ValueComparator
+class SimpleValueComparator implements ValueComparator
 {
     /**
      * {@inheritdoc}

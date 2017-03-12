@@ -17,16 +17,16 @@ use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
-use Rollerworks\Component\Search\Extension\Core\ValueComparison\MoneyValueComparison;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\MoneyValueComparator;
 
 final class MoneyValueComparisonTest extends TestCase
 {
-    /** @var MoneyValueComparison */
+    /** @var MoneyValueComparator */
     private $comparison;
 
     protected function setUp()
     {
-        $this->comparison = new MoneyValueComparison();
+        $this->comparison = new MoneyValueComparator();
     }
 
     /** @test */

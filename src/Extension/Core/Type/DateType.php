@@ -35,7 +35,7 @@ class DateType extends BaseDateTimeType
      */
     public function buildType(FieldConfig $config, array $options)
     {
-        $config->setValueComparison($this->valueComparison);
+        $config->setValueComparator($this->valueComparator);
         $config->setValueTypeSupport(Range::class, true);
         $config->setValueTypeSupport(Compare::class, true);
 

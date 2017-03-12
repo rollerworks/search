@@ -561,7 +561,7 @@ final class FieldValuesFactoryTest extends SearchIntegrationTestCase
                 }
             }
         );
-        $field->setValueComparison(
+        $field->setValueComparator(
             new class() implements ValueComparator {
                 public function isHigher($higher, $lower, array $options): bool
                 {

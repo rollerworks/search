@@ -129,7 +129,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_has_no_comparison_class_by_default()
     {
-        self::assertEquals(null, $this->field->getValueComparison());
+        self::assertEquals(null, $this->field->getValueComparator());
     }
 
     /**
@@ -139,8 +139,8 @@ final class SearchFieldTest extends TestCase
     {
         $comparisonObj = $this->getMockBuilder(ValueComparator::class)->getMock();
 
-        $this->field->setValueComparison($comparisonObj);
-        self::assertEquals($comparisonObj, $this->field->getValueComparison());
+        $this->field->setValueComparator($comparisonObj);
+        self::assertEquals($comparisonObj, $this->field->getValueComparator());
     }
 
     /**

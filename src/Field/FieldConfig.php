@@ -62,19 +62,19 @@ interface FieldConfig
     public function setValueTypeSupport(string $type, bool $enabled);
 
     /**
-     * Set the {@link ValueComparisonInterface} instance for optimizing
+     * Set the {@link ValueComparator} instance for optimizing
      * and validation.
      *
-     * @param ValueComparator $comparisonObj
+     * @param ValueComparator $comparator
      */
-    public function setValueComparison(ValueComparator $comparisonObj);
+    public function setValueComparator(ValueComparator $comparator);
 
     /**
-     * Returns the configured {@link ValueComparisonInterface} instance.
+     * Returns the configured {@link ValueComparator} instance.
      *
      * @return ValueComparator|null
      */
-    public function getValueComparison();
+    public function getValueComparator(): ?ValueComparator;
 
     /**
      * Sets a view transformer for the field.

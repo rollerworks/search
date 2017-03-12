@@ -14,16 +14,16 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Extension\Core\ValueComparison;
 
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\Extension\Core\ValueComparison\DateValueComparison;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateValueComparator;
 
 class DateValueComparisonTest extends TestCase
 {
-    /** @var DateValueComparison */
+    /** @var DateValueComparator */
     private $comparison;
 
     protected function setUp()
     {
-        $this->comparison = new DateValueComparison();
+        $this->comparison = new DateValueComparator();
     }
 
     /** @test */

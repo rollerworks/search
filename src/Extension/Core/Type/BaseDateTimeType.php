@@ -28,7 +28,7 @@ abstract class BaseDateTimeType extends AbstractFieldType
     /**
      * @var ValueComparator
      */
-    protected $valueComparison;
+    protected $valueComparator;
 
     /**
      * @var array
@@ -43,11 +43,11 @@ abstract class BaseDateTimeType extends AbstractFieldType
     /**
      * Constructor.
      *
-     * @param ValueComparator $valueComparison
+     * @param ValueComparator $valueComparator
      */
-    public function __construct(ValueComparator $valueComparison)
+    public function __construct(ValueComparator $valueComparator)
     {
-        $this->valueComparison = $valueComparison;
+        $this->valueComparator = $valueComparator;
     }
 
     protected function validateFormat(string $name, $value)
