@@ -27,19 +27,19 @@ class CoreExtension extends AbstractExtension
      */
     protected function loadTypes(): array
     {
-        $dateTimeComparison = new ValueComparison\DateTimeValueComparison();
-        $numberComparison = new ValueComparison\NumberValueComparison();
+        $dateTimeComparator = new ValueComparator\DateTimeValueValueComparator();
+        $numberComparator = new ValueComparator\NumberValueComparator();
 
         return [
-            new Type\SearchFieldType(new ValueComparison\SimpleValueComparison()),
-            new Type\DateType(new ValueComparison\DateValueComparison()),
-            new Type\DateTimeType($dateTimeComparison),
-            new Type\TimeType($dateTimeComparison),
-            new Type\TimestampType($dateTimeComparison),
-            new Type\BirthdayType(new ValueComparison\BirthdayValueComparison()),
-            new Type\IntegerType($numberComparison),
-            new Type\MoneyType(new ValueComparison\MoneyValueComparison()),
-            new Type\NumberType($numberComparison),
+            new Type\SearchFieldType(new ValueComparator\SimpleValueComparator()),
+            new Type\DateType(new ValueComparator\DateValueComparator()),
+            new Type\DateTimeType($dateTimeComparator),
+            new Type\TimeType($dateTimeComparator),
+            new Type\TimestampType($dateTimeComparator),
+            new Type\BirthdayType(new ValueComparator\BirthdayValueComparator()),
+            new Type\IntegerType($numberComparator),
+            new Type\MoneyType(new ValueComparator\MoneyValueComparator()),
+            new Type\NumberType($numberComparator),
         ];
     }
 }

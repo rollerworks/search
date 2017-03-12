@@ -26,16 +26,16 @@ class SearchFieldType extends AbstractFieldType
     /**
      * @var ValueComparator
      */
-    private $valueComparison;
+    private $valueComparator;
 
     /**
      * Constructor.
      *
-     * @param ValueComparator $valueComparison
+     * @param ValueComparator $valueComparator
      */
-    public function __construct(ValueComparator $valueComparison)
+    public function __construct(ValueComparator $valueComparator)
     {
-        $this->valueComparison = $valueComparison;
+        $this->valueComparator = $valueComparator;
     }
 
     /**
@@ -51,7 +51,7 @@ class SearchFieldType extends AbstractFieldType
      */
     public function buildType(FieldConfig $config, array $options)
     {
-        $config->setValueComparison($this->valueComparison);
+        $config->setValueComparator($this->valueComparator);
     }
 
     /**

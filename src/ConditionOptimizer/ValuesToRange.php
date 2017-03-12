@@ -46,7 +46,7 @@ class ValuesToRange implements SearchConditionOptimizer
 
         foreach ($fieldSet->all() as $name => $field) {
             if ($field->supportValueType(Range::class)) {
-                $this->comparators[$name] = new ValueSortCompare($field->getValueComparison(), $field->getOptions());
+                $this->comparators[$name] = new ValueSortCompare($field->getValueComparator(), $field->getOptions());
 
                 $optimize = true;
                 break;
@@ -85,18 +85,18 @@ class ValuesToRange implements SearchConditionOptimizer
         }
     }
 
-    private function optimizeValuesInValuesBag(FieldConfig $config, ValueSortCompare $comparisonFunc, ValuesBag $valuesBag)
+    private function optimizeValuesInValuesBag(FieldConfig $config, ValueSortCompare $comparatorFunc, ValuesBag $valuesBag)
     {
         if ($valuesBag->hasSimpleValues()) {
             $values = $valuesBag->getSimpleValues();
-            uasort($values, $comparisonFunc);
+            uasort($values, $comparatorFunc);
 
             $this->listToRanges($values, $valuesBag, $config);
         }
 
         if ($valuesBag->hasExcludedSimpleValues()) {
             $excludes = $valuesBag->getExcludedSimpleValues();
-            uasort($excludes, $comparisonFunc);
+            uasort($excludes, $comparatorFunc);
 
             $this->listToRanges($excludes, $valuesBag, $config, true);
         }
@@ -105,8 +105,8 @@ class ValuesToRange implements SearchConditionOptimizer
     private function listToRanges(array $values, ValuesBag $valuesBag, FieldConfig $config, bool $exclude = false)
     {
         $class = $exclude ? ExcludedRange::class : Range::class;
-        /** @var ValueIncrementer $comparison */
-        $comparison = $config->getValueComparison();
+        /** @var ValueIncrementer $comparator */
+        $comparator = $config->getValueComparator();
         $options = $config->getOptions();
 
         $prevIndex = null;
@@ -133,9 +133,9 @@ class ValuesToRange implements SearchConditionOptimizer
                 continue;
             }
 
-            $increasedValue = $comparison->getIncrementedValue($prevValue, $options);
+            $increasedValue = $comparator->getIncrementedValue($prevValue, $options);
 
-            if ($comparison->isEqual($value, $increasedValue, $options)) {
+            if ($comparator->isEqual($value, $increasedValue, $options)) {
                 if (null === $rangeLower) {
                     $rangeLower = $prevValue;
                 }

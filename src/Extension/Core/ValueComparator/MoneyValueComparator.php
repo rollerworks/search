@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Extension\Core\ValueComparison;
+namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 
 use Money\Money;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\ValueIncrementer;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class MoneyValueComparison implements ValueIncrementer
+class MoneyValueComparator implements ValueIncrementer
 {
     /**
      * Returns whether the first value is higher then the second value.

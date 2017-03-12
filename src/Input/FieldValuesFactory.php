@@ -65,7 +65,7 @@ class FieldValuesFactory
     /**
      * @var ValueComparator
      */
-    private $valueComparison;
+    private $valueComparator;
 
     /**
      * @var string
@@ -86,10 +86,9 @@ class FieldValuesFactory
         $this->count = $valuesBag->count();
         $this->path = $path;
 
-        $this->valueComparison = $field->getValueComparison();
+        $this->valueComparator = $field->getValueComparator();
         $this->viewTransformer = $field->getViewTransformer();
         $this->normTransformer = $field->getNormTransformer() ?? $this->viewTransformer;
-        $this->valueComparison = $field->getValueComparison();
 
         $this->validator->initializeContext($field, $this->errorList);
     }
@@ -331,7 +330,7 @@ class FieldValuesFactory
 
     private function validateRangeBounds(Range $range, array $path, $lower, $upper): bool
     {
-        if (!$this->valueComparison->isLower($range->getLower(), $range->getUpper(), $this->config->getOptions())) {
+        if (!$this->valueComparator->isLower($range->getLower(), $range->getUpper(), $this->config->getOptions())) {
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';
             $params = [
                 '{{ lower }}' => strpos((string) $lower, ' ') ? "'".$lower."'" : $lower,

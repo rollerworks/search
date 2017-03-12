@@ -56,7 +56,7 @@ class SearchField implements FieldConfig
     /**
      * @var ValueComparator
      */
-    private $valueComparison;
+    private $valueComparator;
 
     /**
      * @var bool
@@ -148,7 +148,7 @@ class SearchField implements FieldConfig
      *
      * @return self
      */
-    public function setValueComparison(ValueComparator $comparisonObj)
+    public function setValueComparator(ValueComparator $comparator)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -156,7 +156,7 @@ class SearchField implements FieldConfig
             );
         }
 
-        $this->valueComparison = $comparisonObj;
+        $this->valueComparator = $comparator;
 
         return $this;
     }
@@ -164,9 +164,9 @@ class SearchField implements FieldConfig
     /**
      * {@inheritdoc}
      */
-    public function getValueComparison()
+    public function getValueComparator(): ?ValueComparator
     {
-        return $this->valueComparison;
+        return $this->valueComparator;
     }
 
     /**
@@ -231,7 +231,7 @@ class SearchField implements FieldConfig
             return;
         }
 
-        if (null === $this->valueComparison) {
+        if (null === $this->valueComparator) {
             foreach ($this->supportedValueTypes as $type => $supported) {
                 if ($supported && isset(class_implements($type)[RequiresComparatorValueHolder::class])) {
                     throw new InvalidConfigurationException(
