@@ -12,35 +12,35 @@
         </instanceof>
 
         <!-- CoreExtension -->
-        <service id="rollerworks_search.value_comparison.simple" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\SimpleValueComparison" />
-        <service id="rollerworks_search.value_comparison.date_time" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\DateTimeValueComparison" />
-        <service id="rollerworks_search.value_comparison.number" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\NumberValueComparison" />
-        <service id="rollerworks_search.value_comparison.birthday" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\BirthdayValueComparison" />
-        <service id="rollerworks_search.value_comparison.money" class="Rollerworks\Component\Search\Extension\Core\ValueComparison\MoneyValueComparison" />
+        <service id="rollerworks_search.value_comparator.simple" class="Rollerworks\Component\Search\Extension\Core\ValueComparator\SimpleValueComparator" />
+        <service id="rollerworks_search.value_comparator.date_time" class="Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueValueComparator" />
+        <service id="rollerworks_search.value_comparator.number" class="Rollerworks\Component\Search\Extension\Core\ValueComparator\NumberValueComparator" />
+        <service id="rollerworks_search.value_comparator.birthday" class="Rollerworks\Component\Search\Extension\Core\ValueComparator\BirthdayValueComparator" />
+        <service id="rollerworks_search.value_comparator.money" class="Rollerworks\Component\Search\Extension\Core\ValueComparator\MoneyValueComparator" />
 
         <service id="Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType">
-            <argument type="service" id="rollerworks_search.value_comparison.simple" />
+            <argument type="service" id="rollerworks_search.value_comparator.simple" />
         </service>
         <service id="Rollerworks\Component\Search\Extension\Core\Type\DateType">
-            <argument type="service" id="rollerworks_search.value_comparison.date_time" />
+            <argument type="service" id="rollerworks_search.value_comparator.date_time" />
         </service>
         <service id="Rollerworks\Component\Search\Extension\Core\Type\DateTimeType">
-            <argument type="service" id="rollerworks_search.value_comparison.date_time" />
+            <argument type="service" id="rollerworks_search.value_comparator.date_time" />
         </service>
         <service id="Rollerworks\Component\Search\Extension\Core\Type\TimeType">
-            <argument type="service" id="rollerworks_search.value_comparison.date_time" />
+            <argument type="service" id="rollerworks_search.value_comparator.date_time" />
         </service>
         <service id="Rollerworks\Component\Search\Extension\Core\Type\BirthdayType">
-            <argument type="service" id="rollerworks_search.value_comparison.birthday" />
+            <argument type="service" id="rollerworks_search.value_comparator.birthday" />
         </service>
         <service id="Rollerworks\Component\Search\Extension\Core\Type\IntegerType">
-            <argument type="service" id="rollerworks_search.value_comparison.number" />
+            <argument type="service" id="rollerworks_search.value_comparator.number" />
         </service>
         <service id="Rollerworks\Component\Search\Extension\Core\Type\MoneyType">
-            <argument type="service" id="rollerworks_search.value_comparison.money" />
+            <argument type="service" id="rollerworks_search.value_comparator.money" />
         </service>
         <service id="Rollerworks\Component\Search\Extension\Core\Type\NumberType">
-            <argument type="service" id="rollerworks_search.value_comparison.number" />
+            <argument type="service" id="rollerworks_search.value_comparator.number" />
         </service>
     </services>
 </container>

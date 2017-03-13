@@ -26,7 +26,7 @@ final class SearchProcessorTest extends FunctionalTestCase
 
     public function testEmptySearchCodeIsValid()
     {
-        $client = self::newClient();
+        $client = self::newClient(['config' => 'search_processor.yml']);
 
         $client->request('GET', '/search');
 
@@ -35,7 +35,7 @@ final class SearchProcessorTest extends FunctionalTestCase
 
     public function testPostNewCondition()
     {
-        $client = self::newClient();
+        $client = self::newClient(['config' => 'search_processor.yml']);
 
         $client->request('POST', '/search', ['search' => 'name: user;']);
         $crawler = $client->followRedirect();
@@ -53,7 +53,7 @@ final class SearchProcessorTest extends FunctionalTestCase
 
     public function testInvalidConditionHasErrors()
     {
-        $client = self::newClient();
+        $client = self::newClient(['config' => 'search_processor.yml']);
 
         $client->request('POST', '/search', ['search' => 'first-name: user;']);
 
