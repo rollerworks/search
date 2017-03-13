@@ -2,6 +2,7 @@ framework:
     translator:         { fallback: en }
     secret:              test
     router:
+        enabled: false
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: "%kernel.debug%"
     form:                false

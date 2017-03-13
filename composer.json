@@ -13,12 +13,12 @@
     "require": {
         "php": "^7.1",
         "psr/simple-cache": "^1.0.0",
-        "rollerworks/search": "^2.0@dev",
+        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA2",
         "rollerworks/uri-encoder": "^1.1.0",
         "symfony/framework-bundle": "^3.3@dev"
     },
     "require-dev": {
-        "matthiasnoback/symfony-dependency-injection-test": "^1.1.0",
+        "matthiasnoback/symfony-dependency-injection-test": "^2.0.0",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.7",
         "rollerworks/search-symfony-validator": "^2.0@dev",
         "symfony/browser-kit": "^3.2.4",
