@@ -42,8 +42,8 @@
             <argument type="service" id="rollerworks_search.condition_optimizer" />
         </service>
 
-        <!-- DependencyInjectionExtension -->
-        <service id="rollerworks_search.extension" class="Rollerworks\Bundle\SearchBundle\Extension\DependencyInjectionExtension">
+        <!-- LazyExtension -->
+        <service id="rollerworks_search.extension" class="Rollerworks\Component\Search\Extension\LazyExtension">
             <!-- All services with tag "rollerworks_search.type" are inserted here by ExtensionPass -->
             <argument type="service-locator" />
             <!-- All services with tag "rollerworks_search.type_extension" are inserted here by ExtensionPass -->
