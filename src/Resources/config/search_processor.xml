@@ -38,5 +38,16 @@
 
         <service id="Rollerworks\Component\Search\Processor\SearchProcessor" alias="rollerworks_search.search_processor" />
         <service id="rollerworks_search.search_processor" alias="rollerworks_search.http_foundation_search_processor" public="true" />
+
+        <service id="rollerworks_search.cache.adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter" abstract="true">
+            <tag name="cache.pool" clearer="cache.default_clearer" />
+            <tag name="monolog.logger" channel="cache" />
+            <argument /> <!-- namespace -->
+            <argument>0</argument> <!-- default lifetime -->
+            <argument /> <!-- version -->
+            <call method="setLogger">
+                <argument type="service" id="logger" on-invalid="ignore" />
+            </call>
+        </service>
     </services>
 </container>
