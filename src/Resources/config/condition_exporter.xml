@@ -8,7 +8,7 @@
         <defaults public="false" />
 
         <service id="rollerworks_search.exporter_loader" class="Rollerworks\Component\Search\Loader\ConditionExporterLoader">
-            <argument type="service-locator" />
+            <argument />
             <!-- All services with tag "rollerworks_search.condition_exporter" are inserted here by ExporterPass -->
             <argument type="collection" />
         </service>

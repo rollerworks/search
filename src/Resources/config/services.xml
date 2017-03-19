@@ -13,7 +13,7 @@
         <!-- LazyFieldSetRegistry -->
         <service id="rollerworks_search.fieldset_registry" class="Rollerworks\Component\Search\LazyFieldSetRegistry">
             <!-- All services with tag "rollerworks_search.fieldset" are inserted here by FieldSetRegistryPass -->
-            <argument type="service-locator" />
+            <argument />
             <argument type="collection" />
         </service>
 
@@ -45,7 +45,7 @@
         <!-- LazyExtension -->
         <service id="rollerworks_search.extension" class="Rollerworks\Component\Search\Extension\LazyExtension">
             <!-- All services with tag "rollerworks_search.type" are inserted here by ExtensionPass -->
-            <argument type="service-locator" />
+            <argument />
             <!-- All services with tag "rollerworks_search.type_extension" are inserted here by ExtensionPass -->
             <argument type="iterator" />
         </service>

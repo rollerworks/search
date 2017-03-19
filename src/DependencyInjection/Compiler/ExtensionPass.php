@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
-use Symfony\Component\DependencyInjection\Argument\ServiceLocatorArgument;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
  * Adds all services with the tags "rollerworks_search.type" and "rollerworks_search.type_extension" as
@@ -57,24 +58,19 @@ class ExtensionPass implements CompilerPassInterface
         $definition->replaceArgument(1, $this->processTypeExtensions($container));
     }
 
-    private function processTypes(ContainerBuilder $container, Definition $definition): ServiceLocatorArgument
+    private function processTypes(ContainerBuilder $container, Definition $definition): Definition
     {
         // Get service locator argument
         $servicesMap = [];
-        $locator = $definition->getArgument(0);
-
-        if ($locator instanceof ServiceLocatorArgument) {
-            $servicesMap = $locator->getValues();
-        }
 
         // Builds an array with fully-qualified type class names as keys and service IDs as values
         foreach ($container->findTaggedServiceIds($this->fieldTypeTag) as $serviceId => $tag) {
             $serviceDefinition = $container->getDefinition($serviceId);
             // Add field type service to the service locator
-            $servicesMap[$serviceDefinition->getClass()] = new Reference($serviceId);
+            $servicesMap[$serviceDefinition->getClass()] = new ServiceClosureArgument(new Reference($serviceId));
         }
 
-        return new ServiceLocatorArgument($servicesMap);
+        return (new Definition(ServiceLocator::class, [$servicesMap]))->addTag('container.service_locator');
     }
 
     private function processTypeExtensions(ContainerBuilder $container): array
