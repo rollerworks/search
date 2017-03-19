@@ -54,11 +54,11 @@ class ExtensionPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition($this->fieldExtensionService);
-        $definition->replaceArgument(0, $this->processTypes($container, $definition));
+        $definition->replaceArgument(0, $this->processTypes($container));
         $definition->replaceArgument(1, $this->processTypeExtensions($container));
     }
 
-    private function processTypes(ContainerBuilder $container, Definition $definition): Definition
+    private function processTypes(ContainerBuilder $container): Definition
     {
         // Get service locator argument
         $servicesMap = [];
