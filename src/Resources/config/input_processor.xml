@@ -8,7 +8,7 @@
         <defaults public="false" />
 
         <service id="rollerworks_search.input_loader" class="Rollerworks\Component\Search\Loader\InputProcessorLoader">
-            <argument type="service-locator" />
+            <argument />
             <!-- All services with tag "rollerworks_search.input_processor" are inserted here by InputProcessorPass -->
             <argument type="collection" />
         </service>

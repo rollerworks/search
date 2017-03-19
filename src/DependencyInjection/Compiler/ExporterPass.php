@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Argument\ServiceLocatorArgument;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
  * Compiler pass to register tagged services for an exporter.
@@ -44,11 +46,11 @@ class ExporterPass implements CompilerPassInterface
             }
 
             $exporters[$tag[0]['format']] = $serviceId;
-            $exportersServices[$serviceId] = new Reference($serviceId);
+            $exportersServices[$serviceId] = new ServiceClosureArgument(new Reference($serviceId));
         }
 
         $definition = $container->getDefinition('rollerworks_search.exporter_loader');
-        $definition->replaceArgument(0, new ServiceLocatorArgument($exportersServices));
+        $definition->replaceArgument(0, (new Definition(ServiceLocator::class, [$exportersServices]))->addTag('container.service_locator'));
         $definition->replaceArgument(1, $exporters);
     }
 }
