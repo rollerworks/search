@@ -1,0 +1,34 @@
+{
+    "name": "rollerworks/search-api-platform",
+    "description": "API-Platform integration bridge for RollerworksSearch",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollerscapes.net"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "rollerworks/search-processor": "^0.2.0",
+        "rollerworks/search": "^2.0,>=2.0.0-ALPHA2",
+        "api-platform/core": "^2.0.3"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^3.2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\ApiPlatform\\": "src/"
+        },
+        "exclude-from-classmap": [
+            "tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\ApiPlatform\\Tests\\": "tests/"
+        }
+    }
+}
