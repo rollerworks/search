@@ -30,4 +30,4 @@ with this source code in the file [LICENSE](LICENSE).
 
 [1]: https://github.com/rollerworks/RollerworksSearch
 [2]: https://github.com/rollerworks/RollerworksSearch#contributing
-[3]: http://rollerworks-search.readthedocs.org/en/latest/
+[3]: http://rollerworkssearch.readthedocs.io/en/latest/
