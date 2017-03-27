@@ -34,8 +34,10 @@ use Rollerworks\Component\Search\SearchCondition;
  *  * Conversion results must be properly escaped to prevent SQL injections.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @final
  */
-final class NativeQueryConditionGenerator extends AbstractConditionGenerator
+class NativeQueryConditionGenerator extends AbstractConditionGenerator
 {
     private $query;
 

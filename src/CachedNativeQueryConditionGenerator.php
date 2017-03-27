@@ -29,8 +29,10 @@ use Psr\SimpleCache\CacheInterface as Cache;
  * should purge all cached entries.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @final
  */
-final class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerator
+class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerator
 {
     /**
      * @var NativeQuery

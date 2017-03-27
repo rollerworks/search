@@ -38,6 +38,8 @@ use Rollerworks\Component\Search\SearchCondition;
  *  * Conversions require the correct query-hint to be set.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @final
  */
 final class DqlConditionGenerator extends AbstractConditionGenerator
 {
