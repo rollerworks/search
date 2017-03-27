@@ -31,8 +31,10 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
  * should purge all cached entries.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @final
  */
-final class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator
+class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator
 {
     use QueryPlatformTrait;
 

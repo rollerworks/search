@@ -20,8 +20,10 @@ use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @final
  */
-final class DoctrineOrmFactory
+class DoctrineOrmFactory
 {
     /**
      * @var Cache
