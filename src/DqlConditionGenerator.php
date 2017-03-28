@@ -14,10 +14,13 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\ORM\Query as DqlQuery;
+use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Rollerworks\Component\Search\Doctrine\Orm\QueryPlatform\DqlQueryPlatform;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
@@ -41,10 +44,10 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * @final
  */
-final class DqlConditionGenerator extends AbstractConditionGenerator
+class DqlConditionGenerator extends AbstractConditionGenerator
 {
     /**
-     * @var DqlQuery
+     * @var DqlQuery|QueryBuilder
      */
     private $query;
 
@@ -61,11 +64,19 @@ final class DqlConditionGenerator extends AbstractConditionGenerator
     /**
      * Constructor.
      *
-     * @param DqlQuery        $query           Doctrine ORM Query object
-     * @param SearchCondition $searchCondition SearchCondition object
+     * @param DqlQuery|QueryBuilder $query           Doctrine ORM Query object
+     * @param SearchCondition       $searchCondition SearchCondition object
      */
-    public function __construct(DqlQuery $query, SearchCondition $searchCondition)
+    public function __construct($query, SearchCondition $searchCondition)
     {
+        if ($query instanceof QueryBuilder) {
+            if (!method_exists($query, 'setHint')) {
+                throw new InvalidArgumentException(sprintf('An "%s" instance was provided but method setHint is not implemented in "%s".', QueryBuilder::class, get_class($query)));
+            }
+        } elseif (!$query instanceof DqlQuery) {
+            throw new UnexpectedTypeException($query, [DqlQuery::class, QueryBuilder::class.' (with QueryHint support)']);
+        }
+
         parent::__construct($searchCondition, $query->getEntityManager());
 
         $this->query = $query;
@@ -118,10 +129,17 @@ final class DqlConditionGenerator extends AbstractConditionGenerator
     {
         $whereCase = $this->getWhereClause($prependQuery);
 
-        if ('' !== $whereCase) {
-            $this->query->setDQL($this->query->getDQL().$whereCase);
-            $this->query->setHint($this->getQueryHintName(), $this->getQueryHintValue());
+        if ('' === $whereCase) {
+            return $this;
         }
+
+        if ($this->query instanceof QueryBuilder) {
+            $this->query->andWhere($this->getWhereClause());
+        } else {
+            $this->query->setDQL($this->query->getDQL().$whereCase);
+        }
+
+        $this->query->setHint($this->getQueryHintName(), $this->getQueryHintValue());
 
         return $this;
     }
@@ -167,7 +185,7 @@ final class DqlConditionGenerator extends AbstractConditionGenerator
     /**
      * @internal
      */
-    public function getQuery(): DqlQuery
+    public function getQuery()
     {
         return $this->query;
     }

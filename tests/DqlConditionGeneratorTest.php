@@ -15,10 +15,13 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\QueryException;
+use Doctrine\ORM\QueryBuilder;
+use Prophecy\Argument;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Orm\SqlConversionInfo;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
@@ -42,7 +45,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
         return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
     }
 
-    private function getConditionGenerator(SearchCondition $condition, Query $query = null, $noMapping = false)
+    private function getConditionGenerator(SearchCondition $condition, $query = null, $noMapping = false)
     {
         if (null === $query) {
             $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C');
@@ -610,6 +613,32 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id IN (2)))',
             false
         );
+    }
+
+    public function testUpdateQueryWithQueryBuilder()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+            ->end()
+        ->getSearchCondition();
+
+        if (method_exists(QueryBuilder::class, 'setHint')) {
+            $qb = $this->prophesize(QueryBuilder::class);
+        } else {
+            $qb = $this->prophesize(QueryBuilderWithHints::class);
+        }
+
+        $qb->getEntityManager()->willReturn($this->em);
+        $qb->setHint('rws_conversion_hint', Argument::type(SqlConversionInfo::class))->shouldBeCalled();
+        $qb->andWhere('((C.id IN(2)))')->shouldBeCalled();
+
+        $conditionGenerator = $this->getConditionGenerator($condition, $qb->reveal());
+
+        $whereCase = $conditionGenerator->getWhereClause();
+        $conditionGenerator->updateQuery(' WHERE ');
+
+        $this->assertEquals('((C.id IN(2)))', $whereCase);
     }
 
     public function testUpdateQueryWithNoResult()
