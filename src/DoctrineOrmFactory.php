@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
@@ -54,7 +55,9 @@ class DoctrineOrmFactory
     {
         if ($query instanceof NativeQuery) {
             return new NativeQueryConditionGenerator($query, $searchCondition);
-        } elseif ($query instanceof Query) {
+        }
+
+        if ($query instanceof Query || $query instanceof QueryBuilder) {
             return new DqlConditionGenerator($query, $searchCondition);
         }
 
