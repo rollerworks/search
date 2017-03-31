@@ -77,7 +77,8 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
                 'cache' => [
                     'pools' => [
                         'rollerworks.search_processor.cache' => [
-                            'adapter' => 'rollerworks_search.cache.adapter.array',
+                            'adapter' => 'cache.adapter.psr6',
+                            'provider' => 'rollerworks_search.cache.adapter.array',
                         ],
                     ],
                 ],
