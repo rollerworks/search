@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\ApiPlatform\Tests;
 
 use ApiPlatform\Core\Api\UrlGeneratorInterface;
 use PHPUnit\Framework\TestCase;
-use Rollerworks\Component\Search\ApiPlatform\InvalidSearchConditionNormalizer;
+use Rollerworks\Component\Search\ApiPlatform\Serializer\InvalidSearchConditionNormalizer;
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\ApiPlatform;
+namespace Rollerworks\Component\Search\ApiPlatform\Serializer;
 
 use ApiPlatform\Core\Api\UrlGeneratorInterface;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;

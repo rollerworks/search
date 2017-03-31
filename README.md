@@ -1,7 +1,7 @@
 RollerworksSearch API-Platform Bridge
 =====================================
 
-API-Platform integration bridge for [RollerworksSearch][1].
+[API-Platform](https://github.com/api-platform) integration bridge for [RollerworksSearch][1].
 
 **Note**: If you are new to RollerworksSearch, please read the main documentation
 of [RollerworksSearch][1] before continuing.
