@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\ApiPlatform\EventListener;
 
 use ApiPlatform\Core\Api\UrlGeneratorInterface;
+use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface as ResourceMetadataFactory;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Processor\ProcessorConfig;
 use Rollerworks\Component\Search\Processor\SearchProcessor;
@@ -27,26 +28,25 @@ final class SearchConditionListener
     private $searchFactory;
     private $searchProcessor;
     private $urlGenerator;
+    private $resourceMetadataFactory;
 
-    public function __construct(SearchFactory $searchFactory, SearchProcessor $searchProcessor, UrlGeneratorInterface $urlGenerator)
+    public function __construct(SearchFactory $searchFactory, SearchProcessor $searchProcessor, UrlGeneratorInterface $urlGenerator, ResourceMetadataFactory $resourceMetadataFactory)
     {
         $this->searchFactory = $searchFactory;
         $this->searchProcessor = $searchProcessor;
         $this->urlGenerator = $urlGenerator;
+        $this->resourceMetadataFactory = $resourceMetadataFactory;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
 
-        if ($request->isMethod(Request::METHOD_DELETE) || !$request->attributes->has('_api_respond')) {
+        if (!$request->isMethodCacheable() || !$request->attributes->has('_api_resource_class')) {
             return;
         }
 
-        // XXX Allow to configure a resolver (listener), to support admin/frontend (based on serialization context)
-        // Else read from the ResourceMetadata
-        // Provide config in the ResourceMetadata or `_api_search_config` (object)
-        if (null === $fieldSet = $request->attributes->get('_api_search_fieldset')) {
+        if (null === $fieldSet = $this->resolveFieldSetName($request)) {
             return;
         }
 
@@ -61,17 +61,44 @@ final class SearchConditionListener
         }
 
         if ($payload->isValid() && $payload->isChanged()) {
-            return new RedirectResponse(
-                $this->urlGenerator->generate(
-                    $request->attributes->get('_route'),
-                    array_merge(
-                        $request->query->all(),
-                        ['search' => $payload->searchCode]
-                    )
-                )
+            $routeArguments = array_merge(
+                $request->query->all(),
+                ['search' => $payload->exportedCondition] // Use array instead or string ()
             );
+
+            if (null !== $format = $request->attributes->get('_format')) {
+                $routeArguments['_format'] = $format;
+            }
+
+            $event->setResponse(new RedirectResponse(
+                $this->urlGenerator->generate($request->attributes->get('_route'), $routeArguments)
+            ));
         }
 
         $request->attributes->set('_api_search_condition', $payload->searchCondition);
+    }
+
+    private function resolveFieldSetName(Request $request): ?string
+    {
+        if (null !== $fieldSet = $request->attributes->get('_api_search_fieldset')) {
+            return $fieldSet;
+        }
+
+        $resourceClass = $request->attributes->get('_api_resource_class');
+        $searchConfig = $this->resourceMetadataFactory->create($resourceClass)->getAttribute('rollerworks_search');
+
+        if (empty($searchConfig)) {
+            return null;
+        }
+
+        if (!empty($searchConfig['fieldset'])) {
+            return $searchConfig['fieldset'];
+        }
+
+        if (!empty($searchConfig['fields'])) {
+            return $resourceClass;
+        }
+
+        return null;
     }
 }
