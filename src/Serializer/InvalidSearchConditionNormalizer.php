@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 final class InvalidSearchConditionNormalizer implements NormalizerInterface
 {
-    const FORMAT = 'jsonld';
+    const FORMAT = 'jsonproblem';
 
     /**
      * @var UrlGeneratorInterface
