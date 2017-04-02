@@ -14,9 +14,7 @@
         "rollerworks/search-processor": "^0.2.0",
         "rollerworks/search": "^2.0,>=2.0.0-ALPHA2",
         "rollerworks/uri-encoder": "^1.1.0",
-        "api-platform/core": "^2.0.3",
-        "symfony/psr-http-message-bridge": "^1.0.0",
-        "zendframework/zend-diactoros": "^1.3.9"
+        "api-platform/core": "^2.0.3"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.2.6",
