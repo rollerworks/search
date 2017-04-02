@@ -71,6 +71,9 @@ final class CollectionDataProvider implements CollectionDataProviderInterface
         // BC for https://github.com/doctrine/doctrine2/pull/6359
         if (!method_exists($queryBuilder, 'setHint')) {
             $queryBuilder = new QueryBuilder($queryBuilder->getEntityManager());
+            $queryBuilder
+                ->select('o')
+                ->from($repository->getClassName(), 'o');
         }
 
         $queryNameGenerator = new QueryNameGenerator();
