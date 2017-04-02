@@ -18,6 +18,8 @@ matrix:
           env: testcase='doctrine_orm'
         - php: '7.1'
           env: testcase='search_processor'
+        - php: '7.1'
+          env: testcase='api_platform'
 env:
     global:
         - TMPDIR=/tmp
@@ -42,14 +44,20 @@ before_install:
 
         if [[ $testcase = 'search_processor' ]]; then
             composer require --no-update "rollerworks/search-processor:^1.0@dev"
-            composer require --no-update "symfony/psr-http-message-bridge:^1.0.0"
-            composer require --no-update "zendframework/zend-diactoros:^1.3.9"
+            composer require --no-update "symfony/psr-http-message-bridge:^1.0"
+        fi;
+
+        if [[ $testcase = 'api_platform' ]]; then
+            composer require --no-update "symfony/twig-bundle:^3.2.4"
+            composer require --no-update "doctrine/doctrine-bundle:^1.1"
+            composer require --no-update "rollerworks/search-doctrine-orm:^2.0@dev"
+            composer require --no-update "rollerworks/search-api-platform:^1.0@dev"
         fi;
 
 install:
     - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
     - export SYMFONY_PHPUNIT_VERSION=5.4.8
-    - export SYMFONY_DEPRECATIONS_HELPER=strict
+    - export SYMFONY_DEPRECATIONS_HELPER=weak_vendors
     - if [[ ! $deps ]]; then composer update --prefer-source --no-progress --no-suggest --ansi; fi
     - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --prefer-source --no-progress --no-suggest --ansi ; fi
     - if [[ $deps = 'low' ]]; then composer update --prefer-source --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi

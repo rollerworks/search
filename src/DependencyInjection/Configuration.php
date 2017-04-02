@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
+use Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\Processor\Psr7SearchProcessor;
+use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -36,7 +38,7 @@ final class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('processor')
                     ->info('SearchProcessor configuration')
-                    ->{class_exists(Psr7SearchProcessor::class) ? 'canBeDisabled' : 'canBeEnabled'}()
+                    ->{class_exists(Psr7SearchProcessor::class) && class_exists(HttpFoundationFactoryInterface::class) ? 'canBeDisabled' : 'canBeEnabled'}()
                     ->children()
                         ->booleanNode('disable_cache')->defaultFalse()->end()
                     ->end()
@@ -44,6 +46,7 @@ final class Configuration implements ConfigurationInterface
             ->end();
 
         $this->addDoctrineSection($rootNode);
+        $this->addApiPlatformSection($rootNode);
 
         return $treeBuilder;
     }
@@ -74,6 +77,21 @@ final class Configuration implements ConfigurationInterface
                                      ->prototype('scalar')->end()
                                  ->end()
                              ->end()
+                         ->end()
+                     ->end()
+                 ->end()
+             ->end();
+    }
+
+    private function addApiPlatformSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+             ->children()
+                 ->arrayNode('api_platform')
+                    ->{class_exists(SearchConditionListener::class) ? 'canBeDisabled' : 'canBeEnabled'}()
+                     ->children()
+                         ->arrayNode('doctrine_orm')
+                             ->{class_exists(DoctrineOrmFactory::class) ? 'canBeDisabled' : 'canBeEnabled'}()
                          ->end()
                      ->end()
                  ->end()

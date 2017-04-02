@@ -22,15 +22,18 @@
         "matthiasnoback/symfony-service-definition-validator": "^1.2.7",
         "rollerworks/search-symfony-validator": "^2.0@dev",
         "symfony/browser-kit": "^3.2.4",
-        "symfony/routing": "^3.2.4",
         "symfony/dom-crawler": "^3.2.4",
-        "symfony/phpunit-bridge": "^3.2.4"
+        "symfony/asset": "^3.2.4",
+        "symfony/templating": "^3.2.4",
+        "symfony/phpunit-bridge": "^3.3",
+        "symfony/routing": "^3.2.4",
+        "symfony/twig-bundle": "^3.2.4"
     },
     "conflict": {
         "symfony/psr-http-message-bridge": "<1.0.0",
         "rollerworks/search-symfony-validator": "<2.0",
         "rollerworks/search-doctrine-dbal": "<2.0",
-        "rollerworks/search-doctrine-orm": "<2.0",
+        "rollerworks/search-doctrine-orm": "<2.0-ALPHA2",
         "doctrine/doctrine-bundle": "<1.1"
     },
     "autoload": {

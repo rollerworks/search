@@ -54,5 +54,10 @@
         <service id="rollerworks_search.chain_condition_optimizer" class="Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer" />
         <service id="rollerworks_search.condition_optimizer" alias="rollerworks_search.chain_condition_optimizer" />
         <service id="Rollerworks\Component\Search\SearchConditionOptimizer" alias="rollerworks_search.chain_condition_optimizer" />
+
+        <!-- ArrayAdapter (default cache adapter) -->
+        <service id="rollerworks_search.cache.adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter">
+            <argument>0</argument> <!-- default lifetime -->
+        </service>
     </services>
 </container>
