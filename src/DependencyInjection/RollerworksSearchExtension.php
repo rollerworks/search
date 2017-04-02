@@ -63,6 +63,14 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
         if (class_exists(Translator::class)) {
             $loader->load('translator_alias_resolver.xml');
         }
+
+        if ($this->isConfigEnabled($container, $config['api_platform'])) {
+            $loader->load('api_platform.xml');
+
+            if ($this->isConfigEnabled($container, $config['api_platform']['doctrine_orm'])) {
+                $loader->load('api_platform_doctrine_orm.xml');
+            }
+        }
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Bundle\SearchBundle;
 
 use Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -27,5 +28,6 @@ class RollerworksSearchBundle extends Bundle
         $container->addCompilerPass(new Compiler\ConditionOptimizerPass());
         $container->addCompilerPass(new Compiler\FieldSetRegistryPass());
         $container->addCompilerPass(new Compiler\DoctrineOrmPass());
+        $container->addCompilerPass(new Compiler\DoctrineOrmQueryBuilderPass(), PassConfig::TYPE_BEFORE_REMOVING);
     }
 }

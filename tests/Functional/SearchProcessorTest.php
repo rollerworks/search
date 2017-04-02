@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional;
 
 use Rollerworks\Component\Search\Processor\Psr7SearchProcessor;
+use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 
 final class SearchProcessorTest extends FunctionalTestCase
 {
@@ -21,6 +22,10 @@ final class SearchProcessorTest extends FunctionalTestCase
     {
         if (!class_exists(Psr7SearchProcessor::class)) {
             self::markTestSkipped('rollerworks/search-processor is not installed.');
+        }
+
+        if (!class_exists(HttpFoundationFactoryInterface::class)) {
+            self::markTestSkipped('symfony/psr-http-message-bridge is not installed.');
         }
     }
 

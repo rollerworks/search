@@ -13,10 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application;
 
+use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle;
 use Matthias\SymfonyServiceDefinitionValidator\Compiler\ValidateServiceDefinitionsPass;
 use Matthias\SymfonyServiceDefinitionValidator\Configuration;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -60,6 +62,11 @@ class AppKernel extends Kernel
         if (class_exists(DoctrineBundle::class)) {
             $bundles[] = new DoctrineCacheBundle();
             $bundles[] = new DoctrineBundle();
+        }
+
+        if ('api_platform.yml' === substr($this->config, -16)) {
+            $bundles[] = new TwigBundle();
+            $bundles[] = new ApiPlatformBundle();
         }
 
         return $bundles;

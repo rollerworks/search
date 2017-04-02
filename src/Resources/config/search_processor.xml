@@ -38,9 +38,5 @@
 
         <service id="Rollerworks\Component\Search\Processor\SearchProcessor" alias="rollerworks_search.search_processor" />
         <service id="rollerworks_search.search_processor" alias="rollerworks_search.http_foundation_search_processor" public="true" />
-
-        <service id="rollerworks_search.cache.adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter">
-            <argument>0</argument> <!-- default lifetime -->
-        </service>
     </services>
 </container>
