@@ -43,5 +43,11 @@
 
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
         </service>
+
+        <!-- MetadataFactory, execute after everything else but before caching. -->
+        <service id="rollerworks_search.api_platform.metadata.resource.default_context_factory" class="Rollerworks\Component\Search\ApiPlatform\Metadata\DefaultConfigurationMetadataFactory" decorates="api_platform.metadata.resource.metadata_factory" decoration-priority="-9" public="false">
+            <argument type="service" id="rollerworks_search.api_platform.metadata.resource.default_context_factory.inner" />
+        </service>
+
     </services>
 </container>

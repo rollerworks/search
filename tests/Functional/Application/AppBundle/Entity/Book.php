@@ -28,15 +28,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     iri="http://schema.org/Book",
  *     attributes={
  *         "rollerworks_search"={
- *             "fieldset" = "Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Search\FieldSet\BookFieldSet",
- *             "doctrine_orm"={
- *                  "*" = {
- *                      "mappings" = {
- *                           "id" = "id",
- *                           "title" = "title"
+ *             "contexts"={
+ *                 "_default"={
+ *                      "fieldset" = "Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Search\FieldSet\BookFieldSet"
+ *                  },
+ *                  "_any"={
+ *                      "doctrine_orm"={
+ *                          "mappings"={
+ *                              "id" = "id",
+ *                              "title" = "title"
+ *                          }
  *                      }
  *                  }
- *              }
+ *             }
  *         }
  *     }
  * )
