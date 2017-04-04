@@ -16,7 +16,6 @@ namespace Rollerworks\Component\Search\ApiPlatform\Doctrine\Orm\Extension;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Core\Exception\RuntimeException;
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
 use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\ApiPlatform\ArrayKeysValidator;
 use Rollerworks\Component\Search\Doctrine\Orm\ConditionGenerator;
@@ -32,12 +31,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 final class SearchExtension implements QueryCollectionExtensionInterface
 {
     private $requestStack;
-    private $resourceMetadataFactory;
     private $ormFactory;
 
-    public function __construct(RequestStack $requestStack, ResourceMetadataFactoryInterface $resourceMetadataFactory, DoctrineOrmFactory $ormFactory)
+    public function __construct(RequestStack $requestStack, DoctrineOrmFactory $ormFactory)
     {
-        $this->resourceMetadataFactory = $resourceMetadataFactory;
         $this->requestStack = $requestStack;
         $this->ormFactory = $ormFactory;
     }
@@ -55,48 +52,45 @@ final class SearchExtension implements QueryCollectionExtensionInterface
             return;
         }
 
-        $fieldSetName = $condition->getFieldSet()->getSetName() ?? '*';
-        $attributes = $this->resourceMetadataFactory->create($resourceClass)->getAttribute('rollerworks_search');
+        $context = $request->attributes->get('_api_search_context');
+        $configuration = $request->attributes->get('_api_search_config');
+        $configPath = "{$resourceClass}#attributes[rollerworks_search][contexts][{$context}][doctrine_orm]";
 
-        if (empty($attributes['doctrine_orm']['*']) && empty($attributes['doctrine_orm'][$fieldSetName])) {
+        if (empty($configuration['doctrine_orm'])) {
             return;
         }
 
-        $setName = isset($attributes['doctrine_orm'][$fieldSetName]) ? $fieldSetName : '*';
-        $configuration = $attributes['doctrine_orm'][$setName];
-
-        ArrayKeysValidator::assertOnlyKeys($configuration, ['accepted_fieldsets', 'relations', 'mappings'], $resourceClass.'#attributes:rollerworks_search.doctrine_orm['.$setName.']');
-
-        $this->configureRelations($resourceClass, $configuration, $setName, $queryBuilder);
+        $configuration = $configuration['doctrine_orm'];
+        ArrayKeysValidator::assertOnlyKeys($configuration, ['relations', 'mappings'], $configPath);
+        $this->configureRelations($configPath, $configuration, $queryBuilder);
 
         $conditionGenerator = $this->ormFactory->createCachedConditionGenerator(
             $this->ormFactory->createConditionGenerator($queryBuilder, $condition)
         );
 
-        $this->configureMappings($resourceClass, $configuration, $setName, $conditionGenerator);
+        $this->configureMappings($resourceClass, $configuration, $configPath, $conditionGenerator);
         $conditionGenerator->updateQuery();
     }
 
-    private function configureRelations(string $resourceClass, array $configuration, string $setName, QueryBuilder $queryBuilder): void
+    private function configureRelations(string $configPath, array $configuration, QueryBuilder $queryBuilder): void
     {
         if (empty($configuration['relations'])) {
             return;
         }
 
-        $path = $resourceClass.'#attributes:rollerworks_search.doctrine_orm['.$setName.'][relations]';
+        $configPath .= '[relations]';
 
         if (isset($configuration['relations']['o'])) {
-            throw new RuntimeException(sprintf('Invalid configuration for "%s", relation name "o" is already used for the root.', $path));
+            throw new RuntimeException(sprintf('Invalid configuration for "%s", relation name "o" is already used for the root.', $configPath));
         }
 
         foreach ($configuration['relations'] as $alias => $config) {
-            $path .= "[$alias]";
+            $path = "{$configPath}[{$alias}]";
 
             ArrayKeysValidator::assertOnlyKeys($config, ['join', 'entity', 'type', 'conditionType', 'condition', 'index'], $path);
             ArrayKeysValidator::assertKeysExists($config, ['join', 'entity'], $path);
 
-            $config['type'] = $config['type'] ?? 'left';
-            if (!method_exists($queryBuilder, $config['type'].'Join')) {
+            if (!method_exists($queryBuilder, ($config['type'] = $config['type'] ?? 'left').'Join')) {
                 throw new RuntimeException(sprintf('Invalid value for "%s", type "%s" is not supported. Use left, right or inner.', $path.'[type]', $config['type']));
             }
 
@@ -110,7 +104,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
         }
     }
 
-    private function configureMappings(string $resourceClass, array $configuration, string $setName, ConditionGenerator $conditionGenerator): void
+    private function configureMappings(string $resourceClass, array $configuration, string $configPath, ConditionGenerator $conditionGenerator): void
     {
         $configuration['relations']['o']['entity'] = $resourceClass;
 
@@ -126,7 +120,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
                 $mapping['alias'] = 'o';
             }
 
-            $path = $resourceClass.'#attributes:rollerworks_search.doctrine_orm['.$setName.'][mappings]['.$mappingName.']';
+            $path = "{$configPath}[mappings][{$mappingName}]";
             ArrayKeysValidator::assertOnlyKeys($mapping, ['property', 'alias', 'type'], $path);
             ArrayKeysValidator::assertKeysExists($mapping, ['property'], $path);
 

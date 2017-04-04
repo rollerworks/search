@@ -27,6 +27,8 @@
             <exclude>
                 <directory>./vendor/</directory>
                 <directory>./tests/</directory>
+                <file>src/Doctrine/Orm/CollectionDataProvider.php</file>
+                <file>src/Doctrine/Orm/QueryBuilder.php</file>
             </exclude>
         </whitelist>
     </filter>
