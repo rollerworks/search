@@ -65,15 +65,15 @@ possible experience use the provided framework integration plug-ins.
 * ZendFramework2 Plugin (coming soon)
 * Silex Plugin (coming soon)
 
-Your favorite framework not listed? No problem, read the [Contributing Guidelines]
+Your favorite framework not listed? No problem, read the [Contributing Guidelines][2]
 on how you can help!
 
 ## Installation and usage
 
 *Please ignore the instructions below if your use a framework integration.*
-[Read the Documentation for master] for complete instructions and information.
+[Read the Documentation for master][4] for complete instructions and information.
 
-Install the RollerworksSearch "core" library using [Composer]:
+Install the RollerworksSearch "core" library using [Composer][1]:
 
 ```bash
 $ composer install rollerworks/search
@@ -151,7 +151,7 @@ your own.
 
 ## Resources
 
-* [Read the Documentation for master]
+* [Read the Documentation for master][4]
 * RollerworksSearch is maintained under the [Semantic Versioning guidelines](http://semver.org/)
 
 ## Who is behind RollerworksSearch?
@@ -175,12 +175,12 @@ and contain a big amount of code from the Symfony project.
 ## Contributing
 
 This is an open source project. If you'd like to contribute,
-please read the [Contributing Guidelines]. If you're submitting
-a pull request, please follow the guidelines in the [Submitting a Patch] section.
+please read the [Contributing Guidelines][2]. If you're submitting
+a pull request, please follow the guidelines in the [Submitting a Patch][3] section.
 
 [Join the chat at https://gitter.im/rollerworks/search](https://gitter.im/rollerworks/search?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[Composer]: https://getcomposer.org/doc/00-intro.md
-[Contributing Guidelines]: https://github.com/rollerworks/contributing
-[Submitting a Patch]: https://contributing.readthedocs.org/en/latest/code/patches.html
-[Read the Documentation for master]: http://rollerworkssearch.readthedocs.org/en/latest/
-[Join the chat]: https://gitter.im/rollerworks/search 
+
+[1]: https://getcomposer.org/doc/00-intro.md
+[2]: https://github.com/rollerworks/contributing
+[3]: https://contributing.readthedocs.org/en/latest/code/patches.html
+[4]: http://rollerworkssearch.readthedocs.org/en/latest/
