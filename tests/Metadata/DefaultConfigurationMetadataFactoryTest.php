@@ -26,7 +26,7 @@ final class DefaultConfigurationMetadataFactoryTest extends TestCase
         $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
             'rollerworks_search' => [
                 'contexts' => [
-                    '_default' => [
+                    '_defaults' => [
                         'processor' => [
                             'cache_ttl' => 60,
                             'export_format' => 'json',
@@ -81,7 +81,7 @@ final class DefaultConfigurationMetadataFactoryTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_without_updating_when_defaults_were_set()
+    public function it_returns_without_updating_when_no_defaults_were_set()
     {
         $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
             'rollerworks_search' => [

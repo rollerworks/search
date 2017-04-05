@@ -17,7 +17,7 @@ use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
 use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
 
 /**
- * The DefaultConfigurationMetadataFactory merges the `_default` configuration
+ * The DefaultConfigurationMetadataFactory merges the `_defaults` configuration
  * of the `rollerworks_search` resource attribute to all configs.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -43,15 +43,15 @@ final class DefaultConfigurationMetadataFactory implements ResourceMetadataFacto
         $resourceMetadata = $this->decorated->create($resourceClass);
         $searchConfig = $resourceMetadata->getAttribute('rollerworks_search');
 
-        if (empty($searchConfig) || empty($searchConfig['contexts']['_default'])) {
+        if (empty($searchConfig) || empty($searchConfig['contexts']['_defaults'])) {
             return $resourceMetadata;
         }
 
         $configurations = $searchConfig['contexts'];
-        unset($configurations['_default']);
+        unset($configurations['_defaults']);
 
         foreach ($configurations as $name => $configuration) {
-            $configurations[$name] = array_replace_recursive($searchConfig['contexts']['_default'], $configuration);
+            $configurations[$name] = array_replace_recursive($searchConfig['contexts']['_defaults'], $configuration);
         }
 
         $attributes = $resourceMetadata->getAttributes();

@@ -3,7 +3,7 @@ Class:
 ```php
  "rollerworks_search" = {
     "contexts" = {
-        "_default" {
+        "_defaults" {
             # Set defaults, merged with more specific configuration (and _any)
         },
         "ContextName | _any" = { # ContextName is provided using event listeners (request#attributes[_search_context])
