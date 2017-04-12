@@ -15,8 +15,9 @@ namespace Rollerworks\Component\Search\ElasticSearch;
 
 use Elastica\Param;
 use Elastica\Query\{
-    BoolQuery, MultiMatch, Range as ESRange, Term, Terms
+    BoolQuery, Match, MultiMatch, Prefix, Range as ESRange, Regexp, Term, Terms, Wildcard
 };
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\{
     Compare, ExcludedRange, PatternMatch, Range, ValuesGroup
@@ -117,13 +118,36 @@ class QueryConditionGenerator
 
             /** @var PatternMatch $patternMatch */
             foreach ($valuesBag->get(PatternMatch::class) as $patternMatch) {
-                if ($patternMatch->isExclusive()) {
+                switch ($patternMatch->getType()) {
+                    // Faster then Wildcard but less accurate. Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
+                    case PatternMatch::PATTERN_CONTAINS:
+                    case PatternMatch::PATTERN_NOT_CONTAINS:
+                        $value = new Match($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
+                        break;
 
-                } else {
+                    case PatternMatch::PATTERN_STARTS_WITH:
+                    case PatternMatch::PATTERN_NOT_STARTS_WITH:
+                        $value = (new Prefix())->setPrefix($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
+                        break;
 
+                    case PatternMatch::PATTERN_ENDS_WITH:
+                    case PatternMatch::PATTERN_NOT_ENDS_WITH:
+                        $value = new Wildcard($this->mappings[$fieldName]->indexName, '?'.addcslashes($patternMatch->getValue(), '?*'));
+                        break;
+
+                    default:
+                        if ($patternMatch->isRegex()) {
+                            $value = new Regexp($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
+                        } else {
+                            throw new InvalidSearchConditionException(sprintf('PatternMatch type "%s"', $patternMatch->getType()));
+                        }
                 }
 
-                // $includes[] = new ESRange($this->mappings[$fieldName]->indexName, [$compareToKey[$operator] => $compare->getValue()]);
+                if ($patternMatch->isExclusive()) {
+                    $excludes[] = $value;
+                } else {
+                    $includes[] = $value;
+                }
             }
         }
 
