@@ -1,0 +1,47 @@
+language: php
+
+sudo: true
+
+jdk:
+    - oraclejdk8
+
+addons:
+    apt:
+        packages:
+            - oracle-java8-installer
+
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
+env:
+    global:
+        - ES_VERSION="5.x"
+        - ES_TEST_HOST=http://localhost:9200
+        - JAVA_HOME="/usr/lib/jvm/java-8-oracle/jre"
+
+matrix:
+    include:
+        - php: 7.1
+        - php: 7.1
+          env: deps='low'
+        - php: 7.1
+          env: deps='dev'
+    fast_finish: true
+
+before_install:
+    - phpenv config-rm xdebug.ini || echo "xdebug not available"
+    - sudo update-java-alternatives -s java-8-oracle
+    - ./travis/download_and_run_es.sh
+
+install:
+    - export COMPOSER_ROOT_VERSION=dev-master
+    - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
+    - export SYMFONY_PHPUNIT_VERSION=5.4.8
+    - if [[ ! $deps ]]; then composer update --prefer-source --no-progress --no-suggest --ansi; fi
+    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --prefer-source --no-progress --no-suggest --ansi ; fi
+    - if [[ $deps = 'low' ]]; then composer update --prefer-source --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
+
+script:
+    - vendor/bin/simple-phpunit --verbose

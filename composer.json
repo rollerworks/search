@@ -1,0 +1,41 @@
+{
+    "name": "rollerworks/search-elasticsearch",
+    "description": "ElasticSearch (Elastica) extension for RollerworksSearch",
+    "keywords": ["rollerworks", "search", "doctrine", "dbal"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/Rollerworks/search-elasticsearch/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "rollerworks/search": "^2.0@dev",
+        "ruflin/elastica": "^5.1.0"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^3.2.7",
+        "symfony/var-dumper": "^3.2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\ElasticSearch\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Tests\\ElasticSearch\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    }
+}
