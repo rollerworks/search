@@ -23,6 +23,8 @@ use Rollerworks\Component\Search\Value\{
     Compare, ExcludedRange, PatternMatch, Range, ValuesGroup
 };
 
+// Allow to mark Field as id https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
+
 class QueryConditionGenerator
 {
     private $searchCondition;
@@ -32,9 +34,15 @@ class QueryConditionGenerator
 
     public function __construct(SearchCondition $searchCondition)
     {
+        $mapping = new FieldMapping();
+        $mapping->indexName = 'id';
+
+        $mapping2 = new FieldMapping();
+        $mapping2->indexName = 'name';
+
         $this->searchCondition = $searchCondition;
         $this->fieldSet = $searchCondition->getFieldSet();
-        $this->mappings = []; // TODO MultiMatch
+        $this->mappings = ['id' => $mapping, 'name' => $mapping2]; // TODO MultiMatch
     }
 
     public function registerField(string $fieldName): FieldMapping
@@ -77,13 +85,15 @@ class QueryConditionGenerator
 
         // FIXME Objects need for type formatter. `elastic_search_value_transformer` (use extensions to configure types)
 
+        $includingMethod = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical() ? 'addMust' : 'addShould';
+
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             if ($valuesBag->hasSimpleValues()) {
-                $includes[] = new Terms($this->mappings[$fieldName]->indexName, $valuesBag->getSimpleValues());
+                $bool->{$includingMethod}(new Terms($this->mappings[$fieldName]->indexName, $valuesBag->getSimpleValues()));
             }
 
             if ($valuesBag->hasExcludedSimpleValues()) {
-                $excludes[] = new Terms($this->mappings[$fieldName]->indexName, $valuesBag->getExcludedSimpleValues());
+                $bool->addMustNot(new Terms($this->mappings[$fieldName]->indexName, $valuesBag->getExcludedSimpleValues()));
             }
 
             /** @var Range $range */
@@ -93,7 +103,7 @@ class QueryConditionGenerator
                     $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
                 ];
 
-                $includes[] = new ESRange($this->mappings[$fieldName]->indexName, $rangeParams);
+                $bool->{$includingMethod}(new ESRange($this->mappings[$fieldName]->indexName, $rangeParams));
             }
 
             foreach ($valuesBag->get(ExcludedRange::class) as $range) {
@@ -102,18 +112,16 @@ class QueryConditionGenerator
                     $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
                 ];
 
-                $excludes[] = new ESRange($this->mappings[$fieldName]->indexName, $rangeParams);
+                $bool->addMustNot(new ESRange($this->mappings[$fieldName]->indexName, $rangeParams));
             }
 
             /** @var Compare $compare */
             foreach ($valuesBag->get(Compare::class) as $compare) {
                 if ($operator = $compare->getOperator() === '<>') {
-                    $excludes[] = new Term($this->mappings[$fieldName]->indexName, $compare->getValue());
-
-                    continue;
+                    $bool->addMustNot(new Term($this->mappings[$fieldName]->indexName, $compare->getValue()));
+                } else {
+                    $bool->{$includingMethod}(new ESRange($this->mappings[$fieldName]->indexName, [$compareToKey[$operator] => $compare->getValue()]));
                 }
-
-                $includes[] = new ESRange($this->mappings[$fieldName]->indexName, [$compareToKey[$operator] => $compare->getValue()]);
             }
 
             /** @var PatternMatch $patternMatch */
@@ -136,6 +144,8 @@ class QueryConditionGenerator
                         break;
 
                     default:
+                        // Stupid ElasticSearch U no support case-insensitive?
+
                         if ($patternMatch->isRegex()) {
                             $value = new Regexp($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
                         } else {
@@ -144,37 +154,19 @@ class QueryConditionGenerator
                 }
 
                 if ($patternMatch->isExclusive()) {
-                    $excludes[] = $value;
+                    $bool->addMustNot($value);
                 } else {
-                    $includes[] = $value;
+                    $bool->{$includingMethod}($value);
                 }
             }
         }
-
-        if (!empty($includes)) {
-            if (ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical()) {
-                $bool->addMust($includes);
-            } else {
-                $bool->addShould($includes);
-            }
-        }
-
-        if (!empty($excludes)) {
-            $bool->addMustNot($excludes);
-        }
-
-        $groupsConditions = [];
 
         foreach ($group->getGroups() as $subGroup) {
             $subGroupCondition = $this->processGroup($subGroup);
 
             if ([] !== $subGroupCondition->getParams()) {
-                $groupsConditions = $subGroupCondition;
+                $bool->addMust($subGroupCondition);
             }
-        }
-
-        if (!empty($groupsConditions)) {
-            $bool->addMust($groupsConditions);
         }
 
         return $bool;
