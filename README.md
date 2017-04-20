@@ -1,11 +1,11 @@
-RollerworksSearch ElasticSearch (Elastica) extension
+RollerworksSearch Elasticsearch (Elastica) extension
 ====================================================
 
-This package provides the ElasticSearch (Elastica) extension for [RollerworksSearch][1].
+This package provides the Elasticsearch (Elastica) extension for [RollerworksSearch][1].
 
 **Note:** 
 
-> This extension is only about generating a search Query for ElasticSearch,
+> This extension is only about generating a search Query for Elasticsearch,
   you need to set-up indexing and storage yourself.
 
 RollerworksSearch is a powerful open-source Search system, if you are new to

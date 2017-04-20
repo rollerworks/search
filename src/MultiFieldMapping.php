@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\ElasticSearch;
+namespace Rollerworks\Component\Search\Elasticsearch;
 
 final class MultiFieldMapping
 {

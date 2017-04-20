@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\ElasticSearch;
 
-use Rollerworks\Component\Search\ElasticSearch\QueryConditionGenerator;
+use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
