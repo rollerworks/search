@@ -29,6 +29,9 @@ class QueryConditionGenerator
 {
     private $searchCondition;
     private $fieldSet;
+
+    private const COMPARE_OPR_TYPE = ['>=' => 'gte', '<=' => 'lte', '<' => 'lt', '>' => 'gt'];
+
     /** @var FieldMapping[] $mapping */
     private $mappings;
 
@@ -51,7 +54,7 @@ class QueryConditionGenerator
 
     /**
      * This uses the `multi_match` instead of mapping the field multiple times,
-     * and allows for more flexibility tailored to ElasticSearch.
+     * and allows for more flexibility tailored to Elasticsearch.
      *
      * @param string $fieldName
      *
@@ -75,17 +78,12 @@ class QueryConditionGenerator
 
     private function processGroup(ValuesGroup $group): BoolQuery
     {
-        $compareToKey = ['>=' => 'gte', '<=' => 'lte', '<' => 'lt', '>' => 'gt'];
         $bool = new BoolQuery();
-        $includes = [];
-        $excludes = [];
 
-        // Note: Excludes are always must_not, for includes `must` (AND) or `should` (OR) is used.
-        // Subgroups are always `must`.
-
-        // FIXME Objects need for type formatter. `elastic_search_value_transformer` (use extensions to configure types)
-
+        // Note: Excludes are `must_not`, for includes `must` (AND) or `should` (OR) is used. Subgroups use `must`.
         $includingMethod = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical() ? 'addMust' : 'addShould';
+
+        // FIXME Objects need type formatter. `elastic_search_value_transformer` (use extensions to configure types)
 
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             if ($valuesBag->hasSimpleValues()) {
@@ -120,45 +118,11 @@ class QueryConditionGenerator
                 if ($operator = $compare->getOperator() === '<>') {
                     $bool->addMustNot(new Term($this->mappings[$fieldName]->indexName, $compare->getValue()));
                 } else {
-                    $bool->{$includingMethod}(new ESRange($this->mappings[$fieldName]->indexName, [$compareToKey[$operator] => $compare->getValue()]));
+                    $bool->{$includingMethod}(new ESRange($this->mappings[$fieldName]->indexName, [self::COMPARE_OPR_TYPE[$operator] => $compare->getValue()]));
                 }
             }
 
-            /** @var PatternMatch $patternMatch */
-            foreach ($valuesBag->get(PatternMatch::class) as $patternMatch) {
-                switch ($patternMatch->getType()) {
-                    // Faster then Wildcard but less accurate. Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
-                    case PatternMatch::PATTERN_CONTAINS:
-                    case PatternMatch::PATTERN_NOT_CONTAINS:
-                        $value = new Match($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
-                        break;
-
-                    case PatternMatch::PATTERN_STARTS_WITH:
-                    case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                        $value = (new Prefix())->setPrefix($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
-                        break;
-
-                    case PatternMatch::PATTERN_ENDS_WITH:
-                    case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                        $value = new Wildcard($this->mappings[$fieldName]->indexName, '?'.addcslashes($patternMatch->getValue(), '?*'));
-                        break;
-
-                    default:
-                        // Stupid ElasticSearch U no support case-insensitive?
-
-                        if ($patternMatch->isRegex()) {
-                            $value = new Regexp($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
-                        } else {
-                            throw new InvalidSearchConditionException(sprintf('PatternMatch type "%s"', $patternMatch->getType()));
-                        }
-                }
-
-                if ($patternMatch->isExclusive()) {
-                    $bool->addMustNot($value);
-                } else {
-                    $bool->{$includingMethod}($value);
-                }
-            }
+            $this->processPatternMatchers($valuesBag->get(PatternMatch::class), $fieldName, $bool, $includingMethod);
         }
 
         foreach ($group->getGroups() as $subGroup) {
@@ -170,5 +134,53 @@ class QueryConditionGenerator
         }
 
         return $bool;
+    }
+
+    private function processPatternMatchers(array $values, string $fieldName, BoolQuery $bool, string $includingMethod)
+    {
+        // Note. Elasticsearch supports case-insensitive only at index level.
+
+        /** @var PatternMatch $patternMatch */
+        foreach ($values as $patternMatch) {
+            switch ($patternMatch->getType()) {
+                // Faster then Wildcard but less accurate. Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
+                case PatternMatch::PATTERN_CONTAINS:
+                case PatternMatch::PATTERN_NOT_CONTAINS:
+                    $value = new Match($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
+                    break;
+
+                case PatternMatch::PATTERN_STARTS_WITH:
+                case PatternMatch::PATTERN_NOT_STARTS_WITH:
+                    $value = (new Prefix())->setPrefix(
+                        $this->mappings[$fieldName]->indexName,
+                        $patternMatch->getValue()
+                    );
+                    break;
+
+                case PatternMatch::PATTERN_ENDS_WITH:
+                case PatternMatch::PATTERN_NOT_ENDS_WITH:
+                    $value = new Wildcard(
+                        $this->mappings[$fieldName]->indexName,
+                        '?'.addcslashes($patternMatch->getValue(), '?*')
+                    );
+                    break;
+
+                case PatternMatch::PATTERN_REGEX:
+                case PatternMatch::PATTERN_NOT_REGEX:
+                    $value = new Regexp($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
+                    break;
+
+                default:
+                    throw new InvalidSearchConditionException(
+                        sprintf('PatternMatch type "%s"', $patternMatch->getType())
+                    );
+            }
+
+            if ($patternMatch->isExclusive()) {
+                $bool->addMustNot($value);
+            } else {
+                $bool->{$includingMethod}($value);
+            }
+        }
     }
 }
