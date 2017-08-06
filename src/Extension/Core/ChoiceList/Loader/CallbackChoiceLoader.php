@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader;
 
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ArrayChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceLoaderTrait;
 
 /**
  * Loads an {@link ArrayChoiceList} instance from a callable returning an array of choices.
@@ -23,14 +24,9 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
  */
 final class CallbackChoiceLoader implements ChoiceLoader
 {
-    private $callback;
+    use ChoiceLoaderTrait;
 
-    /**
-     * The loaded choice list.
-     *
-     * @var ArrayChoiceList
-     */
-    private $choiceList;
+    private $callback;
 
     /**
      * @var bool
@@ -58,32 +54,6 @@ final class CallbackChoiceLoader implements ChoiceLoader
         }
 
         return $this->choiceList = new ArrayChoiceList(call_user_func($this->callback), $value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadChoicesForValues(array $values, callable $value = null): array
-    {
-        // Optimize
-        if (empty($values)) {
-            return [];
-        }
-
-        return $this->loadChoiceList($value)->getChoicesForValues($values);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadValuesForChoices(array $choices, callable $value = null): array
-    {
-        // Optimize
-        if (empty($choices)) {
-            return [];
-        }
-
-        return $this->loadChoiceList($value)->getValuesForChoices($choices);
     }
 
     /**
