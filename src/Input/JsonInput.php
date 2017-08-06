@@ -19,8 +19,6 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Seld\JsonLint\JsonParser;
-use Seld\JsonLint\ParsingException;
 
 /**
  * JsonInput processes input provided as an JSON object.
@@ -61,19 +59,16 @@ final class JsonInput implements InputProcessor
             return new SearchCondition($config->getFieldSet(), new ValuesGroup());
         }
 
-        try {
-            $parser = new JsonParser();
-            $array = $parser->parse($input, JsonParser::PARSE_TO_ASSOC);
-        } catch (ParsingException $e) {
-            $errors = [
+        $array = json_decode($input, true, 512, \JSON_BIGINT_AS_STRING);
+
+        if (json_last_error() !== \JSON_ERROR_NONE) {
+            throw new InvalidSearchConditionException([
                 ConditionErrorMessage::rawMessage(
                     $input,
-                    'Input does not contain valid JSON: '."\n".$e->getMessage(),
-                    $e
+                    'Input does not contain valid JSON: '."\n".json_last_error_msg(),
+                    $input
                 ),
-            ];
-
-            throw new InvalidSearchConditionException($errors);
+            ]);
         }
 
         return $this->processor->process($config, $array);
