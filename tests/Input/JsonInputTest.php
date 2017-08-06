@@ -37,7 +37,7 @@ final class JsonInputTest extends InputProcessorTestCase
         $config = new ProcessorConfig($this->getFieldSet());
         $error = ConditionErrorMessage::rawMessage(
             '{]',
-            "Input does not contain valid JSON: \nParse error on line 1:\n{]\n^\nExpected one of: 'STRING', '}'"
+            "Input does not contain valid JSON: \nState mismatch (invalid or malformed JSON)"
         );
 
         $this->assertConditionContainsErrorsWithoutCause('{]', $config, [$error]);
