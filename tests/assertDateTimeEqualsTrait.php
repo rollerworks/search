@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\Assert;
+
 trait assertDateTimeEqualsTrait
 {
     public static function assertDateTimeEquals(\DateTimeInterface $expected, \DateTimeInterface $actual)
     {
-        \PHPUnit_Framework_Assert::assertEquals(
+        Assert::assertEquals(
             $expected->format('U'),
             $actual->format('U'),
             $expected->format('c').' <=> '.$actual->format('c')

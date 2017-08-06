@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Test;
 
-use PHPUnit_Framework_Assert;
-use PHPUnit_Framework_AssertionFailedError as AssertionFailedError;
+use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\AssertionFailedError;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
@@ -66,8 +66,8 @@ final class FieldTransformationAssertion
             throw new AssertionFailedError('Norm->model: '.$e->getMessage(), $e->getCode(), $e);
         }
 
-        PHPUnit_Framework_Assert::assertEquals($model, $viewValue, 'View->model value does not equal');
-        PHPUnit_Framework_Assert::assertEquals($model, $normValue, 'Norm->model value does not equal');
+        Assert::assertEquals($model, $viewValue, 'View->model value does not equal');
+        Assert::assertEquals($model, $normValue, 'Norm->model value does not equal');
 
         $this->transformed = true;
         $this->model = $model;
@@ -120,8 +120,8 @@ final class FieldTransformationAssertion
             throw new AssertionFailedError('Model->norm: '.$e->getMessage(), $e->getCode(), $e);
         }
 
-        PHPUnit_Framework_Assert::assertEquals($expectedView, $viewValue, 'View value does not equal');
-        PHPUnit_Framework_Assert::assertEquals($expectedNorm ?? $expectedView, $normValue, 'Norm value does not equal');
+        Assert::assertEquals($expectedView, $viewValue, 'View value does not equal');
+        Assert::assertEquals($expectedNorm ?? $expectedView, $normValue, 'Norm value does not equal');
     }
 
     private function viewToModel($value)

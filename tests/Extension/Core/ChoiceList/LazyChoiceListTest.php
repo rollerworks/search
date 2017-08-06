@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\ChoiceList;
 
+use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\LazyChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
@@ -20,7 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class LazyChoiceListTest extends \PHPUnit_Framework_TestCase
+class LazyChoiceListTest extends TestCase
 {
     /**
      * @var LazyChoiceList
