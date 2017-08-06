@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
+use Money\Parser\IntlMoneyParser;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToStringTransformer;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
@@ -28,10 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MoneyType extends AbstractFieldType
 {
-    /**
-     * @var ValueComparator
-     */
     protected $valueComparator;
+    private static $checked = false;
 
     /**
      * Constructor.
@@ -48,6 +47,14 @@ class MoneyType extends AbstractFieldType
      */
     public function buildType(FieldConfig $config, array $options)
     {
+        if (!self::$checked) {
+            self::$checked = true;
+
+            if (!class_exists(IntlMoneyParser::class)) {
+                throw new \RuntimeException('Unable to use MoneyType without the "moneyphp/money" library.');
+            }
+        }
+
         $config->setValueComparator($this->valueComparator);
         $config->setValueTypeSupport(Range::class, true);
         $config->setValueTypeSupport(Compare::class, true);

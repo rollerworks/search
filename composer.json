@@ -20,13 +20,19 @@
         "symfony/options-resolver": "^3.2.1",
         "symfony/property-access": "^3.2.1",
         "symfony/intl": "^3.2.1",
-        "moneyphp/money": "^3.0.0",
         "psr/container": "^1.0.0"
     },
     "require-dev": {
+        "moneyphp/money": "^3.0.0",
         "phpunit/phpunit": "^5.7.5",
         "symfony/phpunit-bridge": "^3.2.1",
         "symfony/var-dumper": "^3.2.1"
+    },
+    "suggest": {
+        "moneyphp/money": "To use the MoneyType"
+    },
+    "conflict": {
+        "moneyphp/money": "<3.0.0"
     },
     "autoload": {
         "psr-4": {
