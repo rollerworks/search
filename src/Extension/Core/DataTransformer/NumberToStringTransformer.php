@@ -86,7 +86,7 @@ class NumberToStringTransformer extends BaseNumberTransformer
         }
 
         if (is_string($result)) {
-            if (false !== strpos($result, '.')) {
+            if (false !== mb_strpos($result, '.')) {
                 $result = (float) $result;
             } else {
                 $result = (int) $result;

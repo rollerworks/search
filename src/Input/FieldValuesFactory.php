@@ -301,7 +301,7 @@ class FieldValuesFactory
 
     private function createValuePath(string $path): string
     {
-        if (false !== strpos($path, '%d')) {
+        if (false !== mb_strpos($path, '%d')) {
             return $this->path.sprintf($path, $this->count);
         }
 
@@ -333,8 +333,8 @@ class FieldValuesFactory
         if (!$this->valueComparator->isLower($range->getLower(), $range->getUpper(), $this->config->getOptions())) {
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';
             $params = [
-                '{{ lower }}' => strpos((string) $lower, ' ') ? "'".$lower."'" : $lower,
-                '{{ upper }}' => strpos((string) $upper, ' ') ? "'".$upper."'" : $upper,
+                '{{ lower }}' => mb_strpos((string) $lower, ' ') ? "'".$lower."'" : $lower,
+                '{{ upper }}' => mb_strpos((string) $upper, ' ') ? "'".$upper."'" : $upper,
             ];
 
             $this->addError(ConditionErrorMessage::withMessageTemplate($path[0], $message, $params));

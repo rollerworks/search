@@ -24,8 +24,8 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  */
 class ValuesGroup implements \Serializable
 {
-    const GROUP_LOGICAL_OR = 'OR';
-    const GROUP_LOGICAL_AND = 'AND';
+    public const GROUP_LOGICAL_OR = 'OR';
+    public const GROUP_LOGICAL_AND = 'AND';
 
     /**
      * @var ValuesGroup[]

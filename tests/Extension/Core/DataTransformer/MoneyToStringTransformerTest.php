@@ -71,7 +71,7 @@ class MoneyToStringTransformerTest extends TestCase
             $from = new MoneyValue($this->parseMoneyAsDecimal($from), false);
         }
 
-        $to = substr($to, 4);
+        $to = mb_substr($to, 4);
 
         self::assertEquals($to, $transformer->transform($from));
     }
@@ -99,7 +99,7 @@ class MoneyToStringTransformerTest extends TestCase
 
         if (null !== $to) {
             $to = new MoneyValue($this->parseMoneyAsDecimal($to, 'USD'), false);
-            $from = substr($from, 4);
+            $from = mb_substr($from, 4);
         }
 
         self::assertEquals($to, $transformer->reverseTransform($from));

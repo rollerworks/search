@@ -32,7 +32,7 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
     private static $patterns = [];
 
     /** None-breaking line */
-    const NBL = "\xc2\xa0";
+    private const NBL = "\xc2\xa0";
 
     /**
      * Constructor.

@@ -107,7 +107,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
             $value = str_replace(',', $decSep, $value);
         }
 
-        if (false !== strpos($value, $decSep)) {
+        if (false !== mb_strpos($value, $decSep)) {
             $type = \NumberFormatter::TYPE_DOUBLE;
         } else {
             $type = PHP_INT_SIZE === 8
@@ -133,8 +133,8 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
             $length = mb_strlen($value, $encoding);
             $remainder = mb_substr($value, $position, $length, $encoding);
         } else {
-            $length = strlen($value);
-            $remainder = substr($value, $position, $length);
+            $length = mb_strlen($value);
+            $remainder = mb_substr($value, $position, $length);
         }
 
         // After parsing, position holds the index of the character where the

@@ -21,7 +21,7 @@ final class Compare implements RequiresComparatorValueHolder
     private $operator;
     private $value;
 
-    const OPERATORS = ['>=', '<=', '<>', '<', '>'];
+    public const OPERATORS = ['>=', '<=', '<>', '<', '>'];
 
     /**
      * Constructor.

@@ -22,12 +22,12 @@ use Rollerworks\Component\Search\Exception\StringLexerException;
  */
 final class StringLexer
 {
-    const FIELD_NAME = '/(\p{L}[\p{L}\p{N}_-]*)\s*:/Au';
+    private const FIELD_NAME = '/(\p{L}[\p{L}\p{N}_-]*)\s*:/Au';
 
-    const PATTERN_MATCH = 'pattern-match';
-    const SIMPLE_VALUE = 'simple-value';
-    const COMPARE = 'compare';
-    const RANGE = 'range';
+    public const PATTERN_MATCH = 'pattern-match';
+    public const SIMPLE_VALUE = 'simple-value';
+    public const COMPARE = 'compare';
+    public const RANGE = 'range';
 
     private $data;
     private $cursor;

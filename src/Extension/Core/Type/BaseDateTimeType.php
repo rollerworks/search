@@ -21,8 +21,8 @@ use Rollerworks\Component\Search\Field\AbstractFieldType;
  */
 abstract class BaseDateTimeType extends AbstractFieldType
 {
-    const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
-    const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
+    public const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
+    public const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
 
     /**
      * @var array
