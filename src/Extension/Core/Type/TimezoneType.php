@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class TimezoneType extends AbstractFieldType implements ChoiceLoader
+final class TimezoneType extends AbstractFieldType implements ChoiceLoader
 {
     /**
      * Timezone loaded choice list.

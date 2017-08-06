@@ -20,15 +20,10 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class ChoiceToValueTransformer implements DataTransformer
+final class ChoiceToValueTransformer implements DataTransformer
 {
     private $choiceList;
 
-    /**
-     * Constructor.
-     *
-     * @param ChoiceList $choiceList
-     */
     public function __construct(ChoiceList $choiceList)
     {
         $this->choiceList = $choiceList;

@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DateTimeValueValueComparator extends DateValueComparator
+final class DateTimeValueValueComparator extends DateValueComparator
 {
     /**
      * Returns the incremented value of the input.

@@ -25,13 +25,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class DateType extends BaseDateTimeType
+final class DateType extends BaseDateTimeType
 {
     const DEFAULT_FORMAT = \IntlDateFormatter::MEDIUM;
 
     const HTML5_FORMAT = 'yyyy-MM-dd';
 
-    protected $valueComparator;
+    private $valueComparator;
 
     public function __construct()
     {

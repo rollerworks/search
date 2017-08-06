@@ -26,7 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class IntegerType extends AbstractFieldType
+final class IntegerType extends AbstractFieldType
 {
     private $valueComparator;
 

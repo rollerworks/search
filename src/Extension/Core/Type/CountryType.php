@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class CountryType extends AbstractFieldType implements ChoiceLoader
+final class CountryType extends AbstractFieldType implements ChoiceLoader
 {
     /**
      * Country loaded choice list.

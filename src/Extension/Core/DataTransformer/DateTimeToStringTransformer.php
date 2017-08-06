@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  */
-class DateTimeToStringTransformer extends BaseDateTimeTransformer
+final class DateTimeToStringTransformer extends BaseDateTimeTransformer
 {
     /**
      * Format used for generating strings.

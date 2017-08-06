@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  */
-class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
+final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
 {
     /**
      * Transforms a DateTimeInterface object into a timestamp.

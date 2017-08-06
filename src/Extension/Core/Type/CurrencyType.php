@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class CurrencyType extends AbstractFieldType implements ChoiceLoader
+final class CurrencyType extends AbstractFieldType implements ChoiceLoader
 {
     /**
      * Currency loaded choice list.

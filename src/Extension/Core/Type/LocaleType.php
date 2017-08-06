@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class LocaleType extends AbstractFieldType implements ChoiceLoader
+final class LocaleType extends AbstractFieldType implements ChoiceLoader
 {
     /**
      * Locale loaded choice list.

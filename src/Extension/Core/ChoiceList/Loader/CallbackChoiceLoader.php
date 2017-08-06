@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
  *
  * @author Jules Pietri <jules@heahprod.com>
  */
-class CallbackChoiceLoader implements ChoiceLoader
+final class CallbackChoiceLoader implements ChoiceLoader
 {
     private $callback;
 

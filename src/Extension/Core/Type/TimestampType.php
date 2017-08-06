@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class TimestampType extends AbstractFieldType
+final class TimestampType extends AbstractFieldType
 {
     private $valueComparator;
 

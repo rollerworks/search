@@ -32,13 +32,8 @@ use Symfony\Component\PropertyAccess\PropertyPath;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ChoiceType extends AbstractFieldType
+final class ChoiceType extends AbstractFieldType
 {
-    /**
-     * Caches created choice lists.
-     *
-     * @var ChoiceListFactory
-     */
     private $choiceListFactory;
 
     public function __construct(ChoiceListFactory $choiceListFactory = null)

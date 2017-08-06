@@ -27,9 +27,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class MoneyType extends AbstractFieldType
+final class MoneyType extends AbstractFieldType
 {
-    protected $valueComparator;
+    private $valueComparator;
 
     public function __construct()
     {

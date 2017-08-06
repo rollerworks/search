@@ -26,7 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class DateTimeType extends BaseDateTimeType
+final class DateTimeType extends BaseDateTimeType
 {
     const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
     const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
@@ -54,6 +54,8 @@ class DateTimeType extends BaseDateTimeType
      * is used when the format matches this constant.
      */
     const HTML5_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+
+    private $valueComparator;
 
     public function __construct()
     {

@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class CachingFactoryDecorator implements ChoiceListFactory
+final class CachingFactoryDecorator implements ChoiceListFactory
 {
     /**
      * @var ChoiceListFactory

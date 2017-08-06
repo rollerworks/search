@@ -27,7 +27,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class BirthdayType extends AbstractFieldType
+final class BirthdayType extends AbstractFieldType
 {
     private $valueComparator;
 

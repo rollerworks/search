@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class LazyChoiceList implements ChoiceList
+final class LazyChoiceList implements ChoiceList
 {
     /**
      * The choice loader.
