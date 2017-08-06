@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  * Transforms between a date string and a DateTime object
  * and between a ISO string and an integer.
  */
-class BirthdayTransformer implements DataTransformer
+final class BirthdayTransformer implements DataTransformer
 {
     /**
      * @var DataTransformer

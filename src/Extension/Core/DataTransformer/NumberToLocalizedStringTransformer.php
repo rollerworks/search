@@ -160,7 +160,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
      *
      * @return \NumberFormatter
      */
-    protected function getNumberFormatter(): \NumberFormatter
+    private function getNumberFormatter(): \NumberFormatter
     {
         $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
 

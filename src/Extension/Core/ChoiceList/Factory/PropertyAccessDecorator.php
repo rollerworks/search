@@ -41,7 +41,7 @@ use Symfony\Component\PropertyAccess\PropertyPath;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class PropertyAccessDecorator implements ChoiceListFactory
+final class PropertyAccessDecorator implements ChoiceListFactory
 {
     /**
      * @var ChoiceListFactory

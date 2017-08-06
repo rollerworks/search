@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
+final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
 {
     private $defaultCurrency;
 

@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\ValueIncrementer;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class MoneyValueComparator implements ValueIncrementer
+final class MoneyValueComparator implements ValueIncrementer
 {
     /**
      * Returns whether the first value is higher then the second value.
@@ -83,7 +83,7 @@ class MoneyValueComparator implements ValueIncrementer
      *
      * @return MoneyValue
      */
-    public function getIncrementedValue($value, array $options, int $increments = 1)
+    public function getIncrementedValue($value, array $options, int $increments = 1): MoneyValue
     {
         if (!isset($options['increase_by'])) {
             $options['increase_by'] = 'cent';
@@ -97,10 +97,7 @@ class MoneyValueComparator implements ValueIncrementer
                 $amount += ($increments - 1) * 100;
             }
 
-            $newValue = new Money(
-                $amount,
-                $value->value->getCurrency()
-            );
+            $newValue = new Money($amount, $value->value->getCurrency());
         } else {
             // Increase with n cent.
             $newValue = $value->value->add(new Money($increments, $value->value->getCurrency()));

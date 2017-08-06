@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class TextType extends AbstractFieldType
+final class TextType extends AbstractFieldType
 {
     /**
      * {@inheritdoc}

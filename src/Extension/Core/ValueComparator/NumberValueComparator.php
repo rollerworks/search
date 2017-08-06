@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\ValueIncrementer;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class NumberValueComparator implements ValueIncrementer
+final class NumberValueComparator implements ValueIncrementer
 {
     /**
      * Returns whether the first value is higher then the second value.

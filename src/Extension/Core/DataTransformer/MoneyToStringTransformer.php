@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class MoneyToStringTransformer implements DataTransformer
+final class MoneyToStringTransformer implements DataTransformer
 {
     private $defaultCurrency;
     private $moneyParser;

@@ -15,32 +15,24 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\IntegerToStringTransformer;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\NumberValueComparator;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class IntegerType extends AbstractFieldType
+final class IntegerType extends AbstractFieldType
 {
-    /**
-     * @var ValueComparator
-     */
-    protected $valueComparator;
+    private $valueComparator;
 
-    /**
-     * Constructor.
-     *
-     * @param ValueComparator $valueComparator
-     */
-    public function __construct(ValueComparator $valueComparator)
+    public function __construct()
     {
-        $this->valueComparator = $valueComparator;
+        $this->valueComparator = new NumberValueComparator();
     }
 
     /**

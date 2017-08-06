@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ChoiceToLabelTransformer implements DataTransformer
+final class ChoiceToLabelTransformer implements DataTransformer
 {
     private $choiceList;
     private $choiceListView;

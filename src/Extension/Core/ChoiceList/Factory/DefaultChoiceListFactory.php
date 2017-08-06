@@ -26,7 +26,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class DefaultChoiceListFactory implements ChoiceListFactory
+final class DefaultChoiceListFactory implements ChoiceListFactory
 {
     /**
      * {@inheritdoc}

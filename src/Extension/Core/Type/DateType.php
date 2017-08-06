@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateValueComparator;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
@@ -24,11 +25,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class DateType extends BaseDateTimeType
+final class DateType extends BaseDateTimeType
 {
     const DEFAULT_FORMAT = \IntlDateFormatter::MEDIUM;
 
     const HTML5_FORMAT = 'yyyy-MM-dd';
+
+    private $valueComparator;
+
+    public function __construct()
+    {
+        $this->valueComparator = new DateValueComparator();
+    }
 
     /**
      * {@inheritdoc}

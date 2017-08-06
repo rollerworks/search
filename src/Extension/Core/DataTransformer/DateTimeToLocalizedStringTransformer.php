@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  */
-class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
+final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 {
     private $dateFormat;
     private $timeFormat;

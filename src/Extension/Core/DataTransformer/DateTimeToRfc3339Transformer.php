@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
+final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
 {
     /**
      * {@inheritdoc}

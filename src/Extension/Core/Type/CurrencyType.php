@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ArrayChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceLoaderTrait;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Symfony\Component\Intl\Intl;
@@ -23,18 +24,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class CurrencyType extends AbstractFieldType implements ChoiceLoader
+final class CurrencyType extends AbstractFieldType implements ChoiceLoader
 {
-    /**
-     * Currency loaded choice list.
-     *
-     * The choices are lazy loaded and generated from the Intl component.
-     *
-     * {@link \Symfony\Component\Intl\Intl::getCurrencyBundle()}.
-     *
-     * @var ArrayChoiceList
-     */
-    private $choiceList;
+    use ChoiceLoaderTrait;
 
     /**
      * {@inheritdoc}
@@ -66,42 +58,6 @@ class CurrencyType extends AbstractFieldType implements ChoiceLoader
         }
 
         return $this->choiceList = new ArrayChoiceList(array_flip(Intl::getCurrencyBundle()->getCurrencyNames()), $value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadChoicesForValues(array $values, callable $value = null): array
-    {
-        // Optimize
-        if (empty($values)) {
-            return [];
-        }
-
-        // If no callable is set, values are the same as choices
-        if (null === $value) {
-            return $values;
-        }
-
-        return $this->loadChoiceList($value)->getChoicesForValues($values);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadValuesForChoices(array $choices, callable $value = null): array
-    {
-        // Optimize
-        if (empty($choices)) {
-            return [];
-        }
-
-        // If no callable is set, choices are the same as values
-        if (null === $value) {
-            return $choices;
-        }
-
-        return $this->loadChoiceList($value)->getValuesForChoices($choices);
     }
 
     /**

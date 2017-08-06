@@ -26,9 +26,6 @@ use Rollerworks\Component\Search\SearchExtension;
  */
 final class LazyExtension implements SearchExtension
 {
-    /**
-     * @var ContainerInterface
-     */
     private $typeContainer;
 
     /**

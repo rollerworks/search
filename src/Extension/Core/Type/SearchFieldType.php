@@ -13,29 +13,21 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\SimpleValueComparator;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\FieldConfig;
-use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchFieldType extends AbstractFieldType
+final class SearchFieldType extends AbstractFieldType
 {
-    /**
-     * @var ValueComparator
-     */
     private $valueComparator;
 
-    /**
-     * Constructor.
-     *
-     * @param ValueComparator $valueComparator
-     */
-    public function __construct(ValueComparator $valueComparator)
+    public function __construct()
     {
-        $this->valueComparator = $valueComparator;
+        $this->valueComparator = new SimpleValueComparator();
     }
 
     /**

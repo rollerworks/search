@@ -20,21 +20,10 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  * Transforms between a date string and a DateTime object
  * and between a localized string and a integer.
  */
-class LocalizedBirthdayTransformer implements DataTransformer
+final class LocalizedBirthdayTransformer implements DataTransformer
 {
-    /**
-     * @var DataTransformer
-     */
     private $transformer;
-
-    /**
-     * @var bool
-     */
     private $allowAge;
-
-    /**
-     * @var bool
-     */
     private $allowFutureDate;
 
     /**
@@ -148,11 +137,6 @@ class LocalizedBirthdayTransformer implements DataTransformer
         }
     }
 
-    /**
-     * Returns a preconfigured \NumberFormatter instance.
-     *
-     * @return \NumberFormatter
-     */
     private function getNumberFormatter(): \NumberFormatter
     {
         /** @var \NumberFormatter $formatter */
