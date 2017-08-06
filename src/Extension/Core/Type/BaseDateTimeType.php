@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
-use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -26,11 +25,6 @@ abstract class BaseDateTimeType extends AbstractFieldType
     const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
 
     /**
-     * @var ValueComparator
-     */
-    protected $valueComparator;
-
-    /**
      * @var array
      */
     protected static $acceptedFormats = [
@@ -39,16 +33,6 @@ abstract class BaseDateTimeType extends AbstractFieldType
         \IntlDateFormatter::MEDIUM,
         \IntlDateFormatter::SHORT,
     ];
-
-    /**
-     * Constructor.
-     *
-     * @param ValueComparator $valueComparator
-     */
-    public function __construct(ValueComparator $valueComparator)
-    {
-        $this->valueComparator = $valueComparator;
-    }
 
     protected function validateFormat(string $name, $value)
     {

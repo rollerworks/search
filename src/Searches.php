@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\Extension\Core\CoreExtension;
-
 /**
  * Entry point of the Search system.
  *
@@ -127,10 +125,7 @@ final class Searches
      */
     public static function createSearchFactoryBuilder(): SearchFactoryBuilder
     {
-        $builder = new SearchFactoryBuilder();
-        $builder->addExtension(new CoreExtension());
-
-        return $builder;
+        return new SearchFactoryBuilder();
     }
 
     /**

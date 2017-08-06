@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToTimestampTransformer;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueValueComparator;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -27,19 +27,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TimestampType extends AbstractFieldType
 {
-    /**
-     * @var ValueComparator
-     */
-    protected $valueComparator;
+    private $valueComparator;
 
-    /**
-     * Constructor.
-     *
-     * @param ValueComparator $valueComparator
-     */
-    public function __construct(ValueComparator $valueComparator)
+    public function __construct()
     {
-        $this->valueComparator = $valueComparator;
+        $this->valueComparator = new DateTimeValueValueComparator();
     }
 
     /**

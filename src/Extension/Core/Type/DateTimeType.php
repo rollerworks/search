@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueValueComparator;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
@@ -53,6 +54,11 @@ class DateTimeType extends BaseDateTimeType
      * is used when the format matches this constant.
      */
     const HTML5_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+
+    public function __construct()
+    {
+        $this->valueComparator = new DateTimeValueValueComparator();
+    }
 
     /**
      * {@inheritdoc}

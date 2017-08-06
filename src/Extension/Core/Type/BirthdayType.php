@@ -15,12 +15,12 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\LocalizedBirthdayTransformer;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\BirthdayValueComparator;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,19 +29,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BirthdayType extends AbstractFieldType
 {
-    /**
-     * @var ValueComparator
-     */
     private $valueComparator;
 
-    /**
-     * Constructor.
-     *
-     * @param ValueComparator $valueComparator
-     */
-    public function __construct(ValueComparator $valueComparator)
+    public function __construct()
     {
-        $this->valueComparator = $valueComparator;
+        $this->valueComparator = new BirthdayValueComparator();
     }
 
     /**
