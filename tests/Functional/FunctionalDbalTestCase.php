@@ -14,7 +14,11 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Doctrine\DBAL\Schema\Schema as DbSchema;
+use Doctrine\DBAL\Schema\Synchronizer\SingleDatabaseSynchronizer;
 use Doctrine\Tests\TestUtil;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\Warning;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
 use Rollerworks\Component\Search\SearchCondition;
@@ -65,12 +69,9 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             $schema = new DbSchema();
             $this->setUpDbSchema($schema);
 
-            $platform = self::$sharedConn->getDatabasePlatform();
-            $queries = $schema->toSql($platform);
-
-            foreach ($queries as $query) {
-                self::$sharedConn->exec($query);
-            }
+            $databaseSynchronizer = new SingleDatabaseSynchronizer(self::$sharedConn);
+            $databaseSynchronizer->dropAllSchema();
+            $databaseSynchronizer->updateSchema($schema);
 
             $recordSets = $this->getDbRecords();
 
@@ -180,12 +181,10 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         self::assertNotEmpty($this->conn->query($this->getQuery().$whereClause));
     }
 
-    protected function onNotSuccessfulTest($e)
+    protected function onNotSuccessfulTest(\Throwable $e)
     {
         // Ignore deprecation warnings.
-        if ($e instanceof \PHPUnit_Framework_AssertionFailedError ||
-            ($e instanceof \PHPUnit_Framework_Warning && strpos($e->getMessage(), ' is deprecated,'))
-        ) {
+        if ($e instanceof AssertionFailedError || ($e instanceof Warning && strpos($e->getMessage(), ' is deprecated,'))) {
             throw $e;
         }
 
@@ -232,7 +231,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
                 'Trace:'.PHP_EOL.
                 $traceMsg;
 
-            throw new \PHPUnit_Framework_Exception($message, (int) $e->getCode(), $e);
+            throw new Exception($message, (int) $e->getCode(), $e);
         }
 
         throw $e;
