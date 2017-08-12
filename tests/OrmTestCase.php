@@ -20,8 +20,12 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Tests\TestUtil;
 use Psr\SimpleCache\CacheInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
 use Rollerworks\Component\Search\Doctrine\Orm\AbstractConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
+use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion;
+use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion;
+use Rollerworks\Component\Search\Doctrine\Orm\Functions\ValueMatch;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -65,28 +69,29 @@ class OrmTestCase extends DbalTestCase
         parent::setUp();
 
         if (!isset(self::$sharedConn)) {
-            $GLOBALS['db_event_subscribers'] = 'Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber';
+            $GLOBALS['db_event_subscribers'] = SqliteConnectionSubscriber::class;
 
             $config = Setup::createAnnotationMetadataConfiguration([__DIR__.'/Fixtures/Entity'], true, null, null, false);
             $config->addCustomStringFunction(
                 'RW_SEARCH_FIELD_CONVERSION',
-                'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion'
+                SqlFieldConversion::class
             );
 
             $config->addCustomStringFunction(
                 'RW_SEARCH_VALUE_CONVERSION',
-                'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion'
+                SqlValueConversion::class
             );
 
             $config->addCustomStringFunction(
                 'RW_SEARCH_MATCH',
-                'Rollerworks\Component\Search\Doctrine\Orm\Functions\ValueMatch'
+                ValueMatch::class
             );
 
             self::$sharedConn = TestUtil::getConnection();
             self::$sharedEm = EntityManager::create(self::$sharedConn, $config);
 
             $schemaTool = new SchemaTool(self::$sharedEm);
+            $schemaTool->dropDatabase();
             $schemaTool->updateSchema(self::$sharedEm->getMetadataFactory()->getAllMetadata(), false);
 
             $recordSets = $this->getDbRecords();
