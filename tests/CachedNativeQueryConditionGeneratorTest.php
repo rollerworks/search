@@ -49,6 +49,8 @@ final class CachedNativeQueryConditionGeneratorTest extends OrmTestCase
 
     public function testGetWhereClauseNoCache()
     {
+        $name = $this->conn->getDatabasePlatform()->getName();
+
         $this->cacheDriver
             ->expects(self::never())
             ->method('has');
@@ -62,9 +64,13 @@ final class CachedNativeQueryConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('set')
-            ->with(self::CACHE_KEY, '((I.customer IN(2, 5)))', 60);
+            ->with(self::CACHE_KEY, 'sqlite' === $name ? '((I.customer IN(2, 5)))' : "((I.customer IN('2', '5')))", 60);
 
-        self::assertEquals('((I.customer IN(2, 5)))', $this->cachedConditionGenerator->getWhereClause());
+        if ('sqlite' === $name) {
+            self::assertEquals('((I.customer IN(2, 5)))', $this->cachedConditionGenerator->getWhereClause());
+        } else {
+            self::assertEquals("((I.customer IN('2', '5')))", $this->cachedConditionGenerator->getWhereClause());
+        }
     }
 
     public function testGetWhereClauseWithCache()
@@ -150,9 +156,14 @@ final class CachedNativeQueryConditionGeneratorTest extends OrmTestCase
         $whereCase = $this->cachedConditionGenerator->getWhereClause();
         $this->cachedConditionGenerator->updateQuery();
 
-        $this->assertEquals('((I.customer IN(2, 5)))', $whereCase);
+        if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
+            self::assertEquals('((I.customer IN(2, 5)))', $this->cachedConditionGenerator->getWhereClause());
+        } else {
+            self::assertEquals("((I.customer IN('2', '5')))", $this->cachedConditionGenerator->getWhereClause());
+        }
+
         $this->assertEquals(
-            'SELECT * FROM invoice AS I JOIN customer AS C ON I.customer = C.id WHERE ((I.customer IN(2, 5)))',
+            'SELECT * FROM invoice AS I JOIN customer AS C ON I.customer = C.id WHERE '.$whereCase,
             $this->query->getSQL()
         );
     }

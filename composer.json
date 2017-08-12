@@ -21,7 +21,8 @@
         "doctrine/orm": "^2.5"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.2.1"
+        "symfony/phpunit-bridge": "^3.3.6",
+        "moneyphp/money": "^3.0.7"
     },
     "autoload": {
         "psr-4": {
