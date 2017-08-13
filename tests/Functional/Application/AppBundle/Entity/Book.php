@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={
  *         "rollerworks_search"={
  *             "contexts"={
- *                 "_default"={
+ *                 "_defaults"={
  *                      "fieldset" = "Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Search\FieldSet\BookFieldSet"
  *                  },
  *                  "_any"={

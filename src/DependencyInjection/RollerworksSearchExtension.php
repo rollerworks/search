@@ -30,7 +30,6 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
-        $loader->load('type.xml');
         $loader->load('input_processor.xml');
         $loader->load('condition_exporter.xml');
         $loader->load('condition_optimizers.xml');
