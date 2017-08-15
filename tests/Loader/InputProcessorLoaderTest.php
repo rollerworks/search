@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Input;
 use Rollerworks\Component\Search\Loader\InputProcessorLoader;
 
+/**
+ * @internal
+ */
 final class InputProcessorLoaderTest extends TestCase
 {
     /** @test */

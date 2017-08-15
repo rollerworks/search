@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\GenericFieldSet;
 
+/**
+ * @internal
+ */
 final class GenericFieldSetTest extends TestCase
 {
     /**

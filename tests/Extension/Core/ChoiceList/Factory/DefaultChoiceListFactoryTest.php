@@ -25,6 +25,8 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
 final class DefaultChoiceListFactoryTest extends TestCase
 {

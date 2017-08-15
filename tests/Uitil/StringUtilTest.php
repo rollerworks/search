@@ -16,6 +16,9 @@ namespace Rollerworks\Component\Search\Tests\Uitil;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Util\StringUtil;
 
+/**
+ * @internal
+ */
 final class StringUtilTest extends TestCase
 {
     /**

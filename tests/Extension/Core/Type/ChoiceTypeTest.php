@@ -21,6 +21,9 @@ use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
+/**
+ * @internal
+ */
 final class ChoiceTypeTest extends SearchIntegrationTestCase
 {
     private $choices = [

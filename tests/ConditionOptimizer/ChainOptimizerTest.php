@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\SearchConditionOptimizer;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 {
     /**

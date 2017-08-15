@@ -16,6 +16,9 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BaseDateTimeTransformer;
 
+/**
+ * @internal
+ */
 final class BaseDateTimeTransformerTest extends TestCase
 {
     /**

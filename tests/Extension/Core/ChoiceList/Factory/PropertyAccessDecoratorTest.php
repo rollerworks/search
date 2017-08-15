@@ -24,6 +24,8 @@ use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
 final class PropertyAccessDecoratorTest extends TestCase
 {

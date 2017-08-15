@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
 
+/**
+ * @internal
+ */
 final class BirthdayTransformerTest extends TestCase
 {
     /** @test */

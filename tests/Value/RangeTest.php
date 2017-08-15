@@ -16,6 +16,9 @@ namespace Rollerworks\Component\Search\Tests\Value;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\Range;
 
+/**
+ * @internal
+ */
 final class RangeTest extends TestCase
 {
     /**

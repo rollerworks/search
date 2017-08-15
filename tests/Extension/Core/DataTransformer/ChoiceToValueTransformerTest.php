@@ -20,6 +20,8 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTra
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
 final class ChoiceToValueTransformerTest extends TestCase
 {

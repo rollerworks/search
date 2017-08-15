@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\GenericSearchFactory;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
+/**
+ * @internal
+ */
 final class SearchFactoryBuilderTest extends TestCase
 {
     /** @var \ReflectionProperty */

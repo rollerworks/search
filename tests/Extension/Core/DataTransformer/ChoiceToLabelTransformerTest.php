@@ -20,6 +20,9 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTransformer;
 
+/**
+ * @internal
+ */
 final class ChoiceToLabelTransformerTest extends TestCase
 {
     /**

@@ -22,6 +22,9 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 
+/**
+ * @internal
+ */
 final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
 {
     protected function setUp()

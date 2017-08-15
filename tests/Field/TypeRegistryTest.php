@@ -25,6 +25,9 @@ use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
+/**
+ * @internal
+ */
 final class TypeRegistryTest extends TestCase
 {
     /**

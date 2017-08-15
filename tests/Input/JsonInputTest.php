@@ -22,6 +22,9 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class JsonInputTest extends InputProcessorTestCase
 {
     protected function getProcessor(): InputProcessor

@@ -18,6 +18,8 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
 final class ArrayChoiceListTest extends AbstractChoiceListTest
 {

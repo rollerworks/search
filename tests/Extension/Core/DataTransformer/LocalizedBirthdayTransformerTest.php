@@ -20,6 +20,9 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\LocalizedBirthdayTransformer;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
+/**
+ * @internal
+ */
 final class LocalizedBirthdayTransformerTest extends TestCase
 {
     protected function setUp()

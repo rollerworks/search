@@ -17,6 +17,9 @@ use Rollerworks\Component\Search\Extension\Core\Type\TimestampType;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
+/**
+ * @internal
+ */
 final class TimestampTypeTest extends SearchIntegrationTestCase
 {
     public function testTransformWithDifferentTimezones()

@@ -20,6 +20,9 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocali
 use Rollerworks\Component\Search\Tests\assertDateTimeEqualsTrait;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
+/**
+ * @internal
+ */
 final class DateTimeToLocalizedStringTransformerTest extends TestCase
 {
     use assertDateTimeEqualsTrait;

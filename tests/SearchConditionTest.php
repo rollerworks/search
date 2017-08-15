@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class SearchConditionTest extends TestCase
 {
     /** @test */

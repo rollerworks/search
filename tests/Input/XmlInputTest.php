@@ -24,6 +24,9 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class XmlInputTest extends InputProcessorTestCase
 {
     protected function getProcessor(): InputProcessor

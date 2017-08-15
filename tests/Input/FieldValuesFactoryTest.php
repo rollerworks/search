@@ -33,6 +33,9 @@ use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\ValueComparator;
 
+/**
+ * @internal
+ */
 final class FieldValuesFactoryTest extends SearchIntegrationTestCase
 {
     /** @var ErrorList */

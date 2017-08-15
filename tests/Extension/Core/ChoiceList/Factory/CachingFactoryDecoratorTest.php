@@ -22,6 +22,8 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
 final class CachingFactoryDecoratorTest extends TestCase
 {

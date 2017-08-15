@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\FieldSetConfigurator;
 use Rollerworks\Component\Search\LazyFieldSetRegistry;
 
+/**
+ * @internal
+ */
 final class LazyFieldSetRegistryTest extends TestCase
 {
     /** @test */

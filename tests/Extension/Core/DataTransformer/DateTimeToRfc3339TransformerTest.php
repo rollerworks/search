@@ -17,6 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
 
+/**
+ * @internal
+ */
 final class DateTimeToRfc3339TransformerTest extends TestCase
 {
     protected $dateTime;

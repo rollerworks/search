@@ -23,6 +23,9 @@ use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
+/**
+ * @internal
+ */
 final class GenericFieldSetBuilderTest extends TestCase
 {
     /**

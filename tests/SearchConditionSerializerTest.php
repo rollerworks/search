@@ -23,6 +23,9 @@ use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class SearchConditionSerializerTest extends TestCase
 {
     /**

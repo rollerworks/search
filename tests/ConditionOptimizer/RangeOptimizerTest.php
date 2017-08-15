@@ -20,6 +20,9 @@ use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 
+/**
+ * @internal
+ */
 final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
 {
     protected function setUp()

@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
+/**
+ * @internal
+ */
 final class IntegerTypeTest extends SearchIntegrationTestCase
 {
     public function testCreate()

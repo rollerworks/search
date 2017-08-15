@@ -17,6 +17,9 @@ use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
+/**
+ * @internal
+ */
 final class TextTypeTest extends SearchIntegrationTestCase
 {
     public function testAcceptsAnyScalarInput()

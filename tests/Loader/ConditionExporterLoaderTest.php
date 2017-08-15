@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exporter;
 use Rollerworks\Component\Search\Loader\ConditionExporterLoader;
 
+/**
+ * @internal
+ */
 final class ConditionExporterLoaderTest extends TestCase
 {
     /** @test */

@@ -16,6 +16,9 @@ namespace Rollerworks\Component\Search\Tests\Value;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\Compare;
 
+/**
+ * @internal
+ */
 final class CompareTest extends TestCase
 {
     /** @var Compare */

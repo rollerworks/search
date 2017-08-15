@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\Input\XmlInput;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
+/**
+ * @internal
+ */
 final class XmlExporterTest extends SearchConditionExporterTestCase
 {
     public function provideSingleValuePairTest()

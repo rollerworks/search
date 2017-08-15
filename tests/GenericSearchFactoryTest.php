@@ -21,6 +21,9 @@ use Rollerworks\Component\Search\Field\TypeRegistry;
 use Rollerworks\Component\Search\FieldSetRegistry;
 use Rollerworks\Component\Search\GenericSearchFactory;
 
+/**
+ * @internal
+ */
 final class GenericSearchFactoryTest extends TestCase
 {
     /**
