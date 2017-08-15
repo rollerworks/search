@@ -36,7 +36,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
     private $typeExtensions;
 
     /**
-     * @var GenericResolvedFieldType
+     * @var ResolvedFieldType|null
      */
     private $parent;
 
@@ -48,13 +48,13 @@ class GenericResolvedFieldType implements ResolvedFieldType
     /**
      * Constructor.
      *
-     * @param FieldType         $innerType
-     * @param array             $typeExtensions
-     * @param ResolvedFieldType $parent
+     * @param FieldType              $innerType
+     * @param array                  $typeExtensions
+     * @param ResolvedFieldType|null $parent
      *
      * @throws UnexpectedTypeException When at least one of the given extensions is not an FieldTypeExtension
      */
-    public function __construct(FieldType $innerType, array $typeExtensions = [], ResolvedFieldType $parent = null)
+    public function __construct(FieldType $innerType, array $typeExtensions = [], ?ResolvedFieldType $parent = null)
     {
         foreach ($typeExtensions as $extension) {
             if (!$extension instanceof FieldTypeExtension) {

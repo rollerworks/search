@@ -56,7 +56,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class ArrayInput extends AbstractInput
 {
     /**
-     * @var FieldValuesFactory
+     * @var FieldValuesFactory|null
      */
     private $valuesFactory;
 

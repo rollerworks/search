@@ -23,7 +23,7 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
     /**
      * {@inheritdoc}
      */
-    public function transform($dateTime)
+    public function transform($dateTime): ?string
     {
         if (null === $dateTime) {
             return '';
@@ -47,13 +47,13 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
     /**
      * {@inheritdoc}
      */
-    public function reverseTransform($rfc3339)
+    public function reverseTransform($rfc3339): ?\DateTime
     {
-        if (!is_string($rfc3339)) {
-            throw new TransformationFailedException('Expected a string.');
+        if (null !== $rfc3339 && !is_string($rfc3339)) {
+            throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if ('' === $rfc3339) {
+        if (null === $rfc3339 || '' === $rfc3339) {
             return null;
         }
 

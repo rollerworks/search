@@ -31,7 +31,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class XmlExporter extends AbstractExporter
 {
     /**
-     * @var \DOMDocument
+     * @var \DOMDocument|null
      */
     private $document;
 

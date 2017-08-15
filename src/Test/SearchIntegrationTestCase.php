@@ -18,11 +18,11 @@ use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
-use Rollerworks\Component\Search\GenericSearchFactory;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Searches;
+use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\Tests\Input\InputProcessorTestCase;
 use Rollerworks\Component\Search\Value\Compare;
@@ -39,7 +39,7 @@ abstract class SearchIntegrationTestCase extends TestCase
     protected $factoryBuilder;
 
     /**
-     * @var GenericSearchFactory
+     * @var SearchFactory
      */
     private $searchFactory;
 
@@ -50,7 +50,7 @@ abstract class SearchIntegrationTestCase extends TestCase
         $this->factoryBuilder = Searches::createSearchFactoryBuilder();
     }
 
-    protected function getFactory(): GenericSearchFactory
+    protected function getFactory(): SearchFactory
     {
         if (null === $this->searchFactory) {
             $this->factoryBuilder->addExtensions($this->getExtensions());

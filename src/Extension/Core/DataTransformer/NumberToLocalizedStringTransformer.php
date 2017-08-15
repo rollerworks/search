@@ -25,12 +25,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 class NumberToLocalizedStringTransformer extends BaseNumberTransformer
 {
-    /**
-     * @param int  $scale
-     * @param bool $grouping
-     * @param int  $roundingMode
-     */
-    public function __construct(int $scale = null, bool $grouping = null, int $roundingMode = null)
+    public function __construct(?int $scale = null, ?bool $grouping = null, ?int $roundingMode = null)
     {
         $this->scale = $scale;
         $this->grouping = $grouping ?? false;
@@ -40,21 +35,21 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
     /**
      * Transforms a number type into localized number.
      *
-     * @param int|float $value Number value
+     * @param int|float|null $value Number value
      *
      * @throws TransformationFailedException If the given value is not numeric
      *                                       or if the value can not be transformed
      *
      * @return string Localized value
      */
-    public function transform($value)
+    public function transform($value): string
     {
-        if (null === $value) {
-            return '';
+        if (null !== $value && !is_numeric($value)) {
+            throw new TransformationFailedException('Expected a numeric or null.');
         }
 
-        if (!is_numeric($value)) {
-            throw new TransformationFailedException('Expected a numeric.');
+        if (null === $value || '' === $value) {
+            return '';
         }
 
         $formatter = $this->getNumberFormatter();
@@ -155,11 +150,6 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
         return $this->round($result);
     }
 
-    /**
-     * Returns a preconfigured \NumberFormatter instance.
-     *
-     * @return \NumberFormatter
-     */
     private function getNumberFormatter(): \NumberFormatter
     {
         $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);

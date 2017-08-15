@@ -26,7 +26,7 @@ class NumberToStringTransformer extends BaseNumberTransformer
      * @param int $scale
      * @param int $roundingMode
      */
-    public function __construct(int $scale = null, int $roundingMode = null)
+    public function __construct(int $scale = null, ?int $roundingMode = null)
     {
         $this->scale = $scale;
         $this->roundingMode = $roundingMode ?? self::ROUND_HALF_UP;
@@ -35,21 +35,21 @@ class NumberToStringTransformer extends BaseNumberTransformer
     /**
      * Transforms a number type into number.
      *
-     * @param int|float $value Number value
+     * @param int|float|null $value Number value
      *
      * @throws TransformationFailedException If the given value is not numeric
      *                                       or if the value can not be transformed
      *
      * @return string
      */
-    public function transform($value)
+    public function transform($value): string
     {
-        if (null === $value) {
-            return '';
+        if (null !== $value && !is_numeric($value)) {
+            throw new TransformationFailedException('Expected a numeric or null.');
         }
 
-        if (!is_numeric($value)) {
-            throw new TransformationFailedException('Expected a numeric.');
+        if (null === $value || '' === $value) {
+            return '';
         }
 
         if ($value >= PHP_INT_MAX || $value <= -PHP_INT_MAX) {

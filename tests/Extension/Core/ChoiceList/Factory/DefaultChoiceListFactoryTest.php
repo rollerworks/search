@@ -35,7 +35,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
     private $list;
 
     /**
-     * @var DefaultChoiceListFactory
+     * @var DefaultChoiceListFactory|null
      */
     private $factory;
 

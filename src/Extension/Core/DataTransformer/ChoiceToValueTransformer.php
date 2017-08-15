@@ -31,7 +31,9 @@ final class ChoiceToValueTransformer implements DataTransformer
 
     public function transform($choice)
     {
-        return (string) current($this->choiceList->getValuesForChoices([$choice]));
+        $value = $this->choiceList->getValuesForChoices([$choice]);
+
+        return (string) current($value);
     }
 
     public function reverseTransform($value)

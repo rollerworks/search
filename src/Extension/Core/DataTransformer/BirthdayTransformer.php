@@ -109,7 +109,7 @@ final class BirthdayTransformer implements DataTransformer
 
         if (!$currentDate) {
             $currentDate = new \DateTime('now', new \DateTimeZone('UTC'));
-            $currentDate->setTime(0, 0, 0);
+            $currentDate->setTime(0, 0);
         }
 
         if ($value > $currentDate) {

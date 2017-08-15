@@ -26,12 +26,12 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 class CachingFactoryDecoratorTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|null
      */
     private $decoratedFactory;
 
     /**
-     * @var CachingFactoryDecorator
+     * @var CachingFactoryDecorator|null
      */
     private $factory;
 

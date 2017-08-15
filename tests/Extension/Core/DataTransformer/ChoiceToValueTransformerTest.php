@@ -24,12 +24,12 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTra
 final class ChoiceToValueTransformerTest extends TestCase
 {
     /**
-     * @var ChoiceToValueTransformer
+     * @var ChoiceToValueTransformer|null
      */
     private $transformer;
 
     /**
-     * @var ChoiceToValueTransformer
+     * @var ChoiceToValueTransformer|null
      */
     private $transformerWithNull;
 

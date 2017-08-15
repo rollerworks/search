@@ -23,27 +23,27 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\CallbackChoice
 final class CallbackChoiceLoaderTest extends TestCase
 {
     /**
-     * @var CallbackChoiceLoader
+     * @var CallbackChoiceLoader|null
      */
     private static $loader;
 
     /**
-     * @var callable
+     * @var callable|null
      */
     private static $value;
 
     /**
-     * @var array
+     * @var array|null
      */
     private static $choices;
 
     /**
-     * @var string[]
+     * @var string[]|null
      */
     private static $choiceValues;
 
     /**
-     * @var LazyChoiceList
+     * @var LazyChoiceList|null
      */
     private static $lazyChoiceList;
 

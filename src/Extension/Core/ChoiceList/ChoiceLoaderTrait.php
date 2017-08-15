@@ -22,7 +22,7 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
 trait ChoiceLoaderTrait
 {
     /**
-     * @var ArrayChoiceList
+     * @var ArrayChoiceList|null
      */
     protected $choiceList;
 
