@@ -16,6 +16,6 @@ namespace Rollerworks\Component\Search\Exception;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class TransformationFailedException extends \RuntimeException implements SearchException
+final class TransformationFailedException extends \RuntimeException implements SearchException
 {
 }

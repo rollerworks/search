@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Fixtures;
 
-class CustomerId
+final class CustomerId
 {
     private $id;
 

@@ -28,7 +28,7 @@ use Rollerworks\Component\Search\ValueIncrementer;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesToRange implements SearchConditionOptimizer
+final class ValuesToRange implements SearchConditionOptimizer
 {
     private $comparators = [];
 

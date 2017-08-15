@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\SearchConditionOptimizer;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ChainOptimizer implements SearchConditionOptimizer
+final class ChainOptimizer implements SearchConditionOptimizer
 {
     /**
      * @var array<SearchConditionOptimizerInterface[]>

@@ -17,7 +17,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
-class BirthdayTypeTest extends SearchIntegrationTestCase
+final class BirthdayTypeTest extends SearchIntegrationTestCase
 {
     public function testDateOnlyInput()
     {

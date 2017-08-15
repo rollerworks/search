@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BaseDateTimeTransformer;
 
-class BaseDateTimeTransformerTest extends TestCase
+final class BaseDateTimeTransformerTest extends TestCase
 {
     /**
      * @expectedException \Rollerworks\Component\Search\Exception\InvalidArgumentException

@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToLocalized
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class MoneyToLocalizedStringTransformerTest extends TestCase
+final class MoneyToLocalizedStringTransformerTest extends TestCase
 {
     protected function setUp()
     {

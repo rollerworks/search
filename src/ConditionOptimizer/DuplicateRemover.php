@@ -38,7 +38,7 @@ use Rollerworks\Component\Search\ValueComparator;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DuplicateRemover implements SearchConditionOptimizer
+final class DuplicateRemover implements SearchConditionOptimizer
 {
     /**
      * {@inheritdoc}

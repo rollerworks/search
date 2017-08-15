@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Field\ResolvedFieldTypeFactory;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchFactoryBuilder
+final class SearchFactoryBuilder
 {
     /**
      * @var ResolvedFieldTypeFactory

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Field;
 
-class GenericResolvedFieldTypeFactory implements ResolvedFieldTypeFactory
+final class GenericResolvedFieldTypeFactory implements ResolvedFieldTypeFactory
 {
     /**
      * {@inheritdoc}

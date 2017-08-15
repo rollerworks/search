@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Loader;
 use Psr\Container\NotFoundExceptionInterface;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
-class ServiceNotFoundException extends InvalidArgumentException implements NotFoundExceptionInterface
+final class ServiceNotFoundException extends InvalidArgumentException implements NotFoundExceptionInterface
 {
     public function __construct(string $id)
     {

@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exception;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 final class UnsupportedFieldSetException extends InvalidArgumentException
 {
     public function __construct(array $expected, string $provided)

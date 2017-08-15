@@ -17,7 +17,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\FieldType;
 use Rollerworks\Component\Search\Field\FieldTypeExtension;
 
-class PreloadedExtension implements SearchExtension
+final class PreloadedExtension implements SearchExtension
 {
     /**
      * @var array

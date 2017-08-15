@@ -19,7 +19,7 @@ use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class IntegerTypeTest extends SearchIntegrationTestCase
+final class IntegerTypeTest extends SearchIntegrationTestCase
 {
     public function testCreate()
     {

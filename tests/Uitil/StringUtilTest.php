@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Uitil;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Util\StringUtil;
 
-class StringUtilTest extends TestCase
+final class StringUtilTest extends TestCase
 {
     /**
      * @dataProvider fqcnToBlockPrefixProvider

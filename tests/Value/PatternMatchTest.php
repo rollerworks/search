@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Value;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
-class PatternMatchTest extends TestCase
+final class PatternMatchTest extends TestCase
 {
     /** @var PatternMatch */
     private $value;

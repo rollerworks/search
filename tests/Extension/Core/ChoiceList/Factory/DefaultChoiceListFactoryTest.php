@@ -839,7 +839,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
 }
 
 /** @ignore */
-class DefaultChoiceListFactoryTest_Castable
+final class DefaultChoiceListFactoryTest_Castable
 {
     private $property;
 

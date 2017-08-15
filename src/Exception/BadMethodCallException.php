@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exception;
 
-class BadMethodCallException extends \BadMethodCallException implements SearchException
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
+final class BadMethodCallException extends \BadMethodCallException implements SearchException
 {
 }

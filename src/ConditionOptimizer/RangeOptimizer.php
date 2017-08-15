@@ -28,7 +28,7 @@ use Rollerworks\Component\Search\ValueComparator;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class RangeOptimizer implements SearchConditionOptimizer
+final class RangeOptimizer implements SearchConditionOptimizer
 {
     /**
      * {@inheritdoc}

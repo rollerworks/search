@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exporter;
 use Rollerworks\Component\Search\Loader\ConditionExporterLoader;
 
-class ConditionExporterLoaderTest extends TestCase
+final class ConditionExporterLoaderTest extends TestCase
 {
     /** @test */
     public function it_lazily_loads_a_condition_exporter()

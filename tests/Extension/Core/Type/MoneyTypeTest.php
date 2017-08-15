@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class MoneyTypeTest extends SearchIntegrationTestCase
+final class MoneyTypeTest extends SearchIntegrationTestCase
 {
     protected function setUp()
     {

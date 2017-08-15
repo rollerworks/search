@@ -19,7 +19,7 @@ use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class DateTimeTypeTest extends SearchIntegrationTestCase
+final class DateTimeTypeTest extends SearchIntegrationTestCase
 {
     public function testViewTimezoneCanBeTransformedToModelTimezone()
     {
