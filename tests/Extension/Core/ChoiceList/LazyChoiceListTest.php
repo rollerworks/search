@@ -24,17 +24,17 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 class LazyChoiceListTest extends TestCase
 {
     /**
-     * @var LazyChoiceList
+     * @var LazyChoiceList|null
      */
     private $list;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|null
      */
     private $loadedList;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|null
      */
     private $loader;
 

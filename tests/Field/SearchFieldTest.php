@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests;
+namespace Rollerworks\Component\Search\Tests\Field;
 
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\DataTransformer;
@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\ValueComparator;
 final class SearchFieldTest extends TestCase
 {
     /**
-     * @var \Rollerworks\Component\Search\ResolvedFieldType
+     * @var ResolvedFieldType
      */
     private $resolvedType;
 

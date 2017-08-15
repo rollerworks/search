@@ -82,9 +82,9 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *                                       instance or if the output timezone
      *                                       is not supported
      *
-     * @return string A value as produced by PHP's date() function
+     * @return string|null A value as produced by PHP's date() function
      */
-    public function transform($value)
+    public function transform($value): ?string
     {
         if (null === $value) {
             return '';
@@ -118,14 +118,14 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @return \DateTime|null An instance of \DateTime
      */
-    public function reverseTransform($value)
+    public function reverseTransform($value): ?\DateTime
     {
-        if ('' === $value || null === $value) {
-            return null;
+        if (null !== $value && !is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if (!is_string($value)) {
-            throw new TransformationFailedException('Expected a string.');
+        if (null === $value || '' === $value) {
+            return null;
         }
 
         try {

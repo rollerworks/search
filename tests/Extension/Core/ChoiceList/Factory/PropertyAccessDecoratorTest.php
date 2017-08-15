@@ -28,12 +28,12 @@ use Symfony\Component\PropertyAccess\PropertyPath;
 class PropertyAccessDecoratorTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|null
      */
     private $decoratedFactory;
 
     /**
-     * @var PropertyAccessDecorator
+     * @var PropertyAccessDecorator|null
      */
     private $factory;
 

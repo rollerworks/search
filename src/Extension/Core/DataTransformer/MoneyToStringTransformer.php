@@ -53,7 +53,7 @@ final class MoneyToStringTransformer implements DataTransformer
      *
      * @return string Normalized money string
      */
-    public function transform($value)
+    public function transform($value): ?string
     {
         if (null === $value) {
             return '';
@@ -82,15 +82,15 @@ final class MoneyToStringTransformer implements DataTransformer
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed
      *
-     * @return MoneyValue Normalized number
+     * @return MoneyValue|null Normalized number
      */
-    public function reverseTransform($value)
+    public function reverseTransform($value): ?MoneyValue
     {
-        if (!is_string($value)) {
-            throw new TransformationFailedException('Expected a string value.');
+        if (null !== $value && !is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if ('' === $value) {
+        if (null === $value || '' === $value) {
             return null;
         }
 

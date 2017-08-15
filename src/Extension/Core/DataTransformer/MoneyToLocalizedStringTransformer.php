@@ -54,9 +54,9 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed
      *
-     * @return string Localized money string
+     * @return string|null Localized money string
      */
-    public function transform($value)
+    public function transform($value): ?string
     {
         if (null === $value) {
             return '';
@@ -81,20 +81,20 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
     /**
      * Transforms a localized number into an integer or float.
      *
-     * @param string $value The localized value
+     * @param string|null $value The localized value
      *
      * @throws TransformationFailedException if the given value is not a string
      *                                       or if the value can not be transformed
      *
-     * @return MoneyValue
+     * @return MoneyValue|null
      */
-    public function reverseTransform($value)
+    public function reverseTransform($value): ?MoneyValue
     {
-        if (!is_string($value)) {
-            throw new TransformationFailedException('Expected a string.');
+        if (null !== $value && !is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if ('' === $value) {
+        if (null === $value || '' === $value) {
             return null;
         }
 
@@ -158,11 +158,12 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
      * ICU cannot parse() without a currency,
      * and decimal doesn't include scale when 0.
      *
-     * @param string $value
+     * @param string      $value
+     * @param null|string $currency
      *
      * @return string
      */
-    private function addCurrencySymbol(string $value, string $currency = null): string
+    private function addCurrencySymbol(string $value, ?string $currency = null): string
     {
         $currency = $currency ?? $this->defaultCurrency;
         $locale = \Locale::getDefault();
@@ -205,6 +206,7 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
      * And, decimal doesn't include scale when 0.
      *
      * @param string $value
+     * @param string $currency
      *
      * @return string
      */

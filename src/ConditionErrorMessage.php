@@ -37,7 +37,7 @@ final class ConditionErrorMessage
     /**
      * The template for the error message.
      *
-     * @var string
+     * @var string|null
      */
     public $messageTemplate;
 
@@ -80,7 +80,7 @@ final class ConditionErrorMessage
      * @param int|null    $messagePluralization The value for error message pluralization
      * @param mixed       $cause                The cause of the error
      */
-    public function __construct(string $path, string $message, string $messageTemplate = null, array $messageParameters = [], int $messagePluralization = null, $cause = null)
+    public function __construct(string $path, string $message, ?string $messageTemplate = null, array $messageParameters = [], ?int $messagePluralization = null, $cause = null)
     {
         $this->path = $path;
         $this->message = $message;
@@ -94,7 +94,7 @@ final class ConditionErrorMessage
     {
         return new static(
             $path,
-            strtr((string) $messageTemplate, $messageParameters),
+            strtr($messageTemplate, $messageParameters),
             $messageTemplate,
             $messageParameters,
             $messagePluralization,
@@ -124,6 +124,6 @@ final class ConditionErrorMessage
      */
     public function __toString()
     {
-        return (string) $this->message;
+        return $this->message;
     }
 }

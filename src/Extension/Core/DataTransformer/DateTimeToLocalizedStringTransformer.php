@@ -72,14 +72,14 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a normalized date into a localized date string/array.
      *
-     * @param \DateTimeInterface $dateTime A DateTimeInterface object
+     * @param \DateTimeInterface|null $dateTime A DateTimeInterface object
      *
      * @throws TransformationFailedException if the given value is not a \DateTimeInterface
      *                                       or if the date could not be transformed
      *
-     * @return string
+     * @return string|null
      */
-    public function transform($dateTime)
+    public function transform($dateTime): ?string
     {
         if (null === $dateTime) {
             return '';
@@ -101,7 +101,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a localized date string/array into a normalized date.
      *
-     * @param string|array $value Localized date string/array
+     * @param string|null $value Localized date string
      *
      * @throws TransformationFailedException if the given value is not a string,
      *                                       if the date could not be parsed
@@ -110,11 +110,11 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      */
     public function reverseTransform($value)
     {
-        if (!is_string($value)) {
-            throw new TransformationFailedException('Expected a string.');
+        if (null !== $value && !is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if ('' === $value) {
+        if (null === $value || '' === $value) {
             return null;
         }
 

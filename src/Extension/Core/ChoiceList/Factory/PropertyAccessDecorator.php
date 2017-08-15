@@ -43,23 +43,16 @@ use Symfony\Component\PropertyAccess\PropertyPath;
  */
 final class PropertyAccessDecorator implements ChoiceListFactory
 {
-    /**
-     * @var ChoiceListFactory
-     */
     private $decoratedFactory;
-
-    /**
-     * @var PropertyAccessor
-     */
     private $propertyAccessor;
 
     /**
      * Decorates the given factory.
      *
      * @param ChoiceListFactory     $decoratedFactory The decorated factory
-     * @param null|PropertyAccessor $propertyAccessor The used property accessor
+     * @param PropertyAccessor|null $propertyAccessor The used property accessor
      */
-    public function __construct(ChoiceListFactory $decoratedFactory, PropertyAccessor $propertyAccessor = null)
+    public function __construct(ChoiceListFactory $decoratedFactory, ?PropertyAccessor $propertyAccessor = null)
     {
         $this->decoratedFactory = $decoratedFactory;
         $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
@@ -68,7 +61,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
     /**
      * Returns the decorated factory.
      *
-     * @return ChoiceListFactory The decorated factory
+     * @return ChoiceListFactory
      */
     public function getDecoratedFactory(): ChoiceListFactory
     {
@@ -76,13 +69,13 @@ final class PropertyAccessDecorator implements ChoiceListFactory
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      *
      * @param array|\Traversable                $choices The choices
-     * @param null|callable|string|PropertyPath $value   The callable or path for
+     * @param callable|string|PropertyPath|null $value   The callable or path for
      *                                                   generating the choice values
      *
-     * @return ChoiceList The choice list
+     * @return ChoiceList
      */
     public function createListFromChoices($choices, $value = null): ChoiceList
     {
@@ -107,13 +100,13 @@ final class PropertyAccessDecorator implements ChoiceListFactory
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      *
      * @param ChoiceLoader                      $loader The choice loader
-     * @param null|callable|string|PropertyPath $value  The callable or path for
+     * @param callable|string|PropertyPath|null $value  The callable or path for
      *                                                  generating the choice values
      *
-     * @return ChoiceList The choice list
+     * @return ChoiceList
      */
     public function createListFromLoader(ChoiceLoader $loader, $value = null): ChoiceList
     {
@@ -138,7 +131,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      *
      * @param ChoiceList                              $list             The choice list
      * @param null|array|callable|string|PropertyPath $preferredChoices The preferred choices
@@ -147,7 +140,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
      * @param null|callable|string|PropertyPath       $groupBy          The callable or path generating the group names
      * @param null|array|callable|string|PropertyPath $attr             The callable or path generating the HTML attributes
      *
-     * @return ChoiceListView The choice list view
+     * @return ChoiceListView
      */
     public function createView(ChoiceList $list, $preferredChoices = null, $label = null, $index = null, $groupBy = null, $attr = null): ChoiceListView
     {

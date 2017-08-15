@@ -34,7 +34,7 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      *
      * @return int|null A timestamp
      */
-    public function transform($dateTime)
+    public function transform($dateTime): ?int
     {
         if (null === $dateTime) {
             return null;
@@ -57,14 +57,14 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      *
      * @return \DateTime|null
      */
-    public function reverseTransform($value)
+    public function reverseTransform($value): ?\DateTime
     {
-        if (null === $value) {
-            return null;
+        if (null !== $value && !is_numeric($value)) {
+            throw new TransformationFailedException('Expected a numeric or null.');
         }
 
-        if (!is_numeric($value)) {
-            throw new TransformationFailedException('Expected a numeric.');
+        if (null === $value || '' === $value) {
+            return null;
         }
 
         try {

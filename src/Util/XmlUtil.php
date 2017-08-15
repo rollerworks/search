@@ -95,7 +95,7 @@ final class XmlUtil
                 } catch (\Exception $e) {
                     $valid = false;
                 }
-            } elseif (!is_array($schemaOrCallable) && is_file((string) $schemaOrCallable)) {
+            } elseif (!is_array($schemaOrCallable) && is_file($schemaOrCallable)) {
                 $valid = @$dom->schemaValidate($schemaOrCallable);
             } else {
                 libxml_use_internal_errors($internalErrors);

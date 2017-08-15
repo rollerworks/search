@@ -37,7 +37,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class XmlInput extends AbstractInput
 {
     /**
-     * @var FieldValuesFactory
+     * @var FieldValuesFactory|null
      */
     private $valuesFactory;
 

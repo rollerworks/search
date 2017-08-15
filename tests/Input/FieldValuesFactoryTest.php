@@ -22,7 +22,6 @@ use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Field\FieldConfig;
-use Rollerworks\Component\Search\Field\SearchField;
 use Rollerworks\Component\Search\Input\FieldValuesFactory;
 use Rollerworks\Component\Search\Input\NullValidator;
 use Rollerworks\Component\Search\Input\Validator;
@@ -503,7 +502,7 @@ final class FieldValuesFactoryTest extends SearchIntegrationTestCase
         return new FieldValuesFactory($this->errorList, $validator, $valuesLimit);
     }
 
-    private function createField(string $type = null, array $options = []): SearchField
+    private function createField(string $type = null, array $options = []): FieldConfig
     {
         return $this->getFactory()->createField('field-name', $type ?? TextType::class, $options);
     }
@@ -543,7 +542,7 @@ final class FieldValuesFactoryTest extends SearchIntegrationTestCase
         self::assertEquals($errors, $errorsList);
     }
 
-    private function createFullySupportedField(): SearchField
+    private function createFullySupportedField(): FieldConfig
     {
         $field = $this->createField();
         $field->setValueTypeSupport(Range::class, true);

@@ -44,12 +44,12 @@ abstract class BaseDateTimeTransformer implements DataTransformer
     /**
      * Constructor.
      *
-     * @param string $inputTimezone  The name of the input timezone
-     * @param string $outputTimezone The name of the output timezone
+     * @param string|null $inputTimezone  The name of the input timezone
+     * @param string|null $outputTimezone The name of the output timezone
      *
      * @throws UnexpectedTypeException if a timezone is not a string
      */
-    public function __construct(string $inputTimezone = null, string $outputTimezone = null)
+    public function __construct(?string $inputTimezone = null, ?string $outputTimezone = null)
     {
         $this->inputTimezone = $inputTimezone ?? date_default_timezone_get();
         $this->outputTimezone = $outputTimezone ?? date_default_timezone_get();

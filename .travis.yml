@@ -12,6 +12,8 @@ matrix:
           #env: coverage=1
         - php: '7.1'
           env: deps='low'
+        - php: '7.1'
+          env: lint=1
 
 cache:
     directories:
@@ -22,7 +24,9 @@ before_install:
     - if [[ $coverage = 1 ]]; then mkdir -p build/logs build/cov; fi
     - if [[ $coverage = 1 ]]; then wget https://phar.phpunit.de/phpcov.phar; fi
     - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar; fi
-    - export PATH="$PATH:$HOME/.composer/vendor/bin"
+    - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.3.2/php-cs-fixer.phar; fi
+    - if [[ $lint = 1 ]]; then composer global require phpstan/phpstan; fi
+    - export PATH="$PATH:$HOME/.composer/vendor/bin:./vendor/bin"
 
 install:
     - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^4.0.1'; fi
@@ -31,8 +35,12 @@ install:
     - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
-    - if [[ $coverage = 1 ]]; then phpdbg -qrr -dmemory_limit=-1 vendor/bin/phpunit  --verbose --coverage-php build/cov/coverage-phpunit.cov; else vendor/bin/phpunit --verbose; fi
+    - export SYMFONY_DEPRECATIONS_HELPER=strict
+    - if [[ $coverage = 1 ]]; then phpdbg -qrr -dmemory_limit=-1 vendor/bin/phpunit  --verbose --coverage-php build/cov/coverage-phpunit.cov; fi
     - if [[ $coverage = 1 ]]; then phpdbg -qrr phpcov.phar merge --clover build/logs/clover.xml build/cov; fi
+    - if [[ ! $lint ]]; then vendor/bin/phpunit --verbose; fi
+    - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
+    - if [[ $lint = 1 ]]; then phpstan analyse -c phpstan.neon -l5 --ansi src tests; fi
 
 after_success:
     - if [[ $coverage = 1 ]]; then travis_retry php coveralls.phar; fi

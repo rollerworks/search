@@ -138,7 +138,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class StringQueryInput extends AbstractInput
 {
     /**
-     * @var FieldValuesByViewFactory
+     * @var FieldValuesByViewFactory|null
      */
     private $valuesFactory;
 
