@@ -29,14 +29,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class ArrayExporter extends AbstractExporter
 {
-    /**
-     * @param ValuesGroup $valuesGroup
-     * @param FieldSet    $fieldSet
-     * @param bool        $isRoot
-     *
-     * @return array
-     */
-    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false)
+    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): array
     {
         $result = [];
         $fields = $valuesGroup->getFields();

@@ -32,9 +32,6 @@ final class ValuesToRange implements SearchConditionOptimizer
 {
     private $comparators = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(SearchCondition $condition)
     {
         $fieldSet = $condition->getFieldSet();
@@ -61,9 +58,6 @@ final class ValuesToRange implements SearchConditionOptimizer
         $this->optimizeValuesInGroup($valuesGroup, $fieldSet);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPriority(): int
     {
         // run before range optimizer

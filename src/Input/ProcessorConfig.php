@@ -15,6 +15,11 @@ namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\FieldSet;
 
+/**
+ * ProcessorConfig holds the configuration for an Input processor.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 class ProcessorConfig
 {
     /**
@@ -46,8 +51,6 @@ class ProcessorConfig
     }
 
     /**
-     * Returns the FieldSet.
-     *
      * @return FieldSet
      */
     public function getFieldSet(): FieldSet

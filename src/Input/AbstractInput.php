@@ -58,7 +58,7 @@ abstract class AbstractInput implements InputProcessor
      *
      * @param Validator|null $validator
      */
-    public function __construct(Validator $validator = null)
+    public function __construct(?Validator $validator = null)
     {
         $this->validator = $validator ?? new NullValidator();
     }

@@ -22,17 +22,17 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 {
     /**
-     * @var ObjectProphecy
+     * @var ObjectProphecy|null
      */
     private $optimizer1;
 
     /**
-     * @var ObjectProphecy
+     * @var ObjectProphecy|null
      */
     private $optimizer2;
 
     /**
-     * @var ChainOptimizer
+     * @var ChainOptimizer|null
      */
     protected $optimizer;
 

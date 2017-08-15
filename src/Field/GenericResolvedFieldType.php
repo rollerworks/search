@@ -187,7 +187,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
      * @param string $name    The name of the field
      * @param array  $options The builder options
      *
-     * @return FieldConfig The new field instance
+     * @return FieldConfig
      */
     protected function newField($name, array $options): FieldConfig
     {
@@ -201,7 +201,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
      *
      * @param FieldSetView $view
      *
-     * @return SearchFieldView The new view instance
+     * @return SearchFieldView
      */
     protected function newView(FieldSetView $view): SearchFieldView
     {

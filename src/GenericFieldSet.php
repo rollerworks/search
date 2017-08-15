@@ -25,10 +25,6 @@ final class GenericFieldSet implements FieldSetWithView
 {
     private $fields = [];
     private $name;
-
-    /**
-     * @var callable
-     */
     private $viewBuilder;
 
     /**

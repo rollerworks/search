@@ -119,10 +119,7 @@ final class ConditionErrorMessage
         $this->translatedParameters = $translatedParameters;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->message;
     }

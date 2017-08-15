@@ -121,12 +121,7 @@ final class XmlUtil
         return $dom;
     }
 
-    /**
-     * @param bool $internalErrors
-     *
-     * @return array
-     */
-    private static function getXmlErrors($internalErrors)
+    private static function getXmlErrors(bool $internalErrors): array
     {
         $errors = [];
 

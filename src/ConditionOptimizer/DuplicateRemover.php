@@ -40,17 +40,11 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class DuplicateRemover implements SearchConditionOptimizer
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(SearchCondition $condition)
     {
         $this->removeDuplicatesInGroup($condition->getValuesGroup(), $condition->getFieldSet());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPriority(): int
     {
         return 5;
@@ -83,13 +77,6 @@ final class DuplicateRemover implements SearchConditionOptimizer
         $this->removeDuplicateMatchers($valuesBag, $comparator, $options);
     }
 
-    /**
-     * @param array           $values
-     * @param ValuesBag       $valuesBag
-     * @param ValueComparator $comparator
-     * @param array           $options
-     * @param bool            $exclude
-     */
     private function removeDuplicateValues(
         array $values,
         ValuesBag $valuesBag,
@@ -152,11 +139,6 @@ final class DuplicateRemover implements SearchConditionOptimizer
         }
     }
 
-    /**
-     * @param ValuesBag       $valuesBag
-     * @param ValueComparator $comparator
-     * @param array           $options
-     */
     private function removeDuplicateComparisons(ValuesBag $valuesBag, ValueComparator $comparator, array $options)
     {
         /** @var Compare[] $comparisons */
@@ -178,11 +160,6 @@ final class DuplicateRemover implements SearchConditionOptimizer
         }
     }
 
-    /**
-     * @param ValuesBag       $valuesBag
-     * @param ValueComparator $comparator
-     * @param array           $options
-     */
     private function removeDuplicateMatchers(ValuesBag $valuesBag, ValueComparator $comparator, array $options)
     {
         /** @var PatternMatch[] $matchers */

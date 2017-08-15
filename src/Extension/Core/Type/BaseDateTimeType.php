@@ -24,9 +24,6 @@ abstract class BaseDateTimeType extends AbstractFieldType
     public const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
     public const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
 
-    /**
-     * @var array
-     */
     protected static $acceptedFormats = [
         \IntlDateFormatter::FULL,
         \IntlDateFormatter::LONG,

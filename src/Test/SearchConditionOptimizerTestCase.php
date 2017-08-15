@@ -16,15 +16,18 @@ namespace Rollerworks\Component\Search\Test;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionOptimizer;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 abstract class SearchConditionOptimizerTestCase extends SearchIntegrationTestCase
 {
     /**
-     * @var FieldSet
+     * @var FieldSet|null
      */
     protected $fieldSet;
 
     /**
-     * @var SearchConditionOptimizer
+     * @var SearchConditionOptimizer|null
      */
     protected $optimizer;
 

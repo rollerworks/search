@@ -38,14 +38,7 @@ abstract class AbstractExporter implements ConditionExporter
         return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
     }
 
-    /**
-     * @param ValuesGroup $valuesGroup
-     * @param FieldSet    $fieldSet
-     * @param bool        $isRoot
-     *
-     * @return mixed
-     */
-    abstract protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false);
+    abstract protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false);
 
     /**
      * Transforms the model value to a view representation.

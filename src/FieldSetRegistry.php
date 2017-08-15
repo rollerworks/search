@@ -20,7 +20,7 @@ interface FieldSetRegistry
     /**
      * Returns a FieldSetConfiguratorInterface by name.
      *
-     * @param string $name The name of the FieldSet configurator
+     * @param string $name
      *
      * @throws InvalidArgumentException if the configurator can not be retrieved
      *
@@ -31,7 +31,7 @@ interface FieldSetRegistry
     /**
      * Returns whether the given FieldSetConfigurator is supported.
      *
-     * @param string $name The name of the FieldSet configurator
+     * @param string $name
      *
      * @return bool
      */

@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\Field\FieldType;
 use Rollerworks\Component\Search\Field\FieldTypeExtension;
-use Rollerworks\Component\Search\Field\GenericResolvedFieldTypeFactory;
 use Rollerworks\Component\Search\Field\GenericTypeRegistry;
 use Rollerworks\Component\Search\Field\ResolvedFieldType;
 use Rollerworks\Component\Search\Field\ResolvedFieldTypeFactory;
