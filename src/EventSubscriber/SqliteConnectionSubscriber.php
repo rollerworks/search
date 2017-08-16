@@ -22,7 +22,7 @@ final class SqliteConnectionSubscriber implements EventSubscriber
     /**
      * @param ConnectionEventArgs $args
      */
-    public function postConnect(ConnectionEventArgs $args)
+    public function postConnect(ConnectionEventArgs $args): void
     {
         if ('sqlite' === $args->getDatabasePlatform()->getName()) {
             $conn = $args->getConnection()->getWrappedConnection();
@@ -48,7 +48,7 @@ final class SqliteConnectionSubscriber implements EventSubscriber
     /**
      * {@inheritdoc}
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [Events::postConnect];
     }

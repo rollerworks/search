@@ -29,7 +29,7 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             ['doctrine_dbal_conversion' => null]

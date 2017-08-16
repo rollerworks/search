@@ -37,7 +37,7 @@ class MoneyValueConversion implements ValueConversion, ColumnConversion, Strateg
     /**
      * {@inheritdoc}
      */
-    public function convertValue($value, array $options, ConversionHints $hints)
+    public function convertValue($value, array $options, ConversionHints $hints): string
     {
         if (!$value instanceof MoneyValue) {
             throw new UnexpectedTypeException($value, MoneyValue::class);
