@@ -24,6 +24,9 @@ use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\FieldSetView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @internal
+ */
 final class ResolvedFieldTypeTest extends TestCase
 {
     /**

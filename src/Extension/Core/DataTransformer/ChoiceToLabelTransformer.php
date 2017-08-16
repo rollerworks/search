@@ -26,12 +26,6 @@ final class ChoiceToLabelTransformer implements DataTransformer
     private $choiceList;
     private $choiceListView;
 
-    /**
-     * Constructor.
-     *
-     * @param ChoiceList     $choiceList
-     * @param ChoiceListView $choiceListView
-     */
     public function __construct(ChoiceList $choiceList, ChoiceListView $choiceListView)
     {
         $this->choiceList = $choiceList;

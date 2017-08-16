@@ -31,7 +31,7 @@ interface ResolvedFieldType
     /**
      * Returns the wrapped field type.
      *
-     * @return FieldType The wrapped field type
+     * @return FieldType
      */
     public function getInnerType(): FieldType;
 
@@ -85,14 +85,14 @@ interface ResolvedFieldType
     /**
      * Returns the prefix of the template block name for this type.
      *
-     * @return string The prefix of the template block name
+     * @return string
      */
     public function getBlockPrefix(): string;
 
     /**
      * Returns the configured options resolver used for this type.
      *
-     * @return OptionsResolver The options resolver
+     * @return OptionsResolver
      */
     public function getOptionsResolver(): OptionsResolver;
 }

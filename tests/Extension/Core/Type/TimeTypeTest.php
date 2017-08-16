@@ -19,7 +19,10 @@ use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class TimeTypeTest extends SearchIntegrationTestCase
+/**
+ * @internal
+ */
+final class TimeTypeTest extends SearchIntegrationTestCase
 {
     private $defaultTimezone;
 

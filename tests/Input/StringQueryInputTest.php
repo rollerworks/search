@@ -28,6 +28,9 @@ use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class StringQueryInputTest extends InputProcessorTestCase
 {
     protected function getProcessor(callable $labelResolver = null): InputProcessor

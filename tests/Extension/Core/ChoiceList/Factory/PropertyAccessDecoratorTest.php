@@ -24,8 +24,10 @@ use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
-class PropertyAccessDecoratorTest extends TestCase
+final class PropertyAccessDecoratorTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|null

@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Field\ResolvedFieldTypeFactory;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class SearchFactoryBuilder
+final class SearchFactoryBuilder
 {
     /**
      * @var ResolvedFieldTypeFactory
@@ -99,7 +99,7 @@ class SearchFactoryBuilder
     /**
      * Adds an extension to be loaded by the factory.
      *
-     * @param SearchExtension $extension The extension
+     * @param SearchExtension $extension
      *
      * @return $this The builder
      */
@@ -113,7 +113,7 @@ class SearchFactoryBuilder
     /**
      * Adds a list of extensions to be loaded by the factory.
      *
-     * @param SearchExtension[] $extensions The extensions
+     * @param SearchExtension[] $extensions
      *
      * @return $this The builder
      */
@@ -127,7 +127,7 @@ class SearchFactoryBuilder
     /**
      * Adds a field type to the factory.
      *
-     * @param FieldType $type The field type
+     * @param FieldType $type
      *
      * @return $this The builder
      */
@@ -141,7 +141,7 @@ class SearchFactoryBuilder
     /**
      * Adds a list of field types to the factory.
      *
-     * @param FieldType[] $types The field types
+     * @param FieldType[] $types
      *
      * @return $this The builder
      */
@@ -157,7 +157,7 @@ class SearchFactoryBuilder
     /**
      * Adds a field type extension to the factory.
      *
-     * @param FieldTypeExtension $typeExtension The field type extension
+     * @param FieldTypeExtension $typeExtension
      *
      * @return $this The builder
      */
@@ -171,7 +171,7 @@ class SearchFactoryBuilder
     /**
      * Adds a list of field type extension to the factory.
      *
-     * @param FieldTypeExtension[] $typeExtensions The field type extension
+     * @param FieldTypeExtension[] $typeExtensions
      *
      * @return $this The builder
      */
@@ -187,7 +187,7 @@ class SearchFactoryBuilder
     /**
      * Builds and returns the factory.
      *
-     * @return SearchFactory The search factory
+     * @return SearchFactory
      */
     public function getSearchFactory(): SearchFactory
     {

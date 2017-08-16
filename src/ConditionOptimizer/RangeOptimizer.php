@@ -28,11 +28,8 @@ use Rollerworks\Component\Search\ValueComparator;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class RangeOptimizer implements SearchConditionOptimizer
+final class RangeOptimizer implements SearchConditionOptimizer
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(SearchCondition $condition)
     {
         $fieldSet = $condition->getFieldSet();
@@ -54,9 +51,6 @@ class RangeOptimizer implements SearchConditionOptimizer
         $this->normalizeRangesInGroup($condition->getValuesGroup(), $fieldSet);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPriority(): int
     {
         return -5;

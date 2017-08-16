@@ -22,11 +22,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 class NumberToStringTransformer extends BaseNumberTransformer
 {
-    /**
-     * @param int $scale
-     * @param int $roundingMode
-     */
-    public function __construct(int $scale = null, ?int $roundingMode = null)
+    public function __construct(?int $scale = null, ?int $roundingMode = null)
     {
         $this->scale = $scale;
         $this->roundingMode = $roundingMode ?? self::ROUND_HALF_UP;

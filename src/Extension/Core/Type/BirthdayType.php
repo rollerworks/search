@@ -93,9 +93,7 @@ final class BirthdayType extends AbstractFieldType
     }
 
     /**
-     * Returns the name of the type.
-     *
-     * @return string The type name
+     * {@inheritdoc}
      */
     public function getParent()
     {

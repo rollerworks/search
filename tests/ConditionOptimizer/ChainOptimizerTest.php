@@ -19,20 +19,23 @@ use Rollerworks\Component\Search\SearchConditionOptimizer;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
 {
     /**
-     * @var ObjectProphecy
+     * @var ObjectProphecy|null
      */
     private $optimizer1;
 
     /**
-     * @var ObjectProphecy
+     * @var ObjectProphecy|null
      */
     private $optimizer2;
 
     /**
-     * @var ChainOptimizer
+     * @var ChainOptimizer|null
      */
     protected $optimizer;
 

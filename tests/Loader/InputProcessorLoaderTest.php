@@ -18,7 +18,10 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Input;
 use Rollerworks\Component\Search\Loader\InputProcessorLoader;
 
-class InputProcessorLoaderTest extends TestCase
+/**
+ * @internal
+ */
+final class InputProcessorLoaderTest extends TestCase
 {
     /** @test */
     public function it_lazily_loads_an_input_processor()

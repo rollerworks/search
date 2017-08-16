@@ -24,6 +24,9 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\ValueComparator;
 
+/**
+ * @internal
+ */
 final class SearchFieldTest extends TestCase
 {
     /**

@@ -28,13 +28,10 @@ use Rollerworks\Component\Search\ValueIncrementer;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesToRange implements SearchConditionOptimizer
+final class ValuesToRange implements SearchConditionOptimizer
 {
     private $comparators = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(SearchCondition $condition)
     {
         $fieldSet = $condition->getFieldSet();
@@ -61,9 +58,6 @@ class ValuesToRange implements SearchConditionOptimizer
         $this->optimizeValuesInGroup($valuesGroup, $fieldSet);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPriority(): int
     {
         // run before range optimizer

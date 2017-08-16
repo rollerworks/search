@@ -37,8 +37,6 @@ final class PatternMatch implements ValueHolder
     private $value;
 
     /**
-     * Comparison operator.
-     *
      * @var string
      */
     private $patternType;
@@ -70,36 +68,22 @@ final class PatternMatch implements ValueHolder
         $this->caseInsensitive = $caseInsensitive;
     }
 
-    /**
-     * @return string
-     */
     public function getValue(): string
     {
         return $this->value;
     }
 
-    /**
-     * Gets the pattern-match type.
-     *
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->patternType;
     }
 
-    /**
-     * @return bool
-     */
-    public function isCaseInsensitive()
+    public function isCaseInsensitive(): bool
     {
         return $this->caseInsensitive;
     }
 
-    /**
-     * @return bool
-     */
-    public function isExclusive()
+    public function isExclusive(): bool
     {
         return in_array(
             $this->patternType,
@@ -113,10 +97,7 @@ final class PatternMatch implements ValueHolder
         );
     }
 
-    /**
-     * @return bool
-     */
-    public function isRegex()
+    public function isRegex(): bool
     {
         return self::PATTERN_REGEX === $this->patternType
             || self::PATTERN_NOT_REGEX === $this->patternType

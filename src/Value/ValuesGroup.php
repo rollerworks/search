@@ -219,7 +219,7 @@ class ValuesGroup implements \Serializable
      *
      * @return self
      */
-    public function setGroupLogical($groupLogical)
+    public function setGroupLogical(string $groupLogical)
     {
         if (!in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
             throw new InvalidArgumentException(sprintf('Unsupported group logical "%s".', $groupLogical));

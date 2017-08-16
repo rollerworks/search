@@ -34,12 +34,6 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
     /** None-breaking line */
     private const NBL = "\xc2\xa0";
 
-    /**
-     * Constructor.
-     *
-     * @param string $defaultCurrency
-     * @param bool   $grouping
-     */
     public function __construct(string $defaultCurrency, bool $grouping = false)
     {
         $this->defaultCurrency = $defaultCurrency;

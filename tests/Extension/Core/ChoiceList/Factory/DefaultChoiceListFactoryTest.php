@@ -25,6 +25,8 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
 final class DefaultChoiceListFactoryTest extends TestCase
 {
@@ -839,7 +841,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
 }
 
 /** @ignore */
-class DefaultChoiceListFactoryTest_Castable
+final class DefaultChoiceListFactoryTest_Castable
 {
     private $property;
 

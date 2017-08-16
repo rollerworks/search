@@ -24,8 +24,6 @@ use Rollerworks\Component\Search\SearchExtension;
 final class GenericTypeRegistry implements TypeRegistry
 {
     /**
-     * Extensions.
-     *
      * @var SearchExtension[]
      */
     private $extensions = [];
@@ -35,9 +33,6 @@ final class GenericTypeRegistry implements TypeRegistry
      */
     private $types = [];
 
-    /**
-     * @var ResolvedFieldTypeFactory
-     */
     private $resolvedTypeFactory;
 
     /**

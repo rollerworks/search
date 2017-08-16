@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -46,8 +45,6 @@ abstract class BaseDateTimeTransformer implements DataTransformer
      *
      * @param string|null $inputTimezone  The name of the input timezone
      * @param string|null $outputTimezone The name of the output timezone
-     *
-     * @throws UnexpectedTypeException if a timezone is not a string
      */
     public function __construct(?string $inputTimezone = null, ?string $outputTimezone = null)
     {

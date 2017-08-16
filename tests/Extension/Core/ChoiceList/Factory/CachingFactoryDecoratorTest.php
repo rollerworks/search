@@ -22,8 +22,10 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
-class CachingFactoryDecoratorTest extends TestCase
+final class CachingFactoryDecoratorTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|null

@@ -26,7 +26,7 @@ interface TypeRegistry
      *
      * This methods registers the type extensions from the search extensions.
      *
-     * @param string $name The name of the type
+     * @param string $name
      *
      * @throws Exception\InvalidArgumentException if the type cannot be retrieved from any extension
      *

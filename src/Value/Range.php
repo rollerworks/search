@@ -43,41 +43,21 @@ class Range implements RequiresComparatorValueHolder
         $this->inclusiveUpper = $inclusiveUpper;
     }
 
-    /**
-     * Get the lower value of the range.
-     *
-     * @return mixed
-     */
     public function getLower()
     {
         return $this->lower;
     }
 
-    /**
-     * Get the upper value of the range.
-     *
-     * @return mixed
-     */
     public function getUpper()
     {
         return $this->upper;
     }
 
-    /**
-     * Return whether the lower-value of the range is inclusive.
-     *
-     * @return bool
-     */
     public function isLowerInclusive(): bool
     {
         return $this->inclusiveLower;
     }
 
-    /**
-     * Return whether the upper-value of the range is inclusive.
-     *
-     * @return bool
-     */
     public function isUpperInclusive(): bool
     {
         return $this->inclusiveUpper;

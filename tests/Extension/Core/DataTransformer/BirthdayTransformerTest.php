@@ -19,7 +19,10 @@ use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
 
-class BirthdayTransformerTest extends TestCase
+/**
+ * @internal
+ */
+final class BirthdayTransformerTest extends TestCase
 {
     /** @test */
     public function it_transforms_age_to_integer()

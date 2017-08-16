@@ -17,7 +17,10 @@ use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\IntegerToStringTransformer;
 
-class IntegerToStringTransformerTest extends TestCase
+/**
+ * @internal
+ */
+final class IntegerToStringTransformerTest extends TestCase
 {
     protected function setUp()
     {

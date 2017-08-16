@@ -87,7 +87,7 @@ interface FieldConfig
      * @param DataTransformer|null $viewTransformer Use null to remove the
      *                                              transformer
      */
-    public function setViewTransformer(DataTransformer $viewTransformer = null);
+    public function setViewTransformer(?DataTransformer $viewTransformer = null);
 
     /**
      * Returns the view transformer of the field.
@@ -107,7 +107,7 @@ interface FieldConfig
      * @param DataTransformer|null $viewTransformer Use null to remove the
      *                                              transformer
      */
-    public function setNormTransformer(DataTransformer $viewTransformer = null);
+    public function setNormTransformer(?DataTransformer $viewTransformer = null);
 
     /**
      * Returns the normalize transformer of the field.
@@ -122,31 +122,31 @@ interface FieldConfig
      * A field with locked data is restricted to the data passed in
      * this configuration.
      *
-     * @return bool Whether the data is locked
+     * @return bool
      */
     public function isConfigLocked(): bool;
 
     /**
      * Returns all options passed during the construction of the field.
      *
-     * @return array The passed options
+     * @return array
      */
     public function getOptions(): array;
 
     /**
      * Returns whether a specific option exists.
      *
-     * @param string $name The option name
+     * @param string $name
      *
-     * @return bool Whether the option exists
+     * @return bool
      */
     public function hasOption(string $name): bool;
 
     /**
      * Returns the value of a specific option.
      *
-     * @param string $name    The option name
-     * @param mixed  $default The value returned if the option does not exist
+     * @param string $name
+     * @param mixed  $default
      *
      * @return mixed The option value
      */
@@ -164,15 +164,15 @@ interface FieldConfig
     /**
      * Sets the value for an attribute.
      *
-     * @param string $name  The name of the attribute
-     * @param mixed  $value The value of the attribute
+     * @param string $name
+     * @param mixed  $value
      */
     public function setAttribute(string $name, $value);
 
     /**
      * Sets the attributes.
      *
-     * @param array $attributes The attributes
+     * @param array $attributes
      */
     public function setAttributes(array $attributes);
 
@@ -186,7 +186,7 @@ interface FieldConfig
     /**
      * Returns whether the attribute with the given name exists.
      *
-     * @param string $name The attribute name
+     * @param string $name
      *
      * @return bool
      */
@@ -198,7 +198,7 @@ interface FieldConfig
      * @param string $name    The attribute name
      * @param mixed  $default The value returned if the attribute does not exist
      *
-     * @return mixed The attribute value
+     * @return mixed
      */
     public function getAttribute(string $name, $default = null);
 }

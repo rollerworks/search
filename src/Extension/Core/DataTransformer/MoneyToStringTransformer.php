@@ -23,8 +23,6 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 /**
  * Transforms between a normalized format and a money string.
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
- * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 final class MoneyToStringTransformer implements DataTransformer
@@ -33,11 +31,6 @@ final class MoneyToStringTransformer implements DataTransformer
     private $moneyParser;
     private $formatter;
 
-    /**
-     * Constructor.
-     *
-     * @param string $defaultCurrency
-     */
     public function __construct(string $defaultCurrency)
     {
         $this->defaultCurrency = $defaultCurrency;

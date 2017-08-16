@@ -19,6 +19,8 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\CallbackChoice
 
 /**
  * @author Jules Pietri <jules@heahprod.com>
+ *
+ * @internal
  */
 final class CallbackChoiceLoaderTest extends TestCase
 {

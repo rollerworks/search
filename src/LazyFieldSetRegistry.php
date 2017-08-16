@@ -20,12 +20,11 @@ use Rollerworks\Component\Search\Loader\ClosureContainer;
 /**
  * LazyFieldSetRegistry tries to lazily load the FieldSetConfigurator
  * from s PSR-11 compatible Container or by FQCN.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 final class LazyFieldSetRegistry implements FieldSetRegistry
 {
-    /**
-     * @var ContainerInterface
-     */
     private $container;
 
     /**

@@ -20,8 +20,10 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @internal
  */
-class LazyChoiceListTest extends TestCase
+final class LazyChoiceListTest extends TestCase
 {
     /**
      * @var LazyChoiceList|null

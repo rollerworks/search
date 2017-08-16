@@ -26,11 +26,6 @@ final class LocalizedBirthdayTransformer implements DataTransformer
     private $allowAge;
     private $allowFutureDate;
 
-    /**
-     * @param DataTransformer $transformer
-     * @param bool            $allowAge
-     * @param bool            $allowFutureDate
-     */
     public function __construct(DataTransformer $transformer, bool $allowAge = true, bool $allowFutureDate = false)
     {
         $this->transformer = $transformer;

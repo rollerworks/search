@@ -20,7 +20,10 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\MoneyToStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
-class MoneyToStringTransformerTest extends TestCase
+/**
+ * @internal
+ */
+final class MoneyToStringTransformerTest extends TestCase
 {
     private function parseMoneyAsDecimal($input, string $currency = 'EUR')
     {

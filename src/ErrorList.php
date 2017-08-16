@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 final class ErrorList extends \ArrayObject
 {
 }

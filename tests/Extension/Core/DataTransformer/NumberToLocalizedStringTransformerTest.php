@@ -18,7 +18,10 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class NumberToLocalizedStringTransformerTest extends TestCase
+/**
+ * @internal
+ */
+final class NumberToLocalizedStringTransformerTest extends TestCase
 {
     protected function setUp()
     {

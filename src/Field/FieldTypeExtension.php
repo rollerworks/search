@@ -28,8 +28,8 @@ interface FieldTypeExtension
      *
      * @see SearchFieldType::buildType()
      *
-     * @param FieldConfig $builder The config builder
-     * @param array       $options The options
+     * @param FieldConfig $builder
+     * @param array       $options
      */
     public function buildType(FieldConfig $builder, array $options);
 
@@ -47,14 +47,14 @@ interface FieldTypeExtension
     /**
      * Overrides the default options from the extended type.
      *
-     * @param OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver);
 
     /**
      * Returns the name of the type being extended.
      *
-     * @return string The name of the type being extended
+     * @return string
      */
     public function getExtendedType(): string;
 }

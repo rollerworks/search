@@ -183,11 +183,6 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         return $intlDateFormatter;
     }
 
-    /**
-     * Checks if the pattern contains only a date.
-     *
-     * @return bool
-     */
     protected function isPatternDateOnly(): bool
     {
         if (null === $this->pattern) {

@@ -19,7 +19,10 @@ use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-class SearchConditionTest extends TestCase
+/**
+ * @internal
+ */
+final class SearchConditionTest extends TestCase
 {
     /** @test */
     public function it_can_check_if_FieldSet_is_supported()

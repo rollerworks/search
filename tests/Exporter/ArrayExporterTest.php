@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\Input\ArrayInput;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
+/**
+ * @internal
+ */
 final class ArrayExporterTest extends SearchConditionExporterTestCase
 {
     public function provideSingleValuePairTest()

@@ -19,7 +19,7 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class IntegerToStringTransformer extends NumberToStringTransformer
+final class IntegerToStringTransformer extends NumberToStringTransformer
 {
     /**
      * Constructs a transformer.

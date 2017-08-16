@@ -24,6 +24,9 @@ use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class StringQueryExporterTest extends SearchConditionExporterTestCase
 {
     /**

@@ -55,23 +55,16 @@ final class StringQueryExporter extends AbstractExporter
      *
      * @param SearchCondition $condition The search condition to export
      *
-     * @return mixed
+     * @return string
      */
-    public function exportCondition(SearchCondition $condition)
+    public function exportCondition(SearchCondition $condition): string
     {
         $this->fields = $this->resolveLabels($condition->getFieldSet());
 
         return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
     }
 
-    /**
-     * @param ValuesGroup $valuesGroup
-     * @param FieldSet    $fieldSet
-     * @param bool        $isRoot
-     *
-     * @return string
-     */
-    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false)
+    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): string
     {
         $result = '';
         $exportedGroups = '';

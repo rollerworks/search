@@ -16,7 +16,10 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\ValueComparison;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateValueComparator;
 
-class DateValueComparisonTest extends TestCase
+/**
+ * @internal
+ */
+final class DateValueComparisonTest extends TestCase
 {
     /** @var DateValueComparator */
     private $comparison;

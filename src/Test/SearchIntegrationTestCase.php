@@ -31,15 +31,18 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 abstract class SearchIntegrationTestCase extends TestCase
 {
     /**
-     * @var SearchFactoryBuilder
+     * @var SearchFactoryBuilder|null
      */
     protected $factoryBuilder;
 
     /**
-     * @var SearchFactory
+     * @var SearchFactory|null
      */
     private $searchFactory;
 

@@ -18,6 +18,9 @@ use PHPUnit\Framework\AssertionFailedError;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 final class FieldTransformationAssertion
 {
     private $field;

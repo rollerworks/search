@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Field\AbstractFieldType;
 /**
  * @internal
  */
-class FooType extends AbstractFieldType
+final class FooType extends AbstractFieldType
 {
     public function getParent()
     {

@@ -35,6 +35,9 @@ use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 {
     abstract protected function getProcessor(): InputProcessor;

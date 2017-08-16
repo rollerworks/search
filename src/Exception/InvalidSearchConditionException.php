@@ -15,6 +15,9 @@ namespace Rollerworks\Component\Search\Exception;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 final class InvalidSearchConditionException extends \InvalidArgumentException implements SearchException
 {
     private $errors;

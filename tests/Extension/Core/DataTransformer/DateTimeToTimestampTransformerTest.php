@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToTimestampTransformer;
 use Rollerworks\Component\Search\Tests\assertDateTimeEqualsTrait;
 
+/**
+ * @internal
+ */
 final class DateTimeToTimestampTransformerTest extends TestCase
 {
     use assertDateTimeEqualsTrait;

@@ -18,6 +18,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * SearchCondition contains the searching conditions and FieldSet.
+ *
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class SearchCondition
 {

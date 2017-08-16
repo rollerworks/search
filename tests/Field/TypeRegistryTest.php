@@ -17,14 +17,17 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\Field\FieldType;
 use Rollerworks\Component\Search\Field\FieldTypeExtension;
-use Rollerworks\Component\Search\Field\GenericResolvedFieldTypeFactory;
 use Rollerworks\Component\Search\Field\GenericTypeRegistry;
 use Rollerworks\Component\Search\Field\ResolvedFieldType;
+use Rollerworks\Component\Search\Field\ResolvedFieldTypeFactory;
 use Rollerworks\Component\Search\PreloadedExtension;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
+/**
+ * @internal
+ */
 final class TypeRegistryTest extends TestCase
 {
     /**
@@ -36,7 +39,7 @@ final class TypeRegistryTest extends TestCase
         $extension2 = new PreloadedExtension([FooSubType::class => $fooSubType = new FooSubType()]);
         $barType = new BarType();
 
-        $resolvedFieldTypeFactory = $this->prophesize(GenericResolvedFieldTypeFactory::class);
+        $resolvedFieldTypeFactory = $this->prophesize(ResolvedFieldTypeFactory::class);
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooType::class), [], null)->willReturn($resolvedFooType = $this->createResolvedTypeMock($fooType));
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooSubType::class), [], $resolvedFooType)->willReturn($this->createResolvedTypeMock($fooSubType));
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(BarType::class), [], null)->willReturn($this->createResolvedTypeMock($barType));
@@ -72,7 +75,7 @@ final class TypeRegistryTest extends TestCase
 
         $barType = new BarType();
 
-        $resolvedFieldTypeFactory = $this->prophesize(GenericResolvedFieldTypeFactory::class);
+        $resolvedFieldTypeFactory = $this->prophesize(ResolvedFieldTypeFactory::class);
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooType::class), [], null)->willReturn($resolvedFooType = $this->createResolvedTypeMock($fooType));
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(FooSubType::class), [$fooSubTypeExtension], $resolvedFooType)->willReturn($this->createResolvedTypeMock($fooSubType));
         $resolvedFieldTypeFactory->createResolvedType(Argument::type(BarType::class), [$barTypeExtension], null)->willReturn($this->createResolvedTypeMock($barType));

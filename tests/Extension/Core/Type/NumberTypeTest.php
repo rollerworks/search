@@ -19,7 +19,10 @@ use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
-class NumberTypeTest extends SearchIntegrationTestCase
+/**
+ * @internal
+ */
+final class NumberTypeTest extends SearchIntegrationTestCase
 {
     public function testCastsToInteger()
     {

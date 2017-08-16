@@ -24,7 +24,7 @@ interface SearchExtension
     /**
      * Returns a type by name.
      *
-     * @param string $name The name of the type
+     * @param string $name
      *
      * @throws Exception\InvalidArgumentException if the given type is not supported by this extension
      *
@@ -35,7 +35,7 @@ interface SearchExtension
     /**
      * Returns whether the given type is supported.
      *
-     * @param string $name The name of the type
+     * @param string $name
      *
      * @return bool Whether the type is supported by this extension
      */
@@ -44,7 +44,7 @@ interface SearchExtension
     /**
      * Returns the extensions for the given type.
      *
-     * @param string $name The name of the type
+     * @param string $name
      *
      * @return FieldTypeExtension[]
      */

@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 use Rollerworks\Component\Search\Extension\Core\ValueComparator\MoneyValueComparator;
 
+/**
+ * @internal
+ */
 final class MoneyValueComparisonTest extends TestCase
 {
     /** @var MoneyValueComparator */

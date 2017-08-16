@@ -43,7 +43,7 @@ final class XmlExporter extends AbstractExporter
      *
      * @return string
      */
-    public function exportCondition(SearchCondition $condition, bool $formatOutput = true)
+    public function exportCondition(SearchCondition $condition, bool $formatOutput = true): string
     {
         $this->document = new \DOMDocument('1.0', 'utf-8');
         $this->document->formatOutput = $formatOutput;
@@ -66,12 +66,7 @@ final class XmlExporter extends AbstractExporter
         return $xml;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @ignore
-     */
-    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, $isRoot = false)
+    protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): void
     {
         // no-op
     }

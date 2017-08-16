@@ -19,6 +19,9 @@ use Rollerworks\Component\Search\Input\JsonInput;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
+/**
+ * @internal
+ */
 final class JsonExporterTest extends SearchConditionExporterTestCase
 {
     public function provideSingleValuePairTest()

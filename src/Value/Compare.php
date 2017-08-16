@@ -41,11 +41,6 @@ final class Compare implements RequiresComparatorValueHolder
         $this->operator = $operator;
     }
 
-    /**
-     * Gets the comparison operator.
-     *
-     * @return string
-     */
     public function getOperator(): string
     {
         return $this->operator;

@@ -25,6 +25,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  * ArrayInputTest.
  *
  * Note. Array's are zero indexed, and so are there error paths.
+ *
+ * @internal
  */
 final class ArrayInputTest extends InputProcessorTestCase
 {

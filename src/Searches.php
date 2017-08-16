@@ -121,7 +121,7 @@ final class Searches
     /**
      * Creates a SearchFactoryBuilder with the default configuration.
      *
-     * @return SearchFactoryBuilder The search factory builder
+     * @return SearchFactoryBuilder
      */
     public static function createSearchFactoryBuilder(): SearchFactoryBuilder
     {

@@ -16,7 +16,10 @@ namespace Rollerworks\Component\Search\Tests\Input;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Input\StringLexer;
 
-class StringLexerTest extends TestCase
+/**
+ * @internal
+ */
+final class StringLexerTest extends TestCase
 {
     /** @var StringLexer */
     private $lexer;

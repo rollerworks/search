@@ -21,6 +21,9 @@ use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Extension\LazyExtension;
 use Rollerworks\Component\Search\Field\FieldTypeExtension;
 
+/**
+ * @internal
+ */
 final class LazyExtensionTest extends TestCase
 {
     /** @test */
