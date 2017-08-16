@@ -34,7 +34,7 @@ final class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         // Constraint should always be converted to an array
         $constraintsNormalizer = function (Options $options, $constraints) {

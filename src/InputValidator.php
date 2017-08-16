@@ -29,7 +29,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 final class InputValidator implements Validator
 {
-    /** @var ValidatorInterface */
     private $validator;
     /** @var FieldConfig */
     private $field;
@@ -43,7 +42,7 @@ final class InputValidator implements Validator
         $this->validator = $validator;
     }
 
-    public function initializeContext(FieldConfig $field, ErrorList $errorList)
+    public function initializeContext(FieldConfig $field, ErrorList $errorList): void
     {
         $this->field = $field;
         $this->errorList = $errorList;

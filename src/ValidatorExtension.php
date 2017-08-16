@@ -20,9 +20,6 @@ use Rollerworks\Component\Search\AbstractExtension;
  */
 final class ValidatorExtension extends AbstractExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function loadTypesExtensions(): array
     {
         return [
