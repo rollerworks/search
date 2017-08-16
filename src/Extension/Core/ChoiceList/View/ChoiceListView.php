@@ -66,7 +66,7 @@ class ChoiceListView
         $this->preferredChoices = $preferredChoices;
     }
 
-    public function initChoicesByLabel()
+    public function initChoicesByLabel(): void
     {
         $this->choicesByLabel = [];
 

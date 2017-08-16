@@ -42,7 +42,7 @@ final class JsonExporter implements ConditionExporter
      *
      * @return string
      */
-    public function exportCondition(SearchCondition $condition)
+    public function exportCondition(SearchCondition $condition): string
     {
         return json_encode($this->exporter->exportCondition($condition));
     }

@@ -43,7 +43,7 @@ final class MoneyType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfig $config, array $options)
+    public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueComparator($this->valueComparator);
         $config->setValueTypeSupport(Range::class, true);
@@ -64,7 +64,7 @@ final class MoneyType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         $view->vars['grouping'] = $options['grouping'];
         $view->vars['default_currency'] = $options['default_currency'];
@@ -74,7 +74,7 @@ final class MoneyType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

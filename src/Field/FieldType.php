@@ -25,14 +25,14 @@ interface FieldType
      *
      * @return string|null The name of the parent type if any, null otherwise
      */
-    public function getParent();
+    public function getParent(): ?string;
 
     /**
      * Sets the default options for this type.
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver);
+    public function configureOptions(OptionsResolver $resolver): void;
 
     /**
      * This configures the {@link FieldConfigInterface}.
@@ -43,7 +43,7 @@ interface FieldType
      * @param FieldConfig $config
      * @param array       $options
      */
-    public function buildType(FieldConfig $config, array $options);
+    public function buildType(FieldConfig $config, array $options): void;
 
     /**
      * Configures the SearchFieldView instance.
@@ -57,7 +57,7 @@ interface FieldType
      * @param FieldConfig     $config
      * @param array           $options
      */
-    public function buildView(SearchFieldView $view, FieldConfig $config, array $options);
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void;
 
     /**
      * Returns the prefix of the template block name for this type.

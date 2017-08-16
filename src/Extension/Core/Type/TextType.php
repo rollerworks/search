@@ -25,7 +25,7 @@ final class TextType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfig $config, array $options)
+    public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueTypeSupport(PatternMatch::class, true);
     }

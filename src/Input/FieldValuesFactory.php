@@ -79,7 +79,7 @@ class FieldValuesFactory
         $this->validator = $validator;
     }
 
-    public function initContext(FieldConfig $field, ValuesBag $valuesBag, string $path)
+    public function initContext(FieldConfig $field, ValuesBag $valuesBag, string $path): void
     {
         $this->config = $field;
         $this->valuesBag = $valuesBag;
@@ -93,7 +93,7 @@ class FieldValuesFactory
         $this->validator->initializeContext($field, $this->errorList);
     }
 
-    public function addSimpleValue($value, string $path)
+    public function addSimpleValue($value, string $path): void
     {
         $path = $this->createValuePath($path);
 
@@ -106,7 +106,7 @@ class FieldValuesFactory
         }
     }
 
-    public function addExcludedSimpleValue($value, string $path)
+    public function addExcludedSimpleValue($value, string $path): void
     {
         $path = $this->createValuePath($path);
         $this->increaseValuesCount($path);
@@ -125,7 +125,7 @@ class FieldValuesFactory
      * @param bool  $upperInclusive
      * @param array $path           [path, lower-path-pattern, upper-path-pattern]
      */
-    public function addRange($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path)
+    public function addRange($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
         $path[0] = $this->createValuePath($path[0]);
 
@@ -151,7 +151,7 @@ class FieldValuesFactory
      * @param bool  $upperInclusive
      * @param array $path           [path, lower-path-pattern, upper-path-pattern]
      */
-    public function addExcludedRange($lower, $upper, $lowerInclusive, $upperInclusive, array $path)
+    public function addExcludedRange($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
         $path[0] = $this->createValuePath($path[0]);
 
@@ -170,7 +170,7 @@ class FieldValuesFactory
         }
     }
 
-    public function addComparisonValue($operator, $value, array $path)
+    public function addComparisonValue($operator, $value, array $path): void
     {
         $basePath = $this->createValuePath($path[0]);
 
@@ -192,7 +192,7 @@ class FieldValuesFactory
         }
     }
 
-    public function addPatterMatch($type, $value, bool $caseInsensitive, array $path)
+    public function addPatterMatch($type, $value, bool $caseInsensitive, array $path): void
     {
         $basePath = $this->createValuePath($path[0]);
         $valid = true;
@@ -294,7 +294,7 @@ class FieldValuesFactory
         }
     }
 
-    protected function addError(ConditionErrorMessage $error)
+    protected function addError(ConditionErrorMessage $error): void
     {
         $this->errorList[] = $error;
     }
@@ -308,14 +308,14 @@ class FieldValuesFactory
         return $this->path.$path;
     }
 
-    private function increaseValuesCount(string $path)
+    private function increaseValuesCount(string $path): void
     {
         if (++$this->count > $this->maxCount) {
             throw new ValuesOverflowException($this->config->getName(), $this->maxCount, $path);
         }
     }
 
-    private function assertAcceptsType(string $type)
+    private function assertAcceptsType(string $type): void
     {
         if (isset($this->checkedValueType[$type])) {
             return;

@@ -154,7 +154,7 @@ final class CachingFactoryDecorator implements ChoiceListFactory
      * @param array $array  The array to flatten
      * @param array $output The flattened output
      */
-    private static function flatten(array $array, &$output)
+    private static function flatten(array $array, &$output): void
     {
         if (null === $output) {
             $output = [];

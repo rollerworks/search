@@ -204,7 +204,7 @@ class ArrayChoiceList implements ChoiceList
      *                                   corresponding values
      * @param array    $structuredValues The values indexed by the original keys
      */
-    private function flatten(array $choices, callable $value, &$choicesByValues, &$keysByValues, &$structuredValues)
+    private function flatten(array $choices, callable $value, &$choicesByValues, &$keysByValues, &$structuredValues): void
     {
         if (null === $choicesByValues) {
             $choicesByValues = [];

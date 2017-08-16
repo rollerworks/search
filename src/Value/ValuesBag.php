@@ -36,7 +36,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * {@inheritdoc}
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(
             [
@@ -51,7 +51,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * {@inheritdoc}
      */
-    public function unserialize($serialized)
+    public function unserialize($serialized): void
     {
         $data = unserialize($serialized);
 

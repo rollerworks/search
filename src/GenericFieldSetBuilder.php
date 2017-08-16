@@ -79,7 +79,7 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
     /**
      * {@inheritdoc}
      */
-    public function has(string $name)
+    public function has(string $name): bool
     {
         if (isset($this->unresolvedFields[$name])) {
             return true;
@@ -95,7 +95,7 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
     /**
      * {@inheritdoc}
      */
-    public function get(string $name)
+    public function get(string $name): FieldConfig
     {
         if (isset($this->unresolvedFields[$name])) {
             $this->fields[$name] = $this->searchFactory->createField(

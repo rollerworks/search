@@ -39,7 +39,7 @@ final class ClosureContainer implements ContainerInterface
     /**
      * {@inheritdoc}
      */
-    public function has($id)
+    public function has($id): bool
     {
         return isset($this->factories[$id]);
     }

@@ -28,21 +28,21 @@ abstract class AbstractFieldTypeExtension implements FieldTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfig $builder, array $options)
+    public function buildType(FieldConfig $builder, array $options): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildView(FieldConfig $config, SearchFieldView $view)
+    public function buildView(FieldConfig $config, SearchFieldView $view): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
     }
 }

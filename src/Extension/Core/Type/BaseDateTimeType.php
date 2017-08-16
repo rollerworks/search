@@ -31,7 +31,7 @@ abstract class BaseDateTimeType extends AbstractFieldType
         \IntlDateFormatter::SHORT,
     ];
 
-    protected function validateFormat(string $name, $value)
+    protected function validateFormat(string $name, $value): void
     {
         if (!in_array($value, self::$acceptedFormats, true)) {
             throw new InvalidConfigurationException(
@@ -41,7 +41,7 @@ abstract class BaseDateTimeType extends AbstractFieldType
         }
     }
 
-    protected function validateDateFormat(string $name, string $format)
+    protected function validateDateFormat(string $name, string $format): void
     {
         if (null !== $format &&
             (false === strpos($format, 'y') || false === strpos($format, 'M') || false === strpos($format, 'd'))

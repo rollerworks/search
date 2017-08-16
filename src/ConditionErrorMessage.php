@@ -113,10 +113,14 @@ final class ConditionErrorMessage
     /**
      * @param array $translatedParameters An array of parameter names that need
      *                                    to be translated prior to there usage
+     *
+     * @return $this
      */
-    public function setTranslatedParameters(array $translatedParameters)
+    public function setTranslatedParameters(array $translatedParameters): self
     {
         $this->translatedParameters = $translatedParameters;
+
+        return $this;
     }
 
     public function __toString(): string

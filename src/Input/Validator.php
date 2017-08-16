@@ -31,10 +31,8 @@ interface Validator
      *
      * @param FieldConfig $field
      * @param ErrorList   $errorList
-     *
-     * @return void
      */
-    public function initializeContext(FieldConfig $field, ErrorList $errorList);
+    public function initializeContext(FieldConfig $field, ErrorList $errorList): void;
 
     /**
      * Validates and returns whether the value is valid.

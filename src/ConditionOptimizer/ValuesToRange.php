@@ -32,7 +32,7 @@ final class ValuesToRange implements SearchConditionOptimizer
 {
     private $comparators = [];
 
-    public function process(SearchCondition $condition)
+    public function process(SearchCondition $condition): void
     {
         $fieldSet = $condition->getFieldSet();
         $valuesGroup = $condition->getValuesGroup();

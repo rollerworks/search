@@ -71,7 +71,7 @@ final class XmlExporter extends AbstractExporter
         // no-op
     }
 
-    private function exportGroupNode(\DOMNode $parent, ValuesGroup $valuesGroup, FieldSet $fieldSet)
+    private function exportGroupNode(\DOMNode $parent, ValuesGroup $valuesGroup, FieldSet $fieldSet): void
     {
         $fields = $valuesGroup->getFields();
 
@@ -108,7 +108,7 @@ final class XmlExporter extends AbstractExporter
         }
     }
 
-    private function exportValuesToNode(ValuesBag $valuesBag, \DOMNode $parent, FieldConfig $field)
+    private function exportValuesToNode(ValuesBag $valuesBag, \DOMNode $parent, FieldConfig $field): void
     {
         if ($valuesBag->hasSimpleValues()) {
             $valuesNode = $this->document->createElement('simple-values');
@@ -198,7 +198,7 @@ final class XmlExporter extends AbstractExporter
         }
     }
 
-    private function exportRangeValueToNode(\DOMNode $parent, Range $range, FieldConfig $field)
+    private function exportRangeValueToNode(\DOMNode $parent, Range $range, FieldConfig $field): void
     {
         $rangeNode = $this->document->createElement('range');
 

@@ -24,9 +24,9 @@ interface ResolvedFieldType
     /**
      * Returns the parent type.
      *
-     * @return ResolvedFieldType|null The parent type or null
+     * @return ResolvedFieldType|null
      */
-    public function getParent();
+    public function getParent(): ?ResolvedFieldType;
 
     /**
      * Returns the wrapped field type.
@@ -61,7 +61,7 @@ interface ResolvedFieldType
      * @param FieldConfig $config
      * @param array       $options
      */
-    public function buildType(FieldConfig $config, array $options);
+    public function buildType(FieldConfig $config, array $options): void;
 
     /**
      * Creates a new SearchFieldView for a field of this type.
@@ -71,7 +71,7 @@ interface ResolvedFieldType
      *
      * @return SearchFieldView
      */
-    public function createFieldView(FieldConfig $config, FieldSetView $view);
+    public function createFieldView(FieldConfig $config, FieldSetView $view): SearchFieldView;
 
     /**
      * Configures a SearchFieldView for the type hierarchy.
@@ -80,7 +80,7 @@ interface ResolvedFieldType
      * @param FieldConfig     $config
      * @param array           $options
      */
-    public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options);
+    public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options): void;
 
     /**
      * Returns the prefix of the template block name for this type.

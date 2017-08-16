@@ -21,7 +21,7 @@ final class NullValidator implements Validator
     /**
      * {@inheritdoc}
      */
-    public function initializeContext(FieldConfig $field, ErrorList $errorList)
+    public function initializeContext(FieldConfig $field, ErrorList $errorList): void
     {
         // no-op
     }

@@ -33,15 +33,15 @@ final class SearchFieldType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getParent(): ?string
     {
-        // no-op
+        return null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfig $config, array $options)
+    public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueComparator($this->valueComparator);
     }
@@ -49,7 +49,7 @@ final class SearchFieldType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

@@ -49,7 +49,7 @@ final class ChainOptimizer implements SearchConditionOptimizer
      *
      * @throws \InvalidArgumentException
      *
-     * @return self
+     * @return $this
      */
     public function addOptimizer(SearchConditionOptimizer $optimizer)
     {
@@ -72,7 +72,7 @@ final class ChainOptimizer implements SearchConditionOptimizer
     /**
      * {@inheritdoc}
      */
-    public function process(SearchCondition $condition)
+    public function process(SearchCondition $condition): void
     {
         krsort($this->optimizers, SORT_NUMERIC);
 

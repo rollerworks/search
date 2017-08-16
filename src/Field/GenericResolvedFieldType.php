@@ -70,7 +70,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getParent(): ?ResolvedFieldType
     {
         return $this->parent;
     }
@@ -104,7 +104,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfig $config, array $options)
+    public function buildType(FieldConfig $config, array $options): void
     {
         if (null !== $this->parent) {
             $this->parent->buildType($config, $options);
@@ -120,7 +120,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
     /**
      * {@inheritdoc}
      */
-    public function createFieldView(FieldConfig $config, FieldSetView $view)
+    public function createFieldView(FieldConfig $config, FieldSetView $view): SearchFieldView
     {
         $view = $this->newView($view);
         $view->vars = array_merge($view->vars, [
@@ -136,7 +136,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options)
+    public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         if (null !== $this->parent) {
             $this->parent->buildFieldView($view, $config, $options);

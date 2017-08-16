@@ -188,7 +188,7 @@ class SearchField implements FieldConfig
     /**
      * {@inheritdoc}
      */
-    public function getViewTransformer()
+    public function getViewTransformer(): ?DataTransformer
     {
         return $this->viewTransformer;
     }
@@ -212,7 +212,7 @@ class SearchField implements FieldConfig
     /**
      * {@inheritdoc}
      */
-    public function getNormTransformer()
+    public function getNormTransformer(): ?DataTransformer
     {
         return $this->normTransformer;
     }
@@ -225,7 +225,7 @@ class SearchField implements FieldConfig
      * @throws InvalidConfigurationException when a supported value-type requires
      *                                       a value comparator but none is set
      */
-    public function finalizeConfig()
+    public function finalizeConfig(): void
     {
         if ($this->locked) {
             return;

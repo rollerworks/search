@@ -29,7 +29,7 @@ interface SearchConditionOptimizer
      *
      * @param SearchCondition $condition
      */
-    public function process(SearchCondition $condition);
+    public function process(SearchCondition $condition): void;
 
     /**
      * Priority of the optimizer.

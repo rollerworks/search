@@ -31,7 +31,7 @@ interface FieldTypeExtension
      * @param FieldConfig $builder
      * @param array       $options
      */
-    public function buildType(FieldConfig $builder, array $options);
+    public function buildType(FieldConfig $builder, array $options): void;
 
     /**
      * Builds the SearchFieldView.
@@ -42,14 +42,14 @@ interface FieldTypeExtension
      * @param FieldConfig     $config
      * @param SearchFieldView $view
      */
-    public function buildView(FieldConfig $config, SearchFieldView $view);
+    public function buildView(FieldConfig $config, SearchFieldView $view): void;
 
     /**
      * Overrides the default options from the extended type.
      *
      * @param OptionsResolver $resolver
      */
-    public function configureOptions(OptionsResolver $resolver);
+    public function configureOptions(OptionsResolver $resolver): void;
 
     /**
      * Returns the name of the type being extended.
