@@ -25,11 +25,8 @@ use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
 use Rollerworks\Component\Search\Tests\Input\InputProcessorTestCase;
-use Rollerworks\Component\Search\Value\Compare;
-use Rollerworks\Component\Search\Value\ExcludedRange;
-use Rollerworks\Component\Search\Value\PatternMatch;
-use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -97,26 +94,74 @@ abstract class SearchIntegrationTestCase extends TestCase
 
     protected static function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
     {
-        $expectedArray = [
-            'single' => $expected->getSimpleValues(),
-            'excluded' => $expected->getExcludedSimpleValues(),
-            'ranges' => $expected->get(Range::class),
-            'excludedRanges' => $expected->get(ExcludedRange::class),
-            'compares' => $expected->get(Compare::class),
-            'matchers' => $expected->get(PatternMatch::class),
-        ];
+        // use array_merge to renumber indexes and prevent mismatches.
 
-        // use array_merge to renumber indexes and prevent mismatches
-        $resultArray = [
+        $expectedValues = [
+            'single' => array_merge([], $expected->getSimpleValues()),
+            'excluded' => array_merge([], $expected->getExcludedSimpleValues()),
+        ];
+        foreach ($expected->all() as $type => $values) {
+            $expectedValues[$type] = array_merge([], $values);
+        }
+
+        $resultValues = [
             'single' => array_merge([], $result->getSimpleValues()),
             'excluded' => array_merge([], $result->getExcludedSimpleValues()),
-            'ranges' => array_merge([], $result->get(Range::class)),
-            'excludedRanges' => array_merge([], $result->get(ExcludedRange::class)),
-            'compares' => array_merge([], $result->get(Compare::class)),
-            'matchers' => array_merge([], $result->get(PatternMatch::class)),
         ];
+        foreach ($expected->all() as $type => $values) {
+            $resultValues[$type] = array_merge([], $values);
+        }
 
-        self::assertEquals($expectedArray, $resultArray);
+        self::assertEquals($expectedValues, $resultValues);
+    }
+
+    protected static function assertConditionsEquals(SearchCondition $expectedCondition, SearchCondition $actualCondition)
+    {
+        try {
+            // First try the "simple" method, it's possible this fails due to index mismatches.
+            self::assertEquals($expectedCondition, $actualCondition);
+        } catch (\Exception $e) {
+            // No need for custom implementations here.
+            // The reindexValuesGroup can be used for custom implementations (when needed).
+            $actualCondition = new SearchCondition(
+                $actualCondition->getFieldSet(),
+                self::reindexValuesGroup($actualCondition->getValuesGroup())
+            );
+
+            self::assertEquals($expectedCondition, $actualCondition);
+        }
+    }
+
+    protected static function reindexValuesGroup(ValuesGroup $valuesGroup): ValuesGroup
+    {
+        $newValuesGroup = new ValuesGroup($valuesGroup->getGroupLogical());
+
+        foreach ($valuesGroup->getGroups() as $group) {
+            $newValuesGroup->addGroup(self::reindexValuesGroup($group));
+        }
+
+        foreach ($valuesGroup->getFields() as $name => $valuesBag) {
+            $newValuesBag = new ValuesBag();
+
+            foreach ($valuesBag->getSimpleValues() as $value) {
+                $newValuesBag->addSimpleValue($value);
+            }
+
+            foreach ($valuesBag->getExcludedSimpleValues() as $value) {
+                $newValuesBag->addExcludedSimpleValue($value);
+            }
+
+            // use array_merge to renumber indexes and prevent mismatches.
+            foreach ($valuesBag->all() as $type => $values) {
+                foreach (array_merge([], $values) as $value) {
+                    $newValuesBag->add($value);
+                }
+            }
+
+            $newValuesGroup->addField($name, $newValuesBag);
+        }
+
+        return $newValuesGroup;
     }
 
     protected function assertConditionEquals(

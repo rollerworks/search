@@ -20,7 +20,6 @@ use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\ValuesBag;
 
 /**
  * @internal
@@ -46,18 +45,33 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
                 ->addSimpleValue(3)
                 ->addSimpleValue(4)
             ->end()
+
+            ->group()
+                ->field('id')
+                    ->addSimpleValue(3)
+                    ->addSimpleValue(3)
+                ->end()
+            ->end()
             ->getSearchCondition()
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag->addSimpleValue(10);
-        $expectedValuesBag->addSimpleValue(3);
-        $expectedValuesBag->addSimpleValue(4);
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->addSimpleValue(10)
+                ->addSimpleValue(3)
+                ->addSimpleValue(4)
+            ->end()
+            ->group()
+                ->field('id')
+                    ->addSimpleValue(3)
+                ->end()
+            ->end()
+            ->getSearchCondition()
+        ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -76,16 +90,17 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->addExcludedSimpleValue(10)
-            ->addExcludedSimpleValue(3)
-            ->addExcludedSimpleValue(4)
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->addExcludedSimpleValue(10)
+                ->addExcludedSimpleValue(3)
+                ->addExcludedSimpleValue(4)
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -111,24 +126,28 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->add(new Range(10, 50))
-            ->add(new Range(60, 70))
-            ->add(new Range(100, 300))
-            ->add(new Range(200, 300, false, false))
-            // duplicated but inclusive differs
-            ->add(new Range(100, 400, false))
-            ->add(new Range(100, 400, true))
-            ->add(new Range(1000, 3000, false, true))
-            ->add(new Range(1000, 3000, true, false))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->add(new Range(10, 50))
+                ->add(new Range(60, 70))
+                ->add(new Range(100, 300))
+                ->add(new Range(200, 300, false, false))
+                // duplicated but inclusive differs
+                ->add(new Range(100, 400, false))
+                ->add(new Range(100, 400, true))
+                ->add(new Range(1000, 3000, false, true))
+                ->add(new Range(1000, 3000, true, false))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
+    /**
+     * @test
+     */
     public function it_removes_all_duplicated_excludedRanges()
     {
         $condition = SearchConditionBuilder::create($this->fieldSet)
@@ -149,22 +168,23 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->add(new ExcludedRange(10, 50))
-            ->add(new ExcludedRange(60, 70))
-            ->add(new ExcludedRange(100, 300))
-            ->add(new ExcludedRange(200, 300, false, false))
-            // duplicated but inclusive differs
-            ->add(new ExcludedRange(100, 400, false))
-            ->add(new ExcludedRange(100, 400, true))
-            ->add(new ExcludedRange(1000, 3000, false, true))
-            ->add(new ExcludedRange(1000, 3000, true, false))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->add(new ExcludedRange(10, 50))
+                ->add(new ExcludedRange(60, 70))
+                ->add(new ExcludedRange(100, 300))
+                ->add(new ExcludedRange(200, 300, false, false))
+                // duplicated but inclusive differs
+                ->add(new ExcludedRange(100, 400, false))
+                ->add(new ExcludedRange(100, 400, true))
+                ->add(new ExcludedRange(1000, 3000, false, true))
+                ->add(new ExcludedRange(1000, 3000, true, false))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -183,16 +203,17 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->add(new Compare(10, '>'))
-            ->add(new Compare(20, '>'))
-            ->add(new Compare(20, '<'))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->add(new Compare(10, '>'))
+                ->add(new Compare(20, '>'))
+                ->add(new Compare(20, '<'))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -215,18 +236,19 @@ final class DuplicateRemoverTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->add(new PatternMatch('bar', PatternMatch::PATTERN_CONTAINS))
-            ->add(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS))
-            ->add(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH))
-            ->add(new PatternMatch('bla', PatternMatch::PATTERN_CONTAINS))
-            ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS))
-            ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS, true))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('name')
+                ->add(new PatternMatch('bar', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('foo', PatternMatch::PATTERN_ENDS_WITH))
+                ->add(new PatternMatch('bla', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('who', PatternMatch::PATTERN_CONTAINS, true))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('name'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 }
