@@ -19,14 +19,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class InvoiceStatusType extends AbstractFieldType
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             ['choices' => ['concept' => 0, 'publish' => 1, 'paid' => 2]]
         );
     }
 
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceType::class;
     }
