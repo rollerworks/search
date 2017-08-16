@@ -30,7 +30,7 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class RangeOptimizer implements SearchConditionOptimizer
 {
-    public function process(SearchCondition $condition)
+    public function process(SearchCondition $condition): void
     {
         $fieldSet = $condition->getFieldSet();
         $supportsRanges = false;
@@ -56,7 +56,7 @@ final class RangeOptimizer implements SearchConditionOptimizer
         return -5;
     }
 
-    private function normalizeRangesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
+    private function normalizeRangesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet): void
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
             $config = $fieldSet->get($fieldName);
@@ -71,7 +71,7 @@ final class RangeOptimizer implements SearchConditionOptimizer
         }
     }
 
-    private function normalizeRangesInValuesBag(FieldConfig $config, ValuesBag $valuesBag)
+    private function normalizeRangesInValuesBag(FieldConfig $config, ValuesBag $valuesBag): void
     {
         $comparator = $config->getValueComparator();
         $options = $config->getOptions();
@@ -151,7 +151,7 @@ final class RangeOptimizer implements SearchConditionOptimizer
         ValueComparator $comparator,
         array $options,
         bool $exclude = false
-    ) {
+    ): void {
         foreach ($ranges as $i => $range) {
             foreach ($singleValues as $c => $value) {
                 if ($this->isValInRange($value, $range, $comparator, $options)) {
@@ -180,7 +180,7 @@ final class RangeOptimizer implements SearchConditionOptimizer
         ValuesBag $valuesBag,
         ValueComparator $comparator,
         array $options
-    ) {
+    ): void {
         foreach ($ranges as $i => $range) {
             // If the range is already removed just ignore it.
             if (!isset($ranges[$i])) {
@@ -219,7 +219,7 @@ final class RangeOptimizer implements SearchConditionOptimizer
         ValueComparator $comparator,
         array $options,
         bool $exclude = false
-    ) {
+    ): void {
         $class = $exclude ? ExcludedRange::class : Range::class;
 
         foreach ($ranges as $i => $range) {
@@ -300,12 +300,12 @@ final class RangeOptimizer implements SearchConditionOptimizer
 
     private function isBoundEqual(
         ValueComparator $comparator,
-        $options,
+        array $options,
         $value1,
         $value2,
-        $value1Inclusive,
-        $value2Inclusive
-    ) {
+        bool $value1Inclusive,
+        bool $value2Inclusive
+    ): bool {
         if (!$comparator->isEqual($value1, $value2, $options)) {
             return false;
         }

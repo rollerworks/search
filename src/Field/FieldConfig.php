@@ -94,7 +94,7 @@ interface FieldConfig
      *
      * @return DataTransformer|null
      */
-    public function getViewTransformer();
+    public function getViewTransformer(): ?DataTransformer;
 
     /**
      * Sets a normalize transformer for the field.
@@ -114,7 +114,7 @@ interface FieldConfig
      *
      * @return DataTransformer|null
      */
-    public function getNormTransformer();
+    public function getNormTransformer(): ?DataTransformer;
 
     /**
      * Returns whether the field's data is locked.

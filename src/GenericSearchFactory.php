@@ -84,7 +84,7 @@ final class GenericSearchFactory implements SearchFactory
     /**
      * {@inheritdoc}
      */
-    public function optimizeCondition(SearchCondition $condition)
+    public function optimizeCondition(SearchCondition $condition): void
     {
         $this->optimizer->process($condition);
     }

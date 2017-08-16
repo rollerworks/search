@@ -31,7 +31,7 @@ final class LanguageType extends AbstractFieldType implements ChoiceLoader
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'choice_loader' => $this,
@@ -42,7 +42,7 @@ final class LanguageType extends AbstractFieldType implements ChoiceLoader
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceType::class;
     }

@@ -48,7 +48,7 @@ final class ChoiceType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfig $config, array $options)
+    public function buildType(FieldConfig $config, array $options): void
     {
         $choiceList = $this->createChoiceList($options);
         $config->setAttribute('choice_list', $choiceList);
@@ -85,7 +85,7 @@ final class ChoiceType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         /** @var ChoiceListView $choiceListView */
         $choiceListView = $config->getAttribute('choice_list_view');
@@ -101,7 +101,7 @@ final class ChoiceType extends AbstractFieldType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $choiceTranslationDomainNormalizer = function (Options $options, $choiceTranslationDomain) {
             if (true === $choiceTranslationDomain) {

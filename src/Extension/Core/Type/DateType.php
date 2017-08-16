@@ -41,7 +41,7 @@ final class DateType extends BaseDateTimeType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfig $config, array $options)
+    public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueComparator($this->valueComparator);
         $config->setValueTypeSupport(Range::class, true);
@@ -79,7 +79,7 @@ final class DateType extends BaseDateTimeType
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         $pattern = $options['pattern'];
 
@@ -101,7 +101,7 @@ final class DateType extends BaseDateTimeType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

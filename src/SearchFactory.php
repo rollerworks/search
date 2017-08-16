@@ -61,5 +61,5 @@ interface SearchFactory
      *
      * @param SearchCondition $condition
      */
-    public function optimizeCondition(SearchCondition $condition);
+    public function optimizeCondition(SearchCondition $condition): void;
 }

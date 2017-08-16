@@ -40,7 +40,7 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class DuplicateRemover implements SearchConditionOptimizer
 {
-    public function process(SearchCondition $condition)
+    public function process(SearchCondition $condition): void
     {
         $this->removeDuplicatesInGroup($condition->getValuesGroup(), $condition->getFieldSet());
     }
@@ -50,7 +50,7 @@ final class DuplicateRemover implements SearchConditionOptimizer
         return 5;
     }
 
-    private function removeDuplicatesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet)
+    private function removeDuplicatesInGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet): void
     {
         foreach ($valuesGroup->getFields() as $fieldName => $values) {
             $this->removeDuplicatesInValuesBag($fieldSet->get($fieldName), $values);
@@ -62,7 +62,7 @@ final class DuplicateRemover implements SearchConditionOptimizer
         }
     }
 
-    private function removeDuplicatesInValuesBag(FieldConfig $config, ValuesBag $valuesBag)
+    private function removeDuplicatesInValuesBag(FieldConfig $config, ValuesBag $valuesBag): void
     {
         $comparator = $config->getValueComparator();
         $options = $config->getOptions();
@@ -82,8 +82,8 @@ final class DuplicateRemover implements SearchConditionOptimizer
         ValuesBag $valuesBag,
         ValueComparator $comparator,
         array $options,
-        $exclude = false
-    ) {
+        bool $exclude = false
+    ): void {
         foreach ($values as $i => $value) {
             foreach ($values as $c => $value2) {
                 if ($i === $c || !$comparator->isEqual($value, $value2, $options)) {

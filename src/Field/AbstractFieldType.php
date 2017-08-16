@@ -31,28 +31,28 @@ abstract class AbstractFieldType implements FieldType
     /**
      * {@inheritdoc}
      */
-    public function buildType(FieldConfig $config, array $options)
+    public function buildType(FieldConfig $config, array $options): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildView(SearchFieldView $view, FieldConfig $config, array $options)
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return SearchFieldType::class;
     }

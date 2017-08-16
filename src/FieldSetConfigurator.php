@@ -30,8 +30,6 @@ interface FieldSetConfigurator
      * Configure the FieldSet builder.
      *
      * @param FieldSetBuilder $builder
-     *
-     * @return void
      */
-    public function buildFieldSet(FieldSetBuilder $builder);
+    public function buildFieldSet(FieldSetBuilder $builder): void;
 }

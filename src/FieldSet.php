@@ -26,9 +26,9 @@ interface FieldSet
     /**
      * Returns the name of the set.
      *
-     * @return null|string
+     * @return string|null
      */
-    public function getSetName();
+    public function getSetName(): ?string;
 
     /**
      * Returns the {@link FieldConfigInterface} object of the search field.

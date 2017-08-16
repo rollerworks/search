@@ -39,7 +39,7 @@ final class StringLexer
     private $cursorSnapshot;
     private $charSnapshot;
 
-    public function parse($data)
+    public function parse(string $data): void
     {
         $this->data = str_replace(["\r\n", "\r"], "\n", $data);
         $this->end = strlen($this->data);
@@ -50,7 +50,7 @@ final class StringLexer
         $this->skipEmptyLines();
     }
 
-    public function skipWhitespace()
+    public function skipWhitespace(): void
     {
         if (preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
             $this->char += mb_strlen($match[0]);
@@ -58,28 +58,28 @@ final class StringLexer
         }
     }
 
-    public function skipEmptyLines()
+    public function skipEmptyLines(): void
     {
         if (preg_match('/(?:\s*+)++/A', $this->data, $match, 0, $this->cursor)) {
             $this->moveCursor($match[0]);
         }
     }
 
-    public function moveCursor(string $text)
+    public function moveCursor(string $text): void
     {
         $this->lineno += mb_substr_count($text, "\n");
         $this->cursor += strlen($text);
         $this->char += mb_strlen($text);
     }
 
-    public function snapshot()
+    public function snapshot(): void
     {
         $this->linenoSnapshot = $this->lineno;
         $this->cursorSnapshot = $this->cursor;
         $this->charSnapshot = $this->char;
     }
 
-    public function restoreCursor()
+    public function restoreCursor(): void
     {
         if (null === $this->cursorSnapshot) {
             throw new \RuntimeException('Unable to restore cursor because no snapshot was stored.');
@@ -113,7 +113,7 @@ final class StringLexer
         return null;
     }
 
-    public function expects(string $data, $expected = null)
+    public function expects(string $data, $expected = null): ?string
     {
         $match = $this->regexOrSingleChar($data);
 
@@ -132,7 +132,7 @@ final class StringLexer
         return $this->cursor >= $this->end;
     }
 
-    public function createSyntaxException($expected)
+    public function createSyntaxException($expected): StringLexerException
     {
         $expected = (array) $expected;
 
@@ -146,7 +146,7 @@ final class StringLexer
         );
     }
 
-    public function createFormatException($string)
+    public function createFormatException($string): StringLexerException
     {
         return StringLexerException::formatError(
             $this->cursor,

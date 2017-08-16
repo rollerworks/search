@@ -78,7 +78,7 @@ final class FieldTransformationAssertion
         return $this;
     }
 
-    public function failsToTransforms()
+    public function failsToTransforms(): void
     {
         if (null === $this->inputView) {
             throw new \LogicException('withInput() must be called first.');

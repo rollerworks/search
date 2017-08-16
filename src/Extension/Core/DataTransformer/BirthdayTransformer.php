@@ -98,7 +98,7 @@ final class BirthdayTransformer implements DataTransformer
         return $value;
     }
 
-    private function validateDate(\DateTimeInterface $value)
+    private function validateDate(\DateTimeInterface $value): void
     {
         static $currentDate;
 
