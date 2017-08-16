@@ -94,7 +94,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
 
     public function testChoiceListAndChoicesCanBeEmpty()
     {
-        $this->getFactory()->createField('choice', ChoiceType::class);
+        $field = $this->getFactory()->createField('choice', ChoiceType::class);
+        self::assertEquals([], $field->getOption('choices'));
     }
 
     public function testChoiceListWithScalarValues()

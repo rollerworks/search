@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Test;
 
 use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\AssertionFailedError;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
@@ -53,6 +52,8 @@ final class FieldTransformationAssertion
 
     public function successfullyTransformsTo($model): self
     {
+        $normValue = $viewValue = null;
+
         if (null === $this->inputView) {
             throw new \LogicException('withInput() must be called first.');
         }
@@ -60,13 +61,13 @@ final class FieldTransformationAssertion
         try {
             $viewValue = $this->viewToModel($this->inputView);
         } catch (TransformationFailedException $e) {
-            throw new AssertionFailedError('View->model: '.$e->getMessage(), $e->getCode(), $e);
+            Assert::fail('View->model: '.$e->getMessage()."\n".$e->getTraceAsString());
         }
 
         try {
             $normValue = $this->normToModel($this->inputNorm);
         } catch (TransformationFailedException $e) {
-            throw new AssertionFailedError('Norm->model: '.$e->getMessage(), $e->getCode(), $e);
+            Assert::fail('Norm->model: '.$e->getMessage()."\n".$e->getTraceAsString());
         }
 
         Assert::assertEquals($model, $viewValue, 'View->model value does not equal');
@@ -91,22 +92,24 @@ final class FieldTransformationAssertion
         try {
             $this->modelToView($this->inputView);
 
-            throw new AssertionFailedError(sprintf('Expected view-input "%s" to be invalid', $this->inputView));
+            Assert::fail(sprintf('Expected view-input "%s" to be invalid', $this->inputView));
         } catch (TransformationFailedException $e) {
-            // no-op
+            Assert::assertTrue(true); // no-op
         }
 
         try {
             $this->modelToNorm($this->inputNorm);
 
-            throw new AssertionFailedError(sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
+            Assert::fail(sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
         } catch (TransformationFailedException $e) {
-            // no-op
+            Assert::assertTrue(true); // no-op
         }
     }
 
     public function andReverseTransformsTo($expectedView = null, $expectedNorm = null)
     {
+        $normValue = $viewValue = null;
+
         if (!$this->transformed) {
             throw new \LogicException('successfullyTransformsTo() must be called first.');
         }
@@ -114,13 +117,13 @@ final class FieldTransformationAssertion
         try {
             $viewValue = $this->modelToView($this->model);
         } catch (TransformationFailedException $e) {
-            throw new AssertionFailedError('Model->view: '.$e->getMessage(), $e->getCode(), $e);
+            Assert::fail('Model->view: '.$e->getMessage()."\n".$e->getTraceAsString());
         }
 
         try {
             $normValue = $this->modelToNorm($this->model);
         } catch (TransformationFailedException $e) {
-            throw new AssertionFailedError('Model->norm: '.$e->getMessage(), $e->getCode(), $e);
+            Assert::fail('Model->norm: '.$e->getMessage()."\n".$e->getTraceAsString());
         }
 
         Assert::assertEquals($expectedView, $viewValue, 'View value does not equal');

@@ -54,15 +54,6 @@ final class ChainOptimizerTest extends SearchConditionOptimizerTestCase
     /**
      * @test
      */
-    public function it_allows_adding_optimizers()
-    {
-        $this->optimizer->addOptimizer($this->optimizer1->reveal());
-        $this->optimizer->addOptimizer($this->optimizer2->reveal());
-    }
-
-    /**
-     * @test
-     */
     public function it_execute_the_registered_optimizers_priority_order()
     {
         $searchCondition = $this->prophesize('Rollerworks\Component\Search\SearchCondition');
