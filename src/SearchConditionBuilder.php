@@ -105,12 +105,9 @@ final class SearchConditionBuilder
         return $valuesBag;
     }
 
-    /**
-     * @return SearchConditionBuilder
-     */
     public function end(): SearchConditionBuilder
     {
-        return null !== $this->parent ? $this->parent : $this;
+        return $this->parent ?? $this;
     }
 
     /**
@@ -132,7 +129,12 @@ final class SearchConditionBuilder
             return $this->parent->getSearchCondition();
         }
 
-        return new SearchCondition($this->fieldSet, $this->valuesGroup);
+        // This the root of the condition so now traverse back up the hierarchy.
+        // We need to re-create the condition using actual objects.
+        $rootValuesGroup = new ValuesGroup($this->valuesGroup->getGroupLogical());
+        $this->normalizeValueGroup($this->valuesGroup, $rootValuesGroup);
+
+        return new SearchCondition($this->fieldSet, $rootValuesGroup);
     }
 
     private function __construct(string $logical, FieldSet $fieldSet, SearchConditionBuilder $parent = null)
@@ -140,5 +142,23 @@ final class SearchConditionBuilder
         $this->valuesGroup = new ValuesGroup($logical);
         $this->parent = $parent;
         $this->fieldSet = $fieldSet;
+    }
+
+    private function normalizeValueGroup(ValuesGroup $currentValuesGroup, ValuesGroup $rootValuesGroup): void
+    {
+        foreach ($currentValuesGroup->getGroups() as $group) {
+            $subGroup = new ValuesGroup($group->getGroupLogical());
+            $this->normalizeValueGroup($group, $subGroup);
+
+            $rootValuesGroup->addGroup($subGroup);
+        }
+
+        foreach ($currentValuesGroup->getFields() as $name => $values) {
+            if ($values instanceof ValuesBagBuilder) {
+                $values = $values->toValuesBag();
+            }
+
+            $rootValuesGroup->addField($name, $values);
+        }
     }
 }

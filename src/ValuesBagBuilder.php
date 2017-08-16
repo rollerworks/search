@@ -38,4 +38,12 @@ class ValuesBagBuilder extends ValuesBag
     {
         return $this->parent;
     }
+
+    public function toValuesBag(): ValuesBag
+    {
+        $valuesBag = new ValuesBag();
+        $valuesBag->unserialize($this->serialize());
+
+        return $valuesBag;
+    }
 }
