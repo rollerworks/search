@@ -76,7 +76,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
      *
      * @internal
      */
-    public function getEmbeddedValues()
+    public function getEmbeddedValues(): array
     {
         return $this->embeddedValues;
     }
