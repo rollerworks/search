@@ -67,5 +67,7 @@ final class CountryTypeTest extends SearchIntegrationTestCase
                 $this->fail('Should not contain choice "ZZ"');
             }
         }
+
+        self::assertContains('AF', $choices[0]->value ?? 'ZZ');
     }
 }

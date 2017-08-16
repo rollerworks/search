@@ -26,7 +26,9 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
 {
     public function testCreate()
     {
-        $this->getFactory()->createField('integer', IntegerType::class);
+        $field = $this->getFactory()->createField('integer', IntegerType::class);
+
+        self::assertFalse($field->getOption('grouping'));
     }
 
     public function testCastsToInteger()
