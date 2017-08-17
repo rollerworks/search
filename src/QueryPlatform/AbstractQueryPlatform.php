@@ -59,7 +59,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
             return $this->convertSqlValue($value, $mappingConfig, $column, $strategy);
         }
 
-        return (string) $this->quoteValue(
+        return $this->quoteValue(
             $mappingConfig->dbType->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
             $mappingConfig->dbType
         );

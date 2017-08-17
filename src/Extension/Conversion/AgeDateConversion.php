@@ -84,7 +84,9 @@ class AgeDateConversion implements StrategySupportedConversion, ColumnConversion
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     *
+     * @return string|int
      */
     public function convertValue($value, array $options, ConversionHints $hints)
     {

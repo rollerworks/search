@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks;
 class ConnectionMock extends \Doctrine\DBAL\Connection
 {
     private $_fetchOneResult;
+    private $_platform;
     private $_platformMock;
     private $_lastInsertId = 0;
     private $_inserts = [];

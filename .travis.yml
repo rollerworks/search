@@ -21,7 +21,7 @@ php:
 matrix:
     include:
         - php: 7.1
-          env: deps='low'
+          env: deps='low' lint=1
         - php: 7.1
           env: DB=pgsql
         - php: 7.1
@@ -29,23 +29,29 @@ matrix:
         - php: 7.1
           env: DB=mysql
         - php: 7.1
-          env: deps='dev'
+          env: deps='dev' lint=1
     fast_finish: true
 
 before_install:
     - phpenv config-rm xdebug.ini || echo "xdebug not available"
+    - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.3.2/php-cs-fixer.phar; fi
+    - if [[ $lint = 1 ]]; then composer global require --dev 'phpstan/phpstan:^0.8'; fi
+    - export PATH="$PATH:$HOME/.composer/vendor/bin"
 
 install:
-    - export COMPOSER_ROOT_VERSION=dev-master
-    - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
-    - export SYMFONY_PHPUNIT_VERSION=6.2
-    - if [[ ! $deps ]]; then composer update --prefer-source --no-progress --no-suggest --ansi; fi
-    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --prefer-source --no-progress --no-suggest --ansi ; fi
-    - if [[ $deps = 'low' ]]; then composer update --prefer-source --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
+    - if [[ ! $deps ]]; then composer update --no-progress --no-suggest --ansi; fi
+    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --no-progress --no-suggest --ansi ; fi
+    - if [[ $deps = 'low' ]]; then composer update --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 before_script:
     - if [ "$DB" == "mysql" ]; then mysql -e 'create database search_tests;'; fi;
 
 script:
+    - export SYMFONY_DEPRECATIONS_HELPER=strict
+    - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
+    - export SYMFONY_PHPUNIT_VERSION=6.2
     - vendor/bin/simple-phpunit --verbose
     - if [ "$DB" != "" ]; then vendor/bin/simple-phpunit --configuration tests/travis/$DB.travis.xml; fi;
+    - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
+    - if [[ $lint = 1 ]]; then phpstan analyse -c phpstan.neon -l5 --ansi src tests; fi
