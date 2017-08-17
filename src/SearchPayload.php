@@ -16,6 +16,9 @@ namespace Rollerworks\Component\Search\Processor;
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\SearchCondition;
 
+/**
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ */
 final class SearchPayload
 {
     /**
@@ -53,7 +56,7 @@ final class SearchPayload
     /**
      * READ-ONLY: The Format in which the condition is exported.
      *
-     * @var string
+     * @var string|null
      */
     public $exportedFormat;
 
