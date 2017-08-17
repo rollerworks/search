@@ -18,7 +18,7 @@ matrix:
         - php: '7.1'
           env: testcase='search_processor'
         - php: '7.1'
-          env: testcase='api_platform'
+          env: testcase='api_platform' lint=1
 env:
     global:
         - TMPDIR=/tmp
@@ -31,7 +31,7 @@ before_install:
     - phpenv config-rm xdebug.ini || echo "xdebug not available"
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.3.2/php-cs-fixer.phar; fi
-#    - if [[ $lint = 1 ]]; then composer global require --dev 'phpstan/phpstan:^0.8'; fi
+    - if [[ $lint = 1 ]]; then composer global require --dev 'phpstan/phpstan:^0.8'; fi
     - export PATH="$PATH:$HOME/.composer/vendor/bin"
     - |
         if [[ $testcase = 'doctrine_dbal' ]]; then
@@ -56,6 +56,12 @@ before_install:
             composer require --no-update "rollerworks/search-api-platform:^1.0@dev"
         fi;
 
+        if [[ $lint = 1 ]]; then
+            composer require --no-update "symfony/expression-language:^3.2.4"
+            composer require --no-update "symfony/psr-http-message-bridge:^1.0"
+            composer require --no-update "zendframework/zend-diactoros:^1.4"
+        fi;
+
 install:
     - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
     - export SYMFONY_PHPUNIT_VERSION=6.2
@@ -68,4 +74,4 @@ script:
     - export SYMFONY_DEPRECATIONS_HELPER=strict
     - vendor/bin/phpunit --verbose
     - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
-#    - if [[ $lint = 1 ]]; then phpstan analyse -c phpstan.neon -l5 --ansi src tests; fi
+    - if [[ $lint = 1 ]]; then phpstan analyse -c phpstan.neon -l5 --ansi src tests; fi

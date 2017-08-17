@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\FieldSetConfigurator;
 
 final class BookFieldSet implements FieldSetConfigurator
 {
-    public function buildFieldSet(FieldSetBuilder $builder)
+    public function buildFieldSet(FieldSetBuilder $builder): void
     {
         $builder->add('id', IntegerType::class);
         $builder->add('title', TextType::class);
