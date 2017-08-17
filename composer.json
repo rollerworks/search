@@ -52,5 +52,5 @@
             "*": "dist"
         },
         "sort-packages": true
-    },
+    }
 }
