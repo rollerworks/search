@@ -58,11 +58,11 @@ class ProcessorConfig extends \Rollerworks\Component\Search\Input\ProcessorConfi
     /**
      * Set the default export format for the SearchCondition(s).
      *
-     * @param string $exportFormat
+     * @param string|null $exportFormat
      *
      * @return ProcessorConfig
      */
-    public function setExportFormat(string $exportFormat = null): ProcessorConfig
+    public function setExportFormat(?string $exportFormat = null): ProcessorConfig
     {
         $this->exportFormat = $exportFormat;
 
