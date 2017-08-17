@@ -11,14 +11,7 @@ use Rollerworks\Component\Search\FieldSetConfigurator;
 
 final class UserFieldSet implements FieldSetConfigurator
 {
-    /**
-     * Configure the FieldSet builder.
-     *
-     * @param FieldSetBuilder $builder
-     *
-     * @return void
-     */
-    public function buildFieldSet(FieldSetBuilder $builder)
+    public function buildFieldSet(FieldSetBuilder $builder): void
     {
         $builder->add('id', IntegerType::class);
         $builder->add('name', TextType::class);
