@@ -18,7 +18,6 @@ use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\ValuesBag;
 
 /**
  * @internal
@@ -61,18 +60,19 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->addSimpleValue(10)
-            ->addSimpleValue(7)
-            ->add(new Range(1, 5))
-            ->add(new Range(12, 15))
-            ->add(new Range(17, 20))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->addSimpleValue(10)
+                ->addSimpleValue(7)
+                ->add(new Range(1, 5))
+                ->add(new Range(12, 15))
+                ->add(new Range(17, 20))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -94,15 +94,16 @@ final class ValuesToRangeTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->addExcludedSimpleValue(10)
-            ->addExcludedSimpleValue(7)
-            ->add(new ExcludedRange(1, 5))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->addExcludedSimpleValue(10)
+                ->addExcludedSimpleValue(7)
+                ->add(new ExcludedRange(1, 5))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 }

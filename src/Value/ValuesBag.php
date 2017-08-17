@@ -218,4 +218,9 @@ class ValuesBag implements \Countable, \Serializable
 
         return $this;
     }
+
+    public function all(): array
+    {
+        return $this->values;
+    }
 }

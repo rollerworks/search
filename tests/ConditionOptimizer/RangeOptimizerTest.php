@@ -18,7 +18,6 @@ use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchConditionOptimizerTestCase;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\Range;
-use Rollerworks\Component\Search\Value\ValuesBag;
 
 /**
  * @internal
@@ -56,21 +55,23 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->addSimpleValue(90)
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->addSimpleValue(90)
                 ->addSimpleValue(21)
                 ->addSimpleValue(40)
                 ->addSimpleValue(1) // this is overlapping, but the range lower-bound is exclusive
+
                 ->add(new Range(11, 20))
                 ->add(new Range(25, 30))
                 ->add(new Range(50, 70))
                 ->add(new Range(1, 10, false))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -102,19 +103,22 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->add(new Range(1, 10))
-            ->add(new Range(20, 30))
-            ->add(new Range(50, 70))
-            ->add(new Range(51, 71))
-            ->add(new Range(50, 71, false, false))
-            ->add(new Range(99, 151, false, false))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->add(new Range(1, 10))
+                ->add(new Range(20, 30))
+                ->add(new Range(50, 70))
+                ->add(new Range(51, 71)) // 8
+                ->add(new Range(50, 71, false, false))
+
+                // exclusive bounds overlapping
+                ->add(new Range(99, 151, false, false))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -140,22 +144,23 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->addExcludedSimpleValue(90)
-            ->addExcludedSimpleValue(21)
-            ->addExcludedSimpleValue(40)
-            ->addExcludedSimpleValue(1) // this is overlapping, but the range lower-bound is exclusive
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->addExcludedSimpleValue(90)
+                ->addExcludedSimpleValue(21)
+                ->addExcludedSimpleValue(40)
+                ->addExcludedSimpleValue(1) // this is overlapping, but the range lower-bound is exclusive
 
-            ->add(new ExcludedRange(11, 20))
-            ->add(new ExcludedRange(25, 30))
-            ->add(new ExcludedRange(50, 70))
-            ->add(new ExcludedRange(1, 10, false))
+                ->add(new ExcludedRange(11, 20))
+                ->add(new ExcludedRange(25, 30))
+                ->add(new ExcludedRange(50, 70))
+                ->add(new ExcludedRange(1, 10, false))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -187,19 +192,22 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->add(new ExcludedRange(1, 10))
-            ->add(new ExcludedRange(20, 30))
-            ->add(new ExcludedRange(50, 70))
-            ->add(new ExcludedRange(51, 71))
-            ->add(new ExcludedRange(50, 71, false, false))
-            ->add(new ExcludedRange(99, 151, false, false))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->add(new ExcludedRange(1, 10))
+                ->add(new ExcludedRange(20, 30))
+                ->add(new ExcludedRange(50, 70))
+                ->add(new ExcludedRange(51, 71))
+                ->add(new ExcludedRange(50, 71, false, false))
+
+                // exclusive bounds overlapping
+                ->add(new ExcludedRange(99, 151, false, false))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -219,16 +227,17 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->add(new Range(30, 40))
-            ->add(new Range(20, 28, false)) // this should not be changed as the bounds do not equal 1
-            ->add(new Range(10, 26))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->add(new Range(30, 40))
+                ->add(new Range(20, 28, false)) // this should not be changed as the bounds do not equal 1
+                ->add(new Range(10, 26))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 
     /**
@@ -248,15 +257,16 @@ final class RangeOptimizerTest extends SearchConditionOptimizerTestCase
         ;
 
         $this->optimizer->process($condition);
-        $valuesGroup = $condition->getValuesGroup();
 
-        $expectedValuesBag = new ValuesBag();
-        $expectedValuesBag
-            ->add(new ExcludedRange(30, 40))
-            ->add(new ExcludedRange(20, 28, false)) // this should not be changed as the bounds do not equal 1
-            ->add(new ExcludedRange(10, 26))
+        $expectedCondition = SearchConditionBuilder::create($this->fieldSet)
+            ->field('id')
+                ->add(new ExcludedRange(30, 40))
+                ->add(new ExcludedRange(20, 28, false)) // this should not be changed as the bounds do not equal 1
+                ->add(new ExcludedRange(10, 26))
+            ->end()
+            ->getSearchCondition()
         ;
 
-        self::assertValueBagsEqual($expectedValuesBag, $valuesGroup->getField('id'));
+        self::assertConditionsEquals($expectedCondition, $condition);
     }
 }
