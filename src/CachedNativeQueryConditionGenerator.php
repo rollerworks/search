@@ -54,7 +54,6 @@ class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerat
     {
         parent::__construct($conditionGenerator, $cacheDriver, $ttl);
 
-        $this->conditionGenerator = $conditionGenerator;
         $this->query = $conditionGenerator->getQuery();
         $this->cacheDriver = $cacheDriver;
         $this->ttl = $ttl;

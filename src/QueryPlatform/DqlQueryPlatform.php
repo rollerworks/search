@@ -110,9 +110,9 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
             return $value ? 'true' : 'false';
         } elseif (is_scalar($value) && ctype_digit((string) $value)) {
             return (string) $value;
-        } else {
-            return "'".str_replace("'", "''", $value)."'";
         }
+
+        return "'".str_replace("'", "''", $value)."'";
     }
 
     /**

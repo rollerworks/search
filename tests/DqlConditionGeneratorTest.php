@@ -557,7 +557,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             ->expects($this->atLeastOnce())
             ->method('convertColumn')
             ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
-                if (2 === (int) $hints->conversionStrategy) {
+                if (2 === $hints->conversionStrategy) {
                     return "search_conversion_age($column)";
                 }
 

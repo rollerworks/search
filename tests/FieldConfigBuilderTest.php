@@ -25,8 +25,8 @@ use Rollerworks\Component\Search\SearchFactory;
 
 final class FieldConfigBuilderTest extends TestCase
 {
-    const CUSTOMER_CLASS = Fixtures\Entity\ECommerceCustomer::class;
-    const INVOICE_CLASS = Fixtures\Entity\ECommerceInvoice::class;
+    public const CUSTOMER_CLASS = Fixtures\Entity\ECommerceCustomer::class;
+    public const INVOICE_CLASS = Fixtures\Entity\ECommerceInvoice::class;
 
     /**
      * @var ObjectProphecy
