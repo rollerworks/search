@@ -44,7 +44,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
      */
     protected $conditionGenerator;
 
-    const CACHE_KEY = '88816f28d71f213a0b933fe002d7aa460a63f011e5d5a03ebf277d420a6d7dee';
+    public const CACHE_KEY = '88816f28d71f213a0b933fe002d7aa460a63f011e5d5a03ebf277d420a6d7dee';
 
     public function testGetWhereClauseNoCache()
     {

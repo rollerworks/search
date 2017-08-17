@@ -69,6 +69,7 @@ abstract class AbstractCachedConditionGenerator implements ConditionGenerator
      */
     public function __construct(AbstractConditionGenerator $conditionGenerator, Cache $cacheDriver, int $ttl = null)
     {
+        $this->conditionGenerator = $conditionGenerator;
         $this->cacheDriver = $cacheDriver;
         $this->ttl = $ttl;
     }

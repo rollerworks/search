@@ -19,6 +19,9 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Tests\TestUtil;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\Warning;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
 use Rollerworks\Component\Search\Doctrine\Orm\AbstractConditionGenerator;
@@ -30,37 +33,35 @@ use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 
-class OrmTestCase extends DbalTestCase
+abstract class OrmTestCase extends DbalTestCase
 {
-    const CUSTOMER_CLASS = Fixtures\Entity\ECommerceCustomer::class;
-    const INVOICE_CLASS = Fixtures\Entity\ECommerceInvoice::class;
-
-    use OnNotSuccessfulTrait;
+    protected const CUSTOMER_CLASS = Fixtures\Entity\ECommerceCustomer::class;
+    protected const INVOICE_CLASS = Fixtures\Entity\ECommerceInvoice::class;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager|null
      */
     protected $em;
 
     /**
-     * @var \Doctrine\DBAL\Connection
+     * @var \Doctrine\DBAL\Connection|null
      */
     protected $conn;
 
     /**
-     * @var \Doctrine\DBAL\Logging\DebugStack
+     * @var \Doctrine\DBAL\Logging\DebugStack|null
      */
     protected $sqlLoggerStack;
 
     /**
      * Shared connection when a TestCase is run alone (outside of it's functional suite).
      *
-     * @var \Doctrine\DBAL\Connection
+     * @var \Doctrine\DBAL\Connection|null
      */
     private static $sharedConn;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager|null
      */
     private static $sharedEm;
 
@@ -189,5 +190,61 @@ class OrmTestCase extends DbalTestCase
             array_merge([], array_unique($idRows)),
             sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s", print_r($rows, true), $whereClause)
         );
+    }
+
+    protected function onNotSuccessfulTest(\Throwable $e)
+    {
+        // Ignore deprecation warnings.
+        if ($e instanceof AssertionFailedError || ($e instanceof Warning && strpos($e->getMessage(), ' is deprecated,'))) {
+            throw $e;
+        }
+
+        if (isset($this->sqlLoggerStack->queries) && count($this->sqlLoggerStack->queries)) {
+            $queries = '';
+            $i = count($this->sqlLoggerStack->queries);
+
+            foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
+                $params = array_map(
+                    function ($p) {
+                        if (is_object($p)) {
+                            return get_class($p);
+                        }
+
+                        return "'".var_export($p, true)."'";
+                    },
+                    $query['params'] ?: []
+                );
+
+                $queries .= ($i + 1).". SQL: '".$query['sql']."' Params: ".implode(', ', $params).PHP_EOL;
+                --$i;
+            }
+
+            $trace = $e->getTrace();
+            $traceMsg = '';
+
+            foreach ($trace as $part) {
+                if (isset($part['file'])) {
+                    if (strpos($part['file'], 'PHPUnit/') !== false) {
+                        // Beginning with PHPUnit files we don't print the trace anymore.
+                        break;
+                    }
+
+                    $traceMsg .= $part['file'].':'.$part['line'].PHP_EOL;
+                }
+            }
+
+            $message =
+                '['.get_class($e).'] '.
+                $e->getMessage().
+                PHP_EOL.PHP_EOL.
+                'With queries:'.PHP_EOL.
+                $queries.PHP_EOL.
+                'Trace:'.PHP_EOL.
+                $traceMsg;
+
+            throw new Exception($message, (int) $e->getCode(), $e instanceof \Exception ? $e : null);
+        }
+
+        throw $e;
     }
 }

@@ -42,7 +42,7 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
  * Complex structure tests are not done here as these tests are more about
  * "doesn't error".
  */
-class ConditionGeneratorResultsTestCase extends OrmTestCase
+abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
 {
     /**
      * @var StringQueryInput

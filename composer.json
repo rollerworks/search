@@ -21,14 +21,17 @@
         "doctrine/orm": "^2.5"
     },
     "require-dev": {
+        "moneyphp/money": "^3.0.7",
+        "phpunit/phpunit": "^6.3",
         "symfony/phpunit-bridge": "^3.3.6",
-        "moneyphp/money": "^3.0.7"
+        "symfony/var-dumper": "^3.3"
     },
     "autoload": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Doctrine\\Orm\\": "src/",
             "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Orm\\": "src/Extension/"
-        }
+        },
+        "exclude-from-classmap": ["tests/"]
     },
     "autoload-dev": {
         "psr-4": {
@@ -41,5 +44,17 @@
         "branch-alias": {
             "dev-master": "2.0-dev"
         }
+    },
+    "config": {
+        "platform": {
+            "php": "7.1"
+        },
+        "preferred-install": {
+            "doctrine/dbal": "source",
+            "doctrine/orm": "source",
+            "rollerworks/search-doctrine-dbal": "source",
+            "*": "dist"
+        },
+        "sort-packages": true
     }
 }

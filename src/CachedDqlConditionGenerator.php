@@ -70,7 +70,6 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator
 
         $this->ttl = $ttl;
         $this->cacheDriver = $cacheDriver;
-        $this->conditionGenerator = $conditionGenerator;
         $this->query = $conditionGenerator->getQuery();
     }
 

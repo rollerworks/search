@@ -5,7 +5,6 @@
          backupGlobals="false"
          colors="true"
          bootstrap="vendor/autoload.php"
-         beStrictAboutTestsThatDoNotTestAnything="false"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
 >
