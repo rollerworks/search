@@ -25,7 +25,7 @@ final class DoctrineDbalFactory
     /**
      * @var Cache
      */
-    protected $cacheDriver;
+    private $cacheDriver;
 
     /**
      * Constructor.

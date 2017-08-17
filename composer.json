@@ -29,7 +29,8 @@
         "psr-4": {
             "Rollerworks\\Component\\Search\\Doctrine\\Dbal\\": "src/",
             "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Dbal\\": "src/Extension/"
-        }
+        },
+        "exclude-from-classmap": ["tests/"]
     },
     "autoload-dev": {
         "psr-4": {
@@ -41,5 +42,15 @@
         "branch-alias": {
             "dev-master": "2.0-dev"
         }
-    }
+    },
+    "config": {
+        "platform": {
+            "php": "7.1"
+        },
+        "preferred-install": {
+            "doctrine/dbal": "source",
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
 }
