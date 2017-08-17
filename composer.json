@@ -21,13 +21,14 @@
     "require-dev": {
         "matthiasnoback/symfony-dependency-injection-test": "^2.0.0",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.7",
+        "phpunit/phpunit": "^6.3",
         "rollerworks/search-symfony-validator": "^2.0@dev",
+        "symfony/asset": "^3.2.4",
         "symfony/browser-kit": "^3.2.4",
         "symfony/dom-crawler": "^3.2.4",
-        "symfony/asset": "^3.2.4",
-        "symfony/templating": "^3.2.4",
         "symfony/phpunit-bridge": "^3.3",
-        "symfony/routing": "^3.2.4"
+        "symfony/routing": "^3.2.4",
+        "symfony/templating": "^3.2.4"
     },
     "conflict": {
         "symfony/psr-http-message-bridge": "<1.0.0",
@@ -39,7 +40,8 @@
     "autoload": {
         "psr-4": {
             "Rollerworks\\Bundle\\SearchBundle\\": "src/"
-        }
+        },
+        "exclude-from-classmap": ["test/"]
     },
     "autoload-dev": {
         "psr-4": {

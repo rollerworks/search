@@ -16,12 +16,8 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle;
-use Matthias\SymfonyServiceDefinitionValidator\Compiler\ValidateServiceDefinitionsPass;
-use Matthias\SymfonyServiceDefinitionValidator\Configuration;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -103,19 +99,5 @@ class AppKernel extends Kernel
     public function unserialize($str)
     {
         call_user_func_array([$this, '__construct'], unserialize($str));
-    }
-
-    protected function build(ContainerBuilder $container)
-    {
-        // Temp disabled due to incompatibility
-        if ($container->getParameter('kernel.debug')) {
-            $configuration = new Configuration();
-            $configuration->setEvaluateExpressions(true);
-//
-//            $container->addCompilerPass(
-//                new ValidateServiceDefinitionsPass($configuration),
-//                PassConfig::TYPE_AFTER_REMOVING
-//            );
-        }
     }
 }
