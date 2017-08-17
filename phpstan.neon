@@ -10,7 +10,7 @@ parameters:
 
         # False positive
         - '#Call to an undefined method Doctrine\\DBAL\\Driver\\Connection\:\:sqliteCreateFunction\(\)#'
-        - '#Parameter \#2 \$type of method Doctrine\\DBAL\\Connection\:\:quote\(\) expects int\|null, Doctrine\\DBAL\\Types\\Type given#'
+        - '#Parameter \#2 \$type of method Doctrine\\DBAL\\Connection\:\:quote\(\) expects ([^\s]+)#'
         - "#Casting to string something that's already string#" # cannot fix this yet.
         - '#(DbalTestCase|FunctionalDbalTestCase|SearchIntegrationTestCase) not found and could not be autoloaded#' # properly a bug in PHPStan?
 
