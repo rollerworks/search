@@ -92,29 +92,6 @@ abstract class SearchIntegrationTestCase extends TestCase
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
-    protected static function assertValueBagsEqual(ValuesBag $expected, ValuesBag $result)
-    {
-        // use array_merge to renumber indexes and prevent mismatches.
-
-        $expectedValues = [
-            'single' => array_merge([], $expected->getSimpleValues()),
-            'excluded' => array_merge([], $expected->getExcludedSimpleValues()),
-        ];
-        foreach ($expected->all() as $type => $values) {
-            $expectedValues[$type] = array_merge([], $values);
-        }
-
-        $resultValues = [
-            'single' => array_merge([], $result->getSimpleValues()),
-            'excluded' => array_merge([], $result->getExcludedSimpleValues()),
-        ];
-        foreach ($expected->all() as $type => $values) {
-            $resultValues[$type] = array_merge([], $values);
-        }
-
-        self::assertEquals($expectedValues, $resultValues);
-    }
-
     protected static function assertConditionsEquals(SearchCondition $expectedCondition, SearchCondition $actualCondition)
     {
         try {
