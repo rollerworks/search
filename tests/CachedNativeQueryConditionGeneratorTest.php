@@ -45,7 +45,7 @@ final class CachedNativeQueryConditionGeneratorTest extends OrmTestCase
      */
     protected $conditionGenerator;
 
-    public const CACHE_KEY = '8c6844fc8d25be938498e078d917a8fa2e39e00c8fc91834fbd4cc557d99454c';
+    public const CACHE_KEY = 'bcb3e2093d5cdf5fb6cf43875b045edf28bdc382c15a513478f8d01f80d2d01f';
 
     public function testGetWhereClauseNoCache()
     {
