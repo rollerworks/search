@@ -65,7 +65,7 @@ final class InputValidatorTest extends SearchIntegrationTestCase
 
     protected function getExtensions(): array
     {
-        return [new ValidatorExtension($this->sfValidator)];
+        return [new ValidatorExtension()];
     }
 
     /**
