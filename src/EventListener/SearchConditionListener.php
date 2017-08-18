@@ -65,7 +65,7 @@ final class SearchConditionListener
      *
      * @param GetResponseEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event): void
     {
         $request = $event->getRequest();
 
@@ -103,7 +103,7 @@ final class SearchConditionListener
         $request->attributes->set('_api_search_condition', $payload->searchCondition);
     }
 
-    private function resolveSearchConfiguration(array $searchConfig, string $resourceClass, Request $request)
+    private function resolveSearchConfiguration(array $searchConfig, string $resourceClass, Request $request): array
     {
         if (empty($searchConfig['contexts'])) {
             throw new RuntimeException(
@@ -143,7 +143,7 @@ final class SearchConditionListener
         return $searchConfig['contexts'][$context];
     }
 
-    private function configureProcessor(ProcessorConfig $config, array $options, string $resourceClass)
+    private function configureProcessor(ProcessorConfig $config, array $options, string $resourceClass): void
     {
         if (empty($options['processor'])) {
             return;

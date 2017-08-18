@@ -31,13 +31,6 @@ final class DefaultConfigurationMetadataFactory implements ResourceMetadataFacto
         $this->decorated = $decorated;
     }
 
-    /**
-     * Creates a resource metadata.
-     *
-     * @param string $resourceClass
-     *
-     * @return ResourceMetadata
-     */
     public function create(string $resourceClass): ResourceMetadata
     {
         $resourceMetadata = $this->decorated->create($resourceClass);
