@@ -13,6 +13,7 @@ namespace Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\RelatedDummy;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -56,7 +57,7 @@ class Dummy
     /**
      * @var array foo
      */
-    private $foo;
+    protected $foo;
 
     /**
      * @var string A short description of the item

@@ -108,7 +108,7 @@ final class ApiSearchProcessor implements SearchProcessor
         return $payload;
     }
 
-    private function exportCondition(SearchPayload $payload)
+    private function exportCondition(SearchPayload $payload): void
     {
         if (null === $payload->searchCondition) {
             return;
@@ -120,7 +120,7 @@ final class ApiSearchProcessor implements SearchProcessor
         $payload->exportedFormat = 'array';
     }
 
-    private function storeCache(ProcessorConfig $config, SearchPayload $payload)
+    private function storeCache(ProcessorConfig $config, SearchPayload $payload): void
     {
         if ([] === $payload->exportedCondition) {
             return;
