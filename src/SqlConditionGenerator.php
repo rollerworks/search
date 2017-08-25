@@ -17,6 +17,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as MappingType;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\SqlQueryPlatform;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
@@ -147,10 +148,10 @@ final class SqlConditionGenerator implements ConditionGenerator
         $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';
 
-        if (class_exists($platformClass)) {
-            return new $platformClass($this->connection);
+        if (!class_exists($platformClass)) {
+            $platformClass = SqlQueryPlatform::class;
         }
 
-        throw new \RuntimeException(sprintf('No supported class found for database-platform "%s".', $dbPlatform));
+        return new $platformClass($this->connection);
     }
 }

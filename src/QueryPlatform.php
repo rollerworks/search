@@ -60,16 +60,4 @@ interface QueryPlatform
      * @return string
      */
     public function convertSqlValue($value, QueryField $mappingConfig, string $column, $strategy = 0): string;
-
-    /**
-     * Returns the SQL for the match (regexp).
-     *
-     * @param string $column
-     * @param string $value           Fully escaped value or parameter-name
-     * @param bool   $caseInsensitive Is the match case insensitive
-     * @param bool   $negative        Is the match negative (exclude)
-     *
-     * @return string
-     */
-    public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string;
 }

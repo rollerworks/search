@@ -20,19 +20,6 @@ final class SqliteQueryPlatform extends AbstractQueryPlatform
     /**
      * {@inheritdoc}
      */
-    public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string
-    {
-        return ($negative ? 'NOT ' : '').sprintf(
-            "RW_REGEXP(%s, %s, '%s')",
-            $value,
-            $column,
-            ($caseInsensitive ? 'ui' : 'u')
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function quoteValue($value, Type $type): string
     {
         // Don't quote numbers as SQLite doesn't follow the standards.

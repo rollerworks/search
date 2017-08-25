@@ -98,13 +98,9 @@ abstract class AbstractQueryPlatform implements QueryPlatform
      */
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string
     {
+        /** @deprecated to be removed 2.0.0-ALPHA3 */
         if ($patternMatch->isRegex()) {
-            return $this->getMatchSqlRegex(
-                $column,
-                $this->connection->quote($patternMatch->getValue()),
-                $patternMatch->isCaseInsensitive(),
-                $patternMatch->isExclusive()
-            );
+            throw new \BadMethodCallException('NOT SUPPORTED ANYMORE.');
         }
 
         if (in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {

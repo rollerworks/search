@@ -16,17 +16,6 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 class MssqlQueryPlatform extends AbstractQueryPlatform
 {
     /**
-     * {@inheritdoc}
-     */
-    public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string
-    {
-        throw new \RuntimeException(
-            "MSSQL doesn't have support for regexes out-of-the box.\n".
-            "It's possible to support simple regexes, but we need of help of someone with experience in MSSQL."
-        );
-    }
-
-    /**
      * Returns the list of characters to escape.
      *
      * @return string
