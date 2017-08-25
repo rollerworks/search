@@ -279,14 +279,6 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
     /**
      * @test
      */
-    public function it_finds_by_excluding_regex_pattern()
-    {
-        $this->makeTest('status: published; row-label: ~*"repair", ~!?"Armor";', [6]);
-    }
-
-    /**
-     * @test
-     */
     public function it_finds_by_excluding_equals_pattern()
     {
         $this->makeTest('row-label: ~=Armor, ~=sword;', [2]); // Invoice 3 doesn't match as "sword" is lowercase

@@ -28,7 +28,6 @@ use Rollerworks\Component\Search\Doctrine\Orm\AbstractConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion;
 use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion;
-use Rollerworks\Component\Search\Doctrine\Orm\Functions\ValueMatch;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -81,11 +80,6 @@ abstract class OrmTestCase extends DbalTestCase
             $config->addCustomStringFunction(
                 'RW_SEARCH_VALUE_CONVERSION',
                 SqlValueConversion::class
-            );
-
-            $config->addCustomStringFunction(
-                'RW_SEARCH_MATCH',
-                ValueMatch::class
             );
 
             self::$sharedConn = TestUtil::getConnection();

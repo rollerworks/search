@@ -120,12 +120,6 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
      */
     public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string
     {
-        return sprintf(
-            'RW_SEARCH_MATCH(%s, %s, %s) %s 1',
-            $column,
-            $value,
-            $this->quoteValue($caseInsensitive, Type::getType(Type::BOOLEAN)),
-            ($negative ? '<>' : '=')
-        );
+        throw new \BadMethodCallException('NOT SUPPORTED ANYMORE.');
     }
 }

@@ -43,11 +43,6 @@ class DoctrineOrmExtension extends AbstractExtension
                 'RW_SEARCH_VALUE_CONVERSION',
                 'Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion'
             );
-
-            $emConfig->addCustomStringFunction(
-                'RW_SEARCH_MATCH',
-                'Rollerworks\Component\Search\Doctrine\Orm\Functions\ValueMatch'
-            );
         }
     }
 }
