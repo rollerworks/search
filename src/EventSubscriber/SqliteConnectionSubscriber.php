@@ -34,14 +34,6 @@ final class SqliteConnectionSubscriber implements EventSubscriber
                 },
                 1
             );
-
-            $conn->sqliteCreateFunction(
-                'RW_REGEXP',
-                function ($pattern, $string, $flags) {
-                    return (preg_match('{'.$pattern.'}'.$flags, $string) > 0) ? 1 : 0;
-                },
-                3
-            );
         }
     }
 

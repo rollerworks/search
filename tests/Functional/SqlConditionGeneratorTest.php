@@ -222,8 +222,6 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
-                ->add(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
-                ->add(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
             ->end()
         ->getSearchCondition();
 

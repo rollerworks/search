@@ -315,8 +315,6 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
-                ->add(new PatternMatch('(foo|bar)', PatternMatch::PATTERN_REGEX))
-                ->add(new PatternMatch('(doctor|who)', PatternMatch::PATTERN_REGEX, true))
                 ->add(new PatternMatch('My name', PatternMatch::PATTERN_EQUALS))
                 ->add(new PatternMatch('Last', PatternMatch::PATTERN_NOT_EQUALS))
                 ->add(new PatternMatch('Spider', PatternMatch::PATTERN_EQUALS, true))
@@ -327,8 +325,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals(
-            "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\'o' ESCAPE '\\' OR ".
-            "RW_REGEXP('(foo|bar)', C.name, 'u') OR RW_REGEXP('(doctor|who)', C.name, 'ui') OR C.name = 'My name' OR ".
+            "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\'o' ESCAPE '\\' OR C.name = 'My name' OR ".
             "LOWER(C.name) = LOWER('Spider')) AND (LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\' AND C.name <> 'Last' ".
             "AND LOWER(C.name) <> LOWER('Piggy'))))",
             $conditionGenerator->getWhereClause()
