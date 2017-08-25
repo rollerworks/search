@@ -1,4 +1,4 @@
-UPGRADE FROM 2.0-ALPHA2 to 2.0-ALPHA3
+UPGRADE FROM 2.0-ALPHA2 to 2.0-ALPHA5
 =====================================
 
 * Support for using Regex in ValueMatch has been removed.
