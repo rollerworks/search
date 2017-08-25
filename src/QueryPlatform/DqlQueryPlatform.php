@@ -114,12 +114,4 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
 
         return "'".str_replace("'", "''", $value)."'";
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMatchSqlRegex(string $column, string $value, bool $caseInsensitive, bool $negative): string
-    {
-        throw new \BadMethodCallException('NOT SUPPORTED ANYMORE.');
-    }
 }
