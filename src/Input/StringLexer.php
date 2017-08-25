@@ -272,7 +272,7 @@ final class StringLexer
         $negative = false;
         $caseInsensitive = false;
 
-        if (!preg_match('/([^*<>?=]{0,2}\s*)([*<>?=])/A', $this->data, $match, 0, $this->cursor)) {
+        if (!preg_match('/([^*<>=]{0,2}\s*)([*<>=])/A', $this->data, $match, 0, $this->cursor)) {
             throw $this->createSyntaxException('PatternMatch');
         }
 
@@ -293,7 +293,6 @@ final class StringLexer
             '*' => 'CONTAINS',
             '>' => 'STARTS_WITH',
             '<' => 'ENDS_WITH',
-            '?' => 'REGEX',
             '=' => 'EQUALS',
         ];
 

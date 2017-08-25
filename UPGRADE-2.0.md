@@ -1,3 +1,12 @@
+UPGRADE FROM 2.0-ALPHA2 to 2.0-ALPHA3
+=====================================
+
+* Support for using Regex in ValueMatch has been removed.
+  
+  * The constants `PatternMatch::PATTERN_REGEX` and `PatternMatch::PATTERN_NOT_REGEX`
+    have been removed.
+  * The method `PatternMatch::isRegex` has been removed.
+
 UPGRADE FROM 2.0-ALPHA1 to 2.0-ALPHA2
 =====================================
 

@@ -176,11 +176,6 @@ final class StringQueryExporter extends AbstractExporter
                 $operator .= '<';
                 break;
 
-            case PatternMatch::PATTERN_REGEX:
-            case PatternMatch::PATTERN_NOT_REGEX:
-                $operator .= '?';
-                break;
-
             case PatternMatch::PATTERN_EQUALS:
             case PatternMatch::PATTERN_NOT_EQUALS:
                 $operator .= '=';

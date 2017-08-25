@@ -23,11 +23,9 @@ final class PatternMatch implements ValueHolder
     public const PATTERN_CONTAINS = 'CONTAINS';
     public const PATTERN_STARTS_WITH = 'STARTS_WITH';
     public const PATTERN_ENDS_WITH = 'ENDS_WITH';
-    public const PATTERN_REGEX = 'REGEX';
     public const PATTERN_NOT_CONTAINS = 'NOT_CONTAINS';
     public const PATTERN_NOT_STARTS_WITH = 'NOT_STARTS_WITH';
     public const PATTERN_NOT_ENDS_WITH = 'NOT_ENDS_WITH';
-    public const PATTERN_NOT_REGEX = 'NOT_REGEX';
     public const PATTERN_EQUALS = 'EQUALS';
     public const PATTERN_NOT_EQUALS = 'NOT_EQUALS';
 
@@ -91,16 +89,8 @@ final class PatternMatch implements ValueHolder
                 self::PATTERN_NOT_STARTS_WITH,
                 self::PATTERN_NOT_CONTAINS,
                 self::PATTERN_NOT_ENDS_WITH,
-                self::PATTERN_NOT_REGEX,
                 self::PATTERN_NOT_EQUALS,
             ], true
         );
-    }
-
-    public function isRegex(): bool
-    {
-        return self::PATTERN_REGEX === $this->patternType
-            || self::PATTERN_NOT_REGEX === $this->patternType
-        ;
     }
 }
