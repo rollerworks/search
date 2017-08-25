@@ -16,8 +16,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "rollerworks/search": "^2.0@dev,>=2.0-ALPHA5",
-        "ruflin/elastica": "^5.1.0"
+        "rollerworks/search": "^2.0@dev,>=2.0-ALPHA5"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.3.6",
@@ -25,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\ElasticSearch\\": "src/"
+            "Rollerworks\\Component\\Search\\Elasticsearch\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Tests\\ElasticSearch\\": "tests/"
+            "Rollerworks\\Component\\Search\\Tests\\Elasticsearch\\": "tests/"
         }
     },
     "extra": {

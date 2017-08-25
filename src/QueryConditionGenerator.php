@@ -13,11 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch;
 
-use Elastica\Param;
-use Elastica\Query\{
-    BoolQuery, Match, MultiMatch, Prefix, Range as ESRange, Regexp, Term, Terms, Wildcard
-};
-use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\{
     Compare, ExcludedRange, PatternMatch, Range, ValuesGroup
@@ -25,7 +21,7 @@ use Rollerworks\Component\Search\Value\{
 
 // Allow to mark Field as id https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
 
-class QueryConditionGenerator
+final class QueryConditionGenerator
 {
     private $searchCondition;
     private $fieldSet;
@@ -64,34 +60,34 @@ class QueryConditionGenerator
     {
     }
 
-    public function getQuery(): ?Param
+    public function getQuery(): ?array
     {
-        $root = $this->searchCondition->getValuesGroup();
-        $rootGroupCondition = $this->processGroup($root);
+        $rootGroupCondition = $this->processGroup($this->searchCondition->getValuesGroup());
 
-        if ([] === $rootGroupCondition->getParams()) {
+        if ([] === $rootGroupCondition) {
             return null;
         }
 
         return $rootGroupCondition;
     }
 
-    private function processGroup(ValuesGroup $group): BoolQuery
+    private function processGroup(ValuesGroup $group): array
     {
-        $bool = new BoolQuery();
+        $bool = [];
 
         // Note: Excludes are `must_not`, for includes `must` (AND) or `should` (OR) is used. Subgroups use `must`.
         $includingMethod = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical() ? 'addMust' : 'addShould';
+        $includingType = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical() ? 'must' : 'should';
 
         // FIXME Objects need type formatter. `elastic_search_value_transformer` (use extensions to configure types)
 
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             if ($valuesBag->hasSimpleValues()) {
-                $bool->{$includingMethod}(new Terms($this->mappings[$fieldName]->indexName, $valuesBag->getSimpleValues()));
+                $bool[$includingType][]['terms'] = [$this->mappings[$fieldName]->indexName => array_values($valuesBag->getSimpleValues())];
             }
 
             if ($valuesBag->hasExcludedSimpleValues()) {
-                $bool->addMustNot(new Terms($this->mappings[$fieldName]->indexName, $valuesBag->getExcludedSimpleValues()));
+                $bool['must_not'][]['terms'] = [$this->mappings[$fieldName]->indexName => array_values($valuesBag->getExcludedSimpleValues())];
             }
 
             /** @var Range $range */
@@ -101,7 +97,7 @@ class QueryConditionGenerator
                     $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
                 ];
 
-                $bool->{$includingMethod}(new ESRange($this->mappings[$fieldName]->indexName, $rangeParams));
+                $bool[$includingType][] = [$this->mappings[$fieldName]->indexName => $rangeParams];
             }
 
             foreach ($valuesBag->get(ExcludedRange::class) as $range) {
@@ -110,71 +106,63 @@ class QueryConditionGenerator
                     $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
                 ];
 
-                $bool->addMustNot(new ESRange($this->mappings[$fieldName]->indexName, $rangeParams));
+                $bool['must_not'][] = [$this->mappings[$fieldName]->indexName => $rangeParams];
             }
 
             /** @var Compare $compare */
             foreach ($valuesBag->get(Compare::class) as $compare) {
                 if ($operator = $compare->getOperator() === '<>') {
-                    $bool->addMustNot(new Term($this->mappings[$fieldName]->indexName, $compare->getValue()));
+                    $bool['must_not'][] = [$this->mappings[$fieldName]->indexName, ['value' => $compare->getValue()]];
                 } else {
-                    $bool->{$includingMethod}(new ESRange($this->mappings[$fieldName]->indexName, [self::COMPARE_OPR_TYPE[$operator] => $compare->getValue()]));
+                    $bool[$includingType][] = [$this->mappings[$fieldName]->indexName => [self::COMPARE_OPR_TYPE[$operator] => $compare->getValue()]];
                 }
             }
 
-            $this->processPatternMatchers($valuesBag->get(PatternMatch::class), $fieldName, $bool, $includingMethod);
+            $this->processPatternMatchers($valuesBag->get(PatternMatch::class), $fieldName, $bool, $includingType);
         }
 
         foreach ($group->getGroups() as $subGroup) {
             $subGroupCondition = $this->processGroup($subGroup);
 
-            if ([] !== $subGroupCondition->getParams()) {
-                $bool->addMust($subGroupCondition);
+            if ([] !== $subGroupCondition) {
+                $bool['must'][] = $subGroupCondition;
             }
         }
 
-        return $bool;
+        return ['bool' => $bool];
     }
 
-    private function processPatternMatchers(array $values, string $fieldName, BoolQuery $bool, string $includingMethod)
+    private function processPatternMatchers(array $values, string $fieldName, array &$bool, string $includingType)
     {
         // Note. Elasticsearch supports case-insensitive only at index level.
 
         /** @var PatternMatch $patternMatch */
         foreach ($values as $patternMatch) {
             switch ($patternMatch->getType()) {
-                // Faster then Wildcard but less accurate. Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
+                // Faster then Wildcard but less accurate. XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
                 case PatternMatch::PATTERN_CONTAINS:
                 case PatternMatch::PATTERN_NOT_CONTAINS:
-                    $value = new Match($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
+                    $value['match'] = [$this->mappings[$fieldName]->indexName, ['query' => $patternMatch->getValue()]];
                     break;
 
                 case PatternMatch::PATTERN_STARTS_WITH:
                 case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                    $value = (new Prefix())->setPrefix(
-                        $this->mappings[$fieldName]->indexName,
-                        $patternMatch->getValue()
-                    );
+                    $value['prefix'] = [$this->mappings[$fieldName]->indexName, ['value' => $patternMatch->getValue()]];
                     break;
 
                 case PatternMatch::PATTERN_ENDS_WITH:
                 case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                    $value = new Wildcard(
-                        $this->mappings[$fieldName]->indexName,
-                        '?'.addcslashes($patternMatch->getValue(), '?*')
-                    );
+                    $value['wildcard'] = [$this->mappings[$fieldName]->indexName, ['value' => '?'.addcslashes($patternMatch->getValue(), '?*')]];
                     break;
 
                 default:
-                    throw new InvalidSearchConditionException(
-                        sprintf('PatternMatch type "%s"', $patternMatch->getType())
-                    );
+                    throw new BadMethodCallException(sprintf('PatternMatch type "%s"', $patternMatch->getType()));
             }
 
             if ($patternMatch->isExclusive()) {
-                $bool->addMustNot($value);
+                $bool['must_not'][] = $value;
             } else {
-                $bool->{$includingMethod}($value);
+                $bool[$includingType][] = $value;
             }
         }
     }

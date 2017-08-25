@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Tests\ElasticSearch;
+namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -35,7 +35,7 @@ class QueryConditionGeneratorTest extends SearchIntegrationTestCase
 
         $g = new QueryConditionGenerator($condition);
 
-        echo json_encode($g->getQuery()->toArray(), JSON_PRETTY_PRINT);
+        echo json_encode($g->getQuery(), JSON_PRETTY_PRINT);
 
 //        {
 //            "bool": {
