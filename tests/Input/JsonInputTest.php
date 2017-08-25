@@ -162,7 +162,6 @@ final class JsonInputTest extends InputProcessorTestCase
                                     ['value' => 'value', 'type' => 'CONTAINS'],
                                     ['value' => 'value2', 'type' => 'STARTS_WITH', 'case-insensitive' => true],
                                     ['value' => 'value3', 'type' => 'ENDS_WITH'],
-                                    ['value' => '^foo|bar?', 'type' => 'REGEX'],
                                     ['value' => 'value4', 'type' => 'NOT_CONTAINS'],
                                     ['value' => 'value5', 'type' => 'NOT_CONTAINS', 'case-insensitive' => true],
                                     ['value' => 'value9', 'type' => 'EQUALS'],

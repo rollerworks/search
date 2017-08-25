@@ -250,7 +250,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $values->add(new PatternMatch('value', PatternMatch::PATTERN_CONTAINS));
         $values->add(new PatternMatch('value2', PatternMatch::PATTERN_STARTS_WITH, true));
         $values->add(new PatternMatch('value3', PatternMatch::PATTERN_ENDS_WITH));
-        $values->add(new PatternMatch('^foo|bar?', PatternMatch::PATTERN_REGEX));
         $values->add(new PatternMatch('value4', PatternMatch::PATTERN_NOT_CONTAINS));
         $values->add(new PatternMatch('value5', PatternMatch::PATTERN_NOT_CONTAINS, true));
         $values->add(new PatternMatch('value9', PatternMatch::PATTERN_EQUALS));

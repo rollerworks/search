@@ -14,7 +14,7 @@ parameters:
         - '#Call to an undefined method DateTimeInterface\:\:setTimezone\(\)#'
         - '#Call to an undefined method Money\\Exception\:\:getMessage\(\)#'
         - '#Call to an undefined method Exception\:\:getErrors\(\)#'
-        - '#expects Rollerworks\\Component\\Search\\Field\\FieldTypeExtension\[\], mixed\[\]\[\] given#'
+        - '#expects Rollerworks\\Component\\Search\\Field\\FieldTypeExtension\[\], Rollerworks\\Component\\Search\\Field\\FieldTypeExtension\[\]\[\] given#'
         - '#\(mixed\[\]\[\]\) does not accept iterable\(iterable\(mixed\[\]\)\[\]\)#'
         - '#Undefined variable: \$(c|flatChoices)#'
 

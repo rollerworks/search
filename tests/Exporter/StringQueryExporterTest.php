@@ -84,7 +84,7 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
 
     public function provideMatcherValuesTest()
     {
-        return 'name: ~* value, ~i> value2, ~< value3, ~? "^foo|bar?", ~!* value4, ~i!* value5, ~= value9, ~!= value10, ~i= value11, ~i!= value12;';
+        return 'name: ~* value, ~i> value2, ~< value3, ~!* value4, ~i!* value5, ~= value9, ~!= value10, ~i= value11, ~i!= value12;';
     }
 
     public function provideGroupTest()

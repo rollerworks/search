@@ -162,7 +162,6 @@ final class XmlExporterTest extends SearchConditionExporterTestCase
                         <pattern-matcher type="contains" case-insensitive="false">value</pattern-matcher>
                         <pattern-matcher type="starts_with" case-insensitive="true">value2</pattern-matcher>
                         <pattern-matcher type="ends_with" case-insensitive="false">value3</pattern-matcher>
-                        <pattern-matcher type="regex" case-insensitive="false">^foo|bar?</pattern-matcher>
                         <pattern-matcher type="not_contains" case-insensitive="false">value4</pattern-matcher>
                         <pattern-matcher type="not_contains" case-insensitive="true">value5</pattern-matcher>
                         <pattern-matcher type="equals" case-insensitive="false">value9</pattern-matcher>

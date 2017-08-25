@@ -113,7 +113,6 @@ final class ArrayExporterTest extends SearchConditionExporterTestCase
                         ['type' => 'CONTAINS', 'value' => 'value', 'case-insensitive' => false],
                         ['type' => 'STARTS_WITH', 'value' => 'value2', 'case-insensitive' => true],
                         ['type' => 'ENDS_WITH', 'value' => 'value3', 'case-insensitive' => false],
-                        ['type' => 'REGEX', 'value' => '^foo|bar?', 'case-insensitive' => false],
                         ['type' => 'NOT_CONTAINS', 'value' => 'value4', 'case-insensitive' => false],
                         ['type' => 'NOT_CONTAINS', 'value' => 'value5', 'case-insensitive' => true],
                         ['type' => 'EQUALS', 'value' => 'value9', 'case-insensitive' => false],
