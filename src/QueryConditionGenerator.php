@@ -165,11 +165,6 @@ class QueryConditionGenerator
                     );
                     break;
 
-                case PatternMatch::PATTERN_REGEX:
-                case PatternMatch::PATTERN_NOT_REGEX:
-                    $value = new Regexp($this->mappings[$fieldName]->indexName, $patternMatch->getValue());
-                    break;
-
                 default:
                     throw new InvalidSearchConditionException(
                         sprintf('PatternMatch type "%s"', $patternMatch->getType())
