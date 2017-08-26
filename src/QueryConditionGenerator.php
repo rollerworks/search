@@ -19,7 +19,7 @@ use Rollerworks\Component\Search\Value\{
     Compare, ExcludedRange, PatternMatch, Range, ValuesGroup
 };
 
-// Allow to mark Field as id https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
+// XXX Allow to mark Field as id https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
 
 final class QueryConditionGenerator
 {
@@ -76,7 +76,6 @@ final class QueryConditionGenerator
         $bool = [];
 
         // Note: Excludes are `must_not`, for includes `must` (AND) or `should` (OR) is used. Subgroups use `must`.
-        $includingMethod = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical() ? 'addMust' : 'addShould';
         $includingType = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical() ? 'must' : 'should';
 
         // FIXME Objects need type formatter. `elastic_search_value_transformer` (use extensions to configure types)
@@ -111,10 +110,14 @@ final class QueryConditionGenerator
 
             /** @var Compare $compare */
             foreach ($valuesBag->get(Compare::class) as $compare) {
-                if ($operator = $compare->getOperator() === '<>') {
-                    $bool['must_not'][] = [$this->mappings[$fieldName]->indexName, ['value' => $compare->getValue()]];
+                if ('<>' === ($operator = $compare->getOperator())) {
+                    $bool['must_not'][]['term'] = [$this->mappings[$fieldName]->indexName => ['value' => $compare->getValue()]];
                 } else {
-                    $bool[$includingType][] = [$this->mappings[$fieldName]->indexName => [self::COMPARE_OPR_TYPE[$operator] => $compare->getValue()]];
+                    $bool[$includingType][] = [
+                        $this->mappings[$fieldName]->indexName => [
+                            self::COMPARE_OPR_TYPE[$operator] => $compare->getValue(),
+                        ],
+                    ];
                 }
             }
 
@@ -129,6 +132,10 @@ final class QueryConditionGenerator
             }
         }
 
+        if ([] === $bool) {
+            return [];
+        }
+
         return ['bool' => $bool];
     }
 
@@ -138,25 +145,32 @@ final class QueryConditionGenerator
 
         /** @var PatternMatch $patternMatch */
         foreach ($values as $patternMatch) {
+            $value = [];
+
             switch ($patternMatch->getType()) {
                 // Faster then Wildcard but less accurate. XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
                 case PatternMatch::PATTERN_CONTAINS:
                 case PatternMatch::PATTERN_NOT_CONTAINS:
-                    $value['match'] = [$this->mappings[$fieldName]->indexName, ['query' => $patternMatch->getValue()]];
+                    $value['match'] = [$this->mappings[$fieldName]->indexName => ['query' => $patternMatch->getValue()]];
                     break;
 
                 case PatternMatch::PATTERN_STARTS_WITH:
                 case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                    $value['prefix'] = [$this->mappings[$fieldName]->indexName, ['value' => $patternMatch->getValue()]];
+                    $value['prefix'] = [$this->mappings[$fieldName]->indexName => ['value' => $patternMatch->getValue()]];
                     break;
 
                 case PatternMatch::PATTERN_ENDS_WITH:
                 case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                    $value['wildcard'] = [$this->mappings[$fieldName]->indexName, ['value' => '?'.addcslashes($patternMatch->getValue(), '?*')]];
+                    $value['wildcard'] = [$this->mappings[$fieldName]->indexName => ['value' => '?'.addcslashes($patternMatch->getValue(), '?*')]];
+                    break;
+
+                case PatternMatch::PATTERN_EQUALS:
+                case PatternMatch::PATTERN_NOT_EQUALS:
+                    $value['term'] = [$this->mappings[$fieldName]->indexName => ['value' => $patternMatch->getValue()]];
                     break;
 
                 default:
-                    throw new BadMethodCallException(sprintf('PatternMatch type "%s"', $patternMatch->getType()));
+                    throw new BadMethodCallException(sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType()));
             }
 
             if ($patternMatch->isExclusive()) {
