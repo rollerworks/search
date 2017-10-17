@@ -104,7 +104,7 @@ class DqlConditionGenerator extends AbstractConditionGenerator
             $connection = $this->entityManager->getConnection();
             $queryGenerator = new QueryGenerator($connection, $platform, $fields);
 
-            $this->nativePlatform = $this->getQueryPlatform($connection, $fields);
+            $this->nativePlatform = $this->getQueryPlatform($connection);
             $this->whereClause = $queryGenerator->getGroupQuery($this->searchCondition->getValuesGroup());
             $this->parameters = $platform->getEmbeddedValues();
         }
