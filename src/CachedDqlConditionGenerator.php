@@ -86,10 +86,7 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator
         if (null === $this->whereClause) {
             $cacheKey = $this->getCacheKey();
 
-            $this->nativePlatform = $this->getQueryPlatform(
-                $this->conditionGenerator->getEntityManager()->getConnection(),
-                $this->conditionGenerator->getFieldsConfig()->getFields()
-            );
+            $this->nativePlatform = $this->getQueryPlatform($this->conditionGenerator->getEntityManager()->getConnection());
 
             if (null !== $cacheItem = $this->cacheDriver->get($cacheKey)) {
                 list($this->whereClause, $this->parameters) = $cacheItem;

@@ -15,29 +15,22 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\DBAL\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\SqlQueryPlatform;
 
 /**
  * @internal
  */
 trait QueryPlatformTrait
 {
-    /**
-     * Gets the QueryPlatform based on the connection.
-     *
-     * @param Connection $connection
-     * @param array      $fields
-     *
-     * @return QueryPlatform
-     */
-    protected function getQueryPlatform(Connection $connection, array $fields): QueryPlatform
+    protected function getQueryPlatform(Connection $connection): QueryPlatform
     {
         $dbPlatform = ucfirst($connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';
 
         if (class_exists($platformClass)) {
-            return new $platformClass($connection, $fields);
+            return new $platformClass($connection);
         }
 
-        throw new \RuntimeException(sprintf('No supported class found for database-platform "%s".', $dbPlatform));
+        return new SqlQueryPlatform($connection);
     }
 }
