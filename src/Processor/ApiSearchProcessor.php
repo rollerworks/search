@@ -116,8 +116,11 @@ final class ApiSearchProcessor implements SearchProcessor
 
         $exported = $this->exportFactory->get('array')->exportCondition($payload->searchCondition);
         $payload->searchCode = http_build_query($exported);
-        $payload->exportedCondition = $exported;
         $payload->exportedFormat = 'array';
+
+        // Parse query-string back into a array to by-pass bool conversion in URI
+        // https://github.com/rollerworks/search/issues/177
+        parse_str($payload->searchCode, $payload->exportedCondition);
     }
 
     private function storeCache(ProcessorConfig $config, SearchPayload $payload): void
