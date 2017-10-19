@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Elasticsearch\Functional;
 
 use Elastica\Client;
 use Elastica\Document;
+use Elastica\Exception\ResponseException;
 use Elastica\Search;
 use Elastica\Type\Mapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
@@ -24,6 +25,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Elasticsearch\ElasticsearchTestCase;
 
@@ -166,9 +168,9 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     /**
      * @param bool $build
      *
-     * @return \Rollerworks\Component\Search\FieldSet
+     * @return FieldSet
      */
-    protected function getFieldSet(bool $build = true)
+    protected function getFieldSet(bool $build = true): FieldSet
     {
         $builder = $this->getFactory()->createFieldSetBuilder();
 
@@ -200,24 +202,24 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
      */
     protected function configureConditionGenerator(QueryConditionGenerator $conditionGenerator)
     {
-        // TODO: mapping field set alias to Elasticsearch property
-
         $conditionGenerator->registerField('id', '/invoices/invoices#_id');
 
-        /*
-$conditionGenerator->registerField('label', 'label');
-$conditionGenerator->registerField('pub-date', 'date');
-$conditionGenerator->registerField('status', 'status');
-$conditionGenerator->registerField('total', 'total');
-$conditionGenerator->registerField('row-label', 'label');
-$conditionGenerator->registerField('row-price', 'price');
-$conditionGenerator->registerField('row-quantity', 'quantity');
-$conditionGenerator->registerField('row-total', 'total');
-$conditionGenerator->registerField('customer', 'id');
-$conditionGenerator->registerField('customer-name#first_name', 'firstName');
-$conditionGenerator->registerField('customer-name#last_name', 'lastName');
-$conditionGenerator->registerField('customer-birthday', 'birthday');
-*/
+        // TODO: fill these out properly
+        $conditionGenerator->registerField('label', '/invoices/invoices#label');
+        $conditionGenerator->registerField('pub-date', '/invoices/invoices#pubdate');
+        $conditionGenerator->registerField('status', '/invoices/invoices#status');
+        $conditionGenerator->registerField('total', '/invoices/invoices#total');
+
+        // $conditionGenerator->registerField('status', 'status');
+        // $conditionGenerator->registerField('total', 'total');
+        // $conditionGenerator->registerField('row-label', 'label');
+        // $conditionGenerator->registerField('row-price', 'price');
+        // $conditionGenerator->registerField('row-quantity', 'quantity');
+        // $conditionGenerator->registerField('row-total', 'total');
+        // $conditionGenerator->registerField('customer', 'id');
+        // $conditionGenerator->registerField('customer-name#first_name', 'firstName');
+        // $conditionGenerator->registerField('customer-name#last_name', 'lastName');
+        // $conditionGenerator->registerField('customer-birthday', 'birthday');
     }
 
     /**
@@ -239,23 +241,39 @@ $conditionGenerator->registerField('customer-birthday', 'birthday');
                 ->addType($mapping->typeName);
         }
 
-        $results = $search->search($query);
-        $documents = $results->getDocuments();
-        $foundIds = array_map(
-            function (Document $document) {
-                return $document->getId();
-            },
-            $documents
-        );
+        try {
+            $results = $search->search($query);
+            $documents = $results->getDocuments();
+            $foundIds = array_map(
+                function (Document $document) {
+                    return $document->getId();
+                },
+                $documents
+            );
+        } catch (ResponseException $exception) {
+            $this->fail(sprintf(
+                "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
+                $exception->getMessage(),
+                $search->getPath(),
+                json_encode($query, JSON_PRETTY_PRINT)
+            ));
 
-        // TODO: this shouldn't be necessary, order is not arbitary for a search result
+            return;
+        }
+
+        // TODO: this sort shouldn't be necessary, order is not arbitrary for a search result
         sort($expectedIds);
         sort($foundIds);
 
         $this->assertEquals(
             $expectedIds,
             $foundIds,
-            sprintf("Found these records instead: \n%s\nWith query: ---------------------\n%s\n---------------------------------\n", print_r($documents, true), json_encode($query, JSON_PRETTY_PRINT))
+            sprintf(
+                "Found these records instead: \n%s\n"
+                ."With query: ---------------------\n%s\n---------------------------------\n",
+                print_r($documents, true),
+                json_encode($query, JSON_PRETTY_PRINT)
+            )
         );
     }
 }

@@ -23,6 +23,8 @@ use Rollerworks\Component\Search\Value\{
 
 final class QueryConditionGenerator
 {
+    private const PROPERTY_ID = '_id';
+
     private $searchCondition;
     // private $fieldSet;
 
@@ -76,19 +78,19 @@ final class QueryConditionGenerator
         $group = $this->searchCondition->getValuesGroup();
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             if ($valuesBag->hasSimpleValues()) {
-                $mappings[] = $this->mappings[$fieldName];
+                $mappings[$fieldName] = $this->mappings[$fieldName];
             }
 
             if ($valuesBag->has(Range::class)) {
-                $mappings[] = $this->mappings[$fieldName];
+                $mappings[$fieldName] = $this->mappings[$fieldName];
             }
 
             if ($valuesBag->has(Compare::class)) {
-                $mappings[] = $this->mappings[$fieldName];
+                $mappings[$fieldName] = $this->mappings[$fieldName];
             }
         }
 
-        return array_unique($mappings);
+        return array_values($mappings);
     }
 
     private function processGroup(ValuesGroup $group): array
@@ -101,40 +103,64 @@ final class QueryConditionGenerator
         // FIXME Objects need type formatter. `elastic_search_value_transformer` (use extensions to configure types)
 
         foreach ($group->getFields() as $fieldName => $valuesBag) {
+            $propertyName = $this->mappings[$fieldName]->propertyName;
+
             if ($valuesBag->hasSimpleValues()) {
-                $bool[$includingType][]['terms'] = [$this->mappings[$fieldName]->propertyName => array_values($valuesBag->getSimpleValues())];
+                $bool[$includingType][]['terms'] = [$propertyName => array_values($valuesBag->getSimpleValues())];
             }
 
             if ($valuesBag->hasExcludedSimpleValues()) {
-                $bool['must_not'][]['terms'] = [$this->mappings[$fieldName]->propertyName => array_values($valuesBag->getExcludedSimpleValues())];
+                $bool['must_not'][]['terms'] = [$propertyName => array_values($valuesBag->getExcludedSimpleValues())];
             }
 
-            /** @var Range $range */
-            foreach ($valuesBag->get(Range::class) as $range) {
-                $rangeParams = [
-                    $range->isLowerInclusive() ? 'lte' : 'lt' => $range->getLower(),
-                    $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
-                ];
-
-                $bool[$includingType][] = [$this->mappings[$fieldName]->propertyName => $rangeParams];
+            $isId = self::PROPERTY_ID === $propertyName;
+            if (true === $isId) {
+                $propertyName = 'ids';
             }
 
-            foreach ($valuesBag->get(ExcludedRange::class) as $range) {
-                $rangeParams = [
-                    $range->isLowerInclusive() ? 'lte' : 'lt' => $range->getLower(),
-                    $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
-                ];
+            if (false === $isId) {
+                /** @var Range $range */
+                foreach ($valuesBag->get(Range::class) as $range) {
+                    $rangeParams = [
+                        $range->isLowerInclusive() ? 'lte' : 'lt' => $range->getLower(),
+                        $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
+                    ];
 
-                $bool['must_not'][] = [$this->mappings[$fieldName]->propertyName => $rangeParams];
+                    $bool[$includingType][] = [$propertyName => $rangeParams];
+                }
+
+                foreach ($valuesBag->get(ExcludedRange::class) as $range) {
+                    $rangeParams = [
+                        $range->isLowerInclusive() ? 'lte' : 'lt' => $range->getLower(),
+                        $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
+                    ];
+
+                    $bool['must_not'][] = [$propertyName => $rangeParams];
+                }
+            } else {
+                $ids = [];
+                foreach ($valuesBag->get(Range::class) as $range) {
+                    $ids = array_merge($ids, range($range->getLower(), $range->getUpper()));
+                }
+
+                $excludeIds = [];
+                foreach ($valuesBag->get(ExcludedRange::class) as $range) {
+                    $excludeIds = array_merge($excludeIds, range($range->getLower(), $range->getUpper()));
+                }
+                $ids = array_diff($ids, $excludeIds);
+
+                if (false === empty($ids)) {
+                    $bool[$includingType][] = [$propertyName => ['values' => $ids]];
+                }
             }
 
             /** @var Compare $compare */
             foreach ($valuesBag->get(Compare::class) as $compare) {
                 if ('<>' === ($operator = $compare->getOperator())) {
-                    $bool['must_not'][]['term'] = [$this->mappings[$fieldName]->propertyName => ['value' => $compare->getValue()]];
+                    $bool['must_not'][]['term'] = [$propertyName => ['value' => $compare->getValue()]];
                 } else {
                     $bool[$includingType][] = [
-                        $this->mappings[$fieldName]->propertyName => [
+                        $propertyName => [
                             self::COMPARE_OPR_TYPE[$operator] => $compare->getValue(),
                         ],
                     ];
