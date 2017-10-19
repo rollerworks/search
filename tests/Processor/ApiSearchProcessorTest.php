@@ -24,6 +24,7 @@ use Rollerworks\Component\Search\Processor\ProcessorConfig;
 use Rollerworks\Component\Search\Processor\SearchPayload;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
+use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,6 +112,60 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
         self::assertEquals('array', $payload->exportedFormat);
         self::assertEquals(['fields' => ['title' => ['simple-values' => ['Symfony']]]], $payload->exportedCondition);
         self::assertEquals('fields%5Btitle%5D%5Bsimple-values%5D%5B0%5D=Symfony', $payload->searchCode);
+    }
+
+    public function testProcessSearchCodeFromQueryWithBooleanConversion()
+    {
+        $config = new ProcessorConfig($this->fieldSet);
+        $request = Request::create('/books', 'GET', [
+            'search' => [
+                'fields' => [
+                    'title' => [
+                        'pattern-matchers' => [
+                            [
+                                'type' => 'CONTAINS',
+                                'value' => 'Symfony',
+                                'case-insensitive' => '1',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $payload = $this->createProcessor()->processRequest($request, $config);
+
+        self::assertFalse($payload->isChanged());
+        self::assertTrue($payload->isValid());
+        self::assertEmpty($payload->messages);
+        self::assertEquals(
+            new SearchCondition(
+                $this->fieldSet,
+                (new ValuesGroup())->addField('title', (new ValuesBag())->add(new PatternMatch('Symfony', PatternMatch::PATTERN_CONTAINS, true)))
+            ),
+            $payload->searchCondition
+        );
+        self::assertEquals('array', $payload->exportedFormat);
+        self::assertSame(
+            [
+                'fields' => [
+                    'title' => [
+                        'pattern-matchers' => [
+                            [
+                                'type' => 'CONTAINS',
+                                'value' => 'Symfony',
+                                'case-insensitive' => '1',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $payload->exportedCondition
+        );
+        self::assertEquals(
+            'fields%5Btitle%5D%5Bpattern-matchers%5D%5B0%5D%5Btype%5D=CONTAINS&fields%5Btitle%5D%5Bpattern-matchers%5D%5B0%5D%5Bvalue%5D=Symfony&fields%5Btitle%5D%5Bpattern-matchers%5D%5B0%5D%5Bcase-insensitive%5D=1',
+            $payload->searchCode
+        );
     }
 
     public function testProcessSearchCodeWithChanges()
