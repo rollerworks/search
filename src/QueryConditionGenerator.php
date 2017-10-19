@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Elasticsearch;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
+use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\{
     Compare, ExcludedRange, PatternMatch, Range, ValuesGroup
@@ -36,7 +38,7 @@ final class QueryConditionGenerator
     public function __construct(SearchCondition $searchCondition)
     {
         $this->searchCondition = $searchCondition;
-        // $this->fieldSet = $searchCondition->getFieldSet();
+        $this->fieldSet = $searchCondition->getFieldSet();
         // $this->mappings = ['id' => $mapping, 'name' => $mapping2]; // TODO MultiMatch
     }
 
@@ -104,9 +106,26 @@ final class QueryConditionGenerator
 
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             $propertyName = $this->mappings[$fieldName]->propertyName;
+            $field = $this->fieldSet->get($fieldName);
+
+            // TODO: hack, review and fix
+            $fieldType = $field->getType()->getInnerType();
+            $dateTransformer = new DateTimeToStringTransformer(null, 'UTC', 'Y-m-d');
 
             if ($valuesBag->hasSimpleValues()) {
-                $bool[$includingType][]['terms'] = [$propertyName => array_values($valuesBag->getSimpleValues())];
+                if ($fieldType instanceof DateType) {
+                    // date lookups behave like a range even for an exact value in Elasticsearch
+                    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates
+                    $values = array_values($valuesBag->getSimpleValues());
+                    foreach ($values as $idx => $value) {
+                        $valuesBag->removeSimpleValue($idx);
+                        $value = $dateTransformer->transform($value);
+                        $range = new Range($value, $value);
+                        $valuesBag->add($range);
+                    }
+                } else {
+                    $bool[$includingType][]['terms'] = [$propertyName => array_values($valuesBag->getSimpleValues())];
+                }
             }
 
             if ($valuesBag->hasExcludedSimpleValues()) {
@@ -114,9 +133,6 @@ final class QueryConditionGenerator
             }
 
             $isId = self::PROPERTY_ID === $propertyName;
-            if (true === $isId) {
-                $propertyName = 'ids';
-            }
 
             if (false === $isId) {
                 /** @var Range $range */
@@ -126,7 +142,7 @@ final class QueryConditionGenerator
                         $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
                     ];
 
-                    $bool[$includingType][] = [$propertyName => $rangeParams];
+                    $bool[$includingType][]['range'][$propertyName] = $rangeParams;
                 }
 
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
@@ -135,22 +151,23 @@ final class QueryConditionGenerator
                         $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
                     ];
 
-                    $bool['must_not'][] = [$propertyName => $rangeParams];
+                    $bool['must_not'][]['range'][$propertyName] = $rangeParams;
                 }
             } else {
                 $ids = [];
                 foreach ($valuesBag->get(Range::class) as $range) {
                     $ids = array_merge($ids, range($range->getLower(), $range->getUpper()));
                 }
+                if (false === empty($ids)) {
+                    $bool[$includingType][] = ['ids' => ['values' => $ids]];
+                }
 
                 $excludeIds = [];
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
                     $excludeIds = array_merge($excludeIds, range($range->getLower(), $range->getUpper()));
                 }
-                $ids = array_diff($ids, $excludeIds);
-
-                if (false === empty($ids)) {
-                    $bool[$includingType][] = [$propertyName => ['values' => $ids]];
+                if (false === empty($excludeIds)) {
+                    $bool['must_not'][] = ['ids' => ['values' => $excludeIds]];
                 }
             }
 

@@ -43,19 +43,37 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
     /**
      * @test
      */
+    public function it_finds_ids_with_range_and_excluding_by_id()
+    {
+        $this->makeTest('id: 1~7, !2;', [1, 3, 4, 5, 6]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_with_date()
+    {
+        $this->makeTest('pub-date: 2010-05-10', [1, 2]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_with_range_and_excluding_by_id()
+    {
+        $this->markTestSkipped('date support');
+        $this->makeTest('pub-date: "2010-05-10"; id: !2;', [1]);
+    }
+
+    /**
+     * @test
+     */
     public function it_finds_with_combined_field()
     {
         $this->markTestSkipped('nested query support');
         $this->makeTest('customer-name: Pang, Leroy;', [1, 2, 3, 4]);
     }
 
-    /**
-     * @test
-     */
-    public function it_finds_with_range_and_excluding()
-    {
-        $this->makeTest('id: 1~7, !2;', [1, 3, 4, 5, 6]);
-    }
     /**
      * @test
      */
