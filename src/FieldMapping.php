@@ -15,7 +15,48 @@ namespace Rollerworks\Component\Search\Elasticsearch;
 
 final class FieldMapping
 {
+    public $fieldName;
     public $indexName;
+    public $typeName;
+    public $propertyName;
     public $boost;
     public $options; // special options (reserved)
+
+    public function __construct(string $fieldName, string $property)
+    {
+        $this->fieldName = $fieldName;
+
+        $mapping = $this->parseProperty($property);
+        $this->indexName = $mapping['indexName'];
+        $this->typeName = $mapping['typeName'];
+        $this->propertyName = $mapping['propertyName'];
+    }
+
+    /**
+     * Supported formats:
+     *      - <property>
+     *      - /<index>#<property>
+     *      - /<index>/<type>#<property>.
+     *
+     * @param string $property
+     *
+     * @return string[]
+     */
+    private function parseProperty(string $property): array
+    {
+        $indexName = null;
+        $typeName = null;
+        $propertyName = $property;
+        if (false !== strpos($property, '#')) {
+            [$path, $propertyName] = explode('#', $property);
+
+            $path = trim($path, '/');
+            $indexName = $path;
+            if (false !== strpos($path, '/')) {
+                [$indexName, $typeName] = explode('/', $path);
+            }
+        }
+
+        return compact('indexName', 'typeName', 'propertyName');
+    }
 }

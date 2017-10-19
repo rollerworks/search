@@ -24,7 +24,7 @@ use Rollerworks\Component\Search\Value\{
 final class QueryConditionGenerator
 {
     private $searchCondition;
-    private $fieldSet;
+    // private $fieldSet;
 
     private const COMPARE_OPR_TYPE = ['>=' => 'gte', '<=' => 'lte', '<' => 'lt', '>' => 'gt'];
 
@@ -33,19 +33,14 @@ final class QueryConditionGenerator
 
     public function __construct(SearchCondition $searchCondition)
     {
-        $mapping = new FieldMapping();
-        $mapping->indexName = 'id';
-
-        $mapping2 = new FieldMapping();
-        $mapping2->indexName = 'name';
-
         $this->searchCondition = $searchCondition;
-        $this->fieldSet = $searchCondition->getFieldSet();
-        $this->mappings = ['id' => $mapping, 'name' => $mapping2]; // TODO MultiMatch
+        // $this->fieldSet = $searchCondition->getFieldSet();
+        // $this->mappings = ['id' => $mapping, 'name' => $mapping2]; // TODO MultiMatch
     }
 
-    public function registerField(string $fieldName): FieldMapping
+    public function registerField(string $fieldName, string $mapping)
     {
+        $this->mappings[$fieldName] = new FieldMapping($fieldName, $mapping);
     }
 
     /**
@@ -56,7 +51,7 @@ final class QueryConditionGenerator
      *
      * @return MultiFieldMapping
      */
-    public function registerMultiField(string $fieldName): MultiFieldMapping
+    public function registerMultiField(string $fieldName)
     {
     }
 
@@ -68,7 +63,32 @@ final class QueryConditionGenerator
             return null;
         }
 
-        return $rootGroupCondition;
+        return ['query' => $rootGroupCondition];
+    }
+
+    /**
+     * @return FieldMapping[]
+     */
+    public function getMappings(): array
+    {
+        $mappings = [];
+
+        $group = $this->searchCondition->getValuesGroup();
+        foreach ($group->getFields() as $fieldName => $valuesBag) {
+            if ($valuesBag->hasSimpleValues()) {
+                $mappings[] = $this->mappings[$fieldName];
+            }
+
+            if ($valuesBag->has(Range::class)) {
+                $mappings[] = $this->mappings[$fieldName];
+            }
+
+            if ($valuesBag->has(Compare::class)) {
+                $mappings[] = $this->mappings[$fieldName];
+            }
+        }
+
+        return array_unique($mappings);
     }
 
     private function processGroup(ValuesGroup $group): array
@@ -82,11 +102,11 @@ final class QueryConditionGenerator
 
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             if ($valuesBag->hasSimpleValues()) {
-                $bool[$includingType][]['terms'] = [$this->mappings[$fieldName]->indexName => array_values($valuesBag->getSimpleValues())];
+                $bool[$includingType][]['terms'] = [$this->mappings[$fieldName]->propertyName => array_values($valuesBag->getSimpleValues())];
             }
 
             if ($valuesBag->hasExcludedSimpleValues()) {
-                $bool['must_not'][]['terms'] = [$this->mappings[$fieldName]->indexName => array_values($valuesBag->getExcludedSimpleValues())];
+                $bool['must_not'][]['terms'] = [$this->mappings[$fieldName]->propertyName => array_values($valuesBag->getExcludedSimpleValues())];
             }
 
             /** @var Range $range */
@@ -96,7 +116,7 @@ final class QueryConditionGenerator
                     $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
                 ];
 
-                $bool[$includingType][] = [$this->mappings[$fieldName]->indexName => $rangeParams];
+                $bool[$includingType][] = [$this->mappings[$fieldName]->propertyName => $rangeParams];
             }
 
             foreach ($valuesBag->get(ExcludedRange::class) as $range) {
@@ -105,16 +125,16 @@ final class QueryConditionGenerator
                     $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
                 ];
 
-                $bool['must_not'][] = [$this->mappings[$fieldName]->indexName => $rangeParams];
+                $bool['must_not'][] = [$this->mappings[$fieldName]->propertyName => $rangeParams];
             }
 
             /** @var Compare $compare */
             foreach ($valuesBag->get(Compare::class) as $compare) {
                 if ('<>' === ($operator = $compare->getOperator())) {
-                    $bool['must_not'][]['term'] = [$this->mappings[$fieldName]->indexName => ['value' => $compare->getValue()]];
+                    $bool['must_not'][]['term'] = [$this->mappings[$fieldName]->propertyName => ['value' => $compare->getValue()]];
                 } else {
                     $bool[$includingType][] = [
-                        $this->mappings[$fieldName]->indexName => [
+                        $this->mappings[$fieldName]->propertyName => [
                             self::COMPARE_OPR_TYPE[$operator] => $compare->getValue(),
                         ],
                     ];
@@ -151,22 +171,22 @@ final class QueryConditionGenerator
                 // Faster then Wildcard but less accurate. XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
                 case PatternMatch::PATTERN_CONTAINS:
                 case PatternMatch::PATTERN_NOT_CONTAINS:
-                    $value['match'] = [$this->mappings[$fieldName]->indexName => ['query' => $patternMatch->getValue()]];
+                    $value['match'] = [$this->mappings[$fieldName]->propertyName => ['query' => $patternMatch->getValue()]];
                     break;
 
                 case PatternMatch::PATTERN_STARTS_WITH:
                 case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                    $value['prefix'] = [$this->mappings[$fieldName]->indexName => ['value' => $patternMatch->getValue()]];
+                    $value['prefix'] = [$this->mappings[$fieldName]->propertyName => ['value' => $patternMatch->getValue()]];
                     break;
 
                 case PatternMatch::PATTERN_ENDS_WITH:
                 case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                    $value['wildcard'] = [$this->mappings[$fieldName]->indexName => ['value' => '?'.addcslashes($patternMatch->getValue(), '?*')]];
+                    $value['wildcard'] = [$this->mappings[$fieldName]->propertyName => ['value' => '?'.addcslashes($patternMatch->getValue(), '?*')]];
                     break;
 
                 case PatternMatch::PATTERN_EQUALS:
                 case PatternMatch::PATTERN_NOT_EQUALS:
-                    $value['term'] = [$this->mappings[$fieldName]->indexName => ['value' => $patternMatch->getValue()]];
+                    $value['term'] = [$this->mappings[$fieldName]->propertyName => ['value' => $patternMatch->getValue()]];
                     break;
 
                 default:

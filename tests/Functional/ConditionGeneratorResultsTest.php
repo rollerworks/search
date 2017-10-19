@@ -37,7 +37,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_with_id()
     {
-        $this->markTestIncomplete('Missing Mapping functionality');
         $this->makeTest('id: 1, 5;', [1, 5]);
     }
 

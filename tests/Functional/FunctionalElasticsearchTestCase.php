@@ -202,21 +202,22 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     {
         // TODO: mapping field set alias to Elasticsearch property
 
+        $conditionGenerator->registerField('id', '/invoices/invoices#_id');
+
         /*
-        $conditionGenerator->registerField('id', 'id');
-        $conditionGenerator->registerField('label', 'label');
-        $conditionGenerator->registerField('pub-date', 'date');
-        $conditionGenerator->registerField('status', 'status');
-        $conditionGenerator->registerField('total', 'total');
-        $conditionGenerator->registerField('row-label', 'label');
-        $conditionGenerator->registerField('row-price', 'price');
-        $conditionGenerator->registerField('row-quantity', 'quantity');
-        $conditionGenerator->registerField('row-total', 'total');
-        $conditionGenerator->registerField('customer', 'id');
-        $conditionGenerator->registerField('customer-name#first_name', 'firstName');
-        $conditionGenerator->registerField('customer-name#last_name', 'lastName');
-        $conditionGenerator->registerField('customer-birthday', 'birthday');
-        */
+$conditionGenerator->registerField('label', 'label');
+$conditionGenerator->registerField('pub-date', 'date');
+$conditionGenerator->registerField('status', 'status');
+$conditionGenerator->registerField('total', 'total');
+$conditionGenerator->registerField('row-label', 'label');
+$conditionGenerator->registerField('row-price', 'price');
+$conditionGenerator->registerField('row-quantity', 'quantity');
+$conditionGenerator->registerField('row-total', 'total');
+$conditionGenerator->registerField('customer', 'id');
+$conditionGenerator->registerField('customer-name#first_name', 'firstName');
+$conditionGenerator->registerField('customer-name#last_name', 'lastName');
+$conditionGenerator->registerField('customer-birthday', 'birthday');
+*/
     }
 
     /**
@@ -228,18 +229,16 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $conditionGenerator = new QueryConditionGenerator($condition);
         $this->configureConditionGenerator($conditionGenerator);
 
-        // TODO: where do I get these from?
-        $index = 'invoices';
-        $type = 'invoices';
+        $mappings = $conditionGenerator->getMappings();
+        $query = $conditionGenerator->getQuery();
 
         $search = new Search($this->getClient());
-        $search
-            ->addIndex($index)
-            ->addType($type);
+        foreach ($mappings as $mapping) {
+            $search
+                ->addIndex($mapping->indexName)
+                ->addType($mapping->typeName);
+        }
 
-        $query = [
-            'query' => $conditionGenerator->getQuery(),
-        ];
         $results = $search->search($query);
         $documents = $results->getDocuments();
         $foundIds = array_map(
@@ -248,6 +247,10 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
             },
             $documents
         );
+
+        // TODO: this shouldn't be necessary, order is not arbitary for a search result
+        sort($expectedIds);
+        sort($foundIds);
 
         $this->assertEquals(
             $expectedIds,

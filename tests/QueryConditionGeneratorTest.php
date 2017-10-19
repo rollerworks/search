@@ -27,9 +27,10 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     public function it_generates_nothing_for_empty_condition()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())->getSearchCondition();
-        $g = new QueryConditionGenerator($condition);
+        $generator = new QueryConditionGenerator($condition);
+        $this->addMappings($generator);
 
-        self::assertNull($g->getQuery());
+        self::assertNull($generator->getQuery());
     }
 
     /** @test */
@@ -46,30 +47,33 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             ->end()
         ->getSearchCondition();
 
-        $g = new QueryConditionGenerator($condition);
+        $generator = new QueryConditionGenerator($condition);
+        $this->addMappings($generator);
 
         self::assertEquals([
-            'bool' => [
-                'must' => [
-                    [
-                        'terms' => [
-                            'id' => [
-                                2,
-                                5,
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'terms' => [
+                                'id' => [
+                                    2,
+                                    5,
+                                ],
                             ],
                         ],
-                    ],
-                    [
-                        'terms' => [
-                            'name' => [
-                                'Doctor',
-                                'Foo',
+                        [
+                            'terms' => [
+                                'name' => [
+                                    'Doctor',
+                                    'Foo',
+                                ],
                             ],
                         ],
                     ],
                 ],
             ],
-        ], $g->getQuery());
+        ], $generator->getQuery());
     }
 
     /** @test */
@@ -82,26 +86,29 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             ->end()
         ->getSearchCondition();
 
-        $g = new QueryConditionGenerator($condition);
+        $generator = new QueryConditionGenerator($condition);
+        $this->addMappings($generator);
 
         self::assertEquals([
-            'bool' => [
-                'must_not' => [
-                    [
-                        'terms' => [
-                            'id' => [5],
+            'query' => [
+                'bool' => [
+                    'must_not' => [
+                        [
+                            'terms' => [
+                                'id' => [5],
+                            ],
                         ],
                     ],
-                ],
-                'must' => [
-                    [
-                        'terms' => [
-                            'id' => [10],
+                    'must' => [
+                        [
+                            'terms' => [
+                                'id' => [10],
+                            ],
                         ],
                     ],
                 ],
             ],
-        ], $g->getQuery());
+        ], $generator->getQuery());
     }
 
     /** @test */
@@ -120,27 +127,30 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             ->end()
         ->getSearchCondition();
 
-        $g = new QueryConditionGenerator($condition);
+        $generator = new QueryConditionGenerator($condition);
+        $this->addMappings($generator);
 
         self::assertEquals([
-            'bool' => [
-                'must' => [
-                    [
-                        'terms' => [
-                            'id' => [
-                                2,
-                                5,
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'terms' => [
+                                'id' => [
+                                    2,
+                                    5,
+                                ],
                             ],
                         ],
-                    ],
-                    [
-                        'bool' => [
-                            'must' => [
-                                [
-                                    'terms' => [
-                                        'name' => [
-                                            'Doctor',
-                                            'Foo',
+                        [
+                            'bool' => [
+                                'must' => [
+                                    [
+                                        'terms' => [
+                                            'name' => [
+                                                'Doctor',
+                                                'Foo',
+                                            ],
                                         ],
                                     ],
                                 ],
@@ -149,7 +159,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                     ],
                 ],
             ],
-        ], $g->getQuery());
+        ], $generator->getQuery());
     }
 
     /** @test */
@@ -163,35 +173,38 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             ->end()
         ->getSearchCondition();
 
-        $g = new QueryConditionGenerator($condition);
+        $generator = new QueryConditionGenerator($condition);
+        $this->addMappings($generator);
 
         self::assertEquals([
-            'bool' => [
-                'must_not' => [
-                    [
-                        'terms' => [
+            'query' => [
+                'bool' => [
+                    'must_not' => [
+                        [
+                            'terms' => [
+                                'id' => [
+                                    5,
+                                ],
+                            ],
+                        ],
+                        [
                             'id' => [
-                                5,
+                                'lte' => 10,
+                                'gte' => 20,
                             ],
                         ],
                     ],
-                    [
-                        'id' => [
-                            'lte' => 10,
-                            'gte' => 20,
-                        ],
-                    ],
-                ],
-                'must' => [
-                    [
-                        'id' => [
-                            'lte' => 1,
-                            'gte' => 100,
+                    'must' => [
+                        [
+                            'id' => [
+                                'lte' => 1,
+                                'gte' => 100,
+                            ],
                         ],
                     ],
                 ],
             ],
-        ], $g->getQuery());
+        ], $generator->getQuery());
     }
 
     /** @test */
@@ -206,41 +219,44 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             ->end()
         ->getSearchCondition();
 
-        $g = new QueryConditionGenerator($condition);
+        $generator = new QueryConditionGenerator($condition);
+        $this->addMappings($generator);
 
         self::assertEquals([
-            'bool' => [
-                'must_not' => [
-                    [
-                        'term' => [
-                            'id' => [
-                                'value' => 35,
+            'query' => [
+                'bool' => [
+                    'must_not' => [
+                        [
+                            'term' => [
+                                'id' => [
+                                    'value' => 35,
+                                ],
+                            ],
+                        ],
+                        [
+                            'term' => [
+                                'id' => [
+                                    'value' => 45,
+                                ],
                             ],
                         ],
                     ],
-                    [
-                        'term' => [
+                    'must' => [
+                        [
                             'id' => [
-                                'value' => 45,
+                                'gt' => 30,
                             ],
                         ],
-                    ],
-                ],
-                'must' => [
-                    [
-                        'id' => [
-                            'gt' => 30,
-                        ],
-                    ],
 
-                    [
-                        'id' => [
-                            'lt' => 50,
+                        [
+                            'id' => [
+                                'lt' => 50,
+                            ],
                         ],
                     ],
                 ],
             ],
-        ], $g->getQuery());
+        ], $generator->getQuery());
     }
 
     /** @test */
@@ -258,64 +274,73 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             ->end()
         ->getSearchCondition();
 
-        $g = new QueryConditionGenerator($condition);
+        $generator = new QueryConditionGenerator($condition);
+        $this->addMappings($generator);
 
         self::assertEquals([
-            'bool' => [
-                'must' => [
-                    [
-                        'prefix' => [
-                            'name' => [
-                                'value' => 'foo',
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'prefix' => [
+                                'name' => [
+                                    'value' => 'foo',
+                                ],
+                            ],
+                        ],
+                        [
+                            'prefix' => [
+                                'name' => [
+                                    'value' => 'fo\\\'o',
+                                ],
+                            ],
+                        ],
+                        [
+                            'term' => [
+                                'name' => [
+                                    'value' => 'My name',
+                                ],
+                            ],
+                        ],
+                        [
+                            'term' => [
+                                'name' => [
+                                    'value' => 'Spider',
+                                ],
                             ],
                         ],
                     ],
-                    [
-                        'prefix' => [
-                            'name' => [
-                                'value' => 'fo\\\'o',
+                    'must_not' => [
+                        [
+                            'wildcard' => [
+                                'name' => [
+                                    'value' => '?bar',
+                                ],
                             ],
                         ],
-                    ],
-                    [
-                        'term' => [
-                            'name' => [
-                                'value' => 'My name',
+                        [
+                            'term' => [
+                                'name' => [
+                                    'value' => 'Last',
+                                ],
                             ],
                         ],
-                    ],
-                    [
-                        'term' => [
-                            'name' => [
-                                'value' => 'Spider',
-                            ],
-                        ],
-                    ],
-                ],
-                'must_not' => [
-                    [
-                        'wildcard' => [
-                            'name' => [
-                                'value' => '?bar',
-                            ],
-                        ],
-                    ],
-                    [
-                        'term' => [
-                            'name' => [
-                                'value' => 'Last',
-                            ],
-                        ],
-                    ],
-                    [
-                        'term' => [
-                            'name' => [
-                                'value' => 'Piggy',
+                        [
+                            'term' => [
+                                'name' => [
+                                    'value' => 'Piggy',
+                                ],
                             ],
                         ],
                     ],
                 ],
             ],
-        ], $g->getQuery());
+        ], $generator->getQuery());
+    }
+
+    private function addMappings(QueryConditionGenerator $generator)
+    {
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
     }
 }
