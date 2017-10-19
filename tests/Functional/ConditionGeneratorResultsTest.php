@@ -53,7 +53,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_with_date()
     {
-        $this->makeTest('pub-date: 2010-05-10', [1, 2]);
+        $this->makeTest('pub-date: "2010-05-10"', [1, 2]);
     }
 
     /**
@@ -61,17 +61,15 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_with_range_and_excluding_by_id()
     {
-        $this->markTestSkipped('date support');
         $this->makeTest('pub-date: "2010-05-10"; id: !2;', [1]);
     }
 
     /**
      * @test
      */
-    public function it_finds_with_combined_field()
+    public function it_finds_with_child_property_field()
     {
-        $this->markTestSkipped('nested query support');
-        $this->makeTest('customer-name: Pang, Leroy;', [1, 2, 3, 4]);
+        $this->makeTest('customer: 1, 2; id: !2', [1, 3, 4]);
     }
 
     /**
@@ -82,6 +80,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->markTestSkipped('nested query support');
         $this->makeTest('customer-birthday: "2000-05-15";', range(2, 4));
     }
+
     /**
      * @test
      */
@@ -90,6 +89,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->markTestSkipped('nested query support');
         $this->makeTest('customer-birthday: "2000-05-15", "1980-06-10";', [2, 3, 4]);
     }
+
     /**
      * @test
      */
@@ -98,6 +98,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->markTestSkipped('nested query support');
         $this->makeTest('* customer-birthday: "1980-11-20"; pub-date: "2015-05-01";', [1, 5]);
     }
+
     /**
      * @test
      */
@@ -106,6 +107,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->markTestSkipped('nested query support');
         $this->makeTest('pub-date: "2015-05-10"; total: "50.00"', [4]);
     }
+
     /**
      * @test
      */
@@ -114,6 +116,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->markTestSkipped('nested query support');
         $this->makeTest('customer: 2; status: concept;', [3]);
     }
+
     /**
      * @test
      */
@@ -122,6 +125,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->markTestSkipped('nested query support');
         $this->makeTest('customer: 2; status: paid; total: "90.00";', [2]);
     }
+
     /**
      * @test
      */
@@ -130,6 +134,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->markTestSkipped('nested query support');
         $this->makeTest('customer: 2; *(status: paid; total: "50.00";)', [2, 4]);
     }
+
     /**
      * @test
      */
@@ -139,6 +144,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->markTestSkipped('nested query support');
         $this->makeTest('status: published; *(row-quantity: 5; row-label: ~*"repair"; (row-price: "50.00"));', [4]);
     }
+
     /**
      * @test
      */

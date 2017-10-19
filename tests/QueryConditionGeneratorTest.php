@@ -194,7 +194,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                                     'gte' => 20,
                                 ],
                             ],
-                        ]
+                        ],
                     ],
                     'must' => [
                         [

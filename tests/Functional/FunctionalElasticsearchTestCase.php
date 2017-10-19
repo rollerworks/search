@@ -59,7 +59,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
             'customers' => [
                     'first_name' => ['type' => 'text'],
                     'last_name' => ['type' => 'text'],
-                    'full_name' => ['type' => 'text', 'boost' => 2],
+                    'full_name' => ['type' => 'text', 'boost' => 2, 'index' => 'not_analyzed'],
                     'birthday' => ['type' => 'date'],
                     'reg_date' => ['type' => 'date'],
                 ],
@@ -67,7 +67,9 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                     'customer' => [
                         'type' => 'object',
                         'properties' => [
-                            'full_name' => ['type' => 'text'],
+                            'id' => ['type' => 'integer'],
+                            'full_name' => ['type' => 'text', 'index' => 'not_analyzed'],
+                            'birthday' => ['type' => 'date'],
                         ],
                     ],
                     'label' => ['type' => 'string'],
@@ -97,28 +99,28 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 1 => ['Peter', 'Pang', 'Peter Pang', '1980-11-20', '2005-11-20'],
                 2 => ['Leroy', 'Jenkins', 'Leroy Jenkins', '2000-05-15', '2005-05-20'],
                 3 => ['Doctor', 'Who', 'Doctor Who', '2005-12-10', '2005-02-20'],
-                4 => ['Spider', 'Pig', 'Spider Pig', '2012-06-10', '2012-07-20'],
+                4 => ['Spider', 'Pig', 'Spider Pig', '2005-12-10', '2012-07-20'],
             ],
             'invoices' => [
-                1 => [['full_name' => 'Peter Pang'], '2010-001', '2010-05-10', 2, 100.00, [
+                1 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2010-001', '2010-05-10', 2, 100.00, [
                     ['label' => 'Electric Guitar', 'quantity' => 1, 'price' => 100.00, 'total' => 100.00],
                 ]],
-                2 => [['full_name' => 'Leroy Jenkins'], '2010-002', '2010-05-10', 2, 90.00, [
+                2 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2010-002', '2010-05-10', 2, 90.00, [
                     ['label' => 'Sword', 'quantity' => 1, 'price' => 15.00, 'total' => 15.00],
                     ['label' => 'Shield', 'quantity' => 1, 'price' => 20.00, 'total' => 20.00],
                     ['label' => 'Armor', 'quantity' => 1, 'price' => 55.00, 'total' => 55.00],
                 ]],
-                3 => [['full_name' => 'Leroy Jenkins'], null, null, 0, 10.00, [
+                3 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], null, null, 0, 10.00, [
                     ['label' => 'Sword', 'quantity' => 1, 'price' => 10.00, 'total' => 10.00],
                 ]],
-                4 => [['full_name' => 'Leroy Jenkins'], '2015-001', '2015-05-10', 1, 100.00, [
+                4 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2015-001', '2015-05-10', 1, 100.00, [
                     ['label' => 'Armor repair kit', 'quantity' => 2, 'price' => 50.00, 'total' => 100.00],
                 ]],
-                5 => [['full_name' => 'Doctor Who'], '2015-002', '2015-05-01', 1, 215.00, [
+                5 => [['id' => 3, 'full_name' => 'Doctor Who', 'birthday' => '2005-12-10'], '2015-002', '2015-05-01', 1, 215.00, [
                     ['label' => 'TARDIS Chameleon circuit', 'quantity' => 1, 'price' => 15.00, 'total' => 15.00],
                     ['label' => 'Sonic Screwdriver', 'quantity' => 10, 'price' => 20.00, 'total' => 200.00],
                 ]],
-                6 => [['full_name' => 'Spider Pig'], '2015-003', '2015-05-05', 1, 60.00, [
+                6 => [['id' => 4, 'full_name' => 'Spider Pig', 'birthday' => '2005-12-10'], '2015-003', '2015-05-05', 1, 60.00, [
                     ['label' => 'Web shooter', 'quantity' => 1, 'price' => 10.00, 'total' => 10.00],
                     ['label' => 'Cape', 'quantity' => 1, 'price' => 10.00, 'total' => 10.00],
                     ['label' => 'Cape repair manual', 'quantity' => 1, 'price' => 10.00, 'total' => 10.00],
@@ -202,24 +204,23 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
      */
     protected function configureConditionGenerator(QueryConditionGenerator $conditionGenerator)
     {
-        $conditionGenerator->registerField('id', '/invoices/invoices#_id');
-
-        // TODO: fill these out properly
+        // invoice
+        $conditionGenerator->registerField('id', 'invoices/invoices#_id');
+        $conditionGenerator->registerField('pub-date', 'invoices/invoices#pubdate');
         $conditionGenerator->registerField('label', '/invoices/invoices#label');
-        $conditionGenerator->registerField('pub-date', '/invoices/invoices#pubdate');
         $conditionGenerator->registerField('status', '/invoices/invoices#status');
         $conditionGenerator->registerField('total', '/invoices/invoices#total');
 
-        // $conditionGenerator->registerField('status', 'status');
-        // $conditionGenerator->registerField('total', 'total');
-        // $conditionGenerator->registerField('row-label', 'label');
-        // $conditionGenerator->registerField('row-price', 'price');
-        // $conditionGenerator->registerField('row-quantity', 'quantity');
-        // $conditionGenerator->registerField('row-total', 'total');
-        // $conditionGenerator->registerField('customer', 'id');
-        // $conditionGenerator->registerField('customer-name#first_name', 'firstName');
-        // $conditionGenerator->registerField('customer-name#last_name', 'lastName');
-        // $conditionGenerator->registerField('customer-birthday', 'birthday');
+        // invoice.customer
+        $conditionGenerator->registerField('customer', 'invoices/invoices#customer.id');
+        $conditionGenerator->registerField('customer-name', 'invoices/invoices#customer.full_name');
+        $conditionGenerator->registerField('customer-birthday', 'invoices/invoices#customer.birthday');
+
+        // invoice.item[]
+        $conditionGenerator->registerField('row-label', 'invoices/invoices#items[].label');
+        $conditionGenerator->registerField('row-price', 'invoices/invoices#items[].price');
+        $conditionGenerator->registerField('row-quantity', 'invoices/invoices#items[].quantity');
+        $conditionGenerator->registerField('row-total', 'invoices/invoices#items[].total');
     }
 
     /**

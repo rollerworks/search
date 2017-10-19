@@ -206,6 +206,8 @@ final class QueryConditionGenerator
     {
         // Note. Elasticsearch supports case-insensitive only at index level.
 
+        $propertyName = $this->mappings[$fieldName]->propertyName;
+
         /** @var PatternMatch $patternMatch */
         foreach ($values as $patternMatch) {
             $value = [];
@@ -214,22 +216,22 @@ final class QueryConditionGenerator
                 // Faster then Wildcard but less accurate. XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
                 case PatternMatch::PATTERN_CONTAINS:
                 case PatternMatch::PATTERN_NOT_CONTAINS:
-                    $value['match'] = [$this->mappings[$fieldName]->propertyName => ['query' => $patternMatch->getValue()]];
+                    $value['match'] = [$propertyName => ['query' => $patternMatch->getValue()]];
                     break;
 
                 case PatternMatch::PATTERN_STARTS_WITH:
                 case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                    $value['prefix'] = [$this->mappings[$fieldName]->propertyName => ['value' => $patternMatch->getValue()]];
+                    $value['prefix'] = [$propertyName => ['value' => $patternMatch->getValue()]];
                     break;
 
                 case PatternMatch::PATTERN_ENDS_WITH:
                 case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                    $value['wildcard'] = [$this->mappings[$fieldName]->propertyName => ['value' => '?'.addcslashes($patternMatch->getValue(), '?*')]];
+                    $value['wildcard'] = [$propertyName => ['value' => '?'.addcslashes($patternMatch->getValue(), '?*')]];
                     break;
 
                 case PatternMatch::PATTERN_EQUALS:
                 case PatternMatch::PATTERN_NOT_EQUALS:
-                    $value['term'] = [$this->mappings[$fieldName]->propertyName => ['value' => $patternMatch->getValue()]];
+                    $value['term'] = [$propertyName => ['value' => $patternMatch->getValue()]];
                     break;
 
                 default:

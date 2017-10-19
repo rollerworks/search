@@ -35,8 +35,14 @@ final class FieldMapping
     /**
      * Supported formats:
      *      - <property>
-     *      - /<index>#<property>
-     *      - /<index>/<type>#<property>.
+     *      - <sub.property>
+     *      - <nested[].property>
+     *      - <sub.nested[].property>
+     *      - <index>#<property>
+     *      - <index>#<nested[].property>
+     *      - <index>#<sub.nested[].property>
+     *      - <index>/<type>#<property>
+     *      - <index>/<type>#<sub.nested[].property>.
      *
      * @param string $property
      *
