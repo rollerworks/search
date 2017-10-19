@@ -39,6 +39,7 @@ return PhpCsFixer\Config::create()
         'single_import_per_statement' => false,
         'strict_comparison' => false,
         'strict_param' => true,
+        'yoda_style' => false, // to broad
         // Breaks with phpstan
         'phpdoc_inline_tag' => false,
     ])
