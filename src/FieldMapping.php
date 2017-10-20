@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch;
 
+use Rollerworks\Component\Search\Field\FieldConfig;
+
 final class FieldMapping
 {
     public $fieldName;
@@ -22,7 +24,12 @@ final class FieldMapping
     public $boost;
     public $options; // special options (reserved)
 
-    public function __construct(string $fieldName, string $property)
+    /**
+     * @var ValueConversion
+     */
+    public $valueConversion;
+
+    public function __construct(string $fieldName, string $property, FieldConfig $fieldConfig)
     {
         $this->fieldName = $fieldName;
 
@@ -30,6 +37,8 @@ final class FieldMapping
         $this->indexName = $mapping['indexName'];
         $this->typeName = $mapping['typeName'];
         $this->propertyName = $mapping['propertyName'];
+
+        $this->valueConversion = $fieldConfig->getOption('elasticsearch_conversion');
     }
 
     /**

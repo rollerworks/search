@@ -18,6 +18,11 @@ use Rollerworks\Component\Search\Input\StringQueryInput;
 
 /**
  * Class ConditionGeneratorResultsTest.
+ *
+ * Special cases needed to be handled here
+ * - IDs do not behave like other values
+ *   for example you cannot use ranged queries with them, use "ids" query
+ * - dates always behave like a range, even for exact values
  */
 class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
 {
@@ -77,7 +82,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_birthday()
     {
-        $this->markTestSkipped('nested query support');
         $this->makeTest('customer-birthday: "2000-05-15";', range(2, 4));
     }
 
@@ -86,8 +90,15 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_birthdays()
     {
-        $this->markTestSkipped('nested query support');
         $this->makeTest('customer-birthday: "2000-05-15", "1980-06-10";', [2, 3, 4]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_date_range_excluding_by_date()
+    {
+        $this->makeTest('pub-date: "2010-05-10"~"2015-05-01", !"2000-05-15";', [1, 2, 6]);
     }
 
     /**
@@ -95,7 +106,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_with_or_group()
     {
-        $this->markTestSkipped('nested query support');
         $this->makeTest('* customer-birthday: "1980-11-20"; pub-date: "2015-05-01";', [1, 5]);
     }
 
@@ -104,7 +114,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_pubDate_limited_by_price()
     {
-        $this->markTestSkipped('nested query support');
+        $this->markTestSkipped('currency support');
         $this->makeTest('pub-date: "2015-05-10"; total: "50.00"', [4]);
     }
 
@@ -113,7 +123,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_and_status()
     {
-        $this->markTestSkipped('nested query support');
         $this->makeTest('customer: 2; status: concept;', [3]);
     }
 
@@ -122,7 +131,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_and_status_and_total()
     {
-        $this->markTestSkipped('nested query support');
+        $this->markTestSkipped('currency support');
         $this->makeTest('customer: 2; status: paid; total: "90.00";', [2]);
     }
 
@@ -131,7 +140,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_and_status_or_price()
     {
-        $this->markTestSkipped('nested query support');
+        $this->markTestSkipped('currency support');
         $this->makeTest('customer: 2; *(status: paid; total: "50.00";)', [2, 4]);
     }
 
@@ -161,7 +170,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      * @param string $input
      * @param array  $expectedRows
      */
-    private function makeTest($input, array $expectedRows)
+    private function makeTest(string $input, array $expectedRows)
     {
         $config = new ProcessorConfig($this->getFieldSet());
         try {

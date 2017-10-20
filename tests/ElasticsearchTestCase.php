@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
+use Rollerworks\Component\Search\Elasticsearch\Extension\ElasticsearchExtension;
+use Rollerworks\Component\Search\SearchExtension;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 
 /**
@@ -20,4 +22,13 @@ use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
  */
 abstract class ElasticsearchTestCase extends SearchIntegrationTestCase
 {
+    /**
+     * @return SearchExtension[]
+     */
+    protected function getExtensions(): array
+    {
+        return [
+            new ElasticsearchExtension(),
+        ];
+    }
 }

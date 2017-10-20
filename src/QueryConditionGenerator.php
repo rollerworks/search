@@ -14,21 +14,29 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Elasticsearch;
 
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
-use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value\{
-    Compare, ExcludedRange, PatternMatch, Range, ValuesGroup
-};
-
-// XXX Allow to mark Field as id https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
+use Rollerworks\Component\Search\Value\Compare;
+use Rollerworks\Component\Search\Value\ExcludedRange;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Rollerworks\Component\Search\Value\Range;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class QueryConditionGenerator
 {
     private const PROPERTY_ID = '_id';
 
+    private const QUERY_BOOL = 'bool';
+    private const QUERY_MATCH = 'match';
+    private const QUERY_TERM = 'term';
+    private const QUERY_TERMS = 'terms';
+
+    // Elasticsearch boolean operators
+    private const CONDITION_NOT = 'must_not';
+    private const CONDITION_AND = 'must';
+    private const CONDITION_OR = 'should';
+
     private $searchCondition;
-    // private $fieldSet;
+    private $fieldSet;
 
     private const COMPARE_OPR_TYPE = ['>=' => 'gte', '<=' => 'lte', '<' => 'lt', '>' => 'gt'];
 
@@ -44,7 +52,7 @@ final class QueryConditionGenerator
 
     public function registerField(string $fieldName, string $mapping)
     {
-        $this->mappings[$fieldName] = new FieldMapping($fieldName, $mapping);
+        $this->mappings[$fieldName] = new FieldMapping($fieldName, $mapping, $this->fieldSet->get($fieldName));
     }
 
     /**
@@ -97,63 +105,52 @@ final class QueryConditionGenerator
 
     private function processGroup(ValuesGroup $group): array
     {
-        $bool = [];
-
         // Note: Excludes are `must_not`, for includes `must` (AND) or `should` (OR) is used. Subgroups use `must`.
-        $includingType = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical() ? 'must' : 'should';
+        $includingType = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical()
+            ? self::CONDITION_AND
+            : self::CONDITION_OR;
 
-        // FIXME Objects need type formatter. `elastic_search_value_transformer` (use extensions to configure types)
-
+        $bool = [];
         foreach ($group->getFields() as $fieldName => $valuesBag) {
+            // TODO: this looks fishy, what about nested fields?
             $propertyName = $this->mappings[$fieldName]->propertyName;
-            $field = $this->fieldSet->get($fieldName);
 
-            // TODO: hack, review and fix
-            $fieldType = $field->getType()->getInnerType();
-            $dateTransformer = new DateTimeToStringTransformer(null, 'UTC', 'Y-m-d');
+            $field = $this->fieldSet->get($fieldName);
+            $convertToRange = $field->getOption('elasticsearch_convert_to_range');
+            $converter = $field->getOption('elasticsearch_conversion');
+            $callback = [$this, 'convertValue'];
 
             if ($valuesBag->hasSimpleValues()) {
-                if ($fieldType instanceof DateType) {
-                    // date lookups behave like a range even for an exact value in Elasticsearch
-                    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html#ranges-on-dates
-                    $values = array_values($valuesBag->getSimpleValues());
-                    foreach ($values as $idx => $value) {
-                        $valuesBag->removeSimpleValue($idx);
-                        $value = $dateTransformer->transform($value);
-                        $range = new Range($value, $value);
-                        $valuesBag->add($range);
-                    }
+                $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$converter]);
+                if ($convertToRange) {
+                    $bool[$includingType][] = $this->convertToRange($propertyName, $values);
                 } else {
-                    $bool[$includingType][]['terms'] = [$propertyName => array_values($valuesBag->getSimpleValues())];
+                    $bool[$includingType][] = ['terms' => [$propertyName => $values]];
                 }
             }
 
             if ($valuesBag->hasExcludedSimpleValues()) {
-                $bool['must_not'][]['terms'] = [$propertyName => array_values($valuesBag->getExcludedSimpleValues())];
+                $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$converter]);
+                if ($convertToRange) {
+                    $bool[self::CONDITION_NOT][] = $this->convertToRange($propertyName, $values);
+                } else {
+                    $bool[self::CONDITION_NOT][] = ['terms' => [$propertyName => $values]];
+                }
             }
 
             $isId = self::PROPERTY_ID === $propertyName;
-
             if (false === $isId) {
                 /** @var Range $range */
                 foreach ($valuesBag->get(Range::class) as $range) {
-                    $rangeParams = [
-                        $range->isLowerInclusive() ? 'lte' : 'lt' => $range->getLower(),
-                        $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
-                    ];
-
-                    $bool[$includingType][]['range'][$propertyName] = $rangeParams;
+                    $bool[$includingType][]['range'][$propertyName] = $this->generateRangeParams($range);
                 }
 
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
-                    $rangeParams = [
-                        $range->isLowerInclusive() ? 'lte' : 'lt' => $range->getLower(),
-                        $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
-                    ];
-
-                    $bool['must_not'][]['range'][$propertyName] = $rangeParams;
+                    $bool[self::CONDITION_NOT][]['range'][$propertyName] = $this->generateRangeParams($range);
                 }
             } else {
+                // IDs cannot be queries by range in Elasticsearch, use ids query
+                // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
                 $ids = [];
                 foreach ($valuesBag->get(Range::class) as $range) {
                     $ids = array_merge($ids, range($range->getLower(), $range->getUpper()));
@@ -167,14 +164,14 @@ final class QueryConditionGenerator
                     $excludeIds = array_merge($excludeIds, range($range->getLower(), $range->getUpper()));
                 }
                 if (false === empty($excludeIds)) {
-                    $bool['must_not'][] = ['ids' => ['values' => $excludeIds]];
+                    $bool[self::CONDITION_NOT][] = ['ids' => ['values' => $excludeIds]];
                 }
             }
 
             /** @var Compare $compare */
             foreach ($valuesBag->get(Compare::class) as $compare) {
                 if ('<>' === ($operator = $compare->getOperator())) {
-                    $bool['must_not'][]['term'] = [$propertyName => ['value' => $compare->getValue()]];
+                    $bool[self::CONDITION_NOT][]['term'] = [$propertyName => ['value' => $compare->getValue()]];
                 } else {
                     $bool[$includingType][] = [
                         $propertyName => [
@@ -191,7 +188,7 @@ final class QueryConditionGenerator
             $subGroupCondition = $this->processGroup($subGroup);
 
             if ([] !== $subGroupCondition) {
-                $bool['must'][] = $subGroupCondition;
+                $bool[self::CONDITION_AND][] = $subGroupCondition;
             }
         }
 
@@ -239,10 +236,53 @@ final class QueryConditionGenerator
             }
 
             if ($patternMatch->isExclusive()) {
-                $bool['must_not'][] = $value;
+                $bool[self::CONDITION_NOT][] = $value;
             } else {
                 $bool[$includingType][] = $value;
             }
         }
+    }
+
+    /**
+     * @param mixed                $value
+     * @param null|ValueConversion $converter
+     *
+     * @return mixed
+     */
+    private function convertValue($value, ?ValueConversion $converter)
+    {
+        if (null === $converter) {
+            return $value;
+        }
+
+        return $converter->convertValue($value);
+    }
+
+    /**
+     * @param Range $range
+     *
+     * @return array
+     */
+    private function generateRangeParams(Range $range): array
+    {
+        return [
+            $range->isLowerInclusive() ? 'lte' : 'lt' => $range->getLower(),
+            $range->isUpperInclusive() ? 'gte' : 'gt' => $range->getUpper(),
+        ];
+    }
+
+    /**
+     * @param string          $propertyName
+     * @param array           $values
+     * @return array
+     */
+    private function convertToRange(string $propertyName, array $values): array
+    {
+        $range = [];
+        foreach ($values as $value) {
+            $range['bool']['should'][]['range'][$propertyName] = $this->generateRangeParams(new Range($value, $value));
+        }
+
+        return $range;
     }
 }
