@@ -19,6 +19,8 @@ matrix:
           env: testcase='search_processor'
         - php: '7.1'
           env: testcase='api_platform' lint=1
+        - php: '7.1'
+          env: testcase='api_platform' deps='dev'
 env:
     global:
         - TMPDIR=/tmp
@@ -50,10 +52,11 @@ before_install:
         fi;
 
         if [[ $testcase = 'api_platform' ]]; then
-            composer require --no-update "symfony/twig-bundle:^3.2.4"
+            composer require --no-update "symfony/twig-bundle:^3.2.4 || ^4.0"
             composer require --no-update "doctrine/doctrine-bundle:^1.1"
             composer require --no-update "rollerworks/search-doctrine-orm:^2.0@dev"
             composer require --no-update "rollerworks/search-api-platform:^1.0@dev"
+
         fi;
 
         if [[ $lint = 1 ]]; then
@@ -62,16 +65,20 @@ before_install:
             composer require --no-update "zendframework/zend-diactoros:^1.4"
         fi;
 
+        # Temp fix `matthiasnoback/symfony-dependency-injection-test` doesn't support Symfony 4 yet
+        if [[ $deps = 'dev' ]]; then
+            composer require --no-update "symfony/dependency-injection:v4.0.0-BETA1 as 3.4"
+        fi;
+
 install:
-    - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
-    - export SYMFONY_PHPUNIT_VERSION=6.2
-    - export SYMFONY_DEPRECATIONS_HELPER=weak_vendors
     - if [[ ! $deps ]]; then composer update --prefer-dist --no-progress --no-suggest --ansi; fi
-    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --prefer-dist --no-progress --no-suggest --ansi ; fi
+    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer config prefer-stable false && composer update --prefer-dist --no-progress --no-suggest --ansi ; fi
     - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
-    - export SYMFONY_DEPRECATIONS_HELPER=strict
+    - export SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
+    - export SYMFONY_PHPUNIT_VERSION=6.2
+    - export SYMFONY_DEPRECATIONS_HELPER=weak_vendors
     - vendor/bin/phpunit --verbose
     - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
     - if [[ $lint = 1 ]]; then phpstan analyse -c phpstan.neon -l5 --ansi src tests; fi

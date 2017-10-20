@@ -15,7 +15,6 @@ namespace Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler;
 
 use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion;
 use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion;
-use Rollerworks\Component\Search\Doctrine\Orm\Functions\ValueMatch;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -50,7 +49,6 @@ class DoctrineOrmPass implements CompilerPassInterface
             $ormConfigDef = $container->findDefinition('doctrine.orm.'.$entityManager.'_configuration');
             $ormConfigDef->addMethodCall('addCustomStringFunction', ['RW_SEARCH_FIELD_CONVERSION', SqlFieldConversion::class]);
             $ormConfigDef->addMethodCall('addCustomStringFunction', ['RW_SEARCH_VALUE_CONVERSION', SqlValueConversion::class]);
-            $ormConfigDef->addMethodCall('addCustomStringFunction', ['RW_SEARCH_MATCH', ValueMatch::class]);
         }
     }
 }
