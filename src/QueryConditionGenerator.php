@@ -297,16 +297,18 @@ final class QueryConditionGenerator
     }
 
     /**
-     * @param string               $propertyName
-     * @param mixed                $value
-     * @param QueryConversionHints $hints
-     * @param null|QueryConversion $converter
+     * @param string                               $propertyName
+     * @param mixed                                $value
+     * @param QueryConversionHints                 $hints
+     * @param null|ValueConversion|QueryConversion $converter
      *
      * @return array
      */
-    private function prepareQuery(string $propertyName, $value, QueryConversionHints $hints, ?QueryConversion $converter): array
+    private function prepareQuery(string $propertyName, $value, QueryConversionHints $hints, $converter): array
     {
-        if (null === $converter || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
+        if (null === $converter
+            || !$converter instanceof QueryConversion
+            || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
             return [self::QUERY_TERMS => [$propertyName => $value]];
         }
 

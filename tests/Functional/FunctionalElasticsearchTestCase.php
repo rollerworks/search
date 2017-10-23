@@ -75,14 +75,14 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                     'label' => ['type' => 'string'],
                     'pubdate' => ['type' => 'date'],
                     'status' => ['type' => 'integer'],
-                    'price_total' => ['type' => 'scaled_float', 'scaling_factor' => 100],
+                    'price_total' => ['type' => 'integer'],
                     'items' => [
                         'type' => 'nested',
                         'properties' => [
                             'label' => ['type' => 'string'],
                             'quantity' => ['type' => 'integer'],
-                            'price' => ['type' => 'scaled_float', 'scaling_factor' => 100],
-                            'total' => ['type' => 'scaled_float', 'scaling_factor' => 100],
+                            'price' => ['type' => 'integer'],
+                            'total' => ['type' => 'integer'],
                         ],
                     ],
                 ],
@@ -102,29 +102,29 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 4 => ['Spider', 'Pig', 'Spider Pig', '2005-12-10', '2012-07-20'],
             ],
             'invoices' => [
-                1 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2010-001', '2010-05-10', 2, 100.00, [
-                    ['label' => 'Electric Guitar', 'quantity' => 1, 'price' => 100.00, 'total' => 100.00],
+                1 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2010-001', '2010-05-10', 2, 10000, [
+                    ['label' => 'Electric Guitar', 'quantity' => 1, 'price' => 10000, 'total' => 10000],
                 ]],
-                2 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2010-002', '2010-05-10', 2, 90.00, [
-                    ['label' => 'Sword', 'quantity' => 1, 'price' => 15.00, 'total' => 15.00],
-                    ['label' => 'Shield', 'quantity' => 1, 'price' => 20.00, 'total' => 20.00],
-                    ['label' => 'Armor', 'quantity' => 1, 'price' => 55.00, 'total' => 55.00],
+                2 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2010-002', '2010-05-10', 2, 9000, [
+                    ['label' => 'Sword', 'quantity' => 1, 'price' => 1500, 'total' => 1500],
+                    ['label' => 'Shield', 'quantity' => 1, 'price' => 2000, 'total' => 2000],
+                    ['label' => 'Armor', 'quantity' => 1, 'price' => 5500, 'total' => 5500],
                 ]],
-                3 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], null, null, 0, 10.00, [
-                    ['label' => 'Sword', 'quantity' => 1, 'price' => 10.00, 'total' => 10.00],
+                3 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], null, null, 0, 1000, [
+                    ['label' => 'Sword', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
                 ]],
-                4 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2015-001', '2015-05-10', 1, 100.00, [
-                    ['label' => 'Armor repair kit', 'quantity' => 2, 'price' => 50.00, 'total' => 100.00],
+                4 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2015-001', '2015-05-10', 1, 10000, [
+                    ['label' => 'Armor repair kit', 'quantity' => 2, 'price' => 5000, 'total' => 10000],
                 ]],
-                5 => [['id' => 3, 'full_name' => 'Doctor Who', 'birthday' => '2005-12-10'], '2015-002', '2015-05-01', 1, 215.00, [
-                    ['label' => 'TARDIS Chameleon circuit', 'quantity' => 1, 'price' => 15.00, 'total' => 15.00],
-                    ['label' => 'Sonic Screwdriver', 'quantity' => 10, 'price' => 20.00, 'total' => 200.00],
+                5 => [['id' => 3, 'full_name' => 'Doctor Who', 'birthday' => '2005-12-10'], '2015-002', '2015-05-01', 1, 21500, [
+                    ['label' => 'TARDIS Chameleon circuit', 'quantity' => 1, 'price' => 1500, 'total' => 1500],
+                    ['label' => 'Sonic Screwdriver', 'quantity' => 10, 'price' => 2000, 'total' => 20000],
                 ]],
-                6 => [['id' => 4, 'full_name' => 'Spider Pig', 'birthday' => '2005-12-10'], '2015-003', '2015-05-05', 1, 60.00, [
-                    ['label' => 'Web shooter', 'quantity' => 1, 'price' => 10.00, 'total' => 10.00],
-                    ['label' => 'Cape', 'quantity' => 1, 'price' => 10.00, 'total' => 10.00],
-                    ['label' => 'Cape repair manual', 'quantity' => 1, 'price' => 10.00, 'total' => 10.00],
-                    ['label' => 'Hoof polish', 'quantity' => 3, 'price' => 10.00, 'total' => 30.00],
+                6 => [['id' => 4, 'full_name' => 'Spider Pig', 'birthday' => '2005-12-10'], '2015-003', '2015-05-05', 1, 6000, [
+                    ['label' => 'Web shooter', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
+                    ['label' => 'Cape', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
+                    ['label' => 'Cape repair manual', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
+                    ['label' => 'Hoof polish', 'quantity' => 3, 'price' => 1000, 'total' => 3000],
                 ]],
             ],
         ];
@@ -209,7 +209,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $conditionGenerator->registerField('pub-date', 'invoices/invoices#pubdate');
         $conditionGenerator->registerField('label', '/invoices/invoices#label');
         $conditionGenerator->registerField('status', '/invoices/invoices#status');
-        $conditionGenerator->registerField('total', '/invoices/invoices#total');
+        $conditionGenerator->registerField('total', '/invoices/invoices#price_total');
 
         // invoice.customer
         $conditionGenerator->registerField('customer', 'invoices/invoices#customer.id');

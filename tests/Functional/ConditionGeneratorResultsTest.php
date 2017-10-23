@@ -114,8 +114,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_pubDate_limited_by_price()
     {
-        $this->markTestSkipped('currency support');
-        $this->makeTest('pub-date: "2015-05-10"; total: "50.00"', [4]);
+        $this->makeTest('pub-date: "2015-05-10"; total: "100.00"', [4]);
     }
 
     /**

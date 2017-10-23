@@ -13,24 +13,25 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch\Extension\Type;
 
-use Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\DateConversion;
-use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
+use Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\CurrencyConversion;
+use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
+use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class BirthdayTypeExtension.
+ * Class MoneyTypeExtension.
  */
-class BirthdayTypeExtension
+class MoneyTypeExtension extends AbstractFieldTypeExtension
 {
     /**
-     * @var DateConversion
+     * @var CurrencyConversion
      */
     private $conversion;
 
     /**
-     * @param DateConversion $conversion
+     * @param CurrencyConversion $conversion
      */
-    public function __construct(DateConversion $conversion)
+    public function __construct(CurrencyConversion $conversion)
     {
         $this->conversion = $conversion;
     }
@@ -54,6 +55,6 @@ class BirthdayTypeExtension
      */
     public function getExtendedType(): string
     {
-        return BirthdayType::class;
+        return MoneyType::class;
     }
 }

@@ -28,6 +28,7 @@ class ElasticsearchExtension extends AbstractExtension
         return [
             new Type\FieldTypeExtension(),
             new Type\DateTypeExtension(new Conversion\DateConversion()),
+            new Type\MoneyTypeExtension(new Conversion\CurrencyConversion()),
         ];
     }
 }
