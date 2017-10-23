@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Elasticsearch\Extension\Conversion;
 
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator as Generator;
 use Rollerworks\Component\Search\Elasticsearch\QueryConversion;
-use Rollerworks\Component\Search\Elasticsearch\QueryConversionHints;
+use Rollerworks\Component\Search\Elasticsearch\QueryPreparationHints;
 use Rollerworks\Component\Search\Elasticsearch\ValueConversion;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Rollerworks\Component\Search\Value\Range;
@@ -48,7 +48,7 @@ class DateConversion implements ValueConversion, QueryConversion
     /**
      * @inheritdoc
      */
-    public function convertQuery(string $propertyName, $value, QueryConversionHints $hints): ?array
+    public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array
     {
         if (!is_array($value) && !$value instanceof Range) {
             return $this->generateDateRange($propertyName, new Range($value, $value));
@@ -56,15 +56,15 @@ class DateConversion implements ValueConversion, QueryConversion
 
         $range = [];
         switch ($hints->context) {
-            case QueryConversionHints::CONTEXT_RANGE_VALUES:
-            case QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES:
+            case QueryPreparationHints::CONTEXT_RANGE_VALUES:
+            case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
                 // already a Range
                 /** @var Range $value */
                 $range = [Generator::QUERY_RANGE => [$propertyName => Generator::generateRangeParams($value)]];
                 break;
             default:
-            case QueryConversionHints::CONTEXT_SIMPLE_VALUES:
-            case QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
+            case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
+            case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
                 // dates as single values, need to convert them to a date range
                 /** @var array $value */
                 foreach ($value as $singleValue) {

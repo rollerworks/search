@@ -132,7 +132,7 @@ final class QueryConditionGenerator
             : self::CONDITION_OR;
 
         $bool = [];
-        $hints = new QueryConversionHints();
+        $hints = new QueryPreparationHints();
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             // TODO: this looks fishy, what about nested fields?
             $mapping = $this->mappings[$fieldName];
@@ -149,12 +149,12 @@ final class QueryConditionGenerator
             // simple values
             if ($valuesBag->hasSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$valueConverter]);
-                $hints->context = QueryConversionHints::CONTEXT_SIMPLE_VALUES;
+                $hints->context = QueryPreparationHints::CONTEXT_SIMPLE_VALUES;
                 $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter);
             }
             if ($valuesBag->hasExcludedSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$valueConverter]);
-                $hints->context = QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
+                $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
                 $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter);
             }
 
@@ -163,7 +163,7 @@ final class QueryConditionGenerator
                 /** @var Range $range */
                 foreach ($valuesBag->get(Range::class) as $range) {
                     $range = $this->convertRangeValues($range, $valueConverter);
-                    $hints->context = QueryConversionHints::CONTEXT_RANGE_VALUES;
+                    $hints->context = QueryPreparationHints::CONTEXT_RANGE_VALUES;
                     $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter);
                 }
             }
@@ -171,7 +171,7 @@ final class QueryConditionGenerator
                 /** @var Range $range */
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
                     $range = $this->convertRangeValues($range, $valueConverter);
-                    $hints->context = QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES;
+                    $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES;
                     $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter);
                 }
             }
@@ -189,7 +189,7 @@ final class QueryConditionGenerator
                 }
             }
 
-            $this->processPatternMatchers($valuesBag->get(PatternMatch::class), $fieldName, $bool, $includingType);
+            $this->processPatternMatchers($valuesBag->get(PatternMatch::class), $propertyName, $bool, $includingType);
         }
 
         foreach ($group->getGroups() as $subGroup) {
@@ -207,18 +207,17 @@ final class QueryConditionGenerator
         return [self::QUERY_BOOL => $bool];
     }
 
-    private function processPatternMatchers(array $values, string $fieldName, array &$bool, string $includingType)
+    private function processPatternMatchers(array $values, string $propertyName, array &$bool, string $includingType)
     {
         // Note. Elasticsearch supports case-insensitive only at index level.
-
-        $propertyName = $this->mappings[$fieldName]->propertyName;
 
         /** @var PatternMatch $patternMatch */
         foreach ($values as $patternMatch) {
             $value = [];
 
             switch ($patternMatch->getType()) {
-                // Faster then Wildcard but less accurate. XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
+                // Faster then Wildcard but less accurate.
+                // XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
                 case PatternMatch::PATTERN_CONTAINS:
                 case PatternMatch::PATTERN_NOT_CONTAINS:
                     $value[self::QUERY_MATCH] = [$propertyName => [self::QUERY => $patternMatch->getValue()]];
@@ -231,7 +230,9 @@ final class QueryConditionGenerator
 
                 case PatternMatch::PATTERN_ENDS_WITH:
                 case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                    $value[self::QUERY_WILDCARD] = [$propertyName => [self::QUERY_VALUE => '?'.addcslashes($patternMatch->getValue(), '?*')]];
+                    $value[self::QUERY_WILDCARD] = [
+                        $propertyName => [self::QUERY_VALUE => '?'.addcslashes($patternMatch->getValue(), '?*')],
+                    ];
                     break;
 
                 case PatternMatch::PATTERN_EQUALS:
@@ -240,7 +241,8 @@ final class QueryConditionGenerator
                     break;
 
                 default:
-                    throw new BadMethodCallException(sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType()));
+                    $message = sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
+                    throw new BadMethodCallException($message);
             }
 
             if ($patternMatch->isExclusive()) {
@@ -283,20 +285,20 @@ final class QueryConditionGenerator
     }
 
     /**
-     * @param string               $propertyName
-     * @param mixed                $value
-     * @param QueryConversionHints $hints
-     * @param null|ValueConversion $converter
+     * @param string                $propertyName
+     * @param mixed                 $value
+     * @param QueryPreparationHints $hints
+     * @param null|QueryConversion  $converter
      *
      * @return array
      */
-    private function prepareQuery(string $propertyName, $value, QueryConversionHints $hints, ?ValueConversion $converter): array
+    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter): array
     {
         if (null === $converter
             || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
             switch ($hints->context) {
-                case QueryConversionHints::CONTEXT_RANGE_VALUES:
-                case QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES:
+                case QueryPreparationHints::CONTEXT_RANGE_VALUES:
+                case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
                     $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
                     if ($hints->identifier) {
                         // IDs cannot be queries by range in Elasticsearch, use ids query
@@ -310,8 +312,8 @@ final class QueryConditionGenerator
                     }
                     break;
                 default:
-                case QueryConversionHints::CONTEXT_SIMPLE_VALUES:
-                case QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
+                case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
+                case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
                     // simple values
                     $query = [self::QUERY_TERMS => [$propertyName => $value]];
                     if ($hints->identifier) {

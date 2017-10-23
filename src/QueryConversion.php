@@ -22,11 +22,11 @@ interface QueryConversion
      * Returns the query converted to a new form if required.
      * If null, no query conversion has taken place, use whatever is proper in the current context.
      *
-     * @param string               $propertyName
-     * @param mixed                $value
-     * @param QueryConversionHints $hints
+     * @param string                $propertyName
+     * @param mixed                 $value
+     * @param QueryPreparationHints $hints
      *
      * @return array|null
      */
-    public function convertQuery(string $propertyName, $value, QueryConversionHints $hints): ?array;
+    public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array;
 }
