@@ -145,54 +145,33 @@ final class QueryConditionGenerator
                 return $this->convertValue($value, $converter);
             };
 
+            // simple values
             if ($valuesBag->hasSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$converter]);
                 $hints->context = QueryConversionHints::CONTEXT_SIMPLE_VALUES;
                 $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $converter);
             }
-
             if ($valuesBag->hasExcludedSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$converter]);
                 $hints->context = QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
                 $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $converter);
             }
 
-            if (!$hints->identifier) {
-                if ($valuesBag->has(Range::class)) {
-                    /** @var Range $range */
-                    foreach ($valuesBag->get(Range::class) as $range) {
-                        $range = $this->convertRangeValues($range, $converter);
-                        $hints->context = QueryConversionHints::CONTEXT_RANGE_VALUES;
-                        $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $converter);
-                    }
-                }
-
-                if ($valuesBag->has(ExcludedRange::class)) {
-                    /** @var Range $range */
-                    foreach ($valuesBag->get(ExcludedRange::class) as $range) {
-                        $range = $this->convertRangeValues($range, $converter);
-                        $hints->context = QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES;
-                        $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $converter);
-                    }
-                }
-            } else {
-                // IDs cannot be queries by range in Elasticsearch, use ids query
-                // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
-                // TODO: move to prepareQuery()
-                $ids = [];
+            // ranges
+            if ($valuesBag->has(Range::class)) {
+                /** @var Range $range */
                 foreach ($valuesBag->get(Range::class) as $range) {
-                    $ids = array_merge($ids, range($range->getLower(), $range->getUpper()));
+                    $range = $this->convertRangeValues($range, $converter);
+                    $hints->context = QueryConversionHints::CONTEXT_RANGE_VALUES;
+                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $converter);
                 }
-                if (false === empty($ids)) {
-                    $bool[$includingType][] = [self::QUERY_IDS => [self::QUERY_VALUES => $ids]];
-                }
-
-                $excludeIds = [];
+            }
+            if ($valuesBag->has(ExcludedRange::class)) {
+                /** @var Range $range */
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
-                    $excludeIds = array_merge($excludeIds, range($range->getLower(), $range->getUpper()));
-                }
-                if (false === empty($excludeIds)) {
-                    $bool[self::CONDITION_NOT][] = [self::QUERY_IDS => [self::QUERY_VALUES => $excludeIds]];
+                    $range = $this->convertRangeValues($range, $converter);
+                    $hints->context = QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES;
+                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $converter);
                 }
             }
 
@@ -315,22 +294,30 @@ final class QueryConditionGenerator
         if (null === $converter
             || !$converter instanceof QueryConversion
             || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
-            if ($hints->identifier) {
-                $query = [self::QUERY_IDS => [self::QUERY_VALUES => $value]];
-            } else {
-                switch ($hints->context) {
-                    case QueryConversionHints::CONTEXT_RANGE_VALUES:
-                    case QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES:
-                        // ranges
-                        $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
-                        break;
-                    default:
-                    case QueryConversionHints::CONTEXT_SIMPLE_VALUES:
-                    case QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
-                        // simple values
-                        $query = [self::QUERY_TERMS => [$propertyName => $value]];
-                        break;
-                }
+            switch ($hints->context) {
+                case QueryConversionHints::CONTEXT_RANGE_VALUES:
+                case QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES:
+                    $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
+                    if ($hints->identifier) {
+                        // IDs cannot be queries by range in Elasticsearch, use ids query
+                        // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
+                        /** @var Range $value */
+                        $query = [
+                            self::QUERY_IDS => [
+                                self::QUERY_VALUES => range($value->getLower(), $value->getUpper()),
+                            ],
+                        ];
+                    }
+                    break;
+                default:
+                case QueryConversionHints::CONTEXT_SIMPLE_VALUES:
+                case QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
+                    // simple values
+                    $query = [self::QUERY_TERMS => [$propertyName => $value]];
+                    if ($hints->identifier) {
+                        $query = [self::QUERY_IDS => [self::QUERY_VALUES => $value]];
+                    }
+                    break;
             }
         }
 
