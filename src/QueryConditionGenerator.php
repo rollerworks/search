@@ -141,7 +141,9 @@ final class QueryConditionGenerator
 
             $field = $this->fieldSet->get($fieldName);
             $converter = $field->getOption('elasticsearch_conversion');
-            $callback = [$this, 'convertValue'];
+            $callback = function ($value) use ($converter) {
+                return $this->convertValue($value, $converter);
+            };
 
             if ($valuesBag->hasSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$converter]);

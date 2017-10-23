@@ -82,7 +82,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_birthday()
     {
-        $this->markTestSkipped('BirthdayType support');
         $this->makeTest('customer-birthday: "2000-05-15";', range(2, 4));
     }
 
@@ -91,7 +90,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_birthdays()
     {
-        $this->markTestSkipped('BirthdayType support');
         $this->makeTest('customer-birthday: "2000-05-15", "1980-06-10";', [2, 3, 4]);
     }
 
