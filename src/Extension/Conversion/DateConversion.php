@@ -13,13 +13,17 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch\Extension\Conversion;
 
+use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator as Generator;
+use Rollerworks\Component\Search\Elasticsearch\QueryConversion;
+use Rollerworks\Component\Search\Elasticsearch\QueryConversionHints;
 use Rollerworks\Component\Search\Elasticsearch\ValueConversion;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
+use Rollerworks\Component\Search\Value\Range;
 
 /**
  * Class DateConversion.
  */
-class DateConversion implements ValueConversion
+class DateConversion implements ValueConversion, QueryConversion
 {
     /**
      * @var DateTimeToStringTransformer
@@ -32,16 +36,47 @@ class DateConversion implements ValueConversion
     }
 
     /**
-     * Returns the converted value as a valid Elasticsearch value.
-     *
-     * @param \DateTime $value
+     * @inheritdoc
      *
      * @throws \Rollerworks\Component\Search\Exception\TransformationFailedException
-     *
-     * @return string
      */
     public function convertValue($value): string
     {
         return $this->transformer->transform($value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function convertQuery(string $propertyName, $value, QueryConversionHints $hints): ?array
+    {
+        if (!is_array($value)) {
+            return $this->generateDateRange($propertyName, new Range($value, $value));
+        }
+
+        $range = [];
+
+        /** @var array $value */
+        foreach ($value as $singleValue) {
+            $dateRange = $this->generateDateRange($propertyName, new Range($singleValue, $singleValue));
+            $range[Generator::QUERY_BOOL][Generator::CONDITION_OR][] = $dateRange;
+        }
+
+        return $range;
+    }
+
+    /**
+     * @param string $propertyName
+     * @param Range  $range
+     *
+     * @return array
+     */
+    private function generateDateRange(string $propertyName, Range $range): array
+    {
+        return [
+            Generator::QUERY_RANGE => [
+                $propertyName => Generator::generateRangeParams($range),
+            ],
+        ];
     }
 }

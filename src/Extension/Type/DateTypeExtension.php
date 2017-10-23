@@ -45,8 +45,7 @@ class DateTypeExtension extends AbstractFieldTypeExtension
     {
         $resolver->setDefaults(
             [
-                'elasticsearch_convert_to_range' => true,
-                'elasticsearch_conversion' => $this->conversion
+                'elasticsearch_conversion' => $this->conversion,
             ]
         );
     }

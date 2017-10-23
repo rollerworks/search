@@ -190,8 +190,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                         [
                             'range' => [
                                 'id' => [
-                                    'lte' => 10,
-                                    'gte' => 20,
+                                    'gte' => 10,
+                                    'lte' => 20,
                                 ],
                             ],
                         ],
@@ -200,8 +200,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                         [
                             'range' => [
                                 'id' => [
-                                    'lte' => 1,
-                                    'gte' => 100,
+                                    'gte' => 1,
+                                    'lte' => 100,
                                 ],
                             ],
                         ],

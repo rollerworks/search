@@ -2,8 +2,18 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the RollerworksSearch package.
+ *
+ * (c) Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Rollerworks\Component\Search\Elasticsearch\Extension\Type;
 
+use Rollerworks\Component\Search\Elasticsearch\QueryConversion;
 use Rollerworks\Component\Search\Elasticsearch\ValueConversion;
 use Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
@@ -16,6 +26,7 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
 {
     /**
      * {@inheritdoc}
+     *
      * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
      * @throws \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
      */
@@ -24,7 +35,6 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
         $resolver->setDefaults(
             [
                 'elasticsearch_conversion' => null,
-                'elasticsearch_convert_to_range' => false
             ]
         );
         $resolver->setAllowedTypes(
@@ -32,9 +42,11 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
             [
                 'null',
                 ValueConversion::class,
+                QueryConversion::class,
             ]
         );
     }
+
     /**
      * {@inheritdoc}
      */
