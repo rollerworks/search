@@ -50,16 +50,28 @@ class DateConversion implements ValueConversion, QueryConversion
      */
     public function convertQuery(string $propertyName, $value, QueryConversionHints $hints): ?array
     {
-        if (!is_array($value)) {
+        if (!is_array($value) && !$value instanceof Range) {
             return $this->generateDateRange($propertyName, new Range($value, $value));
         }
 
         $range = [];
-
-        /** @var array $value */
-        foreach ($value as $singleValue) {
-            $dateRange = $this->generateDateRange($propertyName, new Range($singleValue, $singleValue));
-            $range[Generator::QUERY_BOOL][Generator::CONDITION_OR][] = $dateRange;
+        switch ($hints->context) {
+            case QueryConversionHints::CONTEXT_RANGE_VALUES:
+            case QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES:
+                // already a Range
+                /** @var Range $value */
+                $range = [Generator::QUERY_RANGE => [$propertyName => Generator::generateRangeParams($value)]];
+                break;
+            default:
+            case QueryConversionHints::CONTEXT_SIMPLE_VALUES:
+            case QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
+                // dates as single values, need to convert them to a date range
+                /** @var array $value */
+                foreach ($value as $singleValue) {
+                    $dateRange = $this->generateDateRange($propertyName, new Range($singleValue, $singleValue));
+                    $range[Generator::QUERY_BOOL][Generator::CONDITION_OR][] = $dateRange;
+                }
+                break;
         }
 
         return $range;

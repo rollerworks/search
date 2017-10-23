@@ -158,16 +158,22 @@ final class QueryConditionGenerator
             }
 
             if (!$hints->identifier) {
-                /** @var Range $range */
-                foreach ($valuesBag->get(Range::class) as $range) {
-                    $range = $this->convertRangeValues($range, $converter);
-                    $bool[$includingType][][self::QUERY_RANGE][$propertyName] = static::generateRangeParams($range);
+                if ($valuesBag->has(Range::class)) {
+                    /** @var Range $range */
+                    foreach ($valuesBag->get(Range::class) as $range) {
+                        $range = $this->convertRangeValues($range, $converter);
+                        $hints->context = QueryConversionHints::CONTEXT_RANGE_VALUES;
+                        $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $converter);
+                    }
                 }
 
-                /** @var Range $range */
-                foreach ($valuesBag->get(ExcludedRange::class) as $range) {
-                    $range = $this->convertRangeValues($range, $converter);
-                    $bool[self::CONDITION_NOT][][self::QUERY_RANGE][$propertyName] = static::generateRangeParams($range);
+                if ($valuesBag->has(ExcludedRange::class)) {
+                    /** @var Range $range */
+                    foreach ($valuesBag->get(ExcludedRange::class) as $range) {
+                        $range = $this->convertRangeValues($range, $converter);
+                        $hints->context = QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES;
+                        $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $converter);
+                    }
                 }
             } else {
                 // IDs cannot be queries by range in Elasticsearch, use ids query
@@ -309,7 +315,23 @@ final class QueryConditionGenerator
         if (null === $converter
             || !$converter instanceof QueryConversion
             || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
-            return [self::QUERY_TERMS => [$propertyName => $value]];
+            if ($hints->identifier) {
+                $query = [self::QUERY_IDS => [self::QUERY_VALUES => $value]];
+            } else {
+                switch ($hints->context) {
+                    case QueryConversionHints::CONTEXT_RANGE_VALUES:
+                    case QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES:
+                        // ranges
+                        $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
+                        break;
+                    default:
+                    case QueryConversionHints::CONTEXT_SIMPLE_VALUES:
+                    case QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
+                        // simple values
+                        $query = [self::QUERY_TERMS => [$propertyName => $value]];
+                        break;
+                }
+            }
         }
 
         return $query;

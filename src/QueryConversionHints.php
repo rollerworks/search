@@ -20,6 +20,8 @@ class QueryConversionHints
 {
     public const CONTEXT_SIMPLE_VALUES = 'SIMPLE_VALUES';
     public const CONTEXT_EXCLUDED_SIMPLE_VALUES = 'EXCLUDED_SIMPLE_VALUES';
+    public const CONTEXT_RANGE_VALUES = 'RANGE_VALUES';
+    public const CONTEXT_EXCLUDED_RANGE_VALUES = 'EXCLUDED_RANGE_VALUES';
 
     /** @var bool */
     public $identifier = false;
