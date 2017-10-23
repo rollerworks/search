@@ -29,6 +29,11 @@ final class FieldMapping
      */
     public $valueConversion;
 
+    /**
+     * @var QueryConversion
+     */
+    public $queryConversion;
+
     public function __construct(string $fieldName, string $property, FieldConfig $fieldConfig)
     {
         $this->fieldName = $fieldName;
@@ -38,7 +43,14 @@ final class FieldMapping
         $this->typeName = $mapping['typeName'];
         $this->propertyName = $mapping['propertyName'];
 
-        $this->valueConversion = $fieldConfig->getOption('elasticsearch_conversion');
+        $converter = $fieldConfig->getOption('elasticsearch_conversion');
+
+        if ($converter instanceof ValueConversion) {
+            $this->valueConversion = $converter;
+        }
+        if ($converter instanceof QueryConversion) {
+            $this->queryConversion = $converter;
+        }
     }
 
     /**

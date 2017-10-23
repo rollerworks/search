@@ -135,43 +135,44 @@ final class QueryConditionGenerator
         $hints = new QueryConversionHints();
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             // TODO: this looks fishy, what about nested fields?
-            $propertyName = $this->mappings[$fieldName]->propertyName;
+            $mapping = $this->mappings[$fieldName];
+
+            $propertyName = $mapping->propertyName;
+            $valueConverter = $mapping->valueConversion;
+            $queryConverter = $mapping->queryConversion;
 
             $hints->identifier = (self::PROPERTY_ID === $propertyName);
-
-            $field = $this->fieldSet->get($fieldName);
-            $converter = $field->getOption('elasticsearch_conversion');
-            $callback = function ($value) use ($converter) {
-                return $this->convertValue($value, $converter);
+            $callback = function ($value) use ($valueConverter) {
+                return $this->convertValue($value, $valueConverter);
             };
 
             // simple values
             if ($valuesBag->hasSimpleValues()) {
-                $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$converter]);
+                $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$valueConverter]);
                 $hints->context = QueryConversionHints::CONTEXT_SIMPLE_VALUES;
-                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $converter);
+                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter);
             }
             if ($valuesBag->hasExcludedSimpleValues()) {
-                $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$converter]);
+                $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$valueConverter]);
                 $hints->context = QueryConversionHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
-                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $converter);
+                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter);
             }
 
             // ranges
             if ($valuesBag->has(Range::class)) {
                 /** @var Range $range */
                 foreach ($valuesBag->get(Range::class) as $range) {
-                    $range = $this->convertRangeValues($range, $converter);
+                    $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryConversionHints::CONTEXT_RANGE_VALUES;
-                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $converter);
+                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter);
                 }
             }
             if ($valuesBag->has(ExcludedRange::class)) {
                 /** @var Range $range */
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
-                    $range = $this->convertRangeValues($range, $converter);
+                    $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryConversionHints::CONTEXT_EXCLUDED_RANGE_VALUES;
-                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $converter);
+                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter);
                 }
             }
 
@@ -282,17 +283,16 @@ final class QueryConditionGenerator
     }
 
     /**
-     * @param string                               $propertyName
-     * @param mixed                                $value
-     * @param QueryConversionHints                 $hints
-     * @param null|ValueConversion|QueryConversion $converter
+     * @param string               $propertyName
+     * @param mixed                $value
+     * @param QueryConversionHints $hints
+     * @param null|ValueConversion $converter
      *
      * @return array
      */
-    private function prepareQuery(string $propertyName, $value, QueryConversionHints $hints, $converter): array
+    private function prepareQuery(string $propertyName, $value, QueryConversionHints $hints, ?ValueConversion $converter): array
     {
         if (null === $converter
-            || !$converter instanceof QueryConversion
             || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
             switch ($hints->context) {
                 case QueryConversionHints::CONTEXT_RANGE_VALUES:
