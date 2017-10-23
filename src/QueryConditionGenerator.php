@@ -294,33 +294,34 @@ final class QueryConditionGenerator
      */
     private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter): array
     {
-        if (null === $converter
-            || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
-            switch ($hints->context) {
-                case QueryPreparationHints::CONTEXT_RANGE_VALUES:
-                case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
-                    $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
-                    if ($hints->identifier) {
-                        // IDs cannot be queries by range in Elasticsearch, use ids query
-                        // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
-                        /** @var Range $value */
-                        $query = [
-                            self::QUERY_IDS => [
-                                self::QUERY_VALUES => range($value->getLower(), $value->getUpper()),
-                            ],
-                        ];
-                    }
-                    break;
-                default:
-                case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
-                case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
-                    // simple values
-                    $query = [self::QUERY_TERMS => [$propertyName => $value]];
-                    if ($hints->identifier) {
-                        $query = [self::QUERY_IDS => [self::QUERY_VALUES => $value]];
-                    }
-                    break;
-            }
+        if (null !== $converter && null !== ($query = $converter->convertQuery($propertyName, $value, $hints))) {
+            return $query;
+        }
+
+        switch ($hints->context) {
+            case QueryPreparationHints::CONTEXT_RANGE_VALUES:
+            case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
+                $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
+                if ($hints->identifier) {
+                    // IDs cannot be queries by range in Elasticsearch, use ids query
+                    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
+                    /** @var Range $value */
+                    $query = [
+                        self::QUERY_IDS => [
+                            self::QUERY_VALUES => range($value->getLower(), $value->getUpper()),
+                        ],
+                    ];
+                }
+                break;
+            default:
+            case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
+            case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
+                // simple values
+                $query = [self::QUERY_TERMS => [$propertyName => $value]];
+                if ($hints->identifier) {
+                    $query = [self::QUERY_IDS => [self::QUERY_VALUES => $value]];
+                }
+                break;
         }
 
         return $query;

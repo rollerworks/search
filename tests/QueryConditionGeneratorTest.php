@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
@@ -26,7 +27,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     /** @test */
     public function it_generates_nothing_for_empty_condition()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())->getSearchCondition();
+        $condition = $this->createCondition()->getSearchCondition();
         $generator = new QueryConditionGenerator($condition);
         $this->addMappings($generator);
 
@@ -36,7 +37,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     /** @test */
     public function it_generates_a_structure_of_root_level_fields()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
+        $condition = $this->createCondition()
             ->field('id')
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
@@ -79,7 +80,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     /** @test */
     public function it_generates_a_structure_of_root_level_fields_with_excludes()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
+        $condition = $this->createCondition()
             ->field('id')
                 ->addSimpleValue(10)
                 ->addExcludedSimpleValue(5)
@@ -114,7 +115,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     /** @test */
     public function it_generates_a_simple_structure_of_nested_fields()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
+        $condition = $this->createCondition()
             ->field('id')
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
@@ -165,7 +166,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     /** @test */
     public function it_generates_a_structure_with_excludes()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
+        $condition = $this->createCondition()
             ->field('id')
                 ->add(new Range(1, 100))
                 ->add(new ExcludedRange(10, 20))
@@ -214,7 +215,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     /** @test */
     public function it_generates_a_structure_with_comparisons()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
+        $condition = $this->createCondition()
             ->field('id')
                 ->add(new Compare(35, '<>'))
                 ->add(new Compare(45, '<>'))
@@ -266,7 +267,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     /** @test */
     public function it_generates_a_structure_with_PatternMatchers()
     {
-        $condition = SearchConditionBuilder::create($this->getFieldSet())
+        $condition = $this->createCondition()
             ->field('name')
                 ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
@@ -346,5 +347,16 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     {
         $generator->registerField('id', 'id');
         $generator->registerField('name', 'name');
+    }
+
+    /**
+     * @return SearchConditionBuilder
+     */
+    private function createCondition(): SearchConditionBuilder
+    {
+        /** @var FieldSet $fieldSet */
+        $fieldSet = $this->getFieldSet();
+
+        return SearchConditionBuilder::create($fieldSet);
     }
 }
