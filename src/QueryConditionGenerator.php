@@ -29,6 +29,7 @@ final class QueryConditionGenerator
     public const QUERY = 'query';
     public const QUERY_BOOL = 'bool';
     public const QUERY_IDS = 'ids';
+    public const QUERY_NESTED = 'nested';
     public const QUERY_MATCH = 'match';
     public const QUERY_PREFIX = 'prefix';
     public const QUERY_RANGE = 'range';
@@ -140,6 +141,7 @@ final class QueryConditionGenerator
             $propertyName = $mapping->propertyName;
             $valueConverter = $mapping->valueConversion;
             $queryConverter = $mapping->queryConversion;
+            $nested = $mapping->nested;
 
             $hints->identifier = (self::PROPERTY_ID === $propertyName);
             $callback = function ($value) use ($valueConverter) {
@@ -150,12 +152,12 @@ final class QueryConditionGenerator
             if ($valuesBag->hasSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$valueConverter]);
                 $hints->context = QueryPreparationHints::CONTEXT_SIMPLE_VALUES;
-                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter);
+                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested);
             }
             if ($valuesBag->hasExcludedSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$valueConverter]);
                 $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
-                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter);
+                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested);
             }
 
             // ranges
@@ -164,7 +166,7 @@ final class QueryConditionGenerator
                 foreach ($valuesBag->get(Range::class) as $range) {
                     $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_RANGE_VALUES;
-                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter);
+                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested);
                 }
             }
             if ($valuesBag->has(ExcludedRange::class)) {
@@ -172,7 +174,7 @@ final class QueryConditionGenerator
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
                     $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES;
-                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter);
+                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested);
                 }
             }
 
@@ -289,39 +291,50 @@ final class QueryConditionGenerator
      * @param mixed                 $value
      * @param QueryPreparationHints $hints
      * @param null|QueryConversion  $converter
+     * @param array|bool            $nested
      *
      * @return array
      */
-    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter): array
+    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested): array
     {
-        if (null !== $converter && null !== ($query = $converter->convertQuery($propertyName, $value, $hints))) {
-            return $query;
+        if (null === $converter || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
+            switch ($hints->context) {
+                case QueryPreparationHints::CONTEXT_RANGE_VALUES:
+                case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
+                    $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
+                    if ($hints->identifier) {
+                        // IDs cannot be queries by range in Elasticsearch, use ids query
+                        // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
+                        /** @var Range $value */
+                        $query = [
+                            self::QUERY_IDS => [
+                                self::QUERY_VALUES => range($value->getLower(), $value->getUpper()),
+                            ],
+                        ];
+                    }
+                    break;
+                default:
+                case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
+                case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
+                    // simple values
+                    $query = [self::QUERY_TERMS => [$propertyName => $value]];
+                    if ($hints->identifier) {
+                        $query = [self::QUERY_IDS => [self::QUERY_VALUES => $value]];
+                    }
+                    break;
+            }
         }
 
-        switch ($hints->context) {
-            case QueryPreparationHints::CONTEXT_RANGE_VALUES:
-            case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
-                $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
-                if ($hints->identifier) {
-                    // IDs cannot be queries by range in Elasticsearch, use ids query
-                    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
-                    /** @var Range $value */
-                    $query = [
-                        self::QUERY_IDS => [
-                            self::QUERY_VALUES => range($value->getLower(), $value->getUpper()),
-                        ],
-                    ];
-                }
-                break;
-            default:
-            case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
-            case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
-                // simple values
-                $query = [self::QUERY_TERMS => [$propertyName => $value]];
-                if ($hints->identifier) {
-                    $query = [self::QUERY_IDS => [self::QUERY_VALUES => $value]];
-                }
-                break;
+        if ($nested) {
+            while (false !== $nested) {
+                $query = [
+                    self::QUERY_NESTED => [
+                        'path' => $nested['path'],
+                        'query' => $query,
+                    ],
+                ];
+                $nested = $nested['nested'];
+            }
         }
 
         return $query;

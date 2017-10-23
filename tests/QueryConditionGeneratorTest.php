@@ -29,7 +29,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     {
         $condition = $this->createCondition()->getSearchCondition();
         $generator = new QueryConditionGenerator($condition);
-        $this->addMappings($generator);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
 
         self::assertNull($generator->getQuery());
     }
@@ -49,7 +50,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         ->getSearchCondition();
 
         $generator = new QueryConditionGenerator($condition);
-        $this->addMappings($generator);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
 
         self::assertEquals([
             'query' => [
@@ -88,7 +90,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         ->getSearchCondition();
 
         $generator = new QueryConditionGenerator($condition);
-        $this->addMappings($generator);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
 
         self::assertEquals([
             'query' => [
@@ -129,7 +132,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         ->getSearchCondition();
 
         $generator = new QueryConditionGenerator($condition);
-        $this->addMappings($generator);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
 
         self::assertEquals([
             'query' => [
@@ -175,7 +179,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         ->getSearchCondition();
 
         $generator = new QueryConditionGenerator($condition);
-        $this->addMappings($generator);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
 
         self::assertEquals([
             'query' => [
@@ -225,7 +230,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         ->getSearchCondition();
 
         $generator = new QueryConditionGenerator($condition);
-        $this->addMappings($generator);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
 
         self::assertEquals([
             'query' => [
@@ -280,7 +286,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         ->getSearchCondition();
 
         $generator = new QueryConditionGenerator($condition);
-        $this->addMappings($generator);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
 
         self::assertEquals([
             'query' => [
@@ -343,10 +350,48 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         ], $generator->getQuery());
     }
 
-    private function addMappings(QueryConditionGenerator $generator)
+    /** @test */
+    public function it_generates_a_structure_with_nested_queries()
     {
-        $generator->registerField('id', 'id');
-        $generator->registerField('name', 'name');
+        $condition = $this->createCondition()
+            ->field('name')
+                ->addSimpleValue('Doctor')
+                ->addSimpleValue('Foo')
+            ->end()
+            ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('name', 'item[].author[].name');
+
+        self::assertEquals(
+            [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'nested' => [
+                                    'path' => 'item',
+                                    'query' => [
+                                        'nested' => [
+                                            'path' => 'author',
+                                            'query' => [
+                                                'terms' => [
+                                                    'author.name' => [
+                                                        'Doctor',
+                                                        'Foo',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $generator->getQuery()
+        );
     }
 
     /**

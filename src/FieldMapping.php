@@ -21,6 +21,7 @@ final class FieldMapping
     public $indexName;
     public $typeName;
     public $propertyName;
+    public $nested = false;
     public $boost;
     public $options; // special options (reserved)
 
@@ -82,6 +83,21 @@ final class FieldMapping
             if (false !== strpos($path, '/')) {
                 [$indexName, $typeName] = explode('/', $path);
             }
+        }
+
+        if (false !== strpos($propertyName, '[]')) {
+            $tokens = explode('[]', $propertyName);
+
+            // last token is the property name
+            $propertyName = trim(array_pop($tokens), '.');
+            $propertyName = trim(end($tokens), '.').'.'.$propertyName;
+
+            $nested = false;
+            foreach ($tokens as $path) {
+                $path = trim($path, '.');
+                $nested = \compact('path', 'nested');
+            }
+            $this->nested = $nested;
         }
 
         return compact('indexName', 'typeName', 'propertyName');

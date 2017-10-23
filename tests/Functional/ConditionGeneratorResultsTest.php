@@ -130,7 +130,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_and_status_and_total()
     {
-        $this->markTestSkipped('currency support');
         $this->makeTest('customer: 2; status: paid; total: "90.00";', [2]);
     }
 
@@ -139,8 +138,17 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
      */
     public function it_finds_by_customer_and_status_or_price()
     {
-        $this->markTestSkipped('currency support');
-        $this->makeTest('customer: 2; *(status: paid; total: "50.00";)', [2, 4]);
+        // 2 => matches status, doesn't match price
+        // 4 => matches price, doesn't match status
+        $this->makeTest('customer: 2; *(status: paid; total: "100.00";)', [2, 4]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_item_price()
+    {
+        $this->makeTest('row-price: 15.00;', [2, 5]);
     }
 
     /**
@@ -149,7 +157,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
     public function it_finds_by_status_and_label_or_quantity_limited_by_price()
     {
         // Note there is no row with quantity 5, which is resolved as its in an OR'ed group
-        $this->markTestSkipped('nested query support');
         $this->makeTest('status: published; *(row-quantity: 5; row-label: ~*"repair"; (row-price: "50.00"));', [4]);
     }
 
