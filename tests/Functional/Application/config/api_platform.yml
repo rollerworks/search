@@ -47,6 +47,9 @@ api_platform:
     description: |
       This is a demo application of the [API Platform](https://api-platform.com) framework.
       [Its source code](https://github.com/api-platform/demo) includes various examples, check it out!
+        mapping:
+            paths: ['%kernel.root_dir%/AppBundle/Entity']
+
     formats:
         jsonld:  ['application/ld+json']
         jsonhal: ['application/hal+json']
