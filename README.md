@@ -1,7 +1,7 @@
 RollerworksSearch Elasticsearch (Elastica) extension
 ====================================================
 
-This package provides the Elasticsearch (Elastica) extension for [RollerworksSearch][1].
+This package provides the Elasticsearch extension for [RollerworksSearch][1].
 
 **Note:** 
 
