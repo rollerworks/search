@@ -20,7 +20,9 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.3.6",
-        "symfony/var-dumper": "^3.3.6"
+        "symfony/var-dumper": "^3.3.6",
+        "ruflin/elastica": "^3.2",
+        "moneyphp/money": "^3.0"
     },
     "autoload": {
         "psr-4": {
