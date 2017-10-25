@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\UnsupportedFieldSetException;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchPreCondition;
+use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -50,5 +52,19 @@ final class SearchConditionTest extends TestCase
         $this->expectExceptionMessage((new UnsupportedFieldSetException(['bar', 'foo'], 'test'))->getMessage());
 
         $condition->assertFieldSetName('bar', 'foo');
+    }
+
+    /** @test */
+    public function it_allows_setting_a_pre_condition()
+    {
+        $fieldSet = $this->createMock(FieldSet::class);
+        $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
+
+        $preCondition = new SearchPreCondition((new ValuesGroup())->addField('id', new ValuesBag()));
+
+        $condition = new SearchCondition($fieldSet, new ValuesGroup());
+        $condition->setPreCondition($preCondition);
+
+        self::assertEquals($preCondition, $condition->getPreCondition());
     }
 }
