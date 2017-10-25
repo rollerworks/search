@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Elasticsearch;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
 
-final class FieldMapping
+final class FieldMapping implements \Serializable
 {
     public $fieldName;
     public $indexName;
@@ -43,6 +43,7 @@ final class FieldMapping
         $this->indexName = $mapping['indexName'];
         $this->typeName = $mapping['typeName'];
         $this->propertyName = $mapping['propertyName'];
+        $this->nested = $mapping['nested'];
 
         $converter = $fieldConfig->getOption('elasticsearch_conversion');
 
@@ -75,6 +76,7 @@ final class FieldMapping
         $indexName = null;
         $typeName = null;
         $propertyName = $property;
+        $nested = false;
         if (false !== strpos($property, '#')) {
             [$path, $propertyName] = explode('#', $property);
 
@@ -92,14 +94,36 @@ final class FieldMapping
             $propertyName = trim(array_pop($tokens), '.');
             $propertyName = trim(end($tokens), '.').'.'.$propertyName;
 
-            $nested = false;
             foreach ($tokens as $path) {
                 $path = trim($path, '.');
                 $nested = \compact('path', 'nested');
             }
-            $this->nested = $nested;
         }
 
-        return compact('indexName', 'typeName', 'propertyName');
+        return compact('indexName', 'typeName', 'propertyName', 'nested');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function serialize()
+    {
+        return serialize(
+            [
+                'field_name' => $this->fieldName,
+                'index_name' => $this->indexName,
+                'type_name' => $this->typeName,
+                'property_name' => $this->propertyName,
+                'nested' => $this->nested,
+            ]
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unserialize($serialized): void
+    {
+        // no-op
     }
 }
