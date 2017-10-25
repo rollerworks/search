@@ -44,7 +44,22 @@ final class QueryConditionGenerator
     public const CONDITION_AND = 'must';
     public const CONDITION_OR = 'should';
 
-    private const COMPARE_OPR_TYPE = ['>=' => 'gte', '<=' => 'lte', '<' => 'lt', '>' => 'gt'];
+    // Elasticsearch comparison operators
+    public const COMPARISON_LESS = 'lt';
+    public const COMPARISON_LESS_OR_EQUAL = 'lte';
+    public const COMPARISON_GREATER = 'gt';
+    public const COMPARISON_GREATER_OR_EQUAL = 'gte';
+
+    // note: this one is NOT available for Elasticsearch, we use it as a named constant only
+    private const COMPARISON_UNEQUAL = '<>';
+
+    private const COMPARE_OPR_TYPE = [
+        '<>' => self::COMPARISON_UNEQUAL,
+        '<' => self::COMPARISON_LESS,
+        '<=' => self::COMPARISON_LESS_OR_EQUAL,
+        '>' => self::COMPARISON_GREATER,
+        '>=' => self::COMPARISON_GREATER_OR_EQUAL,
+    ];
 
     private $searchCondition;
     private $fieldSet;
@@ -119,9 +134,12 @@ final class QueryConditionGenerator
      */
     public static function generateRangeParams(Range $range): array
     {
+        $lowerCondition = $range->isLowerInclusive() ? self::COMPARISON_GREATER_OR_EQUAL : self::COMPARISON_GREATER;
+        $upperCondition = $range->isUpperInclusive() ? self::COMPARISON_LESS_OR_EQUAL : self::COMPARISON_LESS;
+
         return [
-            $range->isLowerInclusive() ? 'gte' : 'gt' => $range->getLower(),
-            $range->isUpperInclusive() ? 'lte' : 'lt' => $range->getUpper(),
+            $lowerCondition => $range->getLower(),
+            $upperCondition => $range->getUpper(),
         ];
     }
 
@@ -178,20 +196,27 @@ final class QueryConditionGenerator
                 }
             }
 
-            /** @var Compare $compare */
-            foreach ($valuesBag->get(Compare::class) as $compare) {
-                if ('<>' === ($operator = $compare->getOperator())) {
-                    $bool[self::CONDITION_NOT][][self::QUERY_TERM] = [$propertyName => [self::QUERY_VALUE => $compare->getValue()]];
-                } else {
-                    $bool[$includingType][] = [
-                        $propertyName => [
-                            self::COMPARE_OPR_TYPE[$operator] => $compare->getValue(),
-                        ],
-                    ];
+            // comparison
+            if ($valuesBag->has(Compare::class)) {
+                /** @var Compare $compare */
+                foreach ($valuesBag->get(Compare::class) as $compare) {
+                    $compare = $this->convertCompareValue($compare, $valueConverter);
+                    $hints->context = QueryPreparationHints::CONTEXT_COMPARISON;
+                    $localIncludingType = self::COMPARISON_UNEQUAL === $compare->getOperator() ? self::CONDITION_NOT : $includingType;
+                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested);
                 }
             }
 
-            $this->processPatternMatchers($valuesBag->get(PatternMatch::class), $propertyName, $bool, $includingType);
+            // matchers
+            if ($valuesBag->has(PatternMatch::class)) {
+                /** @var PatternMatch $patternMatch */
+                foreach ($valuesBag->get(PatternMatch::class) as $patternMatch) {
+                    $patternMatch = $this->convertMatcherValue($patternMatch, $valueConverter);
+                    $hints->context = QueryPreparationHints::CONTEXT_PATTERN_MATCH;
+                    $localIncludingType = $patternMatch->isExclusive() ? self::CONDITION_NOT : $includingType;
+                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $patternMatch, $hints, $queryConverter, $nested);
+                }
+            }
         }
 
         foreach ($group->getGroups() as $subGroup) {
@@ -207,52 +232,6 @@ final class QueryConditionGenerator
         }
 
         return [self::QUERY_BOOL => $bool];
-    }
-
-    private function processPatternMatchers(array $values, string $propertyName, array &$bool, string $includingType)
-    {
-        // Note. Elasticsearch supports case-insensitive only at index level.
-
-        /** @var PatternMatch $patternMatch */
-        foreach ($values as $patternMatch) {
-            $value = [];
-
-            switch ($patternMatch->getType()) {
-                // Faster then Wildcard but less accurate.
-                // XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
-                case PatternMatch::PATTERN_CONTAINS:
-                case PatternMatch::PATTERN_NOT_CONTAINS:
-                    $value[self::QUERY_MATCH] = [$propertyName => [self::QUERY => $patternMatch->getValue()]];
-                    break;
-
-                case PatternMatch::PATTERN_STARTS_WITH:
-                case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                    $value[self::QUERY_PREFIX] = [$propertyName => [self::QUERY_VALUE => $patternMatch->getValue()]];
-                    break;
-
-                case PatternMatch::PATTERN_ENDS_WITH:
-                case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                    $value[self::QUERY_WILDCARD] = [
-                        $propertyName => [self::QUERY_VALUE => '?'.addcslashes($patternMatch->getValue(), '?*')],
-                    ];
-                    break;
-
-                case PatternMatch::PATTERN_EQUALS:
-                case PatternMatch::PATTERN_NOT_EQUALS:
-                    $value[self::QUERY_TERM] = [$propertyName => [self::QUERY_VALUE => $patternMatch->getValue()]];
-                    break;
-
-                default:
-                    $message = sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
-                    throw new BadMethodCallException($message);
-            }
-
-            if ($patternMatch->isExclusive()) {
-                $bool[self::CONDITION_NOT][] = $value;
-            } else {
-                $bool[$includingType][] = $value;
-            }
-        }
     }
 
     /**
@@ -287,11 +266,44 @@ final class QueryConditionGenerator
     }
 
     /**
+     * @param Compare         $compare
+     * @param ValueConversion $converter
+     *
+     * @return Compare
+     */
+    private function convertCompareValue(Compare $compare, ?ValueConversion $converter): Compare
+    {
+        return new Compare(
+            $this->convertValue($compare->getValue(), $converter),
+            $compare->getOperator()
+        );
+    }
+
+    /**
+     * @param PatternMatch    $patternMatch
+     * @param ValueConversion $converter
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return PatternMatch
+     */
+    private function convertMatcherValue(PatternMatch $patternMatch, ?ValueConversion $converter): PatternMatch
+    {
+        return new PatternMatch(
+            $this->convertValue($patternMatch->getValue(), $converter),
+            $patternMatch->getType(),
+            $patternMatch->isCaseInsensitive()
+        );
+    }
+
+    /**
      * @param string                $propertyName
      * @param mixed                 $value
      * @param QueryPreparationHints $hints
      * @param null|QueryConversion  $converter
      * @param array|bool            $nested
+     *
+     * @throws \Rollerworks\Component\Search\Exception\BadMethodCallException
      *
      * @return array
      */
@@ -313,6 +325,25 @@ final class QueryConditionGenerator
                         ];
                     }
                     break;
+                case QueryPreparationHints::CONTEXT_COMPARISON:
+                    /** @var Compare $value */
+                    $operator = self::COMPARE_OPR_TYPE[$value->getOperator()];
+                    $query = [
+                        $propertyName => [$operator => $value->getValue()],
+                    ];
+
+                    if (self::COMPARISON_UNEQUAL === $value->getOperator()) {
+                        $query = [
+                            self::QUERY_TERM => [
+                                $propertyName => [self::QUERY_VALUE => $value->getValue()],
+                            ],
+                        ];
+                    }
+                    break;
+                case QueryPreparationHints::CONTEXT_PATTERN_MATCH:
+                    /** @var PatternMatch $value */
+                    $query = $this->preparePatternMatch($propertyName, $value);
+                    break;
                 default:
                 case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
                 case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
@@ -327,14 +358,56 @@ final class QueryConditionGenerator
 
         if ($nested) {
             while (false !== $nested) {
+                $path = $nested['path'];
                 $query = [
-                    self::QUERY_NESTED => [
-                        'path' => $nested['path'],
-                        'query' => $query,
-                    ],
+                    self::QUERY_NESTED => compact('path', 'query'),
                 ];
                 $nested = $nested['nested'];
             }
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param string       $propertyName
+     * @param PatternMatch $patternMatch
+     *
+     * @throws \Rollerworks\Component\Search\Exception\BadMethodCallException
+     *
+     * @return array
+     */
+    private function preparePatternMatch(string $propertyName, PatternMatch $patternMatch): array
+    {
+        $query = [];
+        switch ($patternMatch->getType()) {
+            // Faster then Wildcard but less accurate.
+            // XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
+            case PatternMatch::PATTERN_CONTAINS:
+            case PatternMatch::PATTERN_NOT_CONTAINS:
+                $query[self::QUERY_MATCH] = [$propertyName => [self::QUERY => $patternMatch->getValue()]];
+                break;
+
+            case PatternMatch::PATTERN_STARTS_WITH:
+            case PatternMatch::PATTERN_NOT_STARTS_WITH:
+                $query[self::QUERY_PREFIX] = [$propertyName => [self::QUERY_VALUE => $patternMatch->getValue()]];
+                break;
+
+            case PatternMatch::PATTERN_ENDS_WITH:
+            case PatternMatch::PATTERN_NOT_ENDS_WITH:
+                $query[self::QUERY_WILDCARD] = [
+                    $propertyName => [self::QUERY_VALUE => '?'.addcslashes($patternMatch->getValue(), '?*')],
+                ];
+                break;
+
+            case PatternMatch::PATTERN_EQUALS:
+            case PatternMatch::PATTERN_NOT_EQUALS:
+                $query[self::QUERY_TERM] = [$propertyName => [self::QUERY_VALUE => $patternMatch->getValue()]];
+                break;
+
+            default:
+                $message = sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
+                throw new BadMethodCallException($message);
         }
 
         return $query;

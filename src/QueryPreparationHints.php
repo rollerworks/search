@@ -22,12 +22,14 @@ class QueryPreparationHints
     public const CONTEXT_EXCLUDED_SIMPLE_VALUES = 'EXCLUDED_SIMPLE_VALUES';
     public const CONTEXT_RANGE_VALUES = 'RANGE_VALUES';
     public const CONTEXT_EXCLUDED_RANGE_VALUES = 'EXCLUDED_RANGE_VALUES';
+    public const CONTEXT_COMPARISON = 'COMPARISON';
+    public const CONTEXT_PATTERN_MATCH = 'PATTERN_MATCH';
 
     /** @var bool */
     public $identifier = false;
 
     /**
-     * @var string One of ConversionHints::CONTEXT_* constants
+     * @var string Preparation context, one of ConversionHints::CONTEXT_* constants
      */
     public $context;
 }
