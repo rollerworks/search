@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-final class QueryConditionGenerator
+final class QueryConditionGenerator implements ConditionGenerator
 {
     private const PROPERTY_ID = '_id';
 
@@ -74,6 +74,9 @@ final class QueryConditionGenerator
         // $this->mappings = ['id' => $mapping, 'name' => $mapping2]; // TODO MultiMatch
     }
 
+    /**
+     * @inheritdoc
+     */
     public function registerField(string $fieldName, string $mapping)
     {
         $this->mappings[$fieldName] = new FieldMapping($fieldName, $mapping, $this->fieldSet->get($fieldName));
@@ -91,6 +94,9 @@ final class QueryConditionGenerator
     {
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getQuery(): ?array
     {
         $rootGroupCondition = $this->processGroup($this->searchCondition->getValuesGroup());
@@ -103,7 +109,7 @@ final class QueryConditionGenerator
     }
 
     /**
-     * @return FieldMapping[]
+     * @inheritdoc
      */
     public function getMappings(): array
     {
@@ -125,6 +131,14 @@ final class QueryConditionGenerator
         }
 
         return array_values($mappings);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSearchCondition(): SearchCondition
+    {
+        return $this->searchCondition;
     }
 
     /**
