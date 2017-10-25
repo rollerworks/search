@@ -25,6 +25,7 @@ class SearchCondition
 {
     private $fieldSet;
     private $values;
+    private $preCondition;
 
     public function __construct(FieldSet $fieldSet, ValuesGroup $valuesGroup)
     {
@@ -40,6 +41,16 @@ class SearchCondition
     public function getValuesGroup(): ValuesGroup
     {
         return $this->values;
+    }
+
+    public function setPreCondition(SearchPreCondition $condition): void
+    {
+        $this->preCondition = $condition;
+    }
+
+    public function getPreCondition(): ?SearchPreCondition
+    {
+        return $this->preCondition;
     }
 
     /**
