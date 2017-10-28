@@ -36,13 +36,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\": "src/"
+            "Rollerworks\\Component\\Search\\": ""
         },
-        "exclude-from-classmap": ["test/"]
+        "exclude-from-classmap": ["Test/"]
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Tests\\": "tests/"
+            "Rollerworks\\Component\\Search\\Tests\\": "Tests/"
         }
     },
     "extra": {
