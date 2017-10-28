@@ -27,15 +27,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Processor\\": "src"
+            "Rollerworks\\Component\\Search\\Processor\\": ""
         },
         "exclude-from-classmap": [
-            "tests/"
+            "Tests/"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Processor\\Tests\\": "tests"
+            "Rollerworks\\Component\\Search\\Processor\\Tests\\": "Tests/"
         }
     },
     "extra": {
