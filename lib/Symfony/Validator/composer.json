@@ -25,13 +25,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\": "src/"
+            "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\": ""
         },
         "exclude-from-classmap": ["test/"]
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\Tests\\": "tests"
+            "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\Tests\\": "Tests/"
         }
     },
     "extra": {
