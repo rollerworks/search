@@ -1,0 +1,17 @@
+imports:
+    - { resource: framework.yml }
+
+framework:
+    router:
+        enabled: true
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: "%kernel.debug%"
+
+rollerworks_search:
+    api_platform: false
+
+# Register the Controller as service to ensure autowiring can work
+services:
+    'Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Controller\SearchController':
+        autowire: true
+        public: true

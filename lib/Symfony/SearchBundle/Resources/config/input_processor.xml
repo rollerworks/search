@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="rollerworks_search.input_loader" class="Rollerworks\Component\Search\Loader\InputProcessorLoader">
+            <argument />
+            <!-- All services with tag "rollerworks_search.input_processor" are inserted here by InputProcessorPass -->
+            <argument type="collection" />
+        </service>
+
+        <service id="rollerworks_search.input.abstract" class="Rollerworks\Component\Search\Input\StringQueryInput" abstract="true" public="false">
+            <argument id="rollerworks_search.validator" type="service" on-invalid="null" />
+        </service>
+        <service id="rollerworks_search.input.string_query" class="Rollerworks\Component\Search\Input\StringQueryInput" parent="rollerworks_search.input.abstract">
+            <tag name="rollerworks_search.input_processor" format="string_query" />
+            <argument id="rollerworks_search.translator_based_alias_resolver" type="service" on-invalid="null" />
+        </service>
+        <service id="rollerworks_search.input.array" class="Rollerworks\Component\Search\Input\ArrayInput" parent="rollerworks_search.input.abstract">
+            <tag name="rollerworks_search.input_processor" format="array" />
+        </service>
+        <service id="rollerworks_search.input.json" class="Rollerworks\Component\Search\Input\JsonInput" parent="rollerworks_search.input.abstract">
+            <tag name="rollerworks_search.input_processor" format="json" />
+        </service>
+        <service id="rollerworks_search.input.xml" class="Rollerworks\Component\Search\Input\XmlInput" parent="rollerworks_search.input.abstract">
+            <tag name="rollerworks_search.input_processor" format="xml" />
+        </service>
+    </services>
+</container>

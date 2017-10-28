@@ -1,0 +1,11 @@
+imports:
+    - { resource: 'framework.yml' }
+
+doctrine:
+    dbal:
+        driver: pdo_sqlite
+        path: '%kernel.cache_dir%/database.sqlite'
+        charset: UTF8
+
+rollerworks_search:
+    api_platform: false

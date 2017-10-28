@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="rollerworks_search.api_platform.doctrine.orm.query_extension.search" class="Rollerworks\Component\Search\ApiPlatform\Doctrine\Orm\Extension\SearchExtension" public="false">
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="rollerworks_search.doctrine_orm.factory" />
+
+            <tag name="api_platform.doctrine.orm.query_extension.collection" priority="32" />
+        </service>
+    </services>
+</container>

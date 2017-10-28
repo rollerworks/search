@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="false" />
+
+        <!-- GenericResolvedFieldTypeFactory -->
+        <service id="rollerworks_search.resolved_type_factory" class="Rollerworks\Component\Search\Field\GenericResolvedFieldTypeFactory" />
+
+        <!-- LazyFieldSetRegistry -->
+        <service id="rollerworks_search.fieldset_registry" class="Rollerworks\Component\Search\LazyFieldSetRegistry">
+            <!-- All services with tag "rollerworks_search.fieldset" are inserted here by FieldSetRegistryPass -->
+            <argument />
+            <argument type="collection" />
+        </service>
+
+        <!-- SearchConditionSerializer -->
+        <service id="rollerworks_search.condition_serializer" class="Rollerworks\Component\Search\SearchConditionSerializer">
+            <argument id="rollerworks_search.factory" type="service" />
+        </service>
+
+        <!-- GenericTypeRegistry -->
+        <service id="rollerworks_search.type_registry" class="Rollerworks\Component\Search\Field\GenericTypeRegistry">
+            <argument type="collection">
+                <!--
+                We don't need to be able to add more extensions.
+                * more types can be registered with the rollerworks_search.type tag
+                * more type extensions can be registered with the rollerworks_search.type_extension tag
+                -->
+                <argument type="service" id="rollerworks_search.extension" />
+            </argument>
+            <argument type="service" id="rollerworks_search.resolved_type_factory" />
+        </service>
+
+        <!-- GenericSearchFactory -->
+        <service id="rollerworks_search.factory" class="Rollerworks\Component\Search\GenericSearchFactory" public="true">
+            <argument type="service" id="rollerworks_search.type_registry" />
+            <argument type="service" id="rollerworks_search.fieldset_registry" />
+            <argument type="service" id="rollerworks_search.condition_optimizer" />
+        </service>
+
+        <!-- LazyExtension -->
+        <service id="rollerworks_search.extension" class="Rollerworks\Component\Search\Extension\LazyExtension">
+            <!-- All services with tag "rollerworks_search.type" are inserted here by ExtensionPass -->
+            <argument />
+            <!-- All services with tag "rollerworks_search.type_extension" are inserted here by ExtensionPass -->
+            <argument type="iterator" />
+        </service>
+
+        <!-- ChainOptimizer -->
+        <service id="rollerworks_search.chain_condition_optimizer" class="Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer" />
+        <service id="rollerworks_search.condition_optimizer" alias="rollerworks_search.chain_condition_optimizer" />
+        <service id="Rollerworks\Component\Search\SearchConditionOptimizer" alias="rollerworks_search.chain_condition_optimizer" />
+
+        <!-- ArrayAdapter (default cache adapter) -->
+        <service id="rollerworks_search.cache.adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter">
+            <argument>0</argument> <!-- default lifetime -->
+        </service>
+    </services>
+</container>

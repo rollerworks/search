@@ -1,0 +1,5 @@
+imports:
+    - { resource: framework.yml }
+
+rollerworks_search:
+    api_platform: false

@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="false" />
+
+            <service id="rollerworks_search.api_platform.search_processor" class="Rollerworks\Component\Search\ApiPlatform\Processor\ApiSearchProcessor">
+            <argument type="service" id="rollerworks_search.factory" />
+            <argument type="service" id="rollerworks_search.input_loader" />
+            <argument type="service" id="rollerworks_search.exporter_loader" />
+
+            <argument type="service">
+                <service class="Symfony\Component\Cache\Simple\Psr6Cache">
+                    <argument id="rollerworks.search_processor.cache" type="service" />
+                </service>
+            </argument>
+        </service>
+
+        <service id="rollerworks_search.api_platform.event_listener.condition" class="Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener">
+            <argument type="service" id="rollerworks_search.factory" />
+            <argument type="service" id="rollerworks_search.api_platform.search_processor" />
+            <argument type="service" id="api_platform.router" />
+            <argument type="service" id="api_platform.metadata.resource.metadata_factory" />
+
+            <!-- kernel.request priority must be < 8 && > 4 to be executed after the Firewall but before ReadListener -->
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="5" />
+        </service>
+
+        <!-- InvalidSearchConditionException handling -->
+
+        <service id="rollerworks_search.api_platform.hydra.normalizer.invalid_search_condition" class="Rollerworks\Component\Search\ApiPlatform\Serializer\InvalidSearchConditionNormalizer">
+            <argument type="service" id="api_platform.router" />
+
+            <tag name="serializer.normalizer" priority="64" />
+        </service>
+
+        <service id="rollerworks_search.api_platform.listener.invalid_search_condition" class="Rollerworks\Component\Search\ApiPlatform\EventListener\InvalidSearchConditionExceptionListener">
+            <argument type="service" id="api_platform.serializer" />
+            <argument>%api_platform.error_formats%</argument>
+
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
+        </service>
+
+        <!-- MetadataFactory, execute after everything else but before caching. -->
+        <service id="rollerworks_search.api_platform.metadata.resource.default_context_factory" class="Rollerworks\Component\Search\ApiPlatform\Metadata\DefaultConfigurationMetadataFactory" decorates="api_platform.metadata.resource.metadata_factory" decoration-priority="-9" public="false">
+            <argument type="service" id="rollerworks_search.api_platform.metadata.resource.default_context_factory.inner" />
+        </service>
+
+    </services>
+</container>

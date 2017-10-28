@@ -1,0 +1,60 @@
+{
+    "name": "rollerworks/search-bundle",
+    "description": "RollerworksSearch Bundle",
+    "keywords": ["filter", "search", "rollerworks", "symfony", "bundle"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "psr/simple-cache": "^1.0.0",
+        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA4",
+        "symfony/framework-bundle": "^3.3 || ^4.0",
+        "symfony/twig-bundle": "^3.2.4 || ^4.0"
+    },
+    "require-dev": {
+        "matthiasnoback/symfony-dependency-injection-test": "^2.0.0",
+        "matthiasnoback/symfony-service-definition-validator": "^1.2.7",
+        "phpunit/phpunit": "^6.3",
+        "rollerworks/search-symfony-validator": "^2.0@dev",
+        "symfony/asset": "^3.2.4 || ^4.0",
+        "symfony/browser-kit": "^3.2.4 || ^4.0",
+        "symfony/dom-crawler": "^3.2.4 || ^4.0",
+        "symfony/phpunit-bridge": "^3.3 || ^4.0",
+        "symfony/routing": "^3.2.4 || ^4.0",
+        "symfony/templating": "^3.2.4 || ^4.0"
+    },
+    "conflict": {
+        "symfony/psr-http-message-bridge": "<1.0.0",
+        "rollerworks/search-symfony-validator": "<2.0",
+        "rollerworks/search-doctrine-dbal": "<2.0-ALPHA1",
+        "rollerworks/search-doctrine-orm": "<2.0-ALPHA2",
+        "doctrine/doctrine-bundle": "<1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Bundle\\SearchBundle\\": ""
+        },
+        "exclude-from-classmap": ["test/"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "Tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

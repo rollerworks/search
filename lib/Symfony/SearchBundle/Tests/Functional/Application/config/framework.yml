@@ -1,0 +1,22 @@
+framework:
+    translator:         { fallback: en }
+    secret:              test
+    router:
+        enabled: false
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: "%kernel.debug%"
+    form:                false
+    csrf_protection:     false
+    validation:          { enable_annotations: false }
+    templating:          false
+    default_locale:      en
+    session:
+        storage_id: session.storage.filesystem
+    test:                ~
+    assets: false
+
+    cache:
+        pools:
+            rollerworks.search_processor.cache:
+                default_lifetime: 300
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="false" />
+
+        <service id="rollerworks_search.uri_encoder" class="Rollerworks\Component\UriEncoder\Encoder\GZipCompressionDecorator">
+            <argument type="service">
+                <service class="Rollerworks\Component\UriEncoder\Encoder\Base64UriEncoder" />
+            </argument>
+        </service>
+
+        <service class="Rollerworks\Component\Search\Processor\CachedSearchProcessor" id="rollerworks_search.cached_search_processor">
+            <argument type="service">
+                <service class="Symfony\Component\Cache\Simple\Psr6Cache">
+                    <argument id="rollerworks.search_processor.cache" type="service" />
+                </service>
+            </argument>
+            <argument id="rollerworks_search.psr7_search_processor" type="service" />
+            <argument id="rollerworks_search.factory" type="service" />
+            <argument id="property_accessor" type="service" />
+        </service>
+
+        <service class="Rollerworks\Component\Search\Processor\Psr7SearchProcessor" id="rollerworks_search.psr7_search_processor">
+            <argument id="rollerworks_search.factory" type="service" />
+            <argument id="rollerworks_search.input_loader" type="service" />
+            <argument id="rollerworks_search.exporter_loader" type="service" />
+            <argument id="rollerworks_search.uri_encoder" type="service" />
+            <argument id="property_accessor" type="service" />
+        </service>
+
+        <service class="Rollerworks\Bundle\SearchBundle\Processor\HttpFoundationSearchProcessor" id="rollerworks_search.http_foundation_search_processor">
+            <argument id="rollerworks_search.default_search_processor" type="service" />
+        </service>
+
+        <service id="Rollerworks\Component\Search\Processor\SearchProcessor" alias="rollerworks_search.search_processor" />
+        <service id="rollerworks_search.search_processor" alias="rollerworks_search.http_foundation_search_processor" public="true" />
+    </services>
+</container>

@@ -1,0 +1,3 @@
+search:
+    path: /search
+    defaults: { _controller: 'Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Controller\SearchController' }

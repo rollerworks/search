@@ -1,0 +1,38 @@
+imports:
+    - { resource: 'framework.yml' }
+
+doctrine:
+    dbal:
+        driver: pdo_sqlite
+        path: '%kernel.cache_dir%/database.sqlite'
+        charset: UTF8
+
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        proxy_dir: '%kernel.cache_dir%/doctrine/orm/Proxies'
+
+        entity_managers:
+            default:
+                query_cache_driver:
+                    type: array
+                metadata_cache_driver:
+                    type: array
+                result_cache_driver:
+                    type: array
+
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                auto_mapping: false
+
+            secondary:
+                query_cache_driver:
+                    type: array
+                metadata_cache_driver:
+                    type: array
+                result_cache_driver:
+                    type: array
+
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                auto_mapping: false
+
+rollerworks_search:
+    api_platform: false
