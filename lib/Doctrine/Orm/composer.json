@@ -28,15 +28,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Doctrine\\Orm\\": "src/",
-            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Orm\\": "src/Extension/"
+            "Rollerworks\\Component\\Search\\Doctrine\\Orm\\": "",
+            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Orm\\": "Extension/"
         },
-        "exclude-from-classmap": ["tests/"]
+        "exclude-from-classmap": ["Tests/"]
     },
     "autoload-dev": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "vendor/rollerworks/search-doctrine-dbal/tests/",
-            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "tests/",
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "Tests/",
             "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
     },
