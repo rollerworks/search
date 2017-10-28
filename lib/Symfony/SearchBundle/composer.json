@@ -38,13 +38,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Bundle\\SearchBundle\\": "src/"
+            "Rollerworks\\Bundle\\SearchBundle\\": ""
         },
         "exclude-from-classmap": ["test/"]
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "tests/"
+            "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "Tests/"
         }
     },
     "extra": {
