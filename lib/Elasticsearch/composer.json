@@ -27,12 +27,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Elasticsearch\\": "src/"
+            "Rollerworks\\Component\\Search\\Elasticsearch\\": ""
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Tests\\Elasticsearch\\": "tests/"
+            "Rollerworks\\Component\\Search\\Tests\\Elasticsearch\\": "Tests/"
         }
     },
     "extra": {
