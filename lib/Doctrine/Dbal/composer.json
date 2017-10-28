@@ -27,14 +27,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Doctrine\\Dbal\\": "src/",
-            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Dbal\\": "src/Extension/"
+            "Rollerworks\\Component\\Search\\Doctrine\\Dbal\\": "",
+            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Dbal\\": "Extension/"
         },
-        "exclude-from-classmap": ["tests/"]
+        "exclude-from-classmap": ["Tests/"]
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "tests/",
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "Tests/",
             "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
     },
