@@ -25,15 +25,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\ApiPlatform\\": "src/"
+            "Rollerworks\\Component\\Search\\ApiPlatform\\": ""
         },
         "exclude-from-classmap": [
-            "tests/"
+            "Tests/"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\ApiPlatform\\Tests\\": "tests/",
+            "Rollerworks\\Component\\Search\\ApiPlatform\\Tests\\": "Tests/",
             "ApiPlatform\\Core\\Tests\\Fixtures\\TestBundle\\Entity\\": "vendor/api-platform/core/tests/Fixtures/TestBundle/Entity"
         }
     },
