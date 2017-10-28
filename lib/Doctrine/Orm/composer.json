@@ -1,0 +1,60 @@
+{
+    "name": "rollerworks/search-doctrine-orm",
+    "description": "Doctrine ORM extension for RollerworksSearch",
+    "keywords": ["rollerworks", "search", "doctrine", "orm"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/Rollerworks/rollerworks-search-doctrine-orm/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "rollerworks/search": "^2.0@dev, >=v2.0.0-ALPHA5",
+        "rollerworks/search-doctrine-dbal": "^2.0@dev,>=2.0.0-ALPHA3",
+        "doctrine/orm": "^2.5"
+    },
+    "require-dev": {
+        "moneyphp/money": "^3.0.7",
+        "phpunit/phpunit": "^6.3",
+        "symfony/phpunit-bridge": "^3.3.6",
+        "symfony/var-dumper": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Doctrine\\Orm\\": "",
+            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Orm\\": "Extension/"
+        },
+        "exclude-from-classmap": ["Tests/"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "vendor/rollerworks/search-doctrine-dbal/tests/",
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "Tests/",
+            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "7.1"
+        },
+        "preferred-install": {
+            "doctrine/dbal": "source",
+            "doctrine/orm": "source",
+            "rollerworks/search-doctrine-dbal": "source",
+            "*": "dist"
+        },
+        "sort-packages": true
+    }
+}

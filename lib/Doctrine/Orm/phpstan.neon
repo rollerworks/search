@@ -1,0 +1,22 @@
+parameters:
+    autoload_files:
+        - vendor/autoload.php
+    ignoreErrors:
+        - '#__construct\(\) does not call parent constructor from .+#'
+
+        # ValueHolder guard there own correctness. A ValuesBag never returns a wrong object (collection).
+#        - '#Call to an undefined method Rollerworks\\Component\\Search\\Value\\ValueHolder\:\:#'
+
+        # False positive
+        - "#Casting to string something that's already string#" # cannot fix this yet.
+        - '#Call to an undefined method Rollerworks\\Component\\Search\\Doctrine\\Orm\\ConditionGenerator\:\:get[a-zA-Z]+#'
+        - '#Call to an undefined method Doctrine\\Common\\Persistence\\ObjectManager\:\:getConfiguration\(\)#'
+        - '#Call to an undefined method Doctrine\\Common\\Cache\\Cache\:\:flushAll()#'
+
+        # Tests
+        - '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy::[a-zA-Z0-9_]+\(\)#'
+#        - '#Access to an undefined property Prophecy\\Prophecy\\ObjectProphecy::\$[a-zA-Z0-9_]+#'
+#        - '#Call to an undefined method PHPUnit_Framework_MockObject_MockObject::[a-zA-Z0-9_]+\(\)#'
+        - '#expects\s+[^\s]+, PHPUnit_Framework_MockObject_MockObject(\[\])? given#'
+#        - '#does not accept PHPUnit_Framework_MockObject_MockObject#'
+#        - '#but returns PHPUnit_Framework_MockObject_MockObject#'
