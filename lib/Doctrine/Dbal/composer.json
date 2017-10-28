@@ -1,0 +1,56 @@
+{
+    "name": "rollerworks/search-doctrine-dbal",
+    "description": "Doctrine DBAL extension for RollerworksSearch",
+    "keywords": ["rollerworks", "search", "doctrine", "dbal"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/Rollerworks/rollerworks-search-doctrine-dbal/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA5",
+        "doctrine/dbal": "^2.5.5",
+        "psr/simple-cache": "^1.0.0"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^3.3.6",
+        "symfony/var-dumper": "^3.3.6",
+        "moneyphp/money": "^3.0.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Doctrine\\Dbal\\": "",
+            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Dbal\\": "Extension/"
+        },
+        "exclude-from-classmap": ["Tests/"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "Tests/",
+            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "7.1"
+        },
+        "preferred-install": {
+            "doctrine/dbal": "source",
+            "*": "dist"
+        },
+        "sort-packages": true
+    }
+}
