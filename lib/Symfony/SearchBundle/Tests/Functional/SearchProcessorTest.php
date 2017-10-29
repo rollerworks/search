@@ -24,7 +24,7 @@ final class SearchProcessorTest extends FunctionalTestCase
             self::markTestSkipped('rollerworks/search-processor is not installed.');
         }
 
-        if (!class_exists(HttpFoundationFactoryInterface::class)) {
+        if (!interface_exists(HttpFoundationFactoryInterface::class)) {
             self::markTestSkipped('symfony/psr-http-message-bridge is not installed.');
         }
     }

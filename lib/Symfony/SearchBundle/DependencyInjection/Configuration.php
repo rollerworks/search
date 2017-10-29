@@ -38,7 +38,7 @@ final class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('processor')
                     ->info('SearchProcessor configuration')
-                    ->{class_exists(Psr7SearchProcessor::class) && class_exists(HttpFoundationFactoryInterface::class) ? 'canBeDisabled' : 'canBeEnabled'}()
+                    ->{class_exists(Psr7SearchProcessor::class) && interface_exists(HttpFoundationFactoryInterface::class) ? 'canBeDisabled' : 'canBeEnabled'}()
                     ->children()
                         ->booleanNode('disable_cache')->defaultFalse()->end()
                     ->end()
