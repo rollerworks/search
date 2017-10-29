@@ -46,9 +46,9 @@ before_install:
 
 install:
     - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^5.2'; fi
-    - if [[ ! $deps ]]; then composer update --prefer-dist --no-progress --no-suggest --ansi; fi
-    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --prefer-dist --no-progress --no-suggest --ansi ; fi
-    - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
+    - if [[ ! $deps ]]; then composer update --no-progress --no-suggest --ansi; fi
+    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --no-progress --no-suggest --ansi ; fi
+    - if [[ $deps = 'low' ]]; then composer update --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi -o; fi
     - make es-up
 
 before_script:
