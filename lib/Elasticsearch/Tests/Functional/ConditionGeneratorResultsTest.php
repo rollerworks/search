@@ -19,6 +19,8 @@ use Rollerworks\Component\Search\Input\StringQueryInput;
 /**
  * Class ConditionGeneratorResultsTest.
  *
+ * @group functional
+ *
  * Special cases needed to be handled here
  * - IDs do not behave like other values
  *   for example you cannot use ranged queries with them, use "ids" query

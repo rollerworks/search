@@ -14,10 +14,10 @@
     ],
     "require": {
         "php": "^7.1",
-        "symfony/options-resolver": "^3.3.6 || ^4.0",
-        "symfony/property-access": "^3.3.6 || ^4.0",
+        "psr/container": "^1.0.0",
         "symfony/intl": "^3.3.6 || ^4.0",
-        "psr/container": "^1.0.0"
+        "symfony/options-resolver": "^3.3.6 || ^4.0",
+        "symfony/property-access": "^3.3.6 || ^4.0"
     },
     "require-dev": {
         "api-platform/core": "^2.0.10",
