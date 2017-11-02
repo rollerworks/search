@@ -75,7 +75,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                     ],
                     'label' => ['type' => 'string'],
                     'pubdate' => ['type' => 'date'],
-                    'pubdatetime' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                    'pubdatetime' => ['type' => 'date'],
                     'status' => ['type' => 'integer'],
                     'price_total' => ['type' => 'integer'],
                     'items' => [
@@ -104,10 +104,10 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 4 => ['Spider', 'Pig', 'Spider Pig', '2005-12-10', '2012-07-20'],
             ],
             'invoices' => [
-                1 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2010-001', '2010-05-10', '2010-05-10 01:12:13', 2, 10000, [
+                1 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2010-001', '2010-05-10', '2010-05-10T01:12:13+00:00', 2, 10000, [
                     ['label' => 'Electric Guitar', 'quantity' => 1, 'price' => 10000, 'total' => 10000],
                 ]],
-                2 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2010-002', '2010-05-10', '2010-05-10 01:12:13', 2, 9000, [
+                2 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2010-002', '2010-05-10', '2010-05-10T01:12:13+00:00', 2, 9000, [
                     ['label' => 'Sword', 'quantity' => 1, 'price' => 1500, 'total' => 1500],
                     ['label' => 'Shield', 'quantity' => 1, 'price' => 2000, 'total' => 2000],
                     ['label' => 'Armor', 'quantity' => 1, 'price' => 5500, 'total' => 5500],
@@ -115,14 +115,14 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 3 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], null, null, null, 0, 1000, [
                     ['label' => 'Sword', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
                 ]],
-                4 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2015-001', '2015-05-10', '2015-05-10 01:12:13', 1, 10000, [
+                4 => [['id' => 2, 'full_name' => 'Leroy Jenkins', 'birthday' => '2000-05-15'], '2015-001', '2015-05-10', '2015-05-10T01:12:13+00:00', 1, 10000, [
                     ['label' => 'Armor repair kit', 'quantity' => 2, 'price' => 5000, 'total' => 10000],
                 ]],
-                5 => [['id' => 3, 'full_name' => 'Doctor Who', 'birthday' => '2005-12-10'], '2015-002', '2015-05-01', '2015-05-01 01:12:13', 1, 21500, [
+                5 => [['id' => 3, 'full_name' => 'Doctor Who', 'birthday' => '2005-12-10'], '2015-002', '2015-05-01', '2015-05-01T01:12:13+00:00', 1, 21500, [
                     ['label' => 'TARDIS Chameleon circuit', 'quantity' => 1, 'price' => 1500, 'total' => 1500],
                     ['label' => 'Sonic Screwdriver', 'quantity' => 10, 'price' => 2000, 'total' => 20000],
                 ]],
-                6 => [['id' => 4, 'full_name' => 'Spider Pig', 'birthday' => '2005-12-10'], '2015-003', '2015-05-05', '2015-05-05 01:12:13', 1, 6000, [
+                6 => [['id' => 4, 'full_name' => 'Spider Pig', 'birthday' => '2005-12-10'], '2015-003', '2015-05-05', '2015-05-05T01:12:13+00:00', 1, 6000, [
                     ['label' => 'Web shooter', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
                     ['label' => 'Cape', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
                     ['label' => 'Cape repair manual', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
