@@ -96,6 +96,14 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
     /**
      * @test
      */
+    public function it_finds_by_date_comparison()
+    {
+        $this->makeTest('pub-date: >= "2015-05-10"', [4]);
+    }
+
+    /**
+     * @test
+     */
     public function it_finds_by_date_range_excluding_by_date()
     {
         $this->makeTest('pub-date: "2010-05-10"~"2015-05-01", !"2000-05-15";', [1, 2, 5]);

@@ -53,7 +53,7 @@ final class QueryConditionGenerator implements ConditionGenerator
     // note: this one is NOT available for Elasticsearch, we use it as a named constant only
     private const COMPARISON_UNEQUAL = '<>';
 
-    private const COMPARE_OPR_TYPE = [
+    private const COMPARISON_OPERATOR_MAP = [
         '<>' => self::COMPARISON_UNEQUAL,
         '<' => self::COMPARISON_LESS,
         '<=' => self::COMPARISON_LESS_OR_EQUAL,
@@ -155,6 +155,16 @@ final class QueryConditionGenerator implements ConditionGenerator
             $lowerCondition => $range->getLower(),
             $upperCondition => $range->getUpper(),
         ];
+    }
+
+    /**
+     * @param string $operator SearchCondition / Compare operator
+     *
+     * @return string Equivalent Elasticsearch operator
+     */
+    public static function translateComparison(string $operator): string
+    {
+        return self::COMPARISON_OPERATOR_MAP[$operator];
     }
 
     private function processGroup(ValuesGroup $group): array
@@ -341,7 +351,7 @@ final class QueryConditionGenerator implements ConditionGenerator
                     break;
                 case QueryPreparationHints::CONTEXT_COMPARISON:
                     /** @var Compare $value */
-                    $operator = self::COMPARE_OPR_TYPE[$value->getOperator()];
+                    $operator = self::translateComparison($value->getOperator());
                     $query = [
                         $propertyName => [$operator => $value->getValue()],
                     ];
