@@ -18,6 +18,7 @@ use Rollerworks\Component\Search\Elasticsearch\QueryConversion;
 use Rollerworks\Component\Search\Elasticsearch\QueryPreparationHints;
 use Rollerworks\Component\Search\Elasticsearch\ValueConversion;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
+use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
 
 /**
@@ -50,17 +51,24 @@ class DateConversion implements ValueConversion, QueryConversion
      */
     public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array
     {
-        if (!is_array($value) && !$value instanceof Range) {
+        if (!is_array($value) && !$value instanceof Range && !$value instanceof Compare) {
             return $this->generateDateRange($propertyName, new Range($value, $value));
         }
 
-        $range = [];
+        $query = [];
         switch ($hints->context) {
             case QueryPreparationHints::CONTEXT_RANGE_VALUES:
             case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
                 // already a Range
                 /** @var Range $value */
-                $range = [Generator::QUERY_RANGE => [$propertyName => Generator::generateRangeParams($value)]];
+                $query = [Generator::QUERY_RANGE => [$propertyName => Generator::generateRangeParams($value)]];
+                break;
+            case QueryPreparationHints::CONTEXT_COMPARISON:
+                /** @var Compare $value */
+                $operator = Generator::translateComparison($value->getOperator());
+                $query = [
+                    Generator::QUERY_RANGE => [$propertyName => [$operator => $value->getValue()]]
+                ];
                 break;
             default:
             case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
@@ -69,12 +77,12 @@ class DateConversion implements ValueConversion, QueryConversion
                 /** @var array $value */
                 foreach ($value as $singleValue) {
                     $dateRange = $this->generateDateRange($propertyName, new Range($singleValue, $singleValue));
-                    $range[Generator::QUERY_BOOL][Generator::CONDITION_OR][] = $dateRange;
+                    $query[Generator::QUERY_BOOL][Generator::CONDITION_OR][] = $dateRange;
                 }
                 break;
         }
 
-        return $range;
+        return $query;
     }
 
     /**
