@@ -9,3 +9,4 @@ doctrine:
 
 rollerworks_search:
     api_platform: false
+    elasticsearch: false

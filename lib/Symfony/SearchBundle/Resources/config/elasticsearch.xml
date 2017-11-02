@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="rollerworks_search.elasticsearch.factory" class="Rollerworks\Component\Search\Elasticsearch\ElasticsearchFactory" public="true">
+            <argument type="service" id="rollerworks_search.elasticsearch.cache" on-invalid="null" />
+        </service>
+
+        <service id="rollerworks_search.elasticsearch.client" synthetic="true" />
+
+        <!-- conversions -->
+        <service id="Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\CurrencyConversion" public="false"/>
+        <service id="Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\DateConversion" public="false"/>
+        <service id="Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\DateTimeConversion" public="false"/>
+
+        <!-- extensions -->
+        <service id="Rollerworks\Component\Search\Elasticsearch\Extension\Type\FieldTypeExtension" public="false">
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType" />
+        </service>
+
+        <service id="Rollerworks\Component\Search\Elasticsearch\Extension\Type\BirthdayTypeExtension" public="false">
+            <argument type="service" id="Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\DateConversion" />
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\BirthdayType" />
+        </service>
+
+        <service id="Rollerworks\Component\Search\Elasticsearch\Extension\Type\DateTypeExtension" public="false">
+            <argument type="service" id="Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\DateConversion" />
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\DateType" />
+        </service>
+
+        <service id="Rollerworks\Component\Search\Elasticsearch\Extension\Type\DateTimeTypeExtension" public="false">
+            <argument type="service" id="Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\DateTimeConversion" />
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\DateTimeType" />
+        </service>
+
+        <service id="Rollerworks\Component\Search\Elasticsearch\Extension\Type\MoneyTypeExtension" public="false">
+            <argument type="service" id="Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\CurrencyConversion" />
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\MoneyType" />
+        </service>
+    </services>
+</container>

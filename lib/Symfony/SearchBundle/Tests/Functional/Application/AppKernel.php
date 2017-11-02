@@ -16,6 +16,7 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle;
+use FOS\ElasticaBundle\FOSElasticaBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -60,6 +61,10 @@ class AppKernel extends Kernel
             $bundles[] = new DoctrineBundle();
         }
 
+        if (class_exists(FOSElasticaBundle::class)) {
+            $bundles[] = new FOSElasticaBundle();
+        }
+
         if ('api_platform.yml' === substr($this->config, -16)) {
             $bundles[] = new TwigBundle();
             $bundles[] = new ApiPlatformBundle();
@@ -88,16 +93,6 @@ class AppKernel extends Kernel
             $tmpDir = sys_get_temp_dir();
         }
 
-        return rtrim($tmpDir, '/\\').'/RSearch/'.substr(sha1($this->config), 0, 6);
-    }
-
-    public function serialize()
-    {
-        return serialize([$this->config, $this->isDebug()]);
-    }
-
-    public function unserialize($str)
-    {
-        call_user_func_array([$this, '__construct'], unserialize($str));
+        return rtrim($tmpDir, '/\\').'/rollerworks-search-'.sha1(__DIR__).'/'.substr(sha1($this->config), 0, 6);
     }
 }

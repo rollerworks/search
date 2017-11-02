@@ -16,6 +16,7 @@ namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 use Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
+use Rollerworks\Component\Search\Elasticsearch\ElasticsearchFactory;
 use Rollerworks\Component\Search\Processor\Psr7SearchProcessor;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -47,6 +48,7 @@ final class Configuration implements ConfigurationInterface
 
         $this->addDoctrineSection($rootNode);
         $this->addApiPlatformSection($rootNode);
+        $this->addElasticsearchSection($rootNode);
 
         return $treeBuilder;
     }
@@ -93,8 +95,21 @@ final class Configuration implements ConfigurationInterface
                          ->arrayNode('doctrine_orm')
                              ->{class_exists(DoctrineOrmFactory::class) ? 'canBeDisabled' : 'canBeEnabled'}()
                          ->end()
+                        ->arrayNode('elasticsearch')
+                            ->{class_exists(ElasticsearchFactory::class) ? 'canBeDisabled' : 'canBeEnabled'}()
+                        ->end()
                      ->end()
                  ->end()
              ->end();
+    }
+
+    private function addElasticsearchSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('elasticsearch')
+                    ->{class_exists(ElasticsearchFactory::class) ? 'canBeDisabled' : 'canBeEnabled'}()
+                ->end()
+            ->end();
     }
 }

@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-final class QueryConditionGenerator implements ConditionGenerator
+/* final */ class QueryConditionGenerator implements ConditionGenerator
 {
     private const PROPERTY_ID = '_id';
 
