@@ -29,7 +29,7 @@ class DateConversion implements ValueConversion, QueryConversion
     /**
      * @var DateTimeToStringTransformer
      */
-    private $transformer;
+    protected $transformer;
 
     public function __construct()
     {

@@ -120,6 +120,14 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
     /**
      * @test
      */
+    public function it_finds_pubDateTime_comparison()
+    {
+        $this->makeTest('pub-date-time: >= "2015-05-09 13:12:11"', [4]);
+    }
+
+    /**
+     * @test
+     */
     public function it_finds_pubDate_limited_by_price()
     {
         $this->makeTest('pub-date: "2015-05-10"; total: "100.00"', [4]);
