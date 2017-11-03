@@ -22,6 +22,6 @@ class DateTimeConversion extends DateConversion
 {
     public function __construct()
     {
-        $this->transformer = new DateTimeToStringTransformer(null, 'UTC', 'Y-m-d H:i:s');
+        $this->transformer = new DateTimeToStringTransformer(null, 'UTC', 'Y-m-d\TH:i:s');
     }
 }
