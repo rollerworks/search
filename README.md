@@ -51,7 +51,7 @@ And support for the most poplar storage systems.
 
 * [Doctrine2 DBAL](https://github.com/rollerworks/search-doctrine-dbal)
 * [Doctrine2 ORM](https://github.com/rollerworks/search-doctrine-orm)
-* [ElasticSearch](https://github.com/rollerworks/search-elasticsearch) (coming soon)
+* [ElasticSearch](https://github.com/rollerworks/search-elasticsearch)
 
 Search conditions can be as simple or complex as you need them to be.
 Including grouping and nesting for the best possible result.
@@ -177,6 +177,9 @@ and contain a big amount of code from the Symfony project.
 This is an open source project. If you'd like to contribute,
 please read the [Contributing Guidelines][2]. If you're submitting
 a pull request, please follow the guidelines in the [Submitting a Patch][3] section.
+
+**Note:** RollerworksSearch is developed in a monolith repository, do not open pull request
+against repositories marked as `[READ-ONLY]`, thank you.
 
 [Join the chat at https://gitter.im/rollerworks/search](https://gitter.im/rollerworks/search?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
