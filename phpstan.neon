@@ -1,0 +1,16 @@
+parameters:
+    autoload_files:
+        - vendor/autoload.php
+    excludes_analyse:
+        - */lib/*/Tests/Fixtures/*
+        - vendor/
+    ignoreErrors:
+        #- '#__construct\(\) does not call parent constructor from .+#'
+
+        # False positive
+        - '#Parameter \$ttl of method Rollerworks\\Component\\Search\\ApiPlatform\\Processor\\NullCache\:\:set#'
+
+        # Tests
+        - '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy::[a-zA-Z0-9_]+\(\)#'
+        #- '#Access to an undefined property Prophecy\\Prophecy\\ObjectProphecy::\$[a-zA-Z0-9_]+#'
+        - '#expects\s+[^\s]+, PHPUnit_Framework_MockObject_MockObject(\[\])? given#'
