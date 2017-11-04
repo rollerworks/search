@@ -1,0 +1,51 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-02T13:13:25Z
+
+BTW would need to define a `.php_cs` file here, any suggestions? The better the config, the better the output. :+1:
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-11-03T08:07:53Z
+
+I will re-add the .php_cs config file (and some other files) that got lost in the merge process.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-03T08:09:25Z
+
+A basic .editorconfig in root might be a good idea, for files not covered by CS Fixer.
+
+I'll continue on this, probably later today.
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-11-03T09:55:05Z
+
+Common files were re-added 👍
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-03T10:20:12Z
+
+Thanks, I'll rebase.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-04T10:03:43Z
+
+OK, there we go. You can run make and should get the whole thing running.
+
+It will require quite a bit of fixes as PHPStan finds 660 errors. :sob: But that's another PR.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-04T10:29:11Z
+
+Can also significantly simplify Travis config (no need for installing `phpcov`, `phpstan`, `php-cs-fixer` as the QA image ships with them), can probably move replace most of it just to run `make ci`.
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-11-04T11:54:56Z
+
+Thank you @dkarlovi
