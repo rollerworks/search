@@ -2,9 +2,6 @@ language: php
 
 sudo: true
 
-addons:
-    postgresql: "9.2"
-
 services:
     - docker
 
@@ -18,21 +15,10 @@ matrix:
           #env: coverage=1
 #        - php: '7.1'
 #          env: deps='low' lint=1
-        - php: 7.1
-          env: DB=pgsql
-        - php: 7.1
-          env: DB=sqlite
-        - php: 7.1
-          env: DB=mysql
 
 cache:
     directories:
         - $HOME/.composer/cache
-
-env:
-    global:
-        - ES_VERSION="5.x"
-        - ES_TEST_HOST=http://localhost:9200
 
 before_install:
     - phpenv config-rm xdebug.ini || echo "xdebug not available"
@@ -40,25 +26,20 @@ before_install:
     - if [[ $coverage = 1 ]]; then mkdir -p build/logs build/cov; fi
     - if [[ $coverage = 1 ]]; then wget https://phar.phpunit.de/phpcov.phar; fi
     - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar; fi
-    - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.7.1/php-cs-fixer.phar; fi
-    - if [[ $lint = 1 ]]; then composer global require --dev 'phpstan/phpstan:^0.8'; fi
-    - export PATH="$PATH:$HOME/.composer/vendor/bin"
 
 install:
-    - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^5.2'; fi
-    - if [[ ! $deps ]]; then composer update --no-progress --no-suggest --ansi; fi
-    - if [[ $deps = 'dev' ]]; then composer config minimum-stability dev && composer update --no-progress --no-suggest --ansi ; fi
-    - if [[ $deps = 'low' ]]; then composer update --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi -o; fi
-    - make es-up
-
-before_script:
-    - if [ "$DB" == "mysql" ]; then mysql -e 'create database search_tests;'; fi;
+#    - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^5.2'; fi
+    - |
+        if [[ ! $deps ]]; then
+            docker-compose run --rm php make install
+        elif [[ $deps = 'dev' ]]; then
+            docker-compose run --rm php make install-dev
+        elif [[ $deps = 'low' ]]; then
+            docker-compose run --rm php make install-lowest
+        fi
 
 script:
-    - export SYMFONY_DEPRECATIONS_HELPER=strict
-
-    - if [ "$DB" != "" ]; then vendor/bin/phpunit --configuration travis/$DB.travis.xml; fi;
-    - if [[ ! $DB ]]; then vendor/bin/phpunit --configuration phpunit.xml.dist; fi;
+    - make test-isolated
 #    - if [[ $coverage = 1 ]]; then phpdbg -qrr vendor/bin/phpunit --coverage-php build/cov/coverage-phpunit.cov; else vendor/bin/phpunit; fi
 #    - if [[ $coverage = 1 ]]; then phpdbg -qrr phpcov.phar merge --clover build/logs/clover.xml build/cov; fi
 #    - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi

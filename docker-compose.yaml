@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+    php:
+        depends_on:
+          - elasticsearch1
+          - pgsql
+          - mariadb-server
+        image: rollerworks/search-dev:latest
+        volumes:
+            - .:/srv/www:rw
+
+    # Storage services
+    pgsql:
+        image: postgres:9.6-alpine
+        environment:
+            - POSTGRES_DB=search_tests
+            - POSTGRES_USER=postgres
+        volumes:
+            - pg-data:/var/lib/postgresql/data:rw
+        ports:
+            - "5432:5433"
+
+    mariadb-server:
+        image: mariadb
+        restart: always
+        environment:
+            - MYSQL_DATABASE=search_tests
+            - MYSQL_ROOT_PASSWORD=nope
+        volumes:
+            - my-data:/var/lib/mysql:rw
+        ports:
+            - "3306:3306"
+
+    elasticsearch1:
+        image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
+        environment:
+            - "discovery.type=single-node"
+            - "xpack.security.enabled=false"
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        volumes:
+            - esdata:/usr/share/elasticsearch/data
+        ports:
+            - "9200:9200"
+
+volumes:
+    pg-data: {}
+    my-data: {}
+    esdata: {}

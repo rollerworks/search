@@ -16,17 +16,17 @@
         <ini name="memory_limit" value="-1"/>
 
         <var name="db_type" value="pdo_mysql"/>
-        <var name="db_host" value="localhost"/>
-        <var name="db_username" value="travis"/>
-        <var name="db_password" value=""/>
+        <var name="db_host" value="mariadb-server"/>
+        <var name="db_username" value="root"/>
+        <var name="db_password" value="nope"/>
         <var name="db_name" value="search_tests"/>
         <var name="db_port" value="3306"/>
 
         <!-- These parameters are not really used, but they are need for the Doctrine TestUtil -->
         <var name="tmpdb_type" value="mysqli"/>
-        <var name="tmpdb_host" value="localhost"/>
-        <var name="tmpdb_username" value="travis"/>
-        <var name="tmpdb_password" value=""/>
+        <var name="tmpdb_host" value="mariadb-server"/>
+        <var name="tmpdb_username" value="root"/>
+        <var name="tmpdb_password" value="nope"/>
         <var name="tmpdb_port" value="3306"/>
     </php>
 

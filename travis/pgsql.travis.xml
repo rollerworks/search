@@ -16,7 +16,7 @@
         <ini name="memory_limit" value="-1"/>
 
         <var name="db_type" value="pdo_pgsql"/>
-        <var name="db_host" value="localhost" />
+        <var name="db_host" value="pgsql" />
         <var name="db_username" value="postgres" />
         <var name="db_password" value="" />
         <var name="db_name" value="search_tests" />
@@ -24,7 +24,7 @@
 
         <!-- These parameters are not really used, but they are need for the Doctrine TestUtil -->
         <var name="tmpdb_type" value="pdo_pgsql"/>
-        <var name="tmpdb_host" value="localhost" />
+        <var name="tmpdb_host" value="pgsql" />
         <var name="tmpdb_username" value="postgres" />
         <var name="tmpdb_password" value="" />
         <var name="tmpdb_port" value="5432"/>
