@@ -2,8 +2,7 @@ FROM composer:1.5
 FROM php:7.1-cli
 
 ENV BUILD_DEPS="autoconf file g++ gcc libc-dev pkg-config re2c"
-ENV LIB_DEPS="zlib1g-dev libpq5 postgresql-server-dev-9.4"
-ENV TOOL_DEPS="git make unzip ca-certificates"
+ENV LIB_DEPS="git make unzip ca-certificates zlib1g-dev libpq5 postgresql-server-dev-9.4"
 ENV ICU_RELEASE=60.1
 ENV CXXFLAGS "--std=c++0x"
 
