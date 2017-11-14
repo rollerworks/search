@@ -28,8 +28,23 @@ test-full:
 	vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml
 	vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml
 
+test-with-coverage:
+	export SYMFONY_DEPRECATIONS_HELPER=strict
+
+	curl -Ls https://phar.phpunit.de/phpcov.phar > phpcov.phar
+	mkdir -p build/logs build/cov
+	phpdbg -qrr vendor/bin/phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov
+	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
+	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
+	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
+	phpdbg -qrr phpcov.phar merge --clover build/logs/clover.xml build/cov
+
 test-isolated: docker-up
 	docker-compose run --rm php make test-full
+	@$(MAKE) docker-down
+
+test-coverage: docker-up
+	docker-compose run --rm php make test-with-coverage
 	@$(MAKE) docker-down
 
 phpstan:
@@ -52,4 +67,4 @@ docker-up:
 docker-down:
 	docker-compose down
 
-.PHONY: install install-dev install-lowest test test-full test-isolated phpstan cs cs-full cs-full-check docker-up down-down
+.PHONY: install install-dev install-lowest test test-full test-with-coverage test-isolated test-coverage phpstan cs cs-full cs-full-check docker-up down-down
