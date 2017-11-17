@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-03T08:07:43Z
+
+@sstok can we talk about this one? What do you feel is required to get this merged?
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-05T11:06:42Z
+
+I'm adding tests etc, so don't merge if you were going to. :+1:
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-11-05T11:40:43Z
+
+Thanks for the warning 😄
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-05T14:28:01Z
+
+BTW sorry I keep squashing, just realized you might be reading individual commits which makes it awkward. I'll just add WIP commits and squash before merge.
+
+Also, we should try to use the new build process ASAP, fixing CS Fixer and PHPStan issues would allow us to find and fix new ones in new commits.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-12T10:53:06Z
+
+@sstok if this looks OK to you, I'll rebase and squash so you can merge.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-12T10:54:40Z
+
+Also, this was my first time using Prophecy (not a fan) so feel free to comment if I missed any important points.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-13T19:23:40Z
+
+@sstok seeing you're away end of week, could we see this gets merged before then?
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-11-17T15:40:08Z
+
+Thank you @dkarlovi
