@@ -28,6 +28,7 @@ class RollerworksSearchBundle extends Bundle
         $container->addCompilerPass(new Compiler\ConditionOptimizerPass());
         $container->addCompilerPass(new Compiler\FieldSetRegistryPass());
         $container->addCompilerPass(new Compiler\DoctrineOrmPass());
+        $container->addCompilerPass(new Compiler\ElasticaBundlePass());
         $container->addCompilerPass(new Compiler\DoctrineOrmQueryBuilderPass(), PassConfig::TYPE_BEFORE_REMOVING);
     }
 }

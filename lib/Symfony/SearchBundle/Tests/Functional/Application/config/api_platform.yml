@@ -42,6 +42,12 @@ doctrine:
                 mappings:
                     AppBundle:  ~
 
+fos_elastica:
+    clients:
+        default: {host: localhost, port: 9200}
+    indexes:
+        app: ~
+
 api_platform:
     title:       API Platform's demo
     description: |

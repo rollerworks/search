@@ -1,0 +1,9 @@
+imports:
+    - { resource: 'framework.yml' }
+
+rollerworks_search:
+    api_platform: false
+    doctrine:
+        dbal: false
+        orm: false
+    elasticsearch: true
