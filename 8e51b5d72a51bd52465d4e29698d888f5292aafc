@@ -1,0 +1,45 @@
+---------------------------------------------------------------------------
+
+by sstok at 2017-11-13T15:48:52Z
+
+HAHAHA IT WORKED!
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-17T15:56:15Z
+
+IMO once you merge this, you should consider tagging to see what happens (with the mono-repo and all).
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-11-17T16:15:04Z
+
+The splitting of commits is not automated yet 😛 I will try to contact Fabien if he can set this up for RollerworksSearch 👍
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-11-17T17:59:16Z
+
+Don't know what exactly he does to set it up, but the `splitsh-lite` tool was made available for your own use, you can do it on your own if he doesn't have time to do it.
+
+I took the [scripts](https://github.com/dkarlovi/dockerfile-dev/tree/master/bin) from enqueue-dev.
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-11-25T15:41:23Z
+
+I tagged the sub-splits manually for now. I am working on a more permanent solution 👍
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-12-03T15:11:12Z
+
+Good news [HubKit](https://github.com/park-manager/hubkit) now allows to split a monolith repository while merging, and... can synchronize a release for all split repositories! So finally no more outdated releases 🎉
+
+I am continuing work on RollerworksSearch 👍
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-12-03T17:56:14Z
+
+Very nice, LGTM! 🏁
