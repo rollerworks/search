@@ -21,32 +21,24 @@ cache:
         - $HOME/.composer/cache
 
 before_install:
-    - sudo service postgresql stop
-    - sudo service mysql stop
-    # wait for database servers to shutdown
-    - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
-    - while sudo lsof -Pi :3306 -sTCP:LISTEN -t; do sleep 1; done
-
     - phpenv config-rm xdebug.ini || echo "xdebug not available"
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar; fi
     - mkdir -p build/logs build/cov
 
 install:
-#    - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^5.2'; fi
     - |
         if [[ ! $deps ]]; then
-            docker-compose run --rm php make install
+            make install
         elif [[ $deps = 'dev' ]]; then
-            docker-compose run --rm php make install-dev
+            make install-dev
         elif [[ $deps = 'low' ]]; then
-            docker-compose run --rm php make install-lowest
+            make install-lowest
         fi
 
 script:
-    - if [[ $coverage = 1 ]]; then make test-coverage; else make test-isolated; fi
-#    - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
-#    - if [[ $lint = 1 ]]; then phpstan analyse -c phpstan.neon -l5 --ansi src tests; fi
+    - if [[ $coverage = 1 ]]; then make test-coverage; else make test; fi
+    - if [[ $lint = 1 ]]; then make lint; fi
 
 after_success:
     - if [[ $coverage = 1 ]]; then travis_retry php coveralls.phar --coverage_clover build/logs/clover.xml; fi
