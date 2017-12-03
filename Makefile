@@ -21,7 +21,7 @@ test: docker-up
 test-coverage: docker-up
 	mkdir -p build/logs build/cov
 	docker-compose run --rm php make in-docker-test-coverage
-	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr phpcov merge --clover build/logs/clover.xml build/cov"
+	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr /usr/local/bin/phpcov merge --clover build/logs/clover.xml build/cov"
 	@$(MAKE) docker-down
 
 phpstan:
