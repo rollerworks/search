@@ -43,7 +43,7 @@ cs-full-check:
 docker-up:
 	docker-compose up -d
 	# wait for ES to boot
-	until curl -s -X GET "http://localhost:59200/" > /dev/null; do sleep 1; done
+	until curl -s -X GET "http://localhost:9200/" > /dev/null; do sleep 1; done
 
 docker-down:
 	docker-compose down
@@ -70,7 +70,7 @@ in-docker-test:
 	vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml
 	vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml
 
-in-docker-test-with-coverage:
+in-docker-test-coverage:
 	export SYMFONY_DEPRECATIONS_HELPER=strict
 	phpdbg -qrr vendor/bin/phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov
 	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
@@ -78,4 +78,4 @@ in-docker-test-with-coverage:
 	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
 
 .PHONY: install install-dev install-lowest phpstan cs cs-full cs-full-checks docker-up down-down
-.PHONY: in-docker-install in-docker-install-dev in-docker-install-lowest in-docker-test in-docker-test-with-coverage
+.PHONY: in-docker-install in-docker-install-dev in-docker-install-lowest in-docker-test in-docker-test-coverage

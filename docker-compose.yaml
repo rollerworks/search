@@ -41,7 +41,7 @@ services:
         volumes:
             - esdata:/usr/share/elasticsearch/data
         ports:
-            - "9200:59200"
+            - "9200:9200"
 
 volumes:
     pg-data: {}
