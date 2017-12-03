@@ -21,6 +21,12 @@ cache:
         - $HOME/.composer/cache
 
 before_install:
+    - sudo service postgresql stop
+    - sudo service mysql stop
+    # wait for database servers to shutdown
+    - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
+    - while sudo lsof -Pi :3306 -sTCP:LISTEN -t; do sleep 1; done
+
     - phpenv config-rm xdebug.ini || echo "xdebug not available"
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar; fi
