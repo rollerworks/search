@@ -1,15 +1,28 @@
-QA_DOCKER_IMAGE=jakzal/phpqa:alpine
+QA_DOCKER_IMAGE=rollerworks/search-phpqa:latest
 QA_DOCKER_COMMAND=docker run -it --rm -v "$(shell pwd):/project" -w /project ${QA_DOCKER_IMAGE}
-ELASTICSEARCH_DOCKER_COMPOSE=lib/Elasticsearch/docker-compose.yml
 
-dist: cs-full phpstan test-full
+dist: install cs-full phpstan test
 ci: cs-full-check phpstan test-full
+lint: cs-full-check phpstan
 
-test:
-	vendor/bin/phpunit --verbose --exclude-group functional,performance
+install:
+	docker-compose run --rm php make in-docker-install
 
-test-full: es-up
-	vendor/bin/phpunit --verbose
+install-dev:
+	docker-compose run --rm php make in-docker-install-dev
+
+install-lowest:
+	docker-compose run --rm php make in-docker-install-lowest
+
+test: docker-up
+	docker-compose run --rm php make in-docker-test
+	@$(MAKE) docker-down
+
+test-coverage: docker-up
+	mkdir -p build/logs build/cov
+	docker-compose run --rm php make in-docker-test-coverage
+	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr /usr/local/bin/phpcov merge --clover build/logs/clover.xml build/cov"
+	@$(MAKE) docker-down
 
 phpstan:
 	sh -c "${QA_DOCKER_COMMAND} phpstan analyse --configuration phpstan.neon --level max ."
@@ -23,10 +36,46 @@ cs-full:
 cs-full-check:
 	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --using-cache=false --diff --dry-run"
 
-es-up:
-	docker-compose -f ${ELASTICSEARCH_DOCKER_COMPOSE} up -d
+##
+# Special operations
+##
+
+docker-up:
+	docker-compose up -d
 	# wait for ES to boot
 	until curl -s -X GET "http://localhost:9200/" > /dev/null; do sleep 1; done
 
-es-down:
-	docker-compose -f ${ELASTICSEARCH_DOCKER_COMPOSE} down
+docker-down:
+	docker-compose down
+
+##
+# Private targets
+##
+in-docker-install:
+	composer.phar install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
+
+in-docker-install-dev:
+	cp composer.json _composer.json
+	composer.phar config minimum-stability dev
+	composer.phar update --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
+	mv _composer.json composer.json
+
+in-docker-install-lowest:
+	composer update --no-progress --no-suggest --prefer-stable --prefer-lowest --optimize-autoloader --ansi
+
+in-docker-test:
+	export SYMFONY_DEPRECATIONS_HELPER=strict
+	vendor/bin/phpunit --verbose
+	vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml
+	vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml
+	vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml
+
+in-docker-test-coverage:
+	export SYMFONY_DEPRECATIONS_HELPER=strict
+	phpdbg -qrr vendor/bin/phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov
+	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
+	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
+	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
+
+.PHONY: install install-dev install-lowest phpstan cs cs-full cs-full-checks docker-up down-down
+.PHONY: in-docker-install in-docker-install-dev in-docker-install-lowest in-docker-test in-docker-test-coverage

@@ -64,8 +64,7 @@
             "Rollerworks\\Component\\Search\\Elasticsearch\\": "lib/Elasticsearch",
             "Rollerworks\\Component\\Search\\Processor\\": "lib/Processor",
             "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\": "lib/Symfony/Validator",
-            "Rollerworks\\Bundle\\SearchBundle\\": "lib/Symfony/SearchBundle",
-            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
+            "Rollerworks\\Bundle\\SearchBundle\\": "lib/Symfony/SearchBundle"
         }
     },
     "autoload-dev": {
@@ -73,7 +72,8 @@
             "Rollerworks\\Component\\Search\\Tests\\Elasticsearch\\": "lib/Elasticsearch/Tests",
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "lib/Doctrine/Dbal/Tests",
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "lib/Doctrine/Orm/Tests",
-            "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "lib/Symfony/SearchBundle/Tests"
+            "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "lib/Symfony/SearchBundle/Tests",
+            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
     },
     "extra": {
