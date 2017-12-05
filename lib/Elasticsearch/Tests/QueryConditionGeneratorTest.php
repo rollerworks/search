@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
+use Rollerworks\Component\Search\Elasticsearch\FieldMapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -33,6 +34,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         $generator->registerField('name', 'name');
 
         self::assertNull($generator->getQuery());
+        self::assertMapping([], $generator->getMappings());
     }
 
     /** @test */
@@ -77,6 +79,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ],
             ],
         ], $generator->getQuery());
+
+        self::assertMapping(['id', 'name'], $generator->getMappings());
     }
 
     /** @test */
@@ -113,6 +117,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ],
             ],
         ], $generator->getQuery());
+
+        self::assertMapping(['id'], $generator->getMappings());
     }
 
     /** @test */
@@ -165,6 +171,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ],
             ],
         ], $generator->getQuery());
+
+        self::assertMapping(['id', 'name'], $generator->getMappings());
     }
 
     /** @test */
@@ -215,6 +223,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ],
             ],
         ], $generator->getQuery());
+
+        self::assertMapping(['id'], $generator->getMappings());
     }
 
     /** @test */
@@ -268,6 +278,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ],
             ],
         ], $generator->getQuery());
+
+        self::assertMapping(['id'], $generator->getMappings());
     }
 
     /** @test */
@@ -348,6 +360,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ],
             ],
         ], $generator->getQuery());
+
+        self::assertMapping(['name'], $generator->getMappings());
     }
 
     /** @test */
@@ -392,6 +406,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             ],
             $generator->getQuery()
         );
+
+        self::assertMapping(['name'], $generator->getMappings());
     }
 
     /**
@@ -403,5 +419,22 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         $fieldSet = $this->getFieldSet();
 
         return SearchConditionBuilder::create($fieldSet);
+    }
+
+    /**
+     * @param string[]       $expected
+     * @param FieldMapping[] $mappings
+     */
+    private static function assertMapping(array $expected, array $mappings)
+    {
+        $actual = [];
+        foreach ($mappings as $mapping) {
+            $actual[] = $mapping->fieldName;
+        }
+
+        sort($expected);
+        sort($actual);
+
+        self::assertEquals($expected, $actual);
     }
 }
