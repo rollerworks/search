@@ -128,6 +128,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             if ($valuesBag->has(Compare::class)) {
                 $mappings[$fieldName] = $this->mappings[$fieldName];
             }
+
+            if ($valuesBag->has(PatternMatch::class)) {
+                $mappings[$fieldName] = $this->mappings[$fieldName];
+            }
         }
 
         return array_values($mappings);
