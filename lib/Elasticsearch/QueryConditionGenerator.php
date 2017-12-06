@@ -114,20 +114,11 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     public function getMappings(): array
     {
         $mappings = [];
-
         $group = $this->searchCondition->getValuesGroup();
-        foreach ($group->getFields() as $fieldName => $valuesBag) {
-            if ($valuesBag->hasSimpleValues()) {
-                $mappings[$fieldName] = $this->mappings[$fieldName];
-            }
+        $mappings = \array_merge($mappings, $this->getGroupMappings($group));
 
-            if ($valuesBag->has(Range::class)) {
-                $mappings[$fieldName] = $this->mappings[$fieldName];
-            }
-
-            if ($valuesBag->has(Compare::class)) {
-                $mappings[$fieldName] = $this->mappings[$fieldName];
-            }
+        foreach ($group->getGroups() as $subGroup) {
+            $mappings = \array_merge($mappings, $this->getGroupMappings($subGroup));
         }
 
         return array_values($mappings);
@@ -165,6 +156,29 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     public static function translateComparison(string $operator): string
     {
         return self::COMPARISON_OPERATOR_MAP[$operator];
+    }
+
+    private function getGroupMappings(ValuesGroup $group): array
+    {
+        $mappings = [];
+        foreach ($group->getFields() as $fieldName => $valuesBag) {
+            if ($valuesBag->hasSimpleValues()) {
+                $mappings[$fieldName] = $this->mappings[$fieldName];
+            }
+
+            if ($valuesBag->has(Range::class)) {
+                $mappings[$fieldName] = $this->mappings[$fieldName];
+            }
+
+            if ($valuesBag->has(Compare::class)) {
+                $mappings[$fieldName] = $this->mappings[$fieldName];
+            }
+
+            if ($valuesBag->has(PatternMatch::class)) {
+                $mappings[$fieldName] = $this->mappings[$fieldName];
+            }
+        }
+        return $mappings;
     }
 
     private function processGroup(ValuesGroup $group): array
