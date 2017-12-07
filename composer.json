@@ -1,4 +1,6 @@
 {
+    "name": "rollerworks/search-dev",
+    "description": "RollerworksSearch monolith development (use separate packages instead)",
     "homepage": "https://rollerworks.github.io/",
     "type": "project",
     "license": "MIT",
@@ -52,6 +54,16 @@
     },
     "conflict": {
         "moneyphp/money": "<3.0.0"
+    },
+    "replace": {
+        "rollerworks/search": "self.version",
+        "rollerworks/search-api-platform": "self.version",
+        "rollerworks/search-bundle": "self.version",
+        "rollerworks/search-doctrine-dbal": "self.version",
+        "rollerworks/search-doctrine-orm": "self.version",
+        "rollerworks/search-elasticsearch": "self.version",
+        "rollerworks/search-processor": "self.version",
+        "rollerworks/search-symfony-validator": "self.version"
     },
     "autoload": {
         "psr-4": {
