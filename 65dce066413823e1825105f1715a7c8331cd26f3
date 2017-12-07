@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by sstok at 2017-12-07T13:47:21Z
+
+/cc @dkarlovi can you check if this fixes your issue #199 ?
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-12-07T13:57:52Z
+
+It should, it's tricky to test as this is now in a branch on a 3rd party repo so I'd need to fetch your fork's branch and push to my fork, etc.
+
+You can test it yourself, just add
+
+```json
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sstok/search"
+        }
+    ],
+```
+on top of your `composer.json`, `require rollerworks/search-dev:dev-root-composer-name`and see if you're getting your fork installed instead of the main repo.
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-12-07T13:59:08Z
+
+I can merge it, and register it at composer if that's easier 😃
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-12-07T14:01:59Z
+
+~~Register it on Packagist, I'll test it before you merge.~~
+
+Oh yeah, you can't register it before you merge because the name differs in different branches. :see_no_evil:  You're probably going to need to rename the repo on Github too.
