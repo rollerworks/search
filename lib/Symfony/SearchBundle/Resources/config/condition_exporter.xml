@@ -16,6 +16,9 @@
         <service id="rollerworks_search.exporter.string_query" class="Rollerworks\Component\Search\Exporter\StringQueryExporter">
             <tag name="rollerworks_search.condition_exporter" format="string_query" />
         </service>
+        <service id="rollerworks_search.exporter.norm_string_query" class="Rollerworks\Component\Search\Exporter\NormStringQueryExporter">
+            <tag name="rollerworks_search.condition_exporter" format="norm_string_query" />
+        </service>
         <service id="rollerworks_search.condition_exporter.array" class="Rollerworks\Component\Search\Exporter\ArrayExporter">
             <tag name="rollerworks_search.condition_exporter" format="array" />
         </service>

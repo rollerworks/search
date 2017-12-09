@@ -18,6 +18,9 @@
             <tag name="rollerworks_search.input_processor" format="string_query" />
             <argument id="rollerworks_search.translator_based_alias_resolver" type="service" on-invalid="null" />
         </service>
+        <service id="rollerworks_search.input.norm_string_query" class="Rollerworks\Component\Search\Input\NormStringQueryInput" parent="rollerworks_search.input.abstract">
+            <tag name="rollerworks_search.input_processor" format="norm_string_query" />
+        </service>
         <service id="rollerworks_search.input.array" class="Rollerworks\Component\Search\Input\ArrayInput" parent="rollerworks_search.input.abstract">
             <tag name="rollerworks_search.input_processor" format="array" />
         </service>
