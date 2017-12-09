@@ -50,6 +50,7 @@ final class ConditionExporterLoaderTest extends TestCase
             ['xml', Exporter\XmlExporter::class],
             ['array', Exporter\ArrayExporter::class],
             ['string_query', Exporter\StringQueryExporter::class],
+            ['norm_string_query', Exporter\NormStringQueryExporter::class],
         ];
     }
 

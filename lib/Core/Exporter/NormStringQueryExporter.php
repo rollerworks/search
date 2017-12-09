@@ -29,33 +29,19 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class StringQueryExporter extends StringExporter
+final class NormStringQueryExporter extends StringExporter
 {
-    private $labelResolver;
-
-    /**
-     * Constructor.
-     *
-     * @param callable|null $labelResolver A callable to resolve the actual label
-     *                                     of the field, receives a
-     *                                     FieldConfigInterface instance.
-     *                                     If null the `label` option value is
-     *                                     used instead
-     */
-    public function __construct(callable $labelResolver = null)
+    protected function modelToExported($value, FieldConfig $field): string
     {
-        $this->labelResolver = $labelResolver ?? function (FieldConfig $field) {
-            return $field->getOption('label', $field->getName());
-        };
+        return $this->modelToNorm($value, $field);
     }
 
     protected function resolveLabels(FieldSet $fieldSet): array
     {
         $labels = [];
-        $callable = $this->labelResolver;
 
         foreach ($fieldSet->all() as $name => $field) {
-            $labels[$name] = $callable($field);
+            $labels[$name] = $name;
         }
 
         return $labels;
