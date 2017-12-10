@@ -87,7 +87,7 @@ final class SearchConditionListener
 
         $searchConfig = $this->resolveSearchConfiguration($searchConfig, $resourceClass, $request);
 
-        $config = new ProcessorConfig($this->searchFactory->createFieldSet($searchConfig['fieldset']), 'array');
+        $config = new ProcessorConfig($this->searchFactory->createFieldSet($searchConfig['fieldset']), 'norm_string_query');
         $this->configureProcessor($config, $searchConfig, $resourceClass);
         $payload = $this->searchProcessor->processRequest($request, $config);
 
@@ -95,7 +95,7 @@ final class SearchConditionListener
             $routeArguments = array_merge(
                 $request->query->all(),
                 $this->resolveRouteArguments($request), // Execute after query to prevent overwriting.
-                ['search' => $payload->exportedCondition] // Use array instead or string.
+                ['search' => $payload->exportedCondition]
             );
 
             $event->setResponse(new RedirectResponse(
