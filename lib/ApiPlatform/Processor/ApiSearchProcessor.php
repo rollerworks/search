@@ -17,22 +17,21 @@ use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Loader\ConditionExporterLoader;
 use Rollerworks\Component\Search\Loader\InputProcessorLoader;
+use Rollerworks\Component\Search\Processor\AbstractSearchProcessor;
 use Rollerworks\Component\Search\Processor\ProcessorConfig;
 use Rollerworks\Component\Search\Processor\SearchPayload;
-use Rollerworks\Component\Search\Processor\SearchProcessor;
 use Rollerworks\Component\Search\SearchFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Psr7SearchProcessor handles a search provided with a PSR-7 ServerRequest.
+ * ApiSearchProcessor handles a search provided with a Symfony Request.
  *
- * SearchProcessor processes search-data.
+ * The input search condition must be provided as a NormStringQuery.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class ApiSearchProcessor implements SearchProcessor
+final class ApiSearchProcessor extends AbstractSearchProcessor
 {
-    private $searchFactory;
     private $inputFactory;
     private $exportFactory;
     private $cache;
@@ -60,8 +59,9 @@ final class ApiSearchProcessor implements SearchProcessor
             throw new UnexpectedTypeException($request, Request::class);
         }
 
-        $input = $request->query->get('search', []);
-        $payload = $this->processInput($config, $input);
+        $input = $request->query->get('search', '');
+        $format = $this->getRequestParam($request->query->all(), $config, 'search-format', $config->getDefaultFormat(), 'string');
+        $payload = $this->processInput($config, $input, $format);
 
         if (!$payload->changed && !empty($input) && $input !== $payload->exportedCondition) {
             $payload->changed = true;
@@ -70,32 +70,32 @@ final class ApiSearchProcessor implements SearchProcessor
         return $payload;
     }
 
-    private function processInput(ProcessorConfig $config, $input): SearchPayload
+    private function processInput(ProcessorConfig $config, $input, string $format): SearchPayload
     {
         $payload = new SearchPayload();
         $payload->searchCode = '';
 
-        if (!is_array($input) || [] === $input) {
+        if ([] === $input || (is_scalar($input) && '' === trim((string) $input))) {
             return $payload;
         }
 
-        if (null !== $cachedPayload = $this->fetchCached($config, $input)) {
+        $cacheKey = $this->getConditionCacheKey($config, $this->getSearchCode($input), $format);
+
+        if (null !== $cachedPayload = $this->fetchCached($cacheKey)) {
             return $cachedPayload;
         }
 
-        $payload->searchCondition = $this->inputFactory->get('array')->process($config, $input);
+        $payload->searchCondition = $this->inputFactory->get($format)->process($config, $input);
         $this->searchFactory->optimizeCondition($payload->searchCondition);
 
-        $this->exportCondition($payload);
+        $this->exportCondition($payload, $format);
         $this->storeCache($config, $payload);
 
         return $payload;
     }
 
-    private function fetchCached(ProcessorConfig $config, $input): ?SearchPayload
+    private function fetchCached(string $cacheKey): ?SearchPayload
     {
-        $cacheKey = $this->getConditionCacheKey($config, json_encode($input));
-
         if (null !== $payload = $this->cache->get($cacheKey)) {
             try {
                 $payload->searchCondition = $this->searchFactory->getSerializer()->unserialize($payload->searchCondition);
@@ -108,24 +108,28 @@ final class ApiSearchProcessor implements SearchProcessor
         return $payload;
     }
 
-    private function exportCondition(SearchPayload $payload): void
+    private function exportCondition(SearchPayload $payload, string $format): void
     {
         if (null === $payload->searchCondition) {
             return;
         }
 
-        $exported = $this->exportFactory->get('array')->exportCondition($payload->searchCondition);
-        $payload->searchCode = http_build_query($exported);
-        $payload->exportedFormat = 'array';
+        $exported = $this->exportFactory->get($format)->exportCondition($payload->searchCondition);
 
-        // Parse query-string back into a array to by-pass bool conversion in URI
-        // https://github.com/rollerworks/search/issues/177
-        parse_str($payload->searchCode, $payload->exportedCondition);
+        if (is_array($exported)) {
+            // Parse query-string back into a array to by-pass bool conversion in URI
+            // https://github.com/rollerworks/search/issues/177
+            parse_str(http_build_query($exported), $exported);
+        }
+
+        $payload->exportedCondition = $exported;
+        $payload->exportedFormat = $format;
+        $payload->searchCode = $this->getSearchCode($exported);
     }
 
     private function storeCache(ProcessorConfig $config, SearchPayload $payload): void
     {
-        if ([] === $payload->exportedCondition) {
+        if (null === $payload->searchCondition) {
             return;
         }
 
@@ -135,14 +139,27 @@ final class ApiSearchProcessor implements SearchProcessor
         $payload->searchCondition = $this->searchFactory->getSerializer()->serialize($payload->searchCondition);
 
         $this->cache->set(
-            $this->getConditionCacheKey($config, json_encode($payload->exportedCondition)),
+            $this->getConditionCacheKey($config, $payload->searchCode, $payload->exportedFormat),
             $payload,
             $config->getCacheTTL()
         );
     }
 
-    private function getConditionCacheKey(ProcessorConfig $config, string $searchCode): string
+    private function getConditionCacheKey(ProcessorConfig $config, string $searchCode, string $format): string
     {
-        return hash('sha256', $config->getFieldSet()->getSetName().'~'.$searchCode);
+        return hash('sha256', $config->getFieldSet()->getSetName().'~'.$searchCode.'~'.$format);
+    }
+
+    private function getSearchCode($input): string
+    {
+        if (is_scalar($input)) {
+            return 'S:'.urlencode($input);
+        }
+
+        // Parse query-string back into a array to by-pass bool conversion in URI
+        // https://github.com/rollerworks/search/issues/177
+        parse_str(http_build_query($input), $input);
+
+        return 'A:'.json_encode($input);
     }
 }

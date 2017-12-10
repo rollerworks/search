@@ -54,7 +54,7 @@ final class ApiPlatformTest extends FunctionalTestCase
         $client->request(
             'GET',
             '/books.json',
-            ['search' => ['fields' => ['title' => ['simple-values' => ['Symfony']]]]]
+            ['search' => 'title: Symfony;']
         );
 
         self::assertFalse($client->getResponse()->isRedirection());
@@ -68,12 +68,12 @@ final class ApiPlatformTest extends FunctionalTestCase
         $client->request(
             'GET',
             '/books.json',
-            ['search' => ['fields' => ['title' => ['simple-values' => ['Symfony', 'Symfony']]]]]
+            ['search' => 'title: Symfony, Symfony;']
         );
 
         $crawler = $client->followRedirect();
 
-        self::assertEquals('http://localhost/books.json?search%5Bfields%5D%5Btitle%5D%5Bsimple-values%5D%5B0%5D=Symfony', $crawler->getUri());
+        self::assertEquals('http://localhost/books.json?search=title%3A%20Symfony%3B', $crawler->getUri());
         self::assertInstanceOf(SearchCondition::class, $client->getRequest()->attributes->get('_api_search_condition'));
         self::assertEquals('[]', $client->getResponse()->getContent());
     }
@@ -81,17 +81,17 @@ final class ApiPlatformTest extends FunctionalTestCase
     public function testInvalidConditionHasErrors()
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
-        $crawler = $client->request(
+        $client->request(
             'GET',
             '/books.json',
-            ['search' => ['fields' => ['id' => ['simple-values' => ['He']]]]]
+            ['search' => 'id: He;']
         );
 
         self::assertFalse($client->getResponse()->isRedirection());
-        self::assertEquals('/books.json?search%5Bfields%5D%5Bid%5D%5Bsimple-values%5D%5B0%5D=He', $client->getRequest()->getRequestUri());
+        self::assertEquals('/books.json?search=id%3A+He%3B', $client->getRequest()->getRequestUri());
         self::assertNull($client->getRequest()->attributes->get('_api_search_condition'));
         self::assertJsonStringEqualsJsonString(
-            '{"@context":"\/contexts\/ConstraintViolationList","@type":"ConstraintViolationList","hydra:title":"An error occurred","hydra:description":"[fields][id][simple-values][0]: This value is not valid.","violations":[{"propertyPath":"[fields][id][simple-values][0]","message":"This value is not valid."}]}',
+            '{"@context":"\/contexts\/ConstraintViolationList","@type":"ConstraintViolationList","hydra:title":"An error occurred","hydra:description":"[id][0]: This value is not valid.","violations":[{"propertyPath":"[id][0]","message":"This value is not valid."}]}',
             $client->getResponse()->getContent()
         );
     }

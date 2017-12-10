@@ -48,10 +48,11 @@ abstract class AbstractSearchProcessor implements SearchProcessor
      * @param ProcessorConfig   $config
      * @param string            $name
      * @param string|array|null $default
+     * @param string            $type    Eg. string or array
      *
      * @return array|null|string
      */
-    final protected function getRequestParam(array $parameters, ProcessorConfig $config, string $name, $default = null)
+    final protected function getRequestParam(array $parameters, ProcessorConfig $config, string $name, $default = null, string $type = null)
     {
         if ($prefix = $config->getRequestPrefix()) {
             $name = "[{$prefix}][{$name}]";
@@ -62,7 +63,12 @@ abstract class AbstractSearchProcessor implements SearchProcessor
         }
 
         try {
-            return $this->propertyAccessor->getValue($parameters, $name) ?? $default;
+            $value = $this->propertyAccessor->getValue($parameters, $name) ?? $default;
+            if (null !== $type && false === ('is_'.$type)($value)) {
+                return $default;
+            }
+
+            return $value;
         } catch (AccessException | UnexpectedTypeException $e) {
             return $default;
         }

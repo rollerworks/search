@@ -64,8 +64,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $searchPayload = new SearchPayload();
         $searchPayload->searchCondition = $condition = $this->createCondition();
-        $searchPayload->exportedFormat = 'array';
-        $searchPayload->exportedCondition = ['fields' => ['id' => ['single-values' => [1, 2]]]];
+        $searchPayload->exportedFormat = 'norm_string_query';
+        $searchPayload->exportedCondition = 'id: 1, 2;';
 
         $processorProphecy = $this->prophesize(SearchProcessor::class);
         $processorProphecy->processRequest($request, Argument::any())->willReturn($searchPayload);
@@ -121,8 +121,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $searchPayload = new SearchPayload();
         $searchPayload->searchCondition = $condition = $this->createCondition();
-        $searchPayload->exportedFormat = 'array';
-        $searchPayload->exportedCondition = ['fields' => ['id' => ['single-values' => [1, 2]]]];
+        $searchPayload->exportedFormat = 'norm_string_query';
+        $searchPayload->exportedCondition = 'id: 1, 2;';
 
         $processorProphecy = $this->prophesize(SearchProcessor::class);
         $processorProphecy->processRequest($request, Argument::any())->willReturn($searchPayload);
@@ -179,7 +179,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $searchPayload = new SearchPayload(true);
         $searchPayload->searchCondition = $condition = $this->createCondition();
-        $searchPayload->exportedFormat = 'array';
+        $searchPayload->exportedFormat = 'norm_string_query';
         $searchPayload->exportedCondition = ['fields' => ['id' => ['single-values' => [1]]]];
 
         $processorProphecy = $this->prophesize(SearchProcessor::class);
@@ -191,7 +191,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             'api_books_collection',
             ['search' => ['fields' => ['id' => ['single-values' => [1]]]]],
             Argument::any()
-        )->willReturn('/books?search[fields][id][0]=1');
+        )->willReturn('/books?search=id: 1;');
 
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
@@ -199,7 +199,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
-        self::assertEquals(new RedirectResponse('/books?search[fields][id][0]=1'), $event->getResponse());
+        self::assertEquals(new RedirectResponse('/books?search=id: 1;'), $event->getResponse());
         self::assertEquals(
             [
                 '_api_resource_class' => Dummy::class,
@@ -250,8 +250,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $searchPayload = new SearchPayload(true);
         $searchPayload->searchCondition = $condition = $this->createCondition();
-        $searchPayload->exportedFormat = 'array';
-        $searchPayload->exportedCondition = ['fields' => ['id' => ['single-values' => [1]]]];
+        $searchPayload->exportedFormat = 'norm_string_query';
+        $searchPayload->exportedCondition = 'id: 1;';
 
         $processorProphecy = $this->prophesize(SearchProcessor::class);
         $processorProphecy->processRequest($request, Argument::any())->willReturn($searchPayload);
@@ -260,9 +260,9 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $urlGeneratorProphecy = $this->prophesize(UrlGeneratorInterface::class);
         $urlGeneratorProphecy->generate(
             'api_books_collection',
-            ['_format' => 'json', 'search' => ['fields' => ['id' => ['single-values' => [1]]]]],
+            ['_format' => 'json', 'search' => 'id: 1;'],
             Argument::any()
-        )->willReturn('/books.json?search[fields][id][0]=1');
+        )->willReturn('/books.json?search=id: 1;');
 
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
@@ -270,7 +270,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
-        self::assertEquals(new RedirectResponse('/books.json?search[fields][id][0]=1'), $event->getResponse());
+        self::assertEquals(new RedirectResponse('/books.json?search=id: 1;'), $event->getResponse());
         self::assertEquals(
             [
                 '_api_resource_class' => Dummy::class,
@@ -372,11 +372,11 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $searchPayload = new SearchPayload();
         $searchPayload->searchCondition = $condition = $this->createCondition();
-        $searchPayload->exportedFormat = 'array';
-        $searchPayload->exportedCondition = ['fields' => ['id' => ['single-values' => [1, 2]]]];
+        $searchPayload->exportedFormat = 'norm_string_query';
+        $searchPayload->exportedCondition = 'id: 1, 2;';
 
         $fieldSet = $this->getFactory()->createFieldSet(BookFieldSet::class);
-        $processorConfig = new ProcessorConfig($fieldSet, 'array');
+        $processorConfig = new ProcessorConfig($fieldSet, 'norm_string_query');
         $processorConfig->setCacheTTL(30);
         $processorConfig->setExportFormat('json');
 

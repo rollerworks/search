@@ -25,6 +25,7 @@ parameters:
         - '#Psr\\SimpleCache\\DateInterval#'
         - '#Parameter \#3 \$previous of class PHPUnit\\Framework\\Exception constructor expects Exception\|null, Throwable given#'
         - '#Parameter \#1 \$range of static method Rollerworks\\Component\\Search\\Elasticsearch\\QueryConditionGenerator\:\:generateRangeParams\(\)#'
+        - '#Parameter \#3 \$format of method Rollerworks\\Component\\Search\\ApiPlatform\\Processor\\ApiSearchProcessor\:\:processInput\(\) expects string, array\|string\|null given#'
 
         ## Symony Config
         - '# Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given#'
