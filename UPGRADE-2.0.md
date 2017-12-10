@@ -1,3 +1,11 @@
+UPGRADE FROM 2.0-ALPHA5 to 2.0-ALPHA8
+=====================================
+
+## ApiPlatform
+
+* The `Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener`
+  now requires an `EventDispatchInterface` instance as last argument.
+
 UPGRADE FROM 2.0-ALPHA2 to 2.0-ALPHA5
 =====================================
 
