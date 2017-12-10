@@ -19,6 +19,7 @@ use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
 use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener;
+use Rollerworks\Component\Search\ApiPlatform\SearchConditionEvent;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\BookFieldSet;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\Dummy;
 use Rollerworks\Component\Search\FieldSet;
@@ -28,6 +29,7 @@ use Rollerworks\Component\Search\Processor\SearchProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\ValuesGroup;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -73,7 +75,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $urlGeneratorProphecy->generate(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
-        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory);
+        $eventDispatcher = $this->expectingCallEventDispatcher($searchPayload, $request);
+        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertNull($event->getResponse());
@@ -129,7 +132,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $urlGeneratorProphecy->generate(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
-        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory);
+        $eventDispatcher = $this->expectingCallEventDispatcher($searchPayload, $request);
+        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertNull($event->getResponse());
@@ -191,7 +195,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
-        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory);
+        $eventDispatcher = $this->expectingNoCallEventDispatcher();
+        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(new RedirectResponse('/books?search[fields][id][0]=1'), $event->getResponse());
@@ -261,7 +266,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
-        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory);
+        $eventDispatcher = $this->expectingNoCallEventDispatcher();
+        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(new RedirectResponse('/books.json?search[fields][id][0]=1'), $event->getResponse());
@@ -299,7 +305,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $urlGeneratorProphecy->generate(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
-        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory);
+        $eventDispatcher = $this->expectingNoCallEventDispatcher();
+        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertNull($event->getResponse());
@@ -326,7 +333,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $urlGeneratorProphecy->generate(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
-        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory);
+        $eventDispatcher = $this->expectingNoCallEventDispatcher();
+        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertNull($event->getResponse());
@@ -380,7 +388,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $urlGeneratorProphecy->generate(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
-        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory);
+        $eventDispatcher = $this->expectingCallEventDispatcher($searchPayload, $request);
+        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertNull($event->getResponse());
@@ -430,7 +439,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $urlGeneratorProphecy->generate(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $urlGenerator = $urlGeneratorProphecy->reveal();
 
-        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory);
+        $eventDispatcher = $this->expectingNoCallEventDispatcher();
+        $listener = new SearchConditionListener($this->getFactory(), $searchProcessor, $urlGenerator, $resourceMetadataFactory, $eventDispatcher);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($message);
@@ -515,5 +525,25 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $fieldSet->getSetName()->willReturn($setName);
 
         return new SearchCondition($fieldSet->reveal(), new ValuesGroup());
+    }
+
+    private function expectingCallEventDispatcher(SearchPayload $searchPayload, Request $request): EventDispatcherInterface
+    {
+        $event = new SearchConditionEvent($searchPayload->searchCondition, Dummy::class, $request);
+
+        $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
+        $eventDispatcherProphecy->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT, $event)->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT.Dummy::class, $event)->shouldBeCalled();
+
+        return $eventDispatcherProphecy->reveal();
+    }
+
+    private function expectingNoCallEventDispatcher(): EventDispatcherInterface
+    {
+        $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
+        $eventDispatcherProphecy->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT, Argument::any())->shouldNotBeCalled();
+        $eventDispatcherProphecy->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT.Dummy::class, Argument::any())->shouldNotBeCalled();
+
+        return $eventDispatcherProphecy->reveal();
     }
 }

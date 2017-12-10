@@ -16,9 +16,11 @@ namespace Rollerworks\Component\Search\ApiPlatform\EventListener;
 use ApiPlatform\Core\Api\UrlGeneratorInterface;
 use ApiPlatform\Core\Exception\RuntimeException;
 use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface as ResourceMetadataFactory;
+use Rollerworks\Component\Search\ApiPlatform\SearchConditionEvent;
 use Rollerworks\Component\Search\Processor\ProcessorConfig;
 use Rollerworks\Component\Search\Processor\SearchProcessor;
 use Rollerworks\Component\Search\SearchFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -40,21 +42,24 @@ final class SearchConditionListener
     private $searchProcessor;
     private $urlGenerator;
     private $resourceMetadataFactory;
+    private $eventDispatcher;
 
     /**
      * Constructor.
      *
-     * @param SearchFactory           $searchFactory
-     * @param SearchProcessor         $searchProcessor         ApiSearchProcessor instance
-     * @param UrlGeneratorInterface   $urlGenerator
-     * @param ResourceMetadataFactory $resourceMetadataFactory
+     * @param SearchFactory            $searchFactory
+     * @param SearchProcessor          $searchProcessor ApiSearchProcessor instance
+     * @param UrlGeneratorInterface    $urlGenerator
+     * @param ResourceMetadataFactory  $resourceMetadataFactory
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(SearchFactory $searchFactory, SearchProcessor $searchProcessor, UrlGeneratorInterface $urlGenerator, ResourceMetadataFactory $resourceMetadataFactory)
+    public function __construct(SearchFactory $searchFactory, SearchProcessor $searchProcessor, UrlGeneratorInterface $urlGenerator, ResourceMetadataFactory $resourceMetadataFactory, EventDispatcherInterface $eventDispatcher)
     {
         $this->searchFactory = $searchFactory;
         $this->searchProcessor = $searchProcessor;
         $this->urlGenerator = $urlGenerator;
         $this->resourceMetadataFactory = $resourceMetadataFactory;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -99,6 +104,13 @@ final class SearchConditionListener
 
             return;
         }
+
+        $conditionEvent = new SearchConditionEvent($payload->searchCondition, $resourceClass, $request);
+
+        // First Dispatch a specific event to for this resource-class and then a generic one for ease of listening.
+        // Note. If propagation is stopped for specific listener the generic listener is ignored.
+        $this->eventDispatcher->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT.$resourceClass, $conditionEvent);
+        $this->eventDispatcher->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT, $conditionEvent);
 
         $request->attributes->set('_api_search_condition', $payload->searchCondition);
     }
