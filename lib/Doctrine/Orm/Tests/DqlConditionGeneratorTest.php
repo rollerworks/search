@@ -28,6 +28,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\SearchPreCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -653,6 +654,70 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             $conditionGenerator->getQuery()->getDQL()
         );
         $this->assertDqlCompiles($conditionGenerator);
+    }
+
+    public function testQueryWithPrependAndPreCond()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $condition->setPreCondition(
+            new SearchPreCondition(
+                SearchConditionBuilder::create($this->getFieldSet())
+                    ->field('status')
+                        ->addSimpleValue(1)
+                        ->addSimpleValue(2)
+                    ->end()
+                ->getSearchCondition()
+                ->getValuesGroup()
+            )
+        );
+
+        $conditionGenerator = $this->getConditionGenerator($condition);
+
+        $whereCase = $conditionGenerator->getWhereClause('WHERE ');
+        $conditionGenerator->updateQuery();
+
+        $this->assertEquals('WHERE ((I.status IN(1, 2))) AND ((C.id IN(2, 5)))', $whereCase);
+        $this->assertEquals(
+            'SELECT I FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ((I.status IN(1, 2))) AND ((C.id IN(2, 5)))',
+            $conditionGenerator->getQuery()->getDQL()
+        );
+    }
+
+    public function testEmptyQueryWithPrependAndPreCond()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('id2')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $condition->setPreCondition(
+            new SearchPreCondition(
+                SearchConditionBuilder::create($this->getFieldSet())
+                    ->field('status')
+                        ->addSimpleValue(1)
+                        ->addSimpleValue(2)
+                    ->end()
+                ->getSearchCondition()
+                ->getValuesGroup()
+            )
+        );
+
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        $conditionGenerator->updateQuery();
+
+        $this->assertEquals('WHERE ((I.status IN(1, 2)))', $conditionGenerator->getWhereClause('WHERE '));
+        $this->assertEquals(
+            'SELECT I FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ((I.status IN(1, 2)))',
+            $conditionGenerator->getQuery()->getDQL()
+        );
     }
 
     public function testDoctrineAlias()
