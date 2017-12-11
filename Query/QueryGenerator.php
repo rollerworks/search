@@ -18,6 +18,7 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -64,6 +65,19 @@ final class QueryGenerator
         $this->connection = $connection;
         $this->queryPlatform = $queryPlatform;
         $this->fields = $fields;
+    }
+
+    public function getWhereClause(SearchCondition $searchCondition): string
+    {
+        $conditions = [];
+
+        if (null !== $preCondition = $searchCondition->getPreCondition()) {
+            $conditions[] = $this->getGroupQuery($preCondition->getValuesGroup());
+        }
+
+        $conditions[] = $this->getGroupQuery($searchCondition->getValuesGroup());
+
+        return (string) self::implodeWithValue(' AND ', $conditions);
     }
 
     /**

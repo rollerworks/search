@@ -23,6 +23,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringQueryInput;
+use Rollerworks\Component\Search\SearchPreCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 
 /**
@@ -317,6 +318,16 @@ SQL;
     /**
      * @test
      */
+    public function it_finds_by_customer_and_status_and_total_with_preCond()
+    {
+        $this->makeTestWithPreCond('customer: 2;', 'customer: 3;', []);
+        $this->makeTestWithPreCond('customer: 2;', 'status: paid; customer: 3;', []);
+        $this->makeTestWithPreCond('customer: 2;', 'status: paid;', [2]);
+    }
+
+    /**
+     * @test
+     */
     public function it_finds_by_customer_and_status_or_price()
     {
         $this->makeTest('customer: 2; *(status: paid; total: "50.00";)', [2, 4]);
@@ -349,6 +360,30 @@ SQL;
 
         try {
             $condition = $this->inputProcessor->process($config, $input);
+            $this->assertRecordsAreFound($condition, $expectedRows);
+        } catch (\Exception $e) {
+            self::detectSystemException($e);
+
+            if (function_exists('dump')) {
+                dump($e);
+            } else {
+                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.'.PHP_EOL;
+
+                // Don't use var-dump or print-r as this crashes php...
+                echo get_class($e).'::'.(string) $e;
+            }
+
+            $this->fail('Condition contains errors.');
+        }
+    }
+
+    private function makeTestWithPreCond($preCondition, $input, array $expectedRows)
+    {
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        try {
+            $condition = $this->inputProcessor->process($config, $input);
+            $condition->setPreCondition(new SearchPreCondition($this->inputProcessor->process($config, $preCondition)->getValuesGroup()));
             $this->assertRecordsAreFound($condition, $expectedRows);
         } catch (\Exception $e) {
             self::detectSystemException($e);

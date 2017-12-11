@@ -22,6 +22,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\SearchPreCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -86,6 +87,58 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         $conditionGenerator = $this->getConditionGenerator($condition);
 
         $this->assertEquals('', $conditionGenerator->getWhereClause('WHERE '));
+    }
+
+    public function testQueryWithPrependAndPreCond()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $condition->setPreCondition(
+            new SearchPreCondition(
+                SearchConditionBuilder::create($this->getFieldSet())
+                    ->field('status')
+                        ->addSimpleValue(1)
+                        ->addSimpleValue(2)
+                    ->end()
+                ->getSearchCondition()
+                ->getValuesGroup()
+            )
+        );
+
+        $conditionGenerator = $this->getConditionGenerator($condition);
+
+        $this->assertEquals('WHERE ((I.status IN(1, 2))) AND ((I.customer IN(2, 5)))', $conditionGenerator->getWhereClause('WHERE '));
+    }
+
+    public function testEmptyQueryWithPrependAndPreCond()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('id')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $condition->setPreCondition(
+            new SearchPreCondition(
+                SearchConditionBuilder::create($this->getFieldSet())
+                    ->field('status')
+                        ->addSimpleValue(1)
+                        ->addSimpleValue(2)
+                    ->end()
+                ->getSearchCondition()
+                ->getValuesGroup()
+            )
+        );
+
+        $conditionGenerator = $this->getConditionGenerator($condition);
+
+        $this->assertEquals('WHERE ((I.status IN(1, 2)))', $conditionGenerator->getWhereClause('WHERE '));
     }
 
     public function testQueryWithMultipleFields()
