@@ -21,6 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\SearchPreCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -59,6 +60,7 @@ class NativeQueryConditionGeneratorTest extends OrmTestCase
         $conditionGenerator->setDefaultEntity(self::INVOICE_CLASS, 'I');
         $conditionGenerator->setField('id', 'id', null, null, 'smallint');
         $conditionGenerator->setField('customer', 'customer', null, null, 'integer');
+        $conditionGenerator->setField('status', 'status', null, null, 'integer');
         //$conditionGenerator->setField('credit_parent#0', 'parent');
 
         $conditionGenerator->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
@@ -252,5 +254,68 @@ class NativeQueryConditionGeneratorTest extends OrmTestCase
             'SELECT I FROM Invoice I JOIN customer AS C ON I.customer = C.id',
             $conditionGenerator->getQuery()->getSQL()
         );
+    }
+
+    public function testQueryWithPrependAndPreCond()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('customer')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $condition->setPreCondition(
+            new SearchPreCondition(
+                SearchConditionBuilder::create($this->getFieldSet())
+                    ->field('status')
+                        ->addSimpleValue(1)
+                        ->addSimpleValue(2)
+                    ->end()
+                ->getSearchCondition()
+                ->getValuesGroup()
+            )
+        );
+
+        $conditionGenerator = $this->getConditionGenerator($condition);
+
+        $whereCase = $conditionGenerator->getWhereClause('WHERE ');
+
+        if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
+            $this->assertEquals('WHERE ((I.status IN(1, 2))) AND ((I.customer IN(2, 5)))', $whereCase);
+        } else {
+            $this->assertEquals("WHERE ((I.status IN('1', '2'))) AND ((I.customer IN('2', '5')))", $whereCase);
+        }
+    }
+
+    public function testEmptyQueryWithPrependAndPreCond()
+    {
+        $condition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('id2')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $condition->setPreCondition(
+            new SearchPreCondition(
+                SearchConditionBuilder::create($this->getFieldSet())
+                    ->field('status')
+                        ->addSimpleValue(1)
+                        ->addSimpleValue(2)
+                    ->end()
+                ->getSearchCondition()
+                ->getValuesGroup()
+            )
+        );
+
+        $conditionGenerator = $this->getConditionGenerator($condition);
+        $whereCase = $conditionGenerator->getWhereClause('WHERE ');
+
+        if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
+            $this->assertEquals('WHERE ((I.status IN(1, 2)))', $whereCase);
+        } else {
+            $this->assertEquals("WHERE ((I.status IN('1', '2')))", $whereCase);
+        }
     }
 }

@@ -67,7 +67,7 @@ class NativeQueryConditionGenerator extends AbstractConditionGenerator
             $connection = $this->entityManager->getConnection();
 
             $queryGenerator = new QueryGenerator($connection, $this->getQueryPlatform($connection), $fields);
-            $this->whereClause = $queryGenerator->getGroupQuery($this->searchCondition->getValuesGroup());
+            $this->whereClause = $queryGenerator->getWhereClause($this->searchCondition);
         }
 
         if ('' !== $this->whereClause) {
