@@ -117,7 +117,7 @@ final class SqlConditionGenerator implements ConditionGenerator
         if (null === $this->whereClause) {
             $this->whereClause = (new QueryGenerator(
                 $this->connection, $this->getQueryPlatform(), $this->fields
-            ))->getGroupQuery($this->searchCondition->getValuesGroup());
+            ))->getWhereClause($this->searchCondition);
         }
 
         if ('' !== $this->whereClause) {
