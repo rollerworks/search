@@ -2,5 +2,4 @@
 /composer.lock
 *.phar
 /vendor/
-/doc/_build
 /.php_cs.cache

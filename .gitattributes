@@ -11,4 +11,6 @@ core.autocrlf=lf
 .travis.yml export-ignore
 .github export-ignore
 phpunit.xml.dist export-ignore
+phpstan.neon export-ignore
+docker-compose.yaml export-ignore
 Tests/ export-ignore
