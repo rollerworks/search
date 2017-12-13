@@ -17,7 +17,9 @@ use Doctrine\ORM\Query;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\SearchPreCondition;
 
 /**
  * @group non-functional
@@ -44,7 +46,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
      */
     protected $conditionGenerator;
 
-    public const CACHE_KEY = '33be24819ea4c7f8c610e8970d2ce0ab9551b8f86fa4faa35da1ad70c30a09d9';
+    public const CACHE_KEY = '8dbca2a85403b7afbece9461df29c567cf32dfda2c10a75b5aff4d6ac44e4c84';
 
     public function testGetWhereClauseNoCache()
     {
@@ -130,7 +132,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('d59779acc5fc8cdde4c1f3c66de9f59a2de72cb884efd05224b72545cfa8ffd5')
+            ->with('a9c044cceecfd09b772d1190e8c2cc32b11c59d08b7d20b4b4459bab8f9b4bd6')
             ->willReturn(null);
 
         $this->cacheDriver
@@ -177,7 +179,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('d59779acc5fc8cdde4c1f3c66de9f59a2de72cb884efd05224b72545cfa8ffd5')
+            ->with('a9c044cceecfd09b772d1190e8c2cc32b11c59d08b7d20b4b4459bab8f9b4bd6')
             ->willReturn(null);
 
         $this->cacheDriver
@@ -194,6 +196,44 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
             'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C',
             $query->getDQL()
         );
+    }
+
+    public function testGetWhereClauseWithCacheAndPreCond()
+    {
+        $cacheDriverProphecy = $this->prophesize(CacheInterface::class);
+        $cacheDriverProphecy->has('41329a2e34ac65573fb097e858a5b12685b0327e3e55b5bb48902e4731b42afa')->willReturn(true);
+        $cacheDriverProphecy->get('41329a2e34ac65573fb097e858a5b12685b0327e3e55b5bb48902e4731b42afa')->willReturn(["me = 'foo'", ['1' => 'he']]);
+        $cacheDriverProphecy->has('7f1ddddc8869a6cdd6308b790b854f2cac46f67e22e8fd978ead76ab881df323')->willReturn(true);
+        $cacheDriverProphecy->get('7f1ddddc8869a6cdd6308b790b854f2cac46f67e22e8fd978ead76ab881df323')->willReturn(["you = 'me' AND me = 'foo'", ['1' => 'he']]);
+        $cacheDriver = $cacheDriverProphecy->reveal();
+
+        $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('id')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+        $cachedConditionGenerator = $this->createCachedConditionGenerator($cacheDriver, $searchCondition);
+
+        $searchCondition2 = SearchConditionBuilder::create($this->getFieldSet())
+            ->field('id')
+                ->addSimpleValue(2)
+                ->addSimpleValue(5)
+            ->end()
+        ->getSearchCondition();
+
+        $searchCondition2->setPreCondition(new SearchPreCondition(
+            SearchConditionBuilder::create($this->getFieldSet())
+                ->field('customer')
+                    ->addSimpleValue(2)
+                ->end()
+            ->getSearchCondition()->getValuesGroup())
+        );
+
+        $cachedConditionGenerator2 = $this->createCachedConditionGenerator($cacheDriver, $searchCondition2);
+
+        self::assertEquals("me = 'foo'", $cachedConditionGenerator->getWhereClause());
+        self::assertEquals("you = 'me' AND me = 'foo'", $cachedConditionGenerator2->getWhereClause());
     }
 
     protected function setUp()
@@ -222,5 +262,20 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
 
         $this->cacheDriver = $this->createMock(CacheInterface::class);
         $this->cachedConditionGenerator = new CachedDqlConditionGenerator($this->conditionGenerator, $this->cacheDriver, 60);
+    }
+
+    private function createCachedConditionGenerator(CacheInterface $cacheDriver, SearchCondition $searchCondition): CachedDqlConditionGenerator
+    {
+        $conditionGenerator = $this->getOrmFactory()->createConditionGenerator($this->query, $searchCondition);
+        $conditionGenerator->setDefaultEntity(self::INVOICE_CLASS, 'I');
+        $conditionGenerator->setField('id', 'id', null, null, 'smallint');
+
+        $conditionGenerator->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
+        $conditionGenerator->setField('customer', 'id', null, null, 'integer');
+        $conditionGenerator->setField('customer_name#first_name', 'firstName');
+        $conditionGenerator->setField('customer_name#last_name', 'lastName');
+        $conditionGenerator->setField('customer_birthday', 'birthday');
+
+        return new CachedDqlConditionGenerator($conditionGenerator, $cacheDriver, 60);
     }
 }
