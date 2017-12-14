@@ -37,7 +37,7 @@ interface StrategySupportedConversion
      * @param array           $options Options of the Field configuration
      * @param ConversionHints $hints   Special information for the conversion process
      *
-     * @return null|string|int The determined strategy
+     * @return int The determined strategy
      */
-    public function getConversionStrategy($value, array $options, ConversionHints $hints);
+    public function getConversionStrategy($value, array $options, ConversionHints $hints): int;
 }

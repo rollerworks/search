@@ -163,14 +163,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
         return '%_';
     }
 
-    /**
-     * @param QueryField $mappingConfig
-     * @param string     $column
-     * @param string|int $strategy
-     *
-     * @return ConversionHints
-     */
-    protected function getConversionHints(QueryField $mappingConfig, string $column, $strategy = 0): ConversionHints
+    protected function getConversionHints(QueryField $mappingConfig, string $column, int $strategy = 0): ConversionHints
     {
         $hints = new ConversionHints();
         $hints->field = $mappingConfig;
