@@ -47,7 +47,11 @@ class DateConversion implements ValueConversion, QueryConversion
     }
 
     /**
-     * @inheritdoc
+     * @param string                $propertyName
+     * @param mixed                 $value
+     * @param QueryPreparationHints $hints
+     *
+     * @return array|null
      */
     public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array
     {

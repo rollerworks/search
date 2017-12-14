@@ -1,3 +1,9 @@
+UPGRADE FROM 2.0-ALPHA3 to 2.0-ALPHA8
+=====================================
+
+* `Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion::getConversionStrategy`
+  method not must return an integer. And requires a return-type is set.
+
 UPGRADE FROM 1.x to 2.0
 =======================
 

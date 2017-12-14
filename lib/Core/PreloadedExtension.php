@@ -28,8 +28,8 @@ final class PreloadedExtension implements SearchExtension
     /**
      * Constructor.
      *
-     * @param FieldType[]          $types          The types that the extension should support
-     * @param FieldTypeExtension[] $typeExtensions The type extensions that the extension should support
+     * @param FieldType[] $types          The types that the extension should support
+     * @param array[]     $typeExtensions The type extensions that the extension should support
      */
     public function __construct(array $types, array $typeExtensions = [])
     {

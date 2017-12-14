@@ -404,7 +404,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             }
         }
 
-        return $query;
+        return $query ?? [];
     }
 
     /**

@@ -96,6 +96,7 @@ final class SearchConditionBuilder
     public function field(string $name, bool $forceNew = false): ValuesBagBuilder
     {
         if (!$forceNew && $this->valuesGroup->hasField($name)) {
+            /** @var ValuesBagBuilder $valuesBag */
             $valuesBag = $this->valuesGroup->getField($name);
         } else {
             $valuesBag = new ValuesBagBuilder($this);

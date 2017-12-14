@@ -5,12 +5,68 @@ parameters:
         - */lib/*/Tests/Fixtures/*
         - vendor/
     ignoreErrors:
-        #- '#__construct\(\) does not call parent constructor from .+#'
+        - '#__construct\(\) does not call parent constructor from .+#'
+
+        # ValueHolder guard there own correctness. A ValuesBag never returns a wrong object (collection).
+        - '#expects Rollerworks\\Component\\Search\\Value\\[a-zA-Z]+, Rollerworks\\Component\\Search\\Value\\ValueHolder given#'
+        - '#Call to an undefined method Rollerworks\\Component\\Search\\Value\\ValueHolder\:\:#'
+        - '#expects array<Rollerworks\\Component\\Search\\Value\\[a-z]+>, array<Rollerworks\\Component\\Search\\Value\\ValueHolder> given#i'
 
         # False positive
-        - '#Parameter \$ttl of method Rollerworks\\Component\\Search\\ApiPlatform\\Processor\\NullCache\:\:set#'
+        - '#Call to an undefined method Rollerworks\\Component\\Search\\Field\\FieldConfig\:\:finalizeConfig\(\)#'
+        - '#Call to an undefined method DateTimeInterface\:\:setTimezone\(\)#'
+        - '#Call to an undefined static method Money\\Money\:\:#'
+        - '#Call to an undefined method Exception\:\:getErrors\(\)#'
+        - '#Call to an undefined method object\:\:[a-z]+\(\)#i'
+        - '#Parameter \#\d \$searchCondition of class Rollerworks\\Component\\Search\\ApiPlatform\\SearchConditionEvent constructor expects Rollerworks\\Component\\Search\\SearchCondition\|null, array\|Rollerworks\\Component\\Search\\SearchCondition\|null given#'
+        - '#Strict comparison using [!=]== between (null|string) and (float\|int|string) will always evaluate to (true|false)#'
+        - '#Strict comparison using !== between (false|null) and (array\|true|int) will always evaluate to true#'
+        - '#Parameter \#3 \$previous of class PHPUnit\\Framework\\Exception constructor expects Exception\|null, Throwable given#'
+        - '#Parameter \#1 \$range of static method Rollerworks\\Component\\Search\\Elasticsearch\\QueryConditionGenerator\:\:generateRangeParams\(\)#'
+
+        ## Symony Config
+        - '# Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given#'
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:#'
+
+        ## Doctrine
+        - '#Call to an undefined method Doctrine\\DBAL\\Driver\\Connection\:\:sqliteCreateFunction\(\)#'
+        - '#Parameter \#2 \$type of method Doctrine\\DBAL\\Connection\:\:quote\(\) expects ([^\s]+)#'
+        - "#Casting to string something that's already string#" # cannot fix this yet.
+        - '#Call to an undefined method Rollerworks\\Component\\Search\\Doctrine\\Orm\\ConditionGenerator\:\:get[a-zA-Z]+#'
+        - '#Call to an undefined method Doctrine\\Common\\Persistence\\ObjectManager\:\:getConfiguration\(\)#'
+        - '#Call to an undefined method Doctrine\\Common\\Cache\\Cache\:\:flushAll()#'
+        - '#Parameter \#\d \$(firstResult|maxResults) of method Doctrine\\ORM\\QueryBuilder\:\:(setFirstResult|setMaxResults)\(\)#'
+
+        ## Needs investigation
+        - '#ChoiceView constructor expects string, false|string given#' # I don't know if there is good reason to allow bool here - @sstok
+
+        ## Bug in phpstan
+        - '#Parameter \#1 \$parameters of method Rollerworks\\Component\\Search\\Processor\\AbstractSearchProcessor\:\:getRequestParam\(\) expects array, array\|object\|null given#'
+        - '#Parameter \#\d \$format of method Rollerworks\\Component\\Search\\Processor\\Psr7SearchProcessor\:\:(processInput|exportCondition)\(\) expects ([^,]+), ([^\s]+) given#'
 
         # Tests
-        - '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy::[a-zA-Z0-9_]+\(\)#'
+
+        ## Prophecy
+        - '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy\:\:[a-zA-Z0-9_]+\(\)#'
         #- '#Access to an undefined property Prophecy\\Prophecy\\ObjectProphecy::\$[a-zA-Z0-9_]+#'
-        - '#expects\s+[^\s]+, PHPUnit_Framework_MockObject_MockObject(\[\])? given#'
+        - '#expects ([^,]+), object given#'
+        - '#but returns object#'
+
+        ## Mocks
+        - '#Call to an undefined method PHPUnit\\Framework\\MockObject\\MockObject\:\:#'
+        - '#expects\s+[^\s]+, PHPUnit\\Framework\\MockObject\\MockObject(\[\])* given#'
+        - '#does not accept PHPUnit\\Framework\\MockObject\\MockObject#'
+        - '#but returns PHPUnit\\Framework\\MockObject\\MockObject#'
+#        - '#PHPUnit\Framework\MockObject\MockObject given#'
+        - '#does not accept PHPUnit_Framework_MockObject_MockObject#'
+        - '#array<string, PHPUnit_Framework_MockObject_MockObject> given#'
+        - '#array<string, PHPUnit\\Framework\\MockObject\\MockObject> given#'
+        - '#PHPUnit_Framework_MockObject_MockObject given#'
+
+        ##
+        - '#does not accept Rollerworks\\Component\\Search\\FieldSet\|Rollerworks\\Component\\Search\\GenericFieldSetBuilder#'
+        - '#Parameter \#\d \$fieldSet of class Rollerworks\\Component\\Search\\Input\\ProcessorConfig constructor expects Rollerworks\\Component\\Search\\FieldSet, Rollerworks\\Component\\Search\\FieldSet\|Rollerworks\\Component\\Search\\GenericFieldSetBuilder given#'
+
+        ## Transformations are tested to ensure there input type is valided.
+        - '#\:\:transform\(\) expects [^\s]+, [^\s]+ given#'
+        - '#\:\:reverseTransform\(\) expects [^\s]+, ([^\s]+|array<[^>]+>) given#'

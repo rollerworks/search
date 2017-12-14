@@ -24,8 +24,8 @@ final class IntegerToLocalizedStringTransformer extends NumberToLocalizedStringT
     /**
      * Constructs a transformer.
      *
-     * @param bool $grouping     Whether thousands should be grouped
-     * @param int  $roundingMode One of the ROUND_ constants in this class
+     * @param bool|null $grouping     Whether thousands should be grouped
+     * @param int|null  $roundingMode One of the ROUND_ constants in this class
      */
     public function __construct(bool $grouping = null, ?int $roundingMode = null)
     {

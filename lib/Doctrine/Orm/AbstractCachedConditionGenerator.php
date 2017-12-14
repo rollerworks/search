@@ -67,7 +67,7 @@ abstract class AbstractCachedConditionGenerator implements ConditionGenerator
      *                                                       the driver supports TTL then the library may set a default value
      *                                                       for it or let the driver take care of that.
      */
-    public function __construct(AbstractConditionGenerator $conditionGenerator, Cache $cacheDriver, int $ttl = null)
+    public function __construct(AbstractConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = null)
     {
         $this->conditionGenerator = $conditionGenerator;
         $this->cacheDriver = $cacheDriver;

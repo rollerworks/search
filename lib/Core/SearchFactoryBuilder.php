@@ -40,7 +40,7 @@ final class SearchFactoryBuilder
     private $types = [];
 
     /**
-     * @var @var array<FieldTypeExtensionInterface[]>
+     * @var array
      */
     private $typeExtensions = [];
 

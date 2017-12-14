@@ -85,6 +85,7 @@
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "lib/Doctrine/Dbal/Tests",
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "lib/Doctrine/Orm/Tests",
             "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "lib/Symfony/SearchBundle/Tests",
+            "ApiPlatform\\Core\\Tests\\": "vendor/api-platform/core/tests",
             "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
     },

@@ -47,9 +47,9 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @see \DateTime::format() for supported formats
      *
-     * @param string $inputTimezone  The name of the input timezone
-     * @param string $outputTimezone The name of the output timezone
-     * @param string $format         The date format
+     * @param string|null $inputTimezone
+     * @param string|null $outputTimezone
+     * @param string $format
      *
      * @throws UnexpectedTypeException if a timezone is not a string
      */
@@ -76,7 +76,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      * Transforms a DateTime object into a date string with the configured format
      * and timezone.
      *
-     * @param \DateTime $value A DateTime object
+     * @param \DateTimeInterface|null $value A DateTime object
      *
      * @throws TransformationFailedException If the given value is not a \DateTime
      *                                       instance or if the output timezone
@@ -110,7 +110,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a date string in the configured timezone into a DateTime object.
      *
-     * @param string $value A value as produced by PHP's date() function
+     * @param string|null $value A value as produced by PHP's date() function
      *
      * @throws TransformationFailedException If the given value is not a string,
      *                                       if the date could not be parsed or

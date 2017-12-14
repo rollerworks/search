@@ -24,7 +24,7 @@ use Rollerworks\Component\Search\SearchConditionOptimizer;
 final class ChainOptimizer implements SearchConditionOptimizer
 {
     /**
-     * @var array<SearchConditionOptimizerInterface[]>
+     * @var array<SearchConditionOptimizer[]>
      */
     private $optimizers = [];
 

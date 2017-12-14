@@ -43,7 +43,7 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
     /**
      * Transforms a normalized format into a localized money string.
      *
-     * @param MoneyValue $value Normalized number
+     * @param MoneyValue|null $value Normalized number
      *
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed

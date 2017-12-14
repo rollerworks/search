@@ -30,17 +30,17 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     /**
      * Shared connection when a TestCase is run alone (outside of it's functional suite).
      *
-     * @var \Doctrine\DBAL\Connection
+     * @var \Doctrine\DBAL\Connection|null
      */
     private static $sharedConn;
 
     /**
-     * @var \Doctrine\DBAL\Connection
+     * @var \Doctrine\DBAL\Connection|null
      */
     protected $conn;
 
     /**
-     * @var \Doctrine\DBAL\Logging\DebugStack
+     * @var \Doctrine\DBAL\Logging\DebugStack|null
      */
     protected $sqlLoggerStack;
 

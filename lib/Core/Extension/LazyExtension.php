@@ -37,9 +37,9 @@ final class LazyExtension implements SearchExtension
      * Constructor.
      *
      * @param ContainerInterface $typeContainer
-     * @param iterable[]         $typeExtensions
+     * @param array[]            $typeExtensions
      */
-    public function __construct(ContainerInterface $typeContainer, iterable $typeExtensions)
+    public function __construct(ContainerInterface $typeContainer, array $typeExtensions)
     {
         $this->typeContainer = $typeContainer;
         $this->typeExtensionServices = $typeExtensions;
@@ -48,12 +48,12 @@ final class LazyExtension implements SearchExtension
     /**
      * Creates a new LazyExtension with easy factories for lazy loading.
      *
-     * @param iterable   $types          FQCN => \Closure factory
-     * @param iterable[] $typeExtensions
+     * @param array   $types          FQCN => \Closure factory
+     * @param array[] $typeExtensions
      *
      * @return LazyExtension
      */
-    public static function create(iterable $types, iterable $typeExtensions = []): LazyExtension
+    public static function create(array $types, array $typeExtensions = []): LazyExtension
     {
         return new self(new ClosureContainer($types), $typeExtensions);
     }

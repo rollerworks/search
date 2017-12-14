@@ -5,6 +5,11 @@ UPGRADE FROM 2.0-ALPHA5 to 2.0-ALPHA8
 
 * The `Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener`
   now requires an `EventDispatchInterface` instance as last argument.
+  
+## Doctrine DBAL
+
+* `Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion::getConversionStrategy`
+  method not must return an integer. And requires a return-type is set.
 
 UPGRADE FROM 2.0-ALPHA2 to 2.0-ALPHA5
 =====================================

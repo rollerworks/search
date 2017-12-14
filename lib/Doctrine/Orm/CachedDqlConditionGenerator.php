@@ -64,7 +64,7 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator
      *                                                   the driver supports TTL then the library may set a default value
      *                                                   for it or let the driver take care of that.
      */
-    public function __construct(DqlConditionGenerator $conditionGenerator, Cache $cacheDriver, int $ttl = null)
+    public function __construct(DqlConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = null)
     {
         parent::__construct($conditionGenerator, $cacheDriver, $ttl);
 

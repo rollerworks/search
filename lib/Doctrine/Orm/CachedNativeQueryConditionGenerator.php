@@ -50,7 +50,7 @@ class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerat
      *                                                          the driver supports TTL then the library may set a default value
      *                                                          for it or let the driver take care of that.
      */
-    public function __construct(NativeQueryConditionGenerator $conditionGenerator, Cache $cacheDriver, int $ttl = null)
+    public function __construct(NativeQueryConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = null)
     {
         parent::__construct($conditionGenerator, $cacheDriver, $ttl);
 

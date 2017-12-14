@@ -79,7 +79,10 @@ final class Psr7SearchProcessor extends AbstractSearchProcessor
         }
 
         if (0 === strcasecmp($request->getMethod(), 'POST')) {
-            $parameters = $request->getParsedBody();
+            if (!is_array($parameters = $request->getParsedBody())) {
+                $parameters = [];
+            }
+
             $format = $this->getRequestParam($parameters, $config, 'format', $config->getDefaultFormat());
             $input = $this->getRequestParam($parameters, $config, 'search');
 
@@ -124,7 +127,7 @@ final class Psr7SearchProcessor extends AbstractSearchProcessor
         $payload->exportedFormat = null;
         $payload->messages = [];
 
-        if (null === $input || '' === $input || (is_array($input) && [] === $input)) {
+        if (null === $input || (is_string($input) && '' === trim($input)) || (is_array($input) && [] === $input)) {
             return;
         }
 

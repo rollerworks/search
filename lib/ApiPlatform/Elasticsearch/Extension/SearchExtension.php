@@ -63,7 +63,6 @@ class SearchExtension implements QueryCollectionExtensionInterface
             return;
         }
 
-        /** @var String[][] $configuration */
         $configuration = (array) $configuration['elasticsearch'];
         ArrayKeysValidator::assertOnlyKeys($configuration, ['mappings', 'identifiers_normalizer'], $configPath);
 
