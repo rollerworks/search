@@ -12,7 +12,7 @@ branches:
 matrix:
     include:
         - php: '7.1'
-          env: coverage=1 # lint=1
+          env: coverage=1 lint=1
         - php: '7.1'
           env: deps='low'
         - php: '7.1'
@@ -46,7 +46,7 @@ install:
 
 script:
     - if [[ $coverage = 1 ]]; then make test-coverage; else make test; fi
-    - if [[ $lint = 1 ]]; then make lint; fi
+    - if [[ $lint = 1 ]]; then make phpstan; fi
 
 after_success:
     - if [[ $coverage = 1 ]]; then travis_retry php coveralls.phar --coverage_clover build/logs/clover.xml; fi
