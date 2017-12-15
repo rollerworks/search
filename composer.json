@@ -40,7 +40,7 @@
         "symfony/dom-crawler": "^3.2.4 || ^4.0",
         "symfony/framework-bundle": "^3.3 || ^4.0",
         "symfony/http-foundation": "^3.2.6 || ^4.0",
-        "symfony/phpunit-bridge": "^3.3.6 || ^4.0",
+        "symfony/phpunit-bridge": "^3.4 || ^4.0",
         "symfony/psr-http-message-bridge": "^1.0",
         "symfony/routing": "^3.2.4 || ^4.0",
         "symfony/templating": "^3.2.4 || ^4.0",

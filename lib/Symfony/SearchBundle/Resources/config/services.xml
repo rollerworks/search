@@ -41,6 +41,7 @@
             <argument type="service" id="rollerworks_search.fieldset_registry" />
             <argument type="service" id="rollerworks_search.condition_optimizer" />
         </service>
+        <service id="Rollerworks\Component\Search\SearchFactory" alias="rollerworks_search.factory" />
 
         <!-- LazyExtension -->
         <service id="rollerworks_search.extension" class="Rollerworks\Component\Search\Extension\LazyExtension">
