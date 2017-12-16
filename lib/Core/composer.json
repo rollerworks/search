@@ -17,16 +17,16 @@
     ],
     "require": {
         "php": "^7.1",
-        "symfony/options-resolver": "^3.3.6 || ^4.0",
-        "symfony/property-access": "^3.3.6 || ^4.0",
-        "symfony/intl": "^3.3.6 || ^4.0",
+        "symfony/options-resolver": "^3.4.2 || ^4.0",
+        "symfony/property-access": "^3.4.2 || ^4.0",
+        "symfony/intl": "^3.4.2 || ^4.0",
         "psr/container": "^1.0.0"
     },
     "require-dev": {
-        "moneyphp/money": "^3.0.0",
-        "phpunit/phpunit": "^6.2.4",
-        "symfony/phpunit-bridge": "^3.3.6 || ^4.0",
-        "symfony/var-dumper": "^3.2.1 || ^4.0"
+        "moneyphp/money": "^3.0.9",
+        "phpunit/phpunit": "^6.5.4",
+        "symfony/phpunit-bridge": "^3.4.2 || ^4.0",
+        "symfony/var-dumper": "^3.4.2 || ^4.0"
     },
     "suggest": {
         "moneyphp/money": "To use the MoneyType"
