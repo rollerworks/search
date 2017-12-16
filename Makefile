@@ -67,18 +67,16 @@ in-docker-install-lowest:
 	composer update --no-progress --no-suggest --prefer-stable --prefer-lowest --optimize-autoloader --ansi
 
 in-docker-test:
-	export SYMFONY_DEPRECATIONS_HELPER=strict
-	vendor/bin/phpunit --verbose
-	vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml
-	vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml
-	vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml
+	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose
+	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml
+	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml
+	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml
 
 in-docker-test-coverage:
-	export SYMFONY_DEPRECATIONS_HELPER=strict
-	phpdbg -qrr vendor/bin/phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov
-	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
-	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
-	phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
+	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov
+	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
+	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
+	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
 
 .PHONY: install install-dev install-lowest phpstan cs cs-full cs-full-checks docker-up down-down
 .PHONY: in-docker-install in-docker-install-dev in-docker-install-lowest in-docker-test in-docker-test-coverage
