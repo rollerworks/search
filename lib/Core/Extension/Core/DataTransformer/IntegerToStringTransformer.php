@@ -24,7 +24,7 @@ final class IntegerToStringTransformer extends NumberToStringTransformer
     /**
      * Constructs a transformer.
      *
-     * @param int $roundingMode One of the ROUND_ constants in this class
+     * @param int|null $roundingMode One of the ROUND_ constants in this class
      */
     public function __construct(int $roundingMode = null)
     {

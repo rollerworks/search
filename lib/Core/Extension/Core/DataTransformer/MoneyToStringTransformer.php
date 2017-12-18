@@ -39,7 +39,7 @@ final class MoneyToStringTransformer implements DataTransformer
     /**
      * Transforms a normalized format into a localized money string.
      *
-     * @param MoneyValue $value Normalized number
+     * @param MoneyValue|null $value Normalized number
      *
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed
@@ -70,7 +70,7 @@ final class MoneyToStringTransformer implements DataTransformer
     /**
      * Transforms a localized money string into a normalized format.
      *
-     * @param string $value Localized money string
+     * @param string|null $value Localized money string
      *
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed

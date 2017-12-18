@@ -38,7 +38,7 @@ final class CachedConditionGenerator implements ConditionGenerator
     private $cacheDriver;
 
     /**
-     * @var int
+     * @var null|int|\DateInterval
      */
     private $cacheLifeTime;
 

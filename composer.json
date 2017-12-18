@@ -32,6 +32,7 @@
         "matthiasnoback/symfony-service-definition-validator": "^1.2.8",
         "moneyphp/money": "^3.0.9",
         "phpunit/phpunit": "^6.5.4",
+        "phpunit/phpunit-mock-objects": "^5.0",
         "psr/simple-cache": "^1.0.0",
         "rollerworks/uri-encoder": "^1.1.0 || ^2.0",
         "ruflin/elastica": "^3.2",
@@ -85,6 +86,7 @@
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "lib/Doctrine/Dbal/Tests",
             "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Orm\\": "lib/Doctrine/Orm/Tests",
             "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "lib/Symfony/SearchBundle/Tests",
+            "ApiPlatform\\Core\\Tests\\": "vendor/api-platform/core/tests",
             "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
     },

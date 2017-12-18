@@ -35,7 +35,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
     /**
      * Transforms a number type into localized number.
      *
-     * @param int|float|null $value Number value
+     * @param int|float|string|null $value Number value
      *
      * @throws TransformationFailedException If the given value is not numeric
      *                                       or if the value can not be transformed
@@ -73,7 +73,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
      * @throws TransformationFailedException if the given value is not a string
      *                                       or if the value can not be transformed
      *
-     * @return int|float The numeric value
+     * @return int|float|null The numeric value
      */
     public function reverseTransform($value)
     {

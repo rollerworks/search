@@ -29,27 +29,16 @@ final class PatternMatch implements ValueHolder
     public const PATTERN_EQUALS = 'EQUALS';
     public const PATTERN_NOT_EQUALS = 'NOT_EQUALS';
 
-    /**
-     * @var string
-     */
     private $value;
-
-    /**
-     * @var string
-     */
     private $patternType;
-
-    /**
-     * @var bool
-     */
     private $caseInsensitive;
 
     /**
      * Constructor.
      *
-     * @param string     $value
-     * @param int|string $patternType
-     * @param bool       $caseInsensitive
+     * @param string $value
+     * @param string $patternType
+     * @param bool   $caseInsensitive
      *
      * @throws \InvalidArgumentException When the pattern-match type is invalid
      */

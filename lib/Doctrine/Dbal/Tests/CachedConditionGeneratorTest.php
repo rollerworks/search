@@ -39,7 +39,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
     private $cacheDriver;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|SqlConditionGenerator
      */
     private $conditionGenerator;
 

@@ -40,12 +40,6 @@ abstract class BaseDateTimeTransformer implements DataTransformer
         \IntlDateFormatter::SHORT,
     ];
 
-    /**
-     * Constructor.
-     *
-     * @param string|null $inputTimezone  The name of the input timezone
-     * @param string|null $outputTimezone The name of the output timezone
-     */
     public function __construct(?string $inputTimezone = null, ?string $outputTimezone = null)
     {
         $this->inputTimezone = $inputTimezone ?? date_default_timezone_get();

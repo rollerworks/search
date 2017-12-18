@@ -57,7 +57,7 @@ class SearchCondition
      * Checks that the FieldSet of this condition is supported
      * by the contexts it's used in.
      *
-     * @param \string[] ...$name One or more FieldSet names to check for
+     * @param string ...$name One or more FieldSet names to check for
      */
     public function assertFieldSetName(string ...$name)
     {

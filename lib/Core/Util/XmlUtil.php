@@ -22,106 +22,62 @@ namespace Rollerworks\Component\Search\Util;
  * @author Martin Hasoň <martin.hason@gmail.com>
  *
  * @see https://raw.github.com/symfony/symfony/master/src/Symfony/Component/Config/Util/XmlUtils.php
+ *
+ * @internal
  */
 final class XmlUtil
 {
     /**
-     * Loads an XML file.
-     *
-     * @param string          $file             An XML file path
-     * @param string|callable $schemaOrCallable An XSD schema file path or callable
-     *
-     * @throws \InvalidArgumentException When loading of XML file returns error
-     *
-     * @return \DOMDocument
-     */
-    public static function loadFile(string $file, $schemaOrCallable = null): \DOMDocument
-    {
-        return static::parseXml(
-            file_get_contents($file),
-            $schemaOrCallable,
-            sprintf('The XML file "%s" is not valid.', $file)
-        );
-    }
-
-    /**
      * Parses an XML document.
      *
-     * @param string          $content          An XML document as string
-     * @param string|callable $schemaOrCallable An XSD schema file path or callable
-     * @param string          $defaultMessage
+     * @param string      $content        An XML document as string
+     * @param string|null $schema         An XSD schema file path
+     * @param string      $defaultMessage
      *
      * @throws \InvalidArgumentException When loading of XML document returns an error
      *
      * @return \DOMDocument
      */
-    public static function parseXml(string $content, $schemaOrCallable = null, string $defaultMessage = 'The XML file is not valid.'): \DOMDocument
+    public static function parseXml(string $content, string $schema = null, string $defaultMessage = 'The XML file is not valid.'): \DOMDocument
     {
         $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
         libxml_clear_errors();
 
-        $dom = new \DOMDocument();
-        $dom->validateOnParse = true;
+        try {
+            $dom = new \DOMDocument();
+            $dom->validateOnParse = true;
 
-        if (!$dom->loadXML($content, LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
-            libxml_disable_entity_loader($disableEntities);
-
-            throw new \InvalidArgumentException(
-                implode("\n", static::getXmlErrors($internalErrors))
-            );
-        }
-
-        $dom->normalizeDocument();
-
-        libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
-
-        foreach ($dom->childNodes as $child) {
-            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
-                throw new \InvalidArgumentException('Document types are not allowed.');
+            if (!$dom->loadXML($content, LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
+                throw new \InvalidArgumentException(implode("\n", static::getXmlErrors()));
             }
-        }
 
-        if (null !== $schemaOrCallable) {
-            $internalErrors = libxml_use_internal_errors(true);
+            $dom->normalizeDocument();
+
+            foreach ($dom->childNodes as $child) {
+                if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
+                    throw new \InvalidArgumentException('Document types are not allowed.');
+                }
+            }
+
+            if (null !== $schema) {
+                // Allow to schema validator to load the DTD of the XSD schema
+                libxml_disable_entity_loader(false);
+
+                if (!@$dom->schemaValidate($schema)) {
+                    throw new \InvalidArgumentException(implode("\n", static::getXmlErrors() ?? [$defaultMessage]));
+                }
+            }
+        } finally {
             libxml_clear_errors();
-
-            $e = null;
-
-            if (is_callable($schemaOrCallable)) {
-                try {
-                    $valid = call_user_func($schemaOrCallable, $dom, $internalErrors);
-                } catch (\Exception $e) {
-                    $valid = false;
-                }
-            } elseif (!is_array($schemaOrCallable) && is_file($schemaOrCallable)) {
-                $valid = @$dom->schemaValidate($schemaOrCallable);
-            } else {
-                libxml_use_internal_errors($internalErrors);
-
-                throw new \InvalidArgumentException(
-                    'The schemaOrCallable argument has to be a valid path to XSD file or callable.'
-                );
-            }
-
-            if (!$valid) {
-                $messages = static::getXmlErrors($internalErrors);
-
-                if (0 === count($messages)) {
-                    $messages = [$defaultMessage];
-                }
-
-                throw new \InvalidArgumentException(implode("\n", $messages), 0, $e);
-            }
-
             libxml_use_internal_errors($internalErrors);
+            libxml_disable_entity_loader($disableEntities);
         }
 
         return $dom;
     }
 
-    private static function getXmlErrors(bool $internalErrors): array
+    private static function getXmlErrors(): array
     {
         $errors = [];
 
@@ -136,9 +92,6 @@ final class XmlUtil
                 $error->column
             );
         }
-
-        libxml_clear_errors();
-        libxml_use_internal_errors($internalErrors);
 
         return $errors;
     }

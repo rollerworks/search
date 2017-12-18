@@ -39,7 +39,7 @@ abstract class AbstractInput implements InputProcessor
      *
      * @var ConditionErrorMessage[]|ErrorList
      */
-    protected $errors = [];
+    protected $errors;
 
     /**
      * Current nesting level.

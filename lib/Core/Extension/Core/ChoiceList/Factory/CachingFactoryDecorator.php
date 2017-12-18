@@ -151,8 +151,8 @@ final class CachingFactoryDecorator implements ChoiceListFactory
     /**
      * Flattens an array into the given output variable.
      *
-     * @param array $array  The array to flatten
-     * @param array $output The flattened output
+     * @param array      $array  The array to flatten
+     * @param array|null $output The flattened output
      */
     private static function flatten(array $array, &$output): void
     {
