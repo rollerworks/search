@@ -1,0 +1,52 @@
+---------------------------------------------------------------------------
+
+by sstok at 2017-12-10T08:28:59Z
+
+Giving it a night's sleep I think moving forward with only the NormStringQuery and not using Array anymore for the ApiProcessor is the best way. Array is very verbose and requires the Core component in order to compose a query (which is not very developer friendly for the client).
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-12-10T13:09:24Z
+
+@dkarlovi Do you agree this new input processor is better then using array/json for the ApiPlatform?
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-12-10T14:03:14Z
+
+I do, but I see value in having a "structure" as a payload too. Basically, string version is much better for simple cases, but the structure is easier to parse/generate for a 3rd party API client (say, Javascript or Python) if you do not provide an API / parser in that language. This might maybe be somewhat avoided by #185.
+
+I think it's OK to offer both, as suggested in #176.
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-12-10T14:20:59Z
+
+The Psr7Processor allows to specify a desired format, maybe we can add support for this instead of assuming a format 🤔 this would also allow for custom formats.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2017-12-14T09:44:37Z
+
+It would make sense to look at this from the developer's and the user's side of things.
+
+Use cases:
+1) developers providing the search feature (search engine) - DX
+2) developers consuming the search feature (search client) - DX
+3) users consuming the search feature (using the search client) - UX
+
+So, if you wish to develop a search client, what are your use cases in 3? It might be a simple text input, it might be a advanced mega-form with checkboxes, dropdowns, etc.
+
+If it's a simple input, how do we make it the most user friendly for the end user (which is expected to type something in)? - UX
+
+If it's a mega-form, how do we expect the developer in 2) to develop transformation of the form to a search condition and vice-versa? - DX
+
+If we wish to support developer in 1) to support both 2) and 3), what are the tools needed? - DX
+
+IMO it's a complex subject and, solving this well, this library might become quite respectable in the target use space.
+
+---------------------------------------------------------------------------
+
+by sstok at 2017-12-20T15:22:10Z
+
+The ApiProcessor now allows any format (configurable using `search-format` query-string URI parameter), still defaults to NormStringQuery which is the least verbose format.
