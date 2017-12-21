@@ -19,7 +19,6 @@ use Rollerworks\Component\Search\Doctrine\Dbal\CachedConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\SqlConditionGenerator;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -288,7 +287,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         $conditionGenerator = $this->prophesize(ConditionGenerator::class);
         $conditionGenerator->getWhereClause()->willReturn($query);
         $conditionGenerator->getFieldsMapping()->willReturn([
-            'id' => [new QueryField('id', $searchCondition->getFieldSet()->get('id'), Type::getType('integer'), 'id', 'i')]
+            'id' => [new QueryField('id', $searchCondition->getFieldSet()->get('id'), Type::getType('integer'), 'id', 'i')],
         ]);
         $conditionGenerator->getSearchCondition()->willReturn($searchCondition);
 
