@@ -64,7 +64,7 @@ class CachedConditionGenerator implements ConditionGenerator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function registerField(string $fieldName, string $mapping)
     {
@@ -72,7 +72,7 @@ class CachedConditionGenerator implements ConditionGenerator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
@@ -92,7 +92,7 @@ class CachedConditionGenerator implements ConditionGenerator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
@@ -102,7 +102,7 @@ class CachedConditionGenerator implements ConditionGenerator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getSearchCondition(): SearchCondition
     {

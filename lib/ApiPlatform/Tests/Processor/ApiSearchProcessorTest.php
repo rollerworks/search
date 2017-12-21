@@ -201,7 +201,6 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
         );
     }
 
-
     public function testSearchCodeOnlyAcceptsArray()
     {
         $config = new ProcessorConfig($this->fieldSet);

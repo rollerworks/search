@@ -43,7 +43,7 @@ final class SearchConditionBuilder
      *
      * @return SearchConditionBuilder
      */
-    public static function create(FieldSet $fieldSet, string $logical = ValuesGroup::GROUP_LOGICAL_AND): SearchConditionBuilder
+    public static function create(FieldSet $fieldSet, string $logical = ValuesGroup::GROUP_LOGICAL_AND): self
     {
         return new self($logical, $fieldSet);
     }
@@ -64,7 +64,7 @@ final class SearchConditionBuilder
      *
      * @return SearchConditionBuilder
      */
-    public function group(string $logical = ValuesGroup::GROUP_LOGICAL_AND): SearchConditionBuilder
+    public function group(string $logical = ValuesGroup::GROUP_LOGICAL_AND): self
     {
         $builder = new self($logical, $this->fieldSet, $this);
         $this->valuesGroup->addGroup($builder->getGroup());
@@ -106,7 +106,7 @@ final class SearchConditionBuilder
         return $valuesBag;
     }
 
-    public function end(): SearchConditionBuilder
+    public function end(): self
     {
         return $this->parent ?? $this;
     }
@@ -138,7 +138,7 @@ final class SearchConditionBuilder
         return new SearchCondition($this->fieldSet, $rootValuesGroup);
     }
 
-    private function __construct(string $logical, FieldSet $fieldSet, SearchConditionBuilder $parent = null)
+    private function __construct(string $logical, FieldSet $fieldSet, self $parent = null)
     {
         $this->valuesGroup = new ValuesGroup($logical);
         $this->parent = $parent;

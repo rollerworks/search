@@ -59,7 +59,7 @@ class ValuesGroup implements \Serializable
      *
      * @return self
      */
-    public function addGroup(ValuesGroup $group)
+    public function addGroup(self $group)
     {
         $this->groups[] = $group;
 
@@ -81,7 +81,7 @@ class ValuesGroup implements \Serializable
      *
      * @return ValuesGroup
      */
-    public function getGroup(int $index): ValuesGroup
+    public function getGroup(int $index): self
     {
         if (!isset($this->groups[$index])) {
             throw new InvalidArgumentException(

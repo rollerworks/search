@@ -49,7 +49,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @param string|null $inputTimezone
      * @param string|null $outputTimezone
-     * @param string $format
+     * @param string      $format
      *
      * @throws UnexpectedTypeException if a timezone is not a string
      */

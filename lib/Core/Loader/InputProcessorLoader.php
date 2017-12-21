@@ -49,7 +49,7 @@ final class InputProcessorLoader
      *
      * @return InputProcessorLoader
      */
-    public static function create(Input\Validator $validator = null): InputProcessorLoader
+    public static function create(Input\Validator $validator = null): self
     {
         return new self(
             new ClosureContainer(

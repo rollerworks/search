@@ -104,7 +104,7 @@ final class FieldMapping implements \Serializable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function serialize()
     {
@@ -120,7 +120,7 @@ final class FieldMapping implements \Serializable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function unserialize($serialized): void
     {

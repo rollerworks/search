@@ -37,7 +37,7 @@ class DateConversion implements ValueConversion, QueryConversion
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @throws \Rollerworks\Component\Search\Exception\TransformationFailedException
      */
@@ -71,7 +71,7 @@ class DateConversion implements ValueConversion, QueryConversion
                 /** @var Compare $value */
                 $operator = Generator::translateComparison($value->getOperator());
                 $query = [
-                    Generator::QUERY_RANGE => [$propertyName => [$operator => $value->getValue()]]
+                    Generator::QUERY_RANGE => [$propertyName => [$operator => $value->getValue()]],
                 ];
                 break;
             default:

@@ -40,7 +40,7 @@ class ProcessorConfig extends \Rollerworks\Component\Search\Input\ProcessorConfi
      *
      * @return ProcessorConfig
      */
-    public function setRequestPrefix(string $requestPrefix = null): ProcessorConfig
+    public function setRequestPrefix(string $requestPrefix = null): self
     {
         $this->requestPrefix = $requestPrefix;
 
@@ -62,7 +62,7 @@ class ProcessorConfig extends \Rollerworks\Component\Search\Input\ProcessorConfi
      *
      * @return ProcessorConfig
      */
-    public function setExportFormat(?string $exportFormat = null): ProcessorConfig
+    public function setExportFormat(?string $exportFormat = null): self
     {
         $this->exportFormat = $exportFormat;
 
@@ -90,7 +90,7 @@ class ProcessorConfig extends \Rollerworks\Component\Search\Input\ProcessorConfi
      *
      * @return ProcessorConfig
      */
-    public function setCacheTTL(int $cacheTTL): ProcessorConfig
+    public function setCacheTTL(int $cacheTTL): self
     {
         $this->cacheTTL = $cacheTTL;
 

@@ -63,7 +63,7 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
      *
      * @return LazyFieldSetRegistry
      */
-    public static function create(array $configurators = []): LazyFieldSetRegistry
+    public static function create(array $configurators = []): self
     {
         $names = array_keys($configurators);
 
