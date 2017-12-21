@@ -48,7 +48,7 @@ final class SearchConditionListener
      * Constructor.
      *
      * @param SearchFactory            $searchFactory
-     * @param SearchProcessor          $searchProcessor ApiSearchProcessor instance
+     * @param SearchProcessor          $searchProcessor         ApiSearchProcessor instance
      * @param UrlGeneratorInterface    $urlGenerator
      * @param ResourceMetadataFactory  $resourceMetadataFactory
      * @param EventDispatcherInterface $eventDispatcher

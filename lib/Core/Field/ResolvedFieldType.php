@@ -26,7 +26,7 @@ interface ResolvedFieldType
      *
      * @return ResolvedFieldType|null
      */
-    public function getParent(): ?ResolvedFieldType;
+    public function getParent(): ?self;
 
     /**
      * Returns the wrapped field type.

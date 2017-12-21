@@ -15,16 +15,9 @@ namespace Rollerworks\Component\Search\Tests\Exporter;
 
 use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\NormStringQueryExporter;
-use Rollerworks\Component\Search\Exporter\StringQueryExporter;
-use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Input\NormStringQueryInput;
-use Rollerworks\Component\Search\Input\ProcessorConfig;
-use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\InputProcessor;
-use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
-use Rollerworks\Component\Search\Value\ValuesBag;
-use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @internal

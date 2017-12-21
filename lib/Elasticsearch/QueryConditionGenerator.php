@@ -75,7 +75,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function registerField(string $fieldName, string $mapping)
     {
@@ -95,7 +95,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getQuery(): ?array
     {
@@ -109,7 +109,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getMappings(): array
     {
@@ -125,7 +125,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getSearchCondition(): SearchCondition
     {
@@ -178,6 +178,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 $mappings[$fieldName] = $this->mappings[$fieldName];
             }
         }
+
         return $mappings;
     }
 

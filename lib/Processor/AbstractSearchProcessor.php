@@ -48,7 +48,7 @@ abstract class AbstractSearchProcessor implements SearchProcessor
      * @param ProcessorConfig   $config
      * @param string            $name
      * @param string|array|null $default
-     * @param string            $type    Eg. string or array
+     * @param string            $type       Eg. string or array
      *
      * @return array|null|string
      */

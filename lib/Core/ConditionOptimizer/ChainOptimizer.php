@@ -34,7 +34,7 @@ final class ChainOptimizer implements SearchConditionOptimizer
      *
      * @return ChainOptimizer
      */
-    public static function create(): ChainOptimizer
+    public static function create(): self
     {
         $optimizer = new self();
         $optimizer->addOptimizer(new DuplicateRemover());

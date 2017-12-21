@@ -13,17 +13,15 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Input;
 
-use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
-use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-use Rollerworks\Component\Search\Input\ProcessorConfig;
-use Rollerworks\Component\Search\Input\NormStringQueryInput;
-use Rollerworks\Component\Search\SearchCondition;
-
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
+use Rollerworks\Component\Search\Input\NormStringQueryInput;
+use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;

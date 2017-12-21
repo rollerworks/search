@@ -38,8 +38,8 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      * @param string|null $outputTimezone
      * @param int|null    $dateFormat
      * @param int|null    $timeFormat
-     * @param int         $calendar One of the \IntlDateFormatter calendar constants
-     * @param string      $pattern  A pattern to pass to \IntlDateFormatter
+     * @param int         $calendar       One of the \IntlDateFormatter calendar constants
+     * @param string      $pattern        A pattern to pass to \IntlDateFormatter
      *
      * @throws UnexpectedTypeException If a format is not supported or if a timezone is not a string
      */

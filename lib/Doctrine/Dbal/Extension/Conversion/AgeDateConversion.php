@@ -84,7 +84,7 @@ class AgeDateConversion implements StrategySupportedConversion, ColumnConversion
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @return string|int
      */

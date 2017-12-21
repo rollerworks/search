@@ -36,7 +36,7 @@ interface ValueConversion
      * @param array           $options Options of the Field configuration
      * @param ConversionHints $hints   Special information for the conversion process
      *
-     * @return string String or any value that can be used in a string
+     * @return string|int|float String or any value that can be used in a string
      */
     public function convertValue($value, array $options, ConversionHints $hints);
 }

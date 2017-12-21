@@ -13,17 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Input;
 
-use Rollerworks\Component\Search\ErrorList;
-use Rollerworks\Component\Search\Exception\InputProcessorException;
-use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
-use Rollerworks\Component\Search\Exception\StringLexerException;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\Exception\UnknownFieldException;
-use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value\ValuesBag;
-use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * NormStringQueryInput - processes input in the StringInput syntax

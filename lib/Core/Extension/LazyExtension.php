@@ -53,7 +53,7 @@ final class LazyExtension implements SearchExtension
      *
      * @return LazyExtension
      */
-    public static function create(array $types, array $typeExtensions = []): LazyExtension
+    public static function create(array $types, array $typeExtensions = []): self
     {
         return new self(new ClosureContainer($types), $typeExtensions);
     }

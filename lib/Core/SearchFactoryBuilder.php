@@ -89,7 +89,7 @@ final class SearchFactoryBuilder
      *
      * @return SearchFactoryBuilder
      */
-    public function setFieldSetRegistry(FieldSetRegistry $fieldSetRegistry): SearchFactoryBuilder
+    public function setFieldSetRegistry(FieldSetRegistry $fieldSetRegistry): self
     {
         $this->fieldSetRegistry = $fieldSetRegistry;
 
