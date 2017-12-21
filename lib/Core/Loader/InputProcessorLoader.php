@@ -66,6 +66,9 @@ final class InputProcessorLoader
                     'rollerworks_search.input.string_query' => function () use ($validator) {
                         return new Input\StringQueryInput($validator);
                     },
+                    'rollerworks_search.input.norm_string_query' => function () use ($validator) {
+                        return new Input\NormStringQueryInput($validator);
+                    },
                 ]
             ),
             [
@@ -73,6 +76,7 @@ final class InputProcessorLoader
                 'json' => 'rollerworks_search.input.json',
                 'xml' => 'rollerworks_search.input.xml',
                 'string_query' => 'rollerworks_search.input.string_query',
+                'norm_string_query' => 'rollerworks_search.input.norm_string_query',
             ]
         );
     }
