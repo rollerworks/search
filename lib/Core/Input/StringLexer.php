@@ -17,8 +17,6 @@ use Rollerworks\Component\Search\Exception\StringLexerException;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- *
- * @internal
  */
 final class StringLexer
 {
@@ -29,6 +27,7 @@ final class StringLexer
     public const COMPARE = 'compare';
     public const RANGE = 'range';
 
+    private $valueLexers;
     private $data;
     private $cursor;
     private $char;
@@ -39,9 +38,16 @@ final class StringLexer
     private $cursorSnapshot;
     private $charSnapshot;
 
-    public function parse(string $data): void
+    /**
+     * @internal
+     *
+     * @param string     $data
+     * @param \Closure[] $fieldLexers
+     */
+    public function parse(string $data, array $fieldLexers = []): void
     {
         $this->data = str_replace(["\r\n", "\r"], "\n", $data);
+        $this->valueLexers = $fieldLexers;
         $this->end = strlen($this->data);
         $this->lineno = 1;
         $this->cursor = 0;
@@ -50,6 +56,9 @@ final class StringLexer
         $this->skipEmptyLines();
     }
 
+    /**
+     * Skip any form of whitespace (except for empty lines).
+     */
     public function skipWhitespace(): void
     {
         if (preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
@@ -58,6 +67,9 @@ final class StringLexer
         }
     }
 
+    /**
+     * Skip any form of whitespace (including for empty lines).
+     */
     public function skipEmptyLines(): void
     {
         if (preg_match('/(?:\s*+)++/A', $this->data, $match, 0, $this->cursor)) {
@@ -72,8 +84,12 @@ final class StringLexer
         $this->char += mb_strlen($text);
     }
 
-    public function snapshot(): void
+    public function snapshot($force = false): void
     {
+        if (!$force && null !== $this->charSnapshot) {
+            return;
+        }
+
         $this->linenoSnapshot = $this->lineno;
         $this->cursorSnapshot = $this->cursor;
         $this->charSnapshot = $this->char;
@@ -99,6 +115,16 @@ final class StringLexer
         return null !== $this->regexOrSingleChar($data);
     }
 
+    /**
+     * Matches that the current position the $data attribute matches
+     * and moves the cursor _only_ when there is a positive match.
+     *
+     * If there is no match the cursor is left at the current position.
+     *
+     * @param string $data A single character or a fully specified regex (with delimiters and options)
+     *
+     * @return null|string The matched result or null when not matched
+     */
     public function matchOptional(string $data): ?string
     {
         $match = $this->regexOrSingleChar($data);
@@ -113,7 +139,21 @@ final class StringLexer
         return null;
     }
 
-    public function expects(string $data, $expected = null): ?string
+    /**
+     * Expects that the current position the $data attribute matches and moves the cursor.
+     * Or fails with a syntax exception.
+     *
+     * Caution: When using a regex be sure to use `A` modifier.
+     * Whitespace *after* the match is automatically ignored.
+     *
+     * @param string               $data     A single character or a fully specified regex (with delimiters and options)
+     * @param string|string[]|null $expected
+     *
+     * @throws StringLexerException when there no match or there is no further data
+     *
+     * @return string
+     */
+    public function expects(string $data, $expected = null): string
     {
         $match = $this->regexOrSingleChar($data);
 
@@ -155,6 +195,16 @@ final class StringLexer
         );
     }
 
+    /**
+     * Expect a StringValue.
+     *
+     * A StringValue consists of non-special characters in any scripture (language)
+     * or is a QuotedValue. Trailing whitespace are skipped.
+     *
+     * @param string $allowedNext
+     *
+     * @return string
+     */
     public function stringValue(string $allowedNext = ',;)'): string
     {
         $value = '';
@@ -230,18 +280,45 @@ final class StringLexer
         return $value;
     }
 
-    public function rangeValue(): array
+    public function fieldIdentification(): string
+    {
+        return mb_substr(trim($this->expects(self::FIELD_NAME, 'FieldIdentification')), 0, -1);
+    }
+
+    //
+    // Internal methods. DO NOT USE FOR CUSTOM LEXERS!
+    // Write your own lexical parsers as reusing these methods.
+    // May result in an endless recursion.
+    //
+
+    /**
+     * @internal
+     */
+    public function valuePart(string $fieldName, string $allowedNext = ',;)'): string
+    {
+        // matches value syntax (with custom lexer) or string
+        if (isset($this->valueLexers[$fieldName])) {
+            return $this->valueLexers[$fieldName]($this, $allowedNext);
+        }
+
+        return $this->stringValue($allowedNext);
+    }
+
+    /**
+     * @internal
+     */
+    public function rangeValue(string $name): array
     {
         $lowerInclusive = '[' === ($this->matchOptional('/[[\]]/A') ?? '[');
 
         $this->skipWhitespace();
-        $lowerBound = $this->stringValue('~');
+        $lowerBound = $this->valuePart($name, '~');
 
         $this->skipWhitespace();
         $this->expects('~');
 
         $this->skipWhitespace();
-        $upperBound = $this->stringValue('/[[\],;)]/A');
+        $upperBound = $this->valuePart($name, '/[[\],;)]/A');
 
         $upperInclusive = ']' === ($this->matchOptional('/[[\]]/A') ?? ']');
 
@@ -250,17 +327,23 @@ final class StringLexer
         return [$lowerInclusive, $lowerBound, $upperBound, $upperInclusive];
     }
 
-    public function comparisonValue(): array
+    /**
+     * @internal
+     */
+    public function comparisonValue(string $name): array
     {
         $operator = $this->expects('/<>|(?:[<>]=?)/A', 'CompareOperator');
 
         $this->skipWhitespace();
-        $value = $this->stringValue();
+        $value = $this->valuePart($name);
         $this->skipEmptyLines();
 
         return [$operator, $value];
     }
 
+    /**
+     * @internal
+     */
     public function patternMatchValue(): array
     {
         $this->expects('~');
@@ -310,13 +393,15 @@ final class StringLexer
     /**
      * Tries to detect the value-type.
      *
+     * @internal
+     *
      * The detection is very loosely and stops after
      * the first positive detection. As a result a value
-     * may not contain unquoted special characters.
+     * may not match unquoted special characters.
      *
      * @return string
      */
-    public function detectValueType(): string
+    public function detectValueType(string $name): string
     {
         if ($this->cursor === $this->end) {
             return '';
@@ -333,7 +418,7 @@ final class StringLexer
             return self::COMPARE;
         }
 
-        $this->snapshot();
+        $this->snapshot(true);
 
         $this->matchOptional('!');
 
@@ -343,10 +428,13 @@ final class StringLexer
             return self::RANGE;
         }
 
-        $this->stringValue(',;)~');
+        $this->valuePart($name, ',;)~');
 
         // There is still a chance the value is not a range, but that that's
         // not important now. As a value starting with `~` is invalid already.
+        //
+        // A custom lexer that uses the range character should be specific in matching.
+        // Or consider using a combiner like `(value ~ something)`.
         if (null !== $this->matchOptional('~')) {
             $this->restoreCursor();
 
@@ -356,11 +444,6 @@ final class StringLexer
         $this->restoreCursor();
 
         return self::SIMPLE_VALUE;
-    }
-
-    public function fieldIdentification(): string
-    {
-        return mb_substr(trim($this->expects(self::FIELD_NAME, 'FieldIdentification')), 0, -1);
     }
 
     private function regexOrSingleChar(string $data): ?string

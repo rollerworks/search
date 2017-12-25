@@ -139,6 +139,11 @@ abstract class StringInput extends AbstractInput
      */
     protected $fields = [];
 
+    /**
+     * @var \Closure[]
+     */
+    protected $valueLexers = [];
+
     private $lexer;
 
     public function __construct(Validator $validator = null)
@@ -171,6 +176,7 @@ abstract class StringInput extends AbstractInput
 
         $condition = null;
         $this->errors = new ErrorList();
+        $this->valueLexers = [];
         $this->config = $config;
         $this->level = 0;
 
@@ -213,7 +219,7 @@ abstract class StringInput extends AbstractInput
     final protected function parse(ProcessorConfig $config, string $input): ValuesGroup
     {
         $this->config = $config;
-        $this->lexer->parse($input);
+        $this->lexer->parse($input, $this->valueLexers);
 
         if (null !== $this->lexer->matchOptional('*')) {
             $valuesGroup = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR);
@@ -299,14 +305,15 @@ abstract class StringInput extends AbstractInput
         $hasValues = false;
         $this->valuesFactory->initContext($field, $valuesBag, $path);
 
-        $pathVal = '['.$field->getName().'][%d]';
+        $name = $field->getName();
+        $pathVal = '['.$name.'][%d]';
 
         while (!$this->lexer->isEnd() && !$this->lexer->isGlimpse('/[);]/A')) {
-            $valueType = $this->lexer->detectValueType();
+            $valueType = $this->lexer->detectValueType($name);
 
             switch ($valueType) {
                 case StringLexer::COMPARE:
-                    list($operator, $value) = $this->lexer->comparisonValue();
+                    list($operator, $value) = $this->lexer->comparisonValue($name);
                     $this->valuesFactory->addComparisonValue($operator, $value, [$pathVal, '', '']);
                     break;
 
@@ -317,7 +324,7 @@ abstract class StringInput extends AbstractInput
 
                 case StringLexer::RANGE:
                     $negative = null !== $this->lexer->matchOptional('!');
-                    list($lowerInclusive, $lowerBound, $upperBound, $upperInclusive) = $this->lexer->rangeValue();
+                    list($lowerInclusive, $lowerBound, $upperBound, $upperInclusive) = $this->lexer->rangeValue($name);
 
                     if ($negative) {
                         $this->valuesFactory->addExcludedRange(
@@ -341,9 +348,9 @@ abstract class StringInput extends AbstractInput
                 case StringLexer::SIMPLE_VALUE:
                     $negative = null !== $this->lexer->matchOptional('!');
                     if ($negative) {
-                        $this->valuesFactory->addExcludedSimpleValue($this->lexer->stringValue(), $pathVal);
+                        $this->valuesFactory->addExcludedSimpleValue($this->lexer->valuePart($name), $pathVal);
                     } else {
-                        $this->valuesFactory->addSimpleValue($this->lexer->stringValue(), $pathVal);
+                        $this->valuesFactory->addSimpleValue($this->lexer->valuePart($name), $pathVal);
                     }
                     break;
             }

@@ -13,32 +13,32 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Input;
 
-use Rollerworks\Component\Search\FieldSet;
-
 /**
  * NormStringQueryInput - processes input in the StringInput syntax
  * using the Normalized value format.
  */
 final class NormStringQueryInput extends StringInput
 {
+    public const FIELD_LEXER_OPTION_NAME = 'norm_string_query.value_lexer';
+    public const VALUE_EXPORTER_OPTION_NAME = 'norm_string_query.value_exporter';
+
     protected function initForProcess(ProcessorConfig $config): void
     {
-        $this->fields = $this->resolveFieldNames($config->getFieldSet());
+        $names = [];
+
+        foreach ($config->getFieldSet()->all() as $name => $field) {
+            $names[$name] = $name;
+
+            if (null !== $customerMatcher = $field->getOption(self::FIELD_LEXER_OPTION_NAME)) {
+                $this->valueLexers[$name] = $customerMatcher;
+            }
+        }
+
+        $this->fields = $names;
         $this->valuesFactory = new FieldValuesFactory(
             $this->errors,
             $this->validator,
             $this->config->getMaxValues()
         );
-    }
-
-    private function resolveFieldNames(FieldSet $fieldSet): array
-    {
-        $names = [];
-
-        foreach ($fieldSet->all() as $name => $field) {
-            $names[$name] = $name;
-        }
-
-        return $names;
     }
 }

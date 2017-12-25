@@ -19,6 +19,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Input\StringLexer;
 use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
@@ -27,6 +28,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * @internal
@@ -36,6 +38,48 @@ final class StringQueryInputTest extends InputProcessorTestCase
     protected function getProcessor(callable $labelResolver = null): InputProcessor
     {
         return new StringQueryInput(null, $labelResolver);
+    }
+
+    protected function getFieldSet(bool $build = true)
+    {
+        $fieldSet = parent::getFieldSet(false);
+        $field = $this->getFactory()->createField(
+            'geo',
+            TextType::class,
+            [
+                StringQueryInput::FIELD_LEXER_OPTION_NAME => function (StringLexer $lexer): string {
+                    $result = $lexer->expects('(');
+                    $result .= $lexer->expects('/-?\d+,\h*-?\d+/A', 'Geographic points 12,24');
+                    $result .= $lexer->expects(')');
+
+                    return $result;
+                },
+            ]
+        );
+
+        $field->setValueTypeSupport(Compare::class, true);
+        $field->setValueTypeSupport(Range::class, true);
+        $field->setValueTypeSupport(PatternMatch::class, false);
+        $field->setValueComparator(new class() implements ValueComparator {
+            public function isHigher($higher, $lower, array $options): bool
+            {
+                return false;
+            }
+
+            public function isLower($lower, $higher, array $options): bool
+            {
+                return true;
+            }
+
+            public function isEqual($value, $nextValue, array $options): bool
+            {
+                return false;
+            }
+        });
+
+        $fieldSet->set($field);
+
+        return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
     /**
@@ -140,6 +184,26 @@ final class StringQueryInputTest extends InputProcessorTestCase
     }
 
     /**
+     * @test
+     */
+    public function it_processes_with_customer_value_lexer()
+    {
+        $processor = new StringQueryInput();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $values = new ValuesBag();
+        $values->addSimpleValue('(12,24)');
+        $values->add(new Compare('(12,24)', '>'));
+        $values->add(new Range('(12,24)', '(12,25)'));
+        $expectedGroup->addField('geo', $values);
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertConditionEquals('geo: (12,24), >(12,24), (12,24)~(12,25);', $condition, $processor, $config);
+    }
+
+    /**
      * @param string               $input
      * @param StringLexerException $exception
      *
@@ -193,6 +257,19 @@ final class StringQueryInputTest extends InputProcessorTestCase
             [
                 'field1: value, value2; *',
                 StringLexerException::formatError(23, 1, 'A group logical operator can only be used at the start of the input or before a group opening'),
+            ],
+            // Customer value-lexer
+            [
+                'geo: value, value2;',
+                StringLexerException::syntaxError(5, 1, ['('], 'value, val'),
+            ],
+            [
+                'geo: (value, value2);',
+                StringLexerException::syntaxError(6, 1, ['Geographic points 12,24'], 'value, val'),
+            ],
+            [
+                'geo: (12, 24) ~ (value, value2);',
+                StringLexerException::syntaxError(17, 1, ['Geographic points 12,24'], 'value, val'),
             ],
         ];
     }

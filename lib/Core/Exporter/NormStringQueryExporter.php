@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\Input\NormStringQueryInput;
 
 /**
  * Exports the SearchCondition as StringQuery string.
@@ -24,9 +24,19 @@ use Rollerworks\Component\Search\SearchCondition;
  */
 final class NormStringQueryExporter extends StringExporter
 {
-    protected function modelToExported($value, FieldConfig $field): string
+    protected function modelToExported($value, FieldConfig $field, string $allowedNext = ',;)'): string
     {
-        return $this->modelToNorm($value, $field);
+        $valueExporter = $field->getOption(NormStringQueryInput::VALUE_EXPORTER_OPTION_NAME);
+
+        if (true === $valueExporter) {
+            return $this->modelToNorm($value, $field);
+        }
+
+        if (is_callable($valueExporter)) {
+            return $valueExporter($value, [$this, 'modelToNorm'], $field);
+        }
+
+        return $this->exportValueAsString($this->modelToNorm($value, $field));
     }
 
     protected function resolveLabels(FieldSet $fieldSet): array

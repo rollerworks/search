@@ -16,17 +16,55 @@ namespace Rollerworks\Component\Search\Tests\Exporter;
 use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\NormStringQueryExporter;
 use Rollerworks\Component\Search\Input\NormStringQueryInput;
+use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessor;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @internal
  */
 final class NormStringQueryExporterTest extends SearchConditionExporterTestCase
 {
+    /**
+     * @test
+     */
+    public function it_exporters_values()
+    {
+        $exporter = $this->getExporter();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $values = new ValuesBag();
+        $values->addSimpleValue('value ');
+        $values->addSimpleValue('-value2');
+        $values->addSimpleValue('value2-');
+        $values->addSimpleValue('10.00');
+        $values->addSimpleValue('10,00');
+        $values->addSimpleValue('hÌ');
+        $values->addSimpleValue('٤٤٤٦٥٤٦٠٠');
+        $values->addSimpleValue('doctor"who""');
+        $values->addExcludedSimpleValue('value3');
+        $expectedGroup->addField('name', $values);
+
+        $values = new ValuesBag();
+        $values->addSimpleValue('EUR 12.00');
+        $values->addSimpleValue('12');
+        $expectedGroup->addField('price', $values);
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertExportEquals($this->provideSingleValuePairTest(), $exporter->exportCondition($condition));
+
+        $processor = $this->getInputProcessor();
+        $this->assertConditionEquals($this->provideSingleValuePairTest(), $condition, $processor, $config);
+    }
+
     public function provideSingleValuePairTest()
     {
-        return 'name: "value ", -value2, value2-, 10.00, "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3;';
+        return 'name: "value ", -value2, value2-, 10.00, "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3; price: EUR 12.00, 12;';
     }
 
     public function provideMultipleValuesTest()

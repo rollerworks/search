@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Test;
 use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
@@ -44,11 +45,16 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
      */
     protected function getFieldSet(bool $build = true)
     {
+        $priceField = $this->getFactory()->createField('price', MoneyType::class);
+        $priceField->setNormTransformer(null);
+        $priceField->setViewTransformer(null);
+
         $fieldSet = new GenericFieldSetBuilder($this->getFactory());
         $fieldSet->add('id', IntegerType::class);
         $fieldSet->add('name', TextType::class);
         $fieldSet->add('lastname', TextType::class);
         $fieldSet->add('date', DateType::class, ['pattern' => 'MM-dd-yyyy']);
+        $fieldSet->set($priceField);
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
@@ -73,7 +79,6 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $values->addSimpleValue('٤٤٤٦٥٤٦٠٠');
         $values->addSimpleValue('doctor"who""');
         $values->addExcludedSimpleValue('value3');
-
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);

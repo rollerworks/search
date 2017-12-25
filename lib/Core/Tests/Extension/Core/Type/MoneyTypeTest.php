@@ -17,6 +17,10 @@ use Money\Money;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\FieldSetView;
+use Rollerworks\Component\Search\Input\NormStringQueryInput;
+use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Input\StringQueryInput;
+use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -111,5 +115,48 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
 
         self::assertFalse($fieldView->vars['grouping']);
         self::assertEquals('EUR', $fieldView->vars['default_currency']);
+    }
+
+    public function testValueLexing()
+    {
+        $field = $this->getFactory()->createField('money', MoneyType::class);
+        $field->setNormTransformer(null);
+        $field->setViewTransformer(null);
+
+        $fieldSet = $this->getFactory()->createFieldSetBuilder()
+            ->set($field)
+            ->getFieldSet();
+
+        $condition = SearchConditionBuilder::create($fieldSet)
+            ->field('money')
+                ->addSimpleValue('12.00 €')
+                ->addSimpleValue('€ 12.00')
+                ->addSimpleValue('€ 12.00')
+                ->addSimpleValue('€ 12000.00')
+                ->addSimpleValue('€ 12000.00')
+            ->end()
+            ->getSearchCondition();
+
+        $this->assertConditionEquals(
+            'money: 12.00 €, € 12.00, € 12.00, € 12000.00, "€ 12000.00"',
+            $condition,
+            new StringQueryInput(),
+            new ProcessorConfig($fieldSet)
+        );
+
+        $condition2 = SearchConditionBuilder::create($fieldSet)
+            ->field('money')
+                ->addSimpleValue('EUR 12.00')
+                ->addSimpleValue('EUR 12.00')
+                ->addSimpleValue('12.00')
+            ->end()
+            ->getSearchCondition();
+
+        $this->assertConditionEquals(
+            'money: EUR 12.00, "EUR 12.00", 12.00',
+            $condition2,
+            new NormStringQueryInput(),
+            new ProcessorConfig($fieldSet)
+        );
     }
 }
