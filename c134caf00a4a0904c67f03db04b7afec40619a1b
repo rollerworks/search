@@ -1,0 +1,6 @@
+---------------------------------------------------------------------------
+
+by sstok at 2017-12-23T15:24:51Z
+
+I already found a good candidate for this feature (besides Geo spatial values).
+The MoneyType 😄 `€ 5.00` cannot be parsed atm.
