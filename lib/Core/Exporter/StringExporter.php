@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Exporter;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
@@ -87,7 +88,28 @@ abstract class StringExporter extends AbstractExporter
 
     protected function modelToExported($value, FieldConfig $field): string
     {
-        return $this->modelToView($value, $field);
+        $valueExporter = $field->getOption(StringQueryInput::VALUE_EXPORTER_OPTION_NAME);
+
+        if (true === $valueExporter) {
+            return $this->modelToView($value, $field);
+        }
+
+        if (is_callable($valueExporter)) {
+            return $valueExporter($value, [$this, 'modelToView'], $field);
+        }
+
+        return $this->exportValueAsString($this->modelToView($value, $field));
+    }
+
+    final protected function exportValueAsString($value, bool $force = false): string
+    {
+        $value = (string) $value;
+
+        if ($force || preg_match('/[<>[\](),;~!*?=&*"\s]/u', $value)) {
+            return '"'.str_replace('"', '""', $value).'"';
+        }
+
+        return $value;
     }
 
     private function getFieldLabel(string $name): string
@@ -104,11 +126,11 @@ abstract class StringExporter extends AbstractExporter
         $exportedValues = '';
 
         foreach ($valuesBag->getSimpleValues() as $value) {
-            $exportedValues .= $this->exportValuePart($this->modelToExported($value, $field)).', ';
+            $exportedValues .= $this->modelToExported($value, $field).', ';
         }
 
         foreach ($valuesBag->getExcludedSimpleValues() as $value) {
-            $exportedValues .= '!'.$this->exportValuePart($this->modelToExported($value, $field)).', ';
+            $exportedValues .= '!'.$this->modelToExported($value, $field).', ';
         }
 
         foreach ($valuesBag->get(Range::class) as $value) {
@@ -120,11 +142,11 @@ abstract class StringExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->get(Compare::class) as $value) {
-            $exportedValues .= $value->getOperator().' '.$this->exportValuePart($this->modelToExported($value->getValue(), $field)).', ';
+            $exportedValues .= $value->getOperator().' '.$this->modelToExported($value->getValue(), $field).', ';
         }
 
         foreach ($valuesBag->get(PatternMatch::class) as $value) {
-            $exportedValues .= $this->getPatternMatchOperator($value).' '.$this->exportValuePart($value->getValue()).', ';
+            $exportedValues .= $this->getPatternMatchOperator($value).' '.$this->exportValueAsString($value->getValue()).', ';
         }
 
         return rtrim($exportedValues, ', ');
@@ -174,22 +196,11 @@ abstract class StringExporter extends AbstractExporter
     private function exportRangeValue(Range $range, FieldConfig $field): string
     {
         $result = !$range->isLowerInclusive() ? ']' : '';
-        $result .= $this->exportValuePart($this->modelToExported($range->getLower(), $field));
+        $result .= $this->modelToExported($range->getLower(), $field);
         $result .= ' ~ ';
-        $result .= $this->exportValuePart($this->modelToExported($range->getUpper(), $field));
+        $result .= $this->modelToExported($range->getUpper(), $field);
         $result .= !$range->isUpperInclusive() ? '[' : '';
 
         return $result;
-    }
-
-    private function exportValuePart($value): string
-    {
-        $value = (string) $value;
-
-        if (preg_match('/[<>[\](),;~!*?=&*"\s]/u', $value)) {
-            return '"'.str_replace('"', '""', $value).'"';
-        }
-
-        return $value;
     }
 }

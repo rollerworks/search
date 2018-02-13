@@ -43,12 +43,14 @@ abstract class AbstractExporter implements ConditionExporter
     /**
      * Transforms the model value to a view representation.
      *
+     * @internal
+     *
      * @param mixed       $value
      * @param FieldConfig $field
      *
      * @return string
      */
-    protected function modelToView($value, FieldConfig $field): string
+    public function modelToView($value, FieldConfig $field): string
     {
         $transformer = $field->getViewTransformer();
 
@@ -76,12 +78,14 @@ abstract class AbstractExporter implements ConditionExporter
     /**
      * Transforms the model value to a normalized version.
      *
+     * @internal
+     *
      * @param mixed       $value
      * @param FieldConfig $field
      *
      * @return string
      */
-    protected function modelToNorm($value, FieldConfig $field): string
+    public function modelToNorm($value, FieldConfig $field): string
     {
         $transformer = $field->getNormTransformer() ?? $field->getViewTransformer();
 

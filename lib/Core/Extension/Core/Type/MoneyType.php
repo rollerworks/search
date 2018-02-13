@@ -20,6 +20,9 @@ use Rollerworks\Component\Search\Extension\Core\ValueComparator\MoneyValueCompar
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
+use Rollerworks\Component\Search\Input\NormStringQueryInput;
+use Rollerworks\Component\Search\Input\StringLexer;
+use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -81,6 +84,36 @@ final class MoneyType extends AbstractFieldType
                 'grouping' => false,
                 'default_currency' => 'EUR',
                 'increase_by' => 'cents',
+                NormStringQueryInput::FIELD_LEXER_OPTION_NAME => function (StringLexer $lexer, string $allowedNext): string {
+                    if ($lexer->isGlimpse('"')) {
+                        return $lexer->stringValue($allowedNext);
+                    }
+
+                    return $lexer->expects('/([A-Z]{3} )?(-?(\d+)?(\.\d+)?)/As', 'Money format as CUR xx.xx. Eg. EUR 12.00');
+                },
+                StringQueryInput::FIELD_LEXER_OPTION_NAME => function (StringLexer $lexer, string $allowedNext): string {
+                    if ($lexer->isGlimpse('"')) {
+                        return $lexer->stringValue($allowedNext);
+                    }
+
+                    // Currencies can be more complex then you would expect. Some locales even use spaces!
+                    // And this needs to support as much combinations as possible.
+                    //
+                    // The currency is matched before and/or after. Again this is not about validating but matching.
+
+                    return $lexer->expects('/\p{Sc}?(\xc2\xa0|\h)?-?\p{N}+((\xc2\xa0|\h|\.)\p{N}{2,3})*-?((\xc2\xa0|\h)?\p{Sc})?/Aus', 'MoneyFormat');
+                },
+
+                StringQueryInput::VALUE_EXPORTER_OPTION_NAME => function ($value, callable $transformer, FieldConfig $config) {
+                    $transformedValue = $transformer($value, $config);
+
+                    if (false !== strpos($transformedValue, ',')) {
+                        $transformedValue = '"'.$transformedValue.'"';
+                    }
+
+                    return $transformedValue;
+                },
+                NormStringQueryInput::VALUE_EXPORTER_OPTION_NAME => true,
             ]
         );
 

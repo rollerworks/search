@@ -62,9 +62,44 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         $processor->process($config, 'firstname: value, value2;');
     }
 
+    /**
+     * @test
+     */
+    public function it_exporters_values()
+    {
+        $exporter = $this->getExporter();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $values = new ValuesBag();
+        $values->addSimpleValue('value ');
+        $values->addSimpleValue('-value2');
+        $values->addSimpleValue('value2-');
+        $values->addSimpleValue('10.00');
+        $values->addSimpleValue('10,00');
+        $values->addSimpleValue('hÌ');
+        $values->addSimpleValue('٤٤٤٦٥٤٦٠٠');
+        $values->addSimpleValue('doctor"who""');
+        $values->addExcludedSimpleValue('value3');
+        $expectedGroup->addField('name', $values);
+
+        $values = new ValuesBag();
+        $values->addSimpleValue('€ 12.00');
+        $values->addSimpleValue('12,00 $');
+        $values->addSimpleValue('$ 12.00');
+        $expectedGroup->addField('price', $values);
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertExportEquals($this->provideSingleValuePairTest(), $exporter->exportCondition($condition));
+
+        $processor = $this->getInputProcessor();
+        $this->assertConditionEquals($this->provideSingleValuePairTest(), $condition, $processor, $config);
+    }
+
     public function provideSingleValuePairTest()
     {
-        return 'name: "value ", -value2, value2-, 10.00, "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3;';
+        return 'name: "value ", -value2, value2-, 10.00, "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3; price: € 12.00, "12,00 $", $ 12.00;';
     }
 
     public function provideMultipleValuesTest()
