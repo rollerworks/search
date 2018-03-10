@@ -117,7 +117,7 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
     public function testProcessSearchCodeFromQueryAsArray()
     {
         $config = new ProcessorConfig($this->fieldSet);
-        $request = Request::create('/books', 'GET', ['search-format' => 'array', 'search' => ['fields' => ['title' => ['simple-values' => ['Symfony']]]]]);
+        $request = Request::create('/books', 'GET', ['search' => ['fields' => ['title' => ['simple-values' => ['Symfony']]]]]);
 
         $payload = $this->createProcessor()->processRequest($request, $config);
 
@@ -333,7 +333,7 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
     public function testProcessSearchCodeFromArrayQueryWithNoCache()
     {
         $config = new ProcessorConfig($this->fieldSet, 'norm_string_query');
-        $request = Request::create('/books', 'GET', ['search-format' => 'array', 'search' => ['fields' => ['title' => ['simple-values' => ['Symfony']]]]]);
+        $request = Request::create('/books', 'GET', ['search' => ['fields' => ['title' => ['simple-values' => ['Symfony']]]]]);
 
         $this->cache
             ->expects(self::once())
@@ -367,7 +367,7 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
     public function testProcessSearchCodeFromArrayQueryStoresOptimized()
     {
         $config = new ProcessorConfig($this->fieldSet);
-        $request = Request::create('/books', 'GET', ['search-format' => 'array', 'search' => ['fields' => ['title' => ['simple-values' => ['Symfony', 'Symfony']]]]]);
+        $request = Request::create('/books', 'GET', ['search' => ['fields' => ['title' => ['simple-values' => ['Symfony', 'Symfony']]]]]);
 
         $this->cache
             ->expects(self::once())
@@ -403,7 +403,7 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
         // This condition would have given an transformer error,
         // so getting one means the transformer was never executed.
         $config = new ProcessorConfig($this->fieldSet);
-        $request = Request::create('/books', 'GET', ['search-format' => 'array', 'search' => ['fields' => ['id' => ['simple-values' => ['He']]]]]);
+        $request = Request::create('/books', 'GET', ['search' => ['fields' => ['id' => ['simple-values' => ['He']]]]]);
 
         $storedPayload = new SearchPayload(false);
         $storedPayload->searchCondition = $this->getFactory()->getSerializer()->serialize($this->condition);
@@ -448,19 +448,19 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
         $this->cache
             ->expects(self::once())
             ->method('get')
-            ->with('097af4e25add550ba5efe087202af72fee0490b45197d8acb15daf747307429a')
+            ->with('f46ae6c70dbd72c18cf3d24623c30aedfc277831cc05f147d925ed26ebff54b1')
             ->willReturn($storedPayload);
 
         $this->cache
             ->expects(self::once())
             ->method('delete')
-            ->with('097af4e25add550ba5efe087202af72fee0490b45197d8acb15daf747307429a');
+            ->with('f46ae6c70dbd72c18cf3d24623c30aedfc277831cc05f147d925ed26ebff54b1');
 
         $payload = new SearchPayload();
         $payload->searchCondition = $this->condition;
         $payload->searchCode = 'S:title%3A+Symfony%3B';
         $payload->exportedCondition = 'title: Symfony;';
-        $payload->exportedFormat = 'string_query';
+        $payload->exportedFormat = 'norm_string_query';
         $payload->messages = [];
 
         $newPayload = clone $payload;
@@ -469,7 +469,7 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
         $this->cache
             ->expects(self::once())
             ->method('set')
-            ->with('097af4e25add550ba5efe087202af72fee0490b45197d8acb15daf747307429a', $newPayload);
+            ->with('f46ae6c70dbd72c18cf3d24623c30aedfc277831cc05f147d925ed26ebff54b1', $newPayload);
 
         $payload = $this->createProcessor()->processRequest($request, $config);
 
@@ -477,7 +477,7 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
         self::assertTrue($payload->isValid());
         self::assertEmpty($payload->messages);
         self::assertEquals($this->condition, $payload->searchCondition);
-        self::assertEquals('string_query', $payload->exportedFormat);
+        self::assertEquals('norm_string_query', $payload->exportedFormat);
         self::assertEquals('title: Symfony;', $payload->exportedCondition);
         self::assertEquals('S:title%3A+Symfony%3B', $payload->searchCode);
     }
