@@ -18,14 +18,11 @@ parameters:
         - '#Call to an undefined static method Money\\Money\:\:#'
         - '#Call to an undefined method Exception\:\:getErrors\(\)#'
         - '#Call to an undefined method object\:\:[a-z]+\(\)#i'
-        - '#Parameter \$ttl of method Rollerworks\\Component\\Search\\ApiPlatform\\Processor\\NullCache\:\:set#'
         - '#Parameter \#\d \$searchCondition of class Rollerworks\\Component\\Search\\ApiPlatform\\SearchConditionEvent constructor expects Rollerworks\\Component\\Search\\SearchCondition\|null, array\|Rollerworks\\Component\\Search\\SearchCondition\|null given#'
         - '#Strict comparison using [!=]== between (null|string) and (float\|int|string) will always evaluate to (true|false)#'
         - '#Strict comparison using !== between (false|null) and (array\|true|int) will always evaluate to true#'
-        - '#Psr\\SimpleCache\\DateInterval#'
         - '#Parameter \#3 \$previous of class PHPUnit\\Framework\\Exception constructor expects Exception\|null, Throwable given#'
         - '#Parameter \#1 \$range of static method Rollerworks\\Component\\Search\\Elasticsearch\\QueryConditionGenerator\:\:generateRangeParams\(\)#'
-        - '#Parameter \#3 \$format of method Rollerworks\\Component\\Search\\ApiPlatform\\Processor\\ApiSearchProcessor\:\:processInput\(\) expects string, array\|string\|null given#'
 
         ## Symony Config
         - '# Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given#'

@@ -26,7 +26,11 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * ApiSearchProcessor handles a search provided with a Symfony Request.
  *
- * The input search condition must be provided as a NormStringQuery.
+ * The search-query needs to be provided as either a string (norm_string_query)
+ * or as an array. The default search-format is silently ignored.
+ *
+ * Note: Unlike the Psr7SearchProcessor the exportedCondition must be used
+ * for the URI, the search-code is used caching only and cannot be processed.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -60,7 +64,7 @@ final class ApiSearchProcessor extends AbstractSearchProcessor
         }
 
         $input = $request->query->get('search', '');
-        $format = $this->getRequestParam($request->query->all(), $config, 'search-format', $config->getDefaultFormat(), 'string');
+        $format = is_array($input) ? 'array' : 'norm_string_query';
         $payload = $this->processInput($config, $input, $format);
 
         if (!$payload->changed && !empty($input) && $input !== $payload->exportedCondition) {
