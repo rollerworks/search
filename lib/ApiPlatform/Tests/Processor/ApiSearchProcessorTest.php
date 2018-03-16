@@ -93,7 +93,7 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
         self::assertFalse($payload->isChanged());
         self::assertTrue($payload->isValid());
         self::assertEmpty($payload->messages);
-        self::assertNull($payload->searchCondition);
+        self::assertEquals(new SearchCondition($config->getFieldSet(), new ValuesGroup()), $payload->searchCondition);
         self::assertNull($payload->exportedFormat);
         self::assertEmpty($payload->searchCode);
     }
@@ -210,7 +210,7 @@ final class ApiSearchProcessorTest extends SearchIntegrationTestCase
 
         self::assertTrue($payload->isValid());
         self::assertFalse($payload->isChanged());
-        self::assertNull($payload->searchCondition);
+        self::assertEquals(new SearchCondition($config->getFieldSet(), new ValuesGroup()), $payload->searchCondition);
         self::assertEquals('', $payload->exportedCondition);
         self::assertEquals('', $payload->searchCode);
     }

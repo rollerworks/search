@@ -20,7 +20,9 @@ use Rollerworks\Component\Search\Loader\InputProcessorLoader;
 use Rollerworks\Component\Search\Processor\AbstractSearchProcessor;
 use Rollerworks\Component\Search\Processor\ProcessorConfig;
 use Rollerworks\Component\Search\Processor\SearchPayload;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchFactory;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -80,6 +82,9 @@ final class ApiSearchProcessor extends AbstractSearchProcessor
         $payload->searchCode = '';
 
         if ([] === $input || (is_scalar($input) && '' === trim((string) $input))) {
+            // Input is empty, but a SearchCondition should always be set to allow for a pre-condition.
+            $payload->searchCondition = new SearchCondition($config->getFieldSet(), new ValuesGroup());
+
             return $payload;
         }
 
