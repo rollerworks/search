@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-03-30T06:13:21Z
+
+@sstok  most of the changes have been done by PHP CS Fixer. Shouldn't it be run across the whole codebase so these kinds of changes don't trickle down with each PR?
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-04-05T06:30:58Z
+
+@sstok this should be it? If not, can you specifically point out what needs changing?
+
+---------------------------------------------------------------------------
+
+by sstok at 2018-04-05T09:45:59Z
+
+Thank you @dkarlovi
