@@ -17,6 +17,7 @@ use Rollerworks\Component\Search\Elasticsearch\FieldMapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\SearchPreCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
@@ -408,6 +409,119 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         );
 
         self::assertMapping(['name'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_applies_the_precondition_without_a_query()
+    {
+        $precondition = new SearchPreCondition(
+            $this->createCondition()
+                ->field('restrict')
+                    ->addSimpleValue('Some')
+                    ->addSimpleValue('Restriction')
+                ->end()
+                ->getSearchCondition()
+                ->getValuesGroup()
+        );
+
+        $condition = $this
+            ->createCondition()
+            ->getSearchCondition();
+        $condition->setPreCondition($precondition);
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('restrict', 'restrict');
+
+        self::assertEquals(
+            [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'terms' => [
+                                    'restrict' => [
+                                        'Some',
+                                        'Restriction',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $generator->getQuery()
+        );
+
+        self::assertMapping(['restrict'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_applies_the_precondition_with_a_query()
+    {
+        $precondition = new SearchPreCondition(
+            $this->createCondition()
+                ->field('restrict')
+                    ->addSimpleValue('Some')
+                    ->addSimpleValue('Restriction')
+                ->end()
+                ->getSearchCondition()
+                ->getValuesGroup()
+        );
+
+        $condition = $this
+            ->createCondition()
+            ->field('name')
+                ->addSimpleValue('Doctor')
+                ->addSimpleValue('Foo')
+            ->end()
+            ->getSearchCondition();
+        $condition->setPreCondition($precondition);
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('restrict', 'restrict');
+        $generator->registerField('name', 'name');
+
+        self::assertEquals(
+            [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'bool' => [
+                                    'must' => [
+                                        [
+                                            'terms' => [
+                                                'restrict' => [
+                                                    'Some',
+                                                    'Restriction',
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'bool' => [
+                                    'must' => [
+                                        [
+                                            'terms' => [
+                                                'name' => [
+                                                    'Doctor',
+                                                    'Foo',
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $generator->getQuery()
+        );
+
+        self::assertMapping(['restrict', 'name'], $generator->getMappings());
     }
 
     /**

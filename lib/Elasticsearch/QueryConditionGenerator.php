@@ -101,6 +101,23 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     {
         $rootGroupCondition = $this->processGroup($this->searchCondition->getValuesGroup());
 
+        if (null !== ($precondition = $this->searchCondition->getPreCondition())) {
+            $preconditionGroupCondition = $this->processGroup($precondition->getValuesGroup());
+
+            if ($rootGroupCondition) {
+                $rootGroupCondition = [
+                    self::QUERY_BOOL => [
+                        self::CONDITION_AND => [
+                            $preconditionGroupCondition,
+                            $rootGroupCondition,
+                        ],
+                    ],
+                ];
+            } else {
+                $rootGroupCondition = $preconditionGroupCondition;
+            }
+        }
+
         if ([] === $rootGroupCondition) {
             return null;
         }
@@ -115,13 +132,14 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     {
         $mappings = [];
         $group = $this->searchCondition->getValuesGroup();
-        $mappings = \array_merge($mappings, $this->getGroupMappings($group));
 
-        foreach ($group->getGroups() as $subGroup) {
-            $mappings = \array_merge($mappings, $this->getGroupMappings($subGroup));
+        $this->extractMappings($group, $mappings);
+
+        if (null !== $precondition = $this->searchCondition->getPreCondition()) {
+            $this->extractMappings($precondition->getValuesGroup(), $mappings);
         }
 
-        return array_values($mappings);
+        return $mappings;
     }
 
     /**
@@ -156,6 +174,17 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     public static function translateComparison(string $operator): string
     {
         return self::COMPARISON_OPERATOR_MAP[$operator];
+    }
+
+    private function extractMappings(ValuesGroup $group, array &$mappings): void
+    {
+        $mappings = \array_merge($mappings, $this->getGroupMappings($group));
+
+        foreach ($group->getGroups() as $subGroup) {
+            $mappings = \array_merge($mappings, $this->getGroupMappings($subGroup));
+        }
+
+        $mappings = array_values($mappings);
     }
 
     private function getGroupMappings(ValuesGroup $group): array

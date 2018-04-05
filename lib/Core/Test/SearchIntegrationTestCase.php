@@ -88,6 +88,7 @@ abstract class SearchIntegrationTestCase extends TestCase
         $fieldSet = new GenericFieldSetBuilder($this->getFactory());
         $fieldSet->set($this->getFactory()->createField('id', IntegerType::class));
         $fieldSet->add('name', TextType::class);
+        $fieldSet->add('restrict', TextType::class);
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
