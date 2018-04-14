@@ -1,3 +1,10 @@
+UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
+======================================
+
+### Core
+
+* The ConditionOptimizers have been removed.
+
 UPGRADE FROM 2.0-ALPHA5 to 2.0-ALPHA8
 =====================================
 

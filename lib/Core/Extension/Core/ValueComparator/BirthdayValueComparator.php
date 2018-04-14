@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 
-use Rollerworks\Component\Search\ValueIncrementer;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class BirthdayValueComparator implements ValueIncrementer
+final class BirthdayValueComparator implements ValueComparator
 {
     /**
      * Returns whether the first value is higher then the second value.
@@ -72,28 +72,5 @@ final class BirthdayValueComparator implements ValueIncrementer
         }
 
         return $value == $nextValue;
-    }
-
-    /**
-     * Returns the incremented value of the input.
-     *
-     * The value should returned in the normalized format.
-     *
-     * @param \DateTimeImmutable|\DateTime|int $value      The value to increment
-     * @param array                            $options    Array of options passed with the field
-     * @param int                              $increments Number of increments
-     *
-     * @return \DateTimeInterface|int
-     */
-    public function getIncrementedValue($value, array $options, int $increments = 1)
-    {
-        if (is_object($value)) {
-            $newValue = clone $value;
-            $newValue = $newValue->modify('+'.$increments.' days');
-
-            return $newValue;
-        }
-
-        return $value + $increments;
     }
 }

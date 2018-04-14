@@ -52,9 +52,6 @@ namespace Rollerworks\Component\Search;
  *     // The `process` method processes the input and produces
  *     // a valid SearchCondition (or throws an exception when something is wrong).
  *     $condition = $inputProcessor->process('firstName: sebastiaan, melany;');
- *
- *     // Remove duplicate values and perform other optimizations (optional step).
- *     $searchFactory->optimizeCondition($condition);
  * } catch (InvalidSearchConditionException $e) {
  *     // Each error message can be easily transformed to a localized version.
  *     // Read the documentation for more details.

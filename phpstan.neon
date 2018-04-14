@@ -64,7 +64,6 @@ parameters:
         - '#PHPUnit_Framework_MockObject_MockObject given#'
 
         ##
-        - '#does not accept Rollerworks\\Component\\Search\\FieldSet\|Rollerworks\\Component\\Search\\GenericFieldSetBuilder#'
         - '#Parameter \#\d \$fieldSet of class Rollerworks\\Component\\Search\\Input\\ProcessorConfig constructor expects Rollerworks\\Component\\Search\\FieldSet, Rollerworks\\Component\\Search\\FieldSet\|Rollerworks\\Component\\Search\\GenericFieldSetBuilder given#'
 
         ## Transformations are tested to ensure there input type is valided.

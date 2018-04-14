@@ -39,7 +39,6 @@
         <service id="rollerworks_search.factory" class="Rollerworks\Component\Search\GenericSearchFactory" public="true">
             <argument type="service" id="rollerworks_search.type_registry" />
             <argument type="service" id="rollerworks_search.fieldset_registry" />
-            <argument type="service" id="rollerworks_search.condition_optimizer" />
         </service>
         <service id="Rollerworks\Component\Search\SearchFactory" alias="rollerworks_search.factory" />
 
@@ -50,11 +49,6 @@
             <!-- All services with tag "rollerworks_search.type_extension" are inserted here by ExtensionPass -->
             <argument type="iterator" />
         </service>
-
-        <!-- ChainOptimizer -->
-        <service id="rollerworks_search.chain_condition_optimizer" class="Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer" />
-        <service id="rollerworks_search.condition_optimizer" alias="rollerworks_search.chain_condition_optimizer" />
-        <service id="Rollerworks\Component\Search\SearchConditionOptimizer" alias="rollerworks_search.chain_condition_optimizer" />
 
         <!-- ArrayAdapter (default cache adapter) -->
         <service id="rollerworks_search.cache.adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter">

@@ -117,44 +117,4 @@ final class MoneyValueComparisonTest extends TestCase
 
         self::assertFalse($this->comparison->isLower($value1, $value2, []));
     }
-
-    /** @test */
-    public function it_increments_value_by_amount()
-    {
-        $value = new MoneyValue(Money::EUR(1210));
-        $valueBak = clone $value;
-
-        self::assertEquals(
-            new MoneyValue(Money::EUR(1300)),
-            $this->comparison->getIncrementedValue($value, ['increase_by' => 'amount'])
-        );
-
-        self::assertEquals(
-            new MoneyValue(Money::EUR(1400)),
-            $this->comparison->getIncrementedValue($value, ['increase_by' => 'amount'], 2)
-        );
-
-        // Check original value is not changed.
-        self::assertEquals($valueBak, $value);
-    }
-
-    /** @test */
-    public function it_increments_value_by_cents()
-    {
-        $value = new MoneyValue(Money::EUR(1210));
-        $valueBak = clone $value;
-
-        self::assertEquals(
-            new MoneyValue(Money::EUR(1211)),
-            $this->comparison->getIncrementedValue($value, [])
-        );
-
-        self::assertEquals(
-            new MoneyValue(Money::EUR(1212)),
-            $this->comparison->getIncrementedValue($value, [], 2)
-        );
-
-        // Check original value is not changed.
-        self::assertEquals($valueBak, $value);
-    }
 }

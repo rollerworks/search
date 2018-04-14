@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 
-use Rollerworks\Component\Search\ValueIncrementer;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DateValueComparator implements ValueIncrementer
+class DateValueComparator implements ValueComparator
 {
     /**
      * Returns whether the first value is higher then the second value.
@@ -60,27 +60,5 @@ class DateValueComparator implements ValueIncrementer
     public function isEqual($value, $nextValue, array $options): bool
     {
         return $value->getTimestamp() === $nextValue->getTimestamp();
-    }
-
-    /**
-     * Returns the incremented value of the input.
-     *
-     * The value should returned in the normalized format.
-     *
-     * @param \DateTimeImmutable|\DateTime $value      The value to increment
-     * @param array                        $options    Array of options passed with the field
-     * @param int                          $increments Number of increments
-     *
-     * @return \DateTimeInterface
-     */
-    public function getIncrementedValue($value, array $options, int $increments = 1)
-    {
-        if (!$value instanceof \DateTimeImmutable) {
-            $value = clone $value;
-        }
-
-        $value = $value->modify('+'.$increments.' days');
-
-        return $value;
     }
 }

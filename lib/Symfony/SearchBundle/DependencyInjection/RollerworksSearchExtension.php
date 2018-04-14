@@ -32,7 +32,6 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
         $loader->load('services.xml');
         $loader->load('input_processor.xml');
         $loader->load('condition_exporter.xml');
-        $loader->load('condition_optimizers.xml');
 
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
