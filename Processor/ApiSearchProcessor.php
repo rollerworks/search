@@ -95,7 +95,6 @@ final class ApiSearchProcessor extends AbstractSearchProcessor
         }
 
         $payload->searchCondition = $this->inputFactory->get($format)->process($config, $input);
-        $this->searchFactory->optimizeCondition($payload->searchCondition);
 
         $this->exportCondition($payload, $format);
         $this->storeCache($config, $payload);
