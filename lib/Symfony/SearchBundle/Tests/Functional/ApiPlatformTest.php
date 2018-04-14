@@ -62,22 +62,6 @@ final class ApiPlatformTest extends FunctionalTestCase
         self::assertEquals('[]', $client->getResponse()->getContent());
     }
 
-    public function testNewConditionWithRedirect()
-    {
-        $client = self::newClient(['config' => 'api_platform.yml']);
-        $client->request(
-            'GET',
-            '/books.json',
-            ['search' => 'title: Symfony, Symfony;']
-        );
-
-        $crawler = $client->followRedirect();
-
-        self::assertEquals('http://localhost/books.json?search=title%3A%20Symfony%3B', $crawler->getUri());
-        self::assertInstanceOf(SearchCondition::class, $client->getRequest()->attributes->get('_api_search_condition'));
-        self::assertEquals('[]', $client->getResponse()->getContent());
-    }
-
     public function testInvalidConditionHasErrors()
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
