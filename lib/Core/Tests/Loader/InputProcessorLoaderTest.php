@@ -47,7 +47,6 @@ final class InputProcessorLoaderTest extends TestCase
     {
         return [
             ['json', Input\JsonInput::class],
-            ['xml', Input\XmlInput::class],
             ['array', Input\ArrayInput::class],
             ['string_query', Input\StringQueryInput::class],
             ['norm_string_query', Input\NormStringQueryInput::class],

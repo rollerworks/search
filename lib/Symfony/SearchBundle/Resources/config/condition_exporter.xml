@@ -25,8 +25,5 @@
         <service id="rollerworks_search.condition_exporter.json" class="Rollerworks\Component\Search\Exporter\JsonExporter">
             <tag name="rollerworks_search.condition_exporter" format="json" />
         </service>
-        <service id="rollerworks_search.condition_exporter.xml" class="Rollerworks\Component\Search\Exporter\XmlExporter">
-            <tag name="rollerworks_search.condition_exporter" format="xml" />
-        </service>
     </services>
 </container>
