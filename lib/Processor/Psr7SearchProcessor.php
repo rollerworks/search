@@ -133,7 +133,6 @@ final class Psr7SearchProcessor extends AbstractSearchProcessor
 
         try {
             $payload->searchCondition = $this->inputFactory->get($format)->process($config, $input);
-            $this->searchFactory->optimizeCondition($payload->searchCondition);
 
             $payload->searchCode = $this->uriEncoder->encodeUri(
                 $this->exportFactory->get('json')->exportCondition($payload->searchCondition)

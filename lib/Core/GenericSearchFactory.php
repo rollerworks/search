@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use Rollerworks\Component\Search\ConditionOptimizer\ChainOptimizer;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\TypeRegistry;
 
@@ -25,14 +24,12 @@ final class GenericSearchFactory implements SearchFactory
     private $registry;
     private $fieldSetRegistry;
     private $serializer;
-    private $optimizer;
 
-    public function __construct(TypeRegistry $registry, FieldSetRegistry $fieldSetRegistry, SearchConditionOptimizer $optimizer = null)
+    public function __construct(TypeRegistry $registry, FieldSetRegistry $fieldSetRegistry)
     {
         $this->registry = $registry;
         $this->fieldSetRegistry = $fieldSetRegistry;
         $this->serializer = new SearchConditionSerializer($this);
-        $this->optimizer = $optimizer ?? ChainOptimizer::create();
     }
 
     /**
@@ -79,13 +76,5 @@ final class GenericSearchFactory implements SearchFactory
     public function getSerializer(): SearchConditionSerializer
     {
         return $this->serializer;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function optimizeCondition(SearchCondition $condition): void
-    {
-        $this->optimizer->process($condition);
     }
 }

@@ -69,12 +69,4 @@ final class DateValueComparisonTest extends TestCase
 
         self::assertTrue($this->comparison->isLower($date1, $date2, []));
     }
-
-    /** @test */
-    public function its_incremented_value_is_one_day()
-    {
-        $date = new \DateTime('2013-09-21 12:46:00');
-
-        self::assertEquals(new \DateTime('2013-09-22 12:46:00'), $this->comparison->getIncrementedValue($date, []));
-    }
 }

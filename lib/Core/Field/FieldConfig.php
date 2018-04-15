@@ -62,8 +62,7 @@ interface FieldConfig
     public function setValueTypeSupport(string $type, bool $enabled);
 
     /**
-     * Set the {@link ValueComparator} instance for optimizing
-     * and validation.
+     * Set the {@link ValueComparator} instance for validation.
      *
      * @param ValueComparator $comparator
      */

@@ -41,7 +41,7 @@ final class CollectionDataProvider implements CollectionDataProviderInterface
      * @param ManagerRegistry                     $managerRegistry
      * @param QueryCollectionExtensionInterface[] $collectionExtensions
      */
-    public function __construct(ManagerRegistry $managerRegistry, array $collectionExtensions = [])
+    public function __construct(ManagerRegistry $managerRegistry, iterable $collectionExtensions = [])
     {
         $this->managerRegistry = $managerRegistry;
         $this->collectionExtensions = $collectionExtensions;

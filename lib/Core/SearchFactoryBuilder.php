@@ -50,11 +50,6 @@ final class SearchFactoryBuilder
     private $fieldSetRegistry;
 
     /**
-     * @var SearchConditionOptimizer
-     */
-    private $conditionOptimizer;
-
-    /**
      * Sets the factory for creating ResolvedFieldTypeInterface instances.
      *
      * @param ResolvedFieldTypeFactory $resolvedTypeFactory
@@ -64,20 +59,6 @@ final class SearchFactoryBuilder
     public function setResolvedTypeFactory(ResolvedFieldTypeFactory $resolvedTypeFactory)
     {
         $this->resolvedTypeFactory = $resolvedTypeFactory;
-
-        return $this;
-    }
-
-    /**
-     * Sets the default SearchCondition optimizer.
-     *
-     * @param SearchConditionOptimizer $conditionOptimizer
-     *
-     * @return $this The builder
-     */
-    public function setSearchConditionOptimizer(SearchConditionOptimizer $conditionOptimizer)
-    {
-        $this->conditionOptimizer = $conditionOptimizer;
 
         return $this;
     }
@@ -200,6 +181,6 @@ final class SearchFactoryBuilder
         $resolvedTypeFactory = $this->resolvedTypeFactory ?? new GenericResolvedFieldTypeFactory();
         $registry = new GenericTypeRegistry($extensions, $resolvedTypeFactory);
 
-        return new GenericSearchFactory($registry, $this->fieldSetRegistry ?? LazyFieldSetRegistry::create(), $this->conditionOptimizer);
+        return new GenericSearchFactory($registry, $this->fieldSetRegistry ?? LazyFieldSetRegistry::create());
     }
 }

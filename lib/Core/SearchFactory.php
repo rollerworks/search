@@ -55,11 +55,4 @@ interface SearchFactory
      * @return SearchConditionSerializer
      */
     public function getSerializer(): SearchConditionSerializer;
-
-    /**
-     * Tries to optimize the SearchCondition.
-     *
-     * @param SearchCondition $condition
-     */
-    public function optimizeCondition(SearchCondition $condition): void;
 }

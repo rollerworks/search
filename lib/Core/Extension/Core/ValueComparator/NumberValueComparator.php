@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 
-use Rollerworks\Component\Search\ValueIncrementer;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class NumberValueComparator implements ValueIncrementer
+final class NumberValueComparator implements ValueComparator
 {
     /**
      * Returns whether the first value is higher then the second value.

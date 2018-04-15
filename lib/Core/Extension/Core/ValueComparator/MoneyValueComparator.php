@@ -13,14 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 
-use Money\Money;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
-use Rollerworks\Component\Search\ValueIncrementer;
+use Rollerworks\Component\Search\ValueComparator;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class MoneyValueComparator implements ValueIncrementer
+final class MoneyValueComparator implements ValueComparator
 {
     /**
      * Returns whether the first value is higher then the second value.
@@ -70,39 +69,5 @@ final class MoneyValueComparator implements ValueIncrementer
     public function isEqual($value, $nextValue, array $options): bool
     {
         return $value->value->equals($nextValue->value);
-    }
-
-    /**
-     * Returns the incremented value of the input.
-     *
-     * The value should returned in the normalized format.
-     *
-     * @param MoneyValue $value      The value to increment
-     * @param array      $options    Array of options passed with the field
-     * @param int        $increments Number of increments
-     *
-     * @return MoneyValue
-     */
-    public function getIncrementedValue($value, array $options, int $increments = 1): MoneyValue
-    {
-        if (!isset($options['increase_by'])) {
-            $options['increase_by'] = 'cent';
-        }
-
-        // NB. Amount is in cents.
-        if ('amount' === $options['increase_by']) {
-            $amount = ceil($value->value->getAmount() / 100) * 100;
-
-            if ($increments > 1) {
-                $amount += ($increments - 1) * 100;
-            }
-
-            $newValue = new Money($amount, $value->value->getCurrency());
-        } else {
-            // Increase with n cent.
-            $newValue = $value->value->add(new Money($increments, $value->value->getCurrency()));
-        }
-
-        return new MoneyValue($newValue, $value->withCurrency);
     }
 }
