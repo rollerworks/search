@@ -56,9 +56,6 @@ final class ConditionExporterLoader
                     'rollerworks_search.condition_exporter.json' => function () {
                         return new Exporter\JsonExporter();
                     },
-                    'rollerworks_search.condition_exporter.xml' => function () {
-                        return new Exporter\XmlExporter();
-                    },
                     'rollerworks_search.condition_exporter.string_query' => function () {
                         return new Exporter\StringQueryExporter();
                     },
@@ -70,7 +67,6 @@ final class ConditionExporterLoader
             [
                 'array' => 'rollerworks_search.condition_exporter.array',
                 'json' => 'rollerworks_search.condition_exporter.json',
-                'xml' => 'rollerworks_search.condition_exporter.xml',
                 'string_query' => 'rollerworks_search.condition_exporter.string_query',
                 'norm_string_query' => 'rollerworks_search.condition_exporter.norm_string_query',
             ]

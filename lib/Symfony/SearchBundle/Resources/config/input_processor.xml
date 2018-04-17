@@ -27,8 +27,5 @@
         <service id="rollerworks_search.input.json" class="Rollerworks\Component\Search\Input\JsonInput" parent="rollerworks_search.input.abstract">
             <tag name="rollerworks_search.input_processor" format="json" />
         </service>
-        <service id="rollerworks_search.input.xml" class="Rollerworks\Component\Search\Input\XmlInput" parent="rollerworks_search.input.abstract">
-            <tag name="rollerworks_search.input_processor" format="xml" />
-        </service>
     </services>
 </container>
