@@ -5,6 +5,38 @@ UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
 
 * The ConditionOptimizers have been removed.
 
+### ApiPlatform
+
+ * The `ApiSearchProcessor` has been removed.
+ 
+ * The `SearchConditionListener` constructor changed:
+ 
+    **Before:**
+ 
+    ```
+    SearchFactory $searchFactory
+    SearchProcessor $searchProcessor
+    UrlGeneratorInterface $urlGenerator
+    ResourceMetadataFactory $resourceMetadataFactory
+    EventDispatcherInterface $eventDispatcher
+    ```
+   
+    **After:**
+   
+    ``` 
+    SearchFactory $searchFactory
+    InputProcessorLoader $inputProcessorLoader
+    ResourceMetadataFactory $resourceMetadataFactory
+    EventDispatcherInterface $eventDispatcher
+    CacheInterface $cache = null
+    ```
+    
+    The `$cache` argument is optional and only used when the TTL of the
+    processor is configured.
+    
+ * The caching moved to Input `ProcessorConfig` class, the metadata 
+   configuration format has remained unchanged.
+
 UPGRADE FROM 2.0-ALPHA5 to 2.0-ALPHA8
 =====================================
 

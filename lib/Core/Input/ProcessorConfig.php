@@ -43,6 +43,11 @@ class ProcessorConfig
     private $fieldSet;
 
     /**
+     * @var null|int|\DateInterval
+     */
+    private $cacheTTL;
+
+    /**
      * @param FieldSet $fieldSet
      */
     public function __construct(FieldSet $fieldSet)
@@ -119,5 +124,25 @@ class ProcessorConfig
     public function getMaxGroups(): int
     {
         return $this->maxGroups;
+    }
+
+    /**
+     * @param null|int|\DateInterval $cacheTTL
+     *
+     * @return ProcessorConfig
+     */
+    public function setCacheTTL($cacheTTL): self
+    {
+        $this->cacheTTL = $cacheTTL;
+
+        return $this;
+    }
+
+    /**
+     * @return null|int|\DateInterval
+     */
+    public function getCacheTTL()
+    {
+        return $this->cacheTTL;
     }
 }
