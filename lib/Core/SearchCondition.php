@@ -53,6 +53,11 @@ class SearchCondition
         return $this->preCondition;
     }
 
+    public function isEmpty(): bool
+    {
+        return 0 === count($this->values->getGroups()) && 0 === count($this->values->getFields());
+    }
+
     /**
      * Checks that the FieldSet of this condition is supported
      * by the contexts it's used in.
