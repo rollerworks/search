@@ -84,24 +84,4 @@ class ProcessorConfig extends \Rollerworks\Component\Search\Input\ProcessorConfi
     {
         return $this->defaultFormat;
     }
-
-    /**
-     * @param int $cacheTTL
-     *
-     * @return ProcessorConfig
-     */
-    public function setCacheTTL(int $cacheTTL): self
-    {
-        $this->cacheTTL = $cacheTTL;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCacheTTL(): ?int
-    {
-        return $this->cacheTTL;
-    }
 }

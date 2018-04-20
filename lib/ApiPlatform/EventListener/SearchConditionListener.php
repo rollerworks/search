@@ -13,53 +13,50 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\EventListener;
 
-use ApiPlatform\Core\Api\UrlGeneratorInterface;
 use ApiPlatform\Core\Exception\RuntimeException;
 use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface as ResourceMetadataFactory;
+use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\ApiPlatform\SearchConditionEvent;
-use Rollerworks\Component\Search\Processor\ProcessorConfig;
-use Rollerworks\Component\Search\Processor\SearchProcessor;
+use Rollerworks\Component\Search\Input\CachingInputProcessor;
+use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Loader\InputProcessorLoader;
+use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  * SearchConditionListener handles search conditions provided with the Request query.
  *
- * The condition is expected to be provided as an ArrayInput format at `search`.
+ * The condition is expected to be provided as an ArrayInput or NormStringQuery format at `search`.
  * After this the Request attribute `_api_search_condition` is set with SearchCondition object.
  *
- * When there is an error the processor is expected to throw an exception.
- * Exceptions are not handled by this listener!
+ * Note: Processing Exceptions are not handled by this listener, but handled by the Exception
+ * Listener of the ApiPlatform.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 final class SearchConditionListener
 {
     private $searchFactory;
-    private $searchProcessor;
-    private $urlGenerator;
+    private $inputProcessorLoader;
     private $resourceMetadataFactory;
     private $eventDispatcher;
+    private $cache;
 
-    /**
-     * Constructor.
-     *
-     * @param SearchFactory            $searchFactory
-     * @param SearchProcessor          $searchProcessor         ApiSearchProcessor instance
-     * @param UrlGeneratorInterface    $urlGenerator
-     * @param ResourceMetadataFactory  $resourceMetadataFactory
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function __construct(SearchFactory $searchFactory, SearchProcessor $searchProcessor, UrlGeneratorInterface $urlGenerator, ResourceMetadataFactory $resourceMetadataFactory, EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        SearchFactory $searchFactory,
+        InputProcessorLoader $inputProcessorLoader,
+        ResourceMetadataFactory $resourceMetadataFactory,
+        EventDispatcherInterface $eventDispatcher,
+        CacheInterface $cache = null
+    ) {
         $this->searchFactory = $searchFactory;
-        $this->searchProcessor = $searchProcessor;
-        $this->urlGenerator = $urlGenerator;
+        $this->inputProcessorLoader = $inputProcessorLoader;
         $this->resourceMetadataFactory = $resourceMetadataFactory;
         $this->eventDispatcher = $eventDispatcher;
+        $this->cache = $cache;
     }
 
     /**
@@ -87,32 +84,18 @@ final class SearchConditionListener
 
         $searchConfig = $this->resolveSearchConfiguration($searchConfig, $resourceClass, $request);
 
-        $config = new ProcessorConfig($this->searchFactory->createFieldSet($searchConfig['fieldset']), 'norm_string_query');
+        $config = new ProcessorConfig($this->searchFactory->createFieldSet($searchConfig['fieldset']));
         $this->configureProcessor($config, $searchConfig, $resourceClass);
-        $payload = $this->searchProcessor->processRequest($request, $config);
 
-        if ($payload->isValid() && $payload->isChanged()) {
-            $routeArguments = array_merge(
-                $request->query->all(),
-                $this->resolveRouteArguments($request), // Execute after query to prevent overwriting.
-                ['search' => $payload->exportedCondition]
-            );
-
-            $event->setResponse(new RedirectResponse(
-                $this->urlGenerator->generate($request->attributes->get('_route'), $routeArguments)
-            ));
-
-            return;
-        }
-
-        $conditionEvent = new SearchConditionEvent($payload->searchCondition, $resourceClass, $request);
+        $condition = $this->getCondition($request, $config);
+        $conditionEvent = new SearchConditionEvent($condition, $resourceClass, $request);
 
         // First Dispatch a specific event to for this resource-class and then a generic one for ease of listening.
         // Note. If propagation is stopped for specific listener the generic listener is ignored.
         $this->eventDispatcher->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT.$resourceClass, $conditionEvent);
         $this->eventDispatcher->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT, $conditionEvent);
 
-        $request->attributes->set('_api_search_condition', $payload->searchCondition);
+        $request->attributes->set('_api_search_condition', $condition);
     }
 
     private function resolveSearchConfiguration(array $searchConfig, string $resourceClass, Request $request): array
@@ -176,18 +159,21 @@ final class SearchConditionListener
         }
     }
 
-    private function resolveRouteArguments(Request $request): array
+    private function getCondition(Request $request, ProcessorConfig $config): SearchCondition
     {
-        $values = [];
+        $input = $request->query->get('search', '');
+        $format = is_array($input) ? 'array' : 'norm_string_query';
+        $inputProcessor = $this->inputProcessorLoader->get($format);
 
-        foreach ($request->attributes->get('_route_params', []) as $name => $value) {
-            if (('_locale' !== $name && '_format' !== $name && '_' === $name[0]) || is_array($value)) {
-                continue;
-            }
-
-            $values[$name] = $value;
+        if (null !== $this->cache && null !== $ttl = $config->getCacheTTL()) {
+            $inputProcessor = new CachingInputProcessor(
+                $this->cache,
+                $this->searchFactory->getSerializer(),
+                $inputProcessor,
+                $ttl
+            );
         }
 
-        return $values;
+        return $inputProcessor->process($config, $input);
     }
 }

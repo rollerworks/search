@@ -18,7 +18,6 @@ parameters:
         - '#Call to an undefined static method Money\\Money\:\:#'
         - '#Call to an undefined method Exception\:\:getErrors\(\)#'
         - '#Call to an undefined method object\:\:[a-z]+\(\)#i'
-        - '#Parameter \#\d \$searchCondition of class Rollerworks\\Component\\Search\\ApiPlatform\\SearchConditionEvent constructor expects Rollerworks\\Component\\Search\\SearchCondition\|null, array\|Rollerworks\\Component\\Search\\SearchCondition\|null given#'
         - '#Strict comparison using [!=]== between (null|string) and (float\|int|string) will always evaluate to (true|false)#'
         - '#Strict comparison using !== between (false|null) and (array\|true|int) will always evaluate to true#'
         - '#Parameter \#3 \$previous of class PHPUnit\\Framework\\Exception constructor expects Exception\|null, Throwable given#'

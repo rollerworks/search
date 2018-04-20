@@ -7,24 +7,17 @@
     <services>
         <defaults public="false" />
 
-            <service id="rollerworks_search.api_platform.search_processor" class="Rollerworks\Component\Search\ApiPlatform\Processor\ApiSearchProcessor">
+        <service id="rollerworks_search.api_platform.event_listener.condition" class="Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener">
             <argument type="service" id="rollerworks_search.factory" />
             <argument type="service" id="rollerworks_search.input_loader" />
-            <argument type="service" id="rollerworks_search.exporter_loader" />
+            <argument type="service" id="api_platform.metadata.resource.metadata_factory" />
+            <argument type="service" id="event_dispatcher" />
 
             <argument type="service">
                 <service class="Symfony\Component\Cache\Simple\Psr6Cache">
                     <argument id="rollerworks.search_processor.cache" type="service" />
                 </service>
             </argument>
-        </service>
-
-        <service id="rollerworks_search.api_platform.event_listener.condition" class="Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener">
-            <argument type="service" id="rollerworks_search.factory" />
-            <argument type="service" id="rollerworks_search.api_platform.search_processor" />
-            <argument type="service" id="api_platform.router" />
-            <argument type="service" id="api_platform.metadata.resource.metadata_factory" />
-            <argument type="service" id="event_dispatcher" />
 
             <!-- kernel.request priority must be < 8 && > 4 to be executed after the Firewall but before ReadListener -->
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="5" />
