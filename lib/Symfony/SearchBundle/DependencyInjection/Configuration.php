@@ -17,8 +17,6 @@ use Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListen
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\Elasticsearch\ElasticsearchFactory;
-use Rollerworks\Component\Search\Processor\Psr7SearchProcessor;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -34,17 +32,6 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('rollerworks_search');
-
-        $rootNode
-            ->children()
-                ->arrayNode('processor')
-                    ->info('SearchProcessor configuration')
-                    ->{class_exists(Psr7SearchProcessor::class) && interface_exists(HttpFoundationFactoryInterface::class) ? 'canBeDisabled' : 'canBeEnabled'}()
-                    ->children()
-                        ->booleanNode('disable_cache')->defaultFalse()->end()
-                    ->end()
-                ->end()
-            ->end();
 
         $this->addDoctrineSection($rootNode);
         $this->addApiPlatformSection($rootNode);

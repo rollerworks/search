@@ -39,10 +39,6 @@ parameters:
         ## Needs investigation
         - '#ChoiceView constructor expects string, false|string given#' # I don't know if there is good reason to allow bool here - @sstok
 
-        ## Bug in phpstan
-        - '#Parameter \#1 \$parameters of method Rollerworks\\Component\\Search\\Processor\\AbstractSearchProcessor\:\:getRequestParam\(\) expects array, array\|object\|null given#'
-        - '#Parameter \#\d \$format of method Rollerworks\\Component\\Search\\Processor\\Psr7SearchProcessor\:\:(processInput|exportCondition)\(\) expects ([^,]+), ([^\s]+) given#'
-
         # Tests
 
         ## Prophecy

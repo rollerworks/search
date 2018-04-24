@@ -13,22 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional;
 
-use Rollerworks\Component\Search\Processor\Psr7SearchProcessor;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
-
 final class SearchProcessorTest extends FunctionalTestCase
 {
-    public static function setUpBeforeClass()
-    {
-        if (!class_exists(Psr7SearchProcessor::class)) {
-            self::markTestSkipped('rollerworks/search-processor is not installed.');
-        }
-
-        if (!interface_exists(HttpFoundationFactoryInterface::class)) {
-            self::markTestSkipped('symfony/psr-http-message-bridge is not installed.');
-        }
-    }
-
     public function testEmptySearchCodeIsValid()
     {
         $client = self::newClient(['config' => 'search_processor.yml']);
@@ -38,7 +24,7 @@ final class SearchProcessorTest extends FunctionalTestCase
         $this->assertEquals('VALID: EMPTY', $client->getResponse()->getContent());
     }
 
-    public function testPostNewCondition()
+    public function testPostCondition()
     {
         $client = self::newClient(['config' => 'search_processor.yml']);
 
@@ -46,12 +32,12 @@ final class SearchProcessorTest extends FunctionalTestCase
         $crawler = $client->followRedirect();
 
         self::assertEquals(
-            'http://localhost/search?search=eJyrVkrLTM1JKVayqlbKS8xNBdHFmbkFOam6ZYk5palAiWil0uLUIqXY2tpaAHvfEH0~string_query',
+            'http://localhost/search?search=name%3A%20user%3B',
             $crawler->getUri()
         );
 
         self::assertEquals(
-            'VALID: eJyrVkrLTM1JKVayqlbKS8xNBdHFmbkFOam6ZYk5palAiWil0uLUIqXY2tpaAHvfEH0~string_query',
+            'VALID: name: user;',
             $client->getResponse()->getContent()
         );
     }
@@ -60,7 +46,7 @@ final class SearchProcessorTest extends FunctionalTestCase
     {
         $client = self::newClient(['config' => 'search_processor.yml']);
 
-        $client->request('POST', '/search', ['search' => 'first-name: user;']);
+        $client->request('GET', '/search?search=first-name%3A%20user%3B');
 
         $this->assertEquals('INVALID: <ul><li>Field first-name is not registered in the FieldSet or available as alias.</li></ul>', $client->getResponse()->getContent());
     }
