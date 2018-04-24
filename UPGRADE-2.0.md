@@ -3,7 +3,71 @@ UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
 
 ### Core
 
-* The ConditionOptimizers have been removed.
+ * The ConditionOptimizers have been removed.
+
+### Processor
+
+ * The SearchProcessor Component has been removed, use the InputProcessor
+   directly now instead.
+   
+   **Before:**
+   
+   ```php
+   $inputProcessorLoader = Loader\InputProcessorLoader::create();
+   $conditionExporterLoader = Loader\ConditionExporterLoader::create();    
+   $processor = new Psr7SearchProcessor($searchFactory, $inputProcessorLoader, $conditionExporterLoader);
+   
+   $request = ...; // A PSR-7 ServerRequestInterface object instance
+   
+   $processorConfig = new ProcessorConfig($userFieldSet);
+   $searchPayload = $processor->processRequest($request, $processorConfig);
+   
+   if ($searchPayload->isChanged() && $searchPayload->isValid()) {
+       header('Location: /search?search='.$searchPayload->searchCode);
+       exit();
+   }
+   
+   if (!$payload->isValid()) {
+       foreach ($payload->messages as $error) {
+          echo (string) $error.PHP_EOL;
+       }
+   }
+   
+   // Notice: This is null when there are errors, when the condition is valid but has
+   // no fields/values this is an empty SearchCondition object.
+   $condition = $payload->searchCondition;
+   ```
+   
+   **After:**
+   
+   ```php
+   // ...
+   
+   $inputProcessor = new StringQueryInput(); // Can be wrapped in a CachingInputProcessor
+   $processorConfig = new ProcessorConfig($fieldSet);
+   
+   $request = ...; // A PSR-7 ServerRequestInterface object instance
+   
+   try {
+       if ($request->getMethod() === 'POST') {
+           $query = $request->getQueryParams()['search'] ?? '';
+           
+           header('Location: /search?search='.$searchPayload->searchCode);
+           exit();
+           
+           // return new RedirectResponse($request->getRequestUri().'?search='.$query);
+       }
+       
+       $query = $request->getParsedBody()['search'] ?? '';
+       $condition = $inputProcessor->process($processorConfig, $query);
+       
+       // Use condition
+   } catch (InvalidSearchConditionException $e) {
+       foreach ($e->getErrors() as $error) {
+          echo (string) $error.PHP_EOL;
+       }
+   }
+   ```
 
 ### ApiPlatform
 

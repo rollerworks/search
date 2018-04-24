@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\Processor\CachedSearchProcessor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
@@ -35,12 +34,6 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
 
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
-
-        if ($this->isConfigEnabled($container, $config['processor'])) {
-            $loader->load('search_processor.xml');
-
-            $this->configureProcessor($container, $config);
-        }
 
         if ($this->isConfigEnabled($container, $config['doctrine']['dbal'])) {
             $loader->load('doctrine_dbal.xml');
@@ -88,18 +81,16 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
 
     public function prepend(ContainerBuilder $container)
     {
-        if (class_exists(CachedSearchProcessor::class)) {
-            $container->prependExtensionConfig('framework', [
-                'cache' => [
-                    'pools' => [
-                        'rollerworks.search_processor.cache' => [
-                            'adapter' => 'cache.adapter.psr6',
-                            'provider' => 'rollerworks_search.cache.adapter.array',
-                        ],
+        $container->prependExtensionConfig('framework', [
+            'cache' => [
+                'pools' => [
+                    'rollerworks.search_processor.cache' => [
+                        'adapter' => 'cache.adapter.psr6',
+                        'provider' => 'rollerworks_search.cache.adapter.array',
                     ],
                 ],
-            ]);
-        }
+            ],
+        ]);
 
         if (class_exists(Translator::class)) {
             $container->prependExtensionConfig('framework', [
@@ -109,23 +100,6 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
                     ],
                 ],
             ]);
-        }
-    }
-
-    private function configureProcessor(ContainerBuilder $container, array $config)
-    {
-        if (!interface_exists(\Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface::class)) {
-            throw new LogicException('SearchProcessor support cannot be enabled as the Symfony PsrHttpMessage Bridge is not installed.');
-        }
-
-        if (!class_exists(\Zend\Diactoros\ServerRequest::class)) {
-            throw new LogicException('SearchProcessor support cannot be enabled as the Zend Diactoros component is not installed.');
-        }
-
-        if ($config['processor']['disable_cache']) {
-            $container->setAlias('rollerworks_search.default_search_processor', 'rollerworks_search.psr7_search_processor');
-        } else {
-            $container->setAlias('rollerworks_search.default_search_processor', 'rollerworks_search.cached_search_processor');
         }
     }
 }

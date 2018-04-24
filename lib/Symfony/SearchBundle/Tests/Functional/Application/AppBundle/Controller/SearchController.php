@@ -15,8 +15,9 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle
 
 use Rollerworks\Bundle\SearchBundle\Tests\Fixtures\FieldSet\UserFieldSet;
 use Rollerworks\Component\Search\ConditionErrorMessage;
-use Rollerworks\Component\Search\Processor\ProcessorConfig;
-use Rollerworks\Component\Search\Processor\SearchProcessor;
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Loader\InputProcessorLoader;
 use Rollerworks\Component\Search\SearchFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,39 +27,45 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class SearchController
 {
     private $searchFactory;
-    private $searchProcessor;
+    private $inputProcessorLoader;
     private $urlGenerator;
 
-    public function __construct(SearchFactory $searchFactory, SearchProcessor $searchProcessor, UrlGeneratorInterface $urlGenerator)
+    public function __construct(SearchFactory $searchFactory, InputProcessorLoader $inputProcessorLoader, UrlGeneratorInterface $urlGenerator)
     {
         $this->searchFactory = $searchFactory;
-        $this->searchProcessor = $searchProcessor;
+        $this->inputProcessorLoader = $inputProcessorLoader;
         $this->urlGenerator = $urlGenerator;
     }
 
     public function __invoke(Request $request)
     {
-        $config = new ProcessorConfig($this->searchFactory->createFieldSet(UserFieldSet::class));
-        $payload = $this->searchProcessor->processRequest($request, $config);
-
-        if ($payload->isChanged() && $payload->isValid()) {
-            return new RedirectResponse($this->urlGenerator->generate('search', ['search' => $payload->searchCode]));
+        if ($request->isMethod('POST')) {
+            return new RedirectResponse($this->urlGenerator->generate('search', ['search' => $request->request->get('search', '')]));
         }
 
-        if ($payload->isValid()) {
-            return new Response('VALID: '.($payload->searchCode ?: 'EMPTY'));
-        }
+        try {
+            $inputProcessor = $this->inputProcessorLoader->get('string_query');
+            $processorConfig = new ProcessorConfig($this->searchFactory->createFieldSet(UserFieldSet::class));
 
-        return new Response(
-            'INVALID: <ul>'.implode(
-                "\n",
-                array_map(
-                    function (ConditionErrorMessage $e) {
-                        return '<li>'.$e->message.'</li>';
-                    },
-                    $payload->messages
-                )
-            ).'</ul>', 500
-        );
+            $condition = $inputProcessor->process($processorConfig, $query = $request->query->get('search', ''));
+
+            if ($condition->isEmpty()) {
+                return new Response('VALID: EMPTY');
+            }
+
+            return new Response('VALID: '.($query ?: 'EMPTY'));
+        } catch (InvalidSearchConditionException $e) {
+            return new Response(
+                'INVALID: <ul>'.implode(
+                    "\n",
+                    array_map(
+                        function (ConditionErrorMessage $e) {
+                            return '<li>'.$e->message.'</li>';
+                        },
+                        $e->getErrors()
+                    )
+                ).'</ul>', 500
+            );
+        }
     }
 }

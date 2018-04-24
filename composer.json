@@ -34,7 +34,6 @@
         "phpunit/phpunit": "^6.5.4",
         "phpunit/phpunit-mock-objects": "^5.0",
         "psr/simple-cache": "^1.0.0",
-        "rollerworks/uri-encoder": "^1.1.0 || ^2.0",
         "ruflin/elastica": "^3.2 || ^6.0.0",
         "symfony/asset": "^3.4.2 || ^4.0",
         "symfony/browser-kit": "^3.4.2 || ^4.0",
@@ -42,13 +41,11 @@
         "symfony/framework-bundle": "^3.4.2 || ^4.0",
         "symfony/http-foundation": "^3.4.2 || ^4.0",
         "symfony/phpunit-bridge": "^3.4.2 || ^4.0",
-        "symfony/psr-http-message-bridge": "^1.0",
         "symfony/routing": "^3.4.2 || ^4.0",
         "symfony/templating": "^3.4.2 || ^4.0",
         "symfony/twig-bundle": "^3.4.2 || ^4.0",
         "symfony/validator": "^3.4.2 || ^4.0",
-        "symfony/var-dumper": "^3.4.2 || ^4.0",
-        "zendframework/zend-diactoros": "^1.4.0"
+        "symfony/var-dumper": "^3.4.2 || ^4.0"
     },
     "suggest": {
         "moneyphp/money": "To use the MoneyType"
@@ -63,7 +60,6 @@
         "rollerworks/search-doctrine-dbal": "self.version",
         "rollerworks/search-doctrine-orm": "self.version",
         "rollerworks/search-elasticsearch": "self.version",
-        "rollerworks/search-processor": "self.version",
         "rollerworks/search-symfony-validator": "self.version"
     },
     "autoload": {
@@ -75,7 +71,6 @@
             "Rollerworks\\Component\\Search\\Doctrine\\Orm\\": "lib/Doctrine/Orm",
             "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Orm\\": "lib/Doctrine/Orm/Extension",
             "Rollerworks\\Component\\Search\\Elasticsearch\\": "lib/Elasticsearch",
-            "Rollerworks\\Component\\Search\\Processor\\": "lib/Processor",
             "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\": "lib/Symfony/Validator",
             "Rollerworks\\Bundle\\SearchBundle\\": "lib/Symfony/SearchBundle"
         }
