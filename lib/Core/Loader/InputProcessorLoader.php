@@ -54,9 +54,6 @@ final class InputProcessorLoader
         return new self(
             new ClosureContainer(
                 [
-                    'rollerworks_search.input.array' => function () use ($validator) {
-                        return new Input\ArrayInput($validator);
-                    },
                     'rollerworks_search.input.json' => function () use ($validator) {
                         return new Input\JsonInput($validator);
                     },
@@ -69,7 +66,6 @@ final class InputProcessorLoader
                 ]
             ),
             [
-                'array' => 'rollerworks_search.input.array',
                 'json' => 'rollerworks_search.input.json',
                 'string_query' => 'rollerworks_search.input.string_query',
                 'norm_string_query' => 'rollerworks_search.input.norm_string_query',

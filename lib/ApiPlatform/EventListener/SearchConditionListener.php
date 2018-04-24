@@ -29,7 +29,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 /**
  * SearchConditionListener handles search conditions provided with the Request query.
  *
- * The condition is expected to be provided as an ArrayInput or NormStringQuery format at `search`.
+ * The condition is expected to be provided as an JsonInput or NormStringQuery format at `search`.
  * After this the Request attribute `_api_search_condition` is set with SearchCondition object.
  *
  * Note: Processing Exceptions are not handled by this listener, but handled by the Exception
@@ -164,7 +164,7 @@ final class SearchConditionListener
         $input = $request->query->get('search', '');
 
         if (is_array($input)) {
-            @trigger_error('ArrayInput is no longer supported, and will throw an exception after RollerworksSearch v2.0.0-ALPHA11, use a json object instead.', E_USER_DEPRECATED);
+            @trigger_error('ArrayInput is no longer supported, and will throw an exception after RollerworksSearch v2.0.0-ALPHA11, use a json-object string instead.', E_USER_DEPRECATED);
 
             $input = json_encode($input);
             $format = 'json';

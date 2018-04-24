@@ -50,9 +50,6 @@ final class ConditionExporterLoader
         return new self(
             new ClosureContainer(
                 [
-                    'rollerworks_search.condition_exporter.array' => function () {
-                        return new Exporter\ArrayExporter();
-                    },
                     'rollerworks_search.condition_exporter.json' => function () {
                         return new Exporter\JsonExporter();
                     },
@@ -65,7 +62,6 @@ final class ConditionExporterLoader
                 ]
             ),
             [
-                'array' => 'rollerworks_search.condition_exporter.array',
                 'json' => 'rollerworks_search.condition_exporter.json',
                 'string_query' => 'rollerworks_search.condition_exporter.string_query',
                 'norm_string_query' => 'rollerworks_search.condition_exporter.norm_string_query',

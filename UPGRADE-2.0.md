@@ -4,6 +4,10 @@ UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
 ### Core
 
  * The ConditionOptimizers have been removed.
+ 
+ * The ArrayInput processor has been removed.
+ 
+ * The XmlInput processor has been removed.
 
 ### Processor
 
@@ -68,6 +72,9 @@ UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
        }
    }
    ```
+   
+   **Note:** The ArrayInput processor has been removed, only string input types
+   (StringInput and JsonInput) are accepted now.
 
 ### ApiPlatform
 
