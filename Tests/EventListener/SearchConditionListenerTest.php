@@ -88,7 +88,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_sets_search_condition_and_config_for_array_qeury()
+    public function it_sets_search_condition_and_config_for_json_query()
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -110,13 +110,13 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $httpKernel = $this->createMock(HttpKernelInterface::class);
         $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
 
-        $request = new Request(['search' => ['foobar']], [], ['_api_resource_class' => Dummy::class]);
+        $request = new Request(['search' => '{"fields:": ["foobar"]}'], [], ['_api_resource_class' => Dummy::class]);
         $eventDispatcher = $this->expectingCallEventDispatcher($request);
 
         $inputProcessor = new SpyingInputProcessor();
         $listener = new SearchConditionListener(
             $this->getFactory(),
-            $this->createProcessorLoader($inputProcessor, 'array'),
+            $this->createProcessorLoader($inputProcessor, 'json'),
             $resourceMetadataFactory,
             $eventDispatcher
         );
@@ -132,7 +132,62 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             ],
             $request->attributes->all()
         );
-        self::assertEquals(['foobar'], $inputProcessor->getInput());
+        self::assertEquals('{"fields:": ["foobar"]}', $inputProcessor->getInput());
+
+        $config = $inputProcessor->getConfig();
+        self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
+    }
+
+    /**
+     * @test
+     * @group legacy
+     * @expectedDeprecation ArrayInput is no longer supported, and will throw an exception after v2.0.0-ALPHA11, use a json object instead.
+     */
+    public function it_sets_search_condition_and_config_for_array_query()
+    {
+        $dummyMetadata = new ResourceMetadata(
+            'dummy',
+            'dummy',
+            '#dummy',
+            [],
+            [],
+            [
+                'rollerworks_search' => [
+                    'contexts' => [
+                        '_any' => [
+                            'fieldset' => BookFieldSet::class,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $httpKernel = $this->createMock(HttpKernelInterface::class);
+        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
+
+        $request = new Request(['search' => ['foobar' => 'he']], [], ['_api_resource_class' => Dummy::class]);
+        $eventDispatcher = $this->expectingCallEventDispatcher($request);
+
+        $inputProcessor = new SpyingInputProcessor();
+        $listener = new SearchConditionListener(
+            $this->getFactory(),
+            $this->createProcessorLoader($inputProcessor, 'json'),
+            $resourceMetadataFactory,
+            $eventDispatcher
+        );
+
+        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+
+        self::assertEquals(
+            [
+                '_api_resource_class' => Dummy::class,
+                '_api_search_config' => ['fieldset' => BookFieldSet::class],
+                '_api_search_context' => '_any',
+                '_api_search_condition' => SpyingInputProcessor::getCondition(),
+            ],
+            $request->attributes->all()
+        );
+        self::assertJsonStringEqualsJsonString('{"foobar": "he"}', $inputProcessor->getInput());
 
         $config = $inputProcessor->getConfig();
         self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
