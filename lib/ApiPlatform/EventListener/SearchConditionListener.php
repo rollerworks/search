@@ -162,7 +162,16 @@ final class SearchConditionListener
     private function getCondition(Request $request, ProcessorConfig $config): SearchCondition
     {
         $input = $request->query->get('search', '');
-        $format = is_array($input) ? 'array' : 'norm_string_query';
+
+        if (is_array($input)) {
+            @trigger_error('ArrayInput is no longer supported, and will throw an exception after v2.0.0-ALPHA11, use a json object instead.', E_USER_DEPRECATED);
+
+            $input = json_encode($input);
+            $format = 'json';
+        } else {
+            $format = '{' === ($input[0] ?? 'n') ? 'json' : 'norm_string_query';
+        }
+
         $inputProcessor = $this->inputProcessorLoader->get($format);
 
         if (null !== $this->cache && null !== $ttl = $config->getCacheTTL()) {
