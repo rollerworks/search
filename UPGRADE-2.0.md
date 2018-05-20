@@ -100,6 +100,12 @@ UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
     
  * The caching moved to Input `ProcessorConfig` class, the metadata 
    configuration format has remained unchanged.
+ 
+ * The Input format is now automatically detected by the first character.
+   
+ * ArrayInput is deprecated and is internally delegated to the 
+   JsonInputProcessor. In RollerworksSearch v2.0.0-ALPHA12 support for 
+   ArrayInput is completely removed and will throw an exception instead.
 
 UPGRADE FROM 2.0-ALPHA5 to 2.0-ALPHA8
 =====================================

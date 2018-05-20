@@ -164,7 +164,7 @@ final class SearchConditionListener
         $input = $request->query->get('search', '');
 
         if (is_array($input)) {
-            @trigger_error('ArrayInput is no longer supported, and will throw an exception after v2.0.0-ALPHA11, use a json object instead.', E_USER_DEPRECATED);
+            @trigger_error('ArrayInput is no longer supported, and will throw an exception after RollerworksSearch v2.0.0-ALPHA11, use a json object instead.', E_USER_DEPRECATED);
 
             $input = json_encode($input);
             $format = 'json';
