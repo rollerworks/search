@@ -141,7 +141,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     /**
      * @test
      * @group legacy
-     * @expectedDeprecation ArrayInput is no longer supported, and will throw an exception after v2.0.0-ALPHA11, use a json object instead.
+     * @expectedDeprecation ArrayInput is no longer supported, and will throw an exception after RollerworksSearch v2.0.0-ALPHA11, use a json object instead.
      */
     public function it_sets_search_condition_and_config_for_array_query()
     {
