@@ -116,7 +116,7 @@ class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerat
                 "\n".
                 serialize($searchCondition->getValuesGroup()).
                 "\n".
-                serialize($searchCondition->getPreCondition()).
+                serialize($searchCondition->getPrimaryCondition()).
                 "\n".
                 serialize($this->conditionGenerator->getFieldsConfig()->getFields())
             );

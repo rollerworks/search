@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Doctrine\Dbal\SqlConditionGenerator;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\SearchPreCondition;
+use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class CachedConditionGeneratorTest extends DbalTestCase
@@ -239,7 +239,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         self::assertEquals('((I.id IN(18)))', $this->cachedConditionGenerator->getWhereClause());
     }
 
-    public function testGetWhereClauseCachedAndPreCond()
+    public function testGetWhereClauseCachedAndPrimaryCond()
     {
         $fieldSet = $this->getFieldSet();
 
@@ -247,8 +247,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         $cacheDriver->has('7503457faa505a978544359616a2b503638538170931ce460b69fcf35566f771')->willReturn(true);
         $cacheDriver->get('7503457faa505a978544359616a2b503638538170931ce460b69fcf35566f771')->willReturn("me = 'foo'");
 
-        $cacheDriver->has('cb136884ef8b94935e3df27498f8882cce67a40ba5f6e6eb30ba7c6b4db65841')->willReturn(true);
-        $cacheDriver->get('cb136884ef8b94935e3df27498f8882cce67a40ba5f6e6eb30ba7c6b4db65841')->willReturn("you = 'me' AND me = 'foo'");
+        $cacheDriver->has('55a05d0537821dd5ae26cfc4e1f4ea5fda29bf8d881554a1b629a45c78bfbf51')->willReturn(true);
+        $cacheDriver->get('55a05d0537821dd5ae26cfc4e1f4ea5fda29bf8d881554a1b629a45c78bfbf51')->willReturn("you = 'me' AND me = 'foo'");
 
         $cachedConditionGenerator = $this->createCachedConditionGenerator(
             $cacheDriver->reveal(),
@@ -257,7 +257,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         );
 
         $searchCondition = new SearchCondition($fieldSet, new ValuesGroup());
-        $searchCondition->setPreCondition(new SearchPreCondition(new ValuesGroup()));
+        $searchCondition->setPrimaryCondition(new SearchPrimaryCondition(new ValuesGroup()));
 
         $cachedConditionGenerator2 = $this->createCachedConditionGenerator(
             $cacheDriver->reveal(),
