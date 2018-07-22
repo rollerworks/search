@@ -18,9 +18,9 @@ use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * The SearchConditionEvent allows to set a pre-condition.
+ * The SearchConditionEvent allows to set a primary-condition.
  *
- * Call getSearchCondition()->setPreCondition() to set a pre-condition.
+ * Call getSearchCondition()->setPrimaryCondition() to set a primary-condition.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -29,7 +29,7 @@ final class SearchConditionEvent extends Event
     /**
      * @Event
      */
-    public const SEARCH_CONDITION_EVENT = 'rollerworks_search.process.pre_condition';
+    public const SEARCH_CONDITION_EVENT = 'rollerworks_search.process.primary_condition';
 
     private $searchCondition;
     private $resourceClass;
