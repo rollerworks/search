@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\SearchPreCondition;
+use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -89,7 +89,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         $this->assertEquals('', $conditionGenerator->getWhereClause('WHERE '));
     }
 
-    public function testQueryWithPrependAndPreCond()
+    public function testQueryWithPrependAndPrimaryCond()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -98,8 +98,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $condition->setPreCondition(
-            new SearchPreCondition(
+        $condition->setPrimaryCondition(
+            new SearchPrimaryCondition(
                 SearchConditionBuilder::create($this->getFieldSet())
                     ->field('status')
                         ->addSimpleValue(1)
@@ -115,7 +115,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         $this->assertEquals('WHERE ((I.status IN(1, 2))) AND ((I.customer IN(2, 5)))', $conditionGenerator->getWhereClause('WHERE '));
     }
 
-    public function testEmptyQueryWithPrependAndPreCond()
+    public function testEmptyQueryWithPrependAndPrimaryCond()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('id')
@@ -124,8 +124,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->end()
         ->getSearchCondition();
 
-        $condition->setPreCondition(
-            new SearchPreCondition(
+        $condition->setPrimaryCondition(
+            new SearchPrimaryCondition(
                 SearchConditionBuilder::create($this->getFieldSet())
                     ->field('status')
                         ->addSimpleValue(1)

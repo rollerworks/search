@@ -101,20 +101,20 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     {
         $rootGroupCondition = $this->processGroup($this->searchCondition->getValuesGroup());
 
-        if (null !== ($precondition = $this->searchCondition->getPreCondition())) {
-            $preconditionGroupCondition = $this->processGroup($precondition->getValuesGroup());
+        if (null !== ($primaryCondition = $this->searchCondition->getPrimaryCondition())) {
+            $primaryConditionGroupCondition = $this->processGroup($primaryCondition->getValuesGroup());
 
             if ($rootGroupCondition) {
                 $rootGroupCondition = [
                     self::QUERY_BOOL => [
                         self::CONDITION_AND => [
-                            $preconditionGroupCondition,
+                            $primaryConditionGroupCondition,
                             $rootGroupCondition,
                         ],
                     ],
                 ];
             } else {
-                $rootGroupCondition = $preconditionGroupCondition;
+                $rootGroupCondition = $primaryConditionGroupCondition;
             }
         }
 
@@ -135,8 +135,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
         $this->extractMappings($group, $mappings);
 
-        if (null !== $precondition = $this->searchCondition->getPreCondition()) {
-            $this->extractMappings($precondition->getValuesGroup(), $mappings);
+        if (null !== $primaryCondition = $this->searchCondition->getPrimaryCondition()) {
+            $this->extractMappings($primaryCondition->getValuesGroup(), $mappings);
         }
 
         return $mappings;

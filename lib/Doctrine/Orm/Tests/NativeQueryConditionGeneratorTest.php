@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\SearchPreCondition;
+use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -256,7 +256,7 @@ class NativeQueryConditionGeneratorTest extends OrmTestCase
         );
     }
 
-    public function testQueryWithPrependAndPreCond()
+    public function testQueryWithPrependAndPrimaryCond()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -265,8 +265,8 @@ class NativeQueryConditionGeneratorTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $condition->setPreCondition(
-            new SearchPreCondition(
+        $condition->setPrimaryCondition(
+            new SearchPrimaryCondition(
                 SearchConditionBuilder::create($this->getFieldSet())
                     ->field('status')
                         ->addSimpleValue(1)
@@ -288,7 +288,7 @@ class NativeQueryConditionGeneratorTest extends OrmTestCase
         }
     }
 
-    public function testEmptyQueryWithPrependAndPreCond()
+    public function testEmptyQueryWithPrependAndPrimaryCond()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('id2')
@@ -297,8 +297,8 @@ class NativeQueryConditionGeneratorTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $condition->setPreCondition(
-            new SearchPreCondition(
+        $condition->setPrimaryCondition(
+            new SearchPrimaryCondition(
                 SearchConditionBuilder::create($this->getFieldSet())
                     ->field('status')
                         ->addSimpleValue(1)

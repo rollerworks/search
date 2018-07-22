@@ -71,8 +71,8 @@ final class QueryGenerator
     {
         $conditions = [];
 
-        if (null !== $preCondition = $searchCondition->getPreCondition()) {
-            $conditions[] = $this->getGroupQuery($preCondition->getValuesGroup());
+        if (null !== $primaryCondition = $searchCondition->getPrimaryCondition()) {
+            $conditions[] = $this->getGroupQuery($primaryCondition->getValuesGroup());
         }
 
         $conditions[] = $this->getGroupQuery($searchCondition->getValuesGroup());

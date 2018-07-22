@@ -17,7 +17,7 @@ use Rollerworks\Component\Search\Elasticsearch\FieldMapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\SearchPreCondition;
+use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
@@ -412,9 +412,9 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_applies_the_precondition_without_a_query()
+    public function it_applies_the_primaryCondition_without_a_query()
     {
-        $precondition = new SearchPreCondition(
+        $primaryCondition = new SearchPrimaryCondition(
             $this->createCondition()
                 ->field('restrict')
                     ->addSimpleValue('Some')
@@ -427,7 +427,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         $condition = $this
             ->createCondition()
             ->getSearchCondition();
-        $condition->setPreCondition($precondition);
+        $condition->setPrimaryCondition($primaryCondition);
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('restrict', 'restrict');
@@ -456,9 +456,9 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_applies_the_precondition_with_a_query()
+    public function it_applies_the_primaryCondition_with_a_query()
     {
-        $precondition = new SearchPreCondition(
+        $primaryCondition = new SearchPrimaryCondition(
             $this->createCondition()
                 ->field('restrict')
                     ->addSimpleValue('Some')
@@ -475,7 +475,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue('Foo')
             ->end()
             ->getSearchCondition();
-        $condition->setPreCondition($precondition);
+        $condition->setPrimaryCondition($primaryCondition);
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('restrict', 'restrict');

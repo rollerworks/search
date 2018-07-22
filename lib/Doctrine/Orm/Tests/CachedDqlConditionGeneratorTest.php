@@ -19,7 +19,7 @@ use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\SearchPreCondition;
+use Rollerworks\Component\Search\SearchPrimaryCondition;
 
 /**
  * @group non-functional
@@ -198,13 +198,11 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
         );
     }
 
-    public function testGetWhereClauseWithCacheAndPreCond()
+    public function testGetWhereClauseWithCacheAndPrimaryCond()
     {
         $cacheDriverProphecy = $this->prophesize(CacheInterface::class);
-        $cacheDriverProphecy->has('41329a2e34ac65573fb097e858a5b12685b0327e3e55b5bb48902e4731b42afa')->willReturn(true);
         $cacheDriverProphecy->get('41329a2e34ac65573fb097e858a5b12685b0327e3e55b5bb48902e4731b42afa')->willReturn(["me = 'foo'", ['1' => 'he']]);
-        $cacheDriverProphecy->has('7f1ddddc8869a6cdd6308b790b854f2cac46f67e22e8fd978ead76ab881df323')->willReturn(true);
-        $cacheDriverProphecy->get('7f1ddddc8869a6cdd6308b790b854f2cac46f67e22e8fd978ead76ab881df323')->willReturn(["you = 'me' AND me = 'foo'", ['1' => 'he']]);
+        $cacheDriverProphecy->get('4202f64ad8bb0d7a4bcc23ca1b1a27980897bc112182ac35401bd3a64c11cdc7')->willReturn(["you = 'me' AND me = 'foo'", ['1' => 'he']]);
         $cacheDriver = $cacheDriverProphecy->reveal();
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
@@ -222,7 +220,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $searchCondition2->setPreCondition(new SearchPreCondition(
+        $searchCondition2->setPrimaryCondition(new SearchPrimaryCondition(
             SearchConditionBuilder::create($this->getFieldSet())
                 ->field('customer')
                     ->addSimpleValue(2)

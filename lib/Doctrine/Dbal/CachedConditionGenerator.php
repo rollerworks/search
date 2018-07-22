@@ -140,7 +140,7 @@ final class CachedConditionGenerator implements ConditionGenerator
                 "\n".
                 serialize($searchCondition->getValuesGroup()).
                 "\n".
-                serialize($searchCondition->getPreCondition()).
+                serialize($searchCondition->getPrimaryCondition()).
                 "\n".
                 serialize($this->conditionGenerator->getFieldsMapping())
             );

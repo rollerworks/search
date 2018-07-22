@@ -28,7 +28,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\SearchPreCondition;
+use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -656,7 +656,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testQueryWithPrependAndPreCond()
+    public function testQueryWithPrependAndPrimaryCond()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -665,8 +665,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $condition->setPreCondition(
-            new SearchPreCondition(
+        $condition->setPrimaryCondition(
+            new SearchPrimaryCondition(
                 SearchConditionBuilder::create($this->getFieldSet())
                     ->field('status')
                         ->addSimpleValue(1)
@@ -689,7 +689,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
         );
     }
 
-    public function testEmptyQueryWithPrependAndPreCond()
+    public function testEmptyQueryWithPrependAndPrimaryCond()
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('id2')
@@ -698,8 +698,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             ->end()
         ->getSearchCondition();
 
-        $condition->setPreCondition(
-            new SearchPreCondition(
+        $condition->setPrimaryCondition(
+            new SearchPrimaryCondition(
                 SearchConditionBuilder::create($this->getFieldSet())
                     ->field('status')
                         ->addSimpleValue(1)

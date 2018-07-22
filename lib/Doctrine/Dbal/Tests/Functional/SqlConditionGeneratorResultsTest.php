@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringQueryInput;
-use Rollerworks\Component\Search\SearchPreCondition;
+use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 
 /**
@@ -318,11 +318,11 @@ SQL;
     /**
      * @test
      */
-    public function it_finds_by_customer_and_status_and_total_with_preCond()
+    public function it_finds_by_customer_and_status_and_total_with_primaryCond()
     {
-        $this->makeTestWithPreCond('customer: 2;', 'customer: 3;', []);
-        $this->makeTestWithPreCond('customer: 2;', 'status: paid; customer: 3;', []);
-        $this->makeTestWithPreCond('customer: 2;', 'status: paid;', [2]);
+        $this->makeTestWithPrimaryCond('customer: 2;', 'customer: 3;', []);
+        $this->makeTestWithPrimaryCond('customer: 2;', 'status: paid; customer: 3;', []);
+        $this->makeTestWithPrimaryCond('customer: 2;', 'status: paid;', [2]);
     }
 
     /**
@@ -377,13 +377,13 @@ SQL;
         }
     }
 
-    private function makeTestWithPreCond($preCondition, $input, array $expectedRows)
+    private function makeTestWithPrimaryCond($primaryCondition, $input, array $expectedRows)
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
         try {
             $condition = $this->inputProcessor->process($config, $input);
-            $condition->setPreCondition(new SearchPreCondition($this->inputProcessor->process($config, $preCondition)->getValuesGroup()));
+            $condition->setPrimaryCondition(new SearchPrimaryCondition($this->inputProcessor->process($config, $primaryCondition)->getValuesGroup()));
             $this->assertRecordsAreFound($condition, $expectedRows);
         } catch (\Exception $e) {
             self::detectSystemException($e);

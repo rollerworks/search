@@ -25,7 +25,7 @@ class SearchCondition
 {
     private $fieldSet;
     private $values;
-    private $preCondition;
+    private $primaryCondition;
 
     public function __construct(FieldSet $fieldSet, ValuesGroup $valuesGroup)
     {
@@ -43,14 +43,14 @@ class SearchCondition
         return $this->values;
     }
 
-    public function setPreCondition(SearchPreCondition $condition): void
+    public function setPrimaryCondition(SearchPrimaryCondition $condition): void
     {
-        $this->preCondition = $condition;
+        $this->primaryCondition = $condition;
     }
 
-    public function getPreCondition(): ?SearchPreCondition
+    public function getPrimaryCondition(): ?SearchPrimaryCondition
     {
-        return $this->preCondition;
+        return $this->primaryCondition;
     }
 
     public function isEmpty(): bool

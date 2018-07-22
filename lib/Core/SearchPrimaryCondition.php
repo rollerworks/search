@@ -16,16 +16,16 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
- * SearchPreCondition contains a condition that must be fulfilled at all times.
+ * SearchPrimaryCondition contains a condition that must be fulfilled at all times.
  *
- * A Pre-condition is applied as `(SearchPreCondition) AND (SearchCondition)`.
+ * A SearchPrimaryCondition is applied as `(SearchPrimaryCondition) AND (SearchCondition)`.
  *
- * Caution: It's important for QueryGenerator to always apply
- * the pre-condition even if the SearchCondition itself is empty!
+ * Caution: It's important for a QueryGenerator to always apply
+ * the primary-condition even if the search-condition itself is empty!
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class SearchPreCondition
+final class SearchPrimaryCondition
 {
     private $values;
 
