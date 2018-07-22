@@ -21,9 +21,6 @@
         <service id="rollerworks_search.input.norm_string_query" class="Rollerworks\Component\Search\Input\NormStringQueryInput" parent="rollerworks_search.input.abstract">
             <tag name="rollerworks_search.input_processor" format="norm_string_query" />
         </service>
-        <service id="rollerworks_search.input.array" class="Rollerworks\Component\Search\Input\ArrayInput" parent="rollerworks_search.input.abstract">
-            <tag name="rollerworks_search.input_processor" format="array" />
-        </service>
         <service id="rollerworks_search.input.json" class="Rollerworks\Component\Search\Input\JsonInput" parent="rollerworks_search.input.abstract">
             <tag name="rollerworks_search.input_processor" format="json" />
         </service>
