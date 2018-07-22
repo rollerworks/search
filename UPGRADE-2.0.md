@@ -11,8 +11,7 @@ UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
 
 ### Processor
 
- * The SearchProcessor Component has been removed, use the InputProcessor
-   directly now instead.
+ * The SearchProcessor Component has been removed, use an InputProcessor directly.
    
    **Before:**
    
@@ -73,14 +72,15 @@ UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
    }
    ```
    
-   **Note:** The ArrayInput processor has been removed, only string input types
-   (StringInput and JsonInput) are accepted now.
+   **Note:** The ArrayInput processor has been removed, only string-type input
+   formats (StringInput and JsonInput) are supported now.
 
 ### ApiPlatform
 
- * The `ApiSearchProcessor` has been removed.
+ * The `ApiSearchProcessor` has been removed. Internally the `SearchConditionListener`
+   now handles the user-input and error handling.
  
- * The `SearchConditionListener` constructor changed:
+ * The `SearchConditionListener` constructor has changed:
  
     **Before:**
  
@@ -102,17 +102,20 @@ UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
     CacheInterface $cache = null
     ```
     
-    The `$cache` argument is optional and only used when the TTL of the
-    processor is configured.
+    **Note:** The `$cache` argument is optional and only used when the `$cacheTTL`
+    of the `ProcessorConfig` is configured.
     
- * The caching moved to Input `ProcessorConfig` class, the metadata 
-   configuration format has remained unchanged.
+ * Cache TTL configuration has been moved to `Rollerworks\Component\Search\Input\ProcessorConfig`, 
+   the metadata configuration format has remained unchanged.
  
  * The Input format is now automatically detected by the first character.
+   When the provided input starts with an `{` the `JsonInput` processor is used,
+   otherwise the `NormStringQueryInput` processor is used.
    
- * ArrayInput is deprecated and is internally delegated to the 
-   JsonInputProcessor. In RollerworksSearch v2.0.0-ALPHA12 support for 
-   ArrayInput is completely removed and will throw an exception instead.
+ * ArrayInput is deprecated and is internally delegated to the JsonInputProcessor.
+   
+   **In RollerworksSearch v2.0.0-ALPHA12 support for ArrayInput is completely 
+   removed and will throw an exception instead.**
 
 UPGRADE FROM 2.0-ALPHA5 to 2.0-ALPHA8
 =====================================
@@ -124,8 +127,8 @@ UPGRADE FROM 2.0-ALPHA5 to 2.0-ALPHA8
   
 ## Doctrine DBAL
 
-* `Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion::getConversionStrategy`
-  method not must return an integer. And requires a return-type is set.
+* The `Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion::getConversionStrategy`
+  method must now return an integer (and is enforced with a return-type).
 
 UPGRADE FROM 2.0-ALPHA2 to 2.0-ALPHA5
 =====================================
@@ -134,24 +137,25 @@ UPGRADE FROM 2.0-ALPHA2 to 2.0-ALPHA5
   
   * The constants `PatternMatch::PATTERN_REGEX` and `PatternMatch::PATTERN_NOT_REGEX`
     have been removed.
+
   * The method `PatternMatch::isRegex` has been removed.
 
 UPGRADE FROM 2.0-ALPHA1 to 2.0-ALPHA2
 =====================================
 
-* The `ValueComparison` namespaces and classes were renamed to `ValueComparator`
+* The `ValueComparison` namespaces and classes have been renamed to `ValueComparator`
 
-* The `FieldConfig::setValueComparison` method was renamed to `setValueComparator`
+* The `FieldConfig::setValueComparison` method has been renamed to `setValueComparator`
 
-* The `FieldConfig::getValueComparison` method was renamed to `getValueComparator`
+* The `FieldConfig::getValueComparison` method has been renamed to `getValueComparator`
 
 UPGRADE FROM 1.x to 2.0-ALPHA1
 ==============================
 
-* Support PHP 5 is dropped you need at least PHP 7.1
+* Support PHP 5 has been dropped you need at least PHP 7.1.
 
-* Classes and interfaces now use strict type hints, considering
-  the size of this change they are not listed in detail in this upgrade guide.
+* Classes and interfaces now use strict type hints, considering the size
+  of this change they are not listed in detail in this upgrade guide.
 
 * `FilterQuery` is renamed to `StringQuery`.
 
@@ -176,7 +180,7 @@ UPGRADE FROM 1.x to 2.0-ALPHA1
 
   class UsersFieldSet implements FieldSetConfigurator
   {
-      public buildFieldSet(FieldSetBuilder $builder)
+      public buildFieldSet(FieldSetBuilder $builder): void
       {
           $builder
               ->add('id', FieldType\IntegerType::class)
@@ -191,8 +195,8 @@ UPGRADE FROM 1.x to 2.0-ALPHA1
   $userFieldSet = $searchFactory->createFieldSet(\Acme\User\Search\UsersFieldSet::class);
   ```
   
-  **Note:** If the FieldSetConfigurator has dependencies register it in a `FieldSetRegistry`
-  instead. Eg using the `LazyFieldSetRegistry`:
+  **Note:** If the FieldSetConfigurator has constructor dependencies, register 
+  it in a`FieldSetRegistry` instead. Eg. using the `LazyFieldSetRegistry`:
   
   ```php
   use Acme\User\Search\UsersFieldSet;
@@ -236,9 +240,9 @@ UPGRADE FROM 1.x to 2.0-ALPHA1
    the `SearchFieldType` "base" type automatically configures this based of
    the type's name and vendor namespace.
    
- * The `DateTimeType`, `DateType`, `IntegerType`, `NumberType`, `TimestampType` 
-   and `TimeType` were synchronized with the Symfony code base and may produce slightly
-   different results then before.
+ * The `DateTimeType`, `DateType`, `IntegerType`, `NumberType`, `TimestampType`
+   and `TimeType` were synchronized with the Symfony code base and may produce
+   slightly different results then before.
 
 ### ChoiceType
 
@@ -276,6 +280,9 @@ UPGRADE FROM 1.x to 2.0-ALPHA1
  * The `precession` option was removed, this is now based of the currency information.
  
  * The `increase_by` option was added to configure with simple-values to range optimization.
+ 
+**Note:** The MoneyPHP library is not installed by default, install the "moneyphp/money"
+package with Composer to use the `MoneyType`: `composer install moneyphp/money`.
 
 ## Field
   
@@ -294,57 +301,58 @@ UPGRADE FROM 1.x to 2.0-ALPHA1
    * `SearchFieldView`
    * `TypeRegistry` (was `FieldRegistryInterface`)
   
- * The `SearchFieldView` now expects an `FieldSetView` as the first argument in the
-   class constructor.
+ * The `SearchFieldView` now expects an `FieldSetView` as the first argument
+   in the class constructor.
    
- * A search field no allows registering multiple transformers, each field
+ * A search field no longer supports registering multiple transformers, each field
    can have exactly one "view" and/or "norm" transformer.
 
 ## Input processor
 
- * The `XmlInput` and `JsonInput` now expect the input values
-   to be in the normalized data format rather then the view format.
+ * The `XmlInput` and `JsonInput` now expect the input values to be in the 
+   normalized data format instead of the view format.
    
  * The `XmlInput` and `JsonInput` now more strictly validate provided input.
    
  * The `StringQueryInput` has changed to a more user-friendly Lexer system:
-   * User friendly error messages whenever possible.
+   
+   * More User-friendly error messages.
+   
    * All characters (except special syntax characters) can now be used without
-     surrounding them with quotes.
+     surrounding them with quotes. `12.00` is now accepted.
+   
    * Line numbers are now properly reported, and the column position is made more accurate.
+   
    * Incorrectly escaped values will now give a friendly error message.
-   * Spaces are no longer allowed between operators `~ >` this is invalid now.
+   
+   * Spaces are no longer allowed between operators. `~ >` is invalid now.
  
  * The `StringQueryInput` now uses `~` for ranges, eg. `10 ~ 20`.
  
- * The `StringQueryInput` PatternMatch no longer requires an correct order
+ * The `StringQueryInput` PatternMatch no longer requires a specific order
    for the flags. Both `i!` and `!i` are accepted now.
  
  * The structure of the XML and JSON changed to adapt to the new value-holder
-   naming. In short this means that `simple` is used now rather then `single`.
+   naming. In short this means that `simple` is used now instead of `single`.
    
- * Values merging is removed, using the field twice in a group
-   overwrites the previously defined value in that group.
+ * Field values merging is has been removed. Using the field twice in a group
+   now overwrites the previously defined value in that group.
 
 ### Validation
 
- * Validation is now done directly during the input processing rather then
+ * Validation is now performed directly during the input processing rather then
    afterwards. As a result, the produced `SearchCondition` no longer holds
    any invalid value. See also error handling below.
 
-### Error handling
+### Error Handling
 
 Error handling for input processing has been completely rewritten,
-exceptions no longer needed to be parsed/transformed for usage.
-But they can be translated if needed.
+exceptions no longer require to be parsed for usage.
 
  * An Input processor now throws _only_ an `InvalidSearchConditionException`
-   for user-input errors. The `InvalidSearchConditionException` actually holds
-   one or more `ConditionErrorMessage` object instances.
-   
-   In practice this means that only one exception type needs to be cached,
-   instead of 4.
-   
+   for user-input errors. The `InvalidSearchConditionException` holds one 
+   or more `ConditionErrorMessage` object instances.
+
  * The produced `SearchCondition` no longer holds any invalid value,
    only when all values are valid a `SearchCondition` is returned
    else an `InvalidSearchConditionException` is thrown.
@@ -358,12 +366,8 @@ See the usage documentation for full instructions on handling user-input errors.
 ## Value
 
  * The `Rollerworks\Component\Search\Value\SingleValue` class has been removed,
-   to add add simple value (as "model" format) use `addSimpleValue` on the `ValuesBag`.
-   
- * The `Rollerworks\Component\Search\ValuesBag` now supports other custom value
-   types instead of only Single, Ranges, Comparison, and PatternMatchers.
-   
-   The actual value is wrapped inside a `ValueHolder` object instance.
+   to add add a simple-value (as "model" format) use `addSimpleValue` method on the 
+   `ValuesBag` object.
    
  * The `ValueHolder` is expected to a hold a "model" format of the value,
    eg. for a date-time input this is an `\DateTimeImmutable` object, for an integer
@@ -379,8 +383,8 @@ See the usage documentation for full instructions on handling user-input errors.
    * `removeComparison(1)` becomes `remove(\Rollerworks\Component\Search\Value\Compare::class, 1)`
    * `addComparisons(new Compare(..))` becomes `add(new Compare(..))`
    
- * A `ValueHolder` no longer holds a "view" format, to Exporter must use the viewTransformer of
-   the search field to get a view representation of the value.
+ * A `ValueHolder` no longer holds a "view" format, an Exporter must use the viewTransformer
+   of the search field to get a view representation of the value.
    
  * A SearchCondition's value structure cannot be locked anymore.
 
