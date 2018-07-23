@@ -5,6 +5,16 @@ UPGRADE FROM 2.0-ALPHA12 to 2.0-ALPHA13
  
  * ApiPlatform SearchConditionListener no longer supports array-input. 
    Use JSON or the NormStringQuery input-format instead.
+   
+ * The default restriction values of `ProcessorConfig` have been changed
+   to provide a better default;
+   
+   * Maximum values per field is now 100 (was 1000)
+   * Maximum number of groups is now 10 (was 100)
+   * Nesting is now 5 (was 100)
+   
+   Unless you must support a higher number of values 
+   it is advised to not increase these values.
 
 UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
 ======================================

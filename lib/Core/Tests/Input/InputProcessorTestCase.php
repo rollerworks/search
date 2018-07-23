@@ -601,6 +601,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     public function it_checks_nested_fields($input, array $errors)
     {
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setMaxNestingLevel(10);
+
         $this->assertConditionContainsErrorsWithoutCause($input, $config, $errors);
     }
 
