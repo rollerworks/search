@@ -62,13 +62,13 @@ final class ApiPlatformTest extends FunctionalTestCase
         self::assertEquals('[]', $client->getResponse()->getContent());
     }
 
-    public function testWithValidConditionArray()
+    public function testWithValidConditionJson()
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
         $client->request(
             'GET',
             '/books.json',
-            ['search' => ['fields' => ['title' => ['single-values' => ['Symfony;']]]]]
+            ['search' => '{"fields":{"title":{"single-values":["Symfony;"]}}}']
         );
 
         self::assertFalse($client->getResponse()->isRedirection());

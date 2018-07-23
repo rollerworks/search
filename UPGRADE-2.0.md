@@ -1,11 +1,17 @@
+UPGRADE FROM 2.0-ALPHA12 to 2.0-ALPHA13
+=======================================
+
+ * The ArrayInput processor has been removed.
+ 
+ * ApiPlatform SearchConditionListener no longer supports array-input. 
+   Use JSON or the NormStringQuery input-format instead.
+
 UPGRADE FROM 2.0-ALPHA8 to 2.0-ALPHA12
 ======================================
 
 ### Core
 
  * The ConditionOptimizers have been removed.
- 
- * The ArrayInput processor has been removed.
  
  * The XmlInput processor has been removed.
 
