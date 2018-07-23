@@ -25,17 +25,17 @@ class ProcessorConfig
     /**
      * @var int
      */
-    private $maxNestingLevel = 100;
+    private $maxNestingLevel = 5;
 
     /**
      * @var int
      */
-    private $maxValues = 1000;
+    private $maxValues = 100;
 
     /**
      * @var int
      */
-    private $maxGroups = 100;
+    private $maxGroups = 10;
 
     /**
      * @var FieldSet
