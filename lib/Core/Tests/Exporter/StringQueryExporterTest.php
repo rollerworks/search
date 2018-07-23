@@ -107,6 +107,11 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         return 'name: value, value2; date: 12-16-2014;';
     }
 
+    public function providePrivateFieldsTest()
+    {
+        return 'name: value, value2; date: 12-16-2014;';
+    }
+
     public function provideRangeValuesTest()
     {
         return 'id: 1 ~ 10, 15 ~ 30, ]100 ~ 200, 310 ~ 400[, !50 ~ 70; date: 12-16-2014 ~ 12-20-2014;';

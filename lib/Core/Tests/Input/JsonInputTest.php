@@ -516,6 +516,39 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
+    public function providePrivateFieldTests()
+    {
+        return [
+            [
+                json_encode(
+                    [
+                        'fields' => [
+                            '_id' => [
+                                'simple-values' => [1, 2],
+                            ],
+                        ],
+                    ]
+                ),
+                '_id',
+            ],
+            [
+                json_encode(
+                    [
+                        'fields' => [
+                            'id' => [
+                                'simple-values' => [1, 2],
+                            ],
+                            '_id' => [
+                                'simple-values' => [1, 2],
+                            ],
+                        ],
+                    ]
+                ),
+                '_id',
+            ],
+        ];
+    }
+
     public function provideUnknownFieldTests()
     {
         return [

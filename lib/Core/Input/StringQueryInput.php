@@ -51,8 +51,13 @@ final class StringQueryInput extends StringInput
     {
         $labels = [];
         $callable = $this->labelResolver;
+        $fieldSet = $config->getFieldSet();
 
-        foreach ($config->getFieldSet()->all() as $name => $field) {
+        foreach ($fieldSet->all() as $name => $field) {
+            if ($fieldSet->isPrivate($name)) {
+                continue;
+            }
+
             $label = $callable($field);
             $labels[$label] = $name;
 

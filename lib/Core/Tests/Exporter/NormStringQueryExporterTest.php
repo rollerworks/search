@@ -72,6 +72,11 @@ final class NormStringQueryExporterTest extends SearchConditionExporterTestCase
         return 'name: value, value2; date: 2014-12-16;';
     }
 
+    public function providePrivateFieldsTest()
+    {
+        return 'name: value, value2; date: 2014-12-16;';
+    }
+
     public function provideRangeValuesTest()
     {
         return 'id: 1 ~ 10, 15 ~ 30, ]100 ~ 200, 310 ~ 400[, !50 ~ 70; date: 2014-12-16 ~ 2014-12-20;';

@@ -386,6 +386,14 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
+    public function providePrivateFieldTests()
+    {
+        return [
+            ['_id: 1;', '_id'],
+            ['id: 1; _id: 2;', '_id'],
+        ];
+    }
+
     public function provideUnknownFieldTests()
     {
         return [

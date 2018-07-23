@@ -63,6 +63,22 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
         );
     }
 
+    public function providePrivateFieldsTest()
+    {
+        return json_encode(
+            [
+                'fields' => [
+                    'name' => [
+                        'simple-values' => ['value', 'value2'],
+                    ],
+                    'date' => [
+                        'simple-values' => ['2014-12-16'],
+                    ],
+                ],
+            ]
+        );
+    }
+
     public function provideRangeValuesTest()
     {
         return json_encode(
