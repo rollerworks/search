@@ -23,6 +23,7 @@ use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\BookFieldSet;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\Dummy;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Mock\SpyingInputProcessor;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Mock\StubInputProcessor;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Loader\ClosureContainer;
@@ -140,10 +141,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
     /**
      * @test
-     * @group legacy
-     * @expectedDeprecation ArrayInput is no longer supported, and will throw an exception after RollerworksSearch v2.0.0-ALPHA11, use a json-object string instead.
      */
-    public function it_sets_search_condition_and_config_for_array_query()
+    public function it_requires_a_string_search_condition()
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -166,7 +165,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
 
         $request = new Request(['search' => ['foobar' => 'he']], [], ['_api_resource_class' => Dummy::class]);
-        $eventDispatcher = $this->expectingCallEventDispatcher($request);
+        $eventDispatcher = $this->expectingNoCallEventDispatcher();
 
         $inputProcessor = new SpyingInputProcessor();
         $listener = new SearchConditionListener(
@@ -176,21 +175,10 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
+        $this->expectException(UnexpectedTypeException::class);
+        $this->expectExceptionMessage('Expected argument of type "string", "array" given');
+
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
-
-        self::assertEquals(
-            [
-                '_api_resource_class' => Dummy::class,
-                '_api_search_config' => ['fieldset' => BookFieldSet::class],
-                '_api_search_context' => '_any',
-                '_api_search_condition' => SpyingInputProcessor::getCondition(),
-            ],
-            $request->attributes->all()
-        );
-        self::assertJsonStringEqualsJsonString('{"foobar": "he"}', $inputProcessor->getInput());
-
-        $config = $inputProcessor->getConfig();
-        self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
     }
 
     /** @test */

@@ -17,6 +17,7 @@ use ApiPlatform\Core\Exception\RuntimeException;
 use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface as ResourceMetadataFactory;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\ApiPlatform\SearchConditionEvent;
+use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Input\CachingInputProcessor;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Loader\InputProcessorLoader;
@@ -163,14 +164,11 @@ final class SearchConditionListener
     {
         $input = $request->query->get('search', '');
 
-        if (is_array($input)) {
-            @trigger_error('ArrayInput is no longer supported, and will throw an exception after RollerworksSearch v2.0.0-ALPHA11, use a json-object string instead.', E_USER_DEPRECATED);
-
-            $input = json_encode($input);
-            $format = 'json';
-        } else {
-            $format = '{' === ($input[0] ?? 'n') ? 'json' : 'norm_string_query';
+        if (!is_string($input)) {
+            throw new UnexpectedTypeException($input, 'string');
         }
+
+        $format = '{' === ($input[0] ?? 'n') ? 'json' : 'norm_string_query';
 
         $inputProcessor = $this->inputProcessorLoader->get($format);
 
