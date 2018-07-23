@@ -48,7 +48,7 @@ final class JsonExporter extends AbstractExporter
         $fields = $valuesGroup->getFields();
 
         foreach ($fields as $name => $values) {
-            if (0 === $values->count()) {
+            if ($fieldSet->isPrivate($name) || 0 === $values->count()) {
                 continue;
             }
 

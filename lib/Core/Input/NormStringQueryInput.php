@@ -25,8 +25,13 @@ final class NormStringQueryInput extends StringInput
     protected function initForProcess(ProcessorConfig $config): void
     {
         $names = [];
+        $fieldSet = $config->getFieldSet();
 
-        foreach ($config->getFieldSet()->all() as $name => $field) {
+        foreach ($fieldSet->all() as $name => $field) {
+            if ($fieldSet->isPrivate($name)) {
+                continue;
+            }
+
             $names[$name] = $name;
 
             if (null !== $customerMatcher = $field->getOption(self::FIELD_LEXER_OPTION_NAME)) {

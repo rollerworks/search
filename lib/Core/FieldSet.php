@@ -56,4 +56,13 @@ interface FieldSet
      * @return bool
      */
     public function has(string $name): bool;
+
+    /**
+     * Returns whether the field is a private field (primary condition only).
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function isPrivate(string $name): bool;
 }

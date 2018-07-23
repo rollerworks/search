@@ -63,7 +63,7 @@ abstract class StringExporter extends AbstractExporter
         }
 
         foreach ($valuesGroup->getFields() as $name => $values) {
-            if (0 === $values->count()) {
+            if ($fieldSet->isPrivate($name) || 0 === $values->count()) {
                 continue;
             }
 

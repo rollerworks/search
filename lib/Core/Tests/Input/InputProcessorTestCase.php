@@ -49,6 +49,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $fieldSet = new GenericFieldSetBuilder($this->getFactory());
         $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('_id', IntegerType::class);
+        $fieldSet->add('_group', IntegerType::class);
         $fieldSet->add('name', TextType::class);
         $fieldSet->add('lastname', TextType::class);
         $fieldSet->add('date', DateType::class, ['pattern' => 'MM-dd-yyyy']);
@@ -456,6 +458,30 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideGroupsOverflowTests();
 
     /**
+     * This tests ensures a private field will throw an UnknownFieldException.
+     *
+     * @param mixed  $input
+     * @param string $fieldName
+     *
+     * @test
+     * @dataProvider providePrivateFieldTests
+     */
+    public function it_errors_when_private_field_was_used($input, string $fieldName)
+    {
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $e = new UnknownFieldException($fieldName);
+        $error = $e->toErrorMessageObj();
+
+        $this->assertConditionContainsErrorsWithoutCause($input, $config, [$error]);
+    }
+
+    /**
+     * @return array[]
+     */
+    abstract public function providePrivateFieldTests();
+
+    /**
      * @param mixed  $input
      * @param string $path
      *
@@ -602,8 +628,13 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
             self::assertInstanceOf(InvalidSearchConditionException::class, $e);
 
             $errorsList = $e->getErrors();
+
             foreach ($errorsList as $error) {
                 // Remove cause to make assertion possible.
+                $error->cause = null;
+            }
+
+            foreach ($errors as $error) {
                 $error->cause = null;
             }
 

@@ -129,6 +129,40 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
     /**
      * @test
      */
+    public function it_ignores_private_fields()
+    {
+        $exporter = $this->getExporter();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $expectedGroup = new ValuesGroup();
+
+        $values = new ValuesBag();
+        $values->addSimpleValue('value');
+        $values->addSimpleValue('value2');
+        $expectedGroup->addField('name', $values);
+
+        $date = new \DateTime('2014-12-16 00:00:00 UTC');
+
+        $values = new ValuesBag();
+        $values->addSimpleValue($date);
+        $expectedGroup->addField('date', $values);
+
+        $values = new ValuesBag();
+        $values->addSimpleValue(1);
+        $expectedGroup->addField('_id', $values);
+
+        $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+        $this->assertExportEquals($this->provideMultipleValuesTest(), $exporter->exportCondition($condition));
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract public function providePrivateFieldsTest();
+
+    /**
+     * @test
+     */
     public function it_exporters_range_values()
     {
         $exporter = $this->getExporter();

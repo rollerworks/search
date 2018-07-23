@@ -77,6 +77,11 @@ final class GenericFieldSet implements FieldSetWithView
         return isset($this->fields[$name]);
     }
 
+    public function isPrivate(string $name): bool
+    {
+        return '_' === $name[0];
+    }
+
     /**
      * {@inheritdoc}
      */
