@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\QueryBuilder;
 use Prophecy\Argument;

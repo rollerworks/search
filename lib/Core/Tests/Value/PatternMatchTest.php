@@ -44,14 +44,14 @@ final class PatternMatchTest extends TestCase
     /** @test */
     public function it_is_case_sensitive_by_default()
     {
-        self::assertEquals(false, $this->value->isCaseInsensitive());
+        self::assertFalse($this->value->isCaseInsensitive());
     }
 
     /** @test */
     public function it_allows_case_insensitive()
     {
         $this->value = new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS, true);
-        self::assertEquals(true, $this->value->isCaseInsensitive());
+        self::assertTrue($this->value->isCaseInsensitive());
     }
 
     /** @test */

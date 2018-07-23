@@ -30,7 +30,7 @@ final class ValuesGroupTest extends TestCase
         $valuesGroup = new ValuesGroup();
 
         self::assertEquals([], $valuesGroup->getFields());
-        self::assertEquals(false, $valuesGroup->hasField('user'));
+        self::assertFalse($valuesGroup->hasField('user'));
     }
 
     /**
@@ -47,8 +47,8 @@ final class ValuesGroupTest extends TestCase
         $valuesGroup->addField('date', $field2);
 
         self::assertEquals(['user' => $field, 'date' => $field2], $valuesGroup->getFields());
-        self::assertEquals(true, $valuesGroup->hasField('user'));
-        self::assertEquals(false, $valuesGroup->hasField('foo'));
+        self::assertTrue($valuesGroup->hasField('user'));
+        self::assertFalse($valuesGroup->hasField('foo'));
     }
 
     /**
@@ -76,7 +76,7 @@ final class ValuesGroupTest extends TestCase
     {
         $valuesGroup = new ValuesGroup();
 
-        self::assertEquals(false, $valuesGroup->hasGroups());
+        self::assertFalse($valuesGroup->hasGroups());
         self::assertEquals([], $valuesGroup->getGroups());
     }
 
@@ -93,7 +93,7 @@ final class ValuesGroupTest extends TestCase
         $valuesGroup->addGroup($group);
         $valuesGroup->addGroup($group2);
 
-        self::assertEquals(true, $valuesGroup->hasGroups());
+        self::assertTrue($valuesGroup->hasGroups());
         self::assertEquals([$group, $group2], $valuesGroup->getGroups());
     }
 
@@ -112,7 +112,7 @@ final class ValuesGroupTest extends TestCase
 
         $valuesGroup->removeGroup(0);
 
-        self::assertEquals(true, $valuesGroup->hasGroups());
+        self::assertTrue($valuesGroup->hasGroups());
         self::assertEquals([1 => $group2], $valuesGroup->getGroups());
     }
 

@@ -44,27 +44,27 @@ final class RangeTest extends TestCase
     public function its_lower_value_is_inclusive_by_default()
     {
         $this->value = new Range(10, 20);
-        self::assertEquals(true, $this->value->isLowerInclusive());
+        self::assertTrue($this->value->isLowerInclusive());
     }
 
     /** @test */
     public function its_upper_value_should_be_inclusive_by_default()
     {
         $this->value = new Range(10, 20);
-        self::assertEquals(true, $this->value->isUpperInclusive());
+        self::assertTrue($this->value->isUpperInclusive());
     }
 
     /** @test */
     public function it_allows_exclusive_lower_value()
     {
         $this->value = new Range(10, 20, false);
-        self::assertEquals(false, $this->value->isLowerInclusive());
+        self::assertFalse($this->value->isLowerInclusive());
     }
 
     /** @test */
     public function it_allows_exclusive_upper_value()
     {
         $this->value = new Range(10, 20, true, false);
-        self::assertEquals(false, $this->value->isUpperInclusive());
+        self::assertFalse($this->value->isUpperInclusive());
     }
 }

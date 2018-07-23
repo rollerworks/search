@@ -74,7 +74,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_should_return_if_an_option_exists()
     {
-        self::assertEquals(true, $this->field->hasOption('name'));
+        self::assertTrue($this->field->hasOption('name'));
         self::assertFalse($this->field->hasOption('foo'));
     }
 
@@ -91,7 +91,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_should_return_null_by_default_if_the_option_does_exist()
     {
-        self::assertEquals(null, $this->field->getOption('foo'));
+        self::assertNull($this->field->getOption('foo'));
     }
 
     /**
@@ -132,7 +132,7 @@ final class SearchFieldTest extends TestCase
      */
     public function it_has_no_comparison_class_by_default()
     {
-        self::assertEquals(null, $this->field->getValueComparator());
+        self::assertNull($this->field->getValueComparator());
     }
 
     /**
