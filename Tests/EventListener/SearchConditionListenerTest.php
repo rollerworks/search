@@ -24,7 +24,6 @@ use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\Dummy;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Mock\SpyingInputProcessor;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Mock\StubInputProcessor;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Loader\ClosureContainer;
 use Rollerworks\Component\Search\Loader\InputProcessorLoader;
