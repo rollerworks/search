@@ -55,7 +55,7 @@ final class SearchConditionTest extends TestCase
     }
 
     /** @test */
-    public function it_allows_setting_a_pre_condition()
+    public function it_allows_setting_a_primary_condition()
     {
         $fieldSet = $this->createMock(FieldSet::class);
         $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
@@ -66,5 +66,20 @@ final class SearchConditionTest extends TestCase
         $condition->setPrimaryCondition($primaryCondition);
 
         self::assertEquals($primaryCondition, $condition->getPrimaryCondition());
+    }
+
+    /** @test */
+    public function it_allows_unsetting_the_primary_condition()
+    {
+        $fieldSet = $this->createMock(FieldSet::class);
+        $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
+
+        $primaryCondition = new SearchPrimaryCondition((new ValuesGroup())->addField('id', new ValuesBag()));
+
+        $condition = new SearchCondition($fieldSet, new ValuesGroup());
+        $condition->setPrimaryCondition($primaryCondition);
+        $condition->setPrimaryCondition(null);
+
+        self::assertNull($condition->getPrimaryCondition());
     }
 }

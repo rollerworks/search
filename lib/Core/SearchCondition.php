@@ -43,7 +43,7 @@ class SearchCondition
         return $this->values;
     }
 
-    public function setPrimaryCondition(SearchPrimaryCondition $condition): void
+    public function setPrimaryCondition(?SearchPrimaryCondition $condition): void
     {
         $this->primaryCondition = $condition;
     }
