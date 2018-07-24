@@ -74,7 +74,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @param mixed $value
      *
-     * @return $this
+     * @return static
      */
     public function addSimpleValue($value)
     {
@@ -96,7 +96,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @param int $index
      *
-     * @return $this
+     * @return static
      */
     public function removeSimpleValue(int $index)
     {
@@ -120,7 +120,7 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @param mixed $value
      *
-     * @return $this
+     * @return static
      */
     public function addExcludedSimpleValue($value)
     {
@@ -143,7 +143,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @param int $index
      *
-     * @return $this
+     * @return static
      */
     public function removeExcludedSimpleValue(int $index)
     {
@@ -208,7 +208,7 @@ class ValuesBag implements \Countable, \Serializable
      *
      * @param ValueHolder $value
      *
-     * @return $this
+     * @return static
      */
     public function add(ValueHolder $value)
     {

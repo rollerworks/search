@@ -118,7 +118,7 @@ final class FieldConfigBuilder
         );
     }
 
-    private function getMappingType(string $fieldName, string $entity, string $propertyName, string $type = null): MappingType
+    private function getMappingType(string $fieldName, string $entity, string $propertyName, ?string $type = null): MappingType
     {
         if (!$type) {
             $type = $this->entityManager->getClassMetadata($entity)->getTypeOfField($propertyName);

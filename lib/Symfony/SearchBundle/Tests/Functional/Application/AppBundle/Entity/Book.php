@@ -111,7 +111,7 @@ class Book
      *
      * @param int $id
      *
-     * @return $this
+     * @return static
      */
     public function setId($id)
     {
@@ -135,7 +135,7 @@ class Book
      *
      * @param string $isbn
      *
-     * @return $this
+     * @return static
      */
     public function setIsbn($isbn)
     {
@@ -159,7 +159,7 @@ class Book
      *
      * @param string $description
      *
-     * @return $this
+     * @return static
      */
     public function setDescription($description)
     {
@@ -183,7 +183,7 @@ class Book
      *
      * @param string $author
      *
-     * @return $this
+     * @return static
      */
     public function setAuthor($author)
     {

@@ -49,7 +49,7 @@ class ArrayChoiceList implements ChoiceList
     /**
      * The callback for creating the value for a choice.
      *
-     * @var callable
+     * @var callable|null
      */
     protected $valueCallback;
 

@@ -31,7 +31,7 @@ class NumberToStringTransformer extends BaseNumberTransformer
     /**
      * Transforms a number type into number.
      *
-     * @param int|float|null $value Number value
+     * @param int|float|string|null $value Number value
      *
      * @throws TransformationFailedException If the given value is not numeric
      *                                       or if the value can not be transformed

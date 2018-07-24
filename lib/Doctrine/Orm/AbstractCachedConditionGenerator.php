@@ -85,7 +85,7 @@ abstract class AbstractCachedConditionGenerator implements ConditionGenerator
      * @param string $entity Entity name (FQCN or Doctrine aliased)
      * @param string $alias  Table alias as used in the query "u" for `FROM Acme:Users AS u`
      *
-     * @return $this
+     * @return static
      */
     public function setDefaultEntity(string $entity, string $alias)
     {

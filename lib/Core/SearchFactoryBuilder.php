@@ -54,7 +54,7 @@ final class SearchFactoryBuilder
      *
      * @param ResolvedFieldTypeFactory $resolvedTypeFactory
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function setResolvedTypeFactory(ResolvedFieldTypeFactory $resolvedTypeFactory)
     {
@@ -82,7 +82,7 @@ final class SearchFactoryBuilder
      *
      * @param SearchExtension $extension
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function addExtension(SearchExtension $extension)
     {
@@ -96,7 +96,7 @@ final class SearchFactoryBuilder
      *
      * @param SearchExtension[] $extensions
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function addExtensions(array $extensions)
     {
@@ -110,7 +110,7 @@ final class SearchFactoryBuilder
      *
      * @param FieldType $type
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function addType(FieldType $type)
     {
@@ -124,7 +124,7 @@ final class SearchFactoryBuilder
      *
      * @param FieldType[] $types
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function addTypes(array $types)
     {
@@ -140,7 +140,7 @@ final class SearchFactoryBuilder
      *
      * @param FieldTypeExtension $typeExtension
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function addTypeExtension(FieldTypeExtension $typeExtension)
     {
@@ -154,7 +154,7 @@ final class SearchFactoryBuilder
      *
      * @param FieldTypeExtension[] $typeExtensions
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function addTypeExtensions(array $typeExtensions)
     {

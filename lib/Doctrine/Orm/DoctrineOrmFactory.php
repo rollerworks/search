@@ -46,8 +46,8 @@ class DoctrineOrmFactory
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option (when present).
      *
-     * @param NativeQuery|Query $query           Doctrine ORM (Native)Query object
-     * @param SearchCondition   $searchCondition SearchCondition object
+     * @param NativeQuery|Query|QueryBuilder $query           Doctrine ORM (Native)Query object
+     * @param SearchCondition                $searchCondition SearchCondition object
      *
      * @return NativeQueryConditionGenerator|DqlConditionGenerator
      */

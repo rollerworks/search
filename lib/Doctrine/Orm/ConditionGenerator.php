@@ -40,7 +40,7 @@ interface ConditionGenerator
      *
      * @throws BadMethodCallException When the where-clause is already generated
      *
-     * @return $this
+     * @return static
      */
     public function setDefaultEntity(string $entity, string $alias);
 
@@ -75,7 +75,7 @@ interface ConditionGenerator
      * @throws UnknownFieldException  When the field is not registered in the fieldset
      * @throws BadMethodCallException When the where-clause is already generated
      *
-     * @return $this
+     * @return static
      */
     public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null);
 

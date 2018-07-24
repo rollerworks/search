@@ -28,7 +28,7 @@ interface FieldSetBuilder
      * @param string $type    The FQCN of the type
      * @param array  $options Array of options for building the field
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function add(string $name, string $type, array $options = []);
 
@@ -37,7 +37,7 @@ interface FieldSetBuilder
      *
      * @param FieldConfig $field
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function set(FieldConfig $field);
 
@@ -48,7 +48,7 @@ interface FieldSetBuilder
      *
      * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
      *
-     * @return $this The builder
+     * @return static The builder
      */
     public function remove(string $name);
 

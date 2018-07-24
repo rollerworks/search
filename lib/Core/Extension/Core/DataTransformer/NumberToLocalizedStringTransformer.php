@@ -110,6 +110,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
                 : \NumberFormatter::TYPE_INT32;
         }
 
+        /** @var int|float|false $result */
         $result = $formatter->parse($value, $type, $position);
 
         if (intl_is_failure($formatter->getErrorCode())) {
@@ -120,7 +121,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
             throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
         }
 
-        if (is_int($result) && $result === (int) $float = (float) $result) {
+        if (\is_int($result) && $result === (int) ($float = (float) $result)) {
             $result = $float;
         }
 

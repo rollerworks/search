@@ -15,7 +15,7 @@ return PhpCsFixer\Config::create()
         '@Symfony:risky' => true,
         '@PHP70Migration' => true,
         '@PHP71Migration' => true,
-        'array_syntax' => array('syntax' => 'short'),
+        'array_syntax' => ['syntax' => 'short'],
         'combine_consecutive_unsets' => true,
         'declare_strict_types' => true,
         'header_comment' => ['header' => $header],

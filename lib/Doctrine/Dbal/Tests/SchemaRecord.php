@@ -65,7 +65,7 @@ final class SchemaRecord
     /**
      * Semantic method for chaining.
      *
-     * @return $this
+     * @return static
      */
     public function end()
     {
@@ -75,7 +75,7 @@ final class SchemaRecord
     /**
      * Semantic method for chaining.
      *
-     * @return $this
+     * @return static
      */
     public function records()
     {

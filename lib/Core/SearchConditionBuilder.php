@@ -26,7 +26,7 @@ final class SearchConditionBuilder
     private $valuesGroup;
 
     /**
-     * @var SearchConditionBuilder
+     * @var SearchConditionBuilder|null
      */
     private $parent;
 

@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Money\Currencies\ISOCurrencies;
+use Money\Exception\ParserException;
+use Money\Exception\UnknownCurrencyException;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Parser\DecimalMoneyParser;
 use Rollerworks\Component\Search\DataTransformer;
@@ -109,10 +111,8 @@ final class MoneyToStringTransformer implements DataTransformer
 
         try {
             return new MoneyValue($this->moneyParser->parse($result, $currency), $withCurrency);
-        } catch (\Money\Exception $e) {
-            throw new TransformationFailedException(
-                sprintf($e->getMessage(), 0, $e)
-            );
+        } catch (ParserException | UnknownCurrencyException $e) {
+            throw new TransformationFailedException($e->getMessage(), 0, $e);
         }
     }
 }
