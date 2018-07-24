@@ -62,7 +62,7 @@ interface ConditionGenerator
      * @throws UnknownFieldException  When the field is not registered in the fieldset
      * @throws BadMethodCallException When the where-clause is already generated
      *
-     * @return $this
+     * @return static
      */
     public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string');
 
