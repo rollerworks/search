@@ -2,7 +2,7 @@ QA_DOCKER_IMAGE=rollerworks/search-phpqa:latest
 QA_DOCKER_COMMAND=docker run -it --rm -v "$(shell pwd):/project" -w /project ${QA_DOCKER_IMAGE}
 
 dist: install cs-full phpstan test
-ci: cs-full-check phpstan test-full
+ci: cs-full-check phpstan test
 lint: cs-full-check phpstan
 
 install:
