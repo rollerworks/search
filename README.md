@@ -13,12 +13,11 @@ Created to make searching in a PHP powered application as simple and fast as pos
 
 Whether you want to simply search for users in your SQL database, want to
 provide a powerful search system for searching products using an ElasticSearch
-back-end or are looking for an easy way to abstract filtering for a reporter, 
-it is possible.
-
-> **Note:** The master branch is currently undergoing some major changes and is not
-> considered ready for production usage yet, documentation is currently missing!
-> Use the 1.x branch for a stable code base and "proper" documentation.
+back-end or are looking for a way to abstract filtering for a reporter.
+ 
+ ##### :warning: You are browsing the code of upcoming RollerworksSearch v2.0 which is not considered ready for production usage yet.
+ ##### Things changed a lot here and major code changes should be expected.
+ ##### If you are looking for a stable version, please wait for version 2.0, which is planned to enter beta state in early 2019.
 
 ### How about complex data structures?
 

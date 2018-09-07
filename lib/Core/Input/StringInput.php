@@ -19,9 +19,7 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\StringLexerException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
-use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -130,9 +128,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 abstract class StringInput extends AbstractInput
 {
     /**
-     * @var FieldValuesFactory|null
+     * @var ConditionStructureBuilder|null
      */
-    protected $valuesFactory;
+    protected $structureBuilder;
 
     /**
      * @var string[]
@@ -175,20 +173,21 @@ abstract class StringInput extends AbstractInput
         }
 
         $condition = null;
-        $this->errors = new ErrorList();
         $this->valueLexers = [];
+        $this->errors = new ErrorList();
         $this->config = $config;
         $this->level = 0;
 
         $this->initForProcess($config);
 
         try {
-            $condition = new SearchCondition($config->getFieldSet(), $this->parse($config, $input));
+            $this->parse($config, $input);
+            $condition = new SearchCondition($config->getFieldSet(), $this->structureBuilder->getRootGroup());
             $this->assertLevel0();
         } catch (InputProcessorException $e) {
             $this->errors[] = $e->toErrorMessageObj();
         } finally {
-            $this->valuesFactory = null;
+            $this->structureBuilder = null;
         }
 
         if (count($this->errors)) {
@@ -216,41 +215,30 @@ abstract class StringInput extends AbstractInput
         throw new UnknownFieldException($name);
     }
 
-    final protected function parse(ProcessorConfig $config, string $input): ValuesGroup
+    final protected function parse(ProcessorConfig $config, string $input): void
     {
         $this->config = $config;
         $this->lexer->parse($input, $this->valueLexers);
 
-        if (null !== $this->lexer->matchOptional('*')) {
-            $valuesGroup = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR);
-        } else {
-            $valuesGroup = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_AND);
-        }
+        $logical = null !== $this->lexer->matchOptional('*') ? ValuesGroup::GROUP_LOGICAL_OR : ValuesGroup::GROUP_LOGICAL_AND;
+        $this->structureBuilder->getRootGroup()->setGroupLogical($logical);
 
         $this->lexer->skipEmptyLines();
-
-        $this->fieldValuesPairs($valuesGroup);
-
-        return $valuesGroup;
+        $this->fieldValuesPairs();
     }
 
-    private function fieldValuesPairs(ValuesGroup $valuesGroup, string $path = '', bool $inGroup = false)
+    private function fieldValuesPairs(bool $inGroup = false): void
     {
-        $groupCount = 0;
-
         while (!$this->lexer->isEnd()) {
             if ($this->lexer->isGlimpse('/[*&]?\s*\(/A')) {
-                $this->validateGroupsCount($groupCount + 1, $path);
-
-                ++$groupCount;
                 ++$this->level;
-
-                $valuesGroup->addGroup($this->fieldGroup($path.'['.$groupCount.']'));
-
+                $this->fieldGroup();
                 --$this->level;
 
                 continue;
-            } elseif ($this->lexer->isGlimpse('/[*&]/A')) {
+            }
+
+            if ($this->lexer->isGlimpse('/[*&]/A')) {
                 throw $this->lexer->createFormatException(StringLexerException::GROUP_LOGICAL_WITHOUT_GROUP);
             }
 
@@ -263,50 +251,39 @@ abstract class StringInput extends AbstractInput
             }
 
             $fieldName = $this->getFieldName($this->lexer->fieldIdentification());
-            $fieldConfig = $this->config->getFieldSet()->get($fieldName);
 
             $this->lexer->skipEmptyLines();
-            $valuesGroup->addField(
-                $fieldName,
-                $this->fieldValues($fieldConfig, new ValuesBag(), $path)
-            );
-
+            $this->fieldValues($fieldName);
             $this->lexer->skipEmptyLines();
         }
     }
 
-    private function fieldGroup(string $path = ''): ValuesGroup
+    private function fieldGroup(): void
     {
-        $this->validateGroupNesting($path);
-
-        if (null !== $this->lexer->matchOptional('*')) {
-            $valuesGroup = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR);
-        } else {
-            $valuesGroup = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_AND);
-        }
+        $logical = null !== $this->lexer->matchOptional('*') ? ValuesGroup::GROUP_LOGICAL_OR : ValuesGroup::GROUP_LOGICAL_AND;
+        $this->structureBuilder->enterGroup($logical, '[%d]');
 
         $this->lexer->skipWhitespace();
         $this->lexer->expects('(');
         $this->lexer->skipEmptyLines();
 
-        $this->fieldValuesPairs($valuesGroup, $path, true);
+        $this->fieldValuesPairs(true);
 
         $this->lexer->expects(')');
         $this->lexer->skipEmptyLines();
 
+        $this->structureBuilder->leaveGroup();
+
         $this->lexer->matchOptional(';');
         $this->lexer->skipEmptyLines();
-
-        return $valuesGroup;
     }
 
-    private function fieldValues(FieldConfig $field, ValuesBag $valuesBag, string $path)
+    private function fieldValues(string $name): void
     {
-        $hasValues = false;
-        $this->valuesFactory->initContext($field, $valuesBag, $path);
+        $this->structureBuilder->field($name, '[%s]');
 
-        $name = $field->getName();
-        $pathVal = '['.$name.'][%d]';
+        $hasValues = false;
+        $pathVal = '[{pos}]';
 
         while (!$this->lexer->isEnd() && !$this->lexer->isGlimpse('/[);]/A')) {
             $valueType = $this->lexer->detectValueType($name);
@@ -314,12 +291,12 @@ abstract class StringInput extends AbstractInput
             switch ($valueType) {
                 case StringLexer::COMPARE:
                     list($operator, $value) = $this->lexer->comparisonValue($name);
-                    $this->valuesFactory->addComparisonValue($operator, $value, [$pathVal, '', '']);
+                    $this->structureBuilder->comparisonValue($operator, $value, [$pathVal, '', '']);
                     break;
 
                     case StringLexer::PATTERN_MATCH:
                     list($caseInsensitive, $type, $value) = $this->lexer->patternMatchValue();
-                    $this->valuesFactory->addPatterMatch($type, $value, $caseInsensitive, [$pathVal, '', '']);
+                    $this->structureBuilder->patterMatchValue($type, $value, $caseInsensitive, [$pathVal, '', '']);
                     break;
 
                 case StringLexer::RANGE:
@@ -327,7 +304,7 @@ abstract class StringInput extends AbstractInput
                     list($lowerInclusive, $lowerBound, $upperBound, $upperInclusive) = $this->lexer->rangeValue($name);
 
                     if ($negative) {
-                        $this->valuesFactory->addExcludedRange(
+                        $this->structureBuilder->excludedRangeValue(
                             $lowerBound,
                             $upperBound,
                             $lowerInclusive,
@@ -335,7 +312,7 @@ abstract class StringInput extends AbstractInput
                             [$pathVal, '[lower]', '[upper]']
                         );
                     } else {
-                        $this->valuesFactory->addRange(
+                        $this->structureBuilder->rangeValue(
                             $lowerBound,
                             $upperBound,
                             $lowerInclusive,
@@ -346,11 +323,10 @@ abstract class StringInput extends AbstractInput
                     break;
 
                 case StringLexer::SIMPLE_VALUE:
-                    $negative = null !== $this->lexer->matchOptional('!');
-                    if ($negative) {
-                        $this->valuesFactory->addExcludedSimpleValue($this->lexer->valuePart($name), $pathVal);
+                    if (null !== $this->lexer->matchOptional('!')) {
+                        $this->structureBuilder->excludedSimpleValue($this->lexer->valuePart($name), $pathVal);
                     } else {
-                        $this->valuesFactory->addSimpleValue($this->lexer->valuePart($name), $pathVal);
+                        $this->structureBuilder->simpleValue($this->lexer->valuePart($name), $pathVal);
                     }
                     break;
             }
@@ -369,8 +345,7 @@ abstract class StringInput extends AbstractInput
             throw $this->lexer->createFormatException(StringLexerException::FIELD_REQUIRES_VALUES);
         }
 
+        $this->structureBuilder->endValues();
         $this->lexer->matchOptional(';');
-
-        return $valuesBag;
     }
 }

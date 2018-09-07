@@ -365,8 +365,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         return [
             ['first level' => 'name: value, value2, value3, value4, value5;', 'name', '[name][3]'],
-            ['nested level' => '((name: value, value2, value3, value4, value5));', 'name', '[1][1][name][3]'],
-            ['deeper level' => '((name: value); (name: value, value2, value3, value4, value5));', 'name', '[1][2][name][3]'],
+            ['nested level' => '((name: value, value2, value3, value4, value5));', 'name', '[0][0][name][3]'],
+            ['deeper level' => '((name: value); (name: value, value2, value3, value4, value5));', 'name', '[0][1][name][3]'],
             ['overwriting' => 'name: value1, value22; name: value, value2, value3, value4, value5;', 'name', '[name][3]'],
         ];
     }
@@ -375,14 +375,14 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         return [
             ['(name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)', ''],
-            ['( ((name: value, value2)); ((name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)) )', '[1][2]'],
+            ['( ((name: value, value2)); ((name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)) )', '[0][1]'],
         ];
     }
 
     public function provideNestingLevelExceededTests()
     {
         return [
-            ['((field2: value;))', '[1][1]'],
+            ['((field2: value;))', '[0][0]'],
         ];
     }
 
@@ -443,8 +443,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         return [
             ['date: 1;', [new ConditionErrorMessage('[date][0]', 'This value is not valid.')]],
-            ['(date: 1;)', [new ConditionErrorMessage('[1][date][0]', 'This value is not valid.')]],
-            ['((((((date: 1;))))))', [new ConditionErrorMessage('[1][1][1][1][1][1][date][0]', 'This value is not valid.')]],
+            ['(date: 1;)', [new ConditionErrorMessage('[0][date][0]', 'This value is not valid.')]],
+            ['((((((date: 1;))))))', [new ConditionErrorMessage('[0][0][0][0][0][0][date][0]', 'This value is not valid.')]],
         ];
     }
 }

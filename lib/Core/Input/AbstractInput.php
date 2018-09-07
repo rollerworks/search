@@ -35,7 +35,7 @@ abstract class AbstractInput implements InputProcessor
      * Error messages.
      *
      * Must be an ErrorList to allow passing by reference
-     * in the FieldValuesByViewFactory.
+     * in the ConditionStructure(ByView)Builder.
      *
      * @var ConditionErrorMessage[]|ErrorList
      */
