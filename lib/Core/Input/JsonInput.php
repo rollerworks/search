@@ -19,9 +19,7 @@ use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
-use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -98,29 +96,7 @@ final class JsonInput extends AbstractInput
             ]);
         }
 
-        return $this->processInput($config, $array);
-    }
-
-    /**
-     * @var FieldValuesFactory|null
-     */
-    private $valuesFactory;
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param ProcessorConfig $config
-     * @param array           $input
-     *
-     * @throws UnexpectedTypeException When provided input is not an array
-     */
-    public function processInput(ProcessorConfig $config, $input): SearchCondition
-    {
-        if (!is_array($input)) {
-            throw new UnexpectedTypeException($input, 'array');
-        }
-
-        if (0 === count($input)) {
+        if (0 === count($array)) {
             return new SearchCondition($config->getFieldSet(), new ValuesGroup());
         }
 
@@ -129,11 +105,13 @@ final class JsonInput extends AbstractInput
         $this->config = $config;
         $this->level = 0;
 
-        $this->valuesFactory = new FieldValuesFactory($this->errors, $this->validator, $this->config->getMaxValues());
+        $this->structureBuilder = new ConditionStructureBuilder($this->config, $this->validator, $this->errors);
 
         try {
-            $valuesGroup = new ValuesGroup($input['logical-case'] ?? ValuesGroup::GROUP_LOGICAL_AND);
-            $this->processGroup($input, $valuesGroup);
+            $valuesGroup = $this->structureBuilder->getRootGroup();
+            $valuesGroup->setGroupLogical($array['logical-case'] ?? ValuesGroup::GROUP_LOGICAL_AND);
+
+            $this->processGroup($array);
 
             $condition = new SearchCondition($config->getFieldSet(), $valuesGroup);
 
@@ -141,7 +119,7 @@ final class JsonInput extends AbstractInput
         } catch (InputProcessorException $e) {
             $this->errors[] = $e->toErrorMessageObj();
         } finally {
-            $this->valuesFactory = null;
+            $this->structureBuilder = null;
         }
 
         if (count($this->errors)) {
@@ -153,102 +131,90 @@ final class JsonInput extends AbstractInput
         return $condition;
     }
 
-    private function processGroup(array $values, ValuesGroup $valuesGroup, string $path = '')
+    /**
+     * @var ConditionStructureBuilder|null
+     */
+    private $structureBuilder;
+
+    private function processGroup(array $group)
     {
-        $this->validateGroupNesting($path);
-        $this->processFields($values['fields'] ?? [], $valuesGroup, $path.'[fields]');
+        $this->processFields($group['fields'] ?? []);
 
-        if (isset($values['groups'])) {
-            $c = count($values['groups']);
-
-            $this->validateGroupsCount($c, $path);
-
-            ++$this->level;
-            $this->processGroups($values['groups'], $valuesGroup, $path);
-            --$this->level;
+        foreach ($group['groups'] ?? [] as $index => $sub) {
+            $this->structureBuilder->enterGroup($sub['logical-case'] ?? ValuesGroup::GROUP_LOGICAL_AND, '[groups][%d]');
+            $this->processGroup($sub);
+            $this->structureBuilder->leaveGroup();
         }
     }
 
-    private function processFields(array $values, ValuesGroup $valuesGroup, string $path)
+    private function processFields(array $values)
     {
         foreach ($values as $name => $value) {
             if ($this->config->getFieldSet()->isPrivate($name)) {
                 throw new UnknownFieldException($name);
             }
 
-            $value = array_merge(
-                [
-                    'simple-values' => [],
-                    'excluded-simple-values' => [],
-                    'ranges' => [],
-                    'excluded-ranges' => [],
-                    'comparisons' => [],
-                    'pattern-matchers' => [],
-                ],
-                $value
-            );
+            $this->structureBuilder->field($name, '[fields][%s]');
 
-            $valuesGroup->addField(
-                $name,
-                $this->valuesToBag($this->config->getFieldSet()->get($name), $value, new ValuesBag(), "{$path}[$name]")
-            );
+            foreach ($value['simple-values'] ?? [] as $index => $val) {
+                $this->structureBuilder->simpleValue($val, '[simple-values][{idx}]');
+            }
+
+            foreach ($value['excluded-simple-values'] ?? [] as $index => $val) {
+                $this->structureBuilder->excludedSimpleValue($val, '[excluded-simple-values][{idx}]');
+            }
+
+            foreach ($value['ranges'] ?? [] as $index => $range) {
+                $this->assertValueArrayHasKeys($range, ['lower', 'upper'], "[ranges][$index]");
+
+                $this->structureBuilder->rangeValue(
+                    $range['lower'],
+                    $range['upper'],
+                    $range['inclusive-lower'] ?? true,
+                    $range['inclusive-upper'] ?? true,
+                    ['[ranges][{idx}]', '[lower]', '[upper]']
+                );
+            }
+
+            foreach ($value['excluded-ranges'] ?? [] as $index => $range) {
+                $this->assertValueArrayHasKeys($range, ['lower', 'upper'], "[excluded-ranges][$index]");
+
+                $this->structureBuilder->excludedRangeValue(
+                    $range['lower'],
+                    $range['upper'],
+                    $range['inclusive-lower'] ?? true,
+                    $range['inclusive-upper'] ?? true,
+                    ['[excluded-ranges][{idx}]', '[lower]', '[upper]']
+                );
+            }
+
+            foreach ($value['comparisons'] ?? [] as $index => $comparison) {
+                $this->assertValueArrayHasKeys($comparison, ['value', 'operator'], "[comparisons][$index]");
+                $this->structureBuilder->comparisonValue(
+                    $comparison['operator'],
+                    $comparison['value'],
+                    ["[comparisons][$index]", '[operator]', '[value]']
+                );
+            }
+
+            foreach ($value['pattern-matchers'] ?? [] as $index => $matcher) {
+                $this->assertValueArrayHasKeys($matcher, ['value', 'type'], "[pattern-matchers][$index]");
+                $this->structureBuilder->patterMatchValue(
+                    $matcher['type'],
+                    $matcher['value'],
+                    ($matcher['case-insensitive'] ?? false),
+                    ["[pattern-matchers][$index]", '[value]', '[type]']
+                );
+            }
+
+            $this->structureBuilder->endValues();
         }
     }
 
-    private function processGroups(array $groups, ValuesGroup $valuesGroup, string $path)
-    {
-        foreach ($groups as $index => $values) {
-            $subValuesGroup = new ValuesGroup($values['logical-case'] ?? ValuesGroup::GROUP_LOGICAL_AND);
-
-            $this->processGroup($values, $subValuesGroup, "{$path}[groups][{$index}]");
-            $valuesGroup->addGroup($subValuesGroup);
-        }
-    }
-
-    private function valuesToBag(FieldConfig $field, array $values, ValuesBag $valuesBag, string $path)
-    {
-        $this->valuesFactory->initContext($field, $valuesBag, $path);
-
-        foreach ($values['simple-values'] as $index => $value) {
-            $this->valuesFactory->addSimpleValue($value, "[simple-values][$index]");
-        }
-
-        foreach ($values['excluded-simple-values'] as $index => $value) {
-            $this->valuesFactory->addExcludedSimpleValue($value, "[excluded-simple-values][$index]");
-        }
-
-        foreach ($values['ranges'] as $index => $range) {
-            $this->assertArrayKeysExists($range, ['lower', 'upper'], "{$path}[ranges][$index]");
-            $this->processRange($range, false, $index);
-        }
-
-        foreach ($values['excluded-ranges'] as $index => $range) {
-            $this->assertArrayKeysExists($range, ['lower', 'upper'], "{$path}[excluded-ranges][$index]");
-            $this->processRange($range, true, $index);
-        }
-
-        foreach ($values['comparisons'] as $index => $comparison) {
-            $this->assertArrayKeysExists($comparison, ['value', 'operator'], "{$path}[comparisons][$index]");
-            $this->valuesFactory->addComparisonValue($comparison['operator'], $comparison['value'], ["[comparisons][$index]", '[operator]', '[value]']);
-        }
-
-        foreach ($values['pattern-matchers'] as $index => $matcher) {
-            $this->assertArrayKeysExists($matcher, ['value', 'type'], "{$path}[pattern-matchers][$index]");
-            $this->valuesFactory->addPatterMatch(
-                $matcher['type'],
-                $matcher['value'],
-                (bool) ($matcher['case-insensitive'] ?? false),
-                ["[pattern-matchers][$index]", '[value]', '[type]']
-            );
-        }
-
-        return $valuesBag;
-    }
-
-    private function assertArrayKeysExists($array, array $requiredKeys, string $path)
+    private function assertValueArrayHasKeys($array, array $requiredKeys, string $path)
     {
         if (!is_array($array)) {
-            throw new InputProcessorException($path,
+            throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()).$path,
                 sprintf('Expected value-structure to be an array, got %s instead.', gettype($array))
             );
         }
@@ -262,7 +228,7 @@ final class JsonInput extends AbstractInput
         }
 
         if ($missingKeys) {
-            throw new InputProcessorException($path,
+            throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()).$path,
                 sprintf(
                     'Expected value-structure to contain the following keys: %s. '.
                     'But the following keys are missing: %s.',
@@ -270,18 +236,6 @@ final class JsonInput extends AbstractInput
                     implode(', ', $missingKeys)
                 )
             );
-        }
-    }
-
-    private function processRange(array $range, bool $negative, int $index)
-    {
-        $lowerInclusive = (bool) ($range['inclusive-lower'] ?? true);
-        $upperInclusive = (bool) ($range['inclusive-upper'] ?? true);
-
-        if ($negative) {
-            $this->valuesFactory->addExcludedRange($range['lower'], $range['upper'], $lowerInclusive, $upperInclusive, ["[excluded-ranges][$index]", '[lower]', '[upper]']);
-        } else {
-            $this->valuesFactory->addRange($range['lower'], $range['upper'], $lowerInclusive, $upperInclusive, ["[ranges][$index]", '[lower]', '[upper]']);
         }
     }
 }

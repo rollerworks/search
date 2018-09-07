@@ -67,10 +67,10 @@ final class StringQueryInput extends StringInput
         }
 
         $this->fields = $labels;
-        $this->valuesFactory = new FieldValuesByViewFactory(
-            $this->errors,
+        $this->structureBuilder = new ConditionStructureByViewBuilder(
+            $this->config,
             $this->validator,
-            $this->config->getMaxValues()
+            $this->errors
         );
     }
 }

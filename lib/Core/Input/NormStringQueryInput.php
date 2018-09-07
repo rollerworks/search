@@ -40,10 +40,6 @@ final class NormStringQueryInput extends StringInput
         }
 
         $this->fields = $names;
-        $this->valuesFactory = new FieldValuesFactory(
-            $this->errors,
-            $this->validator,
-            $this->config->getMaxValues()
-        );
+        $this->structureBuilder = new ConditionStructureBuilder($this->config, $this->validator, $this->errors);
     }
 }

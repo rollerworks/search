@@ -19,27 +19,31 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class FieldValuesByViewFactory extends FieldValuesFactory
+final class ConditionStructureByViewBuilder extends ConditionStructureBuilder
 {
     protected function inputToNorm($value, string $path)
     {
-        if (!$this->viewTransformer) {
+        if (null === $this->inputTransformer) {
+            $this->inputTransformer = $this->fieldConfig->getViewTransformer() ?? false;
+        }
+
+        if (!$this->inputTransformer) {
             if (null !== $value && !is_scalar($value)) {
                 $e = new \RuntimeException(
                     sprintf(
                         'View value of type %s is not a scalar value or null and not cannot be '.
                         'converted to a string. You must set a ViewTransformer for field "%s" with type "%s".',
-                        gettype($value),
-                        $this->config->getName(),
-                        get_class($this->config->getType()->getInnerType())
+                        \gettype($value),
+                        $this->fieldConfig->getName(),
+                        \get_class($this->fieldConfig->getType()->getInnerType())
                     )
                 );
 
                 $error = new ConditionErrorMessage(
                     $path,
-                    $this->config->getOption('invalid_message', $e->getMessage()),
-                    $this->config->getOption('invalid_message', $e->getMessage()),
-                    $this->config->getOption('invalid_message_parameters', []),
+                    $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
+                    $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
+                    $this->fieldConfig->getOption('invalid_message_parameters', []),
                     null,
                     $e
                 );
@@ -53,13 +57,13 @@ final class FieldValuesByViewFactory extends FieldValuesFactory
         }
 
         try {
-            return $this->viewTransformer->reverseTransform($value);
+            return $this->inputTransformer->reverseTransform($value);
         } catch (TransformationFailedException $e) {
             $error = new ConditionErrorMessage(
                 $path,
-                $this->config->getOption('invalid_message', $e->getMessage()),
-                $this->config->getOption('invalid_message', $e->getMessage()),
-                $this->config->getOption('invalid_message_parameters', []),
+                $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
+                $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
+                $this->fieldConfig->getOption('invalid_message_parameters', []),
                 null,
                 $e
             );

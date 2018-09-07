@@ -28,9 +28,22 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * @return int
      */
-    public function count(): int
+    public function count(?string $type = null): int
     {
-        return $this->valuesCount;
+        if (null === $type) {
+            return $this->valuesCount;
+        }
+
+        switch ($type) {
+            case 'simpleValues':
+            case 'simpleValue':
+                return \count($this->simpleValues);
+            case 'simpleExcludedValues':
+            case 'simpleExcludedValue':
+                return \count($this->simpleExcludedValues);
+            default:
+                return \count($this->values[$type] ?? []);
+        }
     }
 
     /**
