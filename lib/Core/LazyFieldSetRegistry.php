@@ -57,7 +57,7 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
     /**
      * Creates a new LazyFieldSetRegistry with easy factories for loading.
      *
-     * @param \Closure[] $configurators An array of lazy loading configurators.
+     * @param \Closure[] $configurators an array of lazy loading configurators.
      *                                  The Closure when called is expected to return
      *                                  a FieldSetConfiguratorInterface object
      *
@@ -118,6 +118,6 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
             return true;
         }
 
-        return class_exists($name) && in_array(FieldSetConfigurator::class, class_implements($name), true);
+        return class_exists($name) && \in_array(FieldSetConfigurator::class, class_implements($name), true);
     }
 }

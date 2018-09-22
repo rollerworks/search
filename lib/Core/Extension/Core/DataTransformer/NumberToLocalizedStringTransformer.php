@@ -77,7 +77,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
      */
     public function reverseTransform($value)
     {
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             throw new TransformationFailedException('Expected a string.');
         }
 

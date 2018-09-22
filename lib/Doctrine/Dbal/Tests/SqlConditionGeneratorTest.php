@@ -530,7 +530,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
             ->willReturnCallback(function ($value) {
-                if (!$value instanceof \DateTime && !is_int($value)) {
+                if (!$value instanceof \DateTime && !\is_int($value)) {
                     throw new \InvalidArgumentException('Only integer/string and DateTime are accepted.');
                 }
 
@@ -584,11 +584,11 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
             ->willReturnCallback(function ($value) {
-                if (!is_string($value) && !is_int($value)) {
+                if (!\is_string($value) && !\is_int($value)) {
                     throw new \InvalidArgumentException('Only integer/string is accepted.');
                 }
 
-                if (is_string($value)) {
+                if (\is_string($value)) {
                     return 2;
                 }
 

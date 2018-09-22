@@ -515,7 +515,7 @@ final class CachingFactoryDecoratorTest extends TestCase
             [0, 0],
             ['a', 'a'],
             // https://github.com/symfony/symfony/issues/10409
-            [chr(181).'meter', chr(181).'meter'], // UTF-8
+            [\chr(181).'meter', \chr(181).'meter'], // UTF-8
             [$object, $object],
         ];
     }
@@ -545,7 +545,7 @@ final class CachingFactoryDecoratorTest extends TestCase
             [0, 0],
             [0, '0'],
             ['a', 'a'],
-            [chr(181).'meter', chr(181).'meter'],
+            [\chr(181).'meter', \chr(181).'meter'],
         ];
     }
 

@@ -162,7 +162,7 @@ abstract class StringInput extends AbstractInput
      */
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
-        if (!is_string($input)) {
+        if (!\is_string($input)) {
             throw new UnexpectedTypeException($input, 'string');
         }
 
@@ -190,7 +190,7 @@ abstract class StringInput extends AbstractInput
             $this->structureBuilder = null;
         }
 
-        if (count($this->errors)) {
+        if (\count($this->errors)) {
             $errors = $this->errors->getArrayCopy();
 
             throw new InvalidSearchConditionException($errors);

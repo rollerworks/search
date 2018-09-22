@@ -48,7 +48,7 @@ final class StringLexer
     {
         $this->data = str_replace(["\r\n", "\r"], "\n", $data);
         $this->valueLexers = $fieldLexers;
-        $this->end = strlen($this->data);
+        $this->end = \strlen($this->data);
         $this->lineno = 1;
         $this->cursor = 0;
         $this->char = 0;
@@ -63,7 +63,7 @@ final class StringLexer
     {
         if (preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
             $this->char += mb_strlen($match[0]);
-            $this->cursor += strlen($match[0]);
+            $this->cursor += \strlen($match[0]);
         }
     }
 
@@ -80,7 +80,7 @@ final class StringLexer
     public function moveCursor(string $text): void
     {
         $this->lineno += mb_substr_count($text, "\n");
-        $this->cursor += strlen($text);
+        $this->cursor += \strlen($text);
         $this->char += mb_strlen($text);
     }
 
@@ -364,7 +364,7 @@ final class StringLexer
         }
 
         if ('' !== $match[1]) {
-            if (!in_array($match[1], ['i!', '!i', 'i', '!'], true)) {
+            if (!\in_array($match[1], ['i!', '!i', 'i', '!'], true)) {
                 throw $this->createFormatException(StringLexerException::UNKNOWN_PATTERN_MATCH_FLAG);
             }
 
@@ -452,7 +452,7 @@ final class StringLexer
             return null;
         }
 
-        if (1 === strlen($data)) {
+        if (1 === \strlen($data)) {
             return $data === $this->data[$this->cursor] ? $data : null;
         }
 

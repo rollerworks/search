@@ -55,7 +55,7 @@ final class JsonExporter extends AbstractExporter
             $exportedValue = $this->exportValues($values, $fieldSet->get($name));
 
             // Only export fields with actual values.
-            if (count($exportedValue) > 0) {
+            if (\count($exportedValue) > 0) {
                 $result['fields'][$name] = $exportedValue;
             }
         }

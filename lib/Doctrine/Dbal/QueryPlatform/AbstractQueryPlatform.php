@@ -98,7 +98,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
      */
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string
     {
-        if (in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {
+        if (\in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {
             $value = $this->connection->quote($patternMatch->getValue());
 
             if ($patternMatch->isCaseInsensitive()) {

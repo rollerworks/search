@@ -64,7 +64,7 @@ class SearchConditionSerializer
      */
     public function unserialize(array $searchCondition): SearchCondition
     {
-        if (2 !== count($searchCondition) || !isset($searchCondition[0], $searchCondition[1])) {
+        if (2 !== \count($searchCondition) || !isset($searchCondition[0], $searchCondition[1])) {
             throw new InvalidArgumentException(
                 'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
             );

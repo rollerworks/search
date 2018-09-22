@@ -94,7 +94,7 @@ final class GenericFieldSet implements FieldSetWithView
         }
 
         if (null !== $this->viewBuilder) {
-            call_user_func($this->viewBuilder, $view);
+            \call_user_func($this->viewBuilder, $view);
         }
 
         return $view;

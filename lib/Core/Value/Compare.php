@@ -31,7 +31,7 @@ final class Compare implements RequiresComparatorValueHolder
      */
     public function __construct($value, $operator)
     {
-        if (!in_array($operator, self::OPERATORS, true)) {
+        if (!\in_array($operator, self::OPERATORS, true)) {
             throw new \InvalidArgumentException(
                 sprintf('Unknown operator "%s".', $operator)
             );

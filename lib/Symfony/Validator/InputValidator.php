@@ -69,6 +69,6 @@ final class InputValidator implements Validator
             );
         }
 
-        return !count($violations);
+        return !\count($violations);
     }
 }

@@ -73,7 +73,7 @@ final class GenericTypeRegistry implements TypeRegistry
 
             if (!$type) {
                 // Support fully-qualified class names.
-                if (!class_exists($name) || !in_array(FieldType::class, class_implements($name), true)) {
+                if (!class_exists($name) || !\in_array(FieldType::class, class_implements($name), true)) {
                     throw new InvalidArgumentException(sprintf('Could not load type "%s"', $name));
                 }
 
@@ -115,7 +115,7 @@ final class GenericTypeRegistry implements TypeRegistry
     private function resolveType(FieldType $type): ResolvedFieldType
     {
         $parentType = $type->getParent();
-        $fqcn = get_class($type);
+        $fqcn = \get_class($type);
 
         $typeExtensions = [];
 

@@ -68,7 +68,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
      */
     public function quote($input, $type = null)
     {
-        if (is_string($input)) {
+        if (\is_string($input)) {
             return "'".$input."'";
         }
 

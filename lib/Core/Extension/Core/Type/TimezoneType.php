@@ -86,10 +86,10 @@ final class TimezoneType extends AbstractFieldType implements ChoiceLoader
         foreach (\DateTimeZone::listIdentifiers() as $timezone) {
             $parts = explode('/', $timezone);
 
-            if (count($parts) > 2) {
+            if (\count($parts) > 2) {
                 $region = $parts[0];
                 $name = $parts[1].' - '.$parts[2];
-            } elseif (count($parts) > 1) {
+            } elseif (\count($parts) > 1) {
                 $region = $parts[0];
                 $name = $parts[1];
             } else {

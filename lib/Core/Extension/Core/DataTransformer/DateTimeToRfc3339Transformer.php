@@ -49,7 +49,7 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
      */
     public function reverseTransform($rfc3339): ?\DateTime
     {
-        if (null !== $rfc3339 && !is_string($rfc3339)) {
+        if (null !== $rfc3339 && !\is_string($rfc3339)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 

@@ -74,7 +74,7 @@ final class JsonInput extends AbstractInput
      */
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
-        if (!is_string($input)) {
+        if (!\is_string($input)) {
             throw new UnexpectedTypeException($input, 'string');
         }
 
@@ -96,7 +96,7 @@ final class JsonInput extends AbstractInput
             ]);
         }
 
-        if (0 === count($array)) {
+        if (0 === \count($array)) {
             return new SearchCondition($config->getFieldSet(), new ValuesGroup());
         }
 
@@ -122,7 +122,7 @@ final class JsonInput extends AbstractInput
             $this->structureBuilder = null;
         }
 
-        if (count($this->errors)) {
+        if (\count($this->errors)) {
             $errors = $this->errors->getArrayCopy();
 
             throw new InvalidSearchConditionException($errors);
@@ -213,9 +213,9 @@ final class JsonInput extends AbstractInput
 
     private function assertValueArrayHasKeys($array, array $requiredKeys, string $path)
     {
-        if (!is_array($array)) {
+        if (!\is_array($array)) {
             throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()).$path,
-                sprintf('Expected value-structure to be an array, got %s instead.', gettype($array))
+                sprintf('Expected value-structure to be an array, got %s instead.', \gettype($array))
             );
         }
 

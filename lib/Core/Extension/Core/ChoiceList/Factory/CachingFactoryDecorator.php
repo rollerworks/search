@@ -135,11 +135,11 @@ final class CachingFactoryDecorator implements ChoiceListFactory
      */
     private static function generateHash($value, string $namespace = ''): string
     {
-        if (is_object($value)) {
+        if (\is_object($value)) {
             $value = spl_object_hash($value);
-        } elseif (is_array($value)) {
+        } elseif (\is_array($value)) {
             array_walk_recursive($value, function (&$v) {
-                if (is_object($v)) {
+                if (\is_object($v)) {
                     $v = spl_object_hash($v);
                 }
             });
@@ -161,7 +161,7 @@ final class CachingFactoryDecorator implements ChoiceListFactory
         }
 
         foreach ($array as $key => $value) {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 self::flatten($value, $output);
 
                 continue;

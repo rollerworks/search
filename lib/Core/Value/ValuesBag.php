@@ -103,7 +103,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function hasSimpleValues(): bool
     {
-        return count($this->simpleValues) > 0;
+        return \count($this->simpleValues) > 0;
     }
 
     /**
@@ -148,7 +148,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function hasExcludedSimpleValues(): bool
     {
-        return count($this->simpleExcludedValues) > 0;
+        return \count($this->simpleExcludedValues) > 0;
     }
 
     /**
@@ -194,7 +194,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function has(string $type): bool
     {
-        return isset($this->values[$type]) && count($this->values[$type]) > 0;
+        return isset($this->values[$type]) && \count($this->values[$type]) > 0;
     }
 
     /**
@@ -225,7 +225,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function add(ValueHolder $value)
     {
-        $this->values[get_class($value)][] = $value;
+        $this->values[\get_class($value)][] = $value;
 
         ++$this->valuesCount;
 

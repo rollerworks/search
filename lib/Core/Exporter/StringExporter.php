@@ -94,7 +94,7 @@ abstract class StringExporter extends AbstractExporter
             return $this->modelToView($value, $field);
         }
 
-        if (is_callable($valueExporter)) {
+        if (\is_callable($valueExporter)) {
             return $valueExporter($value, [$this, 'modelToView'], $field);
         }
 

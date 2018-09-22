@@ -106,7 +106,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
      */
     protected function quoteValue($value, Type $type): string
     {
-        if (is_bool($value)) {
+        if (\is_bool($value)) {
             return $value ? 'true' : 'false';
         } elseif (is_scalar($value) && ctype_digit((string) $value)) {
             return (string) $value;

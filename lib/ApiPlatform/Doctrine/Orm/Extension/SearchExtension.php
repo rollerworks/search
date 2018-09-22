@@ -109,7 +109,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
         $configuration['relations']['o']['entity'] = $resourceClass;
 
         foreach ($configuration['mappings'] as $mappingName => $mapping) {
-            if (!is_array($mapping)) {
+            if (!\is_array($mapping)) {
                 $mapping = [
                     'alias' => 'o',
                     'property' => $mapping,

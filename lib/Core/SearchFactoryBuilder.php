@@ -114,7 +114,7 @@ final class SearchFactoryBuilder
      */
     public function addType(FieldType $type)
     {
-        $this->types[get_class($type)] = $type;
+        $this->types[\get_class($type)] = $type;
 
         return $this;
     }
@@ -129,7 +129,7 @@ final class SearchFactoryBuilder
     public function addTypes(array $types)
     {
         foreach ($types as $type) {
-            $this->types[get_class($type)] = $type;
+            $this->types[\get_class($type)] = $type;
         }
 
         return $this;
@@ -174,7 +174,7 @@ final class SearchFactoryBuilder
     {
         $extensions = $this->extensions;
 
-        if (count($this->types) > 0 || count($this->typeExtensions) > 0) {
+        if (\count($this->types) > 0 || \count($this->typeExtensions) > 0) {
             $extensions[] = new PreloadedExtension($this->types, $this->typeExtensions);
         }
 

@@ -55,7 +55,7 @@ class SearchCondition
 
     public function isEmpty(): bool
     {
-        return 0 === count($this->values->getGroups()) && 0 === count($this->values->getFields());
+        return 0 === \count($this->values->getGroups()) && 0 === \count($this->values->getFields());
     }
 
     /**
@@ -66,7 +66,7 @@ class SearchCondition
      */
     public function assertFieldSetName(string ...$name)
     {
-        if (!in_array($providedName = $this->fieldSet->getSetName(), $name, true)) {
+        if (!\in_array($providedName = $this->fieldSet->getSetName(), $name, true)) {
             throw new UnsupportedFieldSetException($name, $providedName);
         }
     }

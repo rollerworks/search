@@ -55,7 +55,7 @@ class DateConversion implements ValueConversion, QueryConversion
      */
     public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array
     {
-        if (!is_array($value) && !$value instanceof Range && !$value instanceof Compare) {
+        if (!\is_array($value) && !$value instanceof Range && !$value instanceof Compare) {
             return $this->generateDateRange($propertyName, new Range($value, $value));
         }
 

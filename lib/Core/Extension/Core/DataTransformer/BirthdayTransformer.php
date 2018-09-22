@@ -49,7 +49,7 @@ final class BirthdayTransformer implements DataTransformer
      */
     public function transform($value)
     {
-        if (is_int($value)) {
+        if (\is_int($value)) {
             if (!$this->allowAge) {
                 throw new TransformationFailedException('Age support is not enabled.');
             }
@@ -67,7 +67,7 @@ final class BirthdayTransformer implements DataTransformer
     {
         $value = $this->transformWhenInteger($value);
 
-        if (is_int($value)) {
+        if (\is_int($value)) {
             if (!$this->allowAge) {
                 throw new TransformationFailedException('Age support is not enabled.');
             }

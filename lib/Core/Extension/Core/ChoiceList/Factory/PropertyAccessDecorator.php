@@ -79,7 +79,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
      */
     public function createListFromChoices($choices, $value = null): ChoiceList
     {
-        if (is_string($value)) {
+        if (\is_string($value)) {
             $value = new PropertyPath($value);
         }
 
@@ -90,7 +90,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
                 // when such values are passed to
                 // ChoiceList::getValuesForChoices(). Handle this case
                 // so that the call to getValue() doesn't break.
-                if (is_object($choice) || is_array($choice)) {
+                if (\is_object($choice) || \is_array($choice)) {
                     return $accessor->getValue($choice, $value);
                 }
             };
@@ -110,7 +110,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
      */
     public function createListFromLoader(ChoiceLoader $loader, $value = null): ChoiceList
     {
-        if (is_string($value)) {
+        if (\is_string($value)) {
             $value = new PropertyPath($value);
         }
 
@@ -121,7 +121,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
                 // when such values are passed to
                 // ChoiceList::getValuesForChoices(). Handle this case
                 // so that the call to getValue() doesn't break.
-                if (is_object($choice) || is_array($choice)) {
+                if (\is_object($choice) || \is_array($choice)) {
                     return $accessor->getValue($choice, $value);
                 }
             };
@@ -146,7 +146,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
     {
         $accessor = $this->propertyAccessor;
 
-        if (is_string($label)) {
+        if (\is_string($label)) {
             $label = new PropertyPath($label);
         }
 
@@ -156,7 +156,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
             };
         }
 
-        if (is_string($preferredChoices)) {
+        if (\is_string($preferredChoices)) {
             $preferredChoices = new PropertyPath($preferredChoices);
         }
 
@@ -171,7 +171,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
             };
         }
 
-        if (is_string($index)) {
+        if (\is_string($index)) {
             $index = new PropertyPath($index);
         }
 
@@ -181,7 +181,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
             };
         }
 
-        if (is_string($groupBy)) {
+        if (\is_string($groupBy)) {
             $groupBy = new PropertyPath($groupBy);
         }
 
@@ -195,7 +195,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
             };
         }
 
-        if (is_string($attr)) {
+        if (\is_string($attr)) {
             $attr = new PropertyPath($attr);
         }
 

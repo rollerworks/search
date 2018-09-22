@@ -74,7 +74,7 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
         $newParams = [];
 
         foreach ($messageParameters as $name => $value) {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $value = implode(', ', array_map([$this, 'formatValue'], $value));
             } else {
                 $value = $this->formatValue($value);

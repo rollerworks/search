@@ -136,6 +136,6 @@ final class FieldConfigBuilder
             );
         }
 
-        return is_object($type) ? $type : MappingType::getType($type);
+        return \is_object($type) ? $type : MappingType::getType($type);
     }
 }

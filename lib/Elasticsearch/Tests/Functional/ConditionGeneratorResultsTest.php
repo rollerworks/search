@@ -201,12 +201,12 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
             $this->assertDocumentsAreFound($condition, $expectedRows);
         } catch (\Exception $e) {
             self::detectSystemException($e);
-            if (function_exists('dump')) {
+            if (\function_exists('dump')) {
                 dump($e);
             } else {
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.'.PHP_EOL;
                 // Don't use var-dump or print-r as this crashes php...
-                echo get_class($e).'::'.(string) $e;
+                echo \get_class($e).'::'.(string) $e;
             }
             $this->fail('Condition contains errors.');
         }

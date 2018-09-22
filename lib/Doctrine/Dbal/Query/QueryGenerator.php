@@ -155,7 +155,7 @@ final class QueryGenerator
 
         $patterns = ['%s IN(%s)', '%s NOT IN(%s)'];
 
-        if (count($valuesQuery) > 0) {
+        if (\count($valuesQuery) > 0) {
             $query[] = sprintf(
                 $patterns[(int) $exclude],
                 $column,
@@ -272,7 +272,7 @@ final class QueryGenerator
         $query[] = self::implodeWithValue(
             ' AND ',
             $valuesQuery,
-            count($valuesQuery) > 1 && !$exclude ? ['(', ')'] : []
+            \count($valuesQuery) > 1 && !$exclude ? ['(', ')'] : []
         );
     }
 
@@ -332,13 +332,13 @@ final class QueryGenerator
         // Remove the empty values
         $values = array_filter($values, 'strlen');
 
-        if (0 === count($values)) {
+        if (0 === \count($values)) {
             return;
         }
 
         $value = implode($glue, $values);
 
-        if (count($wrap) > 0 && (isset($wrap[2]) || count($values) > 1)) {
+        if (\count($wrap) > 0 && (isset($wrap[2]) || \count($values) > 1)) {
             return $wrap[0].$value.$wrap[1];
         }
 

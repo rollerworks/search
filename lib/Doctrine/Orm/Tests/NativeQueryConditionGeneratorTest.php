@@ -166,7 +166,7 @@ class NativeQueryConditionGeneratorTest extends OrmTestCase
             ->expects($this->atLeastOnce())
             ->method('getConversionStrategy')
             ->willReturnCallback(function ($value) {
-                if (!$value instanceof \DateTime && !is_int($value)) {
+                if (!$value instanceof \DateTime && !\is_int($value)) {
                     throw new \InvalidArgumentException('Only integer/string and DateTime are accepted.');
                 }
 

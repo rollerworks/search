@@ -45,12 +45,12 @@ final class SchemaRecord
 
     public function add(array $values)
     {
-        if (count($values) != count($this->columns)) {
+        if (\count($values) != \count($this->columns)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Values count mismatch, expected %d got %d on table "%s" with record: %s',
-                    count($this->columns),
-                    count($values),
+                    \count($this->columns),
+                    \count($values),
                     $this->table,
                     var_export($values, true)
                 )

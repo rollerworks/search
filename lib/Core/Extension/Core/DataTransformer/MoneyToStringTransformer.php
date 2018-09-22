@@ -81,7 +81,7 @@ final class MoneyToStringTransformer implements DataTransformer
      */
     public function reverseTransform($value): ?MoneyValue
     {
-        if (null !== $value && !is_string($value)) {
+        if (null !== $value && !\is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 

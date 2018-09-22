@@ -44,12 +44,8 @@ final class CachingInputProcessor implements InputProcessor
      *                                                       the driver supports TTL then the library may set a default value
      *                                                       for it or let the driver take care of that.
      */
-    public function __construct(
-        CacheInterface $cache,
-        SearchConditionSerializer $conditionSerializer,
-        InputProcessor $inputProcessor,
-        $ttl = null
-    ) {
+    public function __construct(CacheInterface $cache, SearchConditionSerializer $conditionSerializer, InputProcessor $inputProcessor, $ttl = null)
+    {
         $this->conditionSerializer = $conditionSerializer;
         $this->inputProcessor = $inputProcessor;
         $this->cache = $cache;
@@ -58,7 +54,7 @@ final class CachingInputProcessor implements InputProcessor
 
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
-        if (is_string($input)) {
+        if (\is_string($input)) {
             $cacheKey = $this->getConditionCacheKey($config, $input);
 
             try {

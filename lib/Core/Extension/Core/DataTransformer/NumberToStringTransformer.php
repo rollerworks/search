@@ -81,7 +81,7 @@ class NumberToStringTransformer extends BaseNumberTransformer
             throw new TransformationFailedException('Value is not numeric.');
         }
 
-        if (is_string($result)) {
+        if (\is_string($result)) {
             if (false !== mb_strpos($result, '.')) {
                 $result = (float) $result;
             } else {

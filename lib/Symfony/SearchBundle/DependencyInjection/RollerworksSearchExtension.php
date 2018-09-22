@@ -96,7 +96,7 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
             $container->prependExtensionConfig('framework', [
                 'translator' => [
                     'paths' => [
-                        dirname((new \ReflectionClass(FieldSet::class))->getFileName()).'/Resources/translations',
+                        \dirname((new \ReflectionClass(FieldSet::class))->getFileName()).'/Resources/translations',
                     ],
                 ],
             ]);

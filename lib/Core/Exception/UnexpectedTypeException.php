@@ -26,7 +26,7 @@ class UnexpectedTypeException extends \InvalidArgumentException implements Searc
      */
     public function __construct($value, $expectedType)
     {
-        if (is_array($expectedType)) {
+        if (\is_array($expectedType)) {
             $expectedType = implode('", "', $expectedType);
         }
 
@@ -34,7 +34,7 @@ class UnexpectedTypeException extends \InvalidArgumentException implements Searc
             sprintf(
                 'Expected argument of type "%s", "%s" given',
                 $expectedType,
-                is_object($value) ? get_class($value) : gettype($value)
+                \is_object($value) ? \get_class($value) : \gettype($value)
             )
         );
     }

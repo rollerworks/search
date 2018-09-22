@@ -71,7 +71,7 @@ class ValuesGroup implements \Serializable
      */
     public function hasGroups(): bool
     {
-        return count($this->groups) > 0;
+        return \count($this->groups) > 0;
     }
 
     /**
@@ -221,7 +221,7 @@ class ValuesGroup implements \Serializable
      */
     public function setGroupLogical(string $groupLogical)
     {
-        if (!in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
+        if (!\in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
             throw new InvalidArgumentException(sprintf('Unsupported group logical "%s".', $groupLogical));
         }
 

@@ -62,7 +62,7 @@ class DoctrineOrmFactory
         }
 
         throw new \InvalidArgumentException(
-            sprintf('Query "%s" is not supported by the DoctrineOrmFactory.', get_class($query))
+            sprintf('Query "%s" is not supported by the DoctrineOrmFactory.', \get_class($query))
         );
     }
 
@@ -70,7 +70,7 @@ class DoctrineOrmFactory
      * Creates a new CachedConditionGenerator instance for the ConditionGenerator.
      *
      * @param DqlConditionGenerator|NativeQueryConditionGenerator $conditionGenerator
-     * @param int                                                 $lifetime           Lifetime in seconds after which the cache is expired.
+     * @param int                                                 $lifetime           lifetime in seconds after which the cache is expired.
      *                                                                                Set this 0 to never expire (not recommended)
      *
      * @return ConditionGenerator
@@ -88,7 +88,7 @@ class DoctrineOrmFactory
         }
 
         throw new \InvalidArgumentException(
-            sprintf('ConditionGenerator "%s" is not supported by the DoctrineOrmFactory.', get_class($conditionGenerator))
+            sprintf('ConditionGenerator "%s" is not supported by the DoctrineOrmFactory.', \get_class($conditionGenerator))
         );
     }
 }

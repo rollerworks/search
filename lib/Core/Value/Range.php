@@ -23,20 +23,8 @@ class Range implements RequiresComparatorValueHolder
     private $inclusiveLower;
     private $inclusiveUpper;
 
-    /**
-     * Constructor.
-     *
-     * @param mixed $lower
-     * @param mixed $upper
-     * @param bool  $inclusiveLower
-     * @param bool  $inclusiveUpper
-     */
-    public function __construct(
-        $lower,
-        $upper,
-        bool $inclusiveLower = true,
-        bool $inclusiveUpper = true
-    ) {
+    public function __construct($lower, $upper, bool $inclusiveLower = true, bool $inclusiveUpper = true)
+    {
         $this->lower = $lower;
         $this->upper = $upper;
         $this->inclusiveLower = $inclusiveLower;

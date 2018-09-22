@@ -55,11 +55,11 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             $timeFormat = \IntlDateFormatter::SHORT;
         }
 
-        if (!in_array($dateFormat, self::$formats, true)) {
+        if (!\in_array($dateFormat, self::$formats, true)) {
             throw new UnexpectedTypeException($dateFormat, implode('", "', self::$formats));
         }
 
-        if (!in_array($timeFormat, self::$formats, true)) {
+        if (!\in_array($timeFormat, self::$formats, true)) {
             throw new UnexpectedTypeException($timeFormat, implode('", "', self::$formats));
         }
 
@@ -110,7 +110,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      */
     public function reverseTransform($value)
     {
-        if (null !== $value && !is_string($value)) {
+        if (null !== $value && !\is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 

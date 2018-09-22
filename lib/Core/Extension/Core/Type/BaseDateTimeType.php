@@ -33,7 +33,7 @@ abstract class BaseDateTimeType extends AbstractFieldType
 
     protected function validateFormat(string $name, $value): void
     {
-        if (!in_array($value, self::$acceptedFormats, true)) {
+        if (!\in_array($value, self::$acceptedFormats, true)) {
             throw new InvalidConfigurationException(
                 'The "'.$name.'" option must be one of the IntlDateFormatter constants '.
                 '(FULL, LONG, MEDIUM, SHORT) or the "pattern" option must be a string representing a custom format.'

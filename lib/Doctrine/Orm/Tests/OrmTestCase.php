@@ -193,15 +193,15 @@ abstract class OrmTestCase extends DbalTestCase
             throw $e;
         }
 
-        if (isset($this->sqlLoggerStack->queries) && count($this->sqlLoggerStack->queries)) {
+        if (isset($this->sqlLoggerStack->queries) && \count($this->sqlLoggerStack->queries)) {
             $queries = '';
-            $i = count($this->sqlLoggerStack->queries);
+            $i = \count($this->sqlLoggerStack->queries);
 
             foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
                 $params = array_map(
                     function ($p) {
-                        if (is_object($p)) {
-                            return get_class($p);
+                        if (\is_object($p)) {
+                            return \get_class($p);
                         }
 
                         return "'".var_export($p, true)."'";
@@ -228,7 +228,7 @@ abstract class OrmTestCase extends DbalTestCase
             }
 
             $message =
-                '['.get_class($e).'] '.
+                '['.\get_class($e).'] '.
                 $e->getMessage().
                 PHP_EOL.PHP_EOL.
                 'With queries:'.PHP_EOL.

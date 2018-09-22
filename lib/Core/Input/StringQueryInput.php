@@ -33,7 +33,7 @@ final class StringQueryInput extends StringInput
      * Constructor.
      *
      * @param Validator|null $validator
-     * @param callable|null  $labelResolver A callable to resolve the actual label
+     * @param callable|null  $labelResolver a callable to resolve the actual label
      *                                      of the field, receives a
      *                                      FieldConfigInterface instance.
      *                                      If null the `label` option value is

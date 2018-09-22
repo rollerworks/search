@@ -71,7 +71,7 @@ class DqlConditionGenerator extends AbstractConditionGenerator
     {
         if ($query instanceof QueryBuilder) {
             if (!method_exists($query, 'setHint')) {
-                throw new InvalidArgumentException(sprintf('An "%s" instance was provided but method setHint is not implemented in "%s".', QueryBuilder::class, get_class($query)));
+                throw new InvalidArgumentException(sprintf('An "%s" instance was provided but method setHint is not implemented in "%s".', QueryBuilder::class, \get_class($query)));
             }
         } elseif (!$query instanceof DqlQuery) {
             throw new UnexpectedTypeException($query, [DqlQuery::class, QueryBuilder::class.' (with QueryHint support)']);

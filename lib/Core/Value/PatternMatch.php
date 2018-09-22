@@ -46,7 +46,7 @@ final class PatternMatch implements ValueHolder
     {
         $typeConst = __CLASS__.'::PATTERN_'.strtoupper($patternType);
 
-        if (!defined($typeConst)) {
+        if (!\defined($typeConst)) {
             throw new InvalidArgumentException(sprintf('Unknown PatternMatch type "%s".', $patternType));
         }
 
@@ -72,7 +72,7 @@ final class PatternMatch implements ValueHolder
 
     public function isExclusive(): bool
     {
-        return in_array(
+        return \in_array(
             $this->patternType,
             [
                 self::PATTERN_NOT_STARTS_WITH,

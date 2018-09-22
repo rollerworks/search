@@ -239,7 +239,7 @@ class SearchField implements FieldConfig
                             'Supported value-type "%s" requires a value comparator but none is set for field "%s" with type "%s".',
                             $type,
                             $this->getName(),
-                            get_class($this->getType()->getInnerType())
+                            \get_class($this->getType()->getInnerType())
                         )
                     );
                 }

@@ -31,7 +31,7 @@ final class BirthdayValueComparator implements ValueComparator
      */
     public function isHigher($higher, $lower, array $options): bool
     {
-        if (!is_object($higher) xor !is_object($lower)) {
+        if (!\is_object($higher) xor !\is_object($lower)) {
             return false;
         }
 
@@ -49,7 +49,7 @@ final class BirthdayValueComparator implements ValueComparator
      */
     public function isLower($lower, $higher, array $options): bool
     {
-        if (!is_object($higher) xor !is_object($lower)) {
+        if (!\is_object($higher) xor !\is_object($lower)) {
             return false;
         }
 
@@ -67,7 +67,7 @@ final class BirthdayValueComparator implements ValueComparator
      */
     public function isEqual($value, $nextValue, array $options): bool
     {
-        if (!is_object($value) xor !is_object($nextValue)) {
+        if (!\is_object($value) xor !\is_object($nextValue)) {
             return false;
         }
 

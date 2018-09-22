@@ -38,7 +38,7 @@ final class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
     {
         // Constraint should always be converted to an array
         $constraintsNormalizer = function (Options $options, $constraints) {
-            return is_object($constraints) ? [$constraints] : (array) $constraints;
+            return \is_object($constraints) ? [$constraints] : (array) $constraints;
         };
 
         $resolver->setDefault('constraints', []);

@@ -38,13 +38,13 @@ final class ChoiceToValueTransformer implements DataTransformer
 
     public function reverseTransform($value)
     {
-        if (null !== $value && !is_string($value)) {
+        if (null !== $value && !\is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 
         $choices = $this->choiceList->getChoicesForValues([(string) $value]);
 
-        if (1 !== count($choices)) {
+        if (1 !== \count($choices)) {
             if (null === $value || '' === $value) {
                 return;
             }

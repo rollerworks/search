@@ -39,7 +39,7 @@ class AgeDateConversion implements StrategySupportedConversion, ColumnConversion
      */
     public function getConversionStrategy($value, array $options, ConversionHints $hints): int
     {
-        if (!$value instanceof \DateTimeInterface && !is_int($value)) {
+        if (!$value instanceof \DateTimeInterface && !\is_int($value)) {
             throw new UnexpectedTypeException($value, '\DateTimeInterface object or integer');
         }
 

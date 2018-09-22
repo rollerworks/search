@@ -62,9 +62,9 @@ abstract class AbstractExporter implements ConditionExporter
                     sprintf(
                         'Model value of type %s is not a scalar value or null and not cannot be '.
                         'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
-                        gettype($value),
+                        \gettype($value),
                         $field->getName(),
-                        get_class($field->getType()->getInnerType())
+                        \get_class($field->getType()->getInnerType())
                     )
                 );
             }
@@ -97,9 +97,9 @@ abstract class AbstractExporter implements ConditionExporter
                     sprintf(
                         'Model value of type %s is not a scalar value or null and not cannot be '.
                         'converted to a string. You must set a normTransformer for field "%s" with type "%s".',
-                        gettype($value),
+                        \gettype($value),
                         $field->getName(),
-                        get_class($field->getType()->getInnerType())
+                        \get_class($field->getType()->getInnerType())
                     )
                 );
             }
