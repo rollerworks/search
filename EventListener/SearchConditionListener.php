@@ -46,13 +46,8 @@ final class SearchConditionListener
     private $eventDispatcher;
     private $cache;
 
-    public function __construct(
-        SearchFactory $searchFactory,
-        InputProcessorLoader $inputProcessorLoader,
-        ResourceMetadataFactory $resourceMetadataFactory,
-        EventDispatcherInterface $eventDispatcher,
-        CacheInterface $cache = null
-    ) {
+    public function __construct(SearchFactory $searchFactory, InputProcessorLoader $inputProcessorLoader, ResourceMetadataFactory $resourceMetadataFactory, EventDispatcherInterface $eventDispatcher, CacheInterface $cache = null)
+    {
         $this->searchFactory = $searchFactory;
         $this->inputProcessorLoader = $inputProcessorLoader;
         $this->resourceMetadataFactory = $resourceMetadataFactory;
@@ -164,7 +159,7 @@ final class SearchConditionListener
     {
         $input = $request->query->get('search', '');
 
-        if (!is_string($input)) {
+        if (!\is_string($input)) {
             throw new UnexpectedTypeException($input, 'string');
         }
 
