@@ -9,31 +9,34 @@
          beStrictAboutTodoAnnotatedTests="true"
 >
     <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="date.timezone" value="UTC"/>
         <ini name="intl.default_locale" value="en"/>
         <ini name="intl.error_level" value="0"/>
         <ini name="memory_limit" value="-1"/>
+
+        <env name="ELASTICSEARCH_HOST" value="localhost"/>
+        <env name="ELASTICSEARCH_PORT" value="59200"/>
     </php>
 
     <testsuites>
         <testsuite name="RollerworksSearch Test Suite">
-            <directory>./tests/</directory>
+            <directory>./Tests/</directory>
         </testsuite>
     </testsuites>
 
     <groups>
         <exclude>
-            <group>functional</group>
             <group>performance</group>
         </exclude>
     </groups>
 
     <filter>
         <whitelist>
-            <directory>./src</directory>
+            <directory>./</directory>
             <exclude>
                 <directory>./vendor/</directory>
-                <directory>./tests/</directory>
-                <directory>./doc/</directory>
+                <directory>./Tests/</directory>
                 <directory>./bin/</directory>
             </exclude>
         </whitelist>

@@ -138,7 +138,10 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     protected function getClient(): Client
     {
         // TODO: extract settings to config file, add proper logger
-        return new Client(['host' => getenv('ELASTICSEARCH_HOST') ?: 'elasticsearch']);
+        return new Client([
+            'host' => getenv('ELASTICSEARCH_HOST') ?: 'elasticsearch',
+            'port' => getenv('ELASTICSEARCH_PORT') ?: 9200,
+        ]);
     }
 
     /**
