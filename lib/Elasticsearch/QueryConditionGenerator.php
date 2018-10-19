@@ -71,7 +71,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     {
         $this->searchCondition = $searchCondition;
         $this->fieldSet = $searchCondition->getFieldSet();
-        // $this->mappings = ['id' => $mapping, 'name' => $mapping2]; // TODO MultiMatch
     }
 
     /**
@@ -80,18 +79,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     public function registerField(string $fieldName, string $mapping)
     {
         $this->mappings[$fieldName] = new FieldMapping($fieldName, $mapping, $this->fieldSet->get($fieldName));
-    }
-
-    /**
-     * This uses the `multi_match` instead of mapping the field multiple times,
-     * and allows for more flexibility tailored to Elasticsearch.
-     *
-     * @param string $fieldName
-     *
-     * @return MultiFieldMapping
-     */
-    public function registerMultiField(string $fieldName)
-    {
     }
 
     /**
