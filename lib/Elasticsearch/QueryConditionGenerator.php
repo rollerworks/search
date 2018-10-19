@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch;
 
+use Elastica\Query;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
@@ -84,7 +85,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     /**
      * {@inheritdoc}
      */
-    public function getQuery(): ?array
+    public function getQuery(): Query
     {
         $rootGroupCondition = $this->processGroup($this->searchCondition->getValuesGroup());
 
@@ -105,11 +106,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             }
         }
 
-        if ([] === $rootGroupCondition) {
-            return null;
-        }
-
-        return [self::QUERY => $rootGroupCondition];
+        return new Query([self::QUERY => $rootGroupCondition]);
     }
 
     /**

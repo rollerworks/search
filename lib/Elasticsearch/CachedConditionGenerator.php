@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch;
 
+use Elastica\Query;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
@@ -42,7 +43,7 @@ class CachedConditionGenerator implements ConditionGenerator
     private $cacheTtl;
 
     /**
-     * @var null|array
+     * @var null|Query
      */
     private $query;
 
@@ -76,7 +77,7 @@ class CachedConditionGenerator implements ConditionGenerator
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function getQuery(): ?array
+    public function getQuery(): Query
     {
         if (null === $this->query) {
             $cacheKey = $this->getCacheKey('query');

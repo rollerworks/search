@@ -17,12 +17,12 @@
     "require": {
         "php": "^7.1",
         "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA13",
-        "psr/simple-cache": "^1.0"
+        "psr/simple-cache": "^1.0",
+        "ruflin/elastica": "^4.0 || ^5.0 || ^6.0"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^3.4.2 || ^4.0.2",
         "symfony/var-dumper": "^3.4.2 || ^4.0.2",
-        "ruflin/elastica": "^3.2",
         "moneyphp/money": "^3.0"
     },
     "autoload": {

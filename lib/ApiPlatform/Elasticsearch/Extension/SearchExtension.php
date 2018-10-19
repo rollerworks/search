@@ -83,8 +83,7 @@ class SearchExtension implements QueryCollectionExtensionInterface
             }
         }
 
-        // TODO: temporary, how to do this better?
-        $query = new Query($conditionGenerator->getQuery());
+        $query = $conditionGenerator->getQuery();
 
         // move limit/offset from QueryBuilder to Elasticsearch query
         if (null !== $firstResult = $queryBuilder->getFirstResult()) {
