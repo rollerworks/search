@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch;
 
+use Elastica\Query;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
@@ -71,7 +72,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     {
         $this->searchCondition = $searchCondition;
         $this->fieldSet = $searchCondition->getFieldSet();
-        // $this->mappings = ['id' => $mapping, 'name' => $mapping2]; // TODO MultiMatch
     }
 
     /**
@@ -83,21 +83,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * This uses the `multi_match` instead of mapping the field multiple times,
-     * and allows for more flexibility tailored to Elasticsearch.
-     *
-     * @param string $fieldName
-     *
-     * @return MultiFieldMapping
-     */
-    public function registerMultiField(string $fieldName)
-    {
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function getQuery(): ?array
+    public function getQuery(): Query
     {
         $rootGroupCondition = $this->processGroup($this->searchCondition->getValuesGroup());
 
@@ -118,11 +106,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             }
         }
 
-        if ([] === $rootGroupCondition) {
-            return null;
-        }
-
-        return [self::QUERY => $rootGroupCondition];
+        return new Query([self::QUERY => $rootGroupCondition]);
     }
 
     /**

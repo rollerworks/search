@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch;
 
+use Elastica\Query;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
@@ -71,11 +72,11 @@ interface ConditionGenerator
     public function registerField(string $fieldName, string $mapping);
 
     /**
-     * Return a valid Elasticsearch search query. Query can be sent to a _search endpoint as is.
+     * Return a valid Elastica\Query search query. Query can be sent to a _search endpoint as is.
      *
-     * @return null|array
+     * @return Query
      */
-    public function getQuery(): ?array;
+    public function getQuery(): Query;
 
     /**
      * Return mappings actually used in the query. It allows to restrict the query on specific indices/types.

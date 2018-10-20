@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
+use Elastica\Query;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\Elasticsearch\CachedConditionGenerator;
 use Rollerworks\Component\Search\Elasticsearch\ConditionGenerator;
@@ -22,6 +23,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * Class CachedConditionGeneratorTest.
+ *
+ * @group cache
  */
 class CachedConditionGeneratorTest extends ElasticsearchTestCase
 {
@@ -55,6 +58,8 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
             )
             ->willReturn(false);
 
+        $query = $this->mockQuery();
+
         $this->cacheDriver
             ->expects($this->never())
             ->method('get');
@@ -67,21 +72,23 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
                         return $cacheKey === $key;
                     }
                 ),
-                ['query' => 'nope'],
+                $query,
                 60
             );
 
         $this->conditionGenerator
             ->expects($this->once())
             ->method('getQuery')
-            ->willReturn(['query' => 'nope']);
+            ->willReturn($query);
 
-        self::assertEquals(['query' => 'nope'], $this->cachedConditionGenerator->getQuery());
+        self::assertEquals($query, $this->cachedConditionGenerator->getQuery());
     }
 
     public function testGetQueryWithCache()
     {
         $cacheKey = '';
+
+        $query = $this->mockQuery();
 
         $this->cacheDriver
             ->expects($this->once())
@@ -105,13 +112,13 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
                     return $cacheKey === $key;
                 })
             )
-            ->willReturn(['query' => 'nope']);
+            ->willReturn($query);
 
         $this->conditionGenerator
             ->expects(self::never())
             ->method('getQuery');
 
-        self::assertEquals(['query' => 'nope'], $this->cachedConditionGenerator->getQuery());
+        self::assertEquals($query, $this->cachedConditionGenerator->getQuery());
     }
 
     protected function setUp()
@@ -134,5 +141,11 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
             $this->cacheDriver,
             60
         );
+    }
+
+    private function mockQuery(): Query
+    {
+        return $this->getMockBuilder(Query::class)
+            ->getMock();
     }
 }
