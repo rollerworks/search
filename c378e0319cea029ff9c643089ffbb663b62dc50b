@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-10-19T10:07:04Z
+
+@sstok the failing build seems unrelated? Translation support not enabled?
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-10-19T10:13:09Z
+
+Otherwise, this seems to work as expected, a review would be great.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-10-19T15:12:59Z
+
+@sstok please let me know what you want to see here for a merge.
+
+---------------------------------------------------------------------------
+
+by sstok at 2018-10-20T07:23:52Z
+
+Sorry, I got a migraine yesterday 😔 All good? The breakage is indeed unrelated.
+
+---------------------------------------------------------------------------
+
+by sstok at 2018-10-20T07:24:26Z
+
+Thank you @dkarlovi
