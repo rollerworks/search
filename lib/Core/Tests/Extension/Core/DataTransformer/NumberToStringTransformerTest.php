@@ -54,8 +54,8 @@ final class NumberToStringTransformerTest extends TestCase
     {
         $transformer = new NumberToStringTransformer(2);
 
-        $this->assertEquals('1234.50', $transformer->transform(1234.5));
-        $this->assertEquals('678.92', $transformer->transform(678.916));
+        $this->assertSame('1234.5', $transformer->transform(1234.5));
+        $this->assertSame('678.92', $transformer->transform(678.916));
     }
 
     public function transformWithRoundingProvider()

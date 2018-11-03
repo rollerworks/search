@@ -10,6 +10,7 @@
             <!-- All services with tag "rollerworks_search.input_processor" are inserted here by InputProcessorPass -->
             <argument type="collection" />
         </service>
+        <service id="Rollerworks\Component\Search\Loader\InputProcessorLoader" alias="rollerworks_search.input_loader" />
 
         <service id="rollerworks_search.input.abstract" class="Rollerworks\Component\Search\Input\StringQueryInput" abstract="true" public="false">
             <argument id="rollerworks_search.validator" type="service" on-invalid="null" />

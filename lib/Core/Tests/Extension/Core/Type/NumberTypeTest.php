@@ -40,8 +40,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('01', '01')
-            ->successfullyTransformsTo('01')
-            ->andReverseTransformsTo('01', '01');
+            ->successfullyTransformsTo('1')
+            ->andReverseTransformsTo('1', '1');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('-1')

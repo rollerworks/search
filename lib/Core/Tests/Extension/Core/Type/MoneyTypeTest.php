@@ -53,7 +53,7 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00', '12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200), false))
-            ->andReverseTransformsTo('12,00', '12');
+            ->andReverseTransformsTo('12,00', '12.00');
     }
 
     public function testPassMoneyDe()
@@ -92,7 +92,7 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12', '12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::JPY(12), false))
-            ->andReverseTransformsTo('12', '12.00');
+            ->andReverseTransformsTo('12', '12');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('€12.00', 'EUR 12.00')
