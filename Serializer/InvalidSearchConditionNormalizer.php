@@ -72,9 +72,6 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportsNormalization($data, $format = null)
     {
         return self::FORMAT === $format && $data instanceof InvalidSearchConditionException;
