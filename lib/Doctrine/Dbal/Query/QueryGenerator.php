@@ -68,7 +68,7 @@ final class QueryGenerator
 
         $conditions[] = $this->getGroupQuery($searchCondition->getValuesGroup());
 
-        return (string) self::implodeWithValue(' AND ', $conditions);
+        return self::implodeWithValue(' AND ', $conditions);
     }
 
     public function getGroupQuery(ValuesGroup $valuesGroup): string
@@ -104,12 +104,12 @@ final class QueryGenerator
 
         $this->processGroups($valuesGroup->getGroups(), $finalQuery);
 
-        return (string) self::implodeWithValue(' AND ', $finalQuery, ['(', ')']);
+        return self::implodeWithValue(' AND ', $finalQuery, ['(', ')']);
     }
 
     /**
      * @param ValuesGroup[] $groups
-     * @param array         $query
+     * @param string[]      $query
      */
     private function processGroups(array $groups, array &$query)
     {
@@ -241,9 +241,7 @@ final class QueryGenerator
 
     /**
      * @param PatternMatch[] $patternMatchers
-     * @param QueryField     $mappingConfig
-     * @param array          $query
-     * @param bool           $exclude
+     * @param string[]       $query
      */
     private function processPatternMatchers(array $patternMatchers, QueryField $mappingConfig, array &$query, bool $exclude = false): void
     {
@@ -290,7 +288,11 @@ final class QueryGenerator
         return $hints;
     }
 
-    private static function implodeWithValue($glue, array $values, array $wrap = []): string
+    /**
+     * @param string[] $values
+     * @param array    $wrap   [(string) prefix, (string) suffix, (bool) force when values is empty]
+     */
+    private static function implodeWithValue(string $glue, array $values, array $wrap = []): string
     {
         // Remove the empty values
         $values = array_filter($values, 'strlen');
@@ -301,6 +303,7 @@ final class QueryGenerator
 
         $value = implode($glue, $values);
 
+        // FIXME This is not Clean Code, you can try to hide it but this is not acceptable. Use a separate method implodeWithValueAlways()
         if (\count($wrap) > 0 && (isset($wrap[2]) || \count($values) > 1)) {
             return $wrap[0].$value.$wrap[1];
         }
