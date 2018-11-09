@@ -27,11 +27,6 @@ final class DoctrineDbalFactory
      */
     private $cacheDriver;
 
-    /**
-     * Constructor.
-     *
-     * @param Cache $cacheDriver
-     */
     public function __construct(Cache $cacheDriver = null)
     {
         $this->cacheDriver = $cacheDriver;
@@ -42,10 +37,7 @@ final class DoctrineDbalFactory
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option.
      *
-     * @param Connection      $connection      Doctrine DBAL Connection object
-     * @param SearchCondition $searchCondition SearchCondition object
-     *
-     * @return ConditionGenerator
+     * @param Connection $connection Doctrine DBAL Connection
      */
     public function createConditionGenerator(Connection $connection, SearchCondition $searchCondition): ConditionGenerator
     {
@@ -55,12 +47,12 @@ final class DoctrineDbalFactory
     /**
      * Creates a new CachedConditionGenerator instance for the given ConditionGenerator.
      *
-     * @param ConditionGenerator     $conditionGenerator
-     * @param null|int|\DateInterval $ttl                Optional. The TTL value of this item. If no value is sent and
-     *                                                   the driver supports TTL then the library may set a default value
-     *                                                   for it or let the driver take care of that.
+     * Note: When no cache driver was configured the original ConditionGenerator
+     * is returned instead.
      *
-     * @return ConditionGenerator
+     * @param null|int|\DateInterval $ttl Optional. The TTL value of this item. If no value is sent and
+     *                                    the driver supports TTL then the library may set a default value
+     *                                    for it or let the driver take care of that.
      */
     public function createCachedConditionGenerator(ConditionGenerator $conditionGenerator, $ttl = 0): ConditionGenerator
     {

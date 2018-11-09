@@ -27,11 +27,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 final class DoctrineOrmQueryBuilderPass implements CompilerPassInterface
 {
-    /**
-     * You can modify the container here before it is dumped to PHP code.
-     *
-     * @param ContainerBuilder $container
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('rollerworks_search.api_platform.doctrine.orm.query_extension.search')) {

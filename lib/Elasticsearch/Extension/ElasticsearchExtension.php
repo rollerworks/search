@@ -15,14 +15,8 @@ namespace Rollerworks\Component\Search\Elasticsearch\Extension;
 
 use Rollerworks\Component\Search\AbstractExtension;
 
-/**
- * Class ElasticsearchExtension.
- */
 class ElasticsearchExtension extends AbstractExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function loadTypesExtensions(): array
     {
         return [

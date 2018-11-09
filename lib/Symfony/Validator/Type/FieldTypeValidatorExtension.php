@@ -23,17 +23,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getExtendedType(): string
     {
         return SearchFieldType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         // Constraint should always be converted to an array

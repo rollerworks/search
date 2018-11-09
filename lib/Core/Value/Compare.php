@@ -13,9 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Value;
 
-/**
- * Compare value structure.
- */
 final class Compare implements RequiresComparatorValueHolder
 {
     private $operator;
@@ -24,8 +21,6 @@ final class Compare implements RequiresComparatorValueHolder
     public const OPERATORS = ['>=', '<=', '<>', '<', '>'];
 
     /**
-     * Constructor.
-     *
      * @param mixed  $value
      * @param string $operator
      */

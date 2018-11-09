@@ -43,9 +43,6 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         $this->searchFactory = $searchFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function set(FieldConfig $field)
     {
         $this->fields[$field->getName()] = $field;
@@ -53,9 +50,6 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function add(string $name, string $type, array $options = [])
     {
         $this->unresolvedFields[$name] = [
@@ -66,9 +60,6 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function remove(string $name)
     {
         unset($this->fields[$name], $this->unresolvedFields[$name]);
@@ -76,9 +67,6 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function has(string $name): bool
     {
         if (isset($this->unresolvedFields[$name])) {
@@ -92,9 +80,6 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $name): FieldConfig
     {
         if (isset($this->unresolvedFields[$name])) {
@@ -114,9 +99,6 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         throw new InvalidArgumentException(sprintf('The field with the name "%s" does not exist.', $name));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFieldSet(string $setName = null): FieldSet
     {
         foreach ($this->unresolvedFields as $name => $field) {

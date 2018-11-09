@@ -34,9 +34,6 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  */
 class AgeDateConversion implements StrategySupportedConversion, ColumnConversion, ValueConversion
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getConversionStrategy($value, array $options, ConversionHints $hints): int
     {
         if (!$value instanceof \DateTimeInterface && !\is_int($value)) {
@@ -50,9 +47,6 @@ class AgeDateConversion implements StrategySupportedConversion, ColumnConversion
         return 1;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
         if (3 === $hints->conversionStrategy) {
@@ -84,8 +78,6 @@ class AgeDateConversion implements StrategySupportedConversion, ColumnConversion
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return string|int
      */
     public function convertValue($value, array $options, ConversionHints $hints)

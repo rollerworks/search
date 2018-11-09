@@ -25,33 +25,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class GenericResolvedFieldType implements ResolvedFieldType
 {
-    /**
-     * @var FieldType
-     */
+    /** @var FieldType */
     private $innerType;
 
-    /**
-     * @var FieldTypeExtension[]
-     */
+    /** @var FieldTypeExtension[] */
     private $typeExtensions;
 
-    /**
-     * @var ResolvedFieldType|null
-     */
+    /** @var ResolvedFieldType|null */
     private $parent;
 
-    /**
-     * @var OptionsResolver
-     */
+    /** @var OptionsResolver */
     private $optionsResolver;
 
     /**
-     * Constructor.
-     *
-     * @param FieldType              $innerType
-     * @param array                  $typeExtensions
-     * @param ResolvedFieldType|null $parent
-     *
      * @throws UnexpectedTypeException When at least one of the given extensions is not an FieldTypeExtension
      */
     public function __construct(FieldType $innerType, array $typeExtensions = [], ?ResolvedFieldType $parent = null)
@@ -67,33 +53,21 @@ class GenericResolvedFieldType implements ResolvedFieldType
         $this->parent = $parent;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): ?ResolvedFieldType
     {
         return $this->parent;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getInnerType(): FieldType
     {
         return $this->innerType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTypeExtensions(): array
     {
         return $this->typeExtensions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createField(string $name, array $options = []): FieldConfig
     {
         $options = $this->getOptionsResolver()->resolve($options);
@@ -101,9 +75,6 @@ class GenericResolvedFieldType implements ResolvedFieldType
         return $this->newField($name, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         if (null !== $this->parent) {
@@ -117,9 +88,6 @@ class GenericResolvedFieldType implements ResolvedFieldType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createFieldView(FieldConfig $config, FieldSetView $view): SearchFieldView
     {
         $view = $this->newView($view);
@@ -133,9 +101,6 @@ class GenericResolvedFieldType implements ResolvedFieldType
         return $view;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         if (null !== $this->parent) {
@@ -149,17 +114,11 @@ class GenericResolvedFieldType implements ResolvedFieldType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return $this->innerType->getBlockPrefix();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getOptionsResolver(): OptionsResolver
     {
         if (null === $this->optionsResolver) {
@@ -183,11 +142,6 @@ class GenericResolvedFieldType implements ResolvedFieldType
      * Creates a new SearchField instance.
      *
      * Override this method if you want to customize the field class.
-     *
-     * @param string $name    The name of the field
-     * @param array  $options The builder options
-     *
-     * @return FieldConfig
      */
     protected function newField($name, array $options): FieldConfig
     {
@@ -198,10 +152,6 @@ class GenericResolvedFieldType implements ResolvedFieldType
      * Creates a new SearchFieldView instance.
      *
      * Override this method if you want to customize the view class.
-     *
-     * @param FieldSetView $view
-     *
-     * @return SearchFieldView
      */
     protected function newView(FieldSetView $view): SearchFieldView
     {

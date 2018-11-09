@@ -28,9 +28,6 @@ final class LanguageType extends AbstractFieldType implements ChoiceLoader
 {
     use ChoiceLoaderTrait;
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -39,17 +36,11 @@ final class LanguageType extends AbstractFieldType implements ChoiceLoader
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): ?string
     {
         return ChoiceType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadChoiceList(callable $value = null): ChoiceList
     {
         if (null !== $this->choiceList) {
@@ -59,21 +50,11 @@ final class LanguageType extends AbstractFieldType implements ChoiceLoader
         return $this->choiceList = new ArrayChoiceList(array_flip(Intl::getLanguageBundle()->getLanguageNames()), $value);
     }
 
-    /**
-     * Returns whether the values are constant (not dependent of there position).
-     *
-     * {@see \Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList::isValuesConstant}
-     *
-     * @return bool
-     */
     public function isValuesConstant(): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'language';

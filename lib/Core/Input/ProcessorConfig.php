@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Input;
 use Rollerworks\Component\Search\FieldSet;
 
 /**
- * ProcessorConfig holds the configuration for an Input processor.
+ * Holds the configuration for an Input processor.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -47,17 +47,11 @@ class ProcessorConfig
      */
     private $cacheTTL;
 
-    /**
-     * @param FieldSet $fieldSet
-     */
     public function __construct(FieldSet $fieldSet)
     {
         $this->fieldSet = $fieldSet;
     }
 
-    /**
-     * @return FieldSet
-     */
     public function getFieldSet(): FieldSet
     {
         return $this->fieldSet;
@@ -65,8 +59,6 @@ class ProcessorConfig
 
     /**
      * Set the maximum group nesting level.
-     *
-     * @param int $maxNestingLevel
      */
     public function setMaxNestingLevel(int $maxNestingLevel)
     {
@@ -75,8 +67,6 @@ class ProcessorConfig
 
     /**
      * Gets the maximum group nesting level.
-     *
-     * @return int
      */
     public function getMaxNestingLevel(): int
     {
@@ -95,8 +85,6 @@ class ProcessorConfig
 
     /**
      * Get the maximum number of values per group.
-     *
-     * @return int
      */
     public function getMaxValues(): int
     {
@@ -108,8 +96,6 @@ class ProcessorConfig
      *
      * To calculate an absolute maximum use following formula:
      * maxGroups * maxNestingLevel.
-     *
-     * @param int $maxGroups
      */
     public function setMaxGroups(int $maxGroups)
     {
@@ -118,8 +104,6 @@ class ProcessorConfig
 
     /**
      * Get the maximum number of groups per nesting level.
-     *
-     * @return int
      */
     public function getMaxGroups(): int
     {

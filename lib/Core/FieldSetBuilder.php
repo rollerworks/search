@@ -22,8 +22,6 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 interface FieldSetBuilder
 {
     /**
-     * Add a field to the builder.
-     *
      * @param string $name    Name of search field
      * @param string $type    The FQCN of the type
      * @param array  $options Array of options for building the field
@@ -33,49 +31,23 @@ interface FieldSetBuilder
     public function add(string $name, string $type, array $options = []);
 
     /**
-     * Set a field on the builder.
-     *
-     * @param FieldConfig $field
-     *
      * @return static The builder
      */
     public function set(FieldConfig $field);
 
     /**
-     * Remove a field from the set-builder.
-     *
-     * @param string $name
-     *
      * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
      *
      * @return static The builder
      */
     public function remove(string $name);
 
-    /**
-     * Returns whether the set-builder has a field with the name.
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
     public function has(string $name): bool;
 
-    /**
-     * Get a previously registered field from the set.
-     *
-     * @param string $name
-     *
-     * @return FieldConfig
-     */
     public function get(string $name): FieldConfig;
 
     /**
      * Create the FieldSet using the fields set on the builder.
-     *
-     * @param string $name
-     *
-     * @return FieldSet
      */
     public function getFieldSet(string $name = null): FieldSet;
 }

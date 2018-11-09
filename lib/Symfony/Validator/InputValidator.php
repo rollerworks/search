@@ -29,11 +29,15 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 final class InputValidator implements Validator
 {
+    /** @var ValidatorInterface */
     private $validator;
+
     /** @var FieldConfig */
     private $field;
+
     /** @var ErrorList */
     private $errorList;
+
     /** @var array */
     private $constraints = [];
 

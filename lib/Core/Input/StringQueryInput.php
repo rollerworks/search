@@ -16,8 +16,7 @@ namespace Rollerworks\Component\Search\Input;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
- * StringQueryInput - processes input in the StringInput syntax
- * using the View value format.
+ * Processes input in the StringInput syntax using the View value format.
  */
 final class StringQueryInput extends StringInput
 {
@@ -30,14 +29,11 @@ final class StringQueryInput extends StringInput
     private $labelResolver;
 
     /**
-     * Constructor.
-     *
-     * @param Validator|null $validator
-     * @param callable|null  $labelResolver a callable to resolve the actual label
-     *                                      of the field, receives a
-     *                                      FieldConfigInterface instance.
-     *                                      If null the `label` option value is
-     *                                      used instead
+     * @param callable|null $labelResolver a callable to resolve the actual label
+     *                                     of the field, receives a
+     *                                     FieldConfigInterface instance.
+     *                                     If null the `label` option value is
+     *                                     used instead
      */
     public function __construct(Validator $validator = null, callable $labelResolver = null)
     {

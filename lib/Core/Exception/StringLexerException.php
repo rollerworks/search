@@ -34,15 +34,7 @@ final class StringLexerException extends InputProcessorException
     public const VALUE_QUOTES_MUST_ESCAPE = 'Quotes in a quoted value must be escaped';
     public const MISSING_END_QUOTE = 'Missing quote to end the value';
 
-    /**
-     * @param int            $column
-     * @param int            $line
-     * @param array|string[] $expected
-     * @param string         $got
-     *
-     * @return StringLexerException
-     */
-    public static function syntaxError(int $column, int $line, $expected, string $got)
+    public static function syntaxError(int $column, int $line, $expected, string $got): self
     {
         if ($expected) {
             $exp = new self(
@@ -72,14 +64,7 @@ final class StringLexerException extends InputProcessorException
         return $exp;
     }
 
-    /**
-     * @param int    $column
-     * @param int    $line
-     * @param string $message
-     *
-     * @return StringLexerException
-     */
-    public static function formatError(int $column, int $line, string $message)
+    public static function formatError(int $column, int $line, string $message): self
     {
         $exp = new self(
             '',

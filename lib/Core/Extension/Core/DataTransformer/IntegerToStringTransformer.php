@@ -31,9 +31,6 @@ final class IntegerToStringTransformer extends NumberToStringTransformer
         parent::__construct(0, $roundingMode ?? self::ROUND_DOWN);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($value)
     {
         $result = parent::reverseTransform($value);

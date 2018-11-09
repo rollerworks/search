@@ -29,12 +29,12 @@ use Rollerworks\Component\Search\Field\FieldTypeExtension;
  */
 abstract class AbstractExtension implements SearchExtension
 {
+    /** @var array<FieldTypeExtension[]>|null */
     private $typesExtensions;
+
+    /** @var FieldType[]|null */
     private $types;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getType(string $name): FieldType
     {
         if (null === $this->types) {
@@ -50,9 +50,6 @@ abstract class AbstractExtension implements SearchExtension
         return $this->types[$name];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasType(string $name): bool
     {
         if (null === $this->types) {
@@ -62,9 +59,6 @@ abstract class AbstractExtension implements SearchExtension
         return isset($this->types[$name]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasTypeExtensions(string $type): bool
     {
         if (null === $this->typesExtensions) {
@@ -74,9 +68,6 @@ abstract class AbstractExtension implements SearchExtension
         return isset($this->typesExtensions[$type]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTypeExtensions(string $type): array
     {
         if (null === $this->typesExtensions) {
@@ -105,7 +96,7 @@ abstract class AbstractExtension implements SearchExtension
      * should be overloaded in child class and return array of FieldTypeExtension
      * instances per type: `TypeClassName => [FieldTypeExtensionInterface, ...]`.
      *
-     * @return array
+     * @return array<FieldTypeExtension[]>|array
      */
     protected function loadTypesExtensions(): array
     {

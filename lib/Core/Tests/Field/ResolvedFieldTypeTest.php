@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Field;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
@@ -30,22 +31,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class ResolvedFieldTypeTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FieldType
+     * @var MockObject|FieldType
      */
     private $parentType;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FieldType
+     * @var MockObject|FieldType
      */
     private $type;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeExtension
+     * @var MockObject|FieldTypeExtension
      */
     private $extension1;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FieldTypeExtension
+     * @var MockObject|FieldTypeExtension
      */
     private $extension2;
 
@@ -253,9 +254,9 @@ final class ResolvedFieldTypeTest extends TestCase
     /**
      * @param string $typeClass
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|FieldType
      */
-    private function getMockFieldType($typeClass = AbstractFieldType::class)
+    private function getMockFieldType(string $typeClass = AbstractFieldType::class)
     {
         return $this->getMockBuilder($typeClass)
             ->setMethods(['configureOptions', 'buildView', 'buildType', 'getBlockPrefix'])
@@ -263,7 +264,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|AbstractFieldTypeExtension
      */
     private function getMockFieldTypeExtension()
     {
@@ -273,7 +274,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function createOptionsResolverMock()
     {
@@ -283,7 +284,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|FieldConfig
      */
     private function createFieldMock()
     {
@@ -291,7 +292,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|SearchFieldView
      */
     private function createSearchFieldViewMock()
     {

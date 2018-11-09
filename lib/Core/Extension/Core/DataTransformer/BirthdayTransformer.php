@@ -44,9 +44,6 @@ final class BirthdayTransformer implements DataTransformer
         $this->allowAge = $allowAge;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transform($value)
     {
         if (\is_int($value)) {
@@ -60,9 +57,6 @@ final class BirthdayTransformer implements DataTransformer
         return $this->transformer->transform($value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($value)
     {
         $value = $this->transformWhenInteger($value);

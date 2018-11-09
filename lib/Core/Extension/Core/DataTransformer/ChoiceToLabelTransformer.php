@@ -32,9 +32,6 @@ final class ChoiceToLabelTransformer implements DataTransformer
         $this->choiceListView = $choiceListView;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transform($choice)
     {
         if (null === $this->choiceListView->choicesByLabel) {
@@ -51,9 +48,6 @@ final class ChoiceToLabelTransformer implements DataTransformer
         return $this->choiceListView->labelsByValue[$value];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($value)
     {
         if (null !== $value && !\is_string($value)) {

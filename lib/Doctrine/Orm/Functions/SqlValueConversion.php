@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Orm\Functions;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
+use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
@@ -40,7 +41,7 @@ class SqlValueConversion extends FunctionNode
     /**
      * PathExpression or SqlFieldConversion.
      *
-     * @var \Doctrine\ORM\Query\AST\Node
+     * @var Node
      */
     private $column;
 
@@ -50,13 +51,10 @@ class SqlValueConversion extends FunctionNode
     private $valueIndex;
 
     /**
-     * @var int|string
+     * @var int
      */
-    private $strategy;
+    private $strategy = 0;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSql(SqlWalker $sqlWalker): string
     {
         $this->loadConversionHints($sqlWalker);
@@ -69,9 +67,6 @@ class SqlValueConversion extends FunctionNode
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function parse(Parser $parser): void
     {
         $parser->match(Lexer::T_IDENTIFIER);
@@ -83,11 +78,7 @@ class SqlValueConversion extends FunctionNode
         $parser->match(Lexer::T_COMMA);
         $this->valueIndex = (int) $parser->Literal()->value;
         $parser->match(Lexer::T_COMMA);
-        $this->strategy = $parser->Literal()->value;
-
-        if (ctype_digit((string) $this->strategy)) {
-            $this->strategy = (int) $this->strategy;
-        }
+        $this->strategy = (int) $parser->Literal()->value;
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }

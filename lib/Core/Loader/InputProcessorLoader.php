@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Loader;
 use Psr\Container\ContainerInterface;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Input;
+use Rollerworks\Component\Search\Input\Validator;
 use Rollerworks\Component\Search\InputProcessor;
 
 /**
@@ -29,8 +30,6 @@ final class InputProcessorLoader
     private $serviceIds;
 
     /**
-     * Constructor.
-     *
      * @param ContainerInterface $container  A PSR-11 compatible Service locator/container
      * @param string[]           $serviceIds Format alias to service-id mapping,
      *                                       eg. 'json' => 'JsonInput-ClassName'
@@ -42,14 +41,9 @@ final class InputProcessorLoader
     }
 
     /**
-     * Create a new InputProcessorLoader with the build-in InputProcessors
-     * loadable.
-     *
-     * @param Input\Validator|null $validator
-     *
-     * @return InputProcessorLoader
+     * Create a new InputProcessorLoader with the build-in InputProcessors loadable.
      */
-    public static function create(Input\Validator $validator = null): self
+    public static function create(Validator $validator = null): self
     {
         return new self(
             new ClosureContainer(
@@ -74,13 +68,7 @@ final class InputProcessorLoader
     }
 
     /**
-     * Lazily loads an Input processor.
-     *
-     * @param string $name
-     *
      * @throws \InvalidArgumentException when there is no input processor with the given name
-     *
-     * @return InputProcessor
      */
     public function get(string $name): InputProcessor
     {

@@ -32,9 +32,6 @@ final class GenericSearchFactory implements SearchFactory
         $this->serializer = new SearchConditionSerializer($this);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createFieldSet($configurator): FieldSet
     {
         if (!$configurator instanceof FieldSetConfigurator) {
@@ -47,9 +44,6 @@ final class GenericSearchFactory implements SearchFactory
         return $builder->getFieldSet(\get_class($configurator));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createField(string $name, string $type, array $options = []): FieldConfig
     {
         $type = $this->registry->getType($type);
@@ -62,17 +56,11 @@ final class GenericSearchFactory implements SearchFactory
         return $field;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createFieldSetBuilder(): FieldSetBuilder
     {
         return new GenericFieldSetBuilder($this);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSerializer(): SearchConditionSerializer
     {
         return $this->serializer;

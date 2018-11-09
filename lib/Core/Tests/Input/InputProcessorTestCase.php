@@ -42,9 +42,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 {
     abstract protected function getProcessor(): InputProcessor;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getFieldSet(bool $build = true)
     {
         $fieldSet = new GenericFieldSetBuilder($this->getFactory());

@@ -25,44 +25,30 @@ interface FieldSet
 {
     /**
      * Returns the name of the set.
-     *
-     * @return string|null
      */
     public function getSetName(): ?string;
 
     /**
-     * Returns the {@link FieldConfigInterface} object of the search field.
-     *
-     * @param string $name
+     * Returns the field as a {@link FieldConfig} instance.
      *
      * @throws UnknownFieldException When the field is not registered at this Fieldset
-     *
-     * @return FieldConfig
      */
     public function get(string $name): FieldConfig;
 
     /**
      * Returns all the registered fields in the set.
      *
-     * @return FieldConfig[] [name] => {FieldConfigInterface object})
+     * @return FieldConfig[] [name] => {FieldConfig instance})
      */
     public function all(): array;
 
     /**
      * Returns whether the field is registered in the set.
-     *
-     * @param string $name
-     *
-     * @return bool
      */
     public function has(string $name): bool;
 
     /**
      * Returns whether the field is a private field (primary condition only).
-     *
-     * @param string $name
-     *
-     * @return bool
      */
     public function isPrivate(string $name): bool;
 }

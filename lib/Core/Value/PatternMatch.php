@@ -34,12 +34,6 @@ final class PatternMatch implements ValueHolder
     private $caseInsensitive;
 
     /**
-     * Constructor.
-     *
-     * @param string $value
-     * @param string $patternType
-     * @param bool   $caseInsensitive
-     *
      * @throws \InvalidArgumentException When the pattern-match type is invalid
      */
     public function __construct(string $value, string $patternType, bool $caseInsensitive = false)

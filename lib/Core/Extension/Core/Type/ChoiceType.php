@@ -45,9 +45,6 @@ final class ChoiceType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $choiceList = $this->createChoiceList($options);
@@ -82,9 +79,6 @@ final class ChoiceType extends AbstractFieldType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         /** @var ChoiceListView $choiceListView */
@@ -98,9 +92,6 @@ final class ChoiceType extends AbstractFieldType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $choiceTranslationDomainNormalizer = function (Options $options, $choiceTranslationDomain) {
@@ -155,9 +146,6 @@ final class ChoiceType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'choice';

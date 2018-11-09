@@ -32,8 +32,6 @@ class DoctrineOrmFactory
     private $cacheDriver;
 
     /**
-     * Constructor.
-     *
      * @param Cache $cacheDriver
      */
     public function __construct(Cache $cacheDriver = null)
@@ -70,21 +68,20 @@ class DoctrineOrmFactory
      * Creates a new CachedConditionGenerator instance for the ConditionGenerator.
      *
      * @param DqlConditionGenerator|NativeQueryConditionGenerator $conditionGenerator
-     * @param int                                                 $lifetime           lifetime in seconds after which the cache is expired.
-     *                                                                                Set this 0 to never expire (not recommended)
-     *
-     * @return ConditionGenerator
+     * @param null|int|\DateInterval                              $ttl                Optional. The TTL value of this item. If no value is sent and
+     *                                                                                the driver supports TTL then the library may set a default value
+     *                                                                                for it or let the driver take care of that.
      */
-    public function createCachedConditionGenerator($conditionGenerator, int $lifetime = null): ConditionGenerator
+    public function createCachedConditionGenerator($conditionGenerator, $ttl = null): ConditionGenerator
     {
         if (null === $this->cacheDriver) {
             return $conditionGenerator;
         }
 
         if ($conditionGenerator instanceof DqlConditionGenerator) {
-            return new CachedDqlConditionGenerator($conditionGenerator, $this->cacheDriver, $lifetime);
+            return new CachedDqlConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
         } elseif ($conditionGenerator instanceof NativeQueryConditionGenerator) {
-            return new CachedNativeQueryConditionGenerator($conditionGenerator, $this->cacheDriver, $lifetime);
+            return new CachedNativeQueryConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
         }
 
         throw new \InvalidArgumentException(

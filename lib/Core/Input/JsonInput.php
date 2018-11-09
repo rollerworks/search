@@ -69,9 +69,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class JsonInput extends AbstractInput
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
         if (!\is_string($input)) {

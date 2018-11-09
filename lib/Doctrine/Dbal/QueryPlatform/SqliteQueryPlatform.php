@@ -17,9 +17,6 @@ use Doctrine\DBAL\Types\Type;
 
 final class SqliteQueryPlatform extends AbstractQueryPlatform
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function quoteValue($value, Type $type): string
     {
         // Don't quote numbers as SQLite doesn't follow the standards.

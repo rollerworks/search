@@ -36,9 +36,6 @@ final class PreloadedExtension implements SearchExtension
         $this->typeExtensions = $typeExtensions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getType(string $name): FieldType
     {
         if (!isset($this->types[$name])) {
@@ -50,17 +47,11 @@ final class PreloadedExtension implements SearchExtension
         return $this->types[$name];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasType(string $name): bool
     {
         return isset($this->types[$name]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTypeExtensions(string $name): array
     {
         return $this->typeExtensions[$name] ?? [];

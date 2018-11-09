@@ -36,10 +36,8 @@ final class GenericTypeRegistry implements TypeRegistry
     private $resolvedTypeFactory;
 
     /**
-     * Constructor.
-     *
-     * @param SearchExtension[]        $extensions          An array of SearchExtension
-     * @param ResolvedFieldTypeFactory $resolvedTypeFactory The factory for resolved field types
+     * @param SearchExtension[]        $extensions
+     * @param ResolvedFieldTypeFactory $resolvedTypeFactory
      *
      * @throws UnexpectedTypeException if an extension does not implement SearchExtension
      */
@@ -55,9 +53,6 @@ final class GenericTypeRegistry implements TypeRegistry
         $this->resolvedTypeFactory = $resolvedTypeFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getType(string $name): ResolvedFieldType
     {
         if (!isset($this->types[$name])) {
@@ -86,9 +81,6 @@ final class GenericTypeRegistry implements TypeRegistry
         return $this->types[$name];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasType(string $name): bool
     {
         if (isset($this->types[$name])) {
@@ -104,9 +96,6 @@ final class GenericTypeRegistry implements TypeRegistry
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getExtensions(): array
     {
         return $this->extensions;

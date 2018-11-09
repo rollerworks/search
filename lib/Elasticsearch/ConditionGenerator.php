@@ -17,7 +17,7 @@ use Elastica\Query;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
- * Interface ConditionGenerator.
+ * ConditionGenerator.
  *
  * Sample usage with Elastica:
  *
@@ -67,14 +67,12 @@ interface ConditionGenerator
      * @param string $fieldName Field set name
      * @param string $mapping   Elasticsearch property mapping
      *
-     * @return mixed
+     * @return static
      */
     public function registerField(string $fieldName, string $mapping);
 
     /**
      * Return a valid Elastica\Query search query. Query can be sent to a _search endpoint as is.
-     *
-     * @return Query
      */
     public function getQuery(): Query;
 
@@ -89,8 +87,6 @@ interface ConditionGenerator
      * Returns the assigned SearchCondition.
      *
      * @internal
-     *
-     * @return SearchCondition
      */
     public function getSearchCondition(): SearchCondition;
 }

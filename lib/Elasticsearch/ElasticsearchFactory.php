@@ -16,9 +16,6 @@ namespace Rollerworks\Component\Search\Elasticsearch;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
-/**
- * Class ElasticsearchFactory.
- */
 class ElasticsearchFactory
 {
     /**
@@ -26,9 +23,6 @@ class ElasticsearchFactory
      */
     private $cacheDriver;
 
-    /**
-     * @param null|Cache $cacheDriver
-     */
     public function __construct(?Cache $cacheDriver = null)
     {
         $this->cacheDriver = $cacheDriver;
@@ -39,9 +33,7 @@ class ElasticsearchFactory
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option.
      *
-     * @param SearchCondition $searchCondition SearchCondition object
-     *
-     * @return ConditionGenerator
+     * @param SearchCondition $searchCondition SearchCondition
      */
     public function createConditionGenerator(SearchCondition $searchCondition): ConditionGenerator
     {
@@ -51,12 +43,9 @@ class ElasticsearchFactory
     /**
      * Creates a new CachedConditionGenerator instance for the given ConditionGenerator.
      *
-     * @param ConditionGenerator     $conditionGenerator
-     * @param null|int|\DateInterval $ttl                Optional. The TTL value of this item. If no value is sent and
-     *                                                   the driver supports TTL then the library may set a default value
-     *                                                   for it or let the driver take care of that.
-     *
-     * @return ConditionGenerator
+     * @param null|int|\DateInterval $ttl Optional. The TTL value of this item. If no value is sent and
+     *                                    the driver supports TTL then the library may set a default value
+     *                                    for it or let the driver take care of that.
      */
     public function createCachedConditionGenerator(ConditionGenerator $conditionGenerator, $ttl = 0): ConditionGenerator
     {

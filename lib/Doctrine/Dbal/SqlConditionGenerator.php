@@ -67,12 +67,6 @@ final class SqlConditionGenerator implements ConditionGenerator
      */
     private $connection;
 
-    /**
-     * Constructor.
-     *
-     * @param Connection      $connection      Doctrine DBAL Connection object
-     * @param SearchCondition $searchCondition SearchCondition object
-     */
     public function __construct(Connection $connection, SearchCondition $searchCondition)
     {
         $this->searchCondition = $searchCondition;
@@ -80,9 +74,6 @@ final class SqlConditionGenerator implements ConditionGenerator
         $this->connection = $connection;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string')
     {
         if ($this->whereClause) {
@@ -109,9 +100,6 @@ final class SqlConditionGenerator implements ConditionGenerator
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getWhereClause(string $prependQuery = ''): string
     {
         if (null === $this->whereClause) {
@@ -127,17 +115,11 @@ final class SqlConditionGenerator implements ConditionGenerator
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFieldsMapping(): array
     {
         return $this->fields;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSearchCondition(): SearchCondition
     {
         return $this->searchCondition;

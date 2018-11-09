@@ -19,15 +19,12 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Compiler pass to register tagged services for an exporter.
+ * Compiler pass to register Doctrine ORM custom string functions.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class DoctrineOrmPass implements CompilerPassInterface
+final class DoctrineOrmPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasParameter('rollerworks_search.doctrine.orm.entity_managers') ||

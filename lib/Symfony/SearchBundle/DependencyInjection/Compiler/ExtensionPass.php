@@ -24,12 +24,13 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
- * Adds all services with the tags "rollerworks_search.type" and "rollerworks_search.type_extension" as
- * arguments of the "rollerworks_search.extension" service.
+ * Adds all services with the tags "rollerworks_search.type" and
+ * "rollerworks_search.type_extension" as arguments of the
+ * "rollerworks_search.extension" service.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ExtensionPass implements CompilerPassInterface
+final class ExtensionPass implements CompilerPassInterface
 {
     use PriorityTaggedServiceTrait;
 
@@ -44,9 +45,6 @@ class ExtensionPass implements CompilerPassInterface
         $this->fieldTypeExtensionTag = $fieldTypeExtensionTag;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition($this->fieldExtensionService)) {

@@ -40,20 +40,12 @@ abstract class AbstractQueryPlatform implements QueryPlatform
      */
     protected $connection;
 
-    /**
-     * Constructor.
-     *
-     * @param Connection $connection
-     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, $strategy = 0): string
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
     {
         if ($mappingConfig->valueConversion) {
             return $this->convertSqlValue($value, $mappingConfig, $column, $strategy);
@@ -65,10 +57,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0, string $column = null): string
+    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0, string $column = null): string
     {
         $mappingName = $mappingConfig->mappingName;
 
@@ -93,9 +82,6 @@ abstract class AbstractQueryPlatform implements QueryPlatform
         return $this->fieldsMappingCache[$mappingName][$strategy];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string
     {
         if (\in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {
@@ -130,10 +116,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
         return $column.($patternMatch->isExclusive() ? ' NOT' : '')." LIKE $value ESCAPE $escape";
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function convertSqlValue($value, QueryField $mappingConfig, string $column, $strategy = 0): string
+    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
     {
         return (string) $mappingConfig->valueConversion->convertValue(
             $value,
@@ -144,9 +127,6 @@ abstract class AbstractQueryPlatform implements QueryPlatform
 
     /**
      * @param mixed $value
-     * @param Type  $type
-     *
-     * @return string
      */
     protected function quoteValue($value, Type $type): string
     {
@@ -154,9 +134,7 @@ abstract class AbstractQueryPlatform implements QueryPlatform
     }
 
     /**
-     * Returns the list of characters to escape.
-     *
-     * @return string
+     * Returns the list of characters to escape (per character).
      */
     protected function getLikeEscapeChars(): string
     {

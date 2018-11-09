@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Elasticsearch;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
 
+/** @internal */
 final class FieldMapping implements \Serializable
 {
     public $fieldName;
@@ -67,8 +68,6 @@ final class FieldMapping implements \Serializable
      *      - <index>/<type>#<property>
      *      - <index>/<type>#<sub.nested[].property>.
      *
-     * @param string $property
-     *
      * @return string[]
      */
     private function parseProperty(string $property): array
@@ -103,9 +102,6 @@ final class FieldMapping implements \Serializable
         return compact('indexName', 'typeName', 'propertyName', 'nested');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function serialize()
     {
         return serialize(
@@ -119,9 +115,6 @@ final class FieldMapping implements \Serializable
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function unserialize($serialized): void
     {
         // no-op

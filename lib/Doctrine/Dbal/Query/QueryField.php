@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
- * The QueryField holds the mapping information of a field.
+ * Holds the mapping information of a search field for Doctrine DBAL.
  *
  * Information is provided in public properties for better performance.
  * This information is read-only and should not be changed afterwards.
@@ -74,15 +74,6 @@ final class QueryField implements \Serializable
      */
     public $tableColumn;
 
-    /**
-     * QueryField constructor.
-     *
-     * @param string      $mappingName
-     * @param FieldConfig $fieldConfig
-     * @param DbType      $dbType
-     * @param string      $column
-     * @param string      $alias
-     */
     public function __construct(string $mappingName, FieldConfig $fieldConfig, DbType $dbType, string $column, string $alias = null)
     {
         $this->mappingName = $mappingName;

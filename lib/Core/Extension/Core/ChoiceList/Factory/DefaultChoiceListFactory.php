@@ -28,25 +28,16 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
  */
 final class DefaultChoiceListFactory implements ChoiceListFactory
 {
-    /**
-     * {@inheritdoc}
-     */
     public function createListFromChoices($choices, $value = null): ChoiceList
     {
         return new ArrayChoiceList($choices, $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createListFromLoader(ChoiceLoader $loader, $value = null): ChoiceList
     {
         return new LazyChoiceList($loader, $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createView(ChoiceList $list, $preferredChoices = null, $label = null, $index = null, $groupBy = null, $attr = null): ChoiceListView
     {
         $preferredViews = [];

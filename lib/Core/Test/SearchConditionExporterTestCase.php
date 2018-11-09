@@ -40,9 +40,6 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract protected function getInputProcessor(): InputProcessor;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getFieldSet(bool $build = true)
     {
         $priceField = $this->getFactory()->createField('price', MoneyType::class);

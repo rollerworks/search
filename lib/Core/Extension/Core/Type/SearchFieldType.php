@@ -32,25 +32,16 @@ final class SearchFieldType extends AbstractFieldType
         $this->valueComparator = new SimpleValueComparator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): ?string
     {
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueComparator($this->valueComparator);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -73,9 +64,6 @@ final class SearchFieldType extends AbstractFieldType
         $resolver->setAllowedTypes(NormStringQueryInput::VALUE_EXPORTER_OPTION_NAME, ['null', 'bool', \Closure::class]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'field';

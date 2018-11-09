@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\ChoiceList;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\LazyChoiceList;
@@ -31,12 +32,12 @@ final class LazyChoiceListTest extends TestCase
     private $list;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|null
+     * @var MockObject|null
      */
     private $loadedList;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|null
+     * @var MockObject|null
      */
     private $loader;
 

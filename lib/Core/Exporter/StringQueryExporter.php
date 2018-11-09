@@ -27,13 +27,10 @@ final class StringQueryExporter extends StringExporter
     private $labelResolver;
 
     /**
-     * Constructor.
-     *
      * @param callable|null $labelResolver a callable to resolve the actual label
-     *                                     of the field, receives a
-     *                                     FieldConfigInterface instance.
-     *                                     If null the `label` option value is
-     *                                     used instead
+     *                                     of the field, receives a FieldConfig instance.
+     *                                     If the resolver is null, the `label` option value
+     *                                     of the field is tried instead
      */
     public function __construct(callable $labelResolver = null)
     {

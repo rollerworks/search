@@ -142,6 +142,7 @@ abstract class StringInput extends AbstractInput
      */
     protected $valueLexers = [];
 
+    /** @var StringLexer */
     private $lexer;
 
     public function __construct(Validator $validator = null)
@@ -151,14 +152,9 @@ abstract class StringInput extends AbstractInput
     }
 
     /**
-     * Process the input and returns the result.
-     *
-     * @param ProcessorConfig $config
-     * @param string          $input
+     * @param string $input
      *
      * @throws InvalidSearchConditionException
-     *
-     * @return SearchCondition
      */
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
@@ -199,11 +195,6 @@ abstract class StringInput extends AbstractInput
         return $condition;
     }
 
-    /**
-     * Initialize the fields ValuesFactory.
-     *
-     * @param ProcessorConfig $config
-     */
     abstract protected function initForProcess(ProcessorConfig $config): void;
 
     private function getFieldName(string $name): string

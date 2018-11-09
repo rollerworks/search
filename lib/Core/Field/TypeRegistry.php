@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Field;
 
-use Rollerworks\Component\Search\Exception;
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\SearchExtension;
 
 /**
@@ -24,22 +24,12 @@ interface TypeRegistry
     /**
      * Returns a field type by name.
      *
-     * This methods registers the type extensions from the search extensions.
-     *
-     * @param string $name
-     *
-     * @throws Exception\InvalidArgumentException if the type cannot be retrieved from any extension
-     *
-     * @return ResolvedFieldType
+     * @throws InvalidArgumentException if the type cannot be retrieved from any extension
      */
     public function getType(string $name): ResolvedFieldType;
 
     /**
      * Returns whether the given field type is supported.
-     *
-     * @param string $name
-     *
-     * @return bool
      */
     public function hasType(string $name): bool;
 

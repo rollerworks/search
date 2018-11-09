@@ -54,8 +54,6 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      *
      * @throws TransformationFailedException If the given value is not a timestamp
      *                                       or if the given timestamp is invalid
-     *
-     * @return \DateTime|null
      */
     public function reverseTransform($value): ?\DateTime
     {

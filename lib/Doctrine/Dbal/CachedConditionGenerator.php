@@ -58,8 +58,6 @@ final class CachedConditionGenerator implements ConditionGenerator
     private $whereClause;
 
     /**
-     * Constructor.
-     *
      * @param ConditionGenerator     $conditionGenerator The actual ConditionGenerator to use when no cache exists
      * @param Cache                  $cacheDriver        PSR-16 SimpleCache instance. Use a custom pool to ease
      *                                                   purging invalidated items
@@ -75,14 +73,10 @@ final class CachedConditionGenerator implements ConditionGenerator
     }
 
     /**
-     * Returns the generated/cached where-clause.
-     *
      * @see SqlConditionGenerator::getWhereClause()
      *
      * @param string $prependQuery Prepends this string to the where-clause
      *                             (" WHERE " or " AND " for example)
-     *
-     * @return string
      */
     public function getWhereClause(string $prependQuery = ''): string
     {
@@ -104,17 +98,11 @@ final class CachedConditionGenerator implements ConditionGenerator
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSearchCondition(): SearchCondition
     {
         return $this->conditionGenerator->getSearchCondition();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string')
     {
         $this->conditionGenerator->setField($fieldName, $column, $alias, $type);
@@ -122,9 +110,6 @@ final class CachedConditionGenerator implements ConditionGenerator
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFieldsMapping(): array
     {
         return $this->conditionGenerator->getFieldsMapping();

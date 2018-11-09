@@ -20,13 +20,11 @@ interface QueryConversion
 {
     /**
      * Returns the query converted to a new form if required.
-     * If null, no query conversion has taken place, use whatever is proper in the current context.
      *
-     * @param string                $propertyName
-     * @param mixed                 $value
-     * @param QueryPreparationHints $hints
+     * If null is returned, no query conversion has taken place,
+     * use whatever is proper in the current context.
      *
-     * @return array|null
+     * @param mixed $value
      */
     public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array;
 }

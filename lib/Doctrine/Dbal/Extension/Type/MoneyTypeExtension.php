@@ -34,17 +34,11 @@ class MoneyTypeExtension extends AbstractFieldTypeExtension
      */
     private $conversion;
 
-    /**
-     * @param MoneyValueConversion $conversion
-     */
     public function __construct(MoneyValueConversion $conversion)
     {
         $this->conversion = $conversion;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -57,9 +51,6 @@ class MoneyTypeExtension extends AbstractFieldTypeExtension
         $resolver->setAllowedTypes('doctrine_dbal_with_currency', ['bool']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getExtendedType(): string
     {
         return MoneyType::class;

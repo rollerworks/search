@@ -26,11 +26,8 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ExporterPass implements CompilerPassInterface
+final class ExporterPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('rollerworks_search.exporter_loader')) {

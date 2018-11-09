@@ -53,22 +53,12 @@ abstract class AbstractInput implements InputProcessor
      */
     protected $validator;
 
-    /**
-     * Constructor.
-     *
-     * @param Validator|null $validator
-     */
     public function __construct(?Validator $validator = null)
     {
         $this->validator = $validator ?? new NullValidator();
     }
 
-    /**
-     * Checks if the maximum group nesting level is exceeded.
-     *
-     * @param string $path
-     */
-    protected function validateGroupNesting(string $path)
+    protected function validateGroupNesting(string $path): void
     {
         if ($this->level > $this->config->getMaxNestingLevel()) {
             throw new GroupsNestingException(
@@ -77,12 +67,6 @@ abstract class AbstractInput implements InputProcessor
         }
     }
 
-    /**
-     * Checks if the maximum group count is exceeded.
-     *
-     * @param int    $count
-     * @param string $path
-     */
     protected function validateGroupsCount(int $count, string $path)
     {
         if ($count > $this->config->getMaxGroups()) {
@@ -91,10 +75,7 @@ abstract class AbstractInput implements InputProcessor
     }
 
     /**
-     * Ensure the nesting level returned to 0.
-     *
-     * This method is called after processing and helps with
-     * finding bugs.
+     * This method is called after processing and helps with finding bugs.
      */
     protected function assertLevel0()
     {

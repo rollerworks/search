@@ -35,14 +35,6 @@ final class SearchConditionBuilder
      */
     private $fieldSet;
 
-    /**
-     * Creates a new SearchConditionBuilder.
-     *
-     * @param FieldSet $fieldSet
-     * @param string   $logical
-     *
-     * @return SearchConditionBuilder
-     */
     public static function create(FieldSet $fieldSet, string $logical = ValuesGroup::GROUP_LOGICAL_AND): self
     {
         return new self($logical, $fieldSet);
@@ -51,18 +43,18 @@ final class SearchConditionBuilder
     /**
      * Create a new ValuesGroup and returns the object instance.
      *
-     * After creating the group it can be expended with fields or subgroups:
+     * Afterwards the group can be expended with fields or subgroups:
      *
+     * ```
      * ->group()
      *     ->field('name')
      *         ->...
      *     ->end() // return back to the ValuesGroup.
      * ->end() // return back to the parent ValuesGroup
+     * ```
      *
      * @param string $logical eg. one of the following ValuesGroup class constants value:
      *                        GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
-     *
-     * @return SearchConditionBuilder
      */
     public function group(string $logical = ValuesGroup::GROUP_LOGICAL_AND): self
     {
@@ -73,27 +65,26 @@ final class SearchConditionBuilder
     }
 
     /**
-     * Add/expend a field on this ValuesGroup and returns the object instance.
+     * Add/expend a field ValuesBag on this ValuesGroup and returns
+     * the ValuesBag.
      *
      * Note. Values must be in the model format, they are not transformed!
      *
-     * The object instance is a ValuesBagBuilder (subset of ValuesBag), which
-     * allows to add extra values to the field:
+     * The ValuesBagBuilder is subset of ValuesBag, which provides a developer
+     * friendly interface to construct a ValuesBag structure for the field.
      *
+     * ```
      * ->field('name')
      *   ->addSimpleValue('my value')
      *   ->addSimpleValue('my value 2')
      * ->end() // return back to the ValuesGroup
+     * ```
      *
-     * Tip! If the field already exists the existing is expended (values are added).
-     * To force an overwrite of the existing field use `->field('name', true)` instead.
-     *
-     * @param string $name
-     * @param bool   $forceNew
-     *
-     * @return ValuesBagBuilder
+     * Tip! If the field already exists the existing ValuesBagBuilder of the field
+     * is returned). To force a new builder use `->field('name', true)` instead,
+     * this will overwrite the current field's ValuesBag.
      */
-    public function field(string $name, bool $forceNew = false): ValuesBagBuilder
+    public function field(string $name, bool $forceNew = false): ValuesBagBuilder // XXX This should be split into two methods: field and overwriteField
     {
         if (!$forceNew && $this->valuesGroup->hasField($name)) {
             /** @var ValuesBagBuilder $valuesBag */
@@ -111,9 +102,6 @@ final class SearchConditionBuilder
         return $this->parent ?? $this;
     }
 
-    /**
-     * @return ValuesGroup
-     */
     public function getGroup(): ValuesGroup
     {
         return $this->valuesGroup;
@@ -121,8 +109,6 @@ final class SearchConditionBuilder
 
     /**
      * Build the SearchCondition object using the groups and fields.
-     *
-     * @return SearchCondition
      */
     public function getSearchCondition(): SearchCondition
     {

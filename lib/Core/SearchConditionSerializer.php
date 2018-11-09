@@ -33,15 +33,13 @@ class SearchConditionSerializer
     }
 
     /**
-     * Serialize a search condition.
+     * Serialize a SearchCondition.
      *
-     * The returned value is an array, you should serialize it yourself.
+     * The returned value is an array you can safely serialize yourself.
      * This is not done already because storing a serialized SearchCondition
      * in a php session would serialize the serialized result again.
      *
      * Caution: The FieldSet must be loadable from the factory.
-     *
-     * @param SearchCondition $searchCondition
      *
      * @return array [FieldSet-name, serialized ValuesGroup object]
      */
@@ -53,14 +51,12 @@ class SearchConditionSerializer
     }
 
     /**
-     * Unserialize a serialized search condition.
+     * Unserialize a serialized SearchCondition.
      *
      * @param array $searchCondition [FieldSet-name, serialized ValuesGroup object]
      *
      * @throws InvalidArgumentException when serialized SearchCondition is invalid
      *                                  (invalid structure or failed to unserialize)
-     *
-     * @return SearchCondition
      */
     public function unserialize(array $searchCondition): SearchCondition
     {
@@ -72,6 +68,7 @@ class SearchConditionSerializer
 
         $fieldSet = $this->searchFactory->createFieldSet($searchCondition[0]);
 
+        // FIXME This needs safe serialzing with error handling
         if (false === $group = unserialize($searchCondition[1])) {
             throw new InvalidArgumentException('Unable to unserialize invalid value.');
         }

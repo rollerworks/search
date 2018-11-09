@@ -21,40 +21,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 interface FieldTypeExtension
 {
     /**
-     * Builds the type.
-     *
      * This method is called after the extended type has built the type to
      * further modify it.
      *
      * @see SearchFieldType::buildType()
-     *
-     * @param FieldConfig $builder
-     * @param array       $options
      */
     public function buildType(FieldConfig $builder, array $options): void;
 
     /**
-     * Builds the SearchFieldView.
-     *
      * This method is called after the extended type has built the view to
      * further modify it.
-     *
-     * @param FieldConfig     $config
-     * @param SearchFieldView $view
      */
     public function buildView(FieldConfig $config, SearchFieldView $view): void;
 
     /**
      * Overrides the default options from the extended type.
-     *
-     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver): void;
 
     /**
-     * Returns the name of the type being extended.
-     *
-     * @return string
+     * @return string FQCN of the type class
      */
     public function getExtendedType(): string;
 }

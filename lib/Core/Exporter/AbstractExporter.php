@@ -26,13 +26,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 abstract class AbstractExporter implements ConditionExporter
 {
-    /**
-     * Exports a search condition.
-     *
-     * @param SearchCondition $condition The search condition to export
-     *
-     * @return mixed
-     */
     public function exportCondition(SearchCondition $condition)
     {
         return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
@@ -41,14 +34,9 @@ abstract class AbstractExporter implements ConditionExporter
     abstract protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false);
 
     /**
-     * Transforms the model value to a view representation.
-     *
      * @internal
      *
-     * @param mixed       $value
-     * @param FieldConfig $field
-     *
-     * @return string
+     * @param mixed $value
      */
     public function modelToView($value, FieldConfig $field): string
     {
@@ -76,14 +64,9 @@ abstract class AbstractExporter implements ConditionExporter
     }
 
     /**
-     * Transforms the model value to a normalized version.
-     *
      * @internal
      *
-     * @param mixed       $value
-     * @param FieldConfig $field
-     *
-     * @return string
+     * @param mixed $value
      */
     public function modelToNorm($value, FieldConfig $field): string
     {

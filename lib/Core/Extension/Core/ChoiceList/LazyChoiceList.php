@@ -30,8 +30,6 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 final class LazyChoiceList implements ChoiceList
 {
     /**
-     * The choice loader.
-     *
      * @var ChoiceLoader
      */
     private $loader;
@@ -46,8 +44,6 @@ final class LazyChoiceList implements ChoiceList
     private $value;
 
     /**
-     * Creates a lazily-loaded list using the given loader.
-     *
      * Optionally, a callable can be passed for generating the choice values.
      * The callable receives the choice as first and the array key as the second
      * argument.
@@ -62,57 +58,36 @@ final class LazyChoiceList implements ChoiceList
         $this->value = $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChoices(): array
     {
         return $this->loader->loadChoiceList($this->value)->getChoices();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getValues(): array
     {
         return $this->loader->loadChoiceList($this->value)->getValues();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getStructuredValues(): array
     {
         return $this->loader->loadChoiceList($this->value)->getStructuredValues();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getOriginalKeys(): array
     {
         return $this->loader->loadChoiceList($this->value)->getOriginalKeys();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChoicesForValues(array $values): array
     {
         return $this->loader->loadChoicesForValues($values, $this->value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getValuesForChoices(array $choices): array
     {
         return $this->loader->loadValuesForChoices($choices, $this->value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isValuesConstant(): bool
     {
         return $this->loader->isValuesConstant();

@@ -14,8 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Input;
 
 /**
- * NormStringQueryInput - processes input in the StringInput syntax
- * using the Normalized value format.
+ * Processes input in the StringInput syntax using the Normalized value format.
  */
 final class NormStringQueryInput extends StringInput
 {

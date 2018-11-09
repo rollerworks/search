@@ -47,8 +47,6 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
      *
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed
-     *
-     * @return string|null Localized money string
      */
     public function transform($value): ?string
     {
@@ -79,8 +77,6 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
      *
      * @throws TransformationFailedException if the given value is not a string
      *                                       or if the value can not be transformed
-     *
-     * @return MoneyValue|null
      */
     public function reverseTransform($value): ?MoneyValue
     {
@@ -151,11 +147,6 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
      *
      * ICU cannot parse() without a currency,
      * and decimal doesn't include scale when 0.
-     *
-     * @param string      $value
-     * @param null|string $currency
-     *
-     * @return string
      */
     private function addCurrencySymbol(string $value, ?string $currency = null): string
     {
@@ -198,11 +189,6 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
      * ICU cannot format() with currency, as this
      * produces a number with the `¤` symbol.
      * And, decimal doesn't include scale when 0.
-     *
-     * @param string $value
-     * @param string $currency
-     *
-     * @return string
      */
     private function removeCurrencySymbol(string $value, string $currency): string
     {

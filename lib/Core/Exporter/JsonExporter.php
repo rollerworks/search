@@ -30,16 +30,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class JsonExporter extends AbstractExporter
 {
-    /**
-     * Exports a search condition.
-     *
-     * @param SearchCondition $condition The search condition to export
-     *
-     * @return string
-     */
     public function exportCondition(SearchCondition $condition): string
     {
-        return json_encode($this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true));
+        return (string) json_encode($this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true));
     }
 
     protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): array
@@ -71,7 +64,7 @@ final class JsonExporter extends AbstractExporter
         return $result;
     }
 
-    protected function exportValues(ValuesBag $valuesBag, FieldConfig $field): array
+    private function exportValues(ValuesBag $valuesBag, FieldConfig $field): array
     {
         $exportedValues = [];
 
@@ -84,14 +77,17 @@ final class JsonExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->get(Range::class) as $value) {
+            /** @var Range $value */
             $exportedValues['ranges'][] = $this->exportRangeValue($value, $field);
         }
 
         foreach ($valuesBag->get(ExcludedRange::class) as $value) {
+            /** @var ExcludedRange $value */
             $exportedValues['excluded-ranges'][] = $this->exportRangeValue($value, $field);
         }
 
         foreach ($valuesBag->get(Compare::class) as $value) {
+            /** @var Compare $value */
             $exportedValues['comparisons'][] = [
                 'operator' => $value->getOperator(),
                 'value' => $this->modelToNorm($value->getValue(), $field),
@@ -99,6 +95,7 @@ final class JsonExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->get(PatternMatch::class) as $value) {
+            /** @var PatternMatch $value */
             $exportedValues['pattern-matchers'][] = [
                 'type' => $value->getType(),
                 'value' => $value->getValue(),
@@ -109,7 +106,7 @@ final class JsonExporter extends AbstractExporter
         return $exportedValues;
     }
 
-    protected function exportRangeValue(Range $range, FieldConfig $field): array
+    private function exportRangeValue(Range $range, FieldConfig $field): array
     {
         $result = [
             'lower' => $this->modelToNorm($range->getLower(), $field),

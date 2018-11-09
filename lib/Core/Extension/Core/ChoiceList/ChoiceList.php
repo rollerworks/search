@@ -39,7 +39,7 @@ interface ChoiceList
      *
      * The values are strings that do not contain duplicates.
      *
-     * @return string[] The choice values
+     * @return string[]
      */
     public function getValues(): array;
 
@@ -98,8 +98,6 @@ interface ChoiceList
      *
      * @param string[] $values An array of choice values. Non-existing values in
      *                         this array are ignored
-     *
-     * @return array An array of choices
      */
     public function getChoicesForValues(array $values): array;
 
@@ -126,8 +124,6 @@ interface ChoiceList
      * be used for the normalized input format. And ensures that input always
      * relates to the correct choice and the value doesn't change whenever
      * the provided order or length changes (between requests).
-     *
-     * @return bool
      */
     public function isValuesConstant(): bool;
 }
