@@ -35,9 +35,6 @@ final class TimeType extends AbstractFieldType
         $this->valueComparator = new DateTimeValueValueComparator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $format = 'H';
@@ -75,9 +72,6 @@ final class TimeType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         $pattern = 'H';
@@ -95,9 +89,6 @@ final class TimeType extends AbstractFieldType
         $view->vars['with_seconds'] = $options['with_seconds'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -108,9 +99,6 @@ final class TimeType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'time';

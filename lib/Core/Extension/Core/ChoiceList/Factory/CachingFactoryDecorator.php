@@ -39,29 +39,16 @@ final class CachingFactoryDecorator implements ChoiceListFactory
      */
     private $views = [];
 
-    /**
-     * Decorates the given factory.
-     *
-     * @param ChoiceListFactory $decoratedFactory The decorated factory
-     */
     public function __construct(ChoiceListFactory $decoratedFactory)
     {
         $this->decoratedFactory = $decoratedFactory;
     }
 
-    /**
-     * Returns the decorated factory.
-     *
-     * @return ChoiceListFactory The decorated factory
-     */
     public function getDecoratedFactory(): ChoiceListFactory
     {
         return $this->decoratedFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createListFromChoices($choices, $value = null): ChoiceList
     {
         if ($choices instanceof \Traversable) {
@@ -85,9 +72,6 @@ final class CachingFactoryDecorator implements ChoiceListFactory
         return $this->lists[$hash];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createListFromLoader(ChoiceLoader $loader, $value = null): ChoiceList
     {
         $hash = self::generateHash([$loader, $value], 'fromLoader');
@@ -99,9 +83,6 @@ final class CachingFactoryDecorator implements ChoiceListFactory
         return $this->lists[$hash];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createView(ChoiceList $list, $preferredChoices = null, $label = null, $index = null, $groupBy = null, $attr = null): ChoiceListView
     {
         // The input is not validated on purpose. This way, the decorated

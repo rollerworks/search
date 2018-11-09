@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Field;
 
-use Rollerworks\Component\Search\Exception;
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -23,13 +23,11 @@ interface ResolvedFieldTypeFactory
     /**
      * Resolves a field type.
      *
-     * @param FieldType         $type
-     * @param array             $typeExtensions
-     * @param ResolvedFieldType $parent
+     * @param FieldType            $type
+     * @param FieldTypeExtension[] $typeExtensions
+     * @param ResolvedFieldType    $parent
      *
-     * @throws Exception\InvalidArgumentException if the types parent cannot be retrieved from any extension
-     *
-     * @return ResolvedFieldType
+     * @throws InvalidArgumentException if the types parent cannot be retrieved from any extension
      */
     public function createResolvedType(FieldType $type, array $typeExtensions, ResolvedFieldType $parent = null): ResolvedFieldType;
 }

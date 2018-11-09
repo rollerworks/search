@@ -34,8 +34,6 @@ final class LazyExtension implements SearchExtension
     private $typeExtensionServices = [];
 
     /**
-     * Constructor.
-     *
      * @param ContainerInterface $typeContainer
      * @param array[]            $typeExtensions
      */
@@ -50,17 +48,12 @@ final class LazyExtension implements SearchExtension
      *
      * @param array   $types          FQCN => \Closure factory
      * @param array[] $typeExtensions
-     *
-     * @return LazyExtension
      */
     public static function create(array $types, array $typeExtensions = []): self
     {
         return new self(new ClosureContainer($types), $typeExtensions);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getType(string $name): FieldType
     {
         if (!$this->typeContainer->has($name)) {
@@ -72,17 +65,11 @@ final class LazyExtension implements SearchExtension
         return $this->typeContainer->get($name);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasType(string $name): bool
     {
         return $this->typeContainer->has($name);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTypeExtensions(string $name): array
     {
         $extensions = [];

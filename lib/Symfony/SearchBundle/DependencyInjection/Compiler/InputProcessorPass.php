@@ -26,11 +26,8 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class InputProcessorPass implements CompilerPassInterface
+final class InputProcessorPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('rollerworks_search.input_loader')) {

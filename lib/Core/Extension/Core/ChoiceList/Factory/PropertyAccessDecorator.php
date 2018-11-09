@@ -46,36 +46,21 @@ final class PropertyAccessDecorator implements ChoiceListFactory
     private $decoratedFactory;
     private $propertyAccessor;
 
-    /**
-     * Decorates the given factory.
-     *
-     * @param ChoiceListFactory     $decoratedFactory The decorated factory
-     * @param PropertyAccessor|null $propertyAccessor The used property accessor
-     */
     public function __construct(ChoiceListFactory $decoratedFactory, ?PropertyAccessor $propertyAccessor = null)
     {
         $this->decoratedFactory = $decoratedFactory;
         $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
     }
 
-    /**
-     * Returns the decorated factory.
-     *
-     * @return ChoiceListFactory
-     */
     public function getDecoratedFactory(): ChoiceListFactory
     {
         return $this->decoratedFactory;
     }
 
     /**
-     * @inheritdoc
-     *
      * @param array|\Traversable                $choices The choices
      * @param callable|string|PropertyPath|null $value   The callable or path for
      *                                                   generating the choice values
-     *
-     * @return ChoiceList
      */
     public function createListFromChoices($choices, $value = null): ChoiceList
     {
@@ -100,13 +85,9 @@ final class PropertyAccessDecorator implements ChoiceListFactory
     }
 
     /**
-     * @inheritdoc
-     *
      * @param ChoiceLoader                      $loader The choice loader
      * @param callable|string|PropertyPath|null $value  The callable or path for
      *                                                  generating the choice values
-     *
-     * @return ChoiceList
      */
     public function createListFromLoader(ChoiceLoader $loader, $value = null): ChoiceList
     {
@@ -131,16 +112,12 @@ final class PropertyAccessDecorator implements ChoiceListFactory
     }
 
     /**
-     * @inheritdoc
-     *
      * @param ChoiceList                              $list             The choice list
      * @param null|array|callable|string|PropertyPath $preferredChoices The preferred choices
      * @param null|callable|string|PropertyPath       $label            The callable or path generating the choice labels
      * @param null|callable|string|PropertyPath       $index            The callable or path generating the view indices
      * @param null|callable|string|PropertyPath       $groupBy          The callable or path generating the group names
      * @param null|array|callable|string|PropertyPath $attr             The callable or path generating the HTML attributes
-     *
-     * @return ChoiceListView
      */
     public function createView(ChoiceList $list, $preferredChoices = null, $label = null, $index = null, $groupBy = null, $attr = null): ChoiceListView
     {

@@ -30,22 +30,14 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
     /**
      * @var int
      */
-    private $valuesIndex = 0;
+    private $currentEmbeddedValuesIndex = 0;
 
-    /**
-     * Constructor.
-     *
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         parent::__construct($entityManager->getConnection());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0, string $column = null): string
+    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0, string $column = null): string
     {
         $mappingName = $mappingConfig->mappingName;
 
@@ -61,7 +53,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
 
         if ($mappingConfig->columnConversion instanceof ColumnConversion) {
             $this->fieldsMappingCache[$mappingName][$strategy] = sprintf(
-                "RW_SEARCH_FIELD_CONVERSION('%s', %s, %s)",
+                "RW_SEARCH_FIELD_CONVERSION('%s', %s, %d)",
                 $mappingName,
                 $column,
                 $strategy
@@ -81,29 +73,26 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
         return $this->embeddedValues;
     }
 
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, $strategy = 0): string
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
     {
         if ($mappingConfig->valueConversion instanceof ValueConversion) {
-            $this->embeddedValues[++$this->valuesIndex] = $value;
+            $this->embeddedValues[++$this->currentEmbeddedValuesIndex] = $value;
 
             return sprintf(
                 "RW_SEARCH_VALUE_CONVERSION('%s', %s, %s, %s)",
                 $mappingConfig->mappingName,
                 $column,
-                $this->valuesIndex,
+                $this->currentEmbeddedValuesIndex,
                 $strategy
             );
         }
 
-        return (string) $this->quoteValue(
+        return $this->quoteValue(
             $mappingConfig->dbType->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
             $mappingConfig->dbType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function quoteValue($value, Type $type): string
     {
         if (\is_bool($value)) {

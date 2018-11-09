@@ -31,8 +31,6 @@ class MoneyValue
     public $withCurrency;
 
     /**
-     * Constructor.
-     *
      * @param Money $value
      * @param bool  $withCurrency indicate the input was provided with a currency.
      *                            This is only used for exporting

@@ -74,12 +74,6 @@ class SearchField implements FieldConfig
     private $normTransformer;
 
     /**
-     * Constructor.
-     *
-     * @param string            $name
-     * @param ResolvedFieldType $type
-     * @param array             $options
-     *
      * @throws \InvalidArgumentException When the name is invalid
      */
     public function __construct(string $name, ResolvedFieldType $type, array $options = [])
@@ -99,17 +93,12 @@ class SearchField implements FieldConfig
         $this->options = $options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportValueType(string $type): bool
     {
         return $this->supportedValueTypes[$type] ?? false;
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws BadMethodCallException
      */
     public function setValueTypeSupport(string $type, bool $enabled)
@@ -125,29 +114,16 @@ class SearchField implements FieldConfig
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getType(): ResolvedFieldType
     {
         return $this->type;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws BadMethodCallException when the data is locked
-     *
-     * @return self
-     */
     public function setValueComparator(ValueComparator $comparator)
     {
         if ($this->locked) {
@@ -161,17 +137,11 @@ class SearchField implements FieldConfig
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getValueComparator(): ?ValueComparator
     {
         return $this->valueComparator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setViewTransformer(DataTransformer $viewTransformer = null)
     {
         if ($this->locked) {
@@ -185,17 +155,11 @@ class SearchField implements FieldConfig
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getViewTransformer(): ?DataTransformer
     {
         return $this->viewTransformer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setNormTransformer(DataTransformer $viewTransformer = null)
     {
         if ($this->locked) {
@@ -209,9 +173,6 @@ class SearchField implements FieldConfig
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNormTransformer(): ?DataTransformer
     {
         return $this->normTransformer;
@@ -249,33 +210,21 @@ class SearchField implements FieldConfig
         $this->locked = true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isConfigLocked(): bool
     {
         return $this->locked;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getOptions(): array
     {
         return $this->options;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasOption(string $name): bool
     {
         return array_key_exists($name, $this->options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getOption(string $name, $default = null)
     {
         if (array_key_exists($name, $this->options)) {
@@ -285,9 +234,6 @@ class SearchField implements FieldConfig
         return $default;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createView(FieldSetView $fieldSet): SearchFieldView
     {
         if (!$this->locked) {
@@ -303,9 +249,6 @@ class SearchField implements FieldConfig
         return $view;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setAttribute(string $name, $value)
     {
         if ($this->locked) {
@@ -319,9 +262,6 @@ class SearchField implements FieldConfig
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setAttributes(array $attributes)
     {
         if ($this->locked) {
@@ -335,25 +275,16 @@ class SearchField implements FieldConfig
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasAttribute(string $name): bool
     {
         return array_key_exists($name, $this->attributes);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAttribute(string $name, $default = null)
     {
         return array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;

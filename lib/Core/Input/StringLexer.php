@@ -41,7 +41,6 @@ final class StringLexer
     /**
      * @internal
      *
-     * @param string     $data
      * @param \Closure[] $fieldLexers
      */
     public function parse(string $data, array $fieldLexers = []): void
@@ -116,7 +115,7 @@ final class StringLexer
     }
 
     /**
-     * Matches that the current position the $data attribute matches
+     * Matches that the current position matches the $data attribute,
      * and moves the cursor _only_ when there is a positive match.
      *
      * If there is no match the cursor is left at the current position.
@@ -140,18 +139,16 @@ final class StringLexer
     }
 
     /**
-     * Expects that the current position the $data attribute matches and moves the cursor.
-     * Or fails with a syntax exception.
+     * Expects that the current position matches $data the attribute,
+     * and moves the cursor. Or fails with a syntax exception.
      *
-     * Caution: When using a regex be sure to use `A` modifier.
+     * Caution: When using a regex be sure to use the `A` modifier.
      * Whitespace *after* the match is automatically ignored.
      *
      * @param string               $data     A single character or a fully specified regex (with delimiters and options)
      * @param string|string[]|null $expected
      *
      * @throws StringLexerException when there no match or there is no further data
-     *
-     * @return string
      */
     public function expects(string $data, $expected = null): string
     {
@@ -199,11 +196,7 @@ final class StringLexer
      * Expect a StringValue.
      *
      * A StringValue consists of non-special characters in any scripture (language)
-     * or is a QuotedValue. Trailing whitespace are skipped.
-     *
-     * @param string $allowedNext
-     *
-     * @return string
+     * or a QuotedValue. Trailing whitespace are skipped.
      */
     public function stringValue(string $allowedNext = ',;)'): string
     {
@@ -391,12 +384,10 @@ final class StringLexer
     }
 
     /**
-     * Tries to detect the value-type.
-     *
      * @internal
      *
      * The detection is very loosely and stops after
-     * the first positive detection. As a result a value
+     * the first positive detection. As a result, a value
      * may not match unquoted special characters.
      *
      * @return string

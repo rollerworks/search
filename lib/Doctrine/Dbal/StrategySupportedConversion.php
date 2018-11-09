@@ -21,9 +21,9 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 interface StrategySupportedConversion
 {
     /**
-     * Returns the conversion strategy.
+     * Returns the conversion strategy for the provided value.
      *
-     * This must either return: null (default), a string or integer.
+     * This must either return: 0 (default) or a positive integer.
      * Each strategy will use a different 'slot' during the query building.
      *
      * For example searching by age/birthday.
@@ -31,13 +31,11 @@ interface StrategySupportedConversion
      * * If the value is an integer, strategy 2 is used and the value is transformed using a custom SQL statement.
      *
      * Afterwards the conversion strategy is available as the `conversionStrategy`
-     * property of the ConversionHints object.
+     * property of the {@link \Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints}.
      *
      * @param mixed           $value   The "model" value format
      * @param array           $options Options of the Field configuration
      * @param ConversionHints $hints   Special information for the conversion process
-     *
-     * @return int The determined strategy
      */
     public function getConversionStrategy($value, array $options, ConversionHints $hints): int;
 }

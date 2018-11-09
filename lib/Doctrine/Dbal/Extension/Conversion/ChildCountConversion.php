@@ -17,8 +17,6 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 
 /**
- * ItemCountConversion.
- *
  * Allows counting the number of parent/children references.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>

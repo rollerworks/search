@@ -26,8 +26,6 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
 class ArrayChoiceList implements ChoiceList
 {
     /**
-     * The choices in the list.
-     *
      * @var array
      */
     protected $choices;
@@ -40,8 +38,6 @@ class ArrayChoiceList implements ChoiceList
     protected $structuredValues;
 
     /**
-     * The original keys of the choices array.
-     *
      * @var int[]|string[]
      */
     protected $originalKeys;
@@ -59,8 +55,6 @@ class ArrayChoiceList implements ChoiceList
     protected $valuesAreConstant;
 
     /**
-     * Creates a list with the given choices and values.
-     *
      * The given choice array must have the same array keys as the value array.
      *
      * @param array|\Traversable $choices The selectable choices
@@ -105,41 +99,26 @@ class ArrayChoiceList implements ChoiceList
         $this->structuredValues = $structuredValues;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChoices(): array
     {
         return $this->choices;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getValues(): array
     {
         return array_map('strval', array_keys($this->choices));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getStructuredValues(): array
     {
         return $this->structuredValues;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getOriginalKeys(): array
     {
         return $this->originalKeys;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChoicesForValues(array $values): array
     {
         $choices = [];
@@ -153,9 +132,6 @@ class ArrayChoiceList implements ChoiceList
         return $choices;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getValuesForChoices(array $choices): array
     {
         $values = [];
@@ -185,9 +161,6 @@ class ArrayChoiceList implements ChoiceList
         return $values;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isValuesConstant(): bool
     {
         return $this->valuesAreConstant;
@@ -230,11 +203,8 @@ class ArrayChoiceList implements ChoiceList
      * Checks whether the given choices can be cast to strings without
      * generating duplicates.
      *
-     * @param array $choices The choices
+     * @param array $choices
      * @param array $cache   The cache for previously checked entries. Internal
-     *
-     * @return bool returns true if the choices can be cast to strings and
-     *              false otherwise
      */
     private function castableToString(array $choices, array &$cache = []): bool
     {

@@ -20,10 +20,19 @@ use Rollerworks\Component\Search\ConditionErrorMessage;
  */
 class InputProcessorException extends \InvalidArgumentException implements SearchException
 {
+    /** @var string */
     public $path = '';
+
+    /** @var string */
     public $messageTemplate;
+
+    /** @var array */
     public $messageParameters;
+
+    /** @var array */
     public $translatedParameters = [];
+
+    /** @var int|null */
     public $plural;
 
     public function __construct(string $path, string $messageTemplate, array $messageParameters = [], int $plural = null, \Exception $previous = null)

@@ -24,19 +24,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FieldTypeExtension extends AbstractFieldTypeExtension
 {
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
-     * @throws \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(
-            [
-                'elasticsearch_conversion' => null,
-            ]
-        );
+        $resolver->setDefaults(['elasticsearch_conversion' => null]);
         $resolver->setAllowedTypes(
             'elasticsearch_conversion',
             [
@@ -47,9 +37,6 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getExtendedType(): string
     {
         return SearchFieldType::class;

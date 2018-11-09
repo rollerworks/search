@@ -27,8 +27,6 @@ use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
- * Doctrine QueryGenerator.
- *
  * This class is only to be used by packages of RollerworksSearch
  * and is considered internal.
  *
@@ -39,7 +37,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class QueryGenerator
 {
     /**
-     * @var array
+     * @var array [field-name][mapping-index] => {QueryField}
      */
     private $fields = [];
 
@@ -53,13 +51,6 @@ final class QueryGenerator
      */
     private $queryPlatform;
 
-    /**
-     * Constructor.
-     *
-     * @param Connection    $connection
-     * @param QueryPlatform $queryPlatform
-     * @param array         $fields
-     */
     public function __construct(Connection $connection, QueryPlatform $queryPlatform, array $fields)
     {
         $this->connection = $connection;
@@ -80,11 +71,6 @@ final class QueryGenerator
         return (string) self::implodeWithValue(' AND ', $conditions);
     }
 
-    /**
-     * @param ValuesGroup $valuesGroup
-     *
-     * @return string
-     */
     public function getGroupQuery(ValuesGroup $valuesGroup): string
     {
         $query = [];
@@ -136,15 +122,7 @@ final class QueryGenerator
         $query[] = self::implodeWithValue(' OR ', $groupSql, ['(', ')', true]);
     }
 
-    /**
-     * @param array      $values
-     * @param QueryField $mappingConfig
-     * @param array      $query
-     * @param bool       $exclude
-     *
-     * @return string
-     */
-    private function processSingleValuesInList(array $values, QueryField $mappingConfig, array &$query, bool $exclude = false)
+    private function processSingleValuesInList(array $values, QueryField $mappingConfig, array &$query, bool $exclude = false): void
     {
         $valuesQuery = [];
         $column = $this->queryPlatform->getFieldColumn($mappingConfig);
@@ -164,13 +142,7 @@ final class QueryGenerator
         }
     }
 
-    /**
-     * @param array      $values
-     * @param QueryField $mappingConfig
-     * @param array      $query
-     * @param bool       $exclude
-     */
-    private function processSingleValues(array $values, QueryField $mappingConfig, array &$query, bool $exclude = false)
+    private function processSingleValues(array $values, QueryField $mappingConfig, array &$query, bool $exclude = false): void
     {
         if (!$mappingConfig->strategyEnabled && !$mappingConfig->valueConversion instanceof ValueConversion) {
             // Don't use IN() with a custom SQL-statement for better compatibility
@@ -195,12 +167,9 @@ final class QueryGenerator
     }
 
     /**
-     * @param Range[]    $ranges
-     * @param QueryField $mappingConfig
-     * @param array      $query
-     * @param bool       $exclude
+     * @param Range[] $ranges
      */
-    private function processRanges(array $ranges, QueryField $mappingConfig, array &$query, bool $exclude = false)
+    private function processRanges(array $ranges, QueryField $mappingConfig, array &$query, bool $exclude = false): void
     {
         foreach ($ranges as $range) {
             $strategy = $this->getConversionStrategy($mappingConfig, $range->getLower());
@@ -217,10 +186,7 @@ final class QueryGenerator
     }
 
     /**
-     * @param Range $range
-     * @param bool  $exclude
-     *
-     * @return string eg. "(%s >= %s AND %s <= %s)"
+     * @return string either "(%s >= %s AND %s <= %s)"
      */
     private function getRangePattern(Range $range, bool $exclude = false): string
     {
@@ -244,12 +210,9 @@ final class QueryGenerator
     }
 
     /**
-     * @param Compare[]  $compares
-     * @param QueryField $mappingConfig
-     * @param array      $query
-     * @param bool       $exclude
+     * @param Compare[] $compares
      */
-    private function processCompares(array $compares, QueryField $mappingConfig, array &$query, bool $exclude = false)
+    private function processCompares(array $compares, QueryField $mappingConfig, array &$query, bool $exclude = false): void
     {
         $valuesQuery = [];
 
@@ -282,7 +245,7 @@ final class QueryGenerator
      * @param array          $query
      * @param bool           $exclude
      */
-    private function processPatternMatchers(array $patternMatchers, QueryField $mappingConfig, array &$query, bool $exclude = false)
+    private function processPatternMatchers(array $patternMatchers, QueryField $mappingConfig, array &$query, bool $exclude = false): void
     {
         foreach ($patternMatchers as $patternMatch) {
             if ($exclude !== $patternMatch->isExclusive()) {
@@ -327,13 +290,13 @@ final class QueryGenerator
         return $hints;
     }
 
-    private static function implodeWithValue($glue, array $values, array $wrap = [])
+    private static function implodeWithValue($glue, array $values, array $wrap = []): string
     {
         // Remove the empty values
         $values = array_filter($values, 'strlen');
 
         if (0 === \count($values)) {
-            return;
+            return '';
         }
 
         $value = implode($glue, $values);

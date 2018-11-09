@@ -34,9 +34,6 @@ class MoneyValueConversion implements ValueConversion, ColumnConversion, Strateg
         $this->formatter = new DecimalMoneyFormatter($this->currencies);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function convertValue($value, array $options, ConversionHints $hints): string
     {
         if (!$value instanceof MoneyValue) {
@@ -50,9 +47,6 @@ class MoneyValueConversion implements ValueConversion, ColumnConversion, Strateg
         return "CAST({$sqlValue} AS {$castType})";
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
         if (DbType::DECIMAL === $hints->field->dbType->getName()) {
@@ -65,9 +59,6 @@ class MoneyValueConversion implements ValueConversion, ColumnConversion, Strateg
         return "CAST($substr AS $castType)";
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getConversionStrategy($value, array $options, ConversionHints $hints): int
     {
         if (!$value instanceof MoneyValue) {

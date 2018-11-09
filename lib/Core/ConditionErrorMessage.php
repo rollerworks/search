@@ -66,8 +66,6 @@ final class ConditionErrorMessage
     public $translatedParameters;
 
     /**
-     * Constructor.
-     *
      * Any array key in $messageParameters will be used as a placeholder in
      * $messageTemplate.
      *
@@ -113,8 +111,6 @@ final class ConditionErrorMessage
     /**
      * @param array $translatedParameters An array of parameter names that need
      *                                    to be translated prior to there usage
-     *
-     * @return static
      */
     public function setTranslatedParameters(array $translatedParameters): self
     {

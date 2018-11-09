@@ -18,11 +18,6 @@ namespace Rollerworks\Component\Search\Exception;
  */
 final class UnknownFieldException extends InputProcessorException
 {
-    /**
-     * Constructor.
-     *
-     * @param string $fieldName
-     */
     public function __construct(string $fieldName)
     {
         parent::__construct(

@@ -33,9 +33,6 @@ final class LocalizedBirthdayTransformer implements DataTransformer
         $this->allowAge = $allowAge;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transform($value)
     {
         if (\is_int($value)) {
@@ -60,9 +57,6 @@ final class LocalizedBirthdayTransformer implements DataTransformer
         return $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($value)
     {
         $value = $this->transformWhenInteger($value);

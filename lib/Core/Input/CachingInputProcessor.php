@@ -20,8 +20,7 @@ use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionSerializer;
 
 /**
- * The CachingInputProcessor caches the SearchCondition in PSR-16
- * (SimpleCache) storage.
+ * Caches the SearchCondition in a PSR-16 (SimpleCache) storage.
  *
  * Caching a processed input provides the most benefit for a really big
  * search condition. Most conditions can be processed with easy, and the
@@ -37,12 +36,9 @@ final class CachingInputProcessor implements InputProcessor
     private $ttl;
 
     /**
-     * @param CacheInterface            $cache
-     * @param SearchConditionSerializer $conditionSerializer
-     * @param InputProcessor            $inputProcessor
-     * @param null|int|\DateInterval    $ttl                 Optional. The TTL value of this item. If no value is sent and
-     *                                                       the driver supports TTL then the library may set a default value
-     *                                                       for it or let the driver take care of that.
+     * @param null|int|\DateInterval $ttl Optional. The TTL value of this item. If no value is sent and
+     *                                    the driver supports TTL then the library may set a default value
+     *                                    for it or let the driver take care of that.
      */
     public function __construct(CacheInterface $cache, SearchConditionSerializer $conditionSerializer, InputProcessor $inputProcessor, $ttl = null)
     {

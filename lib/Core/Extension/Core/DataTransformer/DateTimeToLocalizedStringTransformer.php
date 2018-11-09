@@ -30,8 +30,6 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     private $calendar;
 
     /**
-     * Constructor.
-     *
      * @see BaseDateTimeTransformer::formats for available format options
      *
      * @param string|null $inputTimezone
@@ -76,8 +74,6 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      *
      * @throws TransformationFailedException if the given value is not a \DateTimeInterface
      *                                       or if the date could not be transformed
-     *
-     * @return string|null
      */
     public function transform($dateTime): ?string
     {
@@ -105,10 +101,8 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      *
      * @throws TransformationFailedException if the given value is not a string,
      *                                       if the date could not be parsed
-     *
-     * @return \DateTime|null
      */
-    public function reverseTransform($value)
+    public function reverseTransform($value): ?\DateTime
     {
         if (null !== $value && !\is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
@@ -156,8 +150,6 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      * @param bool $ignoreTimezone use UTC regardless of the configured timezone
      *
      * @throws TransformationFailedException in case the date formatter can not be constructed
-     *
-     * @return \IntlDateFormatter
      */
     protected function getIntlDateFormatter(bool $ignoreTimezone = false): \IntlDateFormatter
     {

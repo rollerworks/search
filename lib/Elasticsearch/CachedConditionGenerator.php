@@ -17,9 +17,6 @@ use Elastica\Query;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
-/**
- * Class CachedConditionGenerator.
- */
 class CachedConditionGenerator implements ConditionGenerator
 {
     /**
@@ -48,8 +45,6 @@ class CachedConditionGenerator implements ConditionGenerator
     private $query;
 
     /**
-     * Constructor.
-     *
      * @param ConditionGenerator     $conditionGenerator The actual ConditionGenerator to use when no cache exists
      * @param Cache                  $cacheDriver        PSR-16 SimpleCache instance. Use a custom pool to ease
      *                                                   purging invalidated items
@@ -64,19 +59,13 @@ class CachedConditionGenerator implements ConditionGenerator
         $this->cacheTtl = $ttl;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function registerField(string $fieldName, string $mapping)
     {
         $this->conditionGenerator->registerField($fieldName, $mapping);
+
+        return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
     public function getQuery(): Query
     {
         if (null === $this->query) {
@@ -92,19 +81,11 @@ class CachedConditionGenerator implements ConditionGenerator
         return $this->query;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
     public function getMappings(): array
     {
         return $this->conditionGenerator->getMappings();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSearchCondition(): SearchCondition
     {
         /** @noinspection PhpInternalEntityUsedInspection */
@@ -113,8 +94,6 @@ class CachedConditionGenerator implements ConditionGenerator
 
     /**
      * @param string $type "query" or "mappings"
-     *
-     * @return string
      */
     private function getCacheKey(string $type): string
     {

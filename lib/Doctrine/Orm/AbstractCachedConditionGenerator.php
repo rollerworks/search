@@ -82,7 +82,7 @@ abstract class AbstractCachedConditionGenerator implements ConditionGenerator
      * fields that were already configured. Which means you can use this
      * method to configure chunks of configuration.
      *
-     * @param string $entity Entity name (FQCN or Doctrine aliased)
+     * @param string $entity Entity name (FQCN)
      * @param string $alias  Table alias as used in the query "u" for `FROM Acme:Users AS u`
      *
      * @return static
@@ -95,9 +95,6 @@ abstract class AbstractCachedConditionGenerator implements ConditionGenerator
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null)
     {
         $this->guardNotGenerated();

@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessor;
@@ -79,11 +80,9 @@ abstract class SearchIntegrationTestCase extends TestCase
     }
 
     /**
-     * @param bool $build
-     *
-     * @return \Rollerworks\Component\Search\FieldSet|GenericFieldSetBuilder
+     * @return FieldSet|GenericFieldSetBuilder
      */
-    protected function getFieldSet(bool $build = true)
+    protected function getFieldSet(bool $build = true) // XXX This should be split into two separate methods, and moved to a Trait
     {
         $fieldSet = new GenericFieldSetBuilder($this->getFactory());
         $fieldSet->set($this->getFactory()->createField('id', IntegerType::class));

@@ -32,15 +32,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 abstract class StringExporter extends AbstractExporter
 {
+    /** @var string[] */
     protected $fields = [];
 
-    /**
-     * Exports a search condition.
-     *
-     * @param SearchCondition $condition The search condition to export
-     *
-     * @return string
-     */
     public function exportCondition(SearchCondition $condition): string
     {
         $this->fields = $this->resolveLabels($condition->getFieldSet());
@@ -55,10 +49,7 @@ abstract class StringExporter extends AbstractExporter
         $result = '';
         $exportedGroups = '';
 
-        if ($isRoot &&
-            $valuesGroup->countValues() > 0 &&
-            ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()
-        ) {
+        if ($isRoot && $valuesGroup->countValues() > 0 && ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()) {
             $result .= '*';
         }
 
@@ -134,18 +125,22 @@ abstract class StringExporter extends AbstractExporter
         }
 
         foreach ($valuesBag->get(Range::class) as $value) {
+            /** @var Range $value */
             $exportedValues .= $this->exportRangeValue($value, $field).', ';
         }
 
         foreach ($valuesBag->get(ExcludedRange::class) as $value) {
+            /** @var ExcludedRange $value */
             $exportedValues .= '!'.$this->exportRangeValue($value, $field).', ';
         }
 
         foreach ($valuesBag->get(Compare::class) as $value) {
+            /** @var Compare $value */
             $exportedValues .= $value->getOperator().' '.$this->modelToExported($value->getValue(), $field).', ';
         }
 
         foreach ($valuesBag->get(PatternMatch::class) as $value) {
+            /** @var PatternMatch $value */
             $exportedValues .= $this->getPatternMatchOperator($value).' '.$this->exportValueAsString($value->getValue()).', ';
         }
 

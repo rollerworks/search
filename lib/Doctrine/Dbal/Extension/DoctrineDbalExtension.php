@@ -17,17 +17,8 @@ use Rollerworks\Component\Search\AbstractExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\AgeDateConversion;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\MoneyValueConversion;
 
-/**
- * Represents the doctrine dbal extension,
- * for the core Doctrine DBAL functionality.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 class DoctrineDbalExtension extends AbstractExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function loadTypesExtensions(): array
     {
         return [

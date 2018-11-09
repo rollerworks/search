@@ -22,25 +22,16 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class SimpleValueComparator implements ValueComparator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function isHigher($value, $nextValue, array $options): bool
     {
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isLower($lower, $higher, array $options): bool
     {
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isEqual($value, $nextValue, array $options): bool
     {
         // This does not work for objects, so they should have

@@ -25,9 +25,6 @@ class ValuesBag implements \Countable, \Serializable
     private $simpleExcludedValues = [];
     private $values = [];
 
-    /**
-     * @return int
-     */
     public function count(?string $type = null): int
     {
         if (null === $type) {
@@ -46,9 +43,6 @@ class ValuesBag implements \Countable, \Serializable
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function serialize(): string
     {
         return serialize(
@@ -61,9 +55,6 @@ class ValuesBag implements \Countable, \Serializable
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function unserialize($serialized): void
     {
         $data = unserialize($serialized);
@@ -76,9 +67,6 @@ class ValuesBag implements \Countable, \Serializable
         ) = $data;
     }
 
-    /**
-     * @return array
-     */
     public function getSimpleValues(): array
     {
         return $this->simpleValues;
@@ -98,17 +86,12 @@ class ValuesBag implements \Countable, \Serializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function hasSimpleValues(): bool
     {
         return \count($this->simpleValues) > 0;
     }
 
     /**
-     * @param int $index
-     *
      * @return static
      */
     public function removeSimpleValue(int $index)
@@ -122,9 +105,6 @@ class ValuesBag implements \Countable, \Serializable
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getExcludedSimpleValues(): array
     {
         return $this->simpleExcludedValues;
@@ -172,8 +152,6 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * Get all values from a specific type.
      *
-     * @param string $type
-     *
      * @return ValueHolder[]
      */
     public function get(string $type): array
@@ -188,8 +166,6 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * Get a single value by type and index.
      *
-     * @param string $type
-     *
      * @return bool
      */
     public function has(string $type): bool
@@ -199,9 +175,6 @@ class ValuesBag implements \Countable, \Serializable
 
     /**
      * Remove a value by type and index.
-     *
-     * @param string $type
-     * @param int    $index
      *
      * @return ValuesBag New ValuesBag object with the referenced values removed
      */
@@ -217,10 +190,6 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * Add a value to the bag.
-     *
-     * @param ValueHolder $value
-     *
      * @return static
      */
     public function add(ValueHolder $value)

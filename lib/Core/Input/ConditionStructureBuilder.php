@@ -23,6 +23,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -38,19 +39,34 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 class ConditionStructureBuilder
 {
-    // Configs
+    /** @var ErrorList */
     private $errorList;
+
+    /** @var Validator */
     private $validator;
+
+    /** @var FieldSet */
     private $fieldSet;
+
+    /** @var int */
     private $maxCount;
+
+    /** @var int */
     private $maxNesting;
+
+    /** @var int */
     private $maxGroups;
+
+    /** @var array */
     private $checkedValueType = [];
 
-    // --
-    // Current state
+    /** @var int */
     private $valuesCount = 0;
+
+    /** @var int */
     private $nestingLevel = 0;
+
+    /** @var array */
     private $path = [];
 
     /**
@@ -60,26 +76,21 @@ class ConditionStructureBuilder
      */
     private $groupsCount = [];
 
-    /**
-     * @var FieldConfig|null
-     */
+    /** @var FieldConfig|null */
     protected $fieldConfig;
 
-    /**
-     * @var ValuesGroup[]
-     */
+    /** @var ValuesGroup[] */
     private $valuesGroupLevels = [];
 
-    /**
-     * @var ValuesBag|null
-     */
+    /** @var ValuesBag|null */
     private $valuesBag;
 
     /**
+     * False when not set, null when undetected (lazy loaded).
+     *
      * @var DataTransformer|null|bool
      */
     protected $inputTransformer;
-    // --
 
     public function __construct(ProcessorConfig $config, Validator $validator, ErrorList $errorList, string $path = '')
     {
@@ -185,9 +196,7 @@ class ConditionStructureBuilder
     /**
      * @param mixed $lower
      * @param mixed $upper
-     * @param bool  $lowerInclusive
-     * @param bool  $upperInclusive
-     * @param array $path           [path, lower-path-pattern, upper-path-pattern]
+     * @param array $path  [path, lower-path-pattern, upper-path-pattern]
      */
     public function rangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
@@ -209,9 +218,7 @@ class ConditionStructureBuilder
     /**
      * @param mixed $lower
      * @param mixed $upper
-     * @param bool  $lowerInclusive
-     * @param bool  $upperInclusive
-     * @param array $path           [path, lower-path-pattern, upper-path-pattern]
+     * @param array $path  [path, lower-path-pattern, upper-path-pattern]
      */
     public function excludedRangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
@@ -263,8 +270,7 @@ class ConditionStructureBuilder
     /**
      * @param string $type
      * @param string $value
-     * @param bool   $caseInsensitive
-     * @param array  $path            [base-path, value-path, type-path]
+     * @param array  $path  [base-path, value-path, type-path]
      */
     public function patterMatchValue($type, $value, bool $caseInsensitive, array $path): void
     {
@@ -323,10 +329,10 @@ class ConditionStructureBuilder
     /**
      * Reverse transforms a value if a value transformer is set.
      *
-     * @param mixed  $value The value to reverse transform
-     * @param string $path
+     * @param mixed $value
      *
-     * @return mixed Returns null when the value is empty or invalid
+     * @return mixed returns null when the value is empty or invalid.
+     *               Note: When the value is invalid an error is registered
      */
     protected function inputToNorm($value, string $path)
     {

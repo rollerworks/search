@@ -41,17 +41,11 @@ final class GenericFieldSet implements FieldSetWithView
         $this->viewBuilder = $viewBuilder;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSetName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $name): FieldConfig
     {
         if (!isset($this->fields[$name])) {
@@ -61,17 +55,11 @@ final class GenericFieldSet implements FieldSetWithView
         return $this->fields[$name];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function all(): array
     {
         return $this->fields;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function has(string $name): bool
     {
         return isset($this->fields[$name]);
@@ -82,9 +70,6 @@ final class GenericFieldSet implements FieldSetWithView
         return '_' === $name[0];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createView(): FieldSetView
     {
         $view = new FieldSetView();

@@ -45,8 +45,6 @@ final class MoneyToStringTransformer implements DataTransformer
      *
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed
-     *
-     * @return string Normalized money string
      */
     public function transform($value): ?string
     {
@@ -76,8 +74,6 @@ final class MoneyToStringTransformer implements DataTransformer
      *
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed
-     *
-     * @return MoneyValue|null Normalized number
      */
     public function reverseTransform($value): ?MoneyValue
     {

@@ -74,17 +74,11 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         $this->fieldSet = $searchCondition->getFieldSet();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function registerField(string $fieldName, string $mapping)
     {
         $this->mappings[$fieldName] = new FieldMapping($fieldName, $mapping, $this->fieldSet->get($fieldName));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getQuery(): Query
     {
         $rootGroupCondition = $this->processGroup($this->searchCondition->getValuesGroup());
@@ -109,9 +103,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return new Query([self::QUERY => $rootGroupCondition]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMappings(): array
     {
         $mappings = [];
@@ -126,19 +117,11 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return $mappings;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSearchCondition(): SearchCondition
     {
         return $this->searchCondition;
     }
 
-    /**
-     * @param Range $range
-     *
-     * @return array
-     */
     public static function generateRangeParams(Range $range): array
     {
         $lowerCondition = $range->isLowerInclusive() ? self::COMPARISON_GREATER_OR_EQUAL : self::COMPARISON_GREATER;
@@ -287,8 +270,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @param mixed                $value
-     * @param null|ValueConversion $converter
+     * @param mixed $value
      *
      * @return mixed
      */
@@ -301,12 +283,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return $converter->convertValue($value);
     }
 
-    /**
-     * @param Range           $range
-     * @param ValueConversion $converter
-     *
-     * @return Range
-     */
     private function convertRangeValues(Range $range, ?ValueConversion $converter): Range
     {
         return new Range(
@@ -317,12 +293,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         );
     }
 
-    /**
-     * @param Compare         $compare
-     * @param ValueConversion $converter
-     *
-     * @return Compare
-     */
     private function convertCompareValue(Compare $compare, ?ValueConversion $converter): Compare
     {
         return new Compare(
@@ -331,14 +301,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         );
     }
 
-    /**
-     * @param PatternMatch    $patternMatch
-     * @param ValueConversion $converter
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return PatternMatch
-     */
     private function convertMatcherValue(PatternMatch $patternMatch, ?ValueConversion $converter): PatternMatch
     {
         return new PatternMatch(
@@ -349,15 +311,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @param string                $propertyName
-     * @param mixed                 $value
-     * @param QueryPreparationHints $hints
-     * @param null|QueryConversion  $converter
-     * @param array|bool            $nested
-     *
-     * @throws \Rollerworks\Component\Search\Exception\BadMethodCallException
-     *
-     * @return array
+     * @param mixed      $value
+     * @param array|bool $nested
      */
     private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested): array
     {
@@ -377,6 +332,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                         ];
                     }
                     break;
+
                 case QueryPreparationHints::CONTEXT_COMPARISON:
                     /** @var Compare $value */
                     $operator = self::translateComparison($value->getOperator());
@@ -392,10 +348,12 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                         ];
                     }
                     break;
+
                 case QueryPreparationHints::CONTEXT_PATTERN_MATCH:
                     /** @var PatternMatch $value */
                     $query = $this->preparePatternMatch($propertyName, $value);
                     break;
+
                 default:
                 case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
                 case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
@@ -421,14 +379,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return $query ?? [];
     }
 
-    /**
-     * @param string       $propertyName
-     * @param PatternMatch $patternMatch
-     *
-     * @throws \Rollerworks\Component\Search\Exception\BadMethodCallException
-     *
-     * @return array
-     */
     private function preparePatternMatch(string $propertyName, PatternMatch $patternMatch): array
     {
         $query = [];

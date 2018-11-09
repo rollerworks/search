@@ -32,9 +32,6 @@ class ChildCountType extends AbstractFieldType
         $this->conversion = new ChildCountConversion();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $conversion = $this->conversion;
@@ -49,9 +46,6 @@ class ChildCountType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): ?string
     {
         return IntegerType::class;

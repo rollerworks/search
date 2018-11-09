@@ -13,9 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch;
 
-/**
- * Class QueryPreparationHints.
- */
 class QueryPreparationHints
 {
     public const CONTEXT_SIMPLE_VALUES = 'SIMPLE_VALUES';

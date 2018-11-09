@@ -28,7 +28,7 @@ interface ValueConversion
      * that can be used as a column's value.
      *
      * Caution: It's important to properly escape any values used in the returned
-     * statement, as they are used as-is!
+     * statement, as they are used as-is in the SQL query!
      *
      * The returned result is NOT for a prepared statement value binding.
      *

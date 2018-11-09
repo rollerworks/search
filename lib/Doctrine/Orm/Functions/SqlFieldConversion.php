@@ -42,13 +42,10 @@ class SqlFieldConversion extends FunctionNode
     private $columnExpression;
 
     /**
-     * @var int|string|null
+     * @var int
      */
     private $strategy;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSql(SqlWalker $sqlWalker): string
     {
         $this->loadConversionHints($sqlWalker);
@@ -60,9 +57,6 @@ class SqlFieldConversion extends FunctionNode
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function parse(Parser $parser): void
     {
         $parser->match(Lexer::T_IDENTIFIER);
@@ -72,11 +66,7 @@ class SqlFieldConversion extends FunctionNode
         $parser->match(Lexer::T_COMMA);
         $this->columnExpression = $parser->StateFieldPathExpression();
         $parser->match(Lexer::T_COMMA);
-        $this->strategy = $parser->Literal()->value;
-
-        if (ctype_digit((string) $this->strategy)) {
-            $this->strategy = (int) $this->strategy;
-        }
+        $this->strategy = (int) $parser->Literal()->value;
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }

@@ -26,15 +26,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FieldTypeExtension extends AbstractFieldTypeExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(
-            ['doctrine_dbal_conversion' => null]
-        );
-
+        $resolver->setDefaults(['doctrine_dbal_conversion' => null]);
         $resolver->setAllowedTypes(
             'doctrine_dbal_conversion',
             [
@@ -46,9 +40,6 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getExtendedType(): string
     {
         return SearchFieldType::class;

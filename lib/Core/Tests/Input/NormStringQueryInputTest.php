@@ -41,9 +41,6 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class NormStringQueryInputTest extends SearchIntegrationTestCase
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function getFieldSet(bool $build = true)
     {
         $fieldSet = new GenericFieldSetBuilder($this->getFactory());

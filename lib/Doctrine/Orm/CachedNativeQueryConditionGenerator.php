@@ -25,7 +25,7 @@ use Psr\SimpleCache\CacheInterface as Cache;
  * The cache-key is a hashed (sha256) combination of the SearchCondition
  * (root ValuesGroup and FieldSet name) and configured field mappings.
  *
- * Caution: Any noticeable changes to your (FieldSet's) configuration
+ * Caution: Any noticeable changes to your (FieldSet) configuration
  * should purge all cached entries.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -40,8 +40,6 @@ class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerat
     private $query;
 
     /**
-     * Constructor.
-     *
      * @param NativeQueryConditionGenerator $conditionGenerator The ConditionGenerator to use for generating
      *                                                          the condition when no cache exists
      * @param Cache                         $cacheDriver        PSR-16 SimpleCache instance. Use a custom pool to ease

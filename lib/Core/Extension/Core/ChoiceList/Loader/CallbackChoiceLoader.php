@@ -26,6 +26,9 @@ final class CallbackChoiceLoader implements ChoiceLoader
 {
     use ChoiceLoaderTrait;
 
+    /**
+     * @var callable
+     */
     private $callback;
 
     /**
@@ -44,9 +47,6 @@ final class CallbackChoiceLoader implements ChoiceLoader
         $this->valuesAreConstant = $valuesAreConstant;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadChoiceList(callable $value = null): ChoiceList
     {
         if (null !== $this->choiceList) {
@@ -56,9 +56,6 @@ final class CallbackChoiceLoader implements ChoiceLoader
         return $this->choiceList = new ArrayChoiceList(\call_user_func($this->callback), $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isValuesConstant(): bool
     {
         return $this->valuesAreConstant;

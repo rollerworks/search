@@ -20,12 +20,6 @@ namespace Rollerworks\Component\Search\Exception;
  */
 final class UnsupportedValueTypeException extends InputProcessorException
 {
-    /**
-     * Constructor.
-     *
-     * @param string $fieldName
-     * @param string $valueType
-     */
     public function __construct(string $fieldName, string $valueType)
     {
         parent::__construct(

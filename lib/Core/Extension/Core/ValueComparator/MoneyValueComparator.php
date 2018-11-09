@@ -22,13 +22,8 @@ use Rollerworks\Component\Search\ValueComparator;
 final class MoneyValueComparator implements ValueComparator
 {
     /**
-     * Returns whether the first value is higher then the second value.
-     *
      * @param MoneyValue $higher
      * @param MoneyValue $lower
-     * @param array      $options
-     *
-     * @return bool
      */
     public function isHigher($higher, $lower, array $options): bool
     {
@@ -40,13 +35,8 @@ final class MoneyValueComparator implements ValueComparator
     }
 
     /**
-     * Returns whether the first value is lower then the second value.
-     *
      * @param MoneyValue $lower
      * @param MoneyValue $higher
-     * @param array      $options
-     *
-     * @return bool
      */
     public function isLower($lower, $higher, array $options): bool
     {
@@ -58,13 +48,8 @@ final class MoneyValueComparator implements ValueComparator
     }
 
     /**
-     * Returns whether the first value equals the second value.
-     *
      * @param MoneyValue $value
      * @param MoneyValue $nextValue
-     * @param array      $options
-     *
-     * @return bool
      */
     public function isEqual($value, $nextValue, array $options): bool
     {

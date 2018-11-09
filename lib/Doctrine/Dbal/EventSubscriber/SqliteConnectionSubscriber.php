@@ -14,19 +14,17 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
+use Doctrine\DBAL\Driver\PDOConnection;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use Doctrine\DBAL\Events;
 
 final class SqliteConnectionSubscriber implements EventSubscriber
 {
-    /**
-     * @param ConnectionEventArgs $args
-     */
     public function postConnect(ConnectionEventArgs $args): void
     {
         if ('sqlite' === $args->getDatabasePlatform()->getName()) {
+            /** @var PDOConnection $conn */
             $conn = $args->getConnection()->getWrappedConnection();
-
             $conn->sqliteCreateFunction(
                 'search_conversion_age',
                 function ($date) {
@@ -37,9 +35,6 @@ final class SqliteConnectionSubscriber implements EventSubscriber
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSubscribedEvents(): array
     {
         return [Events::postConnect];

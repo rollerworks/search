@@ -15,11 +15,6 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
 class MssqlQueryPlatform extends AbstractQueryPlatform
 {
-    /**
-     * Returns the list of characters to escape.
-     *
-     * @return string
-     */
     protected function getLikeEscapeChars(): string
     {
         return '%_[]';

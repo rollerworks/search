@@ -18,14 +18,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * If FOS Elastica Bundle is detected, use its client as our client.
- *
- * Class ElasticaBundlePass.
  */
 class ElasticaBundlePass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->has('fos_elastica.client')) {

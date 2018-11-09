@@ -26,33 +26,17 @@ interface SearchFactory
      *
      * @param string|FieldSetConfigurator $configurator Configurator for building the FieldSet,
      *                                                  a string will be resolved to a configurator
-     *
-     * @return FieldSet
      */
     public function createFieldSet($configurator): FieldSet;
 
     /**
-     * Create a new search field.
-     *
      * @param string $name    Name of the field
      * @param string $type    Type of the field
      * @param array  $options Array of options for building the field
-     *
-     * @return FieldConfig
      */
     public function createField(string $name, string $type, array $options = []): FieldConfig;
 
-    /**
-     * Create a new FieldSetBuilderInterface instance.
-     *
-     * @return FieldSetBuilder
-     */
     public function createFieldSetBuilder(): FieldSetBuilder;
 
-    /**
-     * Get the SearchConditionSerializer.
-     *
-     * @return SearchConditionSerializer
-     */
     public function getSerializer(): SearchConditionSerializer;
 }

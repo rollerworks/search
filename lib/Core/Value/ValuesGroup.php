@@ -16,8 +16,6 @@ namespace Rollerworks\Component\Search\Value;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 
 /**
- * ValuesGroup.
- *
  * The ValuesGroup holds sub-groups and values (per field).
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -43,10 +41,6 @@ class ValuesGroup implements \Serializable
     private $groupLogical;
 
     /**
-     * Constructor.
-     *
-     * @param string $groupLogical
-     *
      * @throws InvalidArgumentException When no an unsupported group logical is provided
      */
     public function __construct(string $groupLogical = self::GROUP_LOGICAL_AND)
@@ -55,8 +49,6 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param ValuesGroup $group
-     *
      * @return self
      */
     public function addGroup(self $group)
@@ -66,20 +58,13 @@ class ValuesGroup implements \Serializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function hasGroups(): bool
     {
         return \count($this->groups) > 0;
     }
 
     /**
-     * @param int $index
-     *
      * @throws InvalidArgumentException when no group exists at the given index
-     *
-     * @return ValuesGroup
      */
     public function getGroup(int $index): self
     {
@@ -101,8 +86,6 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param int $index
-     *
      * @return self
      */
     public function removeGroup(int $index)
@@ -115,9 +98,6 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param string    $name
-     * @param ValuesBag $values
-     *
      * @return self
      */
     public function addField(string $name, ValuesBag $values)
@@ -127,11 +107,6 @@ class ValuesGroup implements \Serializable
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function hasField(string $name): bool
     {
         return isset($this->fields[$name]);
@@ -146,11 +121,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param string $name
-     *
      * @throws InvalidArgumentException
-     *
-     * @return ValuesBag
      */
     public function getField(string $name): ValuesBag
     {
@@ -164,8 +135,6 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @param string $name
-     *
      * @return self
      */
     public function removeField(string $name)
@@ -178,10 +147,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Gets the total number of values
-     * in the fields list structure.
-     *
-     * @return int
+     * Gets the total number of values in the fields list structure.
      */
     public function countValues(): int
     {
@@ -195,8 +161,6 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Get the logical case of the field.
-     *
      * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
@@ -208,12 +172,8 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * Set the logical case of the ValuesGroup.
-     *
      * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
-     *
-     * @param string $groupLogical
      *
      * @throws InvalidArgumentException When an unsupported group logical is provided
      *
@@ -230,9 +190,6 @@ class ValuesGroup implements \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function serialize(): string
     {
         return serialize(
@@ -244,9 +201,6 @@ class ValuesGroup implements \Serializable
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function unserialize($serialized): void
     {
         $data = unserialize($serialized);

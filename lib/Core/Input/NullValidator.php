@@ -18,17 +18,11 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 
 final class NullValidator implements Validator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function initializeContext(FieldConfig $field, ErrorList $errorList): void
     {
         // no-op
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validate($value, string $type, $originalValue, string $path): bool
     {
         return true;

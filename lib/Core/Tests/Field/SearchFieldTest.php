@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Field;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
@@ -223,7 +224,7 @@ final class SearchFieldTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|DataTransformer
      */
     private function createTransformerMock()
     {

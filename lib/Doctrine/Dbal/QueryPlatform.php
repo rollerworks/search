@@ -19,45 +19,28 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 interface QueryPlatform
 {
     /**
-     * Returns the correct column (with SQLField conversions applied).
-     *
-     * @param QueryField $mappingConfig
-     * @param string|int $strategy
-     * @param string     $column
-     *
-     * @return string
+     * Returns the correct column (with a SQLField conversion applied).
      */
-    public function getFieldColumn(QueryField $mappingConfig, $strategy = 0, string $column = null): string;
+    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0, string $column = null): string;
 
     /**
      * Returns either the converted value.
      *
-     * @param mixed      $value
-     * @param QueryField $mappingConfig
-     * @param string     $column
-     * @param string|int $strategy
-     *
-     * @return string
+     * @param mixed $value
      */
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, $strategy = 0): string;
+    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string;
 
     /**
      * Returns the formatted PatternMatch query.
      *
-     * @param PatternMatch $patternMatch
-     * @param string       $column
+     * @param string $column
      *
      * @return string Some like: u.name LIKE '%foo%'
      */
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string;
 
     /**
-     * @param mixed      $value
-     * @param QueryField $mappingConfig
-     * @param string     $column
-     * @param string|int $strategy
-     *
-     * @return string
+     * @param mixed $value
      */
-    public function convertSqlValue($value, QueryField $mappingConfig, string $column, $strategy = 0): string;
+    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0): string;
 }

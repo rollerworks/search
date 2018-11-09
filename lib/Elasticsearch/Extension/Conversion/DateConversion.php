@@ -21,9 +21,6 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToString
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
 
-/**
- * Class DateConversion.
- */
 class DateConversion implements ValueConversion, QueryConversion
 {
     /**
@@ -37,8 +34,6 @@ class DateConversion implements ValueConversion, QueryConversion
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws \Rollerworks\Component\Search\Exception\TransformationFailedException
      */
     public function convertValue($value): string
@@ -46,13 +41,6 @@ class DateConversion implements ValueConversion, QueryConversion
         return $this->transformer->transform($value);
     }
 
-    /**
-     * @param string                $propertyName
-     * @param mixed                 $value
-     * @param QueryPreparationHints $hints
-     *
-     * @return array|null
-     */
     public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array
     {
         if (!\is_array($value) && !$value instanceof Range && !$value instanceof Compare) {
@@ -89,12 +77,6 @@ class DateConversion implements ValueConversion, QueryConversion
         return $query;
     }
 
-    /**
-     * @param string $propertyName
-     * @param Range  $range
-     *
-     * @return array
-     */
     private function generateDateRange(string $propertyName, Range $range): array
     {
         return [

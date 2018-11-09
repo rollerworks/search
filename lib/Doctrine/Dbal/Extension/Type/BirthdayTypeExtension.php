@@ -30,17 +30,11 @@ class BirthdayTypeExtension extends AbstractFieldTypeExtension
      */
     private $conversion;
 
-    /**
-     * @param AgeDateConversion $conversion
-     */
     public function __construct(AgeDateConversion $conversion)
     {
         $this->conversion = $conversion;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -48,9 +42,6 @@ class BirthdayTypeExtension extends AbstractFieldTypeExtension
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getExtendedType(): string
     {
         return BirthdayType::class;

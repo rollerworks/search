@@ -13,9 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch;
 
-/**
- * Interface ValueConversion.
- */
 interface ValueConversion
 {
     /**

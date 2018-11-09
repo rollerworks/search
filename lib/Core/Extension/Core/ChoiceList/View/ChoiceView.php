@@ -49,8 +49,6 @@ class ChoiceView
     public $attr;
 
     /**
-     * Creates a new choice view.
-     *
      * @param mixed  $data  The original choice
      * @param string $value The view representation of the choice
      * @param string $label The label displayed to humans

@@ -52,8 +52,6 @@ final class SearchFactoryBuilder
     /**
      * Sets the factory for creating ResolvedFieldTypeInterface instances.
      *
-     * @param ResolvedFieldTypeFactory $resolvedTypeFactory
-     *
      * @return static The builder
      */
     public function setResolvedTypeFactory(ResolvedFieldTypeFactory $resolvedTypeFactory)
@@ -66,8 +64,6 @@ final class SearchFactoryBuilder
     /**
      * Set the FieldSetRegistry to use for loading FieldSetConfigurators.
      *
-     * @param FieldSetRegistry $fieldSetRegistry
-     *
      * @return SearchFactoryBuilder
      */
     public function setFieldSetRegistry(FieldSetRegistry $fieldSetRegistry): self
@@ -79,8 +75,6 @@ final class SearchFactoryBuilder
 
     /**
      * Adds an extension to be loaded by the factory.
-     *
-     * @param SearchExtension $extension
      *
      * @return static The builder
      */
@@ -107,8 +101,6 @@ final class SearchFactoryBuilder
 
     /**
      * Adds a field type to the factory.
-     *
-     * @param FieldType $type
      *
      * @return static The builder
      */
@@ -138,8 +130,6 @@ final class SearchFactoryBuilder
     /**
      * Adds a field type extension to the factory.
      *
-     * @param FieldTypeExtension $typeExtension
-     *
      * @return static The builder
      */
     public function addTypeExtension(FieldTypeExtension $typeExtension)
@@ -167,8 +157,6 @@ final class SearchFactoryBuilder
 
     /**
      * Builds and returns the factory.
-     *
-     * @return SearchFactory
      */
     public function getSearchFactory(): SearchFactory
     {

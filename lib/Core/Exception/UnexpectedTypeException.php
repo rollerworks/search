@@ -19,8 +19,6 @@ namespace Rollerworks\Component\Search\Exception;
 class UnexpectedTypeException extends \InvalidArgumentException implements SearchException
 {
     /**
-     * Constructor.
-     *
      * @param mixed        $value
      * @param string|array $expectedType
      */

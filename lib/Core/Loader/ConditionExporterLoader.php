@@ -70,13 +70,7 @@ final class ConditionExporterLoader
     }
 
     /**
-     * Lazily loads a ConditionExporter.
-     *
-     * @param string $format
-     *
      * @throws \InvalidArgumentException when there is no exporter for the given format
-     *
-     * @return ConditionExporter
      */
     public function get(string $format): ConditionExporter
     {

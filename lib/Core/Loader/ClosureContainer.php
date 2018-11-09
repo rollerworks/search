@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Loader;
 use Psr\Container\ContainerInterface;
 
 /**
- * ClosureContainer helps with lazily loading dependencies.
+ * Helps with lazily loading dependencies.
  *
  * This class is provided for easy of use, it should not be used
  * directly within your own code.
@@ -36,17 +36,11 @@ final class ClosureContainer implements ContainerInterface
         $this->factories = $factories;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function has($id): bool
     {
         return isset($this->factories[$id]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get($id)
     {
         if (!isset($this->factories[$id])) {

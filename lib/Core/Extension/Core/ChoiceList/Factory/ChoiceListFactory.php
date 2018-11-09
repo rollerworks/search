@@ -36,8 +36,6 @@ interface ChoiceListFactory
      * @param array|\Traversable $choices The choices
      * @param null|callable      $value   The callable generating the choice
      *                                    values
-     *
-     * @return ChoiceList The choice list
      */
     public function createListFromChoices($choices, $value = null): ChoiceList;
 
@@ -51,8 +49,6 @@ interface ChoiceListFactory
      * @param ChoiceLoader  $loader The choice loader
      * @param null|callable $value  The callable generating the choice
      *                              values
-     *
-     * @return ChoiceList The choice list
      */
     public function createListFromLoader(ChoiceLoader $loader, $value = null): ChoiceList;
 
@@ -92,8 +88,6 @@ interface ChoiceListFactory
      *                                              group names
      * @param null|array|callable $attr             The callable generating the
      *                                              HTML attributes
-     *
-     * @return ChoiceListView The choice list view
      */
     public function createView(ChoiceList $list, $preferredChoices = null, $label = null, $index = null, $groupBy = null, $attr = null): ChoiceListView;
 }

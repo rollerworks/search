@@ -16,17 +16,12 @@ namespace Rollerworks\Component\Search\Elasticsearch\Extension\Conversion;
 use Rollerworks\Component\Search\Elasticsearch\ValueConversion;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
-/**
- * Class CurrencyConversion.
- */
 class CurrencyConversion implements ValueConversion
 {
     /**
      * Returns the converted value as a valid Elasticsearch value.
      *
      * @param MoneyValue $value
-     *
-     * @return string
      */
     public function convertValue($value): string
     {

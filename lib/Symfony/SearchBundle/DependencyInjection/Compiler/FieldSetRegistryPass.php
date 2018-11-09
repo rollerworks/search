@@ -25,11 +25,8 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class FieldSetRegistryPass implements CompilerPassInterface
+final class FieldSetRegistryPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('rollerworks_search.fieldset_registry')) {

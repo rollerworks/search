@@ -36,9 +36,6 @@ final class BirthdayType extends AbstractFieldType
         $this->valueComparator = new BirthdayValueComparator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueComparator($this->valueComparator);
@@ -62,18 +59,12 @@ final class BirthdayType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         $view->vars['allow_age'] = $options['allow_age'];
         $view->vars['allow_future_date'] = $options['allow_future_date'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -92,17 +83,11 @@ final class BirthdayType extends AbstractFieldType
         $resolver->setAllowedTypes('allow_future_date', ['bool']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): ?string
     {
         return DateType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'birthday';

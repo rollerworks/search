@@ -22,8 +22,6 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 final class IntegerToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
 {
     /**
-     * Constructs a transformer.
-     *
      * @param bool|null $grouping     Whether thousands should be grouped
      * @param int|null  $roundingMode One of the ROUND_ constants in this class
      */
@@ -32,9 +30,6 @@ final class IntegerToLocalizedStringTransformer extends NumberToLocalizedStringT
         parent::__construct(0, $grouping, $roundingMode ?? self::ROUND_DOWN);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($value)
     {
         $result = parent::reverseTransform($value);

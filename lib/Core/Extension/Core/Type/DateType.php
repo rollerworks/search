@@ -38,9 +38,6 @@ final class DateType extends BaseDateTimeType
         $this->valueComparator = new DateValueComparator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueComparator($this->valueComparator);
@@ -76,9 +73,6 @@ final class DateType extends BaseDateTimeType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         $pattern = $options['pattern'];
@@ -98,9 +92,6 @@ final class DateType extends BaseDateTimeType
         $view->vars['pattern'] = $pattern;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -117,9 +108,6 @@ final class DateType extends BaseDateTimeType
         $resolver->setAllowedTypes('pattern', ['string', 'null']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'date';

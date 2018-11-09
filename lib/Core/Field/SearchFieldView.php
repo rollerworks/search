@@ -34,11 +34,6 @@ class SearchFieldView
      */
     public $fieldSet;
 
-    /**
-     * Constructor.
-     *
-     * @param FieldSetView $fieldSet
-     */
     public function __construct(FieldSetView $fieldSet)
     {
         $this->fieldSet = $fieldSet;

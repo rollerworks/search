@@ -35,8 +35,6 @@ class NumberToStringTransformer extends BaseNumberTransformer
      *
      * @throws TransformationFailedException If the given value is not numeric
      *                                       or if the value can not be transformed
-     *
-     * @return string
      */
     public function transform($value): string
     {

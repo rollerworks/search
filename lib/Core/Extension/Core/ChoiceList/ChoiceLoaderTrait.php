@@ -18,6 +18,7 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
  * choices/values in ChoiceLoaders.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * @author Bernhard Schussek <bschussek@gmail.com>
  */
 trait ChoiceLoaderTrait
 {
@@ -26,9 +27,6 @@ trait ChoiceLoaderTrait
      */
     protected $choiceList;
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadChoicesForValues(array $values, callable $value = null): array
     {
         // Optimize
@@ -44,9 +42,6 @@ trait ChoiceLoaderTrait
         return $this->loadChoiceList($value)->getChoicesForValues($values);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadValuesForChoices(array $choices, callable $value = null): array
     {
         // Optimize

@@ -62,10 +62,7 @@ class DqlConditionGenerator extends AbstractConditionGenerator
     private $nativePlatform;
 
     /**
-     * Constructor.
-     *
-     * @param DqlQuery|QueryBuilder $query           Doctrine ORM Query object
-     * @param SearchCondition       $searchCondition SearchCondition object
+     * @param DqlQuery|QueryBuilder $query Doctrine ORM Query
      */
     public function __construct($query, SearchCondition $searchCondition)
     {
@@ -83,18 +80,10 @@ class DqlConditionGenerator extends AbstractConditionGenerator
     }
 
     /**
-     * Returns the generated where-clause.
+     * {@inheritdoc}
      *
-     * The Where-clause is wrapped inside a group so it can be safely used
-     * with other conditions.
-     *
-     * For SQL conversions to work properly you need to set the required
+     * Note: For SQL conversions to work properly you need to set the required
      * hints using getQueryHintName() and getQueryHintValue().
-     *
-     * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example)
-     *
-     * @return string
      */
     public function getWhereClause(string $prependQuery = ''): string
     {
@@ -116,16 +105,7 @@ class DqlConditionGenerator extends AbstractConditionGenerator
         return '';
     }
 
-    /**
-     * Updates the configured query object with the where-clause and query-hints.
-     *
-     * @param string $prependQuery Prepend before the generated WHERE clause
-     *                             Eg. " WHERE " or " AND ", ignored when WHERE
-     *                             clause is empty. Default is ' WHERE '
-     *
-     * @return DqlConditionGenerator
-     */
-    public function updateQuery(string $prependQuery = ' WHERE ')
+    public function updateQuery(string $prependQuery = ' WHERE '): self
     {
         $whereCase = $this->getWhereClause($prependQuery);
 
@@ -160,8 +140,6 @@ class DqlConditionGenerator extends AbstractConditionGenerator
      * Returns the Query-hint value for the query object.
      *
      * The Query hint is used for conversions.
-     *
-     * @return SqlConversionInfo
      */
     public function getQueryHintValue(): SqlConversionInfo
     {

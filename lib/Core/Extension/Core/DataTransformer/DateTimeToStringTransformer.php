@@ -25,8 +25,6 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 final class DateTimeToStringTransformer extends BaseDateTimeTransformer
 {
     /**
-     * Format used for generating strings.
-     *
      * @var string
      */
     private $generateFormat;
@@ -46,10 +44,6 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      * Transforms a \DateTime instance to a string.
      *
      * @see \DateTime::format() for supported formats
-     *
-     * @param string|null $inputTimezone
-     * @param string|null $outputTimezone
-     * @param string      $format
      *
      * @throws UnexpectedTypeException if a timezone is not a string
      */
@@ -115,8 +109,6 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      * @throws TransformationFailedException If the given value is not a string,
      *                                       if the date could not be parsed or
      *                                       if the input timezone is not supported
-     *
-     * @return \DateTime|null An instance of \DateTime
      */
     public function reverseTransform($value): ?\DateTime
     {

@@ -23,12 +23,21 @@ use Rollerworks\Component\Search\FieldSet;
  */
 final class FieldConfigBuilder
 {
+    /** @var FieldSet */
     private $fieldSet;
+
+    /** @var bool */
     private $native;
+
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     private $fields = [];
+
+    /** @var string */
     private $defaultEntity;
+
+    /** @var string */
     private $defaultAlias;
 
     public function __construct(EntityManagerInterface $entityManager, FieldSet $fieldSet, bool $native = false)

@@ -55,12 +55,6 @@ abstract class AbstractConditionGenerator implements ConditionGenerator
      */
     protected $fieldsConfig;
 
-    /**
-     * Constructor.
-     *
-     * @param SearchCondition        $searchCondition SearchCondition object
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(SearchCondition $searchCondition, EntityManagerInterface $entityManager)
     {
         $this->searchCondition = $searchCondition;
@@ -70,9 +64,6 @@ abstract class AbstractConditionGenerator implements ConditionGenerator
         $this->fieldsConfig = new FieldConfigBuilder($entityManager, $this->fieldset);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setDefaultEntity(string $entity, string $alias)
     {
         $this->guardNotGenerated();
@@ -81,9 +72,6 @@ abstract class AbstractConditionGenerator implements ConditionGenerator
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null)
     {
         $this->guardNotGenerated();

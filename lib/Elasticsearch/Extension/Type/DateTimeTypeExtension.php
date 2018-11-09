@@ -18,9 +18,6 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class DateTimeTypeExtension.
- */
 class DateTimeTypeExtension extends AbstractFieldTypeExtension
 {
     /**
@@ -28,19 +25,11 @@ class DateTimeTypeExtension extends AbstractFieldTypeExtension
      */
     private $conversion;
 
-    /**
-     * @param DateTimeConversion $conversion
-     */
     public function __construct(DateTimeConversion $conversion)
     {
         $this->conversion = $conversion;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -50,11 +39,6 @@ class DateTimeTypeExtension extends AbstractFieldTypeExtension
         );
     }
 
-    /**
-     * Returns the name of the type being extended.
-     *
-     * @return string
-     */
     public function getExtendedType(): string
     {
         return DateTimeType::class;

@@ -35,9 +35,6 @@ final class IntegerType extends AbstractFieldType
         $this->valueComparator = new NumberValueComparator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueComparator($this->valueComparator);
@@ -50,17 +47,11 @@ final class IntegerType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         $view->vars['grouping'] = $options['grouping'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -85,9 +76,6 @@ final class IntegerType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'integer';

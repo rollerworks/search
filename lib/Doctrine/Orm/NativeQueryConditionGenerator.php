@@ -39,13 +39,11 @@ use Rollerworks\Component\Search\SearchCondition;
  */
 class NativeQueryConditionGenerator extends AbstractConditionGenerator
 {
+    /** @var NativeQuery */
     private $query;
 
     /**
-     * Constructor.
-     *
-     * @param NativeQuery     $query           Doctrine ORM NativeQuery object
-     * @param SearchCondition $searchCondition SearchCondition object
+     * @param NativeQuery $query Doctrine ORM NativeQuery
      */
     public function __construct(NativeQuery $query, SearchCondition $searchCondition)
     {
@@ -57,9 +55,6 @@ class NativeQueryConditionGenerator extends AbstractConditionGenerator
         $this->query = $query;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getWhereClause(string $prependQuery = ''): string
     {
         if (null === $this->whereClause) {
@@ -77,15 +72,7 @@ class NativeQueryConditionGenerator extends AbstractConditionGenerator
         return '';
     }
 
-    /**
-     * Updates the configured query object with the where-clause.
-     *
-     * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example)
-     *
-     * @return NativeQueryConditionGenerator
-     */
-    public function updateQuery(string $prependQuery = ' WHERE ')
+    public function updateQuery(string $prependQuery = ' WHERE '): self
     {
         $whereCase = $this->getWhereClause($prependQuery);
 

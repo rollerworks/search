@@ -20,9 +20,6 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
 {
-    /**
-     * {@inheritdoc}
-     */
     public function transform($dateTime): ?string
     {
         if (null === $dateTime) {
@@ -44,9 +41,6 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
         return preg_replace('/\+00:00$/', 'Z', $dateTime->format('c'));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($rfc3339): ?\DateTime
     {
         if (null !== $rfc3339 && !\is_string($rfc3339)) {

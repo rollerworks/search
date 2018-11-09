@@ -36,8 +36,6 @@ interface ChoiceLoader
      *
      * @param null|callable $value The callable which generates the values
      *                             from choices
-     *
-     * @return ChoiceList The loaded choice list
      */
     public function loadChoiceList(callable $value = null): ChoiceList;
 
@@ -54,8 +52,6 @@ interface ChoiceLoader
      * @param string[]      $values An array of choice values. Non-existing
      *                              values in this array are ignored
      * @param null|callable $value  The callable generating the choice values
-     *
-     * @return array An array of choices
      */
     public function loadChoicesForValues(array $values, callable $value = null): array;
 
@@ -81,8 +77,6 @@ interface ChoiceLoader
      * Returns whether the values are constant (not dependent of there position).
      *
      * {@see \Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList::isValuesConstant}
-     *
-     * @return bool
      */
     public function isValuesConstant(): bool;
 }

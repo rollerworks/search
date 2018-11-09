@@ -18,9 +18,6 @@ use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class MoneyTypeExtension.
- */
 class MoneyTypeExtension extends AbstractFieldTypeExtension
 {
     /**
@@ -28,17 +25,11 @@ class MoneyTypeExtension extends AbstractFieldTypeExtension
      */
     private $conversion;
 
-    /**
-     * @param CurrencyConversion $conversion
-     */
     public function __construct(CurrencyConversion $conversion)
     {
         $this->conversion = $conversion;
     }
 
-    /**
-     * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -48,11 +39,6 @@ class MoneyTypeExtension extends AbstractFieldTypeExtension
         );
     }
 
-    /**
-     * Returns the name of the type being extended.
-     *
-     * @return string
-     */
     public function getExtendedType(): string
     {
         return MoneyType::class;

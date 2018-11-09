@@ -22,17 +22,11 @@ use Rollerworks\Component\Search\Value\PatternMatch;
  */
 final class TextType extends AbstractFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueTypeSupport(PatternMatch::class, true);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'text';

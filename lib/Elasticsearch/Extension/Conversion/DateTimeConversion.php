@@ -15,9 +15,6 @@ namespace Rollerworks\Component\Search\Elasticsearch\Extension\Conversion;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 
-/**
- * Class DateTimeConversion.
- */
 class DateTimeConversion extends DateConversion
 {
     public function __construct()

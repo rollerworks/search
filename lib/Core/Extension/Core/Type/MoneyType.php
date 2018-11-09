@@ -43,9 +43,6 @@ final class MoneyType extends AbstractFieldType
         $this->valueComparator = new MoneyValueComparator();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $config->setValueComparator($this->valueComparator);
@@ -64,9 +61,6 @@ final class MoneyType extends AbstractFieldType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
         $view->vars['grouping'] = $options['grouping'];
@@ -74,9 +68,6 @@ final class MoneyType extends AbstractFieldType
         $view->vars['increase_by'] = $options['increase_by'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
@@ -120,9 +111,6 @@ final class MoneyType extends AbstractFieldType
         $resolver->setAllowedValues('increase_by', ['cents', 'amount']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'money';
