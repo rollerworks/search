@@ -211,8 +211,12 @@ abstract class StringInput extends AbstractInput
         $this->config = $config;
         $this->lexer->parse($input, $this->valueLexers);
 
-        $logical = null !== $this->lexer->matchOptional('*') ? ValuesGroup::GROUP_LOGICAL_OR : ValuesGroup::GROUP_LOGICAL_AND;
-        $this->structureBuilder->getRootGroup()->setGroupLogical($logical);
+        // If the first part is a group then ignore the match, let fieldValuesPairs() handle the
+        // group logical on this own.
+        if (!$this->lexer->isGlimpse('/[*&]?\s*\(/A')) {
+            $logical = null !== $this->lexer->matchOptional('*') ? ValuesGroup::GROUP_LOGICAL_OR : ValuesGroup::GROUP_LOGICAL_AND;
+            $this->structureBuilder->getRootGroup()->setGroupLogical($logical);
+        }
 
         $this->lexer->skipEmptyLines();
         $this->fieldValuesPairs();
