@@ -24,6 +24,9 @@ use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 
+/**
+ * @group unit
+ */
 final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
 {
     /** @test */
@@ -525,6 +528,53 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         );
 
         self::assertMapping(['restrict', 'name'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_looks_up_by_child_document()
+    {
+        $condition = $this
+            ->createCondition()
+                ->field('name')
+                    ->addSimpleValue('foo')
+                    ->addSimpleValue('bar')
+                ->end()
+            ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('name', 'child>subchild>sub.name');
+
+        self::assertEquals(
+            [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'has_child' => [
+                                    'type' => 'child',
+                                    'query' => [
+                                        'has_child' => [
+                                            'type' => 'subchild',
+                                            'query' => [
+                                                'terms' => [
+                                                    'sub.name' => [
+                                                        'foo',
+                                                        'bar',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $generator->getQuery()->toArray()
+        );
+
+        self::assertMapping(['name'], $generator->getMappings());
     }
 
     /**

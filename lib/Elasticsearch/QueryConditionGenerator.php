@@ -31,6 +31,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     public const QUERY_BOOL = 'bool';
     public const QUERY_IDS = 'ids';
     public const QUERY_NESTED = 'nested';
+    public const QUERY_HAS_CHILD = 'has_child';
     public const QUERY_MATCH = 'match';
     public const QUERY_PREFIX = 'prefix';
     public const QUERY_RANGE = 'range';
@@ -195,6 +196,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             $valueConverter = $mapping->valueConversion;
             $queryConverter = $mapping->queryConversion;
             $nested = $mapping->nested;
+            $join = $mapping->join;
 
             $hints->identifier = (self::PROPERTY_ID === $propertyName);
             $callback = function ($value) use ($valueConverter) {
@@ -205,12 +207,12 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             if ($valuesBag->hasSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$valueConverter]);
                 $hints->context = QueryPreparationHints::CONTEXT_SIMPLE_VALUES;
-                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested);
+                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested, $join);
             }
             if ($valuesBag->hasExcludedSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$valueConverter]);
                 $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
-                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested);
+                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested, $join);
             }
 
             // ranges
@@ -219,7 +221,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 foreach ($valuesBag->get(Range::class) as $range) {
                     $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_RANGE_VALUES;
-                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested);
+                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join);
                 }
             }
             if ($valuesBag->has(ExcludedRange::class)) {
@@ -227,7 +229,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
                     $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES;
-                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested);
+                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join);
                 }
             }
 
@@ -238,7 +240,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $compare = $this->convertCompareValue($compare, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_COMPARISON;
                     $localIncludingType = self::COMPARISON_UNEQUAL === $compare->getOperator() ? self::CONDITION_NOT : $includingType;
-                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested);
+                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested, $join);
                 }
             }
 
@@ -249,7 +251,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $patternMatch = $this->convertMatcherValue($patternMatch, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_PATTERN_MATCH;
                     $localIncludingType = $patternMatch->isExclusive() ? self::CONDITION_NOT : $includingType;
-                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $patternMatch, $hints, $queryConverter, $nested);
+                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $patternMatch, $hints, $queryConverter, $nested, $join);
                 }
             }
         }
@@ -313,8 +315,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     /**
      * @param mixed      $value
      * @param array|bool $nested
+     * @param array|bool $join
      */
-    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested): array
+    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested, $join): array
     {
         if (null === $converter || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
             switch ($hints->context) {
@@ -373,6 +376,16 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     self::QUERY_NESTED => compact('path', 'query'),
                 ];
                 $nested = $nested['nested'];
+            }
+        }
+
+        if ($join) {
+            while (false !== $join) {
+                $type = $join['type'];
+                $query = [
+                    self::QUERY_HAS_CHILD => compact('type', 'query'),
+                ];
+                $join = $join['join'];
             }
         }
 
