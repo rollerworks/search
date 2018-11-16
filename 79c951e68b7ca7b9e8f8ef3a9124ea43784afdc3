@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by sstok at 2018-11-15T15:55:56Z
+
+@dkarlovi Can you confirm this fixes your isssue?
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-11-15T16:00:11Z
+
+Will test tomorrow first thing, left myself a reminder. Thanks for looking at this so quickly! <3
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-11-16T08:25:11Z
+
+@sstok I can confirm now both
+
+```
+*(title:~*paris;subtitle:~*paris;teaser:~*paris)
+```
+
+and
+
+```
+*title:~*paris;subtitle:~*paris;teaser:~*paris
+```
+
+work.
