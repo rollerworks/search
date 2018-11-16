@@ -23,6 +23,7 @@ use Rollerworks\Component\Search\Input\StringLexer;
 use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
@@ -272,6 +273,39 @@ final class StringQueryInputTest extends InputProcessorTestCase
                 StringLexerException::syntaxError(17, 1, ['Geographic points 12,24'], 'value, val'),
             ],
         ];
+    }
+
+    /**
+     * @test
+     *
+     * @see https://github.com/rollerworks/search/issues/246
+     */
+    public function it_parses_group_logical_when_group_is_provided_first_in()
+    {
+        $fieldSet = $this->getFactory()->createFieldSetBuilder();
+        $fieldSet->add('title', TextType::class);
+        $fieldSet->add('subtitle', TextType::class);
+        $fieldSet->add('teaser', TextType::class);
+        $fieldSet = $fieldSet->getFieldSet();
+
+        $processor = $this->getProcessor();
+        $config = new ProcessorConfig($fieldSet);
+
+        $condition = SearchConditionBuilder::create($fieldSet)
+            ->group(ValuesGroup::GROUP_LOGICAL_OR)
+                ->field('title')
+                    ->addSimpleValue('paris')
+                ->end()
+                ->field('subtitle')
+                    ->addSimpleValue('paris')
+                ->end()
+                ->field('teaser')
+                    ->addSimpleValue('paris')
+                ->end()
+            ->end()
+            ->getSearchCondition();
+
+        self::assertEquals($condition, $processor->process($config, '*(title:paris;subtitle:paris;teaser:paris)'));
     }
 
     public function provideEmptyInputTests()
