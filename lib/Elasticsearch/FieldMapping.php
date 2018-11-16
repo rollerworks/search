@@ -23,6 +23,7 @@ final class FieldMapping implements \Serializable
     public $typeName;
     public $propertyName;
     public $nested = false;
+    public $join = false;
     public $boost;
     public $options; // special options (reserved)
 
@@ -45,6 +46,7 @@ final class FieldMapping implements \Serializable
         $this->typeName = $mapping['typeName'];
         $this->propertyName = $mapping['propertyName'];
         $this->nested = $mapping['nested'];
+        $this->join = $mapping['join'];
 
         $converter = $fieldConfig->getOption('elasticsearch_conversion');
 
@@ -66,7 +68,8 @@ final class FieldMapping implements \Serializable
      *      - <index>#<nested[].property>
      *      - <index>#<sub.nested[].property>
      *      - <index>/<type>#<property>
-     *      - <index>/<type>#<sub.nested[].property>.
+     *      - <index>/<type>#<sub.nested[].property>
+     *      - <index>/<type>#child><sub.nested[].property>.
      *
      * @return string[]
      */
@@ -76,6 +79,7 @@ final class FieldMapping implements \Serializable
         $typeName = null;
         $propertyName = $property;
         $nested = false;
+        $join = false;
         if (false !== strpos($property, '#')) {
             [$path, $propertyName] = explode('#', $property);
 
@@ -83,6 +87,18 @@ final class FieldMapping implements \Serializable
             $indexName = $path;
             if (false !== strpos($path, '/')) {
                 [$indexName, $typeName] = explode('/', $path);
+            }
+        }
+
+        if (false !== strpos($property, '>')) {
+            $tokens = explode('>', $propertyName);
+
+            // last token is the property name
+            $propertyName = trim(array_pop($tokens), '.');
+
+            foreach ($tokens as $type) {
+                $type = trim($type, '.');
+                $join = \compact('type', 'join');
             }
         }
 
@@ -99,7 +115,7 @@ final class FieldMapping implements \Serializable
             }
         }
 
-        return compact('indexName', 'typeName', 'propertyName', 'nested');
+        return compact('indexName', 'typeName', 'propertyName', 'nested', 'join');
     }
 
     public function serialize()
