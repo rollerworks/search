@@ -1,4 +1,4 @@
-FROM composer:1.5
+FROM composer:1.7.3
 FROM php:7.1-cli
 
 ENV BUILD_DEPS="autoconf file g++ gcc libc-dev pkg-config re2c"
