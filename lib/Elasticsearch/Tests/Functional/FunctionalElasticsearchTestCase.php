@@ -58,11 +58,13 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     {
         return [
             'customers' => [
+                    'type' => ['type' => 'join', 'relations' => ['customer' => 'note']],
                     'first_name' => ['type' => 'text'],
                     'last_name' => ['type' => 'text'],
                     'full_name' => ['type' => 'text', 'boost' => 2, 'index' => 'not_analyzed'],
                     'birthday' => ['type' => 'date'],
                     'reg_date' => ['type' => 'date'],
+                    'comment' => ['type' => 'text'],
                 ],
             'invoices' => [
                     'customer' => [
@@ -98,10 +100,17 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     {
         return [
             'customers' => [
-                1 => ['Peter', 'Pang', 'Peter Pang', '1980-11-20', '2005-11-20'],
-                2 => ['Leroy', 'Jenkins', 'Leroy Jenkins', '2000-05-15', '2005-05-20'],
-                3 => ['Doctor', 'Who', 'Doctor Who', '2005-12-10', '2005-02-20'],
-                4 => ['Spider', 'Pig', 'Spider Pig', '2005-12-10', '2012-07-20'],
+                // customers
+                1 => ['customer', 'Peter', 'Pang', 'Peter Pang', '1980-11-20', '2005-11-20', null],
+                2 => ['customer', 'Leroy', 'Jenkins', 'Leroy Jenkins', '2000-05-15', '2005-05-20', null],
+                3 => ['customer', 'Doctor', 'Who', 'Doctor Who', '2005-12-10', '2005-02-20', null],
+                4 => ['customer', 'Spider', 'Pig', 'Spider Pig', '2005-12-10', '2012-07-20', null],
+
+                // notes about customers
+                5 => [['name' => 'note', 'parent' => 2], null, null, null, null, null, 'Leeroy Jenkins!'],
+                6 => [['name' => 'note', 'parent' => 3], null, null, null, null, null, 'Que?'],
+                7 => [['name' => 'note', 'parent' => 3], null, null, null, null, null, 'Who?'],
+                8 => [['name' => 'note', 'parent' => 4], null, null, null, null, null, 'Spider Pig, Spider Pig, Does Whatever A Spider Pig Does'],
             ],
             'invoices' => [
                 1 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2010-001', '2010-05-10', '2010-05-10T01:12:13+00:00', 2, 10000, [
@@ -154,7 +163,9 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         // index
         $client = $this->getClient();
         $index = $client->getIndex($name);
-        $index->create([], ['recreate' => true]);
+        $index->create([
+            'mapping.single_type' => true,
+        ], ['recreate' => true]);
 
         // mapping
         $type = $index->getType($name);
@@ -164,8 +175,14 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         // documents
         if (false === empty($data)) {
             $documents = [];
-            foreach ($data as $id => $document) {
-                $documents[] = new Document($id, array_combine(array_keys($properties), $document));
+            foreach ($data as $id => $item) {
+                $normalized = array_combine(array_keys($properties), $item);
+                $document = new Document($id, $normalized);
+
+                if (isset($normalized['type']['parent'])) {
+                    $document->setRouting($normalized['type']['parent']);
+                }
+                $documents[] = $document;
             }
             $type->addDocuments($documents);
             $index->refresh();
@@ -186,6 +203,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $builder->add('customer-last-name', TextType::class);
         $builder->add('customer-name', TextType::class);
         $builder->add('customer-birthday', BirthdayType::class, ['pattern' => 'yyyy-MM-dd']);
+        $builder->add('customer-comment', TextType::class);
 
         // Invoice
         $builder->add('id', IntegerType::class);
@@ -210,6 +228,9 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
      */
     protected function configureConditionGenerator(QueryConditionGenerator $conditionGenerator)
     {
+        // customer
+        $conditionGenerator->registerField('customer-comment', 'customers/customers/#note>comment');
+
         // invoice
         $conditionGenerator->registerField('id', 'invoices/invoices#_id');
         $conditionGenerator->registerField('pub-date', 'invoices/invoices#pubdate');

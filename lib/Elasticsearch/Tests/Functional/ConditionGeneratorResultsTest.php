@@ -98,6 +98,15 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
     /**
      * @test
      */
+    public function it_finds_by_customer_note()
+    {
+        $this->makeTest('customer-comment: ~*Que', [3]);
+        $this->makeTest('customer-comment: ~*whatever', [4]);
+    }
+
+    /**
+     * @test
+     */
     public function it_finds_by_date_comparison()
     {
         $this->makeTest('pub-date: >= "2015-05-10"', [4]);
