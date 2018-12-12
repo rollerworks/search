@@ -81,8 +81,8 @@ class SearchExtensionTest extends TestCase
         $conditionGenerator = $conditionGeneratorProphecy->reveal();
 
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedConditionGenerator::class);
-        $cachedConditionGeneratorProphecy->registerField('dummy-id', 'id')->shouldBeCalled();
-        $cachedConditionGeneratorProphecy->registerField('dummy-name', 'name')->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->registerField('dummy-id', 'id', [])->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->registerField('dummy-name', 'name', [])->shouldBeCalled();
         $cachedConditionGeneratorProphecy->getQuery()->willReturn($query);
         $cachedConditionGeneratorProphecy->getMappings()->shouldBeCalled();
         $cachedConditionGenerator = $cachedConditionGeneratorProphecy->reveal();

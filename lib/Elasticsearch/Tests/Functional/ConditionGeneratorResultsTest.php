@@ -102,6 +102,9 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
     {
         $this->makeTest('customer-comment: ~*Que', [3]);
         $this->makeTest('customer-comment: ~*whatever', [4]);
+
+        $this->makeTest('customer-comment: ~*specific', [1, 2, 3]);
+        $this->makeTest('customer-comment-restricted: ~*specific', [2]);
     }
 
     /**

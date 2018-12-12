@@ -64,12 +64,13 @@ interface ConditionGenerator
      * @see https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html
      * @see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-nested-query.html
      *
-     * @param string $fieldName Field set name
-     * @param string $mapping   Elasticsearch property mapping
+     * @param string $fieldName  Field set name
+     * @param string $mapping    Elasticsearch property mapping
+     * @param array  $conditions Additional conditions to apply if this mapping is used
      *
      * @return static
      */
-    public function registerField(string $fieldName, string $mapping);
+    public function registerField(string $fieldName, string $mapping, array $conditions = []);
 
     /**
      * Return a valid Elastica\Query search query. Query can be sent to a _search endpoint as is.

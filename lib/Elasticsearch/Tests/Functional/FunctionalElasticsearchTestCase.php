@@ -111,6 +111,9 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 6 => [['name' => 'note', 'parent' => 3], null, null, null, null, null, 'Que?'],
                 7 => [['name' => 'note', 'parent' => 3], null, null, null, null, null, 'Who?'],
                 8 => [['name' => 'note', 'parent' => 4], null, null, null, null, null, 'Spider Pig, Spider Pig, Does Whatever A Spider Pig Does'],
+                9 => [['name' => 'note', 'parent' => 1], 'Larry', null, null, null, null, 'Specific comment'],
+                10 => [['name' => 'note', 'parent' => 2], 'Moe', null, null, null, null, 'Specific comment'],
+                11 => [['name' => 'note', 'parent' => 3], 'Curly', null, null, null, null, 'Specific comment'],
             ],
             'invoices' => [
                 1 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2010-001', '2010-05-10', '2010-05-10T01:12:13+00:00', 2, 10000, [
@@ -204,6 +207,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $builder->add('customer-name', TextType::class);
         $builder->add('customer-birthday', BirthdayType::class, ['pattern' => 'yyyy-MM-dd']);
         $builder->add('customer-comment', TextType::class);
+        $builder->add('customer-comment-restricted', TextType::class);
 
         // Invoice
         $builder->add('id', IntegerType::class);
@@ -230,6 +234,14 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     {
         // customer
         $conditionGenerator->registerField('customer-comment', 'customers/customers/#note>comment');
+        $conditionGenerator->registerField(
+            'customer-comment-restricted',
+            'customers/customers/#note>comment',
+            [
+                // restrict by note author's first name
+                'customers/customers/#note>first_name' => 'moe',
+            ]
+        );
 
         // invoice
         $conditionGenerator->registerField('id', 'invoices/invoices#_id');

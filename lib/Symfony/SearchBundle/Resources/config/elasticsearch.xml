@@ -7,6 +7,7 @@
     <services>
         <service id="rollerworks_search.elasticsearch.factory" class="Rollerworks\Component\Search\Elasticsearch\ElasticsearchFactory" public="true">
             <argument type="service" id="rollerworks_search.elasticsearch.cache" on-invalid="null" />
+            <argument type="service" id="rollerworks_search.parameter_bag" on-invalid="null" />
         </service>
 
         <service id="rollerworks_search.elasticsearch.client" synthetic="true" />
