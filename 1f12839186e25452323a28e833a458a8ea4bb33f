@@ -1,0 +1,126 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-11-28T15:02:12Z
+
+@sstok  this is already solving points 1) and (almost) 2) from #249, do you have any objections about the direction? Note the `ParameterBag` addition in core.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-11-28T15:09:37Z
+
+BTW this is a snippet of my APIP mapping:
+
+```xml
+                <attribute name="_any">
+                    <attribute name="elasticsearch">
+                        <attribute name="mappings">
+
+                           <!-- case 1) and 2) from #249 -->
+                            <attribute name="origin">
+                                <attribute name="property">/app_{locale}_article/article#origin.identifier</attribute>
+                                <attribute name="conditions">
+                                    <attribute>
+                                        <attribute name="property">/app_{locale}_article/article#origin.client</attribute>
+                                        <attribute name="value">{client_id}</attribute>
+                                    </attribute>
+                                </attribute>
+                            </attribute>
+
+                           <!-- to be case 3) from #249 (needs to be added at runtime) -->
+                            <attribute name="att_note">
+                                <attribute name="property">/app_{locale}_article/article#extended_attribute_bag_client_user>extended_attribute_bag_client_user.values_{client_id}.note</attribute>
+                                <attribute name="conditions">
+                                    <attribute>
+                                        <attribute name="property">/app_{locale}_article/article#extended_attribute_bag_client_user>user</attribute>
+                                        <attribute name="value">{user_id}</attribute>
+                                    </attribute>
+                                </attribute>
+                            </attribute>
+                        </attribute>
+                </attribute>
+            </attribute>
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-11-28T16:02:37Z
+
+Remaining:
+~~1. "unpack" the conditions supplied with the mapping and apply them too if non-empty~~
+~~2. figure out how to create a mapping dynamically (this will probably be tricky)~~ (decorate the factory)
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-06T08:39:00Z
+
+@sstok this works for contextual conditions already, you can see both runtime properties and contextual conditions being assigned.
+
+The only thing that comes to mind might be: currently it only allows for simple comparison with AND in contextual conditions, which might be too restrictive, but it also might be fine (so it behaves like `AND additional_field = :value` in SQL).
+
+IMO we could clean up this PR and merge here, adding runtime mappings could be a separate PR.
+
+WDYT?
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-07T09:01:34Z
+
+This works as-is, ready for review.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-12T09:56:05Z
+
+Yay, all green! \o/
+
+@sstok do you think you'd have time to review?
+
+---------------------------------------------------------------------------
+
+by sstok at 2018-12-12T11:24:51Z
+
+Looks good to me, are you going to continue in this pull request or in a follow-up?
+And some tests would be nice 😊
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-12T12:00:35Z
+
+> are you going to continue in this pull request or in a follow-up?
+
+Not really much to follow-up except #252, but I think that's fine as a separate PR, since it would require some discussion.
+
+>  some tests would be nice
+
+Adding now. :+1:
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-12T12:25:40Z
+
+This is why reviews are a thing. :see_no_evil:
+
+I was sure I added the whole missing part of functionality in another PR before so "it's OK tests are missing here, they're already `$there`". But **there is no other PR**, just a different checkout with a whole set of changes which weren't pushed.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-12T14:21:02Z
+
+@sstok it should be ready now, tests added from the other branch and it all works here and in my app.
+
+---------------------------------------------------------------------------
+
+by sstok at 2018-12-12T14:51:09Z
+
+Can I merge? 👍
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-12T14:52:48Z
+
+Yup! \o/
+
+---------------------------------------------------------------------------
+
+by sstok at 2018-12-12T15:12:11Z
+
+Thank you @dkarlovi
