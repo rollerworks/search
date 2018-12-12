@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Elasticsearch;
 
 use Psr\SimpleCache\CacheInterface as Cache;
+use Rollerworks\Component\Search\ParameterBag;
 use Rollerworks\Component\Search\SearchCondition;
 
 class ElasticsearchFactory
@@ -23,9 +24,15 @@ class ElasticsearchFactory
      */
     private $cacheDriver;
 
-    public function __construct(?Cache $cacheDriver = null)
+    /**
+     * @var null|ParameterBag
+     */
+    private $parameterBag;
+
+    public function __construct(?Cache $cacheDriver = null, ?ParameterBag $parameterBag = null)
     {
         $this->cacheDriver = $cacheDriver;
+        $this->parameterBag = $parameterBag;
     }
 
     /**
@@ -37,7 +44,7 @@ class ElasticsearchFactory
      */
     public function createConditionGenerator(SearchCondition $searchCondition): ConditionGenerator
     {
-        return new QueryConditionGenerator($searchCondition);
+        return new QueryConditionGenerator($searchCondition, $this->parameterBag);
     }
 
     /**

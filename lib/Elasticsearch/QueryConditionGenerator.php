@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Elasticsearch;
 
 use Elastica\Query;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\ParameterBag;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
@@ -69,15 +70,20 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     /** @var FieldMapping[] $mapping */
     private $mappings;
 
-    public function __construct(SearchCondition $searchCondition)
+    /** @var null|ParameterBag */
+    private $parameterBag;
+
+    public function __construct(SearchCondition $searchCondition, ParameterBag $parameterBag = null)
     {
         $this->searchCondition = $searchCondition;
+        $this->parameterBag = $parameterBag;
+
         $this->fieldSet = $searchCondition->getFieldSet();
     }
 
-    public function registerField(string $fieldName, string $mapping)
+    public function registerField(string $fieldName, string $property, array $conditions = [])
     {
-        $this->mappings[$fieldName] = new FieldMapping($fieldName, $mapping, $this->fieldSet->get($fieldName));
+        $this->mappings[$fieldName] = new FieldMapping($fieldName, $this->injectParameters($property), $this->fieldSet->get($fieldName));
     }
 
     public function getQuery(): Query
@@ -426,5 +432,18 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         }
 
         return $query;
+    }
+
+    private function injectParameters($template)
+    {
+        if (null === $this->parameterBag) {
+            return $template;
+        }
+
+        if (\is_array($template)) {
+            return array_map([$this->parameterBag, 'injectParameters'], $template);
+        }
+
+        return $this->parameterBag->injectParameters($template);
     }
 }
