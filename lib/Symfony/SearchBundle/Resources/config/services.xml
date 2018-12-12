@@ -54,5 +54,8 @@
         <service id="rollerworks_search.cache.adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter">
             <argument>0</argument> <!-- default lifetime -->
         </service>
+
+        <!-- ParameterBag -->
+        <service alias="rollerworks_search.parameter_bag" id="Rollerworks\Component\Search\ParameterBag"/>
     </services>
 </container>
