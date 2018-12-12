@@ -22,6 +22,7 @@ final class FieldMapping implements \Serializable
     public $indexName;
     public $typeName;
     public $propertyName;
+    public $propertyValue;
     public $nested = false;
     public $join = false;
     public $boost;
@@ -37,9 +38,15 @@ final class FieldMapping implements \Serializable
      */
     public $queryConversion;
 
-    public function __construct(string $fieldName, string $property, FieldConfig $fieldConfig)
+    /**
+     * @var self[]
+     */
+    public $conditions;
+
+    public function __construct(string $fieldName, string $property, FieldConfig $fieldConfig, array $conditions = [])
     {
         $this->fieldName = $fieldName;
+        $this->conditions = $conditions;
 
         $mapping = $this->parseProperty($property);
         $this->indexName = $mapping['indexName'];

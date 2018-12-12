@@ -56,6 +56,7 @@
         </service>
 
         <!-- ParameterBag -->
-        <service alias="rollerworks_search.parameter_bag" id="Rollerworks\Component\Search\ParameterBag"/>
+        <service id="Rollerworks\Component\Search\ParameterBag"/>
+        <service id="rollerworks_search.parameter_bag" alias="Rollerworks\Component\Search\ParameterBag"/>
     </services>
 </container>

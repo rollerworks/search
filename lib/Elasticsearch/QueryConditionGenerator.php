@@ -32,6 +32,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     public const QUERY_BOOL = 'bool';
     public const QUERY_IDS = 'ids';
     public const QUERY_NESTED = 'nested';
+    public const QUERY_TYPE = 'type';
+    public const QUERY_PATH = 'path';
     public const QUERY_HAS_CHILD = 'has_child';
     public const QUERY_MATCH = 'match';
     public const QUERY_PREFIX = 'prefix';
@@ -83,7 +85,15 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
     public function registerField(string $fieldName, string $property, array $conditions = [])
     {
-        $this->mappings[$fieldName] = new FieldMapping($fieldName, $this->injectParameters($property), $this->fieldSet->get($fieldName));
+        $conditionMappings = [];
+        foreach ($conditions as $condition => $value) {
+            $conditionMapping = new FieldMapping($fieldName, $this->injectParameters($condition), $this->fieldSet->get($fieldName));
+            $conditionMapping->propertyValue = $this->injectParameters($value);
+
+            $conditionMappings[] = $conditionMapping;
+        }
+
+        $this->mappings[$fieldName] = new FieldMapping($fieldName, $this->injectParameters($property), $this->fieldSet->get($fieldName), $conditionMappings);
     }
 
     public function getQuery(): Query
@@ -209,16 +219,24 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 return $this->convertValue($value, $valueConverter);
             };
 
+            $conditions = [];
+            if ([] !== $mapping->conditions) {
+                foreach ($mapping->conditions as $mappingCondition) {
+                    $values = array_map($callback, array_values((array) $mappingCondition->propertyValue), [$valueConverter]);
+                    $conditions[] = $this->prepareQuery($mappingCondition->propertyName, $values, $hints, $mappingCondition->queryConversion, $mappingCondition->nested, $mappingCondition->join);
+                }
+            }
+
             // simple values
             if ($valuesBag->hasSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$valueConverter]);
                 $hints->context = QueryPreparationHints::CONTEXT_SIMPLE_VALUES;
-                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested, $join);
+                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested, $join, $conditions);
             }
             if ($valuesBag->hasExcludedSimpleValues()) {
                 $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$valueConverter]);
                 $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
-                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested, $join);
+                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested, $join, $conditions);
             }
 
             // ranges
@@ -227,7 +245,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 foreach ($valuesBag->get(Range::class) as $range) {
                     $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_RANGE_VALUES;
-                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join);
+                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions);
                 }
             }
             if ($valuesBag->has(ExcludedRange::class)) {
@@ -235,7 +253,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
                     $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES;
-                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join);
+                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions);
                 }
             }
 
@@ -246,7 +264,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $compare = $this->convertCompareValue($compare, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_COMPARISON;
                     $localIncludingType = self::COMPARISON_UNEQUAL === $compare->getOperator() ? self::CONDITION_NOT : $includingType;
-                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested, $join);
+                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested, $join, $conditions);
                 }
             }
 
@@ -257,7 +275,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $patternMatch = $this->convertMatcherValue($patternMatch, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_PATTERN_MATCH;
                     $localIncludingType = $patternMatch->isExclusive() ? self::CONDITION_NOT : $includingType;
-                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $patternMatch, $hints, $queryConverter, $nested, $join);
+                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $patternMatch, $hints, $queryConverter, $nested, $join, $conditions);
                 }
             }
         }
@@ -319,11 +337,17 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @param mixed      $value
-     * @param array|bool $nested
-     * @param array|bool $join
+     * @param string                $propertyName
+     * @param mixed                 $value
+     * @param QueryPreparationHints $hints
+     * @param QueryConversion|null  $converter
+     * @param array|bool            $nested
+     * @param array|bool            $join
+     * @param array                 $conditions
+     *
+     * @return array
      */
-    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested, $join): array
+    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested, $join, array $conditions = []): array
     {
         if (null === $converter || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
             switch ($hints->context) {
@@ -377,7 +401,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
         if ($nested) {
             while (false !== $nested) {
-                $path = $nested['path'];
+                $path = $nested[self::QUERY_PATH];
                 $query = [
                     self::QUERY_NESTED => compact('path', 'query'),
                 ];
@@ -387,7 +411,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
         if ($join) {
             while (false !== $join) {
-                $type = $join['type'];
+                $type = $join[self::QUERY_TYPE];
                 $query = [
                     self::QUERY_HAS_CHILD => compact('type', 'query'),
                 ];
@@ -395,7 +419,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             }
         }
 
-        return $query ?? [];
+        return $this->injectConditions($query, $conditions);
     }
 
     private function preparePatternMatch(string $propertyName, PatternMatch $patternMatch): array
@@ -445,5 +469,48 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         }
 
         return $this->parameterBag->injectParameters($template);
+    }
+
+    private function injectConditions(array $query, array $conditions): array
+    {
+        if ([] !== $conditions) {
+            $hasChild = null;
+
+            if (isset($query[self::QUERY_HAS_CHILD])) {
+                // wrap has_child.query into a bool.must to prepare for accepting conditions
+                $query[self::QUERY_HAS_CHILD][self::QUERY] = [
+                    self::QUERY_BOOL => [
+                        self::CONDITION_AND => [
+                            $query[self::QUERY_HAS_CHILD][self::QUERY],
+                        ],
+                    ],
+                ];
+                $hasChild = $query[self::QUERY_HAS_CHILD][self::QUERY_TYPE];
+                $nestedBool = &$query[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL][self::CONDITION_AND];
+            }
+
+            $query = [
+                self::QUERY_BOOL => [
+                    self::CONDITION_AND => [
+                        $query,
+                    ],
+                ],
+            ];
+            $rootBool = &$query[self::QUERY_BOOL][self::CONDITION_AND];
+
+            foreach ($conditions as $condition) {
+                if (isset($condition[self::QUERY_HAS_CHILD])) {
+                    if ($hasChild === $condition[self::QUERY_HAS_CHILD][self::QUERY_TYPE]) {
+                        $nestedBool[] = $condition[self::QUERY_HAS_CHILD][self::QUERY];
+                    } else {
+                        $rootBool[] = $condition;
+                    }
+                } else {
+                    $rootBool[] = $condition;
+                }
+            }
+        }
+
+        return $query ?? [];
     }
 }

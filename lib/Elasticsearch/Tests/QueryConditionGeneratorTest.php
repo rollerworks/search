@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 use Rollerworks\Component\Search\Elasticsearch\FieldMapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\ParameterBag;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
@@ -577,6 +578,132 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         self::assertMapping(['name'], $generator->getMappings());
     }
 
+    /** @test */
+    public function it_adds_contextual_params()
+    {
+        $condition = $this
+            ->createCondition()
+                ->field('name')
+                    ->addSimpleValue('foo')
+                    ->addSimpleValue('bar')
+                ->end()
+            ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition, new ParameterBag(['locale' => 'en', 'territory' => 'US']));
+        $generator->registerField('name', '/articles_{locale}/territory_{territory}#child>name');
+
+        self::assertEquals(
+            [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'has_child' => [
+                                    'type' => 'child',
+                                    'query' => [
+                                        'terms' => [
+                                            'name' => [
+                                                'foo',
+                                                'bar',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $generator->getQuery()->toArray()
+        );
+
+        self::assertSearch(['/articles_en/territory_US'], $generator->getMappings());
+        self::assertMapping(['name'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_adds_contextual_conditions_for_has_child_query()
+    {
+        $condition = $this
+            ->createCondition()
+                ->field('name')
+                    ->addSimpleValue('foo')
+                    ->addSimpleValue('bar')
+                ->end()
+            ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition, new ParameterBag(['locale' => 'en', 'user' => 123]));
+        $generator->registerField(
+            'name',
+            '/articles_{locale}#child>name',
+            [
+                // these are only applied if the original field is used
+                'child>user' => '{user}',
+                'another_child>user' => '{user}_{locale}',
+                'abc' => ['{user}', 345],
+            ]
+        );
+
+        self::assertEquals(
+            [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'bool' => [
+                                    'must' => [
+                                        ['has_child' => [
+                                            'type' => 'child',
+                                            'query' => [
+                                                'bool' => [
+                                                    'must' => [
+                                                        [
+                                                            'terms' => [
+                                                                'name' => [
+                                                                    'foo',
+                                                                    'bar',
+                                                                ],
+                                                            ],
+                                                        ],
+                                                        [
+                                                            'terms' => [
+                                                                'user' => [123],
+                                                            ],
+                                                        ],
+                                                    ],
+                                                ],
+                                            ],
+                                        ]],
+                                        ['has_child' => [
+                                            'type' => 'another_child',
+                                            'query' => [
+                                                'terms' => [
+                                                    'user' => ['123_en'],
+                                                ],
+                                            ],
+                                        ]],
+                                        [
+                                            'terms' => [
+                                                'abc' => [
+                                                    '123',
+                                                    '345',
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $generator->getQuery()->toArray()
+        );
+
+        self::assertSearch(['/articles_en'], $generator->getMappings());
+        self::assertMapping(['name'], $generator->getMappings());
+    }
+
     /**
      * @return SearchConditionBuilder
      */
@@ -586,6 +713,32 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         $fieldSet = $this->getFieldSet();
 
         return SearchConditionBuilder::create($fieldSet);
+    }
+
+    /**
+     * @param string[]       $expected
+     * @param FieldMapping[] $mappings
+     */
+    private static function assertSearch(array $expected, array $mappings)
+    {
+        $actual = [];
+        foreach ($mappings as $mapping) {
+            $search = null;
+            if ($mapping->indexName) {
+                $search = '/'.$mapping->indexName;
+
+                if ($mapping->typeName) {
+                    $search .= '/'.$mapping->typeName;
+                }
+            }
+
+            $actual[] = $search;
+        }
+
+        sort($expected);
+        sort($actual);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**

@@ -72,7 +72,19 @@ class SearchExtension implements QueryCollectionExtensionInterface
         );
 
         foreach ($configuration['mappings'] as $fieldName => $mapping) {
-            $conditionGenerator->registerField($fieldName, $mapping);
+            $conditions = [];
+            if (\is_array($mapping)) {
+                ArrayKeysValidator::assertOnlyKeys($mapping, ['property', 'conditions'], $configPath.'['.$fieldName.']');
+
+                foreach ($mapping['conditions'] as $idx => $conditionMapping) {
+                    ArrayKeysValidator::assertOnlyKeys($conditionMapping, ['property', 'value'], $configPath.'['.$fieldName.'][conditions]['.$idx.']');
+
+                    $conditions[$conditionMapping['property']] = $conditionMapping['value'];
+                }
+                $mapping = $mapping['property'];
+            }
+
+            $conditionGenerator->registerField($fieldName, $mapping, $conditions);
         }
 
         $normalizer = null;
