@@ -13,9 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Serializer;
 
-use ApiPlatform\Core\Api\UrlGeneratorInterface;
+use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Converts {@see \Rollerworks\Component\Search\Exception\InvalidSearchConditionException}
@@ -27,53 +31,80 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
 {
     public const FORMAT = 'jsonproblem';
 
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private $serializePayloadFields;
+    private $nameConverter;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(array $serializePayloadFields = null, NameConverterInterface $nameConverter = null)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->nameConverter = $nameConverter;
+        $this->serializePayloadFields = $serializePayloadFields;
     }
 
     /**
-     * Normalizes an object into a set of arrays/scalars.
-     *
-     * @param InvalidSearchConditionException $object  object to normalize
-     * @param string                          $format  format the normalization result will be encoded as
-     * @param array                           $context Context options for the normalizer
-     *
-     * @return array
+     * @inheritdoc
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        $violations = [];
-        $messages = [];
+        $list = new ConstraintViolationList();
 
+        /** @var ConditionErrorMessage $message */
         foreach ($object->getErrors() as $message) {
-            $violations[] = [
-                'propertyPath' => $message->path,
-                'message' => $message->message,
-            ];
-
-            $propertyPath = $message->path;
-            $prefix = $propertyPath ? sprintf('%s: ', $propertyPath) : '';
-
-            $messages[] = $prefix.$message->message;
+            $violation = new ConstraintViolation(
+                $message->message,
+                $message->messageTemplate,
+                $message->messageParameters,
+                null, // root
+                $message->path,
+                null, // invalidValue
+                $message->messagePluralization,
+                null, // code
+                null, // constraint
+                $message->cause
+            );
+            $list->add($violation);
         }
 
+        list($messages, $violations) = $this->getMessagesAndViolations($list);
+
         return [
-            '@context' => $this->urlGenerator->generate('api_jsonld_context', ['shortName' => 'ConstraintViolationList']),
-            '@type' => 'ConstraintViolationList',
-            'hydra:title' => $context['title'] ?? 'An error occurred',
-            'hydra:description' => $messages ? implode("\n", $messages) : (string) $object,
+            'type' => $context['type'] ?? 'https://tools.ietf.org/html/rfc2616#section-10',
+            'title' => $context['title'] ?? 'An error occurred',
+            'detail' => $messages ? implode("\n", $messages) : (string) $object,
             'violations' => $violations,
         ];
     }
 
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, $format = null): bool
     {
         return self::FORMAT === $format && $data instanceof InvalidSearchConditionException;
+    }
+
+    /**
+     * @author Kévin Dunglas <dunglas@gmail.com>
+     *
+     * @see https://github.com/api-platform/core
+     */
+    private function getMessagesAndViolations(ConstraintViolationListInterface $constraintViolationList): array
+    {
+        $violations = $messages = [];
+
+        foreach ($constraintViolationList as $violation) {
+            $violationData = [
+                'propertyPath' => $this->nameConverter ? $this->nameConverter->normalize($violation->getPropertyPath()) : $violation->getPropertyPath(),
+                'message' => $violation->getMessage(),
+            ];
+
+            $constraint = $violation->getConstraint();
+            if ($this->serializePayloadFields && $constraint && $constraint->payload) {
+                // If some fields are whitelisted, only them are added
+                $payloadFields = null === $this->serializePayloadFields ? $constraint->payload : array_intersect_key($constraint->payload, array_flip($this->serializePayloadFields));
+                $payloadFields && $violationData['payload'] = $payloadFields;
+            }
+
+            $violations[] = $violationData;
+            $messages[] = ($violationData['propertyPath'] ? "{$violationData['propertyPath']}: " : '').$violationData['message'];
+        }
+
+        return [$messages, $violations];
     }
 }
