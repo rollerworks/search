@@ -20,7 +20,8 @@ abstract class FunctionalTestCase extends WebTestCase
     protected static function createKernel(array $options = [])
     {
         return new Application\AppKernel(
-            $options['config'] ?? 'default.yml'
+            $options['config'] ?? 'default.yml',
+            false
         );
     }
 

@@ -4,6 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter on-invalid="null" type="collection" key="api_platform.validator.serialize_payload_fields"/>
+    </parameters>
+
     <services>
         <defaults public="false" />
 
@@ -26,7 +30,8 @@
         <!-- InvalidSearchConditionException handling -->
 
         <service id="rollerworks_search.api_platform.hydra.normalizer.invalid_search_condition" class="Rollerworks\Component\Search\ApiPlatform\Serializer\InvalidSearchConditionNormalizer">
-            <argument type="service" id="api_platform.router" />
+            <argument on-invalid="null">%api_platform.validator.serialize_payload_fields%</argument>
+            <argument type="service" id="api_platform.name_converter" on-invalid="ignore" />
 
             <tag name="serializer.normalizer" priority="64" />
         </service>
