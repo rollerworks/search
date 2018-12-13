@@ -1,0 +1,18 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-13T12:55:57Z
+
+@sstok do you have any idea why this would fail? It thinks only `application/json` is available.
+https://travis-ci.org/rollerworks/search/jobs/467469661#L869
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2018-12-13T14:11:04Z
+
+@sstok ready for review, maybe even a new alpha tagged?
+
+---------------------------------------------------------------------------
+
+by sstok at 2018-12-13T18:01:04Z
+
+Thank you @dkarlovi
