@@ -76,7 +76,7 @@ final class ApiPlatformTest extends FunctionalTestCase
         self::assertEquals('[]', $client->getResponse()->getContent());
     }
 
-    public function testInvalidConditionHasErrors()
+    public function testInvalidConditionHasErrorsInJsonFormat()
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
         $client->request(
@@ -89,7 +89,25 @@ final class ApiPlatformTest extends FunctionalTestCase
         self::assertEquals('/books.json?search=id%3A+He%3B', $client->getRequest()->getRequestUri());
         self::assertNull($client->getRequest()->attributes->get('_api_search_condition'));
         self::assertJsonStringEqualsJsonString(
-            '{"@context":"\/contexts\/ConstraintViolationList","@type":"ConstraintViolationList","hydra:title":"An error occurred","hydra:description":"[id][0]: This value is not valid.","violations":[{"propertyPath":"[id][0]","message":"This value is not valid."}]}',
+            '{"type":"https://tools.ietf.org/html/rfc2616#section-10","title":"An error occurred","detail":"[id][0]: This value is not valid.","violations":[{"propertyPath":"[id][0]","message":"This value is not valid."}]}',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testInvalidConditionHasErrorsInJsonldFormat()
+    {
+        $client = self::newClient(['config' => 'api_platform.yml']);
+        $client->request(
+            'GET',
+            '/books.jsonld',
+            ['search' => 'id: He;']
+        );
+
+        self::assertFalse($client->getResponse()->isRedirection());
+        self::assertEquals('/books.jsonld?search=id%3A+He%3B', $client->getRequest()->getRequestUri());
+        self::assertNull($client->getRequest()->attributes->get('_api_search_condition'));
+        self::assertJsonStringEqualsJsonString(
+            '{"@context":"\/contexts\/Error","@type":"hydra:Error","hydra:title":"An error occurred","hydra:description":"The search-condition contains one or more errors."}',
             $client->getResponse()->getContent()
         );
     }

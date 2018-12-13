@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Tests;
 
-use ApiPlatform\Core\Api\UrlGeneratorInterface;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\ApiPlatform\Serializer\InvalidSearchConditionNormalizer;
 use Rollerworks\Component\Search\ConditionErrorMessage;
@@ -26,9 +25,7 @@ class InvalidSearchConditionNormalizerTest extends TestCase
 {
     public function testSupportNormalization()
     {
-        $urlGeneratorProphecy = $this->prophesize(UrlGeneratorInterface::class);
-
-        $normalizer = new InvalidSearchConditionNormalizer($urlGeneratorProphecy->reveal());
+        $normalizer = new InvalidSearchConditionNormalizer();
 
         self::assertTrue($normalizer->supportsNormalization(new InvalidSearchConditionException([]), InvalidSearchConditionNormalizer::FORMAT));
         self::assertFalse($normalizer->supportsNormalization(new InvalidSearchConditionException([]), 'xml'));
@@ -37,10 +34,7 @@ class InvalidSearchConditionNormalizerTest extends TestCase
 
     public function testNormalize()
     {
-        $urlGeneratorProphecy = $this->prophesize(UrlGeneratorInterface::class);
-        $urlGeneratorProphecy->generate('api_jsonld_context', ['shortName' => 'ConstraintViolationList'])->willReturn('/context/foo')->shouldBeCalled();
-
-        $normalizer = new InvalidSearchConditionNormalizer($urlGeneratorProphecy->reveal());
+        $normalizer = new InvalidSearchConditionNormalizer();
 
         $list = new InvalidSearchConditionException([
             new ConditionErrorMessage('a', 'b'),
@@ -48,11 +42,9 @@ class InvalidSearchConditionNormalizerTest extends TestCase
         ]);
 
         $expected = [
-            '@context' => '/context/foo',
-            '@type' => 'ConstraintViolationList',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'a: b
-2',
+            'type' => 'https://tools.ietf.org/html/rfc2616#section-10',
+            'title' => 'An error occurred',
+            'detail' => "a: b\n2",
             'violations' => [
                     [
                         'propertyPath' => 'a',
