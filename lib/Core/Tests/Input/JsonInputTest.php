@@ -86,6 +86,12 @@ final class JsonInputTest extends InputProcessorTestCase
                 ),
                 ['@date' => 'DESC', '@id' => 'ASC'],
             ],
+            [
+                json_encode(
+                    []
+                ),
+                ['@date' => 'DESC', '@id' => 'ASC'],
+            ],
         ];
     }
 

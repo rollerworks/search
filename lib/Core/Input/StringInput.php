@@ -175,10 +175,6 @@ abstract class StringInput extends AbstractInput
         $input = trim($input);
 
         $fieldSet = $config->getFieldSet();
-        if ('' === $input) {
-            return new SearchCondition($fieldSet, new ValuesGroup());
-        }
-
         $condition = null;
         $this->valueLexers = [];
         $this->errors = new ErrorList();

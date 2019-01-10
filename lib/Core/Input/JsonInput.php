@@ -109,10 +109,6 @@ final class JsonInput extends AbstractInput
             ]);
         }
 
-        if (0 === \count($array)) {
-            return new SearchCondition($fieldSet, new ValuesGroup());
-        }
-
         $condition = null;
         $this->errors = new ErrorList();
         $this->config = $config;

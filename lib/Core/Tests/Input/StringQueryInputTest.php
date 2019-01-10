@@ -322,6 +322,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
             ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3; @date: uP', ['@date' => 'ASC']],
             ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3; @date: Up', ['@date' => 'ASC']],
             ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3;', ['@date' => 'DESC', '@id' => 'ASC']],
+            ['', ['@date' => 'DESC', '@id' => 'ASC']],
         ];
     }
 

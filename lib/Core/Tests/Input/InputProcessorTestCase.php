@@ -115,14 +115,16 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
         $expectedGroup = new ValuesGroup();
 
-        $values = new ValuesBag();
-        $values->addSimpleValue('value');
-        $values->addSimpleValue('value2');
-        $values->addSimpleValue('٤٤٤٦٥٤٦٠٠'); // number in Arab
-        $values->addSimpleValue('30');
-        $values->addSimpleValue('30L');
-        $values->addExcludedSimpleValue('value3');
-        $expectedGroup->addField('name', $values);
+        if (!\in_array($input, ['', '[]'], true)) {
+            $values = new ValuesBag();
+            $values->addSimpleValue('value');
+            $values->addSimpleValue('value2');
+            $values->addSimpleValue('٤٤٤٦٥٤٦٠٠'); // number in Arab
+            $values->addSimpleValue('30');
+            $values->addSimpleValue('30L');
+            $values->addExcludedSimpleValue('value3');
+            $expectedGroup->addField('name', $values);
+        }
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
 
