@@ -67,10 +67,11 @@ interface ConditionGenerator
      * @param string $fieldName  Field set name
      * @param string $mapping    Elasticsearch property mapping
      * @param array  $conditions Additional conditions to apply if this mapping is used
+     * @param array  $options    Additional options to send directly to Elasticsearch
      *
      * @return static
      */
-    public function registerField(string $fieldName, string $mapping, array $conditions = []);
+    public function registerField(string $fieldName, string $mapping, array $conditions = [], array $options = []);
 
     /**
      * Return a valid Elastica\Query search query. Query can be sent to a _search endpoint as is.

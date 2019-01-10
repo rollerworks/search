@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Elasticsearch;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\OrderField;
 
 /** @internal */
 final class FieldMapping implements \Serializable
@@ -23,10 +24,10 @@ final class FieldMapping implements \Serializable
     public $typeName;
     public $propertyName;
     public $propertyValue;
+    public $propertyQuery;
     public $nested = false;
     public $join = false;
     public $boost;
-    public $options; // special options (reserved)
 
     /**
      * @var ValueConversion
@@ -43,10 +44,14 @@ final class FieldMapping implements \Serializable
      */
     public $conditions;
 
-    public function __construct(string $fieldName, string $property, FieldConfig $fieldConfig, array $conditions = [])
+    /**
+     * @var array
+     */
+    public $options;
+
+    public function __construct(string $fieldName, string $property, FieldConfig $fieldConfig, array $conditions = [], array $options = [])
     {
         $this->fieldName = $fieldName;
-        $this->conditions = $conditions;
 
         $mapping = $this->parseProperty($property);
         $this->indexName = $mapping['indexName'];
@@ -54,6 +59,9 @@ final class FieldMapping implements \Serializable
         $this->propertyName = $mapping['propertyName'];
         $this->nested = $mapping['nested'];
         $this->join = $mapping['join'];
+
+        $this->conditions = $this->expandConditions($conditions, $fieldConfig);
+        $this->options = $options;
 
         $converter = $fieldConfig->getOption('elasticsearch_conversion');
 
@@ -123,6 +131,27 @@ final class FieldMapping implements \Serializable
         }
 
         return compact('indexName', 'typeName', 'propertyName', 'nested', 'join');
+    }
+
+    private function expandConditions(array $conditions, FieldConfig $fieldConfig): array
+    {
+        if (OrderField::isOrder($this->fieldName) && $this->join) {
+            // sorting by has_child query is special
+            // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html#_sorting
+            $property = $this->indexName.($this->typeName ? '/'.$this->typeName : '').'#'.$this->join['type'].'>';
+
+            $scoreQuery = new self('_', $property, $fieldConfig, [], ['score_mode' => 'max']);
+            $scoreQuery->propertyQuery = [
+                QueryConditionGenerator::QUERY_FUNCTION_SCORE => [
+                    QueryConditionGenerator::QUERY_SCRIPT_SCORE => [
+                        QueryConditionGenerator::QUERY_SCRIPT => sprintf('%1$s * doc["%2$s"].value', QueryConditionGenerator::SORT_SCORE, $this->propertyName),
+                    ],
+                ],
+            ];
+            $conditions[] = $scoreQuery;
+        }
+
+        return $conditions;
     }
 
     public function serialize()

@@ -17,6 +17,7 @@ use Elastica\Query;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\ParameterBag;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -28,6 +29,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     private const PROPERTY_ID = '_id';
 
     // Elasticsearch general query elements
+    public const SORT = 'sort';
+    public const SORT_ORDER = 'order';
+    public const SORT_SCORE = '_score';
     public const QUERY = 'query';
     public const QUERY_BOOL = 'bool';
     public const QUERY_IDS = 'ids';
@@ -43,6 +47,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     public const QUERY_TERMS = 'terms';
     public const QUERY_VALUE = 'value';
     public const QUERY_VALUES = 'values';
+    public const QUERY_FUNCTION_SCORE = 'function_score';
+    public const QUERY_SCRIPT_SCORE = 'script_score';
+    public const QUERY_SCRIPT = 'script';
 
     // Elasticsearch boolean operators
     public const CONDITION_NOT = 'must_not';
@@ -83,41 +90,48 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         $this->fieldSet = $searchCondition->getFieldSet();
     }
 
-    public function registerField(string $fieldName, string $property, array $conditions = [])
+    public function registerField(string $fieldName, string $property, array $conditions = [], array $options = [])
     {
         $conditionMappings = [];
         foreach ($conditions as $condition => $value) {
-            $conditionMapping = new FieldMapping($fieldName, $this->injectParameters($condition), $this->fieldSet->get($fieldName));
+            $conditionMapping = new FieldMapping($fieldName, $this->injectParameters($condition), $this->fieldSet->get($fieldName), [], $options);
             $conditionMapping->propertyValue = $this->injectParameters($value);
 
             $conditionMappings[] = $conditionMapping;
         }
 
-        $this->mappings[$fieldName] = new FieldMapping($fieldName, $this->injectParameters($property), $this->fieldSet->get($fieldName), $conditionMappings);
+        $this->mappings[$fieldName] = new FieldMapping($fieldName, $this->injectParameters($property), $this->fieldSet->get($fieldName), $conditionMappings, $options);
     }
 
     public function getQuery(): Query
     {
+        $primaryConditionGroupCondition = [];
+        $orderCondition = [];
+        $orderClause = [];
+
         $rootGroupCondition = $this->processGroup($this->searchCondition->getValuesGroup());
+
+        $this->processOrder($this->searchCondition->getOrder(), $orderClause, $orderCondition);
 
         if (null !== ($primaryCondition = $this->searchCondition->getPrimaryCondition())) {
             $primaryConditionGroupCondition = $this->processGroup($primaryCondition->getValuesGroup());
 
-            if ($rootGroupCondition) {
-                $rootGroupCondition = [
-                    self::QUERY_BOOL => [
-                        self::CONDITION_AND => [
-                            $primaryConditionGroupCondition,
-                            $rootGroupCondition,
-                        ],
-                    ],
-                ];
-            } else {
-                $rootGroupCondition = $primaryConditionGroupCondition;
-            }
+            $this->processOrder($primaryCondition->getOrder(), $orderClause, $orderCondition);
         }
 
-        return new Query([self::QUERY => $rootGroupCondition]);
+        $rootGroupCondition = array_values(array_filter([
+            $primaryConditionGroupCondition,
+            $rootGroupCondition,
+            $orderCondition,
+        ]));
+
+        if (\count($rootGroupCondition) > 1) {
+            $rootGroupCondition = [self::QUERY_BOOL => [self::CONDITION_AND => $rootGroupCondition]];
+        } else {
+            $rootGroupCondition = current($rootGroupCondition);
+        }
+
+        return new Query(array_filter([self::QUERY => $rootGroupCondition, self::SORT => $orderClause]));
     }
 
     public function getMappings(): array
@@ -131,7 +145,17 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             $this->extractMappings($primaryCondition->getValuesGroup(), $mappings);
         }
 
-        return $mappings;
+        if ([] === $mappings) {
+            if (null !== $searchOrder = $this->searchCondition->getOrder()) {
+                $this->extractMappings($searchOrder->getValuesGroup(), $mappings);
+            }
+
+            if (null !== $primaryCondition && null !== $primarySearchOrder = $primaryCondition->getOrder()) {
+                $this->extractMappings($primarySearchOrder->getValuesGroup(), $mappings);
+            }
+        }
+
+        return array_values($mappings);
     }
 
     public function getSearchCondition(): SearchCondition
@@ -167,8 +191,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         foreach ($group->getGroups() as $subGroup) {
             $mappings = \array_merge($mappings, $this->getGroupMappings($subGroup));
         }
-
-        $mappings = array_values($mappings);
     }
 
     private function getGroupMappings(ValuesGroup $group): array
@@ -213,47 +235,55 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             $queryConverter = $mapping->queryConversion;
             $nested = $mapping->nested;
             $join = $mapping->join;
+            $options = $mapping->options;
 
             $hints->identifier = (self::PROPERTY_ID === $propertyName);
-            $callback = function ($value) use ($valueConverter) {
-                return $this->convertValue($value, $valueConverter);
-            };
 
-            $conditions = [];
-            if ([] !== $mapping->conditions) {
-                foreach ($mapping->conditions as $mappingCondition) {
-                    $values = array_map($callback, array_values((array) $mappingCondition->propertyValue), [$valueConverter]);
-                    $conditions[] = $this->prepareQuery($mappingCondition->propertyName, $values, $hints, $mappingCondition->queryConversion, $mappingCondition->nested, $mappingCondition->join);
-                }
-            }
+            $conditions = $this->processMappingConditions($mapping, $hints);
 
             // simple values
             if ($valuesBag->hasSimpleValues()) {
-                $values = array_map($callback, array_values($valuesBag->getSimpleValues()), [$valueConverter]);
                 $hints->context = QueryPreparationHints::CONTEXT_SIMPLE_VALUES;
-                $bool[$includingType][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested, $join, $conditions);
+                $this->mergeQuery($bool, $includingType, $this->prepareProcessedValuesQuery(
+                    $propertyName,
+                    $valuesBag->getSimpleValues(),
+                    $hints,
+                    $queryConverter,
+                    $valueConverter,
+                    $nested,
+                    $join,
+                    $conditions
+                ));
             }
             if ($valuesBag->hasExcludedSimpleValues()) {
-                $values = array_map($callback, array_values($valuesBag->getExcludedSimpleValues()), [$valueConverter]);
                 $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
-                $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $values, $hints, $queryConverter, $nested, $join, $conditions);
+                $this->mergeQuery($bool, self::CONDITION_NOT, $this->prepareProcessedValuesQuery(
+                    $propertyName,
+                    $valuesBag->getExcludedSimpleValues(),
+                    $hints,
+                    $queryConverter,
+                    $valueConverter,
+                    $nested,
+                    $join,
+                    $conditions
+                ));
             }
 
             // ranges
             if ($valuesBag->has(Range::class)) {
                 /** @var Range $range */
                 foreach ($valuesBag->get(Range::class) as $range) {
-                    $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_RANGE_VALUES;
-                    $bool[$includingType][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions);
+                    $range = $this->convertRangeValues($range, $valueConverter);
+                    $this->mergeQuery($bool, $includingType, $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions));
                 }
             }
             if ($valuesBag->has(ExcludedRange::class)) {
                 /** @var Range $range */
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
-                    $range = $this->convertRangeValues($range, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES;
-                    $bool[self::CONDITION_NOT][] = $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions);
+                    $range = $this->convertRangeValues($range, $valueConverter);
+                    $this->mergeQuery($bool, self::CONDITION_NOT, $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions));
                 }
             }
 
@@ -261,10 +291,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             if ($valuesBag->has(Compare::class)) {
                 /** @var Compare $compare */
                 foreach ($valuesBag->get(Compare::class) as $compare) {
-                    $compare = $this->convertCompareValue($compare, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_COMPARISON;
+                    $compare = $this->convertCompareValue($compare, $valueConverter);
                     $localIncludingType = self::COMPARISON_UNEQUAL === $compare->getOperator() ? self::CONDITION_NOT : $includingType;
-                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested, $join, $conditions);
+                    $this->mergeQuery($bool, $localIncludingType, $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested, $join, $conditions));
                 }
             }
 
@@ -275,7 +305,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $patternMatch = $this->convertMatcherValue($patternMatch, $valueConverter);
                     $hints->context = QueryPreparationHints::CONTEXT_PATTERN_MATCH;
                     $localIncludingType = $patternMatch->isExclusive() ? self::CONDITION_NOT : $includingType;
-                    $bool[$localIncludingType][] = $this->prepareQuery($propertyName, $patternMatch, $hints, $queryConverter, $nested, $join, $conditions);
+                    $this->mergeQuery($bool, $localIncludingType, $this->prepareQuery($propertyName, $patternMatch, $hints, $queryConverter, $nested, $join, $conditions));
                 }
             }
         }
@@ -293,6 +323,46 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         }
 
         return [self::QUERY_BOOL => $bool];
+    }
+
+    private function processOrder(?SearchOrder $order, array &$clause, array &$conditions): void
+    {
+        if (null === $order) {
+            return;
+        }
+
+        $orderGroup = $order->getValuesGroup();
+        $hints = new QueryPreparationHints();
+        $hints->context = QueryPreparationHints::CONTEXT_ORDER;
+        foreach ($orderGroup->getFields() as $fieldName => $valuesBag) {
+            $mapping = $this->mappings[$fieldName];
+
+            // apply conditions from order fields
+            $mappingConditions = $this->processMappingConditions($mapping, $hints);
+            if ($mappingConditions) {
+                if (!isset($conditions[self::QUERY_BOOL])) {
+                    $conditions[self::QUERY_BOOL] = [];
+                }
+
+                foreach ($mappingConditions as $mappingCondition) {
+                    $this->mergeQuery($conditions[self::QUERY_BOOL], self::CONDITION_AND, $mappingCondition);
+                }
+            }
+
+            // sorting by has_child query is special
+            // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html#_sorting
+            $propertyName = $mapping->join ? self::SORT_SCORE : $mapping->propertyName;
+
+            $clause = array_merge_recursive(
+                $clause,
+                $mapping->options,
+                [
+                    $propertyName => [
+                        self::SORT_ORDER => current($valuesBag->getSimpleValues()),
+                    ],
+                ]
+            );
+        }
     }
 
     /**
@@ -338,16 +408,43 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
     /**
      * @param string                $propertyName
+     * @param array                 $values
+     * @param QueryPreparationHints $hints
+     * @param null|QueryConversion  $queryConverter
+     * @param null|ValueConversion  $valueConverter
+     * @param array|bool            $nested
+     * @param array|bool            $join
+     * @param array                 $conditions
+     * @param array                 $options
+     *
+     * @return array
+     */
+    private function prepareProcessedValuesQuery(string $propertyName, array $values, QueryPreparationHints $hints, $queryConverter, $valueConverter, $nested, $join, array $conditions = [], array $options = []): array
+    {
+        $convertedValues = $values;
+        if ($hints->context !== QueryPreparationHints::CONTEXT_PRECONDITION_QUERY) {
+            $convertedValues = [];
+            foreach ($values as $value) {
+                $convertedValues[] = $this->convertValue($value, $valueConverter);
+            }
+        }
+
+        return $this->prepareQuery($propertyName, $convertedValues, $hints, $queryConverter, $nested, $join, $conditions, $options);
+    }
+
+    /**
+     * @param string                $propertyName
      * @param mixed                 $value
      * @param QueryPreparationHints $hints
      * @param QueryConversion|null  $converter
      * @param array|bool            $nested
      * @param array|bool            $join
      * @param array                 $conditions
+     * @param array                 $options
      *
      * @return array
      */
-    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested, $join, array $conditions = []): array
+    private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested, $join, array $conditions = [], array $options = []): array
     {
         if (null === $converter || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
             switch ($hints->context) {
@@ -387,6 +484,16 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $query = $this->preparePatternMatch($propertyName, $value);
                     break;
 
+                case QueryPreparationHints::CONTEXT_ORDER:
+                    $query = [
+                        self::QUERY_TERMS => [$propertyName => $value],
+                    ];
+                    break;
+
+                case QueryPreparationHints::CONTEXT_PRECONDITION_QUERY:
+                    $query = $value;
+                    break;
+
                 default:
                 case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
                 case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
@@ -403,7 +510,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             while (false !== $nested) {
                 $path = $nested[self::QUERY_PATH];
                 $query = [
-                    self::QUERY_NESTED => compact('path', 'query'),
+                    self::QUERY_NESTED => array_replace_recursive(compact('path', 'query'), $options),
                 ];
                 $nested = $nested['nested'];
             }
@@ -413,7 +520,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             while (false !== $join) {
                 $type = $join[self::QUERY_TYPE];
                 $query = [
-                    self::QUERY_HAS_CHILD => compact('type', 'query'),
+                    self::QUERY_HAS_CHILD => array_replace_recursive(compact('type', 'query'), $options),
                 ];
                 $join = $join['join'];
             }
@@ -486,7 +593,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     ],
                 ];
                 $hasChild = $query[self::QUERY_HAS_CHILD][self::QUERY_TYPE];
-                $nestedBool = &$query[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL][self::CONDITION_AND];
+                $nestedBool = &$query[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL];
             }
 
             $query = [
@@ -496,21 +603,92 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     ],
                 ],
             ];
-            $rootBool = &$query[self::QUERY_BOOL][self::CONDITION_AND];
+            $rootBool = &$query[self::QUERY_BOOL];
 
             foreach ($conditions as $condition) {
                 if (isset($condition[self::QUERY_HAS_CHILD])) {
                     if ($hasChild === $condition[self::QUERY_HAS_CHILD][self::QUERY_TYPE]) {
-                        $nestedBool[] = $condition[self::QUERY_HAS_CHILD][self::QUERY];
+                        $this->mergeQuery($nestedBool, self::CONDITION_AND, $condition[self::QUERY_HAS_CHILD][self::QUERY]);
                     } else {
-                        $rootBool[] = $condition;
+                        $this->mergeQuery($rootBool, self::CONDITION_AND, $condition);
                     }
                 } else {
-                    $rootBool[] = $condition;
+                    $this->mergeQuery($rootBool, self::CONDITION_AND, $condition);
                 }
             }
         }
 
         return $query ?? [];
+    }
+
+    /**
+     * @param FieldMapping          $mapping
+     * @param QueryPreparationHints $hints
+     *
+     * @return array
+     */
+    private function processMappingConditions(FieldMapping $mapping, QueryPreparationHints $hints): array
+    {
+        $conditions = [];
+        if ([] !== $mapping->conditions) {
+            foreach ($mapping->conditions as $mappingCondition) {
+                if ($mappingCondition->propertyQuery) {
+                    $hints->context = QueryPreparationHints::CONTEXT_PRECONDITION_QUERY;
+                    $values = $mappingCondition->propertyQuery;
+                } else {
+                    $hints->context = QueryPreparationHints::CONTEXT_PRECONDITION_VALUE;
+                    $values = (array) $mappingCondition->propertyValue;
+                }
+
+                $conditions[] = $this->prepareProcessedValuesQuery(
+                    $mappingCondition->propertyName,
+                    $values,
+                    $hints,
+                    $mappingCondition->queryConversion,
+                    $mappingCondition->valueConversion,
+                    $mappingCondition->nested,
+                    $mappingCondition->join,
+                    [],
+                    $mappingCondition->options
+                );
+            }
+        }
+
+        return $conditions;
+    }
+
+    private function mergeQuery(array &$bool, string $condition, array $query)
+    {
+        if (isset($query[self::QUERY_HAS_CHILD]) && isset($bool[$condition])) {
+            foreach ($bool[$condition] as &$previousQuery) {
+                if (isset($previousQuery[self::QUERY_HAS_CHILD])
+                    && $previousQuery[self::QUERY_HAS_CHILD][self::QUERY_TYPE] === $query[self::QUERY_HAS_CHILD][self::QUERY_TYPE]) {
+                    $previousQuery[self::QUERY_HAS_CHILD] = array_replace(
+                        $previousQuery[self::QUERY_HAS_CHILD],
+                        $query[self::QUERY_HAS_CHILD],
+                        [
+                            self::QUERY => $previousQuery[self::QUERY_HAS_CHILD][self::QUERY],
+                        ]
+                    );
+
+                    if (!isset($previousQuery[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL])) {
+                        $previousQuery[self::QUERY_HAS_CHILD][self::QUERY] = [
+                            self::QUERY_BOOL => [
+                                $condition => [
+                                    $previousQuery[self::QUERY_HAS_CHILD][self::QUERY],
+                                ],
+                            ],
+                        ];
+                    }
+
+                    $previousQuery[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL][$condition][] = $query[self::QUERY_HAS_CHILD][self::QUERY];
+
+                    return;
+                }
+            }
+            unset($previousQuery);
+        }
+
+        $bool[$condition][] = $query;
     }
 }

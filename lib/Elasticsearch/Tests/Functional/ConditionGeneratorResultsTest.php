@@ -202,6 +202,54 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
     }
 
     /**
+     * @test
+     */
+    public function it_sorts_by_total()
+    {
+        $this->makeTest('@total: ASC', [3, 6, 2, 4, 1, 5]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_sorts_by_total_desc()
+    {
+        $this->makeTest('@total: DESC', [5, 4, 1, 2, 6, 3]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_sorts_by_customer_name()
+    {
+        $this->makeTest('@customer-name: ASC', [5, 2, 4, 3, 1, 6]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_applies_conditional_conditions_from_order_mappings()
+    {
+        $this->makeTest('@customer-pubdate: ASC', [3, 2, 1, 4]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_sorts_by_has_child_query()
+    {
+        $this->makeTest('@customer-note-pubdate: ASC', [4, 3, 2, 1]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_sorts_by_has_child_query_desc()
+    {
+        $this->makeTest('@customer-note-pubdate: DESC', [1, 2, 3, 4]);
+    }
+
+    /**
      * @param string $input
      * @param array  $expectedRows
      */

@@ -26,6 +26,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Elasticsearch\ElasticsearchTestCase;
@@ -61,9 +62,9 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                     'type' => ['type' => 'join', 'relations' => ['customer' => 'note']],
                     'first_name' => ['type' => 'text'],
                     'last_name' => ['type' => 'text'],
-                    'full_name' => ['type' => 'text', 'boost' => 2, 'index' => 'not_analyzed'],
+                    'full_name' => ['type' => 'text', 'boost' => 2, 'fields' => ['keyword' => ['type' => 'keyword']]],
                     'birthday' => ['type' => 'date'],
-                    'reg_date' => ['type' => 'date'],
+                    'pubdate' => ['type' => 'date'],
                     'comment' => ['type' => 'text'],
                 ],
             'invoices' => [
@@ -71,7 +72,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                         'type' => 'object',
                         'properties' => [
                             'id' => ['type' => 'integer'],
-                            'full_name' => ['type' => 'text', 'index' => 'not_analyzed'],
+                            'full_name' => ['type' => 'text', 'fields' => ['keyword' => ['type' => 'keyword']]],
                             'birthday' => ['type' => 'date'],
                         ],
                     ],
@@ -107,13 +108,13 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 4 => ['customer', 'Spider', 'Pig', 'Spider Pig', '2005-12-10', '2012-07-20', null],
 
                 // notes about customers
-                5 => [['name' => 'note', 'parent' => 2], null, null, null, null, null, 'Leeroy Jenkins!'],
-                6 => [['name' => 'note', 'parent' => 3], null, null, null, null, null, 'Que?'],
-                7 => [['name' => 'note', 'parent' => 3], null, null, null, null, null, 'Who?'],
-                8 => [['name' => 'note', 'parent' => 4], null, null, null, null, null, 'Spider Pig, Spider Pig, Does Whatever A Spider Pig Does'],
-                9 => [['name' => 'note', 'parent' => 1], 'Larry', null, null, null, null, 'Specific comment'],
-                10 => [['name' => 'note', 'parent' => 2], 'Moe', null, null, null, null, 'Specific comment'],
-                11 => [['name' => 'note', 'parent' => 3], 'Curly', null, null, null, null, 'Specific comment'],
+                5 => [['name' => 'note', 'parent' => 2], null, null, null, null, '2010-11-10', 'Leeroy Jenkins!'],
+                6 => [['name' => 'note', 'parent' => 3], null, null, null, null, '2010-11-10', 'Que?'],
+                7 => [['name' => 'note', 'parent' => 3], null, null, null, null, '2010-11-13', 'Who?'],
+                8 => [['name' => 'note', 'parent' => 4], null, null, null, null, '2005-01-01', 'Spider Pig, Spider Pig, Does Whatever A Spider Pig Does'],
+                9 => [['name' => 'note', 'parent' => 1], 'Larry', null, null, null, '2018-12-31', 'Specific comment'],
+                10 => [['name' => 'note', 'parent' => 2], 'Moe', null, null, null, '2015-11-10', 'Specific comment'],
+                11 => [['name' => 'note', 'parent' => 3], 'Curly', null, null, null, '2013-11-10', 'Specific comment'],
             ],
             'invoices' => [
                 1 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2010-001', '2010-05-10', '2010-05-10T01:12:13+00:00', 2, 10000, [
@@ -205,18 +206,25 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $builder->add('customer-first-name', TextType::class);
         $builder->add('customer-last-name', TextType::class);
         $builder->add('customer-name', TextType::class);
+        $builder->add('@customer-name', OrderFieldType::class);
         $builder->add('customer-birthday', BirthdayType::class, ['pattern' => 'yyyy-MM-dd']);
+        $builder->add('@customer-birthday', OrderFieldType::class);
+        $builder->add('@customer-pubdate', OrderFieldType::class);
+        $builder->add('@customer-note-pubdate', OrderFieldType::class);
         $builder->add('customer-comment', TextType::class);
         $builder->add('customer-comment-restricted', TextType::class);
 
         // Invoice
         $builder->add('id', IntegerType::class);
+        $builder->add('@id', OrderFieldType::class, ['default' => 'ASC']);
         $builder->add('customer', IntegerType::class);
         $builder->add('label', TextType::class);
         $builder->add('pub-date', DateType::class, ['pattern' => 'yyyy-MM-dd']);
+        $builder->add('@pub-date', OrderFieldType::class);
         $builder->add('pub-date-time', DateTimeType::class, ['pattern' => 'yyyy-MM-dd HH:mm:ss']);
         $builder->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2]]);
         $builder->add('total', MoneyType::class);
+        $builder->add('@total', OrderFieldType::class);
 
         // Invoice Details
         $builder->add('row-label', TextType::class);
@@ -233,7 +241,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     protected function configureConditionGenerator(QueryConditionGenerator $conditionGenerator)
     {
         // customer
-        $conditionGenerator->registerField('customer-comment', 'customers/customers/#note>comment');
+        $conditionGenerator->registerField('customer-comment', 'customers/customers/#note>comment', [], ['_id' => ['unmapped_type' => 'long']]);
         $conditionGenerator->registerField(
             'customer-comment-restricted',
             'customers/customers/#note>comment',
@@ -243,18 +251,31 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
             ]
         );
 
+        $conditionGenerator->registerField('@customer-pubdate', '/customers/customers#pubdate', [
+            '#type' => 'customer',
+        ]);
+
+        $conditionGenerator->registerField('@customer-note-pubdate', '/customers/customers#note>pubdate', [
+            '#type' => 'customer',
+        ]);
+
         // invoice
         $conditionGenerator->registerField('id', 'invoices/invoices#_id');
+        $conditionGenerator->registerField('@id', 'invoices/invoices#_id');
         $conditionGenerator->registerField('pub-date', 'invoices/invoices#pubdate');
+        $conditionGenerator->registerField('@pub-date', 'invoices/invoices#pubdate');
         $conditionGenerator->registerField('pub-date-time', 'invoices/invoices#pubdatetime');
         $conditionGenerator->registerField('label', '/invoices/invoices#label');
         $conditionGenerator->registerField('status', '/invoices/invoices#status');
         $conditionGenerator->registerField('total', '/invoices/invoices#price_total');
+        $conditionGenerator->registerField('@total', '/invoices/invoices#price_total', [], ['price_total' => ['unmapped_type' => 'long']]);
 
         // invoice.customer
         $conditionGenerator->registerField('customer', 'invoices/invoices#customer.id');
         $conditionGenerator->registerField('customer-name', 'invoices/invoices#customer.full_name');
+        $conditionGenerator->registerField('@customer-name', 'invoices/invoices#customer.full_name.keyword');
         $conditionGenerator->registerField('customer-birthday', 'invoices/invoices#customer.birthday');
+        $conditionGenerator->registerField('@customer-birthday', 'invoices/invoices#customer.birthday');
 
         // invoice.item[]
         $conditionGenerator->registerField('row-label', 'invoices/invoices#items[].label');
@@ -296,15 +317,11 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $search->getPath(),
-                json_encode($query, JSON_PRETTY_PRINT)
+                json_encode($query->toArray(), JSON_PRETTY_PRINT)
             ));
 
             return;
         }
-
-        // TODO: this sort shouldn't be necessary, order is not arbitrary for a search result
-        sort($expectedIds);
-        sort($foundIds);
 
         $this->assertEquals(
             $expectedIds,
