@@ -20,13 +20,16 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\OrderTransformer;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
@@ -42,7 +45,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 {
     abstract protected function getProcessor(): InputProcessor;
 
-    protected function getFieldSet(bool $build = true)
+    protected function getFieldSet(bool $build = true, bool $order = false)
     {
         $fieldSet = new GenericFieldSetBuilder($this->getFactory());
         $fieldSet->add('id', IntegerType::class);
@@ -51,6 +54,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $fieldSet->add('name', TextType::class);
         $fieldSet->add('lastname', TextType::class);
         $fieldSet->add('date', DateType::class, ['pattern' => 'MM-dd-yyyy']);
+        if ($order) {
+            $fieldSet->add('@date', OrderFieldType::class, ['case' => OrderTransformer::CASE_LOWERCASE,  'alias' => ['up' => 'ASC', 'down' => 'DESC'], 'default' => 'down']);
+            $fieldSet->add('@id', OrderFieldType::class, ['default' => 'up']);
+        }
         $fieldSet->set(
             $this->getFactory()->createField('no-range-field', IntegerType::class)
                 ->setValueTypeSupport(Range::class, false)
@@ -101,10 +108,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      * @test
      * @dataProvider provideSingleValuePairTests
      */
-    public function it_processes_values($input)
+    public function it_processes_values($input, array $order = [])
     {
         $processor = $this->getProcessor();
-        $config = new ProcessorConfig($this->getFieldSet());
+        $config = new ProcessorConfig($this->getFieldSet(true, true));
 
         $expectedGroup = new ValuesGroup();
 
@@ -118,6 +125,17 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
+
+        if ($order) {
+            $expectedOrderGroup = new ValuesGroup();
+            foreach ($order as $name => $direction) {
+                $orderValueBag = new ValuesBag();
+                $orderValueBag->addSimpleValue($direction);
+                $expectedOrderGroup->addField($name, $orderValueBag);
+            }
+            $condition->setOrder(new SearchOrder($expectedOrderGroup));
+        }
+
         $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 

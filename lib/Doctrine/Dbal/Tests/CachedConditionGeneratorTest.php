@@ -247,8 +247,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         $cacheDriver->has('7503457faa505a978544359616a2b503638538170931ce460b69fcf35566f771')->willReturn(true);
         $cacheDriver->get('7503457faa505a978544359616a2b503638538170931ce460b69fcf35566f771')->willReturn("me = 'foo'");
 
-        $cacheDriver->has('55a05d0537821dd5ae26cfc4e1f4ea5fda29bf8d881554a1b629a45c78bfbf51')->willReturn(true);
-        $cacheDriver->get('55a05d0537821dd5ae26cfc4e1f4ea5fda29bf8d881554a1b629a45c78bfbf51')->willReturn("you = 'me' AND me = 'foo'");
+        $cacheDriver->has('65dc24cc06603327105d067e431b024f9dc0f7573db68fe839b6e244a821c4bb')->willReturn(true);
+        $cacheDriver->get('65dc24cc06603327105d067e431b024f9dc0f7573db68fe839b6e244a821c4bb')->willReturn("you = 'me' AND me = 'foo'");
 
         $cachedConditionGenerator = $this->createCachedConditionGenerator(
             $cacheDriver->reveal(),

@@ -28,6 +28,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class SearchPrimaryCondition
 {
     private $values;
+    private $order;
 
     public function __construct(ValuesGroup $valuesGroup)
     {
@@ -37,5 +38,15 @@ final class SearchPrimaryCondition
     public function getValuesGroup(): ValuesGroup
     {
         return $this->values;
+    }
+
+    public function setOrder(?SearchOrder $order): void
+    {
+        $this->order = $order;
+    }
+
+    public function getOrder(): ?SearchOrder
+    {
+        return $this->order;
     }
 }

@@ -19,7 +19,12 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\StringLexerException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\OrderField;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
+use Rollerworks\Component\Search\StructureBuilder;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -128,9 +133,14 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 abstract class StringInput extends AbstractInput
 {
     /**
-     * @var ConditionStructureBuilder|null
+     * @var StructureBuilder|null
      */
     protected $structureBuilder;
+
+    /**
+     * @var StructureBuilder|null
+     */
+    protected $orderStructureBuilder;
 
     /**
      * @var string[]
@@ -164,8 +174,9 @@ abstract class StringInput extends AbstractInput
 
         $input = trim($input);
 
+        $fieldSet = $config->getFieldSet();
         if ('' === $input) {
-            return new SearchCondition($config->getFieldSet(), new ValuesGroup());
+            return new SearchCondition($fieldSet, new ValuesGroup());
         }
 
         $condition = null;
@@ -177,8 +188,13 @@ abstract class StringInput extends AbstractInput
         $this->initForProcess($config);
 
         try {
-            $this->parse($config, $input);
-            $condition = new SearchCondition($config->getFieldSet(), $this->structureBuilder->getRootGroup());
+            $this->parse($config, $input, $fieldSet);
+            $condition = new SearchCondition($fieldSet, $this->structureBuilder->getRootGroup());
+
+            $orderValuesGroup = $this->orderStructureBuilder->getRootGroup();
+            if ($orderValuesGroup->countValues() > 0) {
+                $condition->setOrder(new SearchOrder($orderValuesGroup));
+            }
             $this->assertLevel0();
         } catch (InputProcessorException $e) {
             $this->errors[] = $e->toErrorMessageObj();
@@ -206,7 +222,7 @@ abstract class StringInput extends AbstractInput
         throw new UnknownFieldException($name);
     }
 
-    final protected function parse(ProcessorConfig $config, string $input): void
+    final protected function parse(ProcessorConfig $config, string $input, FieldSet $fieldSet): void
     {
         $this->config = $config;
         $this->lexer->parse($input, $this->valueLexers);
@@ -220,6 +236,17 @@ abstract class StringInput extends AbstractInput
 
         $this->lexer->skipEmptyLines();
         $this->fieldValuesPairs();
+
+        if (!$this->orderStructureBuilder->getRootGroup()->countValues()) {
+            /** @var FieldConfig $field */
+            foreach ($fieldSet->all() as $name => $field) {
+                if (OrderField::isOrder($name) && null !== $direction = $field->getOption('default')) {
+                    $this->orderStructureBuilder->field($name, '[order][%s]');
+                    $this->orderStructureBuilder->simpleValue($direction, '');
+                    $this->orderStructureBuilder->endValues();
+                }
+            }
+        }
     }
 
     private function fieldValuesPairs(bool $inGroup = false): void
@@ -275,7 +302,12 @@ abstract class StringInput extends AbstractInput
 
     private function fieldValues(string $name): void
     {
-        $this->structureBuilder->field($name, '[%s]');
+        $isOrder = OrderField::isOrder($name);
+
+        /** @var StructureBuilder $structureBuilder */
+        $structureBuilder = $isOrder ? $this->orderStructureBuilder : $this->structureBuilder;
+
+        $structureBuilder->field($name, '[%s]');
 
         $hasValues = false;
         $pathVal = '[{pos}]';
@@ -286,12 +318,12 @@ abstract class StringInput extends AbstractInput
             switch ($valueType) {
                 case StringLexer::COMPARE:
                     list($operator, $value) = $this->lexer->comparisonValue($name);
-                    $this->structureBuilder->comparisonValue($operator, $value, [$pathVal, '', '']);
+                    $structureBuilder->comparisonValue($operator, $value, [$pathVal, '', '']);
                     break;
 
                     case StringLexer::PATTERN_MATCH:
                     list($caseInsensitive, $type, $value) = $this->lexer->patternMatchValue();
-                    $this->structureBuilder->patterMatchValue($type, $value, $caseInsensitive, [$pathVal, '', '']);
+                    $structureBuilder->patterMatchValue($type, $value, $caseInsensitive, [$pathVal, '', '']);
                     break;
 
                 case StringLexer::RANGE:
@@ -299,7 +331,7 @@ abstract class StringInput extends AbstractInput
                     list($lowerInclusive, $lowerBound, $upperBound, $upperInclusive) = $this->lexer->rangeValue($name);
 
                     if ($negative) {
-                        $this->structureBuilder->excludedRangeValue(
+                        $structureBuilder->excludedRangeValue(
                             $lowerBound,
                             $upperBound,
                             $lowerInclusive,
@@ -307,7 +339,7 @@ abstract class StringInput extends AbstractInput
                             [$pathVal, '[lower]', '[upper]']
                         );
                     } else {
-                        $this->structureBuilder->rangeValue(
+                        $structureBuilder->rangeValue(
                             $lowerBound,
                             $upperBound,
                             $lowerInclusive,
@@ -319,9 +351,9 @@ abstract class StringInput extends AbstractInput
 
                 case StringLexer::SIMPLE_VALUE:
                     if (null !== $this->lexer->matchOptional('!')) {
-                        $this->structureBuilder->excludedSimpleValue($this->lexer->valuePart($name), $pathVal);
+                        $structureBuilder->excludedSimpleValue($this->lexer->valuePart($name), $pathVal);
                     } else {
-                        $this->structureBuilder->simpleValue($this->lexer->valuePart($name), $pathVal);
+                        $structureBuilder->simpleValue($this->lexer->valuePart($name), $pathVal);
                     }
                     break;
             }
@@ -340,7 +372,7 @@ abstract class StringInput extends AbstractInput
             throw $this->lexer->createFormatException(StringLexerException::FIELD_REQUIRES_VALUES);
         }
 
-        $this->structureBuilder->endValues();
+        $structureBuilder->endValues();
         $this->lexer->matchOptional(';');
     }
 }

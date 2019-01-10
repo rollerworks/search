@@ -19,7 +19,12 @@ use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
+use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\OrderField;
+use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
+use Rollerworks\Component\Search\StructureBuilder;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -69,6 +74,16 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class JsonInput extends AbstractInput
 {
+    /**
+     * @var StructureBuilder|null
+     */
+    private $structureBuilder;
+
+    /**
+     * @var StructureBuilder|null
+     */
+    private $orderStructureBuilder;
+
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
         if (!\is_string($input)) {
@@ -77,8 +92,9 @@ final class JsonInput extends AbstractInput
 
         $input = trim($input);
 
+        $fieldSet = $config->getFieldSet();
         if (empty($input)) {
-            return new SearchCondition($config->getFieldSet(), new ValuesGroup());
+            return new SearchCondition($fieldSet, new ValuesGroup());
         }
 
         $array = json_decode($input, true, 512, \JSON_BIGINT_AS_STRING);
@@ -94,7 +110,7 @@ final class JsonInput extends AbstractInput
         }
 
         if (0 === \count($array)) {
-            return new SearchCondition($config->getFieldSet(), new ValuesGroup());
+            return new SearchCondition($fieldSet, new ValuesGroup());
         }
 
         $condition = null;
@@ -103,6 +119,7 @@ final class JsonInput extends AbstractInput
         $this->level = 0;
 
         $this->structureBuilder = new ConditionStructureBuilder($this->config, $this->validator, $this->errors);
+        $this->orderStructureBuilder = new OrderStructureBuilder($this->config, $this->validator, $this->errors);
 
         try {
             $valuesGroup = $this->structureBuilder->getRootGroup();
@@ -110,7 +127,9 @@ final class JsonInput extends AbstractInput
 
             $this->processGroup($array);
 
-            $condition = new SearchCondition($config->getFieldSet(), $valuesGroup);
+            $condition = new SearchCondition($fieldSet, $valuesGroup);
+
+            $this->processOrder($condition, $array, $fieldSet);
 
             $this->assertLevel0();
         } catch (InputProcessorException $e) {
@@ -127,11 +146,6 @@ final class JsonInput extends AbstractInput
 
         return $condition;
     }
-
-    /**
-     * @var ConditionStructureBuilder|null
-     */
-    private $structureBuilder;
 
     private function processGroup(array $group)
     {
@@ -206,6 +220,38 @@ final class JsonInput extends AbstractInput
 
             $this->structureBuilder->endValues();
         }
+    }
+
+    private function processOrder(SearchCondition $condition, array $array, FieldSet $fieldSet): void
+    {
+        $order = $array['order'] ?? [];
+
+        if ([] === $order) {
+            /** @var FieldConfig $field */
+            foreach ($fieldSet->all() as $name => $field) {
+                if (OrderField::isOrder($name) && null !== $direction = $field->getOption('default')) {
+                    $this->orderStructureBuilder->field($name, '[order][%s]');
+                    $this->orderStructureBuilder->simpleValue($direction, '');
+                    $this->orderStructureBuilder->endValues();
+                }
+            }
+
+            $orderValuesGroup = $this->orderStructureBuilder->getRootGroup();
+            if ($orderValuesGroup->countValues() > 0) {
+                $condition->setOrder(new SearchOrder($orderValuesGroup));
+            }
+
+            return;
+        }
+
+        foreach ($order as $name => $direction) {
+            $this->orderStructureBuilder->field('@'.$name, '[order][%s]');
+            $this->orderStructureBuilder->simpleValue($direction, '');
+            $this->orderStructureBuilder->endValues();
+        }
+
+        $orderCondition = new SearchOrder($this->orderStructureBuilder->getRootGroup());
+        $condition->setOrder($orderCondition);
     }
 
     private function assertValueArrayHasKeys($array, array $requiredKeys, string $path)

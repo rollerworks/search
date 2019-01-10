@@ -41,9 +41,9 @@ final class StringQueryInputTest extends InputProcessorTestCase
         return new StringQueryInput(null, $labelResolver);
     }
 
-    protected function getFieldSet(bool $build = true)
+    protected function getFieldSet(bool $build = true, bool $order = false)
     {
-        $fieldSet = parent::getFieldSet(false);
+        $fieldSet = parent::getFieldSet(false, $order);
         $field = $this->getFactory()->createField(
             'geo',
             TextType::class,
@@ -319,8 +319,9 @@ final class StringQueryInputTest extends InputProcessorTestCase
     public function provideSingleValuePairTests()
     {
         return [
-            ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3;'],
-            ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3'],
+            ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3; @date: uP', ['@date' => 'ASC']],
+            ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3; @date: Up', ['@date' => 'ASC']],
+            ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3;', ['@date' => 'DESC', '@id' => 'ASC']],
         ];
     }
 

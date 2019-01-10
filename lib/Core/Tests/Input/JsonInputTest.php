@@ -66,8 +66,25 @@ final class JsonInputTest extends InputProcessorTestCase
                                 'excluded-simple-values' => ['value3'],
                             ],
                         ],
+                        'order' => [
+                            'date' => 'uP',
+                        ],
                     ]
                 ),
+                ['@date' => 'ASC'],
+            ],
+            [
+                json_encode(
+                    [
+                        'fields' => [
+                            'name' => [
+                                'simple-values' => ['value', 'value2', '٤٤٤٦٥٤٦٠٠', '30', '30L'],
+                                'excluded-simple-values' => ['value3'],
+                            ],
+                        ],
+                    ]
+                ),
+                ['@date' => 'DESC', '@id' => 'ASC'],
             ],
         ];
     }

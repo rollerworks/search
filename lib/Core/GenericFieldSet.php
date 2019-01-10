@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\OrderField;
 
 /**
  * A FieldSet holds all the search fields and there configuration.
@@ -63,6 +64,11 @@ final class GenericFieldSet implements FieldSetWithView
     public function has(string $name): bool
     {
         return isset($this->fields[$name]);
+    }
+
+    public function isOrder(string $name): bool
+    {
+        return OrderField::isOrder($name);
     }
 
     public function isPrivate(string $name): bool

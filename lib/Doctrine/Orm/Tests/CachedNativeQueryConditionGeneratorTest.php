@@ -222,7 +222,7 @@ final class CachedNativeQueryConditionGeneratorTest extends OrmTestCase
     {
         $cacheDriverProphecy = $this->prophesize(CacheInterface::class);
         $cacheDriverProphecy->get('1b52f5c77746dc39806f6bccd58cda29752d4773decd12e3773a99a3ec0b8478')->willReturn("me = 'foo'");
-        $cacheDriverProphecy->get('ff906fb8642689a2267dfaebe057a011bed6fc97d978f7728a190d87c4dd1371')->willReturn("you = 'me' AND me = 'foo'");
+        $cacheDriverProphecy->get('5c7f26e6c55166224450a215179faadf9935511befadcc358f071a12600199fe')->willReturn("you = 'me' AND me = 'foo'");
         $cacheDriver = $cacheDriverProphecy->reveal();
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
