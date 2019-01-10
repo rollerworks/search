@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\ApiPlatform\Tests\Mock;
 
 use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\BookFieldSet;
 use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\OrderField;
 use Rollerworks\Component\Search\FieldSet;
 
 final class FieldSetStub implements FieldSet
@@ -36,6 +37,11 @@ final class FieldSetStub implements FieldSet
     public function has(string $name): bool
     {
         return false;
+    }
+
+    public function isOrder(string $name): bool
+    {
+        return OrderField::isOrder($name);
     }
 
     public function isPrivate(string $name): bool
