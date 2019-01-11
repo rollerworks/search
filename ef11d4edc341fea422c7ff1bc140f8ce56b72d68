@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-11T14:35:43Z
+
+@sstok this is also ready. It's a continuation of #255 so you can either merge that one and then this one (the commits should get removed?) or just this one.
+
+---------------------------------------------------------------------------
+
+by sstok at 2019-01-11T15:16:51Z
+
+Can you rebase this pull request so it's easier to review? I already merged #255
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-11T15:24:19Z
+
+@sstok there we go, should build.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-11T15:25:15Z
+
+BTW Gitlab has a nifty button to Rebase directly from a MR screen if FF is possible so there you could have done it with a single click. <3
+
+---------------------------------------------------------------------------
+
+by sstok at 2019-01-11T19:18:34Z
+
+Thank you @dkarlovi
