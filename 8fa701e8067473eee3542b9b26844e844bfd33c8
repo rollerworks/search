@@ -1,0 +1,114 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-03T09:32:15Z
+
+@sstok @toflar ready for review
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-03T12:14:50Z
+
+Just figured out another use case, working on it.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-03T13:13:28Z
+
+To clarify the functionality:
+
+- we're using the same prefix `@` for marking the order-by field as we're using in string input (but only by convention)
+- we're using this to be able to specify a different mapping for searching a field and sorting on a field (for example, in Elasticsearch it would be `title: title, @title: title.keyword`)
+- you can specify a normalization for the direction like `LOWERCASE`, `UPPERCASE` (default)
+- you can specify a custom map of view value => model value, default is `ASC => ASC, DESC => DESC`, this allows you to specify additional values and their "meanings", change case if your backend requires it, etc.
+- you can specify a default direction for the sort which means **it will be applied if no user-specified order is specified at all**
+
+TLDR
+
+```
+case = LOWERCASE, map = [up => ASC, down => DESC], query = @date: uP, condition = order[@date: ASC]
+default: DESC, query = title: foo, condition = title: foo, order[@date: DESC]
+```
+
+---------------------------------------------------------------------------
+
+by Toflar at 2019-01-03T15:11:34Z
+
+Looks awesome to me. A bit hard for me to review because I'm quite new to this library but at first sight I can't see any conceptual issues here. The only thing that comes to my mind is the question whether allowed field name characters have been validated so far or if prefixing by an `@` introduces a potential BC break. Not that a think there have been many out there using an `@` prefix but it would maybe be a good idea to restrict the field names if not done already (just double checking).
+
+Also, it seems to me like the current implementation was not locale aware at all. With the introduction of aliases (e.g. like in your example) it kind of becomes localized. `@field up` is English and probably devs will start adding aliases in different languages which seems strange to me for a format that was independent from any language so far. Just a thought though 😄
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-04T15:12:56Z
+
+@Toflar thanks for your feedback.
+
+> only thing that comes to my mind is the question whether allowed field name characters have been validated so far
+
+It has, @ has not been allowed by `StringLexer`, I've allowed for it here.
+
+> it would maybe be a good idea to restrict the field names if not done already
+
+You mean, you can only bind the `@` prefix with a `OrderFieldType`? That could be done. @sstok WDYT?
+
+> With the introduction of aliases (e.g. like in your example) it kind of becomes localized. @field up is English and probably devs will start adding aliases in different languages
+
+The introduction of alliases allows for several things:
+
+1. allow **whitelisting** directions, for example, specifying only `['ASC => 'ASC'']` means you're disallowing `DESC` completely.
+2. allow tweaking the **model**, for example if in a backend you need to say `DESCENDING` instead of just `DESC`, this would allow you to specify the final version you need
+3. allow tweaking the **view** (which you note), this is from my POV the only questionable point, do we want this?
+
+Let's wait and see what @sstok says.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-04T15:15:59Z
+
+BTW note one thing: order's... order :see_no_evil: is **significant**.
+
+This means that `@foo: DESC; @bar: ASC` and `@bar: ASC; @foo: DESC` are **not interchangeable**. The order clause will be created in the same order the user has specified it. We could also opt to always create in the order the fields were added to the fieldset (so, above would be interchangeable, but you lose a bit of flexibility).
+
+This is also up for discussion.
+
+---------------------------------------------------------------------------
+
+by Toflar at 2019-01-04T15:29:10Z
+
+>     3\. allow tweaking the **view** (which you note), this is from my POV the only questionable point, do we want this?
+
+What's your opinion then?
+
+> We could also opt to always create in the order the fields were added to the fieldset (so, above would be interchangeable, but you lose a bit of flexibility).
+
+I don't think this makes sense. A regular user should be able to understand order priorities. I mean, it's the same in any ordinary MS Excel sheet. Order matters. I'd rather find it confusing if I can change the `@field` definitions randomly and always get the same output 😄
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-04T15:33:01Z
+
+Agree, we should use user input, but it's something to note so it's not surprising.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-07T14:13:35Z
+
+@sstok it would be great if you could do a review by Thursday, that's when I'll continue working on this and #256.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-10T07:59:08Z
+
+@sstok had to squash since the interface change was the first commit. I'll add the separate structure builder ASAP.
+
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-01-10T10:24:44Z
+
+Alright, ready for review.
+
+---------------------------------------------------------------------------
+
+by sstok at 2019-01-11T15:12:26Z
+
+Thank you @dkarlovi
