@@ -59,6 +59,11 @@ class SearchExtensionTest extends TestCase
         $queryBuilderProphecy->getFirstResult()->shouldBeCalled();
         $queryBuilderProphecy->getMaxResults()->shouldBeCalled();
         $queryBuilderProphecy->getRootAliases()->willReturn(['o']);
+        $queryBuilderProphecy->setParameter('id0', 3)->shouldBeCalled();
+        $queryBuilderProphecy->setParameter('id1', 1)->shouldBeCalled();
+        $queryBuilderProphecy->setParameter('id2', 5)->shouldBeCalled();
+        $queryBuilderProphecy->addSelect('CASE WHEN o.id = :id0 THEN 0 WHEN o.id = :id1 THEN 1 WHEN o.id = :id2 THEN 2 ELSE 3 END AS HIDDEN order_by')->willReturn($queryBuilderProphecy);
+        $queryBuilderProphecy->orderBy('order_by', 'ASC')->shouldBeCalled();
         $queryBuilder = $queryBuilderProphecy->reveal();
 
         $classMetadataProphecy = $this->prophesize(ClassMetadata::class);
@@ -81,8 +86,8 @@ class SearchExtensionTest extends TestCase
         $conditionGenerator = $conditionGeneratorProphecy->reveal();
 
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedConditionGenerator::class);
-        $cachedConditionGeneratorProphecy->registerField('dummy-id', 'id', [])->shouldBeCalled();
-        $cachedConditionGeneratorProphecy->registerField('dummy-name', 'name', [])->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->registerField('dummy-id', 'id', [], [])->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->registerField('dummy-name', 'name', [], [])->shouldBeCalled();
         $cachedConditionGeneratorProphecy->getQuery()->willReturn($query);
         $cachedConditionGeneratorProphecy->getMappings()->shouldBeCalled();
         $cachedConditionGenerator = $cachedConditionGeneratorProphecy->reveal();
