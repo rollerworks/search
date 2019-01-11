@@ -202,7 +202,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
     {
         $cacheDriverProphecy = $this->prophesize(CacheInterface::class);
         $cacheDriverProphecy->get('41329a2e34ac65573fb097e858a5b12685b0327e3e55b5bb48902e4731b42afa')->willReturn(["me = 'foo'", ['1' => 'he']]);
-        $cacheDriverProphecy->get('4202f64ad8bb0d7a4bcc23ca1b1a27980897bc112182ac35401bd3a64c11cdc7')->willReturn(["you = 'me' AND me = 'foo'", ['1' => 'he']]);
+        $cacheDriverProphecy->get('a91ba1ea3289d6d2ad5caa7ef160c78fa52f0e20c305cc90c4d3cea8b7938cb4')->willReturn(["you = 'me' AND me = 'foo'", ['1' => 'he']]);
         $cacheDriver = $cacheDriverProphecy->reveal();
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())

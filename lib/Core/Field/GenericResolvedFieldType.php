@@ -145,6 +145,10 @@ class GenericResolvedFieldType implements ResolvedFieldType
      */
     protected function newField($name, array $options): FieldConfig
     {
+        if (OrderField::isOrder($name)) {
+            return new OrderField($name, $this, $options);
+        }
+
         return new SearchField($name, $this, $options);
     }
 

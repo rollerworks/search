@@ -26,6 +26,7 @@ class SearchCondition
     private $fieldSet;
     private $values;
     private $primaryCondition;
+    private $order;
 
     public function __construct(FieldSet $fieldSet, ValuesGroup $valuesGroup)
     {
@@ -51,6 +52,16 @@ class SearchCondition
     public function getPrimaryCondition(): ?SearchPrimaryCondition
     {
         return $this->primaryCondition;
+    }
+
+    public function setOrder(?SearchOrder $order): void
+    {
+        $this->order = $order;
+    }
+
+    public function getOrder(): ?SearchOrder
+    {
+        return $this->order;
     }
 
     public function isEmpty(): bool

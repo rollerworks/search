@@ -24,6 +24,7 @@ use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\StructureBuilder;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -37,7 +38,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ConditionStructureBuilder
+class ConditionStructureBuilder implements StructureBuilder
 {
     /** @var ErrorList */
     private $errorList;

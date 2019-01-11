@@ -48,6 +48,11 @@ interface FieldSet
     public function has(string $name): bool;
 
     /**
+     * Returns whether the field is registered to be used for ordering.
+     */
+    public function isOrder(string $name): bool;
+
+    /**
      * Returns whether the field is a private field (primary condition only).
      */
     public function isPrivate(string $name): bool;
