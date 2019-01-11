@@ -59,9 +59,9 @@ class CachedConditionGenerator implements ConditionGenerator
         $this->cacheTtl = $ttl;
     }
 
-    public function registerField(string $fieldName, string $mapping, array $conditions = [])
+    public function registerField(string $fieldName, string $mapping, array $conditions = [], array $options = [])
     {
-        $this->conditionGenerator->registerField($fieldName, $mapping, $conditions);
+        $this->conditionGenerator->registerField($fieldName, $mapping, $conditions, $options);
 
         return $this;
     }

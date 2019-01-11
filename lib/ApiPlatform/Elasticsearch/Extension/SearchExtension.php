@@ -74,9 +74,11 @@ class SearchExtension implements QueryCollectionExtensionInterface
         foreach ($configuration['mappings'] as $fieldName => $mapping) {
             $conditions = [];
             if (\is_array($mapping)) {
-                ArrayKeysValidator::assertOnlyKeys($mapping, ['property', 'conditions'], $configPath.'['.$fieldName.']');
+                ArrayKeysValidator::assertOnlyKeys($mapping, ['property', 'conditions', 'options'], $configPath.'['.$fieldName.']');
+                ArrayKeysValidator::assertKeysExists($mapping, ['property'], $configPath.'['.$fieldName.']');
 
-                foreach ($mapping['conditions'] as $idx => $conditionMapping) {
+                $conditionMappings = $mapping['conditions'] ?? [];
+                foreach ($conditionMappings as $idx => $conditionMapping) {
                     ArrayKeysValidator::assertOnlyKeys($conditionMapping, ['property', 'value'], $configPath.'['.$fieldName.'][conditions]['.$idx.']');
 
                     $conditions[$conditionMapping['property']] = $conditionMapping['value'];
@@ -84,7 +86,7 @@ class SearchExtension implements QueryCollectionExtensionInterface
                 $mapping = $mapping['property'];
             }
 
-            $conditionGenerator->registerField($fieldName, $mapping, $conditions);
+            $conditionGenerator->registerField($fieldName, $mapping, $conditions, $mapping['options'] ?? []);
         }
 
         $normalizer = null;
@@ -143,6 +145,8 @@ class SearchExtension implements QueryCollectionExtensionInterface
                         ->in($rootAlias.'.'.$identifier, ':ids')
             )
             ->setParameter('ids', $ids);
+
+        $this->generateOrderByClause($queryBuilder, $rootAlias.'.'.$identifier, $ids);
     }
 
     private function getIdentifierNames(string $class): array
@@ -155,5 +159,28 @@ class SearchExtension implements QueryCollectionExtensionInterface
         }
 
         return $this->identifierNames[$class];
+    }
+
+    private function generateOrderByClause(QueryBuilder $queryBuilder, string $identifier, array $ids): void
+    {
+        if ([] === $ids) {
+            return;
+        }
+
+        $clause = ['CASE'];
+        $last = 0;
+        foreach ($ids as $idx => $id) {
+            $alias = sprintf('id%1$s', $idx);
+            $queryBuilder->setParameter($alias, $id);
+            $clause[] = sprintf('WHEN %1$s = :%2$s THEN %3$d', $identifier, $alias, $idx);
+            ++$last;
+        }
+        $clause[] = sprintf('ELSE %1$d', $last);
+        $clause[] = 'END';
+        $clause[] = 'AS HIDDEN order_by';
+
+        $queryBuilder
+            ->addSelect(implode(' ', $clause))
+            ->orderBy('order_by', 'ASC');
     }
 }

@@ -15,15 +15,19 @@ namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
 use Rollerworks\Component\Search\Elasticsearch\FieldMapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
+use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\ParameterBag;
 use Rollerworks\Component\Search\SearchConditionBuilder;
+use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
+use Rollerworks\Component\Search\Value\ValuesBag;
+use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @group unit
@@ -31,7 +35,7 @@ use Rollerworks\Component\Search\Value\Range;
 final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
 {
     /** @test */
-    public function it_generates_an_empty_query_for_empty_condition()
+    public function it_generates_an_match_all_query_for_empty_condition()
     {
         $condition = $this->createCondition()->getSearchCondition();
         $generator = new QueryConditionGenerator($condition);
@@ -39,7 +43,9 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         $generator->registerField('name', 'name');
 
         self::assertEquals([
-            'query' => [],
+            'query' => [
+                'match_all' => new \stdClass(),
+            ],
         ], $generator->getQuery()->toArray());
 
         self::assertMapping([], $generator->getMappings());
@@ -704,15 +710,205 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         self::assertMapping(['name'], $generator->getMappings());
     }
 
+    /** @test */
+    public function it_adds_sort()
+    {
+        $condition = $this
+            ->createCondition(true)
+            ->getSearchCondition();
+
+        $condition->setOrder($this->createSearchOrder(['@date' => 'asc']));
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('name', '/articles#name');
+        $generator->registerField('@date', '/articles#date.keyword');
+
+        self::assertEquals(
+            [
+                'sort' => [
+                    'date.keyword' => ['order' => 'asc'],
+                ],
+                'query' => [
+                    'match_all' => new \stdClass(),
+                ],
+            ],
+            $generator->getQuery()->toArray()
+        );
+
+        self::assertSearch(['/articles'], $generator->getMappings());
+        self::assertMapping(['@date'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_adds_sort_from_primary_condition()
+    {
+        $primaryCondition = new SearchPrimaryCondition(
+            $this->createCondition(true)
+                ->getSearchCondition()
+                ->getValuesGroup()
+        );
+        $primaryCondition->setOrder($this->createSearchOrder(['@id' => 'desc']));
+
+        $condition = $this
+            ->createCondition(true)
+            ->getSearchCondition();
+        $condition->setPrimaryCondition($primaryCondition);
+
+        $condition->setOrder($this->createSearchOrder(['@date' => 'asc']));
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('name', '/articles#name');
+        $generator->registerField('@date', '/articles#date.keyword');
+        $generator->registerField('@id', '/articles#_id');
+
+        self::assertEquals(
+            [
+                'sort' => [
+                    'date.keyword' => ['order' => 'asc'],
+                    '_id' => ['order' => 'desc'],
+                ],
+                'query' => [
+                    'match_all' => new \stdClass(),
+                ],
+            ],
+            $generator->getQuery()->toArray()
+        );
+
+        self::assertSearch(['/articles'], $generator->getMappings());
+        self::assertMapping(['@date', '@id'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_adds_sort_for_has_child_query()
+    {
+        $condition = $this
+            ->createCondition(true)
+            ->getSearchCondition();
+        $condition->setOrder($this->createSearchOrder(['@date' => 'asc']));
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('@date', '/articles#child>date');
+
+        self::assertEquals([
+            'sort' => [
+                '_score' => ['order' => 'asc'],
+            ],
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'has_child' => [
+                                'type' => 'child',
+                                'score_mode' => 'max',
+                                'query' => [
+                                    'function_score' => [
+                                        'script_score' => [
+                                            'script' => '_score * doc["date"].value',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $generator->getQuery()->toArray());
+
+        self::assertSearch(['/articles'], $generator->getMappings());
+        self::assertMapping(['@date'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_merges_has_child_queries_from_conditional_order_queries()
+    {
+        $condition = $this
+            ->createCondition(true)
+            ->getSearchCondition();
+        $condition->setOrder($this->createSearchOrder(['@date' => 'asc']));
+
+        $generator = new QueryConditionGenerator($condition, new ParameterBag(['user' => 123]));
+        $generator->registerField('@date', '/articles#child>some.date', [
+            'child>user' => '{user}',
+        ]);
+
+        self::assertEquals([
+            'sort' => [
+                '_score' => ['order' => 'asc'],
+            ],
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'has_child' => [
+                                'type' => 'child',
+                                'score_mode' => 'max',
+                                'query' => [
+                                    'bool' => [
+                                        'must' => [
+                                            [
+                                                'terms' => [
+                                                    'user' => [
+                                                        123,
+                                                    ],
+                                                ],
+                                            ],
+                                            [
+                                                'function_score' => [
+                                                    'script_score' => [
+                                                        'script' => '_score * doc["some.date"].value',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $generator->getQuery()->toArray());
+
+        self::assertSearch(['/articles'], $generator->getMappings());
+        self::assertMapping(['@date'], $generator->getMappings());
+    }
+
+    protected function getFieldSet(bool $build = true, bool $order = false)
+    {
+        $fieldSet = parent::getFieldSet(false);
+
+        if ($order) {
+            $fieldSet->add('@date', OrderFieldType::class);
+            $fieldSet->add('@id', OrderFieldType::class, ['default' => 'DESC']);
+        }
+
+        return $build ? $fieldSet->getFieldSet() : $fieldSet;
+    }
+
     /**
+     * @param bool $order
+     *
      * @return SearchConditionBuilder
      */
-    private function createCondition(): SearchConditionBuilder
+    private function createCondition(bool $order = false): SearchConditionBuilder
     {
         /** @var FieldSet $fieldSet */
-        $fieldSet = $this->getFieldSet();
+        $fieldSet = $this->getFieldSet(true, $order);
 
         return SearchConditionBuilder::create($fieldSet);
+    }
+
+    private function createSearchOrder(array $fields): SearchOrder
+    {
+        $valuesGroup = new ValuesGroup();
+        foreach ($fields as $field => $direction) {
+            $valuesBag = new ValuesBag();
+            $valuesBag->addSimpleValue($direction);
+
+            $valuesGroup->addField($field, $valuesBag);
+        }
+
+        return new SearchOrder($valuesGroup);
     }
 
     /**
@@ -738,7 +934,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         sort($expected);
         sort($actual);
 
-        self::assertEquals($expected, $actual);
+        self::assertEquals($expected, array_unique($actual));
     }
 
     /**
