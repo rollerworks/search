@@ -140,19 +140,19 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         $mappings = [];
         $group = $this->searchCondition->getValuesGroup();
 
-        $this->extractMappings($group, $mappings);
+        $this->getGroupMappings($group, $mappings);
 
         if (null !== $primaryCondition = $this->searchCondition->getPrimaryCondition()) {
-            $this->extractMappings($primaryCondition->getValuesGroup(), $mappings);
+            $this->getGroupMappings($primaryCondition->getValuesGroup(), $mappings);
         }
 
         if ([] === $mappings) {
             if (null !== $searchOrder = $this->searchCondition->getOrder()) {
-                $this->extractMappings($searchOrder->getValuesGroup(), $mappings);
+                $this->getGroupMappings($searchOrder->getValuesGroup(), $mappings);
             }
 
             if (null !== $primaryCondition && null !== $primarySearchOrder = $primaryCondition->getOrder()) {
-                $this->extractMappings($primarySearchOrder->getValuesGroup(), $mappings);
+                $this->getGroupMappings($primarySearchOrder->getValuesGroup(), $mappings);
             }
         }
 
@@ -185,18 +185,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return self::COMPARISON_OPERATOR_MAP[$operator];
     }
 
-    private function extractMappings(ValuesGroup $group, array &$mappings): void
+    private function getGroupMappings(ValuesGroup $group, array &$mappings): void
     {
-        $mappings = \array_merge($mappings, $this->getGroupMappings($group));
-
-        foreach ($group->getGroups() as $subGroup) {
-            $mappings = \array_merge($mappings, $this->getGroupMappings($subGroup));
-        }
-    }
-
-    private function getGroupMappings(ValuesGroup $group): array
-    {
-        $mappings = [];
         foreach ($group->getFields() as $fieldName => $valuesBag) {
             if ($valuesBag->hasSimpleValues()) {
                 $mappings[$fieldName] = $this->mappings[$fieldName];
@@ -215,7 +205,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             }
         }
 
-        return $mappings;
+        foreach ($group->getGroups() as $subGroup) {
+            $this->getGroupMappings($subGroup, $mappings);
+        }
     }
 
     private function processGroup(ValuesGroup $group): array
@@ -317,7 +309,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             $subGroupCondition = $this->processGroup($subGroup);
 
             if ([] !== $subGroupCondition) {
-                $bool[self::CONDITION_AND][] = $subGroupCondition;
+                $bool[$includingType][] = $subGroupCondition;
             }
         }
 

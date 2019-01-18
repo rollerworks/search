@@ -118,6 +118,85 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
+    public function it_generates_a_structure_with_or()
+    {
+        $condition = $this->createCondition()
+            ->group(ValuesGroup::GROUP_LOGICAL_OR)
+                // (id:1 AND name:Doctor) OR (id:2 AND name:Foo)
+                ->group()
+                    ->field('id')
+                        ->addSimpleValue(1)
+                    ->end()
+                    ->field('name')
+                        ->addSimpleValue('Doctor')
+                    ->end()
+                ->end()
+                ->group()
+                    ->field('id')
+                        ->addSimpleValue(2)
+                    ->end()
+                    ->field('name')
+                        ->addSimpleValue('Foo')
+                    ->end()
+                ->end()
+            ->end()
+        ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
+
+        self::assertEquals([
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'bool' => [
+                                'should' => [
+                                    [
+                                        'bool' => [
+                                            'must' => [
+                                                [
+                                                    'terms' => [
+                                                        'id' => [1],
+                                                    ],
+                                                ],
+                                                [
+                                                    'terms' => [
+                                                        'name' => ['Doctor'],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                    [
+                                        'bool' => [
+                                            'must' => [
+                                                [
+                                                    'terms' => [
+                                                        'id' => [2],
+                                                    ],
+                                                ],
+                                                [
+                                                    'terms' => [
+                                                        'name' => ['Foo'],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $generator->getQuery()->toArray());
+
+        self::assertMapping(['id', 'name'], $generator->getMappings());
+    }
+
+    /** @test */
     public function it_generates_a_structure_of_root_level_fields_with_excludes()
     {
         $condition = $this->createCondition()

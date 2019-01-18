@@ -187,7 +187,7 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
     public function it_finds_by_status_and_label_or_quantity_limited_by_price()
     {
         // Note there is no row with quantity 5, which is resolved as its in an OR'ed group
-        $this->makeTest('status: published; *(row-quantity: 5; row-label: ~*"repair"; (row-price: "50.00"));', [4]);
+        $this->makeTest('status: published; *(row-quantity: 5; row-label: ~*"repair"; (row-price: "50.00"));', [4, 6]);
     }
 
     /**
