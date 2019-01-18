@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
 use Rollerworks\Component\Search\Elasticsearch\FieldMapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
+use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\ParameterBag;
@@ -34,6 +35,25 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
 {
+    /** @test */
+    public function it_throws_a_logic_exception_if_referencing_a_field_not_in_fieldset()
+    {
+        $this->expectException(UnknownFieldException::class);
+
+        $condition = $this->createCondition()
+            ->field('unknown')
+                ->addSimpleValue('nope')
+            ->end()
+        ->getSearchCondition();
+        $generator = new QueryConditionGenerator($condition);
+
+        self::assertEquals([
+            'query' => [
+                'match_all' => new \stdClass(),
+            ],
+        ], $generator->getQuery()->toArray());
+    }
+
     /** @test */
     public function it_generates_an_match_all_query_for_empty_condition()
     {

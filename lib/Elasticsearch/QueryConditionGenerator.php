@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Elasticsearch;
 
 use Elastica\Query;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\ParameterBag;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchOrder;
@@ -227,7 +228,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         $bool = [];
         $hints = new QueryPreparationHints();
         foreach ($group->getFields() as $fieldName => $valuesBag) {
-            // TODO: this looks fishy, what about nested fields?
+            if (!isset($this->mappings[$fieldName])) {
+                throw new UnknownFieldException($fieldName);
+            }
             $mapping = $this->mappings[$fieldName];
 
             $propertyName = $mapping->propertyName;
