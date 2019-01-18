@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
 use Rollerworks\Component\Search\Elasticsearch\FieldMapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
+use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\ParameterBag;
@@ -34,6 +35,25 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
 {
+    /** @test */
+    public function it_throws_a_logic_exception_if_referencing_a_field_not_in_fieldset()
+    {
+        $this->expectException(UnknownFieldException::class);
+
+        $condition = $this->createCondition()
+            ->field('unknown')
+                ->addSimpleValue('nope')
+            ->end()
+        ->getSearchCondition();
+        $generator = new QueryConditionGenerator($condition);
+
+        self::assertEquals([
+            'query' => [
+                'match_all' => new \stdClass(),
+            ],
+        ], $generator->getQuery()->toArray());
+    }
+
     /** @test */
     public function it_generates_an_match_all_query_for_empty_condition()
     {
@@ -86,6 +106,85 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                                 'name' => [
                                     'Doctor',
                                     'Foo',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $generator->getQuery()->toArray());
+
+        self::assertMapping(['id', 'name'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_generates_a_structure_with_or()
+    {
+        $condition = $this->createCondition()
+            ->group(ValuesGroup::GROUP_LOGICAL_OR)
+                // (id:1 AND name:Doctor) OR (id:2 AND name:Foo)
+                ->group()
+                    ->field('id')
+                        ->addSimpleValue(1)
+                    ->end()
+                    ->field('name')
+                        ->addSimpleValue('Doctor')
+                    ->end()
+                ->end()
+                ->group()
+                    ->field('id')
+                        ->addSimpleValue(2)
+                    ->end()
+                    ->field('name')
+                        ->addSimpleValue('Foo')
+                    ->end()
+                ->end()
+            ->end()
+        ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('id', 'id');
+        $generator->registerField('name', 'name');
+
+        self::assertEquals([
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'bool' => [
+                                'should' => [
+                                    [
+                                        'bool' => [
+                                            'must' => [
+                                                [
+                                                    'terms' => [
+                                                        'id' => [1],
+                                                    ],
+                                                ],
+                                                [
+                                                    'terms' => [
+                                                        'name' => ['Doctor'],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                    [
+                                        'bool' => [
+                                            'must' => [
+                                                [
+                                                    'terms' => [
+                                                        'id' => [2],
+                                                    ],
+                                                ],
+                                                [
+                                                    'terms' => [
+                                                        'name' => ['Foo'],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],
@@ -628,6 +727,79 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
+    public function it_adds_contextual_params_to_primary_query()
+    {
+        $primaryCondition = new SearchPrimaryCondition(
+            $this->createCondition()
+                ->field('restrict')
+                    ->addSimpleValue('{locale}')
+                ->end()
+                ->getSearchCondition()
+            ->getValuesGroup()
+        );
+
+        $condition = $this
+            ->createCondition()
+            ->field('name')
+                ->addSimpleValue('Doctor')
+                ->addSimpleValue('Foo')
+            ->end()
+            ->getSearchCondition();
+        $condition->setPrimaryCondition($primaryCondition);
+
+        $generator = new QueryConditionGenerator($condition, new ParameterBag(['locale' => 'en', 'territory' => 'US']));
+        $generator->registerField('restrict', 'restrict');
+        $generator->registerField('name', '/articles_{locale}/territory_{territory}#child>name');
+
+        self::assertEquals(
+            [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'bool' => [
+                                    'must' => [
+                                        [
+                                            'terms' => [
+                                                'restrict' => [
+                                                    'en',
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'bool' => [
+                                    'must' => [
+                                        [
+                                            'has_child' => [
+                                                'type' => 'child',
+                                                'query' => [
+                                                    'terms' => [
+                                                        'name' => [
+                                                            'Doctor',
+                                                            'Foo',
+                                                        ],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $generator->getQuery()->toArray()
+        );
+
+        self::assertSearch(['/articles_en/territory_US'], $generator->getMappings());
+        self::assertMapping(['name', 'restrict'], $generator->getMappings());
+    }
+
+    /** @test */
     public function it_adds_contextual_conditions_for_has_child_query()
     {
         $condition = $this
@@ -928,7 +1100,9 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 }
             }
 
-            $actual[] = $search;
+            if ($search) {
+                $actual[] = $search;
+            }
         }
 
         sort($expected);
