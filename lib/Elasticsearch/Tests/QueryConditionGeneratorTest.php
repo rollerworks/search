@@ -727,6 +727,79 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
+    public function it_adds_contextual_params_to_primary_query()
+    {
+        $primaryCondition = new SearchPrimaryCondition(
+            $this->createCondition()
+                ->field('restrict')
+                    ->addSimpleValue('{locale}')
+                ->end()
+                ->getSearchCondition()
+            ->getValuesGroup()
+        );
+
+        $condition = $this
+            ->createCondition()
+            ->field('name')
+                ->addSimpleValue('Doctor')
+                ->addSimpleValue('Foo')
+            ->end()
+            ->getSearchCondition();
+        $condition->setPrimaryCondition($primaryCondition);
+
+        $generator = new QueryConditionGenerator($condition, new ParameterBag(['locale' => 'en', 'territory' => 'US']));
+        $generator->registerField('restrict', 'restrict');
+        $generator->registerField('name', '/articles_{locale}/territory_{territory}#child>name');
+
+        self::assertEquals(
+            [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'bool' => [
+                                    'must' => [
+                                        [
+                                            'terms' => [
+                                                'restrict' => [
+                                                    'en',
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'bool' => [
+                                    'must' => [
+                                        [
+                                            'has_child' => [
+                                                'type' => 'child',
+                                                'query' => [
+                                                    'terms' => [
+                                                        'name' => [
+                                                            'Doctor',
+                                                            'Foo',
+                                                        ],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $generator->getQuery()->toArray()
+        );
+
+        self::assertSearch(['/articles_en/territory_US'], $generator->getMappings());
+        self::assertMapping(['name', 'restrict'], $generator->getMappings());
+    }
+
+    /** @test */
     public function it_adds_contextual_conditions_for_has_child_query()
     {
         $condition = $this
@@ -1027,7 +1100,9 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 }
             }
 
-            $actual[] = $search;
+            if ($search) {
+                $actual[] = $search;
+            }
         }
 
         sort($expected);

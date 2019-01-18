@@ -115,9 +115,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         $this->processOrder($this->searchCondition->getOrder(), $orderClause, $orderCondition);
 
         if (null !== ($primaryCondition = $this->searchCondition->getPrimaryCondition())) {
-            $primaryConditionGroupCondition = $this->processGroup($primaryCondition->getValuesGroup());
+            $primaryConditionGroupCondition = $this->processGroup($primaryCondition->getValuesGroup(), true);
 
-            $this->processOrder($primaryCondition->getOrder(), $orderClause, $orderCondition);
+            $this->processOrder($primaryCondition->getOrder(), $orderClause, $orderCondition, true);
         }
 
         $rootGroupCondition = array_values(array_filter([
@@ -210,7 +210,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         }
     }
 
-    private function processGroup(ValuesGroup $group): array
+    private function processGroup(ValuesGroup $group, bool $injectParams = false): array
     {
         // Note: Excludes are `must_not`, for includes `must` (AND) or `should` (OR) is used. Subgroups use `must`.
         $includingType = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical()
@@ -234,7 +234,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
             $hints->identifier = (self::PROPERTY_ID === $propertyName);
 
-            $conditions = $this->processMappingConditions($mapping, $hints);
+            $conditions = $this->processMappingConditions($mapping, $hints, $injectParams);
 
             // simple values
             if ($valuesBag->hasSimpleValues()) {
@@ -247,6 +247,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $valueConverter,
                     $nested,
                     $join,
+                    $injectParams,
                     $conditions
                 ));
             }
@@ -260,6 +261,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $valueConverter,
                     $nested,
                     $join,
+                    $injectParams,
                     $conditions
                 ));
             }
@@ -269,7 +271,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 /** @var Range $range */
                 foreach ($valuesBag->get(Range::class) as $range) {
                     $hints->context = QueryPreparationHints::CONTEXT_RANGE_VALUES;
-                    $range = $this->convertRangeValues($range, $valueConverter);
+                    $range = $this->convertRangeValues($range, $valueConverter, $injectParams);
                     $this->mergeQuery($bool, $includingType, $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions));
                 }
             }
@@ -277,7 +279,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 /** @var Range $range */
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
                     $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES;
-                    $range = $this->convertRangeValues($range, $valueConverter);
+                    $range = $this->convertRangeValues($range, $valueConverter, $injectParams);
                     $this->mergeQuery($bool, self::CONDITION_NOT, $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions));
                 }
             }
@@ -287,7 +289,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 /** @var Compare $compare */
                 foreach ($valuesBag->get(Compare::class) as $compare) {
                     $hints->context = QueryPreparationHints::CONTEXT_COMPARISON;
-                    $compare = $this->convertCompareValue($compare, $valueConverter);
+                    $compare = $this->convertCompareValue($compare, $valueConverter, $injectParams);
                     $localIncludingType = self::COMPARISON_UNEQUAL === $compare->getOperator() ? self::CONDITION_NOT : $includingType;
                     $this->mergeQuery($bool, $localIncludingType, $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested, $join, $conditions));
                 }
@@ -297,7 +299,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             if ($valuesBag->has(PatternMatch::class)) {
                 /** @var PatternMatch $patternMatch */
                 foreach ($valuesBag->get(PatternMatch::class) as $patternMatch) {
-                    $patternMatch = $this->convertMatcherValue($patternMatch, $valueConverter);
+                    $patternMatch = $this->convertMatcherValue($patternMatch, $valueConverter, $injectParams);
                     $hints->context = QueryPreparationHints::CONTEXT_PATTERN_MATCH;
                     $localIncludingType = $patternMatch->isExclusive() ? self::CONDITION_NOT : $includingType;
                     $this->mergeQuery($bool, $localIncludingType, $this->prepareQuery($propertyName, $patternMatch, $hints, $queryConverter, $nested, $join, $conditions));
@@ -306,7 +308,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         }
 
         foreach ($group->getGroups() as $subGroup) {
-            $subGroupCondition = $this->processGroup($subGroup);
+            $subGroupCondition = $this->processGroup($subGroup, $injectParams);
 
             if ([] !== $subGroupCondition) {
                 $bool[$includingType][] = $subGroupCondition;
@@ -320,7 +322,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return [self::QUERY_BOOL => $bool];
     }
 
-    private function processOrder(?SearchOrder $order, array &$clause, array &$conditions): void
+    private function processOrder(?SearchOrder $order, array &$clause, array &$conditions, bool $injectParams = false): void
     {
         if (null === $order) {
             return;
@@ -333,7 +335,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             $mapping = $this->mappings[$fieldName];
 
             // apply conditions from order fields
-            $mappingConditions = $this->processMappingConditions($mapping, $hints);
+            $mappingConditions = $this->processMappingConditions($mapping, $hints, $injectParams);
             if ($mappingConditions) {
                 if (!isset($conditions[self::QUERY_BOOL])) {
                     $conditions[self::QUERY_BOOL] = [];
@@ -365,8 +367,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
      *
      * @return mixed
      */
-    private function convertValue($value, ?ValueConversion $converter)
+    private function convertValue($value, ?ValueConversion $converter, bool $injectParams)
     {
+        $value = $injectParams ? $this->injectParameters($value) : $value;
+
         if (null === $converter) {
             return $value;
         }
@@ -374,28 +378,28 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return $converter->convertValue($value);
     }
 
-    private function convertRangeValues(Range $range, ?ValueConversion $converter): Range
+    private function convertRangeValues(Range $range, ?ValueConversion $converter, bool $injectParams): Range
     {
         return new Range(
-            $this->convertValue($range->getLower(), $converter),
-            $this->convertValue($range->getUpper(), $converter),
+            $this->convertValue($range->getLower(), $converter, $injectParams),
+            $this->convertValue($range->getUpper(), $converter, $injectParams),
             $range->isLowerInclusive(),
             $range->isUpperInclusive()
         );
     }
 
-    private function convertCompareValue(Compare $compare, ?ValueConversion $converter): Compare
+    private function convertCompareValue(Compare $compare, ?ValueConversion $converter, bool $injectParams): Compare
     {
         return new Compare(
-            $this->convertValue($compare->getValue(), $converter),
+            $this->convertValue($compare->getValue(), $converter, $injectParams),
             $compare->getOperator()
         );
     }
 
-    private function convertMatcherValue(PatternMatch $patternMatch, ?ValueConversion $converter): PatternMatch
+    private function convertMatcherValue(PatternMatch $patternMatch, ?ValueConversion $converter, bool $injectParams): PatternMatch
     {
         return new PatternMatch(
-            $this->convertValue($patternMatch->getValue(), $converter),
+            $this->convertValue($patternMatch->getValue(), $converter, $injectParams),
             $patternMatch->getType(),
             $patternMatch->isCaseInsensitive()
         );
@@ -414,13 +418,13 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
      *
      * @return array
      */
-    private function prepareProcessedValuesQuery(string $propertyName, array $values, QueryPreparationHints $hints, $queryConverter, $valueConverter, $nested, $join, array $conditions = [], array $options = []): array
+    private function prepareProcessedValuesQuery(string $propertyName, array $values, QueryPreparationHints $hints, $queryConverter, $valueConverter, $nested, $join, bool $injectParams, array $conditions = [], array $options = []): array
     {
         $convertedValues = $values;
         if ($hints->context !== QueryPreparationHints::CONTEXT_PRECONDITION_QUERY) {
             $convertedValues = [];
             foreach ($values as $value) {
-                $convertedValues[] = $this->convertValue($value, $valueConverter);
+                $convertedValues[] = $this->convertValue($value, $valueConverter, $injectParams);
             }
         }
 
@@ -622,7 +626,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
      *
      * @return array
      */
-    private function processMappingConditions(FieldMapping $mapping, QueryPreparationHints $hints): array
+    private function processMappingConditions(FieldMapping $mapping, QueryPreparationHints $hints, bool $injectParams): array
     {
         $conditions = [];
         if ([] !== $mapping->conditions) {
@@ -643,6 +647,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $mappingCondition->valueConversion,
                     $mappingCondition->nested,
                     $mappingCondition->join,
+                    $injectParams,
                     [],
                     $mappingCondition->options
                 );
