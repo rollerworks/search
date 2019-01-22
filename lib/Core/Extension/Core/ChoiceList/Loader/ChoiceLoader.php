@@ -34,7 +34,7 @@ interface ChoiceLoader
      * The callable receives the choice as first and the array key as the second
      * argument.
      *
-     * @param null|callable $value The callable which generates the values
+     * @param callable|null $value The callable which generates the values
      *                             from choices
      */
     public function loadChoiceList(callable $value = null): ChoiceList;
@@ -51,7 +51,7 @@ interface ChoiceLoader
      *
      * @param string[]      $values An array of choice values. Non-existing
      *                              values in this array are ignored
-     * @param null|callable $value  The callable generating the choice values
+     * @param callable|null $value  The callable generating the choice values
      */
     public function loadChoicesForValues(array $values, callable $value = null): array;
 
@@ -67,7 +67,7 @@ interface ChoiceLoader
      *
      * @param array         $choices An array of choices. Non-existing choices in
      *                               this array are ignored
-     * @param null|callable $value   The callable generating the choice values
+     * @param callable|null $value   The callable generating the choice values
      *
      * @return string[] An array of choice values
      */

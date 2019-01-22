@@ -35,7 +35,7 @@ final class OrderTransformer implements DataTransformer
     private $case;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $default;
 

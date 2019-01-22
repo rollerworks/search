@@ -20,12 +20,12 @@ use Rollerworks\Component\Search\SearchCondition;
 class ElasticsearchFactory
 {
     /**
-     * @var null|Cache
+     * @var Cache|null
      */
     private $cacheDriver;
 
     /**
-     * @var null|ParameterBag
+     * @var ParameterBag|null
      */
     private $parameterBag;
 
@@ -50,7 +50,7 @@ class ElasticsearchFactory
     /**
      * Creates a new CachedConditionGenerator instance for the given ConditionGenerator.
      *
-     * @param null|int|\DateInterval $ttl Optional. The TTL value of this item. If no value is sent and
+     * @param int|\DateInterval|null $ttl Optional. The TTL value of this item. If no value is sent and
      *                                    the driver supports TTL then the library may set a default value
      *                                    for it or let the driver take care of that.
      */

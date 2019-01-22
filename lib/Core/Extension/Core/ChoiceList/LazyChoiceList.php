@@ -39,7 +39,7 @@ final class LazyChoiceList implements ChoiceList
      *
      * If null, choices are simply cast to strings.
      *
-     * @var null|callable
+     * @var callable|null
      */
     private $value;
 
@@ -49,7 +49,7 @@ final class LazyChoiceList implements ChoiceList
      * argument.
      *
      * @param ChoiceLoader  $loader The choice loader
-     * @param null|callable $value  The callable generating the choice
+     * @param callable|null $value  The callable generating the choice
      *                              values
      */
     public function __construct(ChoiceLoader $loader, callable $value = null)

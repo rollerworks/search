@@ -113,7 +113,7 @@ final class FieldMapping implements \Serializable
 
             foreach ($tokens as $type) {
                 $type = trim($type, '.');
-                $join = \compact('type', 'join');
+                $join = compact('type', 'join');
             }
         }
 
@@ -126,7 +126,7 @@ final class FieldMapping implements \Serializable
 
             foreach ($tokens as $path) {
                 $path = trim($path, '.');
-                $nested = \compact('path', 'nested');
+                $nested = compact('path', 'nested');
             }
         }
 

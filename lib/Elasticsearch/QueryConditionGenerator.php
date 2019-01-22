@@ -80,7 +80,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     /** @var FieldMapping[] $mapping */
     private $mappings;
 
-    /** @var null|ParameterBag */
+    /** @var ParameterBag|null */
     private $parameterBag;
 
     public function __construct(SearchCondition $searchCondition, ParameterBag $parameterBag = null)
@@ -409,8 +409,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
      * @param string                $propertyName
      * @param array                 $values
      * @param QueryPreparationHints $hints
-     * @param null|QueryConversion  $queryConverter
-     * @param null|ValueConversion  $valueConverter
+     * @param QueryConversion|null  $queryConverter
+     * @param ValueConversion|null  $valueConverter
      * @param array|bool            $nested
      * @param array|bool            $join
      * @param array                 $conditions

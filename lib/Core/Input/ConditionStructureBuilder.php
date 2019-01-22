@@ -89,7 +89,7 @@ class ConditionStructureBuilder implements StructureBuilder
     /**
      * False when not set, null when undetected (lazy loaded).
      *
-     * @var DataTransformer|null|bool
+     * @var DataTransformer|bool|null
      */
     protected $inputTransformer;
 

@@ -113,11 +113,11 @@ final class PropertyAccessDecorator implements ChoiceListFactory
 
     /**
      * @param ChoiceList                              $list             The choice list
-     * @param null|array|callable|string|PropertyPath $preferredChoices The preferred choices
-     * @param null|callable|string|PropertyPath       $label            The callable or path generating the choice labels
-     * @param null|callable|string|PropertyPath       $index            The callable or path generating the view indices
-     * @param null|callable|string|PropertyPath       $groupBy          The callable or path generating the group names
-     * @param null|array|callable|string|PropertyPath $attr             The callable or path generating the HTML attributes
+     * @param array|callable|string|PropertyPath|null $preferredChoices The preferred choices
+     * @param callable|string|PropertyPath|null       $label            The callable or path generating the choice labels
+     * @param callable|string|PropertyPath|null       $index            The callable or path generating the view indices
+     * @param callable|string|PropertyPath|null       $groupBy          The callable or path generating the group names
+     * @param array|callable|string|PropertyPath|null $attr             The callable or path generating the HTML attributes
      */
     public function createView(ChoiceList $list, $preferredChoices = null, $label = null, $index = null, $groupBy = null, $attr = null): ChoiceListView
     {

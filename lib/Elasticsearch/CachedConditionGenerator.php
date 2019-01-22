@@ -35,12 +35,12 @@ class CachedConditionGenerator implements ConditionGenerator
     private $cacheKey;
 
     /**
-     * @var null|int|\DateInterval
+     * @var int|\DateInterval|null
      */
     private $cacheTtl;
 
     /**
-     * @var null|Query
+     * @var Query|null
      */
     private $query;
 
@@ -48,7 +48,7 @@ class CachedConditionGenerator implements ConditionGenerator
      * @param ConditionGenerator     $conditionGenerator The actual ConditionGenerator to use when no cache exists
      * @param Cache                  $cacheDriver        PSR-16 SimpleCache instance. Use a custom pool to ease
      *                                                   purging invalidated items
-     * @param null|int|\DateInterval $ttl                Optional. The TTL value of this item. If no value is sent and
+     * @param int|\DateInterval|null $ttl                Optional. The TTL value of this item. If no value is sent and
      *                                                   the driver supports TTL then the library may set a default value
      *                                                   for it or let the driver take care of that.
      */

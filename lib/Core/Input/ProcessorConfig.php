@@ -43,7 +43,7 @@ class ProcessorConfig
     private $fieldSet;
 
     /**
-     * @var null|int|\DateInterval
+     * @var int|\DateInterval|null
      */
     private $cacheTTL;
 
@@ -111,7 +111,7 @@ class ProcessorConfig
     }
 
     /**
-     * @param null|int|\DateInterval $cacheTTL
+     * @param int|\DateInterval|null $cacheTTL
      *
      * @return ProcessorConfig
      */
@@ -123,7 +123,7 @@ class ProcessorConfig
     }
 
     /**
-     * @return null|int|\DateInterval
+     * @return int|\DateInterval|null
      */
     public function getCacheTTL()
     {

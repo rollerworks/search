@@ -122,7 +122,7 @@ final class StringLexer
      *
      * @param string $data A single character or a fully specified regex (with delimiters and options)
      *
-     * @return null|string The matched result or null when not matched
+     * @return string|null The matched result or null when not matched
      */
     public function matchOptional(string $data): ?string
     {
