@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 
 use Money\Currencies\ISOCurrencies;
+use Money\Currency;
 use Money\Parser\DecimalMoneyParser;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
@@ -42,7 +43,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
             $moneyParser = new DecimalMoneyParser($currencies);
         }
 
-        return $moneyParser->parse((string) $input, $currency);
+        return $moneyParser->parse((string) $input, new Currency($currency));
     }
 
     public function provideTransformations()
