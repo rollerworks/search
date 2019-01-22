@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Money\Currencies\ISOCurrencies;
+use Money\Currency;
 use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Parser\IntlMoneyParser;
@@ -30,9 +31,6 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
     private $defaultCurrency;
 
     private static $patterns = [];
-
-    /** None-breaking line */
-    private const NBL = "\xc2\xa0";
 
     public function __construct(string $defaultCurrency, bool $grouping = false)
     {
@@ -61,7 +59,7 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
         $result = (new IntlMoneyFormatter($this->getNumberFormatter(), new ISOCurrencies()))->format($value->value);
 
         // Convert fixed spaces to normal ones
-        $result = str_replace(self::NBL, ' ', $result);
+        $result = str_replace(["\xc2\xa0", "\xe2\x80\xaf"], ' ', $result);
 
         if (!$value->withCurrency) {
             $result = $this->removeCurrencySymbol($result, (string) $value->value->getCurrency());
@@ -97,7 +95,7 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
         }
 
         // Convert normal spaces to fixed spaces.
-        $value = str_replace(' ', self::NBL, $value);
+        $value = str_replace(' ', "\xc2\xa0", $value);
 
         $formatter = $this->getNumberFormatter();
 
