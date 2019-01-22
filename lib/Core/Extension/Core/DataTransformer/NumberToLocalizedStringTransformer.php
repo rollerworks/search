@@ -58,7 +58,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
         }
 
         // Convert fixed spaces to normal ones
-        $value = str_replace("\xc2\xa0", ' ', $value);
+        $value = str_replace(["\xc2\xa0", "\xe2\x80\xaf"], ' ', $value);
 
         return $value;
     }
