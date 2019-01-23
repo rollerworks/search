@@ -41,9 +41,21 @@ class AppKernel extends Kernel
         parent::__construct('test', $debug);
     }
 
+    public function serialize()
+    {
+        return serialize(array($this->config, $this->debug));
+    }
+
+    public function unserialize($data)
+    {
+        list($environment, $debug) = unserialize($data, array('allowed_classes' => false));
+
+        $this->__construct($environment, $debug);
+    }
+
     public function getName()
     {
-        return 'RSearch'.substr(sha1($this->config), 0, 3);
+        return 'RSearch'.substr(sha1($this->config), 0, 6);
     }
 
     public function registerBundles()
@@ -94,5 +106,13 @@ class AppKernel extends Kernel
         }
 
         return rtrim($tmpDir, '/\\').'/rollerworks-search-'.sha1(__DIR__).'/'.substr(sha1($this->config), 0, 6);
+    }
+
+    protected function getKernelParameters()
+    {
+        $parameters = parent::getKernelParameters();
+        $parameters['kernel.container_class'] = 'K'.substr(sha1($this->config), 0, 8);
+
+        return $parameters;
     }
 }
