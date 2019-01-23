@@ -43,12 +43,12 @@ class AppKernel extends Kernel
 
     public function serialize()
     {
-        return serialize(array($this->config, $this->debug));
+        return serialize([$this->config, $this->debug]);
     }
 
     public function unserialize($data)
     {
-        list($environment, $debug) = unserialize($data, array('allowed_classes' => false));
+        list($environment, $debug) = unserialize($data, ['allowed_classes' => false]);
 
         $this->__construct($environment, $debug);
     }

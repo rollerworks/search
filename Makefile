@@ -1,82 +1,86 @@
-QA_DOCKER_IMAGE=rollerworks/search-phpqa:latest
-QA_DOCKER_COMMAND=docker run -it --rm -v "$(shell pwd):/project" -w /project ${QA_DOCKER_IMAGE}
+ifndef BUILD_ENV
+BUILD_ENV=php7.1
+endif
 
-dist: install cs-full phpstan test
-ci: cs-full-check phpstan test
-lint: cs-full-check phpstan
+QA_DOCKER_IMAGE=rollerworks/search:latest
+QA_DOCKER_COMMAND=docker run --init --interactive --tty --rm --env "COMPOSER_HOME=/composer" --user "$(shell id -u):$(shell id -g)" --volume /tmp/tmp-phpqa-$(shell id -u):/tmp --volume "$(shell pwd):/project" --volume "${HOME}/.composer:/composer" --workdir /project ${QA_DOCKER_IMAGE}
 
-install:
-	docker-compose run --rm php make in-docker-install
+install: composer-install
+ci: check test
+check: composer-validate cs-check phpstan psalm
+lint: check # alias
+test: phpunit#-coverage infection
 
-install-dev:
-	docker-compose run --rm php make in-docker-install-dev
+clean:
+	rm -rf var/
 
-install-lowest:
-	docker-compose run --rm php make in-docker-install-lowest
+composer-validate: ensure
+	sh -c "${QA_DOCKER_COMMAND} composer validate"
+#	sh -c "${QA_DOCKER_COMMAND} composer normalize"
 
-test: docker-up
-	docker-compose run --rm php make in-docker-test
-	@$(MAKE) docker-down
+	@for direc in $$(gfind src -mindepth 2 -type f -name composer.json -printf '%h\n'); \
+	do \
+		sh -c "${QA_DOCKER_COMMAND} composer validate --working-dir=$${direc}"; \
+	done;
 
-test-coverage: docker-up
-	mkdir -p build/logs build/cov
-	docker-compose run --rm php make in-docker-test-coverage
-	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr /usr/local/bin/phpcov merge --clover build/logs/clover.xml build/cov"
-	@$(MAKE) docker-down
+#	@for direc in $$(gfind src -mindepth 2 -type f -name composer.json -printf '%h\n'); \
+#	do \
+#		sh -c "${QA_DOCKER_COMMAND} composer validate --working-dir=$${direc}"; \
+#		sh -c "${QA_DOCKER_COMMAND} composer normalize --working-dir=$${direc}"; \
+#	done;
 
-phpstan:
-	sh -c "${QA_DOCKER_COMMAND} phpstan analyse --configuration phpstan.neon --level 5 ."
+composer-install: fetch ensure clean
+	sh -c "${QA_DOCKER_COMMAND} composer upgrade"
+
+composer-install-lowest: fetch ensure clean
+	sh -c "${QA_DOCKER_COMMAND} composer upgrade --prefer-lowest --optimize-autoloader --ansi"
+
+composer-install-dev: fetch ensure clean
+	rm -f composer.lock
+	cp composer.json _composer.json
+	sh -c "${QA_DOCKER_COMMAND} composer config minimum-stability dev"
+	sh -c "${QA_DOCKER_COMMAND} composer upgrade --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi"
+	mv _composer.json composer.json
 
 cs:
-	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --diff"
-
-cs-full:
 	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --using-cache=false --diff"
 
-cs-full-check:
+cs-check:
 	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --using-cache=false --diff --dry-run"
 
-##
-# Special operations
-##
+phpstan: ensure
+	sh -c "${QA_DOCKER_COMMAND} phpstan analyse"
 
-docker-up:
+psalm: ensure
+	sh -c "${QA_DOCKER_COMMAND} php vendor/bin/psalm --show-info=false"
+
+infection: phpunit-coverage
+	docker-compose run --rm php phpdbg -qrr /tools/infection run --verbose --show-mutations --no-interaction --only-covered --coverage var/ --min-msi=84 --min-covered-msi=84
+
+phpunit-coverage: ensure docker-up
+	docker-compose run --rm php phpdbg -qrr vendor/bin/phpunit --verbose --coverage-text --log-junit=var/phpunit.junit.xml --coverage-xml var/coverage-xml/
+
+# Cannot be done yet
+#	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml --coverage-text --log-junit=var/phpunit-sqlite.junit.xml --coverage-xml var/coverage-xml-sqlite/
+#	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml --coverage-text --log-junit=var/phpunit-pgsql.junit.xml --coverage-xml var/coverage-xml-pgsql/"
+#	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-text --log-junit=var/phpunit-mysql.junit.xml --coverage-xml var/coverage-xml-mysql/"
+
+phpunit: docker-up
+	docker-compose run --rm php php vendor/bin/phpunit --verbose
+	docker-compose run --rm php php vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml
+	docker-compose run --rm php php vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml
+	docker-compose run --rm php php vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml
+
+ensure:
+	mkdir -p ${HOME}/.composer /tmp/tmp-phpqa-$(shell id -u)
+
+fetch:
+	docker pull "${QA_DOCKER_IMAGE}"
+
+docker-up: ensure
 	docker-compose up -d
 	# wait for ES to boot
 	until curl -s -X GET "http://localhost:59200/" > /dev/null; do sleep 1; done
 
 docker-down:
 	docker-compose down
-
-##
-# Private targets
-##
-in-docker-install:
-	rm -f composer.lock
-	composer.phar install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
-
-in-docker-install-dev:
-	rm -f composer.lock
-	cp composer.json _composer.json
-	composer.phar config minimum-stability dev
-	composer.phar update --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
-	mv _composer.json composer.json
-
-in-docker-install-lowest:
-	rm -f composer.lock
-	composer update --no-progress --no-suggest --prefer-stable --prefer-lowest --optimize-autoloader --ansi
-
-in-docker-test:
-	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose
-	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml
-	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml
-	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml
-
-in-docker-test-coverage:
-	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov
-	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
-	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
-	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
-
-.PHONY: install install-dev install-lowest phpstan cs cs-full cs-full-checks docker-up down-down
-.PHONY: in-docker-install in-docker-install-dev in-docker-install-lowest in-docker-test in-docker-test-coverage

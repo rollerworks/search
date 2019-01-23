@@ -15,6 +15,8 @@
         <ini name="intl.error_level" value="0"/>
         <ini name="memory_limit" value="-1"/>
 
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak_vendors" />
+
         <var name="db_type" value="pdo_pgsql"/>
         <var name="db_host" value="pgsql" />
         <var name="db_username" value="postgres" />

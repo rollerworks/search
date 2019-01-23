@@ -1,4 +1,10 @@
 parameters:
+    #reportUnmatchedIgnoredErrors: false
+
+    tmpDir: %currentWorkingDirectory%/var/phpstan
+    level: 5
+    paths:
+        - ./lib
     autoload_files:
         - vendor/autoload.php
     excludes_analyse:

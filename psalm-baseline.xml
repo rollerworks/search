@@ -1,0 +1,1207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+  <file src="lib/ApiPlatform/Elasticsearch/Extension/SearchExtension.php">
+    <NullArgument occurrences="1">
+      <code>null</code>
+    </NullArgument>
+  </file>
+  <file src="lib/ApiPlatform/Tests/EventListener/SearchConditionListenerTest.php">
+    <PossiblyNullReference occurrences="6">
+      <code>getFieldSet</code>
+      <code>getFieldSet</code>
+      <code>getFieldSet</code>
+      <code>getFieldSet</code>
+      <code>getFieldSet</code>
+      <code>getFieldSet</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/ApiPlatform/Tests/Fixtures/Dummy.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$dummyDate</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="lib/ApiPlatform/Tests/Mock/FieldSetStub.php">
+    <InvalidReturnType occurrences="1">
+      <code>FieldConfig</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Core/Exception/InputProcessorException.php">
+    <UndefinedMethod occurrences="1">
+      <code>[$this, 'formatValue']</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Core/Exporter/StringExporter.php">
+    <TypeCoercion occurrences="3">
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+    </TypeCoercion>
+    <UndefinedInterfaceMethod occurrences="3">
+      <code>getOperator</code>
+      <code>getValue</code>
+      <code>getValue</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Extension/Core/ChoiceList/ArrayChoiceList.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$choicesByValues</code>
+      <code>$structuredValues</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="lib/Core/Extension/Core/ChoiceList/Factory/DefaultChoiceListFactory.php">
+    <PossiblyFalseArgument occurrences="1">
+      <code>$label</code>
+    </PossiblyFalseArgument>
+  </file>
+  <file src="lib/Core/Extension/Core/ChoiceList/View/ChoiceListView.php">
+    <InvalidPropertyAssignmentValue occurrences="4">
+      <code>$this-&gt;choicesByLabel</code>
+      <code>$this-&gt;choicesByLabel</code>
+      <code>$this-&gt;choicesByLabel</code>
+      <code>$this-&gt;choicesByLabel</code>
+    </InvalidPropertyAssignmentValue>
+    <UndefinedPropertyFetch occurrences="2">
+      <code>$subView-&gt;value</code>
+      <code>$subView-&gt;value</code>
+    </UndefinedPropertyFetch>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/BaseDateTimeTransformer.php">
+    <InvalidScalarArgument occurrences="2">
+      <code>$e-&gt;getCode()</code>
+      <code>$e-&gt;getCode()</code>
+    </InvalidScalarArgument>
+    <PossiblyInvalidArgument occurrences="2">
+      <code>$e-&gt;getCode()</code>
+      <code>$e-&gt;getCode()</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformer.php">
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$dateTime</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$e-&gt;getCode()</code>
+    </PossiblyInvalidArgument>
+    <TypeDoesNotContainType occurrences="1">
+      <code>!$intlDateFormatter</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/DateTimeToRfc3339Transformer.php">
+    <PossiblyInvalidArgument occurrences="2">
+      <code>$e-&gt;getCode()</code>
+      <code>$e-&gt;getCode()</code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>setTimezone</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/DateTimeToStringTransformer.php">
+    <FalsableReturnStatement occurrences="1">
+      <code>return $dateTime;</code>
+    </FalsableReturnStatement>
+    <InvalidFalsableReturnType occurrences="1">
+      <code>?\DateTime</code>
+    </InvalidFalsableReturnType>
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$value</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+    <PossiblyFalseReference occurrences="1">
+      <code>setTimezone</code>
+    </PossiblyFalseReference>
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$e-&gt;getCode()</code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>setTimezone</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/DateTimeToTimestampTransformer.php">
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$dateTime</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$e-&gt;getCode()</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/MoneyToLocalizedStringTransformer.php">
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$value</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/MoneyToStringTransformer.php">
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$value</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/NumberToLocalizedStringTransformer.php">
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$value</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+    <PossiblyFalseArgument occurrences="1">
+      <code>$result</code>
+    </PossiblyFalseArgument>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/NumberToStringTransformer.php">
+    <InvalidScalarArgument occurrences="2">
+      <code>$value</code>
+      <code>$result</code>
+    </InvalidScalarArgument>
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$value</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Core/Extension/Core/DataTransformer/OrderTransformer.php">
+    <PossiblyNullArgument occurrences="2">
+      <code>$value</code>
+      <code>$value</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="lib/Core/Extension/Core/Type/BirthdayType.php">
+    <PossiblyNullArgument occurrences="2">
+      <code>$config-&gt;getViewTransformer()</code>
+      <code>$config-&gt;getNormTransformer()</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="lib/Core/Extension/Core/ValueComparator/BirthdayValueComparator.php">
+    <MoreSpecificImplementedParamType occurrences="3">
+      <code>$higher</code>
+      <code>$lower</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Core/Extension/Core/ValueComparator/DateValueComparator.php">
+    <MoreSpecificImplementedParamType occurrences="3">
+      <code>$higher</code>
+      <code>$lower</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Core/Extension/Core/ValueComparator/MoneyValueComparator.php">
+    <MoreSpecificImplementedParamType occurrences="3">
+      <code>$higher</code>
+      <code>$lower</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Core/Extension/Core/ValueComparator/NumberValueComparator.php">
+    <MoreSpecificImplementedParamType occurrences="3">
+      <code>$higher</code>
+      <code>$lower</code>
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Core/Field/AbstractFieldType.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>string</code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>return StringUtil::fqcnToBlockPrefix(\get_class($this));</code>
+    </NullableReturnStatement>
+  </file>
+  <file src="lib/Core/Field/GenericTypeRegistry.php">
+    <InvalidCatch occurrences="1"/>
+    <TypeCoercion occurrences="1">
+      <code>$type</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Core/Input/CachingInputProcessor.php">
+    <PossiblyNullOperand occurrences="1">
+      <code>$config-&gt;getFieldSet()-&gt;getSetName()</code>
+    </PossiblyNullOperand>
+  </file>
+  <file src="lib/Core/Input/ConditionStructureBuilder.php">
+    <PossiblyInvalidMethodCall occurrences="1">
+      <code>reverseTransform</code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyNullReference occurrences="14">
+      <code>addSimpleValue</code>
+      <code>addExcludedSimpleValue</code>
+      <code>add</code>
+      <code>add</code>
+      <code>add</code>
+      <code>add</code>
+      <code>getNormTransformer</code>
+      <code>getName</code>
+      <code>getOption</code>
+      <code>count</code>
+      <code>getName</code>
+      <code>supportValueType</code>
+      <code>getValueComparator</code>
+      <code>isLower</code>
+    </PossiblyNullReference>
+    <TypeDoesNotContainType occurrences="1">
+      <code>'' === $value</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="lib/Core/Input/ConditionStructureByViewBuilder.php">
+    <PossiblyInvalidMethodCall occurrences="1">
+      <code>reverseTransform</code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyNullReference occurrences="3">
+      <code>getViewTransformer</code>
+      <code>getName</code>
+      <code>getOption</code>
+    </PossiblyNullReference>
+    <TypeDoesNotContainType occurrences="1">
+      <code>'' === $value</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="lib/Core/Input/JsonInput.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>SearchCondition</code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>return $condition;</code>
+    </NullableReturnStatement>
+    <PossiblyNullReference occurrences="8">
+      <code>enterGroup</code>
+      <code>field</code>
+      <code>field</code>
+      <code>getRootGroup</code>
+      <code>field</code>
+      <code>getRootGroup</code>
+      <code>getCurrentPath</code>
+      <code>getCurrentPath</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Input/NormStringQueryInput.php">
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$this-&gt;errors</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Input/OrderStructureBuilder.php">
+    <PossiblyInvalidMethodCall occurrences="1">
+      <code>reverseTransform</code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyNullReference occurrences="9">
+      <code>getName</code>
+      <code>getName</code>
+      <code>getName</code>
+      <code>getName</code>
+      <code>getName</code>
+      <code>getName</code>
+      <code>getNormTransformer</code>
+      <code>getName</code>
+      <code>getOption</code>
+    </PossiblyNullReference>
+    <TypeDoesNotContainType occurrences="1">
+      <code>'' === $value</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="lib/Core/Input/StringInput.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>SearchCondition</code>
+    </InvalidNullableReturnType>
+    <MoreSpecificImplementedParamType occurrences="1">
+      <code>$input</code>
+    </MoreSpecificImplementedParamType>
+    <NullableReturnStatement occurrences="1">
+      <code>return $condition;</code>
+    </NullableReturnStatement>
+    <PossiblyNullReference occurrences="5">
+      <code>getRootGroup</code>
+      <code>getRootGroup</code>
+      <code>getRootGroup</code>
+      <code>getRootGroup</code>
+      <code>enterGroup</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Input/StringLexer.php">
+    <PossiblyUndefinedVariable occurrences="1">
+      <code>$c</code>
+    </PossiblyUndefinedVariable>
+  </file>
+  <file src="lib/Core/Input/StringQueryInput.php">
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$this-&gt;errors</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Test/SearchConditionExporterTestCase.php">
+    <PossiblyInvalidArgument occurrences="11">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Test/SearchIntegrationTestCase.php">
+    <PossiblyNullReference occurrences="1">
+      <code>addExtensions</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Tests/Exporter/NormStringQueryExporterTest.php">
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Tests/Exporter/StringQueryExporterTest.php">
+    <PossiblyInvalidArgument occurrences="2">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/ChoiceList/Factory/CachingFactoryDecoratorTest.php">
+    <PossiblyNullReference occurrences="50">
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromLoader</code>
+      <code>expects</code>
+      <code>createListFromLoader</code>
+      <code>expects</code>
+      <code>createListFromLoader</code>
+      <code>expects</code>
+      <code>createListFromLoader</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+      <code>expects</code>
+      <code>createView</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/ChoiceList/Factory/DefaultChoiceListFactoryTest.php">
+    <PossiblyNullReference occurrences="39">
+      <code>createListFromChoices</code>
+      <code>createListFromChoices</code>
+      <code>createListFromChoices</code>
+      <code>createListFromChoices</code>
+      <code>createListFromChoices</code>
+      <code>createListFromChoices</code>
+      <code>createListFromChoices</code>
+      <code>createListFromChoices</code>
+      <code>createListFromChoices</code>
+      <code>createListFromLoader</code>
+      <code>createListFromLoader</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+      <code>createView</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/ChoiceList/Factory/PropertyAccessDecoratorTest.php">
+    <InvalidArgument occurrences="12">
+      <code>[0 =&gt; true]</code>
+      <code>[0 =&gt; true]</code>
+      <code>[0 =&gt; false]</code>
+      <code>['label']</code>
+      <code>['label']</code>
+      <code>['index']</code>
+      <code>['index']</code>
+      <code>['group']</code>
+      <code>['group']</code>
+      <code>[null]</code>
+      <code>['attr']</code>
+      <code>['attr']</code>
+    </InvalidArgument>
+    <NonStaticSelfCall occurrences="3">
+      <code>self::assertSame([$expectedValue ?? 0 =&gt; $expectedValue], $list-&gt;getChoices(), 'Choices are not the same')</code>
+      <code>self::assertSame([0 =&gt; $expectedValue ?? '0'], $list-&gt;getStructuredValues(), 'StructuredValues are not the same')</code>
+      <code>self::assertSame([$expectedValue ?? 0 =&gt; 0], $list-&gt;getOriginalKeys(), 'Originals are not the same')</code>
+    </NonStaticSelfCall>
+    <PossiblyNullReference occurrences="24">
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromLoader</code>
+      <code>expects</code>
+      <code>createListFromChoices</code>
+      <code>expects</code>
+      <code>createListFromLoader</code>
+      <code>expects</code>
+      <code>createListFromLoader</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/ChoiceList/LazyChoiceListTest.php">
+    <PossiblyNullReference occurrences="16">
+      <code>expects</code>
+      <code>expects</code>
+      <code>getChoices</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>getValues</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>getStructuredValues</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>getOriginalKeys</code>
+      <code>expects</code>
+      <code>getChoicesForValues</code>
+      <code>expects</code>
+      <code>getChoices</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/ChoiceList/Loader/CallbackChoiceLoaderTest.php">
+    <PossiblyNullArgument occurrences="2">
+      <code>self::$choiceValues</code>
+      <code>self::$choices</code>
+    </PossiblyNullArgument>
+    <PossiblyNullReference occurrences="5">
+      <code>loadChoiceList</code>
+      <code>loadChoicesForValues</code>
+      <code>getChoicesForValues</code>
+      <code>loadValuesForChoices</code>
+      <code>getValuesForChoices</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/ChoiceToValueTransformerTest.php">
+    <PossiblyNullReference occurrences="5">
+      <code>transform</code>
+      <code>transform</code>
+      <code>reverseTransform</code>
+      <code>reverseTransform</code>
+      <code>reverseTransform</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformerTest.php">
+    <InvalidArgument occurrences="2">
+      <code>'2010-01-01'</code>
+      <code>1.5</code>
+    </InvalidArgument>
+    <InvalidScalarArgument occurrences="1">
+      <code>12345</code>
+    </InvalidScalarArgument>
+    <PossiblyNullArgument occurrences="7">
+      <code>$transformer-&gt;reverseTransform('03.02.2010, 04:05:06 GMT+00:00')</code>
+      <code>$transformer-&gt;reverseTransform('Feb 3, 2010, 04:05 AM')</code>
+      <code>$transformer-&gt;reverseTransform('03.02.2010, 04:05')</code>
+      <code>$transformer-&gt;reverseTransform('02*2010*03 04|05|06')</code>
+      <code>$transformer-&gt;reverseTransform('28/05/1978')</code>
+      <code>$transformer-&gt;reverseTransform('day: 28 month: 05 year: 1978')</code>
+      <code>$transformer-&gt;reverseTransform('31.04.10 04:05')</code>
+    </PossiblyNullArgument>
+    <PossiblyNullReference occurrences="1">
+      <code>format</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToStringTransformerTest.php">
+    <InvalidArgument occurrences="1">
+      <code>'1234'</code>
+    </InvalidArgument>
+    <InvalidScalarArgument occurrences="1">
+      <code>1234</code>
+    </InvalidScalarArgument>
+    <PossiblyNullArgument occurrences="1">
+      <code>$reverseTransformer-&gt;reverseTransform($input)</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToTimestampTransformerTest.php">
+    <InvalidArgument occurrences="1">
+      <code>'1234'</code>
+    </InvalidArgument>
+    <PossiblyNullArgument occurrences="2">
+      <code>$reverseTransformer-&gt;reverseTransform($input)</code>
+      <code>$reverseTransformer-&gt;reverseTransform($input)</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/IntegerToLocalizedStringTransformerTest.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>1</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/IntegerToStringTransformerTest.php">
+    <InvalidArgument occurrences="1">
+      <code>['1']</code>
+    </InvalidArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/MoneyToLocalizedStringTransformerTest.php">
+    <InvalidArgument occurrences="1">
+      <code>'foo'</code>
+    </InvalidArgument>
+    <InvalidScalarArgument occurrences="1">
+      <code>1</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/MoneyToStringTransformerTest.php">
+    <InvalidArgument occurrences="1">
+      <code>'foo'</code>
+    </InvalidArgument>
+    <InvalidScalarArgument occurrences="1">
+      <code>1</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/NumberToLocalizedStringTransformerTest.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>1</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/DataTransformer/NumberToStringTransformerTest.php">
+    <InvalidArgument occurrences="1">
+      <code>['1']</code>
+    </InvalidArgument>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/ChoiceTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="7">
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/CountryTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="2">
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/CurrencyTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/DateTimeTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/DateTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="2">
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/IntegerTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/LanguageTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="2">
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/LocaleTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/MoneyTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/NumberTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/TimeTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="3">
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Extension/Core/Type/TimezoneTypeTest.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>finalizeConfig</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Core/Tests/Field/ResolvedFieldTypeTest.php">
+    <PossiblyInvalidArgument occurrences="2">
+      <code>$this-&gt;parentType</code>
+      <code>$field</code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedMethod occurrences="4">
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+    </PossiblyUndefinedMethod>
+    <TypeCoercion occurrences="1">
+      <code>$typeClass</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Core/Tests/Field/SearchFieldTest.php">
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$viewTransformer</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Tests/GenericFieldSetBuilderTest.php">
+    <TypeCoercion occurrences="2">
+      <code>$type</code>
+      <code>$type</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Core/Tests/GenericFieldSetTest.php">
+    <InvalidArgument occurrences="3"/>
+  </file>
+  <file src="lib/Core/Tests/Input/InputProcessorTestCase.php">
+    <PossiblyInvalidArgument occurrences="19">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet(true, true)</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Tests/Input/JsonInputTest.php">
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Tests/Input/NormStringQueryInputTest.php">
+    <PossiblyInvalidArgument occurrences="3">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="lib/Core/Tests/Input/StringQueryInputTest.php">
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>set</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Core/Tests/Loader/ConditionExporterLoaderTest.php">
+    <TypeCoercion occurrences="1">
+      <code>$className</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Core/Tests/Loader/InputProcessorLoaderTest.php">
+    <TypeCoercion occurrences="1">
+      <code>$className</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Core/Tests/Mock/FieldSetStub.php">
+    <InvalidReturnType occurrences="1">
+      <code>FieldConfig</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Doctrine/Dbal/CachedConditionGenerator.php">
+    <PossiblyNullOperand occurrences="1">
+      <code>$searchCondition-&gt;getFieldSet()-&gt;getSetName()</code>
+    </PossiblyNullOperand>
+  </file>
+  <file src="lib/Doctrine/Dbal/DoctrineDbalFactory.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$cacheDriver</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="lib/Doctrine/Dbal/EventSubscriber/SqliteConnectionSubscriber.php">
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>array</code>
+    </LessSpecificImplementedReturnType>
+    <UndefinedMethod occurrences="1">
+      <code>sqliteCreateFunction</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Doctrine/Dbal/Extension/Conversion/AgeDateConversion.php">
+    <InvalidArgument occurrences="1">
+      <code>DBALType::getType('date')</code>
+    </InvalidArgument>
+  </file>
+  <file src="lib/Doctrine/Dbal/Query/QueryField.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$alias</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="lib/Doctrine/Dbal/Query/QueryGenerator.php">
+    <InvalidArgument occurrences="1">
+      <code>'strlen'</code>
+    </InvalidArgument>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$column</code>
+    </PossiblyNullPropertyAssignmentValue>
+    <TypeCoercion occurrences="6">
+      <code>$values-&gt;get(Range::class)</code>
+      <code>$values-&gt;get(Compare::class)</code>
+      <code>$values-&gt;get(PatternMatch::class)</code>
+      <code>$values-&gt;get(ExcludedRange::class)</code>
+      <code>$values-&gt;get(PatternMatch::class)</code>
+      <code>$values-&gt;get(Compare::class)</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Doctrine/Dbal/QueryPlatform/AbstractQueryPlatform.php">
+    <PossiblyNullReference occurrences="1">
+      <code>convertValue</code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>convertValue</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Doctrine/Dbal/SqlConditionGenerator.php">
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$this-&gt;fields</code>
+    </InvalidPropertyAssignmentValue>
+    <InvalidReturnType occurrences="1">
+      <code>setField</code>
+    </InvalidReturnType>
+    <LessSpecificReturnStatement occurrences="1">
+      <code>return new $platformClass($this-&gt;connection);</code>
+    </LessSpecificReturnStatement>
+    <MoreSpecificReturnType occurrences="1">
+      <code>QueryPlatform</code>
+    </MoreSpecificReturnType>
+    <NullArrayOffset occurrences="1">
+      <code>$this-&gt;fields[$fieldName][null]</code>
+    </NullArrayOffset>
+    <PossiblyNullArrayOffset occurrences="1">
+      <code>$this-&gt;fields[$fieldName]</code>
+    </PossiblyNullArrayOffset>
+  </file>
+  <file src="lib/Doctrine/Dbal/Tests/CachedConditionGeneratorTest.php">
+    <PossiblyInvalidArgument occurrences="2">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$fieldSet</code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedMethod occurrences="4">
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Doctrine/Dbal/Tests/DbalTestCase.php">
+    <MoreSpecificReturnType occurrences="1">
+      <code>getFieldSet</code>
+    </MoreSpecificReturnType>
+  </file>
+  <file src="lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php">
+    <InvalidReturnType occurrences="1">
+      <code>string</code>
+    </InvalidReturnType>
+    <PossiblyNullReference occurrences="2">
+      <code>query</code>
+      <code>query</code>
+    </PossiblyNullReference>
+    <TypeCoercion occurrences="1">
+      <code>$e</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Doctrine/Dbal/Tests/Functional/SqlConditionGeneratorTest.php">
+    <PossiblyInvalidArgument occurrences="16">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+    <PossiblyNullReference occurrences="2">
+      <code>getDatabasePlatform</code>
+      <code>getDatabasePlatform</code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedMethod occurrences="3">
+      <code>add</code>
+      <code>add</code>
+      <code>add</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Doctrine/Dbal/Tests/Mocks/ConnectionMock.php">
+    <InvalidReturnType occurrences="1">
+      <code>insert</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php">
+    <InvalidReturnType occurrences="8">
+      <code>getBooleanTypeDeclarationSQL</code>
+      <code>getIntegerTypeDeclarationSQL</code>
+      <code>getBigIntTypeDeclarationSQL</code>
+      <code>getSmallIntTypeDeclarationSQL</code>
+      <code>_getCommonIntegerTypeDeclarationSQL</code>
+      <code>getVarcharTypeDeclarationSQL</code>
+      <code>getClobTypeDeclarationSQL</code>
+      <code>getVarcharTypeDeclarationSQLSnippet</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Doctrine/Dbal/Tests/SqlConditionGeneratorTest.php">
+    <PossiblyInvalidArgument occurrences="23">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedMethod occurrences="5">
+      <code>add</code>
+      <code>add</code>
+      <code>add</code>
+      <code>add</code>
+      <code>add</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Doctrine/Dbal/Tests/bootstrap.php">
+    <MissingFile occurrences="1">
+      <code>require __DIR__.'/../vendor/autoload.php'</code>
+    </MissingFile>
+  </file>
+  <file src="lib/Doctrine/Orm/CachedDqlConditionGenerator.php">
+    <PossiblyNullOperand occurrences="1">
+      <code>$searchCondition-&gt;getFieldSet()-&gt;getSetName()</code>
+    </PossiblyNullOperand>
+  </file>
+  <file src="lib/Doctrine/Orm/CachedNativeQueryConditionGenerator.php">
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>getSearchCondition</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Doctrine/Orm/DoctrineOrmFactory.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$cacheDriver</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="lib/Doctrine/Orm/DqlConditionGenerator.php">
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>setHint</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Doctrine/Orm/FieldConfigBuilder.php">
+    <NullArrayOffset occurrences="1">
+      <code>$this-&gt;fields[$fieldName][null]</code>
+    </NullArrayOffset>
+  </file>
+  <file src="lib/Doctrine/Orm/QueryPlatformTrait.php">
+    <MoreSpecificReturnType occurrences="1">
+      <code>QueryPlatform</code>
+    </MoreSpecificReturnType>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/CachedDqlConditionGeneratorTest.php">
+    <PossiblyInvalidArgument occurrences="4">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+    <PossiblyNullReference occurrences="3">
+      <code>createQuery</code>
+      <code>createQuery</code>
+      <code>createQuery</code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedMethod occurrences="3">
+      <code>expects</code>
+      <code>expects</code>
+      <code>expects</code>
+    </PossiblyUndefinedMethod>
+    <TypeCoercion occurrences="1">
+      <code>'Doctrine\Common\Cache\Cache'</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/CachedNativeQueryConditionGeneratorTest.php">
+    <PossiblyInvalidArgument occurrences="4">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+    <PossiblyNullArgument occurrences="3">
+      <code>$this-&gt;em</code>
+      <code>$this-&gt;em</code>
+      <code>$this-&gt;em</code>
+    </PossiblyNullArgument>
+    <PossiblyNullReference occurrences="2">
+      <code>getDatabasePlatform</code>
+      <code>getDatabasePlatform</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/DoctrineOrmFactoryTest.php">
+    <PossiblyNullArgument occurrences="2">
+      <code>$this-&gt;em</code>
+      <code>$this-&gt;em</code>
+    </PossiblyNullArgument>
+    <PossiblyNullReference occurrences="2">
+      <code>createQuery</code>
+      <code>createQuery</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/DqlConditionGeneratorResultsTest.php">
+    <PossiblyNullReference occurrences="1">
+      <code>createQuery</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/DqlConditionGeneratorTest.php">
+    <PossiblyNullReference occurrences="3">
+      <code>createQuery</code>
+      <code>getDatabasePlatform</code>
+      <code>getConfiguration</code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>add</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/FieldConfigBuilderTest.php">
+    <NullArrayOffset occurrences="3">
+      <code>$fields['id'][null]</code>
+      <code>$fields['customer'][null]</code>
+      <code>$fields['id'][null]</code>
+    </NullArrayOffset>
+    <TypeCoercion occurrences="3">
+      <code>'Doctrine\ORM\EntityManagerInterface'</code>
+      <code>'Doctrine\ORM\Mapping\ClassMetadata'</code>
+      <code>'Doctrine\ORM\Mapping\ClassMetadata'</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/NativeQueryConditionGeneratorResultsTest.php">
+    <PossiblyNullArgument occurrences="1">
+      <code>$this-&gt;em</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/NativeQueryConditionGeneratorTest.php">
+    <PossiblyInvalidArgument occurrences="6">
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+      <code>$this-&gt;getFieldSet()</code>
+    </PossiblyInvalidArgument>
+    <PossiblyNullArgument occurrences="1">
+      <code>$this-&gt;em</code>
+    </PossiblyNullArgument>
+    <PossiblyUndefinedMethod occurrences="3">
+      <code>add</code>
+      <code>add</code>
+      <code>add</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Doctrine/Orm/Tests/OrmTestCase.php">
+    <InvalidReturnType occurrences="1">
+      <code>Query|NativeQuery</code>
+    </InvalidReturnType>
+    <PossiblyNullReference occurrences="2">
+      <code>getConfiguration</code>
+      <code>flushAll</code>
+    </PossiblyNullReference>
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>flushAll</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Elasticsearch/CachedConditionGenerator.php">
+    <PossiblyNullOperand occurrences="1">
+      <code>$searchCondition-&gt;getFieldSet()-&gt;getSetName()</code>
+    </PossiblyNullOperand>
+  </file>
+  <file src="lib/Elasticsearch/Extension/Conversion/CurrencyConversion.php">
+    <MoreSpecificImplementedParamType occurrences="1">
+      <code>$value</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Elasticsearch/Extension/Conversion/DateConversion.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>string</code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>return $this-&gt;transformer-&gt;transform($value);</code>
+    </NullableReturnStatement>
+  </file>
+  <file src="lib/Elasticsearch/FieldMapping.php">
+    <InvalidArrayOffset occurrences="1">
+      <code>$this-&gt;join['type']</code>
+    </InvalidArrayOffset>
+  </file>
+  <file src="lib/Elasticsearch/QueryConditionGenerator.php">
+    <InvalidReturnType occurrences="1">
+      <code>registerField</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Elasticsearch/Tests/CachedConditionGeneratorTest.php">
+    <PossiblyUndefinedMethod occurrences="2">
+      <code>expects</code>
+      <code>expects</code>
+    </PossiblyUndefinedMethod>
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>expects</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Elasticsearch/Tests/QueryConditionGeneratorTest.php">
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>add</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="lib/Symfony/SearchBundle/DependencyInjection/Compiler/ExtensionPass.php">
+    <PossiblyNullArrayOffset occurrences="1">
+      <code>$servicesMap</code>
+    </PossiblyNullArrayOffset>
+  </file>
+  <file src="lib/Symfony/SearchBundle/DependencyInjection/Compiler/FieldSetRegistryPass.php">
+    <PossiblyNullArrayOffset occurrences="2">
+      <code>$fieldSetServices</code>
+      <code>$fieldSetServiceIds</code>
+    </PossiblyNullArrayOffset>
+  </file>
+  <file src="lib/Symfony/SearchBundle/DependencyInjection/Configuration.php">
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>addDefaultsIfNotSet</code>
+    </PossiblyUndefinedMethod>
+    <TypeCoercion occurrences="3">
+      <code>$rootNode</code>
+      <code>$rootNode</code>
+      <code>$rootNode</code>
+    </TypeCoercion>
+  </file>
+  <file src="lib/Symfony/SearchBundle/DependencyInjection/RollerworksSearchExtension.php">
+    <PossiblyNullArgument occurrences="1">
+      <code>$configuration</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="lib/Symfony/SearchBundle/Tests/Functional/ApiPlatformTest.php">
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$e-&gt;getCode()</code>
+    </PossiblyInvalidArgument>
+    <PossiblyNullReference occurrences="1">
+      <code>get</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Symfony/SearchBundle/Tests/Functional/BootTest.php">
+    <PossiblyNullReference occurrences="1">
+      <code>get</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Symfony/SearchBundle/Tests/Functional/DoctrineTest.php">
+    <PossiblyNullReference occurrences="2">
+      <code>get</code>
+      <code>get</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Symfony/SearchBundle/Tests/Functional/ElasticsearchTest.php">
+    <PossiblyNullReference occurrences="1">
+      <code>get</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Symfony/SearchBundle/Tests/Functional/FunctionalTestCase.php">
+    <PossiblyNullReference occurrences="2">
+      <code>get</code>
+      <code>getParameter</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="lib/Symfony/Validator/Tests/InputValidatorTest.php">
+    <MoreSpecificReturnType occurrences="1">
+      <code>getFieldSet</code>
+    </MoreSpecificReturnType>
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>add</code>
+    </PossiblyUndefinedMethod>
+  </file>
+</files>

@@ -1,0 +1,23 @@
+{
+    "timeout": 5,
+    "source": {
+        "directories": [
+            "lib"
+        ],
+        "excludes": [
+            "*\/Tests",
+            "*\/Test",
+            "*\/*\/Test",
+            "*\/*\/Tests"
+        ]
+    },
+    "logs": {
+        "text": "var/infection.log"
+    },
+    "mutators": {
+        "@default": true,
+        "IdenticalEqual": false,
+        "NotIdenticalNotEqual": false,
+        "This": false
+    }
+}

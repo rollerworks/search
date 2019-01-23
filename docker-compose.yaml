@@ -6,9 +6,10 @@ services:
           - elasticsearch
           - pgsql
           - mariadb-server
-        image: rollerworks/search-dev:latest
+        image: rollerworks/search:latest
+        working_dir: /project
         volumes:
-            - .:/srv/www:rw
+            - .:/project:rw
 
     # Storage services
     pgsql:
