@@ -30,6 +30,8 @@
         "friendsofsymfony/elastica-bundle": "^4.0.1 || ^5.0.3",
         "matthiasnoback/symfony-dependency-injection-test": "^2.3.0 || ^3.0",
         "moneyphp/money": "^3.2.0",
+        "phpdocumentor/reflection-docblock": "^4.3",
+        "phpspec/prophecy": "^1.8",
         "phpunit/phpunit": "^7.5.2",
         "psalm/plugin-phpunit": "^0.3.0",
         "psr/simple-cache": "^1.0.0",
