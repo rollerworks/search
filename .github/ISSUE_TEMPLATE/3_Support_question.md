@@ -1,6 +1,7 @@
 ---
 name: 👩‍🏫 Support Question
 about: Questions about using RollerworksSearch
+labels: Question / Support 
 
 ---
 
