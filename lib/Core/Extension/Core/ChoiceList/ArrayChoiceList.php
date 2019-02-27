@@ -124,7 +124,7 @@ class ArrayChoiceList implements ChoiceList
         $choices = [];
 
         foreach ($values as $i => $givenValue) {
-            if (array_key_exists($givenValue, $this->choices)) {
+            if (\array_key_exists($givenValue, $this->choices)) {
                 $choices[$i] = $this->choices[$givenValue];
             }
         }

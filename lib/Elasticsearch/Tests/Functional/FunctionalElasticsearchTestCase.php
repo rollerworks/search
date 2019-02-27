@@ -42,7 +42,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $documents = $this->getDocuments();
 
         foreach ($mappings as $name => $properties) {
-            if (false === array_key_exists($name, $documents)) {
+            if (false === \array_key_exists($name, $documents)) {
                 throw new \RuntimeException(sprintf('No documents for mapping "%1$s" defined', $name));
             }
             $data = $documents[$name];

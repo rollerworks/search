@@ -189,7 +189,7 @@ final class OrderField implements FieldConfig
      */
     public function hasOption(string $name): bool
     {
-        return array_key_exists($name, $this->options);
+        return \array_key_exists($name, $this->options);
     }
 
     /**
@@ -197,7 +197,7 @@ final class OrderField implements FieldConfig
      */
     public function getOption(string $name, $default = null)
     {
-        if (array_key_exists($name, $this->options)) {
+        if (\array_key_exists($name, $this->options)) {
             return $this->options[$name];
         }
 
@@ -249,7 +249,7 @@ final class OrderField implements FieldConfig
      */
     public function hasAttribute(string $name): bool
     {
-        return array_key_exists($name, $this->attributes);
+        return \array_key_exists($name, $this->attributes);
     }
 
     /**
@@ -257,6 +257,6 @@ final class OrderField implements FieldConfig
      */
     public function getAttribute(string $name, $default = null)
     {
-        return array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
+        return \array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
     }
 }

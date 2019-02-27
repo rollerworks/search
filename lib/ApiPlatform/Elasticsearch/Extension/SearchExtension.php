@@ -90,7 +90,7 @@ class SearchExtension implements QueryCollectionExtensionInterface
         }
 
         $normalizer = null;
-        if (array_key_exists('identifiers_normalizer', $configuration)) {
+        if (\array_key_exists('identifiers_normalizer', $configuration)) {
             $normalizer = $configuration['identifiers_normalizer'];
             if (!\is_callable($normalizer)) {
                 throw new BadMethodCallException('Parameter "identifiers_normalizer" must be a valid callable');
@@ -151,7 +151,7 @@ class SearchExtension implements QueryCollectionExtensionInterface
 
     private function getIdentifierNames(string $class): array
     {
-        if (!array_key_exists($class, $this->identifierNames)) {
+        if (!\array_key_exists($class, $this->identifierNames)) {
             $manager = $this->registry->getManagerForClass($class);
             $metadata = $manager->getClassMetadata($class);
 

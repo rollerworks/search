@@ -261,7 +261,7 @@ final class JsonInput extends AbstractInput
         $missingKeys = [];
 
         foreach ($requiredKeys as $key) {
-            if (!array_key_exists($key, $array)) {
+            if (!\array_key_exists($key, $array)) {
                 $missingKeys[] = $key;
             }
         }
