@@ -36,9 +36,9 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         $field = $this->getFactory()->createField('integer', IntegerType::class);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('1.678')
-            ->successfullyTransformsTo(1)
-            ->andReverseTransformsTo('1');
+            ->withInput('678')
+            ->successfullyTransformsTo(678)
+            ->andReverseTransformsTo('678');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1')
@@ -58,12 +58,7 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         $field = $this->getFactory()->createField('number', IntegerType::class);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('١٢٣٤٥٫٦٧٨٩٠', '12345')
-            ->successfullyTransformsTo(12345)
-            ->andReverseTransformsTo('١٢٣٤٥', '12345');
-
-        FieldTransformationAssertion::assertThat($field)
-            ->withInput('١٢٣٤٥', '12345.679')
+            ->withInput('١٢٣٤٥', '12345')
             ->successfullyTransformsTo(12345)
             ->andReverseTransformsTo('١٢٣٤٥', '12345');
     }

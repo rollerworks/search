@@ -29,16 +29,17 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'model_timezone' => 'America/New_York',
             'view_timezone' => 'Pacific/Tahiti',
-            'pattern' => DateTimeType::HTML5_FORMAT,
+            'pattern' => 'yyyy-MM-dd\'T\'HH:mm:ssZZZZZ',
+            'html5' => true,
         ]);
 
         $outputTime = new \DateTime('2010-06-02 03:04:00 Pacific/Tahiti');
         $outputTime->setTimezone(new \DateTimeZone('America/New_York'));
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('2010-06-02T03:04:00-10:00')
+            ->withInput('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00-10:00')
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('2010-06-02T03:04:00-10:00');
+            ->andReverseTransformsTo('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00');
     }
 
     public function testPatternCanBeConfigured()

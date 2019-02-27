@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
+use Rollerworks\Component\Search\Exception\TransformationFailedException;
+
 /**
  * Transforms between an integer and a localized number with grouping
  * (each thousand) and comma separators.
@@ -22,18 +24,32 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 final class IntegerToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
 {
     /**
-     * @param bool|null $grouping     Whether thousands should be grouped
-     * @param int|null  $roundingMode One of the ROUND_ constants in this class
+     * @param bool $grouping     Whether thousands should be grouped
+     * @param int  $roundingMode One of the ROUND_ constants in this class
      */
-    public function __construct(bool $grouping = null, ?int $roundingMode = null)
+    public function __construct(?bool $grouping = false, ?int $roundingMode = self::ROUND_DOWN)
     {
-        parent::__construct(0, $grouping, $roundingMode ?? self::ROUND_DOWN);
+        parent::__construct(0, $grouping, $roundingMode);
     }
 
-    public function reverseTransform($value)
+    public function reverseTransform($value): ?int
     {
+        $decimalSeparator = $this->getNumberFormatter()->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+
+        if (\is_string($value) && false !== strpos($value, $decimalSeparator)) {
+            throw new TransformationFailedException(sprintf('The value "%s" is not a valid integer.', $value));
+        }
+
         $result = parent::reverseTransform($value);
 
         return null !== $result ? (int) $result : null;
+    }
+
+    /**
+     * @internal
+     */
+    protected function castParsedValue($value)
+    {
+        return $value;
     }
 }

@@ -84,7 +84,7 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
     /**
      * @dataProvider transformWithRoundingProvider
      */
-    public function testTransformWithRounding(float $input, string $output, int $roundingMode)
+    public function testTransformWithRounding($input, $output, $roundingMode)
     {
         $transformer = new IntegerToLocalizedStringTransformer(null, $roundingMode);
 
@@ -101,9 +101,7 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
         $transformer = new IntegerToLocalizedStringTransformer();
 
         $this->assertEquals(1, $transformer->reverseTransform('1'));
-        $this->assertEquals(1, $transformer->reverseTransform('1,5'));
-        $this->assertEquals(1234, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(12345, $transformer->reverseTransform('12345,912'));
+        $this->assertEquals(12345, $transformer->reverseTransform('12345'));
     }
 
     public function testReverseTransformEmpty()
@@ -122,10 +120,10 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new IntegerToLocalizedStringTransformer(true);
 
-        $this->assertEquals(1234, $transformer->reverseTransform('1.234,5'));
-        $this->assertEquals(12345, $transformer->reverseTransform('12.345,912'));
-        $this->assertEquals(1234, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(12345, $transformer->reverseTransform('12345,912'));
+        $this->assertEquals(1234, $transformer->reverseTransform('1.234'));
+        $this->assertEquals(12345, $transformer->reverseTransform('12.345'));
+        $this->assertEquals(1234, $transformer->reverseTransform('1234'));
+        $this->assertEquals(12345, $transformer->reverseTransform('12345'));
     }
 
     public function reverseTransformWithRoundingProvider()
@@ -182,7 +180,7 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
     /**
      * @dataProvider reverseTransformWithRoundingProvider
      */
-    public function testReverseTransformWithRounding(string $input, int $output, int $roundingMode)
+    public function testReverseTransformWithRounding($input, $output, $roundingMode)
     {
         $transformer = new IntegerToLocalizedStringTransformer(null, $roundingMode);
 
@@ -205,6 +203,30 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
         $this->expectException(TransformationFailedException::class);
 
         $transformer->reverseTransform('foo');
+    }
+
+    /**
+     * @dataProvider floatNumberProvider
+     */
+    public function testReverseTransformExpectsInteger($number, $locale)
+    {
+        IntlTestHelper::requireFullIntl($this, false);
+
+        \Locale::setDefault($locale);
+
+        $transformer = new IntegerToLocalizedStringTransformer();
+
+        $this->expectException(TransformationFailedException::class);
+
+        $transformer->reverseTransform($number);
+    }
+
+    public function floatNumberProvider()
+    {
+        return [
+            ['12345.912', 'en'],
+            ['1.234,5', 'de_DE'],
+        ];
     }
 
     public function testReverseTransformDisallowsNaN()

@@ -32,16 +32,12 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * @see BaseDateTimeTransformer::formats for available format options
      *
-     * @param string|null $inputTimezone
-     * @param string|null $outputTimezone
-     * @param int|null    $dateFormat
-     * @param int|null    $timeFormat
-     * @param int         $calendar       One of the \IntlDateFormatter calendar constants
-     * @param string      $pattern        A pattern to pass to \IntlDateFormatter
+     * @param int    $calendar One of the \IntlDateFormatter calendar constants
+     * @param string $pattern  A pattern to pass to \IntlDateFormatter
      *
      * @throws UnexpectedTypeException If a format is not supported or if a timezone is not a string
      */
-    public function __construct(string $inputTimezone = null, string $outputTimezone = null, int $dateFormat = null, int $timeFormat = null, int $calendar = \IntlDateFormatter::GREGORIAN, string $pattern = null)
+    public function __construct(?string $inputTimezone = null, ?string $outputTimezone = null, ?int $dateFormat = null, ?int $timeFormat = null, int $calendar = \IntlDateFormatter::GREGORIAN, ?string $pattern = null)
     {
         parent::__construct($inputTimezone, $outputTimezone);
 
@@ -70,12 +66,14 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a normalized date into a localized date string/array.
      *
-     * @param \DateTimeInterface|null $dateTime A DateTimeInterface object
+     * @param \DateTimeInterface|null $dateTime
      *
      * @throws TransformationFailedException if the given value is not a \DateTimeInterface
      *                                       or if the date could not be transformed
+     *
+     * @return string Localized date string
      */
-    public function transform($dateTime): ?string
+    public function transform($dateTime): string
     {
         if (null === $dateTime) {
             return '';
@@ -87,7 +85,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         $value = $this->getIntlDateFormatter()->format($dateTime->getTimestamp());
 
-        if (intl_get_error_code() !== 0) {
+        if (0 != intl_get_error_code()) {
             throw new TransformationFailedException(intl_get_error_message());
         }
 
@@ -97,18 +95,18 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a localized date string/array into a normalized date.
      *
-     * @param string|null $value Localized date string
+     * @param string $value Localized date string
      *
      * @throws TransformationFailedException if the given value is not a string,
      *                                       if the date could not be parsed
      */
-    public function reverseTransform($value): ?\DateTime
+    public function reverseTransform($value): ?\DateTimeInterface
     {
-        if (null !== $value && !\is_string($value)) {
-            throw new TransformationFailedException('Expected a string or null.');
+        if (!\is_string($value)) {
+            throw new TransformationFailedException('Expected a string.');
         }
 
-        if (null === $value || '' === $value) {
+        if ('' === $value) {
             return null;
         }
 
@@ -118,8 +116,11 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         $timestamp = $this->getIntlDateFormatter($dateOnly)->parse($value);
 
-        if (intl_get_error_code() !== 0) {
+        if (0 != intl_get_error_code()) {
             throw new TransformationFailedException(intl_get_error_message());
+        } elseif ($timestamp > 253402214400) {
+            // This timestamp represents UTC midnight of 9999-12-31 to prevent 5+ digit years
+            throw new TransformationFailedException('Years beyond 9999 are not supported.');
         }
 
         try {
@@ -145,7 +146,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     }
 
     /**
-     * Returns a pre-configured IntlDateFormatter instance.
+     * Returns a preconfigured IntlDateFormatter instance.
      *
      * @param bool $ignoreTimezone use UTC regardless of the configured timezone
      *
@@ -156,18 +157,22 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         $dateFormat = $this->dateFormat;
         $timeFormat = $this->timeFormat;
         $timezone = $ignoreTimezone ? 'UTC' : $this->outputTimezone;
+        if (class_exists('IntlTimeZone', false)) {
+            // see https://bugs.php.net/bug.php?id=66323
+            $timezone = \IntlTimeZone::createTimeZone($timezone);
+        }
         $calendar = $this->calendar;
         $pattern = $this->pattern;
 
         $intlDateFormatter = new \IntlDateFormatter(\Locale::getDefault(), $dateFormat, $timeFormat, $timezone, $calendar);
 
-        if ($pattern) {
-            $intlDateFormatter->setPattern($pattern);
-        }
-
-        // new \intlDateFormatter may return null instead of false in case of failure, see https://bugs.php.net/bug.php?id=66323
+        // new \IntlDateFormatter may return null instead of false in case of failure, see https://bugs.php.net/bug.php?id=66323
         if (!$intlDateFormatter) {
             throw new TransformationFailedException(intl_get_error_message(), intl_get_error_code());
+        }
+
+        if ($pattern) {
+            $intlDateFormatter->setPattern($pattern);
         }
 
         $intlDateFormatter->setLenient(false);

@@ -26,7 +26,7 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
+final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
 {
     private $defaultCurrency;
 
@@ -78,12 +78,12 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
      */
     public function reverseTransform($value): ?MoneyValue
     {
-        if (null !== $value && !\is_string($value)) {
-            throw new TransformationFailedException('Expected a string or null.');
-        }
-
         if (null === $value || '' === $value) {
             return null;
+        }
+
+        if (!\is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
         }
 
         if ('NaN' === $value) {
@@ -132,7 +132,7 @@ final class MoneyToLocalizedStringTransformer extends BaseNumberTransformer
         }
     }
 
-    private function getNumberFormatter(): \NumberFormatter
+    protected function getNumberFormatter(): \NumberFormatter
     {
         $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::CURRENCY);
         $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);

@@ -17,7 +17,7 @@ parameters:
         # False positive
         - '#Call to an undefined method DateTimeInterface\:\:setTimezone\(\)#'
         - '#Result of \|\| is always true#'
-        - '#Negated boolean is always false#' # TODO This needs to be fixed as this bug is no longer existent?
+        - '#Negated boolean expression is always false#'
 
         ## Symony Config
         - '# Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given#'
@@ -26,7 +26,6 @@ parameters:
         ## Doctrine
         - '#Call to an undefined method Doctrine\\DBAL\\Driver\\PDOConnection\:\:sqliteCreateFunction\(\)#'
         - '#Parameter \#2 \$type of method Doctrine\\DBAL\\Connection\:\:quote\(\) expects ([^\s]+)#'
-        - "#Casting to string something that's already string#" # cannot fix this yet.
         - '#Call to an undefined method Rollerworks\\Component\\Search\\Doctrine\\Orm\\ConditionGenerator\:\:get[a-zA-Z]+#'
         - '#Parameter \#\d \$(firstResult|maxResults) of method Doctrine\\ORM\\QueryBuilder\:\:(setFirstResult|setMaxResults)\(\)#'
         - '#Call to function method_exists\(\)#'

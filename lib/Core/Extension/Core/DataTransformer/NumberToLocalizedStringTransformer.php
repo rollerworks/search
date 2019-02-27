@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
 /**
@@ -21,33 +22,99 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class NumberToLocalizedStringTransformer extends BaseNumberTransformer
+class NumberToLocalizedStringTransformer implements DataTransformer
 {
-    public function __construct(?int $scale = null, ?bool $grouping = null, ?int $roundingMode = null)
+    /**
+     * Rounds a number towards positive infinity.
+     *
+     * Rounds 1.4 to 2 and -1.4 to -1.
+     */
+    public const ROUND_CEILING = \NumberFormatter::ROUND_CEILING;
+
+    /**
+     * Rounds a number towards negative infinity.
+     *
+     * Rounds 1.4 to 1 and -1.4 to -2.
+     */
+    public const ROUND_FLOOR = \NumberFormatter::ROUND_FLOOR;
+
+    /**
+     * Rounds a number away from zero.
+     *
+     * Rounds 1.4 to 2 and -1.4 to -2.
+     */
+    public const ROUND_UP = \NumberFormatter::ROUND_UP;
+
+    /**
+     * Rounds a number towards zero.
+     *
+     * Rounds 1.4 to 1 and -1.4 to -1.
+     */
+    public const ROUND_DOWN = \NumberFormatter::ROUND_DOWN;
+
+    /**
+     * Rounds to the nearest number and halves to the next even number.
+     *
+     * Rounds 2.5, 1.6 and 1.5 to 2 and 1.4 to 1.
+     */
+    public const ROUND_HALF_EVEN = \NumberFormatter::ROUND_HALFEVEN;
+
+    /**
+     * Rounds to the nearest number and halves away from zero.
+     *
+     * Rounds 2.5 to 3, 1.6 and 1.5 to 2 and 1.4 to 1.
+     */
+    public const ROUND_HALF_UP = \NumberFormatter::ROUND_HALFUP;
+
+    /**
+     * Rounds to the nearest number and halves towards zero.
+     *
+     * Rounds 2.5 and 1.6 to 2, 1.5 and 1.4 to 1.
+     */
+    public const ROUND_HALF_DOWN = \NumberFormatter::ROUND_HALFDOWN;
+
+    protected $grouping;
+
+    protected $roundingMode;
+
+    private $scale;
+    private $locale;
+
+    public function __construct(int $scale = null, ?bool $grouping = false, ?int $roundingMode = self::ROUND_HALF_UP, string $locale = null)
     {
+        if (null === $grouping) {
+            $grouping = false;
+        }
+
+        if (null === $roundingMode) {
+            $roundingMode = self::ROUND_HALF_UP;
+        }
+
         $this->scale = $scale;
-        $this->grouping = $grouping ?? false;
-        $this->roundingMode = $roundingMode ?? self::ROUND_HALF_UP;
+        $this->grouping = $grouping;
+        $this->roundingMode = $roundingMode;
+        $this->locale = $locale;
     }
 
     /**
      * Transforms a number type into localized number.
      *
-     * @param int|float|string|null $value Number value
+     * @param int|float|null $value Number value
      *
-     * @throws TransformationFailedException If the given value is not numeric
+     * @throws TransformationFailedException if the given value is not numeric
      *                                       or if the value can not be transformed
+     *
+     * @return string Localized value
      */
-    public function transform($value): string
+    public function transform($value): ?string
     {
-        if (null !== $value && !is_numeric($value)) {
-            throw new TransformationFailedException('Expected a numeric or null.');
+        if (null === $value) {
+            return '';
         }
 
-        if (null === $value || '' === $value) {
-            return '';
+        if (!is_numeric($value)) {
+            throw new TransformationFailedException('Expected a numeric.');
         }
 
         $formatter = $this->getNumberFormatter();
@@ -57,7 +124,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
             throw new TransformationFailedException($formatter->getErrorMessage());
         }
 
-        // Convert fixed spaces to normal ones
+        // Convert non-breaking and narrow non-breaking spaces to normal ones
         $value = str_replace(["\xc2\xa0", "\xe2\x80\xaf"], ' ', $value);
 
         return $value;
@@ -83,7 +150,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
             return null;
         }
 
-        if ('NaN' === $value) {
+        if (\in_array($value, ['NaN', 'NAN', 'nan'], true)) {
             throw new TransformationFailedException('"NaN" is not a valid number');
         }
 
@@ -100,7 +167,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
             $value = str_replace(',', $decSep, $value);
         }
 
-        if (false !== mb_strpos($value, $decSep)) {
+        if (false !== strpos($value, $decSep)) {
             $type = \NumberFormatter::TYPE_DOUBLE;
         } else {
             $type = PHP_INT_SIZE === 8
@@ -108,7 +175,6 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
                 : \NumberFormatter::TYPE_INT32;
         }
 
-        /** @var int|float|false $result */
         $result = $formatter->parse($value, $type, $position);
 
         if (intl_is_failure($formatter->getErrorCode())) {
@@ -116,19 +182,17 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
         }
 
         if ($result >= PHP_INT_MAX || $result <= -PHP_INT_MAX) {
-            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
+            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like');
         }
 
-        if (\is_int($result) && $result === (int) ($float = (float) $result)) {
-            $result = $float;
-        }
+        $result = $this->castParsedValue($result);
 
         if (false !== $encoding = mb_detect_encoding($value, null, true)) {
             $length = mb_strlen($value, $encoding);
             $remainder = mb_substr($value, $position, $length, $encoding);
         } else {
-            $length = mb_strlen($value);
-            $remainder = mb_substr($value, $position, $length);
+            $length = \strlen($value);
+            $remainder = substr($value, $position, $length);
         }
 
         // After parsing, position holds the index of the character where the
@@ -139,9 +203,7 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
             $remainder = trim($remainder, " \t\n\r\0\x0b\xc2\xa0");
 
             if ('' !== $remainder) {
-                throw new TransformationFailedException(
-                    sprintf('The number contains unrecognized characters: "%s"', $remainder)
-                );
+                throw new TransformationFailedException(sprintf('The number contains unrecognized characters: "%s"', $remainder));
             }
         }
 
@@ -149,9 +211,14 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
         return $this->round($result);
     }
 
-    private function getNumberFormatter(): \NumberFormatter
+    /**
+     * Returns a preconfigured \NumberFormatter instance.
+     *
+     * @return \NumberFormatter
+     */
+    protected function getNumberFormatter(): \NumberFormatter
     {
-        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
+        $formatter = new \NumberFormatter($this->locale ?? \Locale::getDefault(), \NumberFormatter::DECIMAL);
 
         if (null !== $this->scale) {
             $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $this->scale);
@@ -161,5 +228,62 @@ class NumberToLocalizedStringTransformer extends BaseNumberTransformer
         $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
 
         return $formatter;
+    }
+
+    /**
+     * @internal
+     */
+    protected function castParsedValue($value)
+    {
+        if (\is_int($value) && $value === (int) $float = (float) $value) {
+            return $float;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Rounds a number according to the configured scale and rounding mode.
+     *
+     * @param int|float|string $number A number
+     *
+     * @return int|float The rounded number
+     */
+    protected function round($number)
+    {
+        if (null !== $this->scale && null !== $this->roundingMode) {
+            // shift number to maintain the correct scale during rounding
+            $roundingCoef = pow(10, $this->scale);
+            // string representation to avoid rounding errors, similar to bcmul()
+            $number = (float) (string) ($number * $roundingCoef);
+
+            switch ($this->roundingMode) {
+                case self::ROUND_CEILING:
+                    $number = ceil($number);
+                    break;
+                case self::ROUND_FLOOR:
+                    $number = floor($number);
+                    break;
+                case self::ROUND_UP:
+                    $number = $number > 0 ? ceil($number) : floor($number);
+                    break;
+                case self::ROUND_DOWN:
+                    $number = $number > 0 ? floor($number) : ceil($number);
+                    break;
+                case self::ROUND_HALF_EVEN:
+                    $number = round($number, 0, PHP_ROUND_HALF_EVEN);
+                    break;
+                case self::ROUND_HALF_UP:
+                    $number = round($number, 0, PHP_ROUND_HALF_UP);
+                    break;
+                case self::ROUND_HALF_DOWN:
+                    $number = round($number, 0, PHP_ROUND_HALF_DOWN);
+                    break;
+            }
+
+            $number /= $roundingCoef;
+        }
+
+        return $number;
     }
 }

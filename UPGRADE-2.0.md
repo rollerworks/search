@@ -1,3 +1,18 @@
+UPGRADE FROM 2.0-ALPHA19 to 2.0-ALPHA20
+=======================================
+
+ * The DataTransformers have been synchronized with the Symfony
+   versions, which might cause some minor BC breakages.
+   
+   * The `BaseNumberTransformer` has been removed, 
+     extend from `NumberToLocalizedStringTransformer` instead.
+   * The `pattern` option of `DateTimeType` now only affects the
+     view transformer, the norm transformer will use either the `DateTimeToRfc3339Transformer`
+     or `DateTimeToHtml5LocalDateTimeTransformer` when the `html5` option is set to true.
+   * The `precision` option of the `NumberType` has been renamed to `scale`.
+   * The `IntegerType` no longer accepts float values.
+
+
 UPGRADE FROM 2.0-ALPHA12 to 2.0-ALPHA13
 =======================================
 
