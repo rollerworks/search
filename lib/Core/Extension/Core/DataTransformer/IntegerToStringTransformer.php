@@ -22,16 +22,14 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 final class IntegerToStringTransformer extends NumberToStringTransformer
 {
     /**
-     * Constructs a transformer.
-     *
      * @param int|null $roundingMode One of the ROUND_ constants in this class
      */
-    public function __construct(int $roundingMode = null)
+    public function __construct(int $roundingMode = null, bool $grouping = false)
     {
-        parent::__construct(0, $roundingMode ?? self::ROUND_DOWN);
+        parent::__construct(0, $grouping, $roundingMode ?? self::ROUND_DOWN);
     }
 
-    public function reverseTransform($value)
+    public function reverseTransform($value): ?int
     {
         $result = parent::reverseTransform($value);
 

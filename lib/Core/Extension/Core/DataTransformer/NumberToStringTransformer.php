@@ -20,14 +20,8 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class NumberToStringTransformer extends BaseNumberTransformer
+class NumberToStringTransformer extends NumberToLocalizedStringTransformer
 {
-    public function __construct(?int $scale = null, ?int $roundingMode = null)
-    {
-        $this->scale = $scale;
-        $this->roundingMode = $roundingMode ?? self::ROUND_HALF_UP;
-    }
-
     /**
      * Transforms a number type into number.
      *
@@ -38,12 +32,12 @@ class NumberToStringTransformer extends BaseNumberTransformer
      */
     public function transform($value): string
     {
-        if (null !== $value && !is_numeric($value)) {
-            throw new TransformationFailedException('Expected a numeric or null.');
-        }
-
         if (null === $value || '' === $value) {
             return '';
+        }
+
+        if (!is_numeric($value)) {
+            throw new TransformationFailedException('Expected a numeric or null.');
         }
 
         if ($value >= PHP_INT_MAX || $value <= -PHP_INT_MAX) {

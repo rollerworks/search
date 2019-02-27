@@ -21,6 +21,7 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -43,7 +44,7 @@ final class NumberType extends AbstractFieldType
 
         $config->setViewTransformer(
             new NumberToLocalizedStringTransformer(
-                $options['precision'],
+                $options['scale'],
                 $options['grouping'],
                 $options['rounding_mode']
             )
@@ -51,7 +52,8 @@ final class NumberType extends AbstractFieldType
 
         $config->setNormTransformer(
             new NumberToStringTransformer(
-                $options['precision'],
+                $options['scale'],
+                $options['grouping'],
                 $options['rounding_mode']
             )
         );
@@ -59,33 +61,39 @@ final class NumberType extends AbstractFieldType
 
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
-        $view->vars['precision'] = $options['precision'];
+        $view->vars['scale'] = $options['scale'];
         $view->vars['grouping'] = $options['grouping'];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(
-            [
-                // default precision is locale specific (usually around 3)
-                'precision' => null,
-                'grouping' => false,
-                'rounding_mode' => \NumberFormatter::ROUND_HALFUP,
-            ]
-        );
+        $resolver->setDefaults([
+            // default scale is locale specific (usually around 3)
+            'scale' => null,
+            'grouping' => false,
+            'rounding_mode' => NumberToLocalizedStringTransformer::ROUND_HALF_UP,
+            'html5' => false,
+        ]);
 
-        $resolver->setAllowedValues(
-            'rounding_mode',
-            [
-                \NumberFormatter::ROUND_FLOOR,
-                \NumberFormatter::ROUND_DOWN,
-                \NumberFormatter::ROUND_HALFDOWN,
-                \NumberFormatter::ROUND_HALFEVEN,
-                \NumberFormatter::ROUND_HALFUP,
-                \NumberFormatter::ROUND_UP,
-                \NumberFormatter::ROUND_CEILING,
-            ]
-        );
+        $resolver->setAllowedValues('rounding_mode', [
+            NumberToLocalizedStringTransformer::ROUND_FLOOR,
+            NumberToLocalizedStringTransformer::ROUND_DOWN,
+            NumberToLocalizedStringTransformer::ROUND_HALF_DOWN,
+            NumberToLocalizedStringTransformer::ROUND_HALF_EVEN,
+            NumberToLocalizedStringTransformer::ROUND_HALF_UP,
+            NumberToLocalizedStringTransformer::ROUND_UP,
+            NumberToLocalizedStringTransformer::ROUND_CEILING,
+        ]);
+
+        $resolver->setAllowedTypes('scale', ['null', 'int']);
+        $resolver->setAllowedTypes('html5', 'bool');
+        $resolver->setNormalizer('grouping', function (Options $options, $value) {
+            if (true === $value && $options['html5']) {
+                throw new \LogicException('Cannot use the "grouping" option when the "html5" option is enabled.');
+            }
+
+            return $value;
+        });
     }
 
     public function getBlockPrefix(): string

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 
 /**
  * Transforms between a date string and a DateTime object.
@@ -44,8 +43,6 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      * Transforms a \DateTime instance to a string.
      *
      * @see \DateTime::format() for supported formats
-     *
-     * @throws UnexpectedTypeException if a timezone is not a string
      */
     public function __construct(string $inputTimezone = null, string $outputTimezone = null, string $format = 'Y-m-d H:i:s')
     {
@@ -70,75 +67,62 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      * Transforms a DateTime object into a date string with the configured format
      * and timezone.
      *
-     * @param \DateTimeInterface|null $value A DateTime object
+     * @param \DateTimeInterface|null $dateTime
      *
-     * @throws TransformationFailedException If the given value is not a \DateTime
-     *                                       instance or if the output timezone
-     *                                       is not supported
+     * @throws TransformationFailedException If the given value is not a \DateTimeInterface
      *
-     * @return string|null A value as produced by PHP's date() function
+     * @return string A value as produced by PHP's date() function
      */
-    public function transform($value): ?string
+    public function transform($dateTime): string
     {
-        if (null === $value) {
+        if (null === $dateTime) {
             return '';
         }
 
-        if (!$value instanceof \DateTimeInterface) {
+        if (!$dateTime instanceof \DateTimeInterface) {
             throw new TransformationFailedException('Expected a \DateTimeInterface.');
         }
 
-        if (!$value instanceof \DateTimeImmutable) {
-            $value = clone $value;
+        if (!$dateTime instanceof \DateTimeImmutable) {
+            $dateTime = clone $dateTime;
         }
 
-        try {
-            $value = $value->setTimezone(new \DateTimeZone($this->outputTimezone));
-        } catch (\Exception $e) {
-            throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
-        }
+        $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
 
-        return $value->format($this->generateFormat);
+        return $dateTime->format($this->generateFormat);
     }
 
     /**
      * Transforms a date string in the configured timezone into a DateTime object.
      *
-     * @param string|null $value A value as produced by PHP's date() function
+     * @param string $value A value as produced by PHP's date() function
      *
      * @throws TransformationFailedException If the given value is not a string,
-     *                                       if the date could not be parsed or
-     *                                       if the input timezone is not supported
+     *                                       or could not be transformed
      */
-    public function reverseTransform($value): ?\DateTime
+    public function reverseTransform($value): ?\DateTimeInterface
     {
-        if (null !== $value && !\is_string($value)) {
-            throw new TransformationFailedException('Expected a string or null.');
-        }
-
-        if (null === $value || '' === $value) {
+        if (empty($value)) {
             return null;
         }
 
+        if (!\is_string($value)) {
+            throw new TransformationFailedException('Expected a string.');
+        }
+
+        $outputTz = new \DateTimeZone($this->outputTimezone);
+        $dateTime = \DateTime::createFromFormat($this->parseFormat, $value, $outputTz);
+
+        $lastErrors = \DateTime::getLastErrors();
+
+        if (0 < $lastErrors['warning_count'] || 0 < $lastErrors['error_count']) {
+            throw new TransformationFailedException(implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors']))));
+        }
+
         try {
-            $outputTz = new \DateTimeZone($this->outputTimezone);
-            $dateTime = \DateTime::createFromFormat($this->parseFormat, $value, $outputTz);
-            $lastErrors = \DateTime::getLastErrors();
-
-            if (0 < $lastErrors['warning_count'] || 0 < $lastErrors['error_count']) {
-                throw new TransformationFailedException(
-                    implode(', ', array_merge(
-                        array_values($lastErrors['warnings']),
-                        array_values($lastErrors['errors'])
-                    ))
-                );
-            }
-
             if ($this->inputTimezone !== $this->outputTimezone) {
                 $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
             }
-        } catch (TransformationFailedException $e) {
-            throw $e;
         } catch (\Exception $e) {
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
         }

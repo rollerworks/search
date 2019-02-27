@@ -24,13 +24,11 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
 {
     /**
-     * Transforms a DateTimeInterface object into a timestamp.
+     * Transforms a DateTime object into a timestamp in the configured timezone.
      *
      * @param \DateTimeInterface|null $dateTime
      *
-     * @throws TransformationFailedException If the given value is not an instance
-     *                                       of \DateTime or if the output
-     *                                       timezone is not supported
+     * @throws TransformationFailedException If the given value is not a \DateTimeInterface
      *
      * @return int|null A timestamp
      */
@@ -41,7 +39,7 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
         }
 
         if (!$dateTime instanceof \DateTimeInterface) {
-            throw new TransformationFailedException('Expected a \DateTime.');
+            throw new TransformationFailedException('Expected a \DateTimeInterface.');
         }
 
         return $dateTime->getTimestamp();
@@ -57,12 +55,12 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      */
     public function reverseTransform($value): ?\DateTime
     {
-        if (null !== $value && !is_numeric($value)) {
-            throw new TransformationFailedException('Expected a numeric or null.');
+        if (null === $value) {
+            return null;
         }
 
-        if (null === $value || '' === $value) {
-            return null;
+        if (!is_numeric($value)) {
+            throw new TransformationFailedException('Expected a numeric.');
         }
 
         try {

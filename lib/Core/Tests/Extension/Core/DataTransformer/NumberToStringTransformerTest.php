@@ -152,14 +152,14 @@ final class NumberToStringTransformerTest extends TestCase
      */
     public function testTransformWithRounding(int $scale, $input, string $output, int $roundingMode)
     {
-        $transformer = new NumberToStringTransformer($scale, $roundingMode);
+        $transformer = new NumberToStringTransformer($scale, false, $roundingMode);
 
         $this->assertEquals($output, $transformer->transform($input));
     }
 
     public function testTransformDoesNotRoundIfNoScale()
     {
-        $transformer = new NumberToStringTransformer(null, NumberToStringTransformer::ROUND_DOWN);
+        $transformer = new NumberToStringTransformer(null, false, NumberToStringTransformer::ROUND_DOWN);
 
         $this->assertEquals('1234.547', $transformer->transform(1234.547));
     }
@@ -268,14 +268,14 @@ final class NumberToStringTransformerTest extends TestCase
      */
     public function testReverseTransformWithRounding(int $scale, string $input, $output, int $roundingMode)
     {
-        $transformer = new NumberToStringTransformer($scale, $roundingMode);
+        $transformer = new NumberToStringTransformer($scale, false, $roundingMode);
 
         $this->assertEquals($output, $transformer->reverseTransform($input));
     }
 
     public function testReverseTransformDoesNotRoundIfNoScale()
     {
-        $transformer = new NumberToStringTransformer(null, NumberToStringTransformer::ROUND_DOWN);
+        $transformer = new NumberToStringTransformer(null, false, NumberToStringTransformer::ROUND_DOWN);
 
         $this->assertEquals(1234.547, $transformer->reverseTransform('1234.547'));
     }

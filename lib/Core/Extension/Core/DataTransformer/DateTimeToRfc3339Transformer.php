@@ -20,7 +20,16 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
 {
-    public function transform($dateTime): ?string
+    /**
+     * Transforms a normalized date into a localized date.
+     *
+     * @param \DateTimeInterface|null $dateTime
+     *
+     * @throws TransformationFailedException If the given value is not a \DateTimeInterface
+     *
+     * @return string The formatted date
+     */
+    public function transform($dateTime): string
     {
         if (null === $dateTime) {
             return '';
@@ -41,14 +50,26 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
         return preg_replace('/\+00:00$/', 'Z', $dateTime->format('c'));
     }
 
-    public function reverseTransform($rfc3339): ?\DateTime
+    /**
+     * Transforms a formatted string following RFC 3339 into a normalized date.
+     *
+     * @param string $rfc3339 Formatted string
+     *
+     * @throws TransformationFailedException If the given value is not a string,
+     *                                       if the value could not be transformed
+     */
+    public function reverseTransform($rfc3339): ?\DateTimeInterface
     {
-        if (null !== $rfc3339 && !\is_string($rfc3339)) {
-            throw new TransformationFailedException('Expected a string or null.');
+        if (!\is_string($rfc3339)) {
+            throw new TransformationFailedException('Expected a string.');
         }
 
-        if (null === $rfc3339 || '' === $rfc3339) {
+        if ('' === $rfc3339) {
             return null;
+        }
+
+        if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|(?:(?:\+|-)\d{2}:\d{2}))$/', $rfc3339, $matches)) {
+            throw new TransformationFailedException(sprintf('The date "%s" is not a valid date.', $rfc3339));
         }
 
         try {
@@ -57,23 +78,12 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ($this->outputTimezone !== $this->inputTimezone) {
-            try {
-                $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
-            } catch (\Exception $e) {
-                throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
-            }
+        if ($this->inputTimezone !== $dateTime->getTimezone()->getName()) {
+            $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
         }
 
-        if (preg_match('/(\d{4})-(\d{2})-(\d{2})/', $rfc3339, $matches) &&
-            !checkdate((int) $matches[2], (int) $matches[3], (int) $matches[1])
-        ) {
-            throw new TransformationFailedException(sprintf(
-                'The date "%s-%s-%s" is not a valid date.',
-                $matches[1],
-                $matches[2],
-                $matches[3]
-            ));
+        if (!checkdate((int) $matches[2], (int) $matches[3], (int) $matches[1])) {
+            throw new TransformationFailedException(sprintf('The date "%s-%s-%s" is not a valid date.', $matches[1], $matches[2], $matches[3]));
         }
 
         return $dateTime;

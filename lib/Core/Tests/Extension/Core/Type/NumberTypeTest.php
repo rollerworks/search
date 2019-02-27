@@ -107,7 +107,7 @@ final class NumberTypeTest extends SearchIntegrationTestCase
 
     public function testDefaultFormattingWithPrecision()
     {
-        $field = $this->getFactory()->createField('number', NumberType::class, ['precision' => 2]);
+        $field = $this->getFactory()->createField('number', NumberType::class, ['scale' => 2]);
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,67890', '12345.67890')
@@ -123,7 +123,7 @@ final class NumberTypeTest extends SearchIntegrationTestCase
     public function testDefaultFormattingWithRounding()
     {
         $field = $this->getFactory()->createField('number', NumberType::class, [
-            'precision' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP,
+            'scale' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP,
         ]);
 
         FieldTransformationAssertion::assertThat($field)
@@ -140,16 +140,16 @@ final class NumberTypeTest extends SearchIntegrationTestCase
     public function testViewIsConfiguredProperly()
     {
         $field = $this->getFactory()->createField('number', NumberType::class, [
-            'precision' => 0, 'grouping' => false,
+            'scale' => 0, 'grouping' => false,
         ]);
 
         $field->finalizeConfig();
         $fieldView = $field->createView(new FieldSetView());
 
-        self::assertArrayHasKey('precision', $fieldView->vars);
+        self::assertArrayHasKey('scale', $fieldView->vars);
         self::assertArrayHasKey('grouping', $fieldView->vars);
 
-        self::assertEquals(0, $fieldView->vars['precision']);
+        self::assertEquals(0, $fieldView->vars['scale']);
         self::assertFalse($fieldView->vars['grouping']);
     }
 
