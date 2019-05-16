@@ -128,6 +128,7 @@ class SearchExtension implements QueryCollectionExtensionInterface, ContextAware
         }
         if (null !== $maxResults = $queryBuilder->getMaxResults()) {
             $query->setSize($maxResults);
+            $queryBuilder->setMaxResults(null);
         }
 
         $search = new Search($this->client);
