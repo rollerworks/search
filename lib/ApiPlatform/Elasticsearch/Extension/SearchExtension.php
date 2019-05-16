@@ -18,13 +18,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInter
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Elastica\Client;
 use Elastica\Document;
 use Elastica\Query;
 use Elastica\Search;
 use Rollerworks\Component\Search\ApiPlatform\ArrayKeysValidator;
-use Rollerworks\Component\Search\ApiPlatform\Doctrine\Orm\PrecountedPaginator;
+use Rollerworks\Component\Search\ApiPlatform\DataProvider\PrecountedPaginator;
 use Rollerworks\Component\Search\Elasticsearch\ElasticsearchFactory;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\SearchCondition;
@@ -40,7 +39,7 @@ class SearchExtension implements QueryCollectionExtensionInterface, ContextAware
     private $elasticsearchFactory;
     private $client;
     private $identifierNames = [];
-    private $totalItems;
+    private $paginator;
 
     public function __construct(RequestStack $requestStack, ManagerRegistry $registry, ElasticsearchFactory $elasticsearchFactory, Client $client)
     {
@@ -55,7 +54,7 @@ class SearchExtension implements QueryCollectionExtensionInterface, ContextAware
      */
     public function supportsResult(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        return null !== $this->totalItems;
+        return null !== $this->paginator;
     }
 
     /**
@@ -63,12 +62,12 @@ class SearchExtension implements QueryCollectionExtensionInterface, ContextAware
      */
     public function getResult(QueryBuilder $queryBuilder, string $resourceClass = null, string $operationName = null, array $context = [])
     {
-        return new PrecountedPaginator(new Paginator($queryBuilder), $this->totalItems);
+        return new PrecountedPaginator($queryBuilder->getQuery()->getResult(), ...$this->paginator);
     }
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
     {
-        $this->totalItems = null;
+        $this->paginator = null;
 
         $request = $this->requestStack->getCurrentRequest();
 
@@ -128,7 +127,6 @@ class SearchExtension implements QueryCollectionExtensionInterface, ContextAware
         }
         if (null !== $maxResults = $queryBuilder->getMaxResults()) {
             $query->setSize($maxResults);
-            $queryBuilder->setMaxResults(null);
         }
 
         $search = new Search($this->client);
@@ -142,7 +140,7 @@ class SearchExtension implements QueryCollectionExtensionInterface, ContextAware
         }
         $response = $search->search($query);
 
-        $this->totalItems = $response->getTotalHits();
+        $this->paginator = [$firstResult, $maxResults, $response->getTotalHits()];
 
         // NOTE: written like this so we only check if we have a normalizer once
         if (null !== $normalizer) {
