@@ -1045,6 +1045,129 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         self::assertMapping(['@date'], $generator->getMappings());
     }
 
+    /** @test */
+    public function it_merges_single_level_nested_queries()
+    {
+        $condition = $this->createCondition()
+            ->field('name')
+                ->addSimpleValue('Doctor')
+                ->addSimpleValue('Foo')
+            ->end()
+            ->field('restrict')
+                ->addSimpleValue('Some')
+                ->addSimpleValue('Restriction')
+            ->end()
+            ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('name', 'author[].name');
+        $generator->registerField('restrict', 'author[].restrict');
+
+        self::assertEquals([
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'nested' => [
+                                'path' => 'author',
+                                'query' => [
+                                    'bool' => [
+                                        'must' => [
+                                            [
+                                                'terms' => [
+                                                    'author.name' => [
+                                                        'Doctor',
+                                                        'Foo',
+                                                    ],
+                                                ],
+                                            ],
+                                            [
+                                                'terms' => [
+                                                    'author.restrict' => [
+                                                        'Some',
+                                                        'Restriction',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $generator->getQuery()->toArray());
+
+        self::assertMapping(['name', 'restrict'], $generator->getMappings());
+    }
+
+    /** @test */
+    public function it_merges_multiple_level_nested_queries()
+    {
+        $this->markTestIncomplete(
+            'This test has not been implemented yet. Read #268.'
+        );
+
+        $condition = $this->createCondition()
+            ->field('name')
+                ->addSimpleValue('Doctor')
+                ->addSimpleValue('Foo')
+            ->end()
+            ->field('restrict')
+                ->addSimpleValue('Some')
+                ->addSimpleValue('Restriction')
+            ->end()
+            ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('name', 'item[].author[].name');
+        $generator->registerField('restrict', 'item[].author[].restrict');
+
+        self::assertEquals([
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'nested' => [
+                                'path' => 'item',
+                                'query' => [
+                                    'nested' => [
+                                        'path' => 'author',
+                                        'query' => [
+                                            'bool' => [
+                                                'must' => [
+                                                    [
+                                                        'terms' => [
+                                                            'author.name' => [
+                                                                'Doctor',
+                                                                'Smith',
+                                                            ],
+                                                        ],
+                                                    ],
+                                                    [
+                                                        'terms' => [
+                                                            'author.restrict' => [
+                                                                'Some',
+                                                                'Restriction',
+                                                            ],
+                                                        ],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $generator->getQuery()->toArray());
+
+        self::assertMapping(['name', 'restrict'], $generator->getMappings());
+    }
+
     protected function getFieldSet(bool $build = true, bool $order = false)
     {
         $fieldSet = parent::getFieldSet(false);
