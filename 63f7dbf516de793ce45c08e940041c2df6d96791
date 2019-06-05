@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by dkarlovi at 2019-06-05T10:53:56Z
+
+@jkabat can you run `make cs` to fix code style issues?
+
+> @dkarlovi Any thoughts how this can be solved? Merging is not working for HAS_CHILD queries with multiple levels as well.
+
+This is a bug so we can create it as an issue (or extend your existing one).
+
+> As this PR solves my current requirement I'm fine with single level fix, but I agree that complete solution is preferred
+
+Agreed. I'm fine with us fixing this bug in steps since otherwise it will not be fixed soon. I'd be OK with merging this as it solves one of the issues, once we have it in, we can refactor to support unlimited layers. @sstok WDYT?
+
+> Unit test covering multiple level nesting case is included but failing... can be removed later.
+
+This is great, actually. Mark test as incomplete, with a note pointing to the original Github issue, we can then fix it later.
+
+---------------------------------------------------------------------------
+
+by sstok at 2019-06-05T14:00:21Z
+
+I pushed the cs fixes manually, can you rebase (and squash the commits) before I merge? Thanks.
+
+---------------------------------------------------------------------------
+
+by jkabat at 2019-06-05T14:23:15Z
+
+@sstok done.
+
+---------------------------------------------------------------------------
+
+by sstok at 2019-06-05T14:46:23Z
+
+Thank you @jkabat
