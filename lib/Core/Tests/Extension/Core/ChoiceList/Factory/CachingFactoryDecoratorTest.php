@@ -51,7 +51,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createListFromChoices')
             ->with([])
-            ->will($this->returnValue($list));
+            ->willReturn($list);
 
         self::assertSame($list, $this->factory->createListFromChoices([]));
         self::assertSame($list, $this->factory->createListFromChoices([]));
@@ -67,7 +67,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createListFromChoices')
             ->with($choices2)
-            ->will($this->returnValue($list));
+            ->willReturn($list);
 
         self::assertSame($list, $this->factory->createListFromChoices($choices1));
         self::assertSame($list, $this->factory->createListFromChoices($choices2));
@@ -82,7 +82,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createListFromChoices')
             ->with($choices1)
-            ->will($this->returnValue($list));
+            ->willReturn($list);
 
         self::assertSame($list, $this->factory->createListFromChoices($choices1));
         self::assertSame($list, $this->factory->createListFromChoices($choices2));
@@ -100,7 +100,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createListFromChoices')
             ->with($choices1)
-            ->will($this->returnValue($list));
+            ->willReturn($list);
 
         self::assertSame($list, $this->factory->createListFromChoices($choices1));
         self::assertSame($list, $this->factory->createListFromChoices($choices2));
@@ -119,11 +119,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createListFromChoices')
             ->with($choices1)
-            ->will($this->returnValue($list1));
+            ->willReturn($list1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createListFromChoices')
             ->with($choices2)
-            ->will($this->returnValue($list2));
+            ->willReturn($list2);
 
         self::assertSame($list1, $this->factory->createListFromChoices($choices1));
         self::assertSame($list2, $this->factory->createListFromChoices($choices2));
@@ -139,7 +139,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createListFromChoices')
             ->with($choices, $closure)
-            ->will($this->returnValue($list));
+            ->willReturn($list);
 
         self::assertSame($list, $this->factory->createListFromChoices($choices, $closure));
         self::assertSame($list, $this->factory->createListFromChoices($choices, $closure));
@@ -158,11 +158,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createListFromChoices')
             ->with($choices, $closure1)
-            ->will($this->returnValue($list1));
+            ->willReturn($list1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createListFromChoices')
             ->with($choices, $closure2)
-            ->will($this->returnValue($list2));
+            ->willReturn($list2);
 
         self::assertSame($list1, $this->factory->createListFromChoices($choices, $closure1));
         self::assertSame($list2, $this->factory->createListFromChoices($choices, $closure2));
@@ -176,7 +176,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createListFromLoader')
             ->with($loader)
-            ->will($this->returnValue($list));
+            ->willReturn($list);
 
         self::assertSame($list, $this->factory->createListFromLoader($loader));
         self::assertSame($list, $this->factory->createListFromLoader($loader));
@@ -192,11 +192,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createListFromLoader')
             ->with($loader1)
-            ->will($this->returnValue($list1));
+            ->willReturn($list1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createListFromLoader')
             ->with($loader2)
-            ->will($this->returnValue($list2));
+            ->willReturn($list2);
 
         self::assertSame($list1, $this->factory->createListFromLoader($loader1));
         self::assertSame($list2, $this->factory->createListFromLoader($loader2));
@@ -212,7 +212,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createListFromLoader')
             ->with($loader, $closure)
-            ->will($this->returnValue($list));
+            ->willReturn($list);
 
         self::assertSame($list, $this->factory->createListFromLoader($loader, $closure));
         self::assertSame($list, $this->factory->createListFromLoader($loader, $closure));
@@ -231,11 +231,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createListFromLoader')
             ->with($loader, $closure1)
-            ->will($this->returnValue($list1));
+            ->willReturn($list1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createListFromLoader')
             ->with($loader, $closure2)
-            ->will($this->returnValue($list2));
+            ->willReturn($list2);
 
         self::assertSame($list1, $this->factory->createListFromLoader($loader, $closure1));
         self::assertSame($list2, $this->factory->createListFromLoader($loader, $closure2));
@@ -250,7 +250,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createView')
             ->with($list, $preferred)
-            ->will($this->returnValue($view));
+            ->willReturn($view);
 
         self::assertSame($view, $this->factory->createView($list, $preferred));
         self::assertSame($view, $this->factory->createView($list, $preferred));
@@ -267,11 +267,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createView')
             ->with($list, $preferred1)
-            ->will($this->returnValue($view1));
+            ->willReturn($view1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createView')
             ->with($list, $preferred2)
-            ->will($this->returnValue($view2));
+            ->willReturn($view2);
 
         self::assertSame($view1, $this->factory->createView($list, $preferred1));
         self::assertSame($view2, $this->factory->createView($list, $preferred2));
@@ -287,7 +287,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createView')
             ->with($list, $preferred)
-            ->will($this->returnValue($view));
+            ->willReturn($view);
 
         self::assertSame($view, $this->factory->createView($list, $preferred));
         self::assertSame($view, $this->factory->createView($list, $preferred));
@@ -306,11 +306,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createView')
             ->with($list, $preferred1)
-            ->will($this->returnValue($view1));
+            ->willReturn($view1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createView')
             ->with($list, $preferred2)
-            ->will($this->returnValue($view2));
+            ->willReturn($view2);
 
         self::assertSame($view1, $this->factory->createView($list, $preferred1));
         self::assertSame($view2, $this->factory->createView($list, $preferred2));
@@ -326,7 +326,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createView')
             ->with($list, null, $labels)
-            ->will($this->returnValue($view));
+            ->willReturn($view);
 
         self::assertSame($view, $this->factory->createView($list, null, $labels));
         self::assertSame($view, $this->factory->createView($list, null, $labels));
@@ -345,11 +345,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createView')
             ->with($list, null, $labels1)
-            ->will($this->returnValue($view1));
+            ->willReturn($view1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createView')
             ->with($list, null, $labels2)
-            ->will($this->returnValue($view2));
+            ->willReturn($view2);
 
         self::assertSame($view1, $this->factory->createView($list, null, $labels1));
         self::assertSame($view2, $this->factory->createView($list, null, $labels2));
@@ -365,7 +365,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createView')
             ->with($list, null, null, $index)
-            ->will($this->returnValue($view));
+            ->willReturn($view);
 
         self::assertSame($view, $this->factory->createView($list, null, null, $index));
         self::assertSame($view, $this->factory->createView($list, null, null, $index));
@@ -384,11 +384,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createView')
             ->with($list, null, null, $index1)
-            ->will($this->returnValue($view1));
+            ->willReturn($view1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createView')
             ->with($list, null, null, $index2)
-            ->will($this->returnValue($view2));
+            ->willReturn($view2);
 
         self::assertSame($view1, $this->factory->createView($list, null, null, $index1));
         self::assertSame($view2, $this->factory->createView($list, null, null, $index2));
@@ -404,7 +404,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createView')
             ->with($list, null, null, null, $groupBy)
-            ->will($this->returnValue($view));
+            ->willReturn($view);
 
         self::assertSame($view, $this->factory->createView($list, null, null, null, $groupBy));
         self::assertSame($view, $this->factory->createView($list, null, null, null, $groupBy));
@@ -423,11 +423,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createView')
             ->with($list, null, null, null, $groupBy1)
-            ->will($this->returnValue($view1));
+            ->willReturn($view1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createView')
             ->with($list, null, null, null, $groupBy2)
-            ->will($this->returnValue($view2));
+            ->willReturn($view2);
 
         self::assertSame($view1, $this->factory->createView($list, null, null, null, $groupBy1));
         self::assertSame($view2, $this->factory->createView($list, null, null, null, $groupBy2));
@@ -442,7 +442,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createView')
             ->with($list, null, null, null, null, $attr)
-            ->will($this->returnValue($view));
+            ->willReturn($view);
 
         self::assertSame($view, $this->factory->createView($list, null, null, null, null, $attr));
         self::assertSame($view, $this->factory->createView($list, null, null, null, null, $attr));
@@ -459,11 +459,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createView')
             ->with($list, null, null, null, null, $attr1)
-            ->will($this->returnValue($view1));
+            ->willReturn($view1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createView')
             ->with($list, null, null, null, null, $attr2)
-            ->will($this->returnValue($view2));
+            ->willReturn($view2);
 
         self::assertSame($view1, $this->factory->createView($list, null, null, null, null, $attr1));
         self::assertSame($view2, $this->factory->createView($list, null, null, null, null, $attr2));
@@ -479,7 +479,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->once())
             ->method('createView')
             ->with($list, null, null, null, null, $attr)
-            ->will($this->returnValue($view));
+            ->willReturn($view);
 
         self::assertSame($view, $this->factory->createView($list, null, null, null, null, $attr));
         self::assertSame($view, $this->factory->createView($list, null, null, null, null, $attr));
@@ -498,11 +498,11 @@ final class CachingFactoryDecoratorTest extends TestCase
         $this->decoratedFactory->expects($this->at(0))
             ->method('createView')
             ->with($list, null, null, null, null, $attr1)
-            ->will($this->returnValue($view1));
+            ->willReturn($view1);
         $this->decoratedFactory->expects($this->at(1))
             ->method('createView')
             ->with($list, null, null, null, null, $attr2)
-            ->will($this->returnValue($view2));
+            ->willReturn($view2);
 
         self::assertSame($view1, $this->factory->createView($list, null, null, null, null, $attr1));
         self::assertSame($view2, $this->factory->createView($list, null, null, null, null, $attr2));
