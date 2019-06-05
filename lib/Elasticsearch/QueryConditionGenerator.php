@@ -579,45 +579,68 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
     private function injectConditions(array $query, array $conditions): array
     {
-        if ([] !== $conditions) {
-            $hasChild = null;
+        if ([] === $conditions) {
+            return $query ?? [];
+        }
 
-            if (isset($query[self::QUERY_HAS_CHILD])) {
-                // wrap has_child.query into a bool.must to prepare for accepting conditions
-                $query[self::QUERY_HAS_CHILD][self::QUERY] = [
-                    self::QUERY_BOOL => [
-                        self::CONDITION_AND => [
-                            $query[self::QUERY_HAS_CHILD][self::QUERY],
-                        ],
-                    ],
-                ];
-                $hasChild = $query[self::QUERY_HAS_CHILD][self::QUERY_TYPE];
-                $nestedBool = &$query[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL];
-            }
+        $childType = null;
+        $nestedPath = null;
 
-            $query = [
+        if (isset($query[self::QUERY_HAS_CHILD])) {
+            // wrap has_child.query into a bool.must to prepare for accepting conditions
+            $query[self::QUERY_HAS_CHILD][self::QUERY] = [
                 self::QUERY_BOOL => [
                     self::CONDITION_AND => [
-                        $query,
+                        $query[self::QUERY_HAS_CHILD][self::QUERY],
                     ],
                 ],
             ];
-            $rootBool = &$query[self::QUERY_BOOL];
 
-            foreach ($conditions as $condition) {
-                if (isset($condition[self::QUERY_HAS_CHILD])) {
-                    if ($hasChild === $condition[self::QUERY_HAS_CHILD][self::QUERY_TYPE]) {
-                        $this->mergeQuery($nestedBool, self::CONDITION_AND, $condition[self::QUERY_HAS_CHILD][self::QUERY]);
-                    } else {
-                        $this->mergeQuery($rootBool, self::CONDITION_AND, $condition);
-                    }
+            $childType = $query[self::QUERY_HAS_CHILD][self::QUERY_TYPE];
+            $nestedBool = &$query[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL];
+        } elseif (isset($query[self::QUERY_NESTED])) {
+            // wrap nested.query into a bool.must to prepare for accepting conditions
+            $query[self::QUERY_NESTED][self::QUERY] = [
+                self::QUERY_BOOL => [
+                    self::CONDITION_AND => [
+                        $query[self::QUERY_NESTED][self::QUERY],
+                    ],
+                ],
+            ];
+
+            $nestedPath = $query[self::QUERY_NESTED][self::QUERY_PATH];
+            $nestedBool = &$query[self::QUERY_NESTED][self::QUERY][self::QUERY_BOOL];
+        }
+
+        $query = [
+            self::QUERY_BOOL => [
+                self::CONDITION_AND => [
+                    $query,
+                ],
+            ],
+        ];
+
+        $rootBool = &$query[self::QUERY_BOOL];
+
+        foreach ($conditions as $condition) {
+            if (isset($condition[self::QUERY_HAS_CHILD])) {
+                if ($childType === $condition[self::QUERY_HAS_CHILD][self::QUERY_TYPE]) {
+                    $this->mergeQuery($nestedBool, self::CONDITION_AND, $condition[self::QUERY_HAS_CHILD][self::QUERY]);
                 } else {
                     $this->mergeQuery($rootBool, self::CONDITION_AND, $condition);
                 }
+            } elseif (isset($condition[self::QUERY_NESTED])) {
+                if ($nestedPath === $condition[self::QUERY_NESTED][self::QUERY_PATH]) {
+                    $this->mergeQuery($nestedBool, self::CONDITION_AND, $condition[self::QUERY_NESTED][self::QUERY]);
+                } else {
+                    $this->mergeQuery($rootBool, self::CONDITION_AND, $condition);
+                }
+            } else {
+                $this->mergeQuery($rootBool, self::CONDITION_AND, $condition);
             }
         }
 
-        return $query ?? [];
+        return $query;
     }
 
     /**
@@ -682,6 +705,34 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     }
 
                     $previousQuery[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL][$condition][] = $query[self::QUERY_HAS_CHILD][self::QUERY];
+
+                    return;
+                }
+            }
+            unset($previousQuery);
+        } elseif (isset($query[self::QUERY_NESTED]) && isset($bool[$condition])) {
+            foreach ($bool[$condition] as &$previousQuery) {
+                if (isset($previousQuery[self::QUERY_NESTED])
+                    && $previousQuery[self::QUERY_NESTED][self::QUERY_PATH] === $query[self::QUERY_NESTED][self::QUERY_PATH]) {
+                    $previousQuery[self::QUERY_NESTED] = array_replace(
+                        $previousQuery[self::QUERY_NESTED],
+                        $query[self::QUERY_NESTED],
+                        [
+                            self::QUERY => $previousQuery[self::QUERY_NESTED][self::QUERY],
+                        ]
+                    );
+
+                    if (!isset($previousQuery[self::QUERY_NESTED][self::QUERY][self::QUERY_BOOL])) {
+                        $previousQuery[self::QUERY_NESTED][self::QUERY] = [
+                            self::QUERY_BOOL => [
+                                $condition => [
+                                    $previousQuery[self::QUERY_NESTED][self::QUERY],
+                                ],
+                            ],
+                        ];
+                    }
+
+                    $previousQuery[self::QUERY_NESTED][self::QUERY][self::QUERY_BOOL][$condition][] = $query[self::QUERY_NESTED][self::QUERY];
 
                     return;
                 }
