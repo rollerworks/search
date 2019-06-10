@@ -1046,6 +1046,47 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
+    public function it_adds_additional_options_for_nested_queries()
+    {
+        $condition = $this->createCondition()
+            ->field('name')
+                ->addSimpleValue('Doctor')
+                ->addSimpleValue('Foo')
+            ->end()
+            ->getSearchCondition();
+
+        $generator = new QueryConditionGenerator($condition);
+        $generator->registerField('name', 'author[].name', [], [
+            'inner_hits' => [],
+        ]);
+
+        self::assertEquals([
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'nested' => [
+                                'path' => 'author',
+                                'query' => [
+                                    'terms' => [
+                                        'author.name' => [
+                                            'Doctor',
+                                            'Foo',
+                                        ],
+                                    ],
+                                ],
+                                'inner_hits' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $generator->getQuery()->toArray());
+
+        self::assertMapping(['name'], $generator->getMappings());
+    }
+
+    /** @test */
     public function it_merges_single_level_nested_queries()
     {
         $condition = $this->createCondition()
