@@ -241,7 +241,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     protected function configureConditionGenerator(QueryConditionGenerator $conditionGenerator)
     {
         // customer
-        $conditionGenerator->registerField('customer-comment', 'customers/customers/#note>comment', [], ['_id' => ['unmapped_type' => 'long']]);
+        $conditionGenerator->registerField('customer-comment', 'customers/customers/#note>comment');
         $conditionGenerator->registerField(
             'customer-comment-restricted',
             'customers/customers/#note>comment',
