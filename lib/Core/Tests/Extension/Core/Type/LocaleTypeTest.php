@@ -49,6 +49,6 @@ final class LocaleTypeTest extends SearchIntegrationTestCase
 
         $this->assertContains(new ChoiceView('en', 'en', 'English'), $choices, '', false, false);
         $this->assertContains(new ChoiceView('en_GB', 'en_GB', 'English (United Kingdom)'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('zh_Hant_MO', 'zh_Hant_MO', 'Chinese (Traditional, Macau SAR China)'), $choices, '', false, false);
+        $this->assertContains(new ChoiceView('zh_Hant_MO', 'zh_Hant_MO', 'Chinese (Traditional, Macao SAR China)'), $choices, '', false, false);
     }
 }

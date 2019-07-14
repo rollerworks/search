@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceLoaderTrait;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -48,7 +48,7 @@ final class LocaleType extends AbstractFieldType implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(array_flip(Intl::getLocaleBundle()->getLocaleNames()), $value);
+        return $this->choiceList = new ArrayChoiceList(array_flip(Locales::getNames()), $value);
     }
 
     public function isValuesConstant(): bool

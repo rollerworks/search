@@ -239,9 +239,9 @@ class ConditionStructureBuilder implements StructureBuilder
     }
 
     /**
-     * @param string $operator
-     * @param mixed  $value
-     * @param array  $path     [base-path, operator-path, value-path]
+     * @param string|mixed $operator
+     * @param mixed        $value
+     * @param array        $path     [base-path, operator-path, value-path]
      */
     public function comparisonValue($operator, $value, array $path): void
     {

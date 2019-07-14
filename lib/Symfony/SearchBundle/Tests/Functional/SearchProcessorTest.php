@@ -32,7 +32,7 @@ final class SearchProcessorTest extends FunctionalTestCase
         $crawler = $client->followRedirect();
 
         self::assertEquals(
-            'http://localhost/search?search=name%3A%20user%3B',
+            'http://localhost/search?search=name:%20user;',
             $crawler->getUri()
         );
 

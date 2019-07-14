@@ -25,8 +25,8 @@ final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('rollerworks_search');
+        $treeBuilder = new TreeBuilder('rollerworks_search');
+        $rootNode = $treeBuilder->getRootNode();
 
         $this->addDoctrineSection($rootNode);
         $this->addApiPlatformSection($rootNode);

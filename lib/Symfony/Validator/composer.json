@@ -1,8 +1,13 @@
 {
     "name": "rollerworks/search-symfony-validator",
-    "description": "Symfony validator extension for RollerworksSearch",
-    "keywords": ["rollerworks", "search", "validation", "symfony"],
     "type": "library",
+    "description": "Symfony validator extension for RollerworksSearch",
+    "keywords": [
+        "rollerworks",
+        "search",
+        "validation",
+        "symfony"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -20,23 +25,25 @@
         "symfony/validator": "^3.4.2 || ^4.0.2"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.4.2 || ^4.0.2",
-        "phpunit/phpunit": "^6.5.4"
+        "phpunit/phpunit": "^6.5.4",
+        "symfony/phpunit-bridge": "^4.3"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
     },
     "autoload": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\": ""
         },
-        "exclude-from-classmap": ["test/"]
+        "exclude-from-classmap": [
+            "test/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Extension\\Symfony\\Validator\\Tests\\": "Tests/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
         }
     }
 }

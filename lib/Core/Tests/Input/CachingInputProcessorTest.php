@@ -25,7 +25,8 @@ use Rollerworks\Component\Search\Tests\Mock\FieldSetStub;
 use Rollerworks\Component\Search\Tests\Mock\SpyingInputProcessor;
 use Rollerworks\Component\Search\Tests\Mock\StubInputProcessor;
 use Rollerworks\Component\Search\Value\ValuesGroup;
-use Symfony\Component\Cache\Simple\ArrayCache;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 
 class CachingInputProcessorTest extends TestCase
 {
@@ -34,12 +35,12 @@ class CachingInputProcessorTest extends TestCase
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
         $inputProcessor = new SpyingInputProcessor();
-        $cache = new ArrayCache();
+        $cache = new Psr16Cache($arrayCache = new ArrayAdapter());
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
 
         $processor->process($config = new ProcessorConfig(new FieldSetStub()), $input = ['Hello']);
 
-        self::assertEmpty($cache->getValues());
+        self::assertEmpty($arrayCache->getValues());
         self::assertEquals($config, $inputProcessor->getConfig());
         self::assertEquals($input, $inputProcessor->getInput());
     }
@@ -54,12 +55,12 @@ class CachingInputProcessorTest extends TestCase
             ->willThrowException(new InvalidArgumentException());
 
         $inputProcessor = new SpyingInputProcessor();
-        $cache = new ArrayCache();
+        $cache = new Psr16Cache($arrayCache = new ArrayAdapter());
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
 
         $processor->process($config = new ProcessorConfig(new FieldSetStub()), $input = 'Hello');
 
-        self::assertCount(1, $cache->getValues());
+        self::assertCount(1, $arrayCache->getValues());
         self::assertEquals($config, $inputProcessor->getConfig());
         self::assertEquals($input, $inputProcessor->getInput());
     }
@@ -162,7 +163,7 @@ class CachingInputProcessorTest extends TestCase
             ->method('unserialize')
             ->willThrowException(new InvalidArgumentException());
 
-        $cache = new ArrayCache();
+        $cache = new Psr16Cache($arrayCache = new ArrayAdapter());
 
         $processor = new CachingInputProcessor($cache, $serializer, new SpyingInputProcessor());
         $processor->process($config = new ProcessorConfig(new FieldSetStub()), $input = 'Hello');
@@ -170,6 +171,6 @@ class CachingInputProcessorTest extends TestCase
         $processor2 = new CachingInputProcessor($cache, $serializer, new StubInputProcessor());
         $processor2->process($config2 = new ProcessorConfig(new FieldSetStub()), $input2 = 'Hello');
 
-        self::assertCount(2, $cache->getValues());
+        self::assertCount(2, $arrayCache->getValues());
     }
 }

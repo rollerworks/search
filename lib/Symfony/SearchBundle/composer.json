@@ -1,8 +1,14 @@
 {
     "name": "rollerworks/search-bundle",
-    "description": "RollerworksSearch Bundle",
-    "keywords": ["filter", "search", "rollerworks", "symfony", "bundle"],
     "type": "symfony-bundle",
+    "description": "RollerworksSearch Bundle",
+    "keywords": [
+        "filter",
+        "search",
+        "rollerworks",
+        "symfony",
+        "bundle"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -14,8 +20,15 @@
         "php": "^7.1",
         "psr/simple-cache": "^1.0.0",
         "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA13",
-        "symfony/framework-bundle": "^3.4.2 || ^4.0.2",
+        "symfony/framework-bundle": "^4.3",
         "symfony/twig-bundle": "^3.4.2 || ^4.0.2"
+    },
+    "conflict": {
+        "doctrine/doctrine-bundle": "<1.1",
+        "rollerworks/search-doctrine-dbal": "<2.0.0-ALPHA13",
+        "rollerworks/search-doctrine-orm": "<2.0.0-ALPHA13",
+        "rollerworks/search-symfony-validator": "<2.0.0-ALPHA13",
+        "symfony/psr-http-message-bridge": "<1.0.0"
     },
     "require-dev": {
         "matthiasnoback/symfony-dependency-injection-test": "^2.0.0",
@@ -25,35 +38,30 @@
         "symfony/asset": "^3.4.2 || ^4.0.2",
         "symfony/browser-kit": "^3.4.2 || ^4.0.2",
         "symfony/dom-crawler": "^3.4.2 || ^4.0.2",
-        "symfony/phpunit-bridge": "^3.4.2 || ^4.0.2",
+        "symfony/phpunit-bridge": "^4.3",
         "symfony/routing": "^3.4.2 || ^4.0.2",
         "symfony/templating": "^3.4.2 || ^4.0.2"
     },
-    "conflict": {
-        "symfony/psr-http-message-bridge": "<1.0.0",
-        "rollerworks/search-symfony-validator": "<2.0.0-ALPHA13",
-        "rollerworks/search-doctrine-dbal": "<2.0.0-ALPHA13",
-        "rollerworks/search-doctrine-orm": "<2.0.0-ALPHA13",
-        "doctrine/doctrine-bundle": "<1.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "Rollerworks\\Bundle\\SearchBundle\\": ""
-        },
-        "exclude-from-classmap": ["test/"]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "Tests/"
-        }
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0-dev"
         }
     },
-    "config": {
-        "sort-packages": true
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Bundle\\SearchBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "test/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "Tests/"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

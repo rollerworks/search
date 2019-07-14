@@ -88,8 +88,8 @@ final class SearchConditionListener
 
         // First Dispatch a specific event to for this resource-class and then a generic one for ease of listening.
         // Note. If propagation is stopped for specific listener the generic listener is ignored.
-        $this->eventDispatcher->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT.$resourceClass, $conditionEvent);
-        $this->eventDispatcher->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT, $conditionEvent);
+        $this->eventDispatcher->dispatch($conditionEvent, SearchConditionEvent::SEARCH_CONDITION_EVENT.$resourceClass);
+        $this->eventDispatcher->dispatch($conditionEvent, SearchConditionEvent::SEARCH_CONDITION_EVENT);
 
         $request->attributes->set('_api_search_condition', $condition);
     }
