@@ -1,7 +1,7 @@
 {
     "name": "rollerworks/search-api-platform",
-    "description": "API-Platform integration bridge for RollerworksSearch",
     "type": "library",
+    "description": "API-Platform integration bridge for RollerworksSearch",
     "license": "MIT",
     "authors": [
         {
@@ -11,16 +11,21 @@
     ],
     "require": {
         "php": "^7.1",
+        "api-platform/core": "^2.0.10",
         "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA13",
         "rollerworks/uri-encoder": "^1.1.0 || ^2.0",
-        "api-platform/core": "^2.0.10",
-        "symfony/http-foundation": "^3.4.2 || ^4.0"
+        "symfony/http-foundation": "^4.3"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.3.6 || ^4.0",
-        "rollerworks/search-doctrine-orm": "^2.0@dev,>=2.0.0-ALPHA13",
         "doctrine/orm": "^2.5.6",
-        "phpunit/phpunit": "^6.3"
+        "phpunit/phpunit": "^6.3",
+        "rollerworks/search-doctrine-orm": "^2.0@dev,>=2.0.0-ALPHA13",
+        "symfony/phpunit-bridge": "^4.3"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -34,11 +39,6 @@
         "psr-4": {
             "Rollerworks\\Component\\Search\\ApiPlatform\\Tests\\": "Tests/",
             "ApiPlatform\\Core\\Tests\\Fixtures\\TestBundle\\Entity\\": "vendor/api-platform/core/tests/Fixtures/TestBundle/Entity"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
         }
     },
     "minimum-stability": "dev",
