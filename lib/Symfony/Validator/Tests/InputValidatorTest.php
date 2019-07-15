@@ -52,7 +52,6 @@ final class InputValidatorTest extends SearchIntegrationTestCase
         $fieldSet->add('id', IntegerType::class, ['constraints' => new Assert\Range(['min' => 5])]);
         $fieldSet->add('date', DateType::class, [
             'constraints' => [
-                new Assert\Date(),
                 new Assert\Range(
                     ['min' => new \DateTime('2014-12-20 14:35:05 UTC')]
                 ),

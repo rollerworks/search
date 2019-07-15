@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\ApiPlatform;
 
 use Rollerworks\Component\Search\SearchCondition;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * The SearchConditionEvent allows to set a primary-condition.

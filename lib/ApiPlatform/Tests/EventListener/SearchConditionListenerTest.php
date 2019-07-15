@@ -28,10 +28,12 @@ use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Loader\ClosureContainer;
 use Rollerworks\Component\Search\Loader\InputProcessorLoader;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
-use Symfony\Component\Cache\Simple\ArrayCache;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class SearchConditionListenerTest extends SearchIntegrationTestCase
@@ -121,7 +123,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(
             [
@@ -373,7 +375,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $this->createProcessorLoader($inputProcessor, 'norm_string_query'),
             $resourceMetadataFactory,
             $eventDispatcher,
-            $cache = new ArrayCache()
+            $cache = new Psr16Cache($arrayCache = new ArrayAdapter())
         );
 
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
@@ -390,7 +392,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             ],
             $request->attributes->all()
         );
-        self::assertCount(1, $cache->getValues());
+        self::assertCount(1, $arrayCache->getValues());
 
         $config = $inputProcessor->getConfig();
         self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
@@ -429,7 +431,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $this->createProcessorLoader($inputProcessor, 'norm_string_query'),
             $resourceMetadataFactory,
             $eventDispatcher,
-            $cache = new ArrayCache()
+            $cache = new Psr16Cache($arrayCache = new ArrayAdapter())
         );
 
         $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
@@ -445,7 +447,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             ],
             $request->attributes->all()
         );
-        self::assertCount(0, $cache->getValues());
+        self::assertCount(0, $arrayCache->getValues());
 
         $config = $inputProcessor->getConfig();
         self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
@@ -566,8 +568,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $event = new SearchConditionEvent(SpyingInputProcessor::getCondition(), Dummy::class, $request);
 
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT, $event)->shouldBeCalled();
-        $eventDispatcherProphecy->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT.Dummy::class, $event)->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT)->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT.Dummy::class)->shouldBeCalled();
 
         return $eventDispatcherProphecy->reveal();
     }
@@ -575,8 +577,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     private function expectingNoCallEventDispatcher(): EventDispatcherInterface
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT, Argument::any())->shouldNotBeCalled();
-        $eventDispatcherProphecy->dispatch(SearchConditionEvent::SEARCH_CONDITION_EVENT.Dummy::class, Argument::any())->shouldNotBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT)->shouldNotBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT.Dummy::class)->shouldNotBeCalled();
 
         return $eventDispatcherProphecy->reveal();
     }

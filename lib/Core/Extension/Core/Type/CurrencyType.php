@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceLoaderTrait;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Currencies;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -48,7 +48,7 @@ final class CurrencyType extends AbstractFieldType implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(array_flip(Intl::getCurrencyBundle()->getCurrencyNames()), $value);
+        return $this->choiceList = new ArrayChoiceList(array_flip(Currencies::getNames()), $value);
     }
 
     public function isValuesConstant(): bool

@@ -1,8 +1,13 @@
 {
     "name": "rollerworks/search-doctrine-dbal",
-    "description": "Doctrine DBAL extension for RollerworksSearch",
-    "keywords": ["rollerworks", "search", "doctrine", "dbal"],
     "type": "library",
+    "description": "Doctrine DBAL extension for RollerworksSearch",
+    "keywords": [
+        "rollerworks",
+        "search",
+        "doctrine",
+        "dbal"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -16,32 +21,14 @@
     ],
     "require": {
         "php": "^7.1",
-        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA13",
         "doctrine/dbal": "^2.5.5",
-        "psr/simple-cache": "^1.0.0"
+        "psr/simple-cache": "^1.0.0",
+        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA13"
     },
     "require-dev": {
+        "moneyphp/money": "^3.0.7",
         "symfony/phpunit-bridge": "^3.4.2 || ^4.0.2",
-        "symfony/var-dumper": "^3.4.2 || ^4.0.2",
-        "moneyphp/money": "^3.0.7"
-    },
-    "autoload": {
-        "psr-4": {
-            "Rollerworks\\Component\\Search\\Doctrine\\Dbal\\": "",
-            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Dbal\\": "Extension/"
-        },
-        "exclude-from-classmap": ["Tests/"]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "Tests/",
-            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
+        "symfony/var-dumper": "^3.4.2 || ^4.0.2"
     },
     "config": {
         "platform": {
@@ -52,5 +39,25 @@
             "*": "dist"
         },
         "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Doctrine\\Dbal\\": "",
+            "Rollerworks\\Component\\Search\\Extension\\Doctrine\\Dbal\\": "Extension/"
+        },
+        "exclude-from-classmap": [
+            "Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Tests\\Doctrine\\Dbal\\": "Tests/",
+            "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
+        }
     }
 }

@@ -18,7 +18,7 @@
             <argument type="service" id="event_dispatcher" />
 
             <argument type="service">
-                <service class="Symfony\Component\Cache\Simple\Psr6Cache">
+                <service class="Symfony\Component\Cache\Psr16Cache">
                     <argument id="rollerworks.search_processor.cache" type="service" />
                 </service>
             </argument>

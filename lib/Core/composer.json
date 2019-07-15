@@ -1,9 +1,13 @@
 {
     "name": "rollerworks/search",
-    "description": "RollerworksSearch provides you with a powerful search system",
-    "keywords": ["rollerworks", "filter", "search"],
-    "homepage": "https://rollerworks.github.io/",
     "type": "library",
+    "description": "RollerworksSearch provides you with a powerful search system",
+    "keywords": [
+        "rollerworks",
+        "filter",
+        "search"
+    ],
+    "homepage": "https://rollerworks.github.io/",
     "license": "MIT",
     "authors": [
         {
@@ -17,37 +21,39 @@
     ],
     "require": {
         "php": "^7.1",
+        "psr/container": "^1.0.0",
+        "symfony/intl": "^4.3",
         "symfony/options-resolver": "^3.4.2 || ^4.0",
-        "symfony/property-access": "^3.4.2 || ^4.0",
-        "symfony/intl": "^3.4.2 || ^4.0",
-        "psr/container": "^1.0.0"
+        "symfony/property-access": "^3.4.2 || ^4.0"
+    },
+    "conflict": {
+        "moneyphp/money": "<3.2.0"
     },
     "require-dev": {
         "moneyphp/money": "^3.2.0",
         "phpunit/phpunit": "^6.5.4",
-        "symfony/phpunit-bridge": "^3.4.2 || ^4.0",
-        "symfony/var-dumper": "^3.4.2 || ^4.0"
+        "symfony/phpunit-bridge": "^4.3",
+        "symfony/var-dumper": "^4.3"
     },
     "suggest": {
         "moneyphp/money": "To use the MoneyType"
     },
-    "conflict": {
-        "moneyphp/money": "<3.2.0"
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
     },
     "autoload": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\": ""
         },
-        "exclude-from-classmap": ["Test/"]
+        "exclude-from-classmap": [
+            "Test/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Tests\\": "Tests/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
         }
     }
 }

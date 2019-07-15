@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Money\Currencies\ISOCurrencies;
+use Money\Currency;
 use Money\Exception\ParserException;
 use Money\Exception\UnknownCurrencyException;
 use Money\Formatter\DecimalMoneyFormatter;
@@ -35,7 +36,7 @@ final class MoneyToStringTransformer implements DataTransformer
 
     public function __construct(string $defaultCurrency)
     {
-        $this->defaultCurrency = $defaultCurrency;
+        $this->defaultCurrency = new Currency($defaultCurrency);
     }
 
     /**
@@ -96,6 +97,8 @@ final class MoneyToStringTransformer implements DataTransformer
                     sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
                 );
             }
+
+            $currency = new Currency($currency);
         } else {
             $withCurrency = false;
             $currency = $this->defaultCurrency;

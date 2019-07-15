@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceLoaderTrait;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Countries;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -47,7 +47,7 @@ final class CountryType extends AbstractFieldType implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(array_flip(Intl::getRegionBundle()->getCountryNames()), $value);
+        return $this->choiceList = new ArrayChoiceList(array_flip(Countries::getNames()), $value);
     }
 
     public function isValuesConstant(): bool
