@@ -78,5 +78,10 @@ in-docker-test-coverage:
 	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
 	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
 
+docs:
+	docker build docs/ -t rollerworks-search-docs
+	@echo 'The documentation is availbe at http://localhost:8000 (to end the process use Ctrl+C)'
+	docker run --rm -p 8000:80 rollerworks-search-docs:latest
+
 .PHONY: install install-dev install-lowest phpstan cs cs-full cs-full-checks docker-up down-down
-.PHONY: in-docker-install in-docker-install-dev in-docker-install-lowest in-docker-test in-docker-test-coverage
+.PHONY: in-docker-install in-docker-install-dev in-docker-install-lowest in-docker-test in-docker-test-coverage docs
