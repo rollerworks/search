@@ -7,7 +7,6 @@
 | Tests pass?   | yes      <!-- please add some, will be required by reviewers -->
 | Fixed tickets | #...     <!-- #-prefixed issue number(s), if any -->
 | License       | MIT
-| Doc PR        | rollerworks/search-docs#... <!--highly recommended for new features-->
 
 <!--
 - Please fill in this template according to the PR you're about to submit.
