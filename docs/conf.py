@@ -16,8 +16,7 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('./_exts'))
+sys.path.append(os.path.abspath('_theme/_exts'))
 
 # adding PhpLexer
 from sphinx.highlighting import lexers
@@ -251,8 +250,8 @@ texinfo_documents = [
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
-html_theme_path = ['_themes']
-html_theme = 'rollerworks'
+html_theme_path = ['_theme']
+html_theme = 'custom_rtd_theme'
 
 pygments_style = 'native'
 primary_domain = 'php'
