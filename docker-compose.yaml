@@ -23,7 +23,6 @@ services:
 
     mariadb-server:
         image: mariadb
-        restart: always
         environment:
             - MYSQL_DATABASE=search_tests
             - MYSQL_ROOT_PASSWORD=nope
