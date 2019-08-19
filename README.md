@@ -113,7 +113,7 @@ try {
     
     // The `process` method processes the input and produces 
     // a valid SearchCondition (or throws an exception when something is wrong).
-    $condition = $inpurProcessor->process('firstName: sebastiaan, melany;');
+    $condition = $inputProcessor->process('firstName: sebastiaan, melany;');
 } catch (InvalidSearchConditionException $e) {
     // Each error message can be easily transformed to a localized version.
     // Read the documentation for more details.
