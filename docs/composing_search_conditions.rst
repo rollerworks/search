@@ -9,7 +9,7 @@ Creating a FieldSet
 -------------------
 
 Before you can compose a SearchCondition you first need a FieldSet configuration,
-even when using the Condition ony for exporting you need a FieldSet as the exporter
+even when using the Condition only for exporting you need a FieldSet as the exporter
 needs to know which data transformer(s) to use.
 
 .. include:: fieldset.rst.inc
@@ -18,7 +18,7 @@ And now you can use the FieldSet for the SearchConditionBuilder, note that
 values must be provided in the "model" format of the field-type.
 
 For the DateTimeType this is a ``DateTime`` object, for the id this is an
-``integer``, and username is simply a ``string``.
+``integer``, and username is a ``string``.
 
 For this example we want to search for users:
 
