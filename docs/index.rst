@@ -1,18 +1,12 @@
 RollerworksSearch
 =================
 
-.. note::
-
-    You are reading the documentation for RollerworksSearch 2.x.
-    Switch to the documentation for RollerworksSearch `1.x`_.
-
-Welcome to RollerworksSearch, RollerworksSearch is a powerful search-system
-for PHP. Created to make searching in a PHP powered application as simple and
-fast as possible.
+RollerworksSearch is a powerful search-system for PHP. Created to make
+searching in a PHP powered application as simple and fast as possible.
 
 In this manual you find everything to get started and make the most
 of the library. Start by :doc:`learning the basic terms <introduction>`,
-then with :doc:`install RollerworksSearch <installing>`, follow-up with
+then :doc:`install RollerworksSearch <installing>`, follow-up with
 :doc:`processing_searches` and continue with integration extensions
 for your framework of choice.
 
@@ -50,5 +44,4 @@ Integrations
     integration/symfony_bundle
     integration/symfony_validator
 
-.. _`1.x`: http://rollerworkssearch.readthedocs.io/en/1.x/
 .. _`RollerworksSearch Gitter Channel`: https://gitter.im/rollerworks/RollerworksSearch
