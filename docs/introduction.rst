@@ -200,12 +200,6 @@ on the client-side in either a cookie, URI query-parameter or hidden form input 
 Or if you need to perform a search operation on an external system that uses
 RollerworksSearch.
 
-Condition Optimizers
---------------------
-
-Condition optimizers remove duplicated values, normalizing overlapping and
-redundant values/conditions. All to produce a minimal SearchCondition for
-faster processing and smaller storage.
 
 SearchFactory
 -------------
@@ -264,24 +258,6 @@ a `PSR-11`_ compatible container.
 The FieldSetRegistry is amongst used when unserializing a serialized SearchCondition,
 so that you don't have to inject the FieldSet explicitly.
 
-SearchProcessor
----------------
-
-Properly handling a Search operation requires multiple steps, you need to
-process the input, handle errors (exceptions) and somehow apply the search
-condition while dealing with (form) posts and redirects.
-
-Not to mention caching, you don't want to process the same condition once you
-know it's valid. To help with this you can use a SearchProcessor, which takes
-care of all these details.
-
-.. tip::
-
-    RollerworksSearch provides a number of Framework integration
-    libraries which take care of adapting the different Request formats.
-
-    The "default" processor uses the `PSR-7`_ Request format.
-
 Further reading
 ---------------
 
@@ -302,4 +278,3 @@ you wish to use.
 * :doc:`Doctrine DBAL/ORM integration <integration/doctrine/index>`
 
 .. _`PSR-11`: http://www.php-fig.org/psr/psr-11/
-.. _`PSR-7`: http://www.php-fig.org/psr/psr-7/

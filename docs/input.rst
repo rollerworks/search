@@ -11,35 +11,6 @@ in the reference section of this manual.
 This chapter explains how you use the processors and how you configure
 them to limit the conditions allowed complexity.
 
-Loading processors
-------------------
-
-Instead of constructing the processors yourself it's best to lazily load
-them using the ``InputProcessorLoader``, which allows to safely load
-processors by format::
-
-    use Rollerworks\Component\Search\Loader\InputProcessorLoader;
-
-    $inputProcessorLoader = InputProcessorLoader::create();
-    $inputProcessor = $inputProcessorLoader->get('xml');
-
-    /* ... */
-
-    // The create() method will register all build-in processors.
-    // But you can also use a PSR-11 compatible Container.
-
-    // \Psr\Container\ContainerInterface
-    $container = ...;
-
-    $formatToServiceId = [
-        'array' => 'rollerworks_search.input.array',
-        'json' => 'rollerworks_search.input.json',
-        'xml' => 'rollerworks_search.input.xml',
-        'string_query' => 'rollerworks_search.input.string_query',
-    ];
-
-    $inputProcessorLoader = new InputProcessorLoader($container, $formatToServiceId);
-
 Values limit
 ------------
 
@@ -85,6 +56,4 @@ Input format reference
     :maxdepth: 1
 
     reference/input/string_query
-    reference/input/array
     reference/input/json
-    reference/input/xml
