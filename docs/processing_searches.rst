@@ -1,36 +1,13 @@
-Using the SearchProcessor
-=========================
+Processing Searches Queries
+===========================
 
-In this chapter you will finally start by integrating RollerworksSearch
-into your application. You will learn how to process search operations
-using the SearchProcessor and handle processing errors.
+In this chapter you will start by integrating RollerworksSearch
+into your application, to process a search query provided a user.
 
-Following the `installation instructions <install>` first install the
-search-processor by running:
+You will learn how to handle search operations user errors.
 
-.. code-block:: bash
-
-    $ php composer.phar require rollerworks/search-processor
-
-The SearchProcessor requires a `PSR-7`_ (Http Message) ServerRequest class which
-is provided by many third party libraries.
-
-Don't worry if your new to PSR-7, all implementations are expected to follow
-the same interface. And therefor it doesn't matter which implementation you use!
-
-.. note::
-
-    A PSR-7 implementation may already be provided by the framework of your
-    choice. Instead of focusing on all frameworks this chapter tries to be
-    as generic as possible. See the :doc:`integration section <integration/index>`
-    for more details.
-
-    For the remainder of this chapter we will use the ``zendframework/zend-diactoros``
-    library. Which other then the PSR-11 interface has no other dependencies.
-
-    .. code-block:: bash
-
-        $ php composer.phar require zendframework/zend-diactoros
+Make sure you have the core package installed as described in the
+`installation instructions <install>`.
 
 Creating your SearchFactory
 ---------------------------
@@ -46,21 +23,22 @@ and perform search operations. So let's set it up:
         // Here you can optionally add new types and (type) extensions
         ->getSearchFactory();
 
-The FactoryBuilder helps with setting up the search system.
-You only need to set a SearchFactory up once, and then it can be reused
-multiple times.
+The FactoryBuilder helps with setting up the search system quickly.
 
 .. note::
 
     The ``Searches`` class and ``SearchFactoryBuilder`` are only meant to be used
-    when you'r using RollerworksSearch as a library. The Framework integrations
-    provide a more powerful system with lazy loading and automatic configuring.
+    for stand-alone usage. The Framework integrations provide a more powerful
+    system with lazy loading and automatic configuring.
+
+You only need to set-up a SearchFactory once, and then it can be reused
+multiple times trough the application.
 
 Creating a FieldSet
 -------------------
 
 Before you can start performing searches the system needs to know which
-fields you to want allow searching in. This configuration is kept in a FieldSet.
+fields you to want allow searching in. This configuration is kept in a :ref:`FieldSet <fieldset>`.
 
 .. include:: fieldset.rst.inc
 
@@ -73,24 +51,16 @@ you have done so far is shown as a whole.
 .. code-block:: php
     :linenos:
 
-    use Rollerworks\Component\Search\Searches;
-    use Rollerworks\Component\Search\Extension\Core\Type\TextType;
-    use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+    use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
     use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
-    use Rollerworks\Component\Search\Loader;
-    use Rollerworks\Component\Search\Processor\ProcessorConfig;
-    use Rollerworks\Component\Search\Processor\Psr7SearchProcessor;
-    use Zend\Diactoros\ServerRequestFactor;
+    use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+    use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+    use Rollerworks\Component\Search\Input\ProcessorConfig;
+    use Rollerworks\Component\Search\Input\StringQueryInput;
+    use Rollerworks\Component\Search\Searches;
 
-    $searchFactory = new Searches::createSearchFactoryBuilder()
+    $searchFactory = Searches::createSearchFactoryBuilder()
         ->getSearchFactory();
-
-    $inputProcessorLoader = Loader\InputProcessorLoader::create();
-    $conditionExporterLoader = Loader\ConditionExporterLoader::create();
-    $processor = new Psr7SearchProcessor($searchFactory, $inputProcessorLoader, $conditionExporterLoader);
-
-    // Everything above this line is reusable.
-    // Everything below is specific to this section of the application.
 
     $userFieldSet = $searchFactory->createFieldSetBuilder()
         ->add('id', IntegerType::class)
@@ -100,135 +70,143 @@ you have done so far is shown as a whole.
         ->add('regDate', DateTimeType::class)
         ->getFieldSet('users');
 
-    // A PSR-7 ServerRequestInterface object instance
-    $request = Zend\Diactoros\ServerRequestFactory::fromGlobals();
+    $inputProcessor = new StringQueryInput();
 
-    // The ProcessorConfig can be configured for advanced use-cases,
-    // and limiting the allowed complexity of a SearchCondition.
-    // See the class methods for all details.
+    // Tip: Everything above this line is reusable, input processors
+    // and fieldsets are idempotent from each other.
 
-    $processorConfig = new ProcessorConfig($userFieldSet);
+    try {
+        // The ProcessorConfig allows to limit the amount of values, groups
+        // and maximum nesting level.
+        $processorConfig = new ProcessorConfig($userFieldSet);
 
-    // The $searchPayload contains READ-ONLY information of the processing result
-    $searchPayload = $processor->processRequest($request, $processorConfig);
+        // The `process()` method parsers the input and produces
+        // a valid SearchCondition (or throws an InvalidSearchConditionException
+        // when something is wrong).
 
-    // When a POST is provided the processor will validate the input
-    // and export it. Note that an empty result is also valid.
-    //
-    // The searchCode depends on the implementation of the SearchProcessor,
-    // and in this case contains a JSON exported SearchCondition encoded for URI usage.
-    if ($searchPayload->isChanged() && $searchPayload->isValid()) {
-        // Redirect to this page with the search-code provided.
-        header('Location: /search?search='.$searchPayload->searchCode);
-        exit();
+        $condition = $inputProcessor->process('firstName: sebastiaan, melany;');
+    } catch (InvalidSearchConditionException $e) {
+        // Each error message can be easily transformed to a localized version.
+        // Read the documentation for more details.
+        foreach ($e->getErrors() as $error) {
+            echo $error.PHP_EOL;
+        }
     }
 
-    // Normally you would use a template system to take care of the presentation
-    echo <<<HTML
-    <form action="/search" method="post">
+That's it, this example shows the minimum amount of code needed process
+a search query. But using a static string is not what we are looking for
+So lets improve upon this example, with a form.
 
-    <label for="search-condition">Condition: </label>
-    <textarea id="search-condition" name="search" cols="10" rows="20">{htmlspecialchars($searchPayload->exportedCondition)}</textarea>
+.. note::
 
-    <label for="search-format">Format ({$searchPayload->exportedFormat}): </label>
-    <select id="search-format" name="format">
-        <option name="json">JSON</option>
-        <option name="xml">XML</option>
-        <option name="string_query">StringQuery</option>
-    </select>
+    This example is more advanced, and you properly want to abstract some
+    of the details in your application. Framework integration already handle
+    this nicely.
 
-    <div>
-        <button type="submit">Search</button> <button type="Reset">Reset</button>
-    </div>
-    </form>
+.. code-block:: php
+    :linenos:
 
-    HTML;
+    use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+    use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
+    use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+    use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+    use Rollerworks\Component\Search\Input\ProcessorConfig;
+    use Rollerworks\Component\Search\Input\StringQueryInput;
+    use Rollerworks\Component\Search\Searches;
 
-    // Always do this check because the uri-provided searchCode could be malformed resulting in
-    // an invalid SearchCondition.
-    if (!$payload->isValid()) {
-        echo '<p>Sorry but your condition contains the following errors: <p>'.PHP_EOL;
+    $searchFactory = Searches::createSearchFactoryBuilder()
+        ->getSearchFactory();
+
+    $userFieldSet = $searchFactory->createFieldSetBuilder()
+        ->add('id', IntegerType::class)
+        ->add('username', TextType::class)
+        ->add('firstName', TextType::class)
+        ->add('lastName', TextType::class)
+        ->add('regDate', DateTimeType::class)
+        ->getFieldSet('users');
+
+    $inputProcessor = new StringQueryInput();
+
+    try {
+        $processorConfig = new ProcessorConfig($userFieldSet);
+        $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
+
+        // When a POST is provided the processor will try to parse the input,
+        // and redirect back to the current page with the query passed-on,
+        // if the input is valid.
+
+        $inputProcessor->process($processorConfig, $_POST['query'] ?? '');
+
+        if ($isPost) {
+            // Redirect to this page with the search-code provided.
+            // Note: The $_POST['query'] value might be spoofed,
+            // be sure to apply proper format detection.
+            // Or use a proper HTTP request abstraction.
+
+            header('Location: /search?search='.$_POST['query'] ?? '');
+            exit();
+        }
+
+        // The processor always needs to parse the query again, see below
+        // to apply caching for better performance.
+        $condition = $inputProcessor->process($processorConfig, $_GET['query'] ?? '');
+    } catch (InvalidSearchConditionException $e) {
+        echo '<p>Your condition contains the following errors: <p>'.PHP_EOL;
         echo '<ul>'.PHP_EOL;
 
-        // Each error message can be transformed to a localized version.
-        // The message contains a messageTemplate and arguments for translation.
-        foreach ($payload->messages as $error) {
+        foreach ($e->getErrors() as $error) {
            echo '<li>'.$error->path.': '.htmlspecialchars((string) $error).'</li>'.PHP_EOL;
         }
 
         echo '</ul>'.PHP_EOL;
     }
 
-    // Notice: This is null when there are errors, when the condition is valid but has
-    // no fields/values this is an empty SearchCondition object.
-    $condition = $payload->searchCondition;
+    $query = htmlspecialchars($_POST['query'] ?? $_GET['query'] ?? '');
 
-That's it, all input processing, optimizing and error handling is taken care of,
-but there is more. The processor creates a ``searchCode`` which solves the form POST
-redirect handling for you.
+    // Normally you would use a template system to take care of the presentation
+    echo <<<HTML
+    <form action="/search" method="post">
 
-And this example can be used for both a Form, or a REST API end-point with one minor
-change:
+    <label for="search-condition">Condition: </label>
+    <textarea id="search-condition" name="query" cols="10" rows="20">{$query}</textarea>
 
-.. code-block:: php
+    <div>
+        <button type="submit">Search</button> <button type="Reset">Reset</button>
+    </div>
+    </form>
+    HTML;
 
-    $processorConfig = new ProcessorConfig($userFieldSet, 'json');
-
-This changes the (default) input/export format from ``string_query``
-to ``json``. Or ``xml`` if you prefer this.
-
-.. note::
-
-    The input/export format can be changed using the ``format``
-    ``ServerRequestInterface`` body-parameter. The loader ensures
-    only valid formats are accepted.
-
-Working with multiple processors
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-When you need to support multiple processors per page (either multiple datagrids).
-You need to set the request-prefix with ``setRequestPrefix('user')``::
-
-    $processorConfig = new ProcessorConfig($userFieldSet);
-    $processorConfig->setRequestPrefix('user');
-
-    ...
-
-    if ($searchPayload->isChanged() && $searchPayload->isValid()) {
-        // Redirect to this page with the search-code provided.
-        header('Location: /search?search['.$processorConfig->getRequestPrefix().']='.$searchPayload->searchCode);
-        exit();
-    }
+That's it, all input processing, and error handling is taken care of, however now
+the query will be parsed for every request, if you only allow small conditions
+this is performance hit is barely noticeable, but if you need to handle bigger
+queries it's advised to cache the produced search condition for additional requests.
 
 Improving performance
 ---------------------
 
-The example shown above is really powerful and works really wel,
-but when you are dealing with a high traffic application and/or complex
-conditions performance *will* become a problem.
+To Cache the parsed result wrap the input processor with a
+:class:`Rollerworks\\Component\\Search\\Input\\CachingInputProcessor`
+as shown below. Note that you need a FieldSetRegistry set-up for the
+serializer to work properly.
 
-Instead of reprocessing a valid condition for every request, you can cache
-the SearchPayload and use it for another request.
+The CachingInputProcessor uses `PSR-16`_ for caching.
 
-Reusing the processor example let's replace the processor with a CachedProcessor.
-The CachedProcessor uses `PSR-16`_ (SimpleCache) and works similar to the ``Psr7SearchProcessor``,
-except that it uses a cached SearchPayload when possible.
+.. code-block:: php
+
+    use Rollerworks\\Component\\Search\\Input\\CachingInputProcessor;
+
+    ...
+
+    // A \Psr\SimpleCache\CacheInterface instance
+    $cache = ...;
+
+    $inputProcessor = new StringQueryInput();
+    $inputProcessor = new CachingInputProcessor($cache, $searchFactory->getSerializer(), $inputProcessor, $ttl = 60);
 
 .. warning::
 
     It's strongly advised to use a memory-based cache system like Redis
     or Memcache. The cache should have a short time to life (TTL) like 5 minutes.
-
-.. code-block:: php
-    :linenos:
-
-    ...
-
-    // \Psr\SimpleCache\CacheInterface instance
-    $cache = ...;
-
-    $processor = new Psr7SearchProcessor($searchFactory, $inputProcessorLoader, $conditionExporterLoader);
-    $processor = new CachedSearchProcessor($cache, $processor, $searchFactory);
 
 Done, caching is now enabled!
 
@@ -237,7 +215,7 @@ But wait, did you know you can also change the TTL per processor?
 
 .. code-block:: php
 
-    $processorConfig = new ProcessorConfig($userFieldSet, 'json');
+    $processorConfig = new ProcessorConfig($userFieldSet);
     $processorConfig->setCacheTTL(60*5); // Time in seconds (5 minutes)
 
 Handling errors
@@ -277,18 +255,15 @@ with a ton of useful information:
     public $messageParameters;
 
     /**
-     * The value for error message pluralization.
-     *
-     * @var int|null
-     */
-    public $messagePluralization;
-
-    /**
      * @var mixed
      */
     public $cause;
 
     /**
+     * A list of parameter names who's values must be translated separately.
+     *
+     * Either token: ["unexpected"]
+     *
      * @var string[]
      */
     public $translatedParameters;
@@ -346,11 +321,11 @@ but for more flexibility it's best to perform the rendering logic in a template.
 
     ...
 
-    if (!$payload->isValid()) {
-        echo '<p>Sorry but your condition contains the following errors: <p>'.PHP_EOL;
+    } catch (InvalidSearchConditionException $e) {
+        echo '<p>Your condition contains the following errors: <p>'.PHP_EOL;
         echo '<ul>'.PHP_EOL;
 
-        foreach ($payload->messages as $error) {
+        foreach ($e->getErrors() as $error) {
            echo '<li>'.$error->path.': '.htmlspecialchars(translateConditionErrorMessage($error)).'</li>'.PHP_EOL;
         }
 
@@ -360,6 +335,9 @@ but for more flexibility it's best to perform the rendering logic in a template.
 .. tip::
 
     Framework integrations already provide a way to translate error messages.
+
+Debugging information
+---------------------
 
 But wait, what is ``$cause`` about? This value holds some useful information about
 what caused this error. It can be an Exception object, ``ConstraintViolation`` or anything.
@@ -372,5 +350,5 @@ Further reading
 * :doc:`Doctrine DBAL/ORM integration <integration/doctrine/index>`
 * :doc:`Visual condition builder <visual_condition_builder>` (coming soon)
 
-.. _`PSR-7`: http://www.php-fig.org/psr/psr-7/
-.. _`Translator component`: http://symfony.com/doc/current/components/translation.html
+.. _`PSR-16`: https://www.php-fig.org/psr/psr-16/
+.. _`Translator component`: https://symfony.com/doc/current/components/translation.html
