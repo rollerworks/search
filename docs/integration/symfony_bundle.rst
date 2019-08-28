@@ -9,8 +9,8 @@ You need the Symfony FrameworkBundle and optionally Symfony Flex,
 while not required the following examples assume your using at least
 Symfony 3.4 and have Symfony Flex installed.
 
-All RollerworksSearch services are can autowired.
-There service-id's are shown for reference.
+All RollerworksSearch services can be autowired. There service-id's are
+shown for reference.
 
 .. note::
 
@@ -47,7 +47,7 @@ Symfony application. Because of this most of RollerworksSearch's documentation
 can be used as-is.
 
 The main difference is that the integration is already done for you,
-and you use the ServiceContainer instead of initializing classes yourself.
+and you use the service Container instead of initializing classes yourself.
 
 SearchFactory
 ~~~~~~~~~~~~~
@@ -65,84 +65,100 @@ Get the (default) SearchFactory service using ``rollerworks_search.factory``::
     $serializedCondition = $serializer->serialize($searchCondition);
     $searchCondition = $serializer->unserialize($serializedCondition);
 
-SearchProcessor
-~~~~~~~~~~~~~~~
+Search Query
+~~~~~~~~~~~~
 
-See also :doc:`/processing_searches` for more information and details.
+.. code-block:: php
+    :linenos:
 
-.. note::
+    namespace App\Controller;
 
-    The SearchProcessor requires additional Composer packages to function
-    properly, install them using:
-
-    .. code-block:: bash
-
-        $ composer require --no-update "rollerworks/search-processor"
-        $ composer require --no-update "symfony/psr-http-message-bridge"
-        $ composer require --no-update "zendframework/zend-diactoros"
-        $ composer update
-
-Get the (default) SearchProcessor service using ``rollerworks_search.search_processor``::
-
-    namespace Acme\Controller;
-
-    use Rollerworks\Component\Search\Processor\ProcessorConfig;
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    use App\Search\FieldSet\UserFieldSet;
+    use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+    use Rollerworks\Component\Search\Input\ProcessorConfig;
+    use Rollerworks\Component\Search\Input\StringQueryInput;
+    use Rollerworks\Component\Search\Loader\InputProcessorLoader;
+    use Rollerworks\Component\Search\SearchFactory;
+    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\HttpFoundation\Request;
-    use Acme\Search\FieldSet\UserFieldSet;
 
-    class SearchController extends Controller
+    class SearchController extends AbstractController
     {
-        public function searchAction(Request $request)
+        public function searchAction(Request $request, $search = '')
         {
-            $fieldSet = $this->get('rollerworks_search.factory')->createFieldSet(UserFieldSet::class);
+            /** @var SearchFactory $searchFactory */
+            $searchFactory = $this->get('search_factory');
+            /** @var StringQueryInput $processor */
+            $processor = $this->get('search.input_loader')->get('string_query');
+
+            $fieldSet = $searchFactory->createFieldSet(UserFieldSet::class);
             $config = new ProcessorConfig($fieldSet);
 
-            // The $searchPayload contains READ-ONLY information of the processing result
-            $searchPayload = $this->get('rollerworks_search.search_processor')->processRequest($request, $config);
+            // Enable caching (optional).
+            // https://www.php.net/manual/en/dateinterval.construct.php
+            // $config->setCacheTTL(new \DateInterval('PT2M'));
 
-            // When a POST is provided the processor will validate the input
-            // and export it. Note that an empty result is also valid.
-            //
-            // The searchCode depends on the implementation of the SearchProcessor,
-            // and in this case contains a JSON exported SearchCondition encoded for URI usage.
-            if ($searchPayload->isChanged() && $searchPayload->isValid()) {
-                return $this->redirectToRoute('user_search', ['search' => $searchPayload->searchCode]);
+            try {
+                if ($request->isMethod('POST')) {
+                    $search = $request->request->get('search');
+                    $processor->process($config, $search);
+
+                    return $this->redirectToRoute($request->attributes->get('_route'), ['search' => $request->request->get('search')]);
+                }
+
+                $condition = $processor->process($config, $search);
+            } catch (InvalidSearchConditionException $e) {
+                return $this->render(
+                    'user/search.html.twig',
+                    [
+                        'data' => [],
+                        'errors' => $e->getErrors(),
+                        'search_query' => $search,
+                    ]
+                );
             }
 
-            // ...
-
-            if (null !== $searchPayload->searchCondition) {
+            if (!$condition->isEmpty()) {
                 // Apply the SearchCondition for searching.
-                // ...
-
-                $data ...;
+                $data = ...;
             }
 
             return $this->render(
                 'user/search.html.twig',
                 [
                     'data' => $data,
-                    'search_payload' => $searchPayload, // contains errors (if any) and the exported condition
+                    'search_query' => $search,
                 ]
             );
         }
+
+        public static function getSubscribedServices(): array
+        {
+            return parent::getSubscribedServices() + [
+                'search.factory' => SearchFactory::class,
+                'search.input_loader' => InputProcessorLoader::class,
+            ];
+        }
     }
+
+
+.. code-block:: twig
+    :linenos:
+
+    TBD.
 
 That's it. You can now process search requests! See the reference section
 below to learn more about application wide cache configuring.
-
-.. note::
-
-    The SearchProcessor accepts a Symfony HttpFoundation Request object or a
-    PSR-7 ServerRequest instance. Format Adaption and caching is already done
-    for you.
 
 Registering types and type extensions
 -------------------------------------
 
 Registering types is only needed when they have injection dependencies
 (constructor or setter). Type extensions always need to be registered.
+
+.. note::
+
+    Tagging is only required if autoconfigure is not enabled, for the current file.
 
 To register a type, create a service as normal and tag it as ``rollerworks_search.type``.
 
@@ -157,9 +173,9 @@ To register a type, create a service as normal and tag it as ``rollerworks_searc
             xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
             <services>
-                <service id="Acme\Search\Type\MyType" public="false">
-                    <tag name="rollerworks_search.type" />
-                </service>
+                <defaults autowire="true" autoconfigure="true" public="false" />
+
+                <service id="App\Search\Type\MyType" />
             </services>
         </container>
 
@@ -167,15 +183,17 @@ To register a type, create a service as normal and tag it as ``rollerworks_searc
         :linenos:
 
         services:
-            'Acme\Search\Type\MyType':
+            _defaults:
+                autowire: true
+                autoconfigure: true
                 public: false
-                tags:
-                    - { name: rollerworks_search.type }
+
+            'App\Search\Type\MyType': ~
 
     .. code-block:: php
         :linenos:
 
-        use Acme\Search\Type\MyType;
+        use App\Search\Type\MyType;
         use Symfony\Component\DependencyInjection\Definition;
 
         $definition = new Definition(MyType::class);
@@ -184,8 +202,7 @@ To register a type, create a service as normal and tag it as ``rollerworks_searc
 
         $container->setDefinition(MyType::class, $definition);
 
-To register a type extension, create a service as normal and tag it as ``rollerworks_search.type_extension``
-and a ``extended-type`` attribute with name of the type this extension applies to.
+To register a type extension, create a service as normal and tag it as ``rollerworks_search.type_extension``.
 
 .. configuration-block::
 
@@ -198,9 +215,7 @@ and a ``extended-type`` attribute with name of the type this extension applies t
             xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
             <services>
-                <service id="Acme\Search\Type\MyType">
-                    <tag name="rollerworks_search.type" extended-type="Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType" />
-                </service>
+                <service id="App\Search\Type\MyTypeExtension" />
             </services>
         </container>
 
@@ -208,19 +223,17 @@ and a ``extended-type`` attribute with name of the type this extension applies t
         :linenos:
 
         services:
-            'Acme\Search\Type\MyType':
-                tags:
-                    - { name: rollerworks_search.type, extended-type: 'Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType' }
+            'App\Search\Type\MyTypeExtension': ~
 
     .. code-block:: php
         :linenos:
 
-        use Acme\Search\Type\MyType;
+        use App\Search\Type\MyTypeExtension;
         use Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType;
         use Symfony\Component\DependencyInjection\Definition;
 
         $definition = new Definition(MyType::class);
-        $definition->addTag('rollerworks_search.type', ['extended-type' => SearchFieldType::class]);
+        $definition->addTag('rollerworks_search.type_extension');
 
         $container->setDefinition(MyType::class, $definition);
 
@@ -228,7 +241,7 @@ Condition processors
 --------------------
 
 Second to SearchFactory and SearchProcessor the bundle provides an integration
-all build-in condition processors (Doctrine DBA/ORM) and Elasticsearch.
+all build-in condition processors (Doctrine DBAL) and Elasticsearch.
 
 Doctrine integration
 ~~~~~~~~~~~~~~~~~~~~
@@ -298,7 +311,7 @@ Enable Caching
 **************
 
 By default the Doctrine integration doesn't have caching enabled, to enable caching
-of generated SQL/DQL conditions configure the ``rollerworks_search.doctrine.cache`` pool.
+of generated query conditions configure the ``rollerworks_search.doctrine.cache`` pool.
 
 .. configuration-block::
 
@@ -342,23 +355,12 @@ when there related dependency is installed.
         :linenos:
 
         rollerworks_search:
-            processor:
-                enabled: false
-                disable_cache: false # Recommended to change this to '%kernel.debug%'
-
             doctrine:
                 dbal:
                     enabled: false
                 orm:
                     enabled: false
                     entity_managers: [default]
-
-        # Configures the `rollerworks.search_processor.cache` pool, but only when the processor
-        # is actually installed.
-        framework:
-            cache:
-                rollerworks.search_processor.cache:
-                    adapter: rollerworks_search.cache.adapter.array
 
     .. code-block:: php
         :linenos:
@@ -370,18 +372,6 @@ when there related dependency is installed.
                 'orm' => [
                     'enabled' => false,
                     'entity_managers' => ['default']
-                ],
-            ],
-        ]);
-
-        // Configures the `rollerworks.search_processor.cache` pool, but only when the processor
-        // is actually installed.
-        $container->prependExtensionConfig('framework', [
-            'cache' => [
-                'pools' => [
-                    'rollerworks.search_processor.cache' => [
-                        'adapter' => 'rollerworks_search.cache.adapter.array',
-                    ],
                 ],
             ],
         ]);

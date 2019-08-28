@@ -58,7 +58,7 @@ A SearchCondition consists of a set of requirements (the condition,
 kept as a structured object-graph), and a **FieldSet** configuration.
 
 *You can think of a condition as an (SQL) query condition ``WHERE (field = 'value')``.*
-But the actual condition is anything a simple string, and is not limited to merely SQL.
+But the actual condition is anything from a simple string, and is not limited to merely SQL.
 
 .. tip::
 
@@ -68,11 +68,13 @@ But the actual condition is anything a simple string, and is not limited to mere
     You can use single-values, ranges, comparisons and value matchers
     (starts/ends with or contains).
 
-In further chapters you will learn how to compose a SearchCondition.
-
-* :doc:`composing_search_conditions`;
+In further chapters you will learn how to produce a SearchCondition by
+processing a user provided query, or by manually composing a SearchCondition
+using the :class:`Rollerworks\\Component\\Search\\SearchConditionBuilder`.
 
 * :doc:`input`;
+
+* :doc:`composing_search_conditions`;
 
 FieldSet
 --------
@@ -84,20 +86,20 @@ The FieldSet helps the search system with processing the field's values and
 transforming user-input to a workable format (eg. an ``DateTime`` object).
 
 To create a FieldSet you can use the ``FieldSetBuilder`` or create a custom
-``FieldSetConfigurator``.
+:doc:`FieldSetConfigurator <creating_reusable_fieldsets>`.
 
-.. tip::
+.. note::
 
-    Technically there is no difference between a FieldSet builder or a Configurator,
-    except that a configurator is re-usable and helps with keeping your code organized.
-
-    In practice a configurator uses a FieldSetBuilder.
+    Using a configurator is mandatory if you plan to serialize the condition,
+    it provides a central point to (lazily) load FieldSet configurations.
 
 .. code-block:: php
     :linenos:
 
     use Rollerworks\Component\Search\Extension\Core\Type\TextType;
     use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
+
+    // ...
 
     $userFieldSet = $searchFactory->createFieldSetBuilder()
         ->add('id', IntegerType::class)
@@ -106,19 +108,21 @@ To create a FieldSet you can use the ``FieldSetBuilder`` or create a custom
         ->add('lastName', TextType::class)
         ->getFieldSet();
 
+.. _fieldset:
+
 SearchField
 -----------
 
-A :class:`Rollerworks\\Component\\Search\\Field\\FieldConfig` consists of a number
-of properties that are needed by various parts of the search system for
-handling/processing field values.
+A :class:`Rollerworks\\Component\\Search\\Field\\FieldConfig` consists
+of a number of properties that are needed by various parts of the
+search system for handling/processing field values.
 
 While some of these configurations might seem a bit intimidating you don't really
 need to know all the internals. In further chapters you will learn how to create
 your own Field Type/Data transformers, etc.
 
 So for now remember that a SearchField has a name, a type and some configuration.
-You can see a SearchField as a form field.
+You can see a SearchField as a form field configuration.
 
 .. note::
 
@@ -142,77 +146,33 @@ an advanced field building system. Each type can have multiple extensions.
     You are free create your own field types for more advanced use-cases.
     See :doc:`cookbook/type/index` for more information.
 
-FieldSetConfigurator
---------------------
-
-A FieldSetConfigurator helps with making FieldSet's reusable and keeping your FieldSet
-configurations in a logical place. Each configurator holds the configuration for single
-FieldSet.
-
-.. code-block:: php
-
-    namespace Acme\Search\FieldSet;
-
-    use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
-    use Rollerworks\Component\Search\FieldSetBuilder;
-    use Rollerworks\Component\Search\FieldSetConfigurator;
-
-    final class UserFieldSet implements FieldSetConfigurator
-    {
-        public function buildFieldSet(FieldSetBuilder $builder)
-        {
-            $builder->add('id', Type\IntegerType::class);
-            $builder->add('name', Type\TextType::class);
-        }
-    }
-
-Loading a FieldSetConfigurator is done by referencing the fully qualified
-class-name (FQCN) (eg. ``Acme\Search\FieldSet\UserFieldSet``).
-
-.. tip::
-
-    A Configurator is automatically initialized on first usage, if your
-    configurator has external dependencies you can use a `PSR-11`_
-    compatible Container to lazily load configurators.
-
-    See :doc:`creating_reusable_fieldsets` for usage.
-
 Input Processors
 ----------------
 
-While composing a new **SearchCondition** object isn't hard, you properly want
-want to *provide* the condition in a more user-friendly format.
+Input Processors transform the input to a ``SearchCondition``.
+And ensure certain limits (either maximum number of values per field),
+and value formatting constraints adhered.
 
-Instead of doing this yourself RollerworksSearch comes pre-bundled with various
-:doc:`input processors <input>` which transform the user-input into a ready-to-use
-SearchCondition.
+Out of the box RollerworksSearch provides support for JSON and a special
+user-friendly string-based input format.
 
 Exporters
 ---------
 
-While the input component processes user-input to a SearchCondition.
+While the input processors transform user-input to a SearchCondition.
 The exporters do the opposite, transforming a SearchCondition to an exported
-format. Ready for input processing.
+format, which can be process for their respective input processor.
 
 Exporting a SearchCondition is very useful if you want to store the condition
 on the client-side in either a cookie, URI query-parameter or hidden form input field.
 
-Or if you need to perform a search operation on an external system that uses
-RollerworksSearch.
-
-Condition Optimizers
---------------------
-
-Condition optimizers remove duplicated values, normalizing overlapping and
-redundant values/conditions. All to produce a minimal SearchCondition for
-faster processing and smaller storage.
+Or if you plan to use RollerworksSearch as a client-side SDK.
 
 SearchFactory
 -------------
 
-The SearchFactory forms the heart of the search system, it provides
-easy access to builders, the (default) condition optimizer, and the
-SearchConditionSerializer.
+The SearchFactory forms the heart of the search system, it provides easy
+access to various builders, loaders, and the :doc:`SearchConditionSerializer <serializer>`.
 
 .. tip::
 
@@ -221,66 +181,6 @@ SearchConditionSerializer.
 
     Otherwise you would rather want to use the :class:`Rollerworks\\Component\\Search\\Searches`
     class which takes care of all the boilerplate of setting up a SearchFactory.
-
-SearchConditionSerializer
--------------------------
-
-The :class:`Rollerworks\\Component\\Search\\SearchConditionSerializer`
-class helps with (un)serializing a ``SearchCondition``.
-
-A SearchCondition holds a condition and a FieldSet configuration.
-
-The condition and it's values can be directly serialized, but the FieldSet is
-more difficult. As a Field can have closures and/or resource reference's, it's
-to complex to serialize.
-
-Instead of serializing the FieldSet the serializer stores the FieldSet set-name,
-and when unserializing it loads the FieldSet using a :class:`Rollerworks\\Component\\Search\\FieldSetRegistry`.
-
-.. note::
-
-    The Serializer doesn't check if the FieldSet is actually loadable
-    by the FieldSetRegistry. You must ensure the FieldSet is loadable,
-    else when unserializing you get an exception.
-
-.. caution::
-
-    Suffice to say, never store a serialized SearchCondition in the client-side!
-    The Serializer still uses the PHP serialize/unserialize functions, and due to
-    unpredictable values can't provide a list of trusted classes.
-
-    Use an Exporter to store a SearchCondition in an untrusted storage.
-
-FieldSetRegistry
-----------------
-
-A FieldSetRegistry (:class:`Rollerworks\\Component\\Search\\FieldSetRegistry`)
-allows to load a FieldSet from a registry.
-
-The :class:`Rollerworks\\Component\\Search\\LazyFieldSetRegistry` allows
-to load a FieldSet using the FQCN of a FieldSetConfigurator or by using
-a `PSR-11`_ compatible container.
-
-The FieldSetRegistry is amongst used when unserializing a serialized SearchCondition,
-so that you don't have to inject the FieldSet explicitly.
-
-SearchProcessor
----------------
-
-Properly handling a Search operation requires multiple steps, you need to
-process the input, handle errors (exceptions) and somehow apply the search
-condition while dealing with (form) posts and redirects.
-
-Not to mention caching, you don't want to process the same condition once you
-know it's valid. To help with this you can use a SearchProcessor, which takes
-care of all these details.
-
-.. tip::
-
-    RollerworksSearch provides a number of Framework integration
-    libraries which take care of adapting the different Request formats.
-
-    The "default" processor uses the `PSR-7`_ Request format.
 
 Further reading
 ---------------
@@ -295,11 +195,8 @@ with integrating RollerworksSearch.
 First make sure you :doc:`install <installing>` RollerworksSearch, and any extensions
 you wish to use.
 
-* :doc:`Using the SearchProcessor <processing_searches>`
+* :doc:`Processing search queries <processing_searches>`
 * :doc:`composing_search_conditions`
 * :doc:`Symfony Framework integration <integration/symfony_bundle>`
-* :doc:`Using ElasticSearch with Elastica <integration/elastic_search>` (coming soon)
+* :doc:`Using ElasticSearch with Elastica <integration/elastic_search>`
 * :doc:`Doctrine DBAL/ORM integration <integration/doctrine/index>`
-
-.. _`PSR-11`: http://www.php-fig.org/psr/psr-11/
-.. _`PSR-7`: http://www.php-fig.org/psr/psr-7/

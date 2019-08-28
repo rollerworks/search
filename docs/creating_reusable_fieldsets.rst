@@ -84,4 +84,4 @@ section for details.*
     Depending the implementation of the ``FieldSetRegistry``
     the configurator is only constructed once.
 
-    The ``LazyFieldSetRegistry`` supports a PSR-11 compatible Container
+    The ``LazyFieldSetRegistry`` supports a PSR-11 compatible Container.

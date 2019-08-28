@@ -24,7 +24,7 @@ and then later map these fields to a (table) column.
 
     A FieldSet can be used for any data system or storage, if the FieldSet was
     aware of your data system it would be only possible for one storage.
-    And switching to ElasticSearch from Doctrine ORM would be more difficult.
+    And switching to ElasticSearch from Doctrine would be more difficult.
 
 .. code-block:: php
     :linenos:
