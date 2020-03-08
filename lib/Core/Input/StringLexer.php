@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Exception\StringLexerException;
  */
 final class StringLexer
 {
-    private const FIELD_NAME = '/@?_?(\p{L}[\p{L}\p{N}_-]*)\s*:/Au';
+    public const FIELD_NAME = '/@?_?(\p{L}[\p{L}\p{N}_-]*)\s*:/Au';
 
     public const PATTERN_MATCH = 'pattern-match';
     public const SIMPLE_VALUE = 'simple-value';

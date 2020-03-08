@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Input;
 
+use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\FieldSet;
 
 /**
@@ -46,6 +47,9 @@ class ProcessorConfig
      * @var int|\DateInterval|null
      */
     private $cacheTTL;
+
+    /** @var string|null */
+    private $defaultField;
 
     public function __construct(FieldSet $fieldSet)
     {
@@ -126,5 +130,19 @@ class ProcessorConfig
     public function getCacheTTL()
     {
         return $this->cacheTTL;
+    }
+
+    public function getDefaultField(bool $error = false): ?string
+    {
+        if ($this->defaultField === null && $error) {
+            throw new InputProcessorException('', 'No default field was configured.');
+        }
+
+        return $this->defaultField;
+    }
+
+    public function setDefaultField(string $defaultField): void
+    {
+        $this->defaultField = $defaultField;
     }
 }

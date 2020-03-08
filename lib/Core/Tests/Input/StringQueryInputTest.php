@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\StringLexerException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
@@ -103,6 +104,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
 
         $processor = $this->getProcessor($labelResolver);
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setDefaultField('name');
 
         $expectedGroup = new ValuesGroup();
 
@@ -112,7 +114,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $expectedGroup->addField('name', $values);
 
         $condition = new SearchCondition($config->getFieldSet(), $expectedGroup);
-        self::assertEquals($condition, $processor->process($config, $input));
+
+        $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
     /**
@@ -182,6 +185,17 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $error = $e->toErrorMessageObj();
 
         $this->assertConditionContainsErrors('name: ~!!*"value";', $config, [$error]);
+    }
+
+    /** @test */
+    public function it_fails_with_unbound_values_and_no_default_field()
+    {
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $e = new InputProcessorException('', 'No default field was configured.');
+        $error = $e->toErrorMessageObj();
+
+        $this->assertConditionContainsErrors('value;', $config, [$error]);
     }
 
     /**
@@ -328,6 +342,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         return [
             ['name: value, value2; date: "12-16-2014";'],
             ['name: value, value2; date: "12-16-2014"'],
+            ['value1; date: "12-16-2014"; value, value2'], // Possible, but not recommended
         ];
     }
 
@@ -335,6 +350,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         return [
             ['id: 1~10, 15 ~ 30, ] 100~200 ], 310~400[, !50~70; date: [12-16-2014 ~ 12-20-2014];'],
+            ['1~10, 15 ~ 30, ] 100~200 ], 310~400[, !50~70; date: [12-16-2014 ~ 12-20-2014];'],
         ];
     }
 
@@ -342,6 +358,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         return [
             ['id: >1, <2, <=5, >=8, <>20; date: >="12-16-2014";'],
+            ['>1, <2, <=5, >=8, <>20; date: >="12-16-2014";'],
         ];
     }
 
@@ -358,6 +375,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
             ['name: value, value2; (name: value3, value4;); *(name: value8, value10;);'],
             ['name: value, value2; (name: value3, value4); *(name: value8, value10)'],
             ['name: value, value2; (name: value3, value4); *(name: value8, value10;)'],
+            ['value, value2; (value3, value4); *(value8, value10;)'],
         ];
     }
 
@@ -365,7 +383,9 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         return [
             ['name: value, value2;'],
+            ['value, value2;'],
             ['*name: value, value2;', ValuesGroup::GROUP_LOGICAL_OR],
+            ['*value, value2;', ValuesGroup::GROUP_LOGICAL_OR],
         ];
     }
 
@@ -373,6 +393,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         return [
             ['(name: value, value2); (name: value3, "value4");'],
+            ['(name: value, value2); (value3, "value4");'],
         ];
     }
 
@@ -383,6 +404,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
             ['((name: value, value2;);)'],
             ['((name: value, value2;))'],
             ['((name: value, value2))'],
+            ['((value, value2))'],
         ];
     }
 
@@ -391,6 +413,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         return [
             ['first-name: value1; first-name: value, value2;'],
             ['first-name: value, value2;'],
+            ['value, value2;'],
         ];
     }
 

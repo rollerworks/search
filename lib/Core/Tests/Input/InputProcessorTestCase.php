@@ -112,6 +112,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet(true, true));
+        $config->setDefaultField('id');
 
         $expectedGroup = new ValuesGroup();
 
@@ -156,6 +157,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setDefaultField('name');
 
         $expectedGroup = new ValuesGroup();
 
@@ -189,6 +191,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setDefaultField('id');
 
         $expectedGroup = new ValuesGroup();
 
@@ -226,6 +229,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setDefaultField('id');
 
         $expectedGroup = new ValuesGroup();
 
@@ -296,6 +300,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setDefaultField('name');
 
         $expectedGroup = new ValuesGroup();
 
@@ -339,6 +344,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setDefaultField('name');
 
         $expectedGroup = new ValuesGroup($logical);
 
@@ -366,6 +372,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setDefaultField('name');
 
         $expectedGroup = new ValuesGroup();
 
@@ -404,6 +411,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
+        $config->setDefaultField('name');
 
         $expectedGroup = new ValuesGroup();
         $nestedGroup = new ValuesGroup();
