@@ -32,23 +32,21 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    public function testCurrenciesAreSelectable()
+    public function testChoicesAreSelectable()
     {
         $field = $field = $this->getFactory()->createField('choice', LanguageType::class);
         $field->finalizeConfig();
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('British English', 'en_GB')
-            ->successfullyTransformsTo('en_GB')
-            ->andReverseTransformsTo('British English', 'en_GB');
+            ->withInput('English', 'en')
+            ->successfullyTransformsTo('en')
+            ->andReverseTransformsTo('English', 'en');
 
         $view = $field->createView(new FieldSetView());
 
         $choices = $view->vars['choices'];
 
         $this->assertContains(new ChoiceView('en', 'en', 'English'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('en_GB', 'en_GB', 'British English'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('en_US', 'en_US', 'American English'), $choices, '', false, false);
         $this->assertContains(new ChoiceView('fr', 'fr', 'French'), $choices, '', false, false);
         $this->assertContains(new ChoiceView('my', 'my', 'Burmese'), $choices, '', false, false);
     }
