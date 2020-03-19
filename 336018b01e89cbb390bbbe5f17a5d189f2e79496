@@ -1,0 +1,18 @@
+---------------------------------------------------------------------------
+
+by sstok at 2020-03-08T19:00:26Z
+
+`Doctrine\DBAL\Driver\PDOException: SQLSTATE[08006] [7] could not translate host name "pgsql" to address: Name or service not known`
+
+![It's all accidental](https://media.giphy.com/media/4WnwHQnv2BoIw/giphy.gif)
+
+Sometimes I wonder why this actually works et-all.
+It used to work, nothing has really changed, and yet it fails... 🙌
+
+---------------------------------------------------------------------------
+
+by sstok at 2020-03-19T10:35:38Z
+
+![You win for now](https://media.giphy.com/media/l2Je6Fk8ud3Cghlny/giphy.gif)
+
+OK, I'm done here 🙂 Nothing on my part I can do to make Travis work again, nothing related has actually changed, it works locally without any issues. And everything so far I tried didn't fix this situation. Eventually I want to switch to GitHub actions, and then you will RUST TRAVIS! RUST I TELL YA! Hauahahhahha 🤪
