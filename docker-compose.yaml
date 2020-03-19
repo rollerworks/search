@@ -6,7 +6,7 @@ services:
           - elasticsearch
           - pgsql
           - mariadb-server
-        image: rollerworks/search-dev:latest
+        image: rollerworks/search-dev:php-72
         volumes:
             - .:/srv/www:rw
 

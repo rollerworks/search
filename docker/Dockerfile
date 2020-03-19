@@ -1,8 +1,7 @@
-FROM composer:1.7.3
-FROM php:7.1-cli
+FROM php:7.2-cli
 
 ENV BUILD_DEPS="autoconf file g++ gcc libc-dev pkg-config re2c"
-ENV LIB_DEPS="git make unzip ca-certificates zlib1g-dev libpq5 postgresql-server-dev-9.6"
+ENV LIB_DEPS="git make unzip ca-certificates zlib1g-dev libpq5 postgresql-server-dev-11"
 ENV ICU_RELEASE=60.1
 ENV CXXFLAGS "--std=c++0x"
 
@@ -17,13 +16,17 @@ RUN echo "date.timezone=Europe/Amsterdam" >> $PHP_INI_DIR/php.ini \
  && docker-php-ext-configure intl && docker-php-ext-install intl \
  && apt-get purge -y --auto-remove $BUILD_DEPS
 
-COPY --from=0 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN ln -s /usr/bin/composer /usr/bin/composer.phar
-
-WORKDIR /srv/www
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER 1
-RUN composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative
+# install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
+RUN set -eux; \
+	composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
+	composer clear-cache
+ENV PATH="${PATH}:/root/.composer/vendor/bin"
+
+WORKDIR /srv/www
 
 CMD icu-config --version && php -i | grep 'ICU version'
