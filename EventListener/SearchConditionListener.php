@@ -60,8 +60,6 @@ final class SearchConditionListener
      *
      * This listener is expected to be run after the Api EntryPoint but before ReadListener
      * on the kernel.request event.
-     *
-     * @param GetResponseEvent $event
      */
     public function onKernelRequest(GetResponseEvent $event): void
     {

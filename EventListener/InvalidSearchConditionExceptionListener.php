@@ -32,8 +32,6 @@ final class InvalidSearchConditionExceptionListener
 
     /**
      * Returns a list of errors normalized in the Hydra format.
-     *
-     * @param GetResponseForExceptionEvent $event
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
