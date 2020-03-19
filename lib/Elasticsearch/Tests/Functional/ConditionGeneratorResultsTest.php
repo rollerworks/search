@@ -249,10 +249,6 @@ class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCase
         $this->makeTest('@customer-note-pubdate: DESC', [1, 2, 3, 4]);
     }
 
-    /**
-     * @param string $input
-     * @param array  $expectedRows
-     */
     private function makeTest(string $input, array $expectedRows)
     {
         $config = new ProcessorConfig($this->getFieldSet());

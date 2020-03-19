@@ -128,17 +128,12 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
     /**
      * Configure fields of the ConditionGenerator.
-     *
-     * @param ConditionGenerator $conditionGenerator
      */
     protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
     }
 
     /**
-     * @param SearchCondition $condition
-     * @param array           $ids
-     *
      * @throws \Doctrine\DBAL\DBALException
      */
     protected function assertRecordsAreFound(SearchCondition $condition, array $ids)

@@ -37,9 +37,6 @@ trait ConversionHintTrait
      */
     protected $fields = [];
 
-    /**
-     * @param SqlWalker $sqlWalker
-     */
     protected function loadConversionHints(SqlWalker $sqlWalker)
     {
         /* @var SqlConversionInfo $hintsValue */

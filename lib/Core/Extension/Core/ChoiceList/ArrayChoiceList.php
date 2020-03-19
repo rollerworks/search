@@ -203,8 +203,7 @@ class ArrayChoiceList implements ChoiceList
      * Checks whether the given choices can be cast to strings without
      * generating duplicates.
      *
-     * @param array $choices
-     * @param array $cache   The cache for previously checked entries. Internal
+     * @param array $cache The cache for previously checked entries. Internal
      */
     private function castableToString(array $choices, array &$cache = []): bool
     {

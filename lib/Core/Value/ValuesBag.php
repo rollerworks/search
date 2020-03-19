@@ -123,9 +123,6 @@ class ValuesBag implements \Countable, \Serializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function hasExcludedSimpleValues(): bool
     {
         return \count($this->simpleExcludedValues) > 0;
@@ -133,8 +130,6 @@ class ValuesBag implements \Countable, \Serializable
 
     /**
      * Remove a simple excluded value by index.
-     *
-     * @param int $index
      *
      * @return static
      */
@@ -165,8 +160,6 @@ class ValuesBag implements \Countable, \Serializable
 
     /**
      * Get a single value by type and index.
-     *
-     * @return bool
      */
     public function has(string $type): bool
     {

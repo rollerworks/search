@@ -128,8 +128,6 @@ class DqlConditionGenerator extends AbstractConditionGenerator
      * Returns the Query-hint name for the query object.
      *
      * The Query-hint is used for conversions.
-     *
-     * @return string
      */
     public function getQueryHintName(): string
     {

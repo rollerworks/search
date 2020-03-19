@@ -58,8 +58,6 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
 
     /**
      * Configure fields of the ConditionGenerator.
-     *
-     * @param ConditionGenerator $conditionGenerator
      */
     protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {

@@ -28,8 +28,6 @@ interface ResolvedFieldType
 
     /**
      * Returns the wrapped field type.
-     *
-     * @return FieldType
      */
     public function getInnerType(): FieldType;
 

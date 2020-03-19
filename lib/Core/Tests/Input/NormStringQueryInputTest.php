@@ -107,8 +107,6 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
     }
 
     /**
-     * @param string $input
-     *
      * @test
      * @dataProvider provideMultipleValues
      */

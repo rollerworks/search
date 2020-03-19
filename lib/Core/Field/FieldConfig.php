@@ -131,8 +131,6 @@ interface FieldConfig
 
     /**
      * Sets the attributes.
-     *
-     * @param array $attributes
      */
     public function setAttributes(array $attributes);
 

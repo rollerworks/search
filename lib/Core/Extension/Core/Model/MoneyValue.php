@@ -31,9 +31,8 @@ class MoneyValue
     public $withCurrency;
 
     /**
-     * @param Money $value
-     * @param bool  $withCurrency indicate the input was provided with a currency.
-     *                            This is only used for exporting
+     * @param bool $withCurrency indicate the input was provided with a currency.
+     *                           This is only used for exporting
      */
     public function __construct(Money $value, bool $withCurrency = true)
     {

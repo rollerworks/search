@@ -33,8 +33,6 @@ interface QueryPlatform
     /**
      * Returns the formatted PatternMatch query.
      *
-     * @param string $column
-     *
      * @return string Some like: u.name LIKE '%foo%'
      */
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string;

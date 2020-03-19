@@ -41,8 +41,6 @@ class BirthdayTypeExtension extends AbstractFieldTypeExtension
 
     /**
      * Returns the name of the type being extended.
-     *
-     * @return string
      */
     public function getExtendedType(): string
     {

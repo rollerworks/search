@@ -23,7 +23,6 @@ interface ResolvedFieldTypeFactory
     /**
      * Resolves a field type.
      *
-     * @param FieldType            $type
      * @param FieldTypeExtension[] $typeExtensions
      * @param ResolvedFieldType    $parent
      *

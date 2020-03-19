@@ -28,9 +28,6 @@ interface Validator
      * Initialize the validator context for the field.
      *
      * Whenever calling validate(), this context needs to be used.
-     *
-     * @param FieldConfig $field
-     * @param ErrorList   $errorList
      */
     public function initializeContext(FieldConfig $field, ErrorList $errorList): void;
 

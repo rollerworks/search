@@ -35,8 +35,6 @@ interface InputProcessor
      * @throws Exception\InvalidSearchConditionException When there are errors in the input
      *                                                   this can be a failed transformation
      *                                                   or processing error
-     *
-     * @return SearchCondition
      */
     public function process(ProcessorConfig $config, $input): SearchCondition;
 }

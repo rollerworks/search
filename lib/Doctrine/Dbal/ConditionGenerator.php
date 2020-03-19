@@ -37,8 +37,6 @@ interface ConditionGenerator
      * @param string $prependQuery Prepend before the generated WHERE clause
      *                             Eg. " WHERE " or " AND ", ignored when WHERE
      *                             clause is empty.
-     *
-     * @return string
      */
     public function getWhereClause(string $prependQuery = ''): string;
 

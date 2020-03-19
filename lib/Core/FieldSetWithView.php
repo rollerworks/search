@@ -20,8 +20,6 @@ interface FieldSetWithView extends FieldSet
 {
     /**
      * Create a new FieldSetView instance of the FieldSet.
-     *
-     * @return FieldSetView
      */
     public function createView(): FieldSetView;
 }

@@ -52,9 +52,6 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         parent::setUp();
     }
 
-    /**
-     * @return array
-     */
     protected function getMappings(): array
     {
         return [
@@ -94,9 +91,6 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getDocuments(): array
     {
         return [
@@ -145,9 +139,6 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         ];
     }
 
-    /**
-     * @return Client
-     */
     protected function getClient(): Client
     {
         // TODO: extract settings to config file, add proper logger
@@ -157,11 +148,6 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         ]);
     }
 
-    /**
-     * @param string $name
-     * @param array  $properties
-     * @param array  $data
-     */
     protected function createDocuments(string $name, array $properties, array $data)
     {
         // index
@@ -193,11 +179,6 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         }
     }
 
-    /**
-     * @param bool $build
-     *
-     * @return FieldSet
-     */
     protected function getFieldSet(bool $build = true): FieldSet
     {
         $builder = $this->getFactory()->createFieldSetBuilder();
@@ -235,9 +216,6 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         return $builder->getFieldSet('invoice');
     }
 
-    /**
-     * @param QueryConditionGenerator $conditionGenerator
-     */
     protected function configureConditionGenerator(QueryConditionGenerator $conditionGenerator)
     {
         // customer
@@ -285,8 +263,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     }
 
     /**
-     * @param SearchCondition $condition
-     * @param int[]           $expectedIds
+     * @param int[] $expectedIds
      */
     protected function assertDocumentsAreFound(SearchCondition $condition, array $expectedIds)
     {

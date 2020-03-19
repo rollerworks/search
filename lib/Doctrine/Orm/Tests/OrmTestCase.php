@@ -145,17 +145,12 @@ abstract class OrmTestCase extends DbalTestCase
 
     /**
      * Configure fields of the ConditionGenerator.
-     *
-     * @param AbstractConditionGenerator $conditionGenerator
      */
     protected function configureConditionGenerator(AbstractConditionGenerator $conditionGenerator)
     {
     }
 
     /**
-     * @param SearchCondition $condition
-     * @param array           $ids
-     *
      * @throws \Doctrine\DBAL\DBALException
      */
     protected function assertRecordsAreFound(SearchCondition $condition, array $ids)

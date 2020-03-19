@@ -98,9 +98,6 @@ final class GenericFieldSetTest extends TestCase
     }
 
     /**
-     * @param string $name
-     * @param bool   $withView
-     *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function createFieldMock(string $name, bool $withView = false)

@@ -144,8 +144,6 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator
      * Returns the Query-hint value for the final query object.
      *
      * The Query hint is used for value-conversions.
-     *
-     * @return SqlConversionInfo
      */
     public function getQueryHintValue(): SqlConversionInfo
     {

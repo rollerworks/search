@@ -36,8 +36,7 @@ final class GenericTypeRegistry implements TypeRegistry
     private $resolvedTypeFactory;
 
     /**
-     * @param SearchExtension[]        $extensions
-     * @param ResolvedFieldTypeFactory $resolvedTypeFactory
+     * @param SearchExtension[] $extensions
      *
      * @throws UnexpectedTypeException if an extension does not implement SearchExtension
      */

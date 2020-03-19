@@ -20,20 +20,12 @@ interface FieldSetRegistry
     /**
      * Returns a FieldSetConfiguratorInterface by name.
      *
-     * @param string $name
-     *
      * @throws InvalidArgumentException if the configurator can not be retrieved
-     *
-     * @return FieldSetConfigurator
      */
     public function getConfigurator(string $name): FieldSetConfigurator;
 
     /**
      * Returns whether the given FieldSetConfigurator is supported.
-     *
-     * @param string $name
-     *
-     * @return bool
      */
     public function hasConfigurator(string $name): bool;
 }

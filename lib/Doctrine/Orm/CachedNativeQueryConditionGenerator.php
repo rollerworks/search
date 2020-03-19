@@ -62,8 +62,6 @@ class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerat
      *
      * @param string $prependQuery Prepends this string to the where-clause
      *                             ("WHERE" or "AND" for example)
-     *
-     * @return string
      */
     public function getWhereClause(string $prependQuery = ''): string
     {

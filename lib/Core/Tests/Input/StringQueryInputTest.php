@@ -205,9 +205,6 @@ final class StringQueryInputTest extends InputProcessorTestCase
     }
 
     /**
-     * @param string               $input
-     * @param StringLexerException $exception
-     *
      * @test
      * @dataProvider provideQueryExceptionTests
      */

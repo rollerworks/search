@@ -330,8 +330,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideGroupTests();
 
     /**
-     * @param mixed  $input
-     * @param string $logical
+     * @param mixed $input
      *
      * @test
      * @dataProvider provideRootLogicalTests
@@ -428,9 +427,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideNestedGroupTests();
 
     /**
-     * @param mixed  $input
-     * @param string $fieldName
-     * @param string $path
+     * @param mixed $input
      *
      * @test
      * @dataProvider provideValueOverflowTests
@@ -452,8 +449,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideValueOverflowTests();
 
     /**
-     * @param mixed  $input
-     * @param string $path
+     * @param mixed $input
      *
      * @test
      * @dataProvider provideGroupsOverflowTests
@@ -477,8 +473,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * This tests ensures a private field will throw an UnknownFieldException.
      *
-     * @param mixed  $input
-     * @param string $fieldName
+     * @param mixed $input
      *
      * @test
      * @dataProvider providePrivateFieldTests
@@ -499,8 +494,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function providePrivateFieldTests();
 
     /**
-     * @param mixed  $input
-     * @param string $path
+     * @param mixed $input
      *
      * @test
      * @dataProvider provideNestingLevelExceededTests
@@ -543,9 +537,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideUnknownFieldTests();
 
     /**
-     * @param mixed  $input
-     * @param string $fieldName
-     * @param string $valueType
+     * @param mixed $input
      *
      * @test
      * @dataProvider provideUnsupportedValueTypeExceptionTests
@@ -567,7 +559,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
     /**
      * @param mixed $input
-     * @param array $path
      *
      * @test
      * @dataProvider provideInvalidRangeTests
@@ -630,7 +621,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
     /**
      * @param mixed                   $input
-     * @param ProcessorConfig         $config
      * @param ConditionErrorMessage[] $errors
      */
     protected function assertConditionContainsErrorsWithoutCause($input, ProcessorConfig $config, array $errors)
@@ -663,7 +653,6 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
     /**
      * @param mixed                   $input
-     * @param ProcessorConfig         $config
      * @param ConditionErrorMessage[] $errors
      */
     protected function assertConditionContainsErrors($input, ProcessorConfig $config, array $errors)

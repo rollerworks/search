@@ -31,9 +31,6 @@ abstract class FunctionalTestCase extends WebTestCase
     }
 
     /**
-     * @param array $options
-     * @param array $server
-     *
      * @return \Symfony\Bundle\FrameworkBundle\Client
      */
     protected static function newClient(array $options = [], array $server = [])

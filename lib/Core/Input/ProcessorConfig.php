@@ -75,8 +75,6 @@ class ProcessorConfig
 
     /**
      * Set the maximum number of values per group.
-     *
-     * @param int $maxValues
      */
     public function setMaxValues(int $maxValues)
     {

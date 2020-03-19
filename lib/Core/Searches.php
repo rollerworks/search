@@ -117,8 +117,6 @@ final class Searches
 {
     /**
      * Creates a SearchFactoryBuilder with the default configuration.
-     *
-     * @return SearchFactoryBuilder
      */
     public static function createSearchFactoryBuilder(): SearchFactoryBuilder
     {
@@ -127,8 +125,6 @@ final class Searches
 
     /**
      * Creates a new GenericSearchFactory with the default configuration.
-     *
-     * @return SearchFactory
      */
     public static function createSearchFactory(): SearchFactory
     {

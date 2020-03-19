@@ -34,8 +34,7 @@ final class LazyExtension implements SearchExtension
     private $typeExtensionServices = [];
 
     /**
-     * @param ContainerInterface $typeContainer
-     * @param array[]            $typeExtensions
+     * @param array[] $typeExtensions
      */
     public function __construct(ContainerInterface $typeContainer, array $typeExtensions)
     {

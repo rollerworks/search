@@ -213,8 +213,6 @@ class NumberToLocalizedStringTransformer implements DataTransformer
 
     /**
      * Returns a preconfigured \NumberFormatter instance.
-     *
-     * @return \NumberFormatter
      */
     protected function getNumberFormatter(): \NumberFormatter
     {

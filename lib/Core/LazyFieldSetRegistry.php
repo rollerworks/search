@@ -76,8 +76,6 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
      * @param string $name The name of the FieldSet configurator
      *
      * @throws InvalidArgumentException if the configurator can not be retrieved
-     *
-     * @return FieldSetConfigurator
      */
     public function getConfigurator(string $name): FieldSetConfigurator
     {
@@ -105,8 +103,6 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
      * Returns whether the given FieldSetConfigurator is supported.
      *
      * @param string $name The name of the FieldSet configurator
-     *
-     * @return bool
      */
     public function hasConfigurator(string $name): bool
     {

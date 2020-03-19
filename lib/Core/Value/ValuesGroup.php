@@ -163,8 +163,6 @@ class ValuesGroup implements \Serializable
     /**
      * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
-     *
-     * @return string
      */
     public function getGroupLogical(): string
     {

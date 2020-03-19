@@ -389,8 +389,6 @@ final class StringLexer
      * The detection is very loosely and stops after
      * the first positive detection. As a result, a value
      * may not match unquoted special characters.
-     *
-     * @return string
      */
     public function detectValueType(string $name): string
     {

@@ -1221,11 +1221,6 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
-    /**
-     * @param bool $order
-     *
-     * @return SearchConditionBuilder
-     */
     private function createCondition(bool $order = false): SearchConditionBuilder
     {
         /** @var FieldSet $fieldSet */

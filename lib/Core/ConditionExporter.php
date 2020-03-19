@@ -27,8 +27,6 @@ interface ConditionExporter
      * to 're-import' the exported search condition with a compatible
      * input processor.
      *
-     * @param SearchCondition $condition
-     *
      * @return mixed
      */
     public function exportCondition(SearchCondition $condition);

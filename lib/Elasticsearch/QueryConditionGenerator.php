@@ -408,17 +408,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @param string                $propertyName
-     * @param array                 $values
-     * @param QueryPreparationHints $hints
-     * @param QueryConversion|null  $queryConverter
-     * @param ValueConversion|null  $valueConverter
-     * @param array|bool            $nested
-     * @param array|bool            $join
-     * @param array                 $conditions
-     * @param array                 $options
-     *
-     * @return array
+     * @param QueryConversion|null $queryConverter
+     * @param ValueConversion|null $valueConverter
+     * @param array|bool           $nested
+     * @param array|bool           $join
      */
     private function prepareProcessedValuesQuery(string $propertyName, array $values, QueryPreparationHints $hints, $queryConverter, $valueConverter, $nested, $join, bool $injectParams, array $conditions = [], array $options = []): array
     {
@@ -434,16 +427,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @param string                $propertyName
-     * @param mixed                 $value
-     * @param QueryPreparationHints $hints
-     * @param QueryConversion|null  $converter
-     * @param array|bool            $nested
-     * @param array|bool            $join
-     * @param array                 $conditions
-     * @param array                 $options
-     *
-     * @return array
+     * @param mixed      $value
+     * @param array|bool $nested
+     * @param array|bool $join
      */
     private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested, $join, array $conditions = [], array $options = []): array
     {
@@ -645,12 +631,6 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return $query;
     }
 
-    /**
-     * @param FieldMapping          $mapping
-     * @param QueryPreparationHints $hints
-     *
-     * @return array
-     */
     private function processMappingConditions(FieldMapping $mapping, QueryPreparationHints $hints, bool $injectParams): array
     {
         $conditions = [];

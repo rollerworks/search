@@ -252,8 +252,6 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @param string $typeClass
-     *
      * @return MockObject|FieldType
      */
     private function getMockFieldType(string $typeClass = AbstractFieldType::class)
