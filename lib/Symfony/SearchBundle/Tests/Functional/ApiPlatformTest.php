@@ -34,6 +34,8 @@ final class ApiPlatformTest extends FunctionalTestCase
 
             $schemaTool = new SchemaTool($em);
             $schemaTool->updateSchema($metadatas, true);
+
+            self::ensureKernelShutdown();
         } catch (\Exception $e) {
             throw new \PHPUnit\Framework\Error\Error($e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine(), $e);
         }

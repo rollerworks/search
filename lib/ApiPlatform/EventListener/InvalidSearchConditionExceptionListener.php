@@ -35,7 +35,8 @@ final class InvalidSearchConditionExceptionListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $exception = $event->getException();
+        $exception = method_exists($event, 'getThrowable') ? $event->getThrowable() : $event->getException();
+
         if (!$exception instanceof InvalidSearchConditionException) {
             return;
         }
