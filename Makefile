@@ -1,5 +1,5 @@
-QA_DOCKER_IMAGE=rollerworks/search-phpqa:latest
-QA_DOCKER_COMMAND=docker run -it --rm -v "$(shell pwd):/project" -w /project ${QA_DOCKER_IMAGE}
+QA_DOCKER_IMAGE=jakzal/phpqa:alpine
+QA_DOCKER_COMMAND=docker run -t --rm -v "$(shell pwd):/project" -w /project ${QA_DOCKER_IMAGE}
 
 dist: install cs-full phpstan test
 ci: cs-full-check phpstan test
@@ -68,15 +68,15 @@ in-docker-install-lowest:
 
 in-docker-test:
 	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose
-	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml
-	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml
-	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml
+	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration phpunit/sqlite.xml
+	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration phpunit/pgsql.xml
+	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration phpunit/mysql.xml
 
 in-docker-test-coverage:
 	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov
-	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/sqlite.travis.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
-	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/pgsql.travis.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
-	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration travis/mysql.travis.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
+	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration phpunit/sqlite.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
+	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration phpunit/pgsql.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
+	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration phpunit/mysql.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
 
 docs:
 	docker build docs/ -t rollerworks-search-docs
