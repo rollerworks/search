@@ -34,8 +34,8 @@ jobs:
             mariadb-server:
                 image: mariadb:10.3
                 env:
-                    MYSQL_DATABASE=search_tests
-                    MYSQL_ROOT_PASSWORD=nope
+                    MYSQL_DATABASE: search_tests
+                    MYSQL_ROOT_PASSWORD: nope
                 ports:
                     - "53306:3306"
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -83,7 +83,7 @@ jobs:
                 run: make in-docker-test
             -
                 name: Setup PHP-QA
-                uses: ${{ env.QA_DOCKER_IMAGE }
+                uses: docker://rollerworks/search-phpqa:latest
 
             -
                 name: Install Composer dependencies
