@@ -53,13 +53,13 @@ docker-down:
 ##
 in-docker-install:
 	rm -f composer.lock
-	composer.phar install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
+	composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
 
 in-docker-install-dev:
 	rm -f composer.lock
 	cp composer.json _composer.json
-	composer.phar config minimum-stability dev
-	composer.phar update --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
+	composer config minimum-stability dev
+	composer update --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
 	mv _composer.json composer.json
 
 in-docker-install-lowest:

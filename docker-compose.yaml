@@ -12,10 +12,11 @@ services:
 
     # Storage services
     pgsql:
-        image: postgres:9.6-alpine
+        image: postgres:9.6
         environment:
             - POSTGRES_DB=search_tests
             - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
         volumes:
             - pg-data:/var/lib/postgresql/data:rw
         ports:

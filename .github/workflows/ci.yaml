@@ -7,7 +7,9 @@ on:
         branches:
             - master
 env:
-    ES_HTTP_PORT: 59200
+    ES_HTTP_PORT: '59200'
+    ELASTICSEARCH_HOST: 'localhost'
+    ELASTICSEARCH_PORT: '59200'
     QA_DOCKER_IMAGE: "rollerworks/search-phpqa:latest"
 
 jobs:
@@ -25,6 +27,7 @@ jobs:
                 image: postgres:9.6
                 env:
                     POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
                     POSTGRES_DB: search_tests
                 ports:
                     - "55432:5432"
@@ -75,7 +78,7 @@ jobs:
             # —— Composer 🧙‍️ —————————————————————————————————————————————————————————
             -
                 name: Install Composer dependencies
-                run: make make in-docker-install
+                run: make in-docker-install
 
             ## —— Tests ✅ ———————————————————————————————————————————————————————————
             -
