@@ -1,0 +1,91 @@
+name: Full CI process
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
+env:
+    ES_HTTP_PORT: 59200
+    QA_DOCKER_IMAGE: "rollerworks/search-phpqa:latest"
+
+jobs:
+    test:
+        name: PHP ${{ matrix.php-versions }}
+        runs-on: ubuntu-18.04
+        strategy:
+            fail-fast: true
+            matrix:
+                php-versions: ['7.2', '7.3', '7.4']
+
+        services:
+            # https://docs.docker.com/samples/library/postgres/
+            postgres:
+                image: postgres:9.6
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_DB: search_tests
+                ports:
+                    - "55432:5432"
+                options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
+            # https://docs.docker.com/samples/library/mysql/
+            mariadb-server:
+                image: mariadb:10.3
+                env:
+                    MYSQL_DATABASE=search_tests
+                    MYSQL_ROOT_PASSWORD=nope
+                ports:
+                    - "53306:3306"
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+            # https://hub.docker.com/_/elasticsearch/
+            elasticsearch:
+                image: elasticsearch:5.6.3
+                ports:
+                    - "59200:9200"
+                options: -e="discovery.type=single-node" -e="xpack.security.enabled=false" --health-cmd="curl http://localhost:9200/_cluster/health" --health-interval=10s --health-timeout=5s --health-retries=10
+
+        steps:
+            # —— Check Elasticsearch 🔎 ——————————————————————————————————————————————
+            -
+                name: Check the Elasticsearch connection from runner host
+                run: |
+                    curl -fsSL "http://localhost:$ES_HTTP_PORT"
+                    curl -fsSL "http://localhost:$ES_HTTP_PORT/_cluster/health?pretty"
+
+            # —— Setup Github actions 🐙 —————————————————————————————————————————————
+            # https://github.com/actions/checkout (official)
+            -
+                name: Checkout
+                uses: actions/checkout@v2
+
+            # https://github.com/shivammathur/setup-php (community)
+            -
+                name: Setup PHP, extensions and composer with shivammathur/setup-php
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    extensions: mbstring, xml, ctype, iconv, intl, bcmath, pdo_sqlite, dom, filter, json, pgsql, pdo, pdo_pgsql, pdo_mysql
+                    coverage: xdebug
+                env:
+                    update: true
+
+            # —— Composer 🧙‍️ —————————————————————————————————————————————————————————
+            -
+                name: Install Composer dependencies
+                run: make make in-docker-install
+
+            ## —— Tests ✅ ———————————————————————————————————————————————————————————
+            -
+                name: Run Tests
+                run: make in-docker-test
+            -
+                name: Setup PHP-QA
+                uses: ${{ env.QA_DOCKER_IMAGE }
+
+            -
+                name: Install Composer dependencies
+                run: |
+                    docker run -it --rm -v "$(shell pwd):/project" -w /project ${QA_DOCKER_IMAGE}
