@@ -2,7 +2,7 @@ name: Full CI process
 on:
     push:
         branches:
-            - github-work-flow
+            - master
     pull_request:
         branches:
             - master
