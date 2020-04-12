@@ -41,7 +41,7 @@ trait ConversionHintTrait
     {
         /* @var SqlConversionInfo $hintsValue */
         if (!($hintsValue = $sqlWalker->getQuery()->getHint('rws_conversion_hint'))) {
-            throw new \LogicException('Missing "rws_conversion_hint" hint for '.\get_class($this));
+            throw new \LogicException('Missing "rws_conversion_hint" hint for '.static::class);
         }
 
         $this->nativePlatform = $hintsValue->nativePlatform;

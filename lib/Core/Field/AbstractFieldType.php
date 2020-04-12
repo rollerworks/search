@@ -47,6 +47,6 @@ abstract class AbstractFieldType implements FieldType
 
     public function getBlockPrefix(): string
     {
-        return StringUtil::fqcnToBlockPrefix(\get_class($this));
+        return StringUtil::fqcnToBlockPrefix(static::class);
     }
 }
