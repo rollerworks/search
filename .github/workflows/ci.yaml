@@ -2,7 +2,7 @@ name: Full CI process
 on:
     push:
         branches:
-            - github-work-flow
+            - master
     pull_request:
         branches:
             - master
@@ -10,13 +10,14 @@ env:
     ES_HTTP_PORT: '59200'
     ELASTICSEARCH_HOST: 'localhost'
     ELASTICSEARCH_PORT: '59200'
+    QA_DOCKER_IMAGE: "rollerworks/search-phpqa:latest"
 
 jobs:
     test:
         name: PHP ${{ matrix.php-versions }}
         runs-on: ubuntu-18.04
         strategy:
-            fail-fast: false
+            fail-fast: true
             matrix:
                 php-versions: ['7.2', '7.3', '7.4']
 
@@ -29,7 +30,7 @@ jobs:
                     POSTGRES_PASSWORD: postgres
                     POSTGRES_DB: search_tests
                 ports:
-                    - "5432:5432"
+                    - "55432:5432"
                 options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
             # https://docs.docker.com/samples/library/mysql/
@@ -39,7 +40,7 @@ jobs:
                     MYSQL_DATABASE: search_tests
                     MYSQL_ROOT_PASSWORD: nope
                 ports:
-                    - "3306:3306"
+                    - "53306:3306"
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
             # https://hub.docker.com/_/elasticsearch/
@@ -77,50 +78,17 @@ jobs:
             # —— Composer 🧙‍️ —————————————————————————————————————————————————————————
             -
                 name: Install Composer dependencies
-                run: |
-                    rm -f composer.lock
-                    composer global require symfony/flex
-                    composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
+                run: make in-docker-install
 
             ## —— Tests ✅ ———————————————————————————————————————————————————————————
             -
                 name: Run Tests
-                env:
-                    SYMFONY_DEPRECATIONS_HELPER: weak
-                run: |
-                    vendor/bin/phpunit --verbose
-                    vendor/bin/phpunit --verbose --configuration .github/phpunit/sqlite.xml
-                    vendor/bin/phpunit --verbose --configuration .github/phpunit/pgsql.xml
-                    vendor/bin/phpunit --verbose --configuration .github/phpunit/mysql.xml
-
-    lint:
-        name: PHP-QA
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-        steps:
+                run: make in-docker-test
             -
-                name: Checkout
-                uses: actions/checkout@v2
+                name: Setup PHP-QA
+                uses: docker://rollerworks/search-phpqa:latest
 
-            # https://github.com/shivammathur/setup-php (community)
-            -
-                name: Setup PHP, extensions and composer with shivammathur/setup-php
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: '7.4'
-                    extensions: mbstring, xml, ctype, iconv, intl, bcmath, pdo_sqlite, dom, filter, json, pgsql, pdo, pdo_pgsql, pdo_mysql
-                    coverage: xdebug
-
-            # —— Composer 🧙‍️ —————————————————————————————————————————————————————————
             -
                 name: Install Composer dependencies
                 run: |
-                    rm -f composer.lock
-                    composer global require symfony/flex
-                    composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
-
-            -
-                name: Run PHP-QA
-                run: |
-                    make lint || exit 0
+                    docker run -it --rm -v "$(shell pwd):/project" -w /project ${QA_DOCKER_IMAGE}
