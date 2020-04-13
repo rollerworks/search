@@ -66,7 +66,6 @@ class DateConversion implements ValueConversion, QueryConversion
             case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
             case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
                 // dates as single values, need to convert them to a date range
-                /** @var array $value */
                 foreach ($value as $singleValue) {
                     $dateRange = $this->generateDateRange($propertyName, new Range($singleValue, $singleValue));
                     $query[Generator::QUERY_BOOL][Generator::CONDITION_OR][] = $dateRange;

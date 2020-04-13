@@ -74,7 +74,7 @@ final class SqlConditionGenerator implements ConditionGenerator
         $this->connection = $connection;
     }
 
-    public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string')
+    public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string'): self
     {
         if ($this->whereClause) {
             throw new BadMethodCallException(
@@ -98,6 +98,8 @@ final class SqlConditionGenerator implements ConditionGenerator
             $column,
             $alias
         );
+
+        return $this;
     }
 
     public function getWhereClause(string $prependQuery = ''): string

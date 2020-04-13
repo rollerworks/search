@@ -133,7 +133,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
 
         if (!$formatter || $formatter->getLocale() !== \Locale::getDefault()) {
             $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::TYPE_INT32);
-            $formatter->setAttribute(\NumberFormatter::GROUPING_USED, false);
+            $formatter->setAttribute(\NumberFormatter::GROUPING_USED, 0);
         }
 
         return $formatter;

@@ -123,4 +123,4 @@ jobs:
             -
                 name: Run PHP-QA
                 run: |
-                    make lint || exit 0
+                    make lint
