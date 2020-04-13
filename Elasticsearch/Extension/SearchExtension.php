@@ -50,8 +50,10 @@ class SearchExtension implements QueryCollectionExtensionInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        /** @var SearchCondition $condition */
-        if (!$request || null === $condition = $request->attributes->get('_api_search_condition')) {
+        /** @var SearchCondition|null $condition */
+        $condition = $request->attributes->get('_api_search_condition');
+
+        if (null === $condition) {
             return;
         }
 
