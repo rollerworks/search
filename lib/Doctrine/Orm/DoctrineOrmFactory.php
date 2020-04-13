@@ -49,7 +49,7 @@ class DoctrineOrmFactory
      *
      * @return NativeQueryConditionGenerator|DqlConditionGenerator
      */
-    public function createConditionGenerator($query, SearchCondition $searchCondition)
+    public function createConditionGenerator($query, SearchCondition $searchCondition): ConditionGenerator
     {
         if ($query instanceof NativeQuery) {
             return new NativeQueryConditionGenerator($query, $searchCondition);
@@ -58,10 +58,6 @@ class DoctrineOrmFactory
         if ($query instanceof Query || $query instanceof QueryBuilder) {
             return new DqlConditionGenerator($query, $searchCondition);
         }
-
-        throw new \InvalidArgumentException(
-            sprintf('Query "%s" is not supported by the DoctrineOrmFactory.', \get_class($query))
-        );
     }
 
     /**
@@ -72,7 +68,7 @@ class DoctrineOrmFactory
      *                                                                                the driver supports TTL then the library may set a default value
      *                                                                                for it or let the driver take care of that.
      */
-    public function createCachedConditionGenerator($conditionGenerator, $ttl = null): ConditionGenerator
+    public function createCachedConditionGenerator(ConditionGenerator $conditionGenerator, $ttl = null): ConditionGenerator
     {
         if (null === $this->cacheDriver) {
             return $conditionGenerator;
@@ -80,12 +76,10 @@ class DoctrineOrmFactory
 
         if ($conditionGenerator instanceof DqlConditionGenerator) {
             return new CachedDqlConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
-        } elseif ($conditionGenerator instanceof NativeQueryConditionGenerator) {
-            return new CachedNativeQueryConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
         }
 
-        throw new \InvalidArgumentException(
-            sprintf('ConditionGenerator "%s" is not supported by the DoctrineOrmFactory.', \get_class($conditionGenerator))
-        );
+        if ($conditionGenerator instanceof NativeQueryConditionGenerator) {
+            return new CachedNativeQueryConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
+        }
     }
 }

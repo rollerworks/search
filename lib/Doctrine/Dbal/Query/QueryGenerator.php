@@ -295,7 +295,9 @@ final class QueryGenerator
     private static function implodeWithValue(string $glue, array $values, array $wrap = []): string
     {
         // Remove the empty values
-        $values = array_filter($values, 'strlen');
+        $values = array_filter($values, function (string $val): bool {
+            return '' !== $val;
+        });
 
         if (0 === \count($values)) {
             return '';

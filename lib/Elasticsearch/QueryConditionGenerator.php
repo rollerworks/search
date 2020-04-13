@@ -102,6 +102,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         }
 
         $this->mappings[$fieldName] = new FieldMapping($fieldName, $this->injectParameters($property), $this->fieldSet->get($fieldName), $conditionMappings, $options);
+
+        return $this;
     }
 
     public function getQuery(): Query

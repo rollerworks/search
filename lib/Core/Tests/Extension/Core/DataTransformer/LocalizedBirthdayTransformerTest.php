@@ -43,6 +43,9 @@ final class LocalizedBirthdayTransformerTest extends TestCase
 
         self::assertEquals(18, $transformer->reverseTransform('18'));
         self::assertEquals('18', $transformer->transform(18));
+
+        self::assertEquals(18000, $transformer->reverseTransform('18000'));
+        self::assertEquals('18000', $transformer->transform(18000));
     }
 
     /** @test */
