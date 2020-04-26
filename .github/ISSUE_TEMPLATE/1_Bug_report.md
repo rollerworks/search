@@ -9,14 +9,14 @@ assignees: ''
 
 **RollerworksSearch version(s) affected**: x.y.z
 
-**Description**  
+**Description**
 <!-- A clear and concise description of the problem. -->
 
-**How to reproduce**  
+**How to reproduce**
 <!-- Code and/or config needed to reproduce the problem. -->
 
-**Possible Solution**  
+**Possible Solution**
 <!--- Optional: only if you have suggestions on a fix/reason for the bug -->
 
-**Additional context**  
+**Additional context**
 <!-- Optional: any other context about the problem: log messages, screenshots, etc. -->

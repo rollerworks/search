@@ -2,18 +2,17 @@
 | ------------- | ---
 | Bug fix?      | yes/no
 | New feature?  | yes/no   <!-- don't forget to update src/**/CHANGELOG.md files -->
-| BC breaks?    | no
+| BC breaks?    | yes/no
 | Deprecations? | yes/no   <!-- don't forget to update UPGRADE-*.md and src/**/CHANGELOG.md files -->
-| Tests pass?   | yes      <!-- please add some, will be required by reviewers -->
-| Fixed tickets | #...     <!-- #-prefixed issue number(s), if any -->
+| Tickets       | Fix #... <!-- prefix each issue number with "Fix #", if any -->
 | License       | MIT
 
 <!--
-- Please fill in this template according to the PR you're about to submit.
-  Provide additional information in your description, not the questioner table.
-- Replace this comment by a description of what your PR is solving.
+Replace this notice by a short README for your feature/bugfix. This will help people
+understand your PR.
 
-Please also note that this project is released with a Contributor Code of Conduct.
-By participating in this project you agree to abide by its terms.
-The Code of Conduct can be found at https://github.com/rollerworks/contributing/blob/master/CODE_OF_CONDUCT.md.
+Additionally:
+ - Update the docs (for new features) if needed.
+ - Always add tests and ensure they pass.
+ - Features and deprecations must be submitted against branch master.
 -->
