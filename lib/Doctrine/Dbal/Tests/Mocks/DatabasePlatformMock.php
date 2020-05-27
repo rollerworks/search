@@ -110,6 +110,8 @@ class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
 
     /**
      * Gets the SQL Snippet used to declare a BLOB column type.
+     *
+     * @throws DBALException
      */
     public function getBlobTypeDeclarationSQL(array $field)
     {

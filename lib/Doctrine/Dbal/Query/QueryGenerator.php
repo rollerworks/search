@@ -88,23 +88,23 @@ final class QueryGenerator
                 $this->processFieldValues($values, $mappingsConfig, $inclusiveSqlGroup, $exclusiveSqlGroup);
             }
 
-            $groupSql[] = self::implodeWithValue(' OR ', $inclusiveSqlGroup, ['(', ')']);
-            $groupSql[] = self::implodeWithValue(' AND ', $exclusiveSqlGroup, ['(', ')']);
-            $query[] = self::implodeWithValue(' AND ', $groupSql, ['(', ')', true]);
+            $groupSql[] = self::implodeValuesWithWrapping(' OR ', $inclusiveSqlGroup, '(', ')');
+            $groupSql[] = self::implodeValuesWithWrapping(' AND ', $exclusiveSqlGroup, '(', ')');
+            $query[] = self::wrapIfNotEmpty(self::implodeWithValue(' AND ', $groupSql), '(', ')');
         }
 
         $finalQuery = [];
 
         // Wrap all the fields as a group
-        $finalQuery[] = self::implodeWithValue(
-            ' '.strtoupper($valuesGroup->getGroupLogical()).' ',
-            $query,
-            ['(', ')', true]
+        $finalQuery[] = self::wrapIfNotEmpty(
+            self::implodeWithValue(' '.strtoupper($valuesGroup->getGroupLogical()).' ', $query),
+            '(',
+            ')'
         );
 
         $this->processGroups($valuesGroup->getGroups(), $finalQuery);
 
-        return self::implodeWithValue(' AND ', $finalQuery, ['(', ')']);
+        return self::implodeValuesWithWrapping(' AND ', $finalQuery, '(', ')');
     }
 
     /**
@@ -119,7 +119,7 @@ final class QueryGenerator
             $groupSql[] = $this->getGroupQuery($group);
         }
 
-        $query[] = self::implodeWithValue(' OR ', $groupSql, ['(', ')', true]);
+        $query[] = self::wrapIfNotEmpty(self::implodeWithValue(' OR ', $groupSql), '(', ')');
     }
 
     private function processSingleValuesInList(array $values, QueryField $mappingConfig, array &$query, bool $exclude = false): void
@@ -232,11 +232,11 @@ final class QueryGenerator
             );
         }
 
-        $query[] = self::implodeWithValue(
-            ' AND ',
-            $valuesQuery,
-            \count($valuesQuery) > 1 && !$exclude ? ['(', ')'] : []
-        );
+        if (\count($valuesQuery) > 1 && !$exclude) {
+            $query[] = self::implodeValuesWithWrapping(' AND ', $valuesQuery, '(', ')');
+        } else {
+            $query[] = self::implodeWithValue(' AND ', $valuesQuery);
+        }
     }
 
     /**
@@ -290,9 +290,22 @@ final class QueryGenerator
 
     /**
      * @param string[] $values
-     * @param array    $wrap   [(string) prefix, (string) suffix, (bool) force when values is empty]
      */
-    private static function implodeWithValue(string $glue, array $values, array $wrap = []): string
+    private static function implodeWithValue(string $glue, array $values): string
+    {
+        // Remove the empty values
+        $values = array_filter($values, function (string $val): bool {
+            return $val !== '';
+        });
+
+        if (0 === \count($values)) {
+            return '';
+        }
+
+        return implode($glue, $values);
+    }
+
+    private static function implodeValuesWithWrapping(string $glue, array $values, string $prefix, string $suffix): string
     {
         // Remove the empty values
         $values = array_filter($values, function (string $val): bool {
@@ -305,12 +318,20 @@ final class QueryGenerator
 
         $value = implode($glue, $values);
 
-        // FIXME This is not Clean Code, you can try to hide it but this is not acceptable. Use a separate method implodeWithValueAlways()
-        if (\count($wrap) > 0 && (isset($wrap[2]) || \count($values) > 1)) {
-            return $wrap[0].$value.$wrap[1];
+        if (\count($values) > 1) {
+            return $prefix.$value.$suffix;
         }
 
         return $value;
+    }
+
+    private static function wrapIfNotEmpty(string $value, string $prefix, string $suffix)
+    {
+        if ('' === $value) {
+            return '';
+        }
+
+        return $prefix.$value.$suffix;
     }
 
     private function processFieldValues(ValuesBag $values, QueryField $mappingConfig, array &$inclusiveSqlGroup, array &$exclusiveSqlGroup)

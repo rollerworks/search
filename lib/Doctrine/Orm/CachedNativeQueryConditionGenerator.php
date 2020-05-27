@@ -65,17 +65,21 @@ class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerat
      */
     public function getWhereClause(string $prependQuery = ''): string
     {
-        if (null === $this->whereClause) {
+        if ($this->whereClause === null) {
             $cacheKey = $this->getCacheKey();
 
-            if (null === $this->whereClause = $this->cacheDriver->get($cacheKey)) {
-                if ('' !== $this->whereClause = $this->conditionGenerator->getWhereClause()) {
-                    $this->cacheDriver->set($cacheKey, $this->whereClause, $this->ttl);
-                }
+            $this->whereClause = $cached = $this->cacheDriver->get($cacheKey);
+
+            if ($cached === null) {
+                $this->whereClause = $this->conditionGenerator->getWhereClause();
+            }
+
+            if ($cached === null && $this->whereClause !== '') {
+                $this->cacheDriver->set($cacheKey, $this->whereClause, $this->ttl);
             }
         }
 
-        if ('' !== $this->whereClause) {
+        if ($this->whereClause !== '') {
             return $prependQuery.$this->whereClause;
         }
 
