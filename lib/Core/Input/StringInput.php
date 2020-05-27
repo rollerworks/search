@@ -35,7 +35,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  * Caution: The error message reports the character position not the byte position.
  * Multi byte may cause some problems when using substr() rather then mb_substr().
  *
- * Each query-pair is a 'field-name: value1, value2;'.
+ * Each query-pair is a 'field-name: value1, value2;' or 'value1, value2;'.
+ *
+ * Tip: The field-name can be omitted, which uses the default field-name configured
+ * in the ProcessorConfig. This should only be used for the first values list.
  *
  *  Query-pairs can be nested inside a group "(field-name: value1, value2;)"
  *    Subgroups are threaded as AND-case to there parent,
@@ -53,7 +56,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  *
  *  Each value inside a query-pair is separated with a single comma.
  *  A value containing special characters (<>[](),;~!*?=) or spaces
- *  must be surrounded by quotes.
+ *  must be surrounded by quotes or use a custom value lexer.
  *
  *  Note surrounding spaces are ignored. Example: field: value , value2  ;
  *
@@ -268,7 +271,11 @@ abstract class StringInput extends AbstractInput
                 throw $this->lexer->createFormatException(StringLexerException::CANNOT_CLOSE_UNOPENED_GROUP);
             }
 
-            $fieldName = $this->getFieldName($this->lexer->fieldIdentification());
+            if ($this->lexer->isGlimpse(StringLexer::FIELD_NAME)) {
+                $fieldName = $this->getFieldName($this->lexer->fieldIdentification());
+            } else {
+                $fieldName = $this->config->getDefaultField(true);
+            }
 
             $this->lexer->skipEmptyLines();
             $this->fieldValues($fieldName);
