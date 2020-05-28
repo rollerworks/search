@@ -69,9 +69,9 @@ final class CachedNativeQueryConditionGeneratorTest extends OrmTestCase
             ->with(self::CACHE_KEY, 'sqlite' === $name ? '((I.customer IN(2, 5)))' : "((I.customer IN('2', '5')))", 60);
 
         if ('sqlite' === $name) {
-            self::assertEquals('((I.customer IN(2, 5)))', $this->cachedConditionGenerator->getWhereClause());
+            self::assertEquals('WHERE ((I.customer IN(2, 5)))', $this->cachedConditionGenerator->getWhereClause('WHERE '));
         } else {
-            self::assertEquals("((I.customer IN('2', '5')))", $this->cachedConditionGenerator->getWhereClause());
+            self::assertEquals("WHERE ((I.customer IN('2', '5')))", $this->cachedConditionGenerator->getWhereClause('WHERE '));
         }
     }
 

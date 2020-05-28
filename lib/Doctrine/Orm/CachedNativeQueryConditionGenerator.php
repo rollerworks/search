@@ -69,7 +69,7 @@ class CachedNativeQueryConditionGenerator extends AbstractCachedConditionGenerat
             $cacheKey = $this->getCacheKey();
 
             if (null === $this->whereClause = $this->cacheDriver->get($cacheKey)) {
-                if ('' !== $this->whereClause = $this->conditionGenerator->getWhereClause($prependQuery)) {
+                if ('' !== $this->whereClause = $this->conditionGenerator->getWhereClause()) {
                     $this->cacheDriver->set($cacheKey, $this->whereClause, $this->ttl);
                 }
             }

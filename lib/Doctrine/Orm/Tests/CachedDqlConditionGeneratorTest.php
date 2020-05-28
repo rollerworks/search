@@ -65,7 +65,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->method('set')
             ->with(self::CACHE_KEY, ['((C.id IN(2, 5)))', []], 60);
 
-        self::assertEquals('((C.id IN(2, 5)))', $this->cachedConditionGenerator->getWhereClause());
+        self::assertEquals('WHERE ((C.id IN(2, 5)))', $this->cachedConditionGenerator->getWhereClause('WHERE '));
     }
 
     public function testGetWhereClauseWithCache()
