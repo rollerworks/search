@@ -65,8 +65,7 @@ final class SearchConditionBuilder
     }
 
     /**
-     * Add/expend a field ValuesBag on this ValuesGroup and returns
-     * the ValuesBag.
+     * Add/expend a field's ValuesBag on this ValuesGroup and returns the ValuesBag.
      *
      * Note. Values must be in the model format, they are not transformed!
      *
@@ -79,20 +78,48 @@ final class SearchConditionBuilder
      *   ->addSimpleValue('my value 2')
      * ->end() // return back to the ValuesGroup
      * ```
-     *
-     * Tip! If the field already exists the existing ValuesBagBuilder of the field
-     * is returned). To force a new builder use `->field('name', true)` instead,
-     * this will overwrite the current field's ValuesBag.
      */
-    public function field(string $name, bool $forceNew = false): ValuesBagBuilder // XXX This should be split into two methods: field and overwriteField
+    public function field(string $name, bool $forceNew = false): ValuesBagBuilder
     {
-        if (!$forceNew && $this->valuesGroup->hasField($name)) {
+        if ($forceNew) {
+            @trigger_error(
+                'Using $forceNew with true is deprecated since RollerworksSearch v2.0.0-ALPHA22 and will be removed in v2.0.0-BETA1, use overwriteField() instead.',
+                E_USER_DEPRECATED
+            );
+
+            return $this->overwriteField($name);
+        }
+
+        if ($this->valuesGroup->hasField($name)) {
             /** @var ValuesBagBuilder $valuesBag */
             $valuesBag = $this->valuesGroup->getField($name);
         } else {
             $valuesBag = new ValuesBagBuilder($this);
             $this->valuesGroup->addField($name, $valuesBag);
         }
+
+        return $valuesBag;
+    }
+
+    /**
+     * Add/overwrites a field's ValuesBag on this ValuesGroup and returns the ValuesBag.
+     *
+     * Note. Values must be in the model format, they are not transformed!
+     *
+     * The ValuesBagBuilder is subset of ValuesBag, which provides a developer
+     * friendly interface to construct a ValuesBag structure for the field.
+     *
+     * ```
+     * ->overwriteField('name')
+     *   ->addSimpleValue('my value')
+     *   ->addSimpleValue('my value 2')
+     * ->end() // return back to the ValuesGroup
+     * ```
+     */
+    public function overwriteField(string $name): ValuesBagBuilder
+    {
+        $valuesBag = new ValuesBagBuilder($this);
+        $this->valuesGroup->addField($name, $valuesBag);
 
         return $valuesBag;
     }

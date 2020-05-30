@@ -79,28 +79,32 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator
      */
     public function getWhereClause(string $prependQuery = ''): string
     {
-        if (null === $this->whereClause) {
+        if ($this->whereClause === null) {
             $cacheKey = $this->getCacheKey();
+            $cacheItem = $this->cacheDriver->get($cacheKey);
 
             $this->nativePlatform = $this->getQueryPlatform($this->conditionGenerator->getEntityManager()->getConnection());
 
-            if (null !== $cacheItem = $this->cacheDriver->get($cacheKey)) {
-                list($this->whereClause, $this->parameters) = $cacheItem;
-            } elseif ('' !== $this->whereClause = $this->conditionGenerator->getWhereClause()) {
+            if ($cacheItem !== null) {
+                [$this->whereClause, $this->parameters] = $cacheItem;
+            } else {
+                $this->whereClause = $this->conditionGenerator->getWhereClause();
                 $this->parameters = $this->conditionGenerator->getParameters();
 
-                $this->cacheDriver->set(
-                    $cacheKey,
-                    [
-                        $this->whereClause,
-                        $this->parameters,
-                    ],
-                    $this->ttl
-                );
+                if ($this->whereClause !== '') {
+                    $this->cacheDriver->set(
+                        $cacheKey,
+                        [
+                            $this->whereClause,
+                            $this->parameters,
+                        ],
+                        $this->ttl
+                    );
+                }
             }
         }
 
-        if ('' !== $this->whereClause) {
+        if ($this->whereClause !== '') {
             return $prependQuery.$this->whereClause;
         }
 
