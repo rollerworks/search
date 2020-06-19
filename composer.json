@@ -1,8 +1,8 @@
 {
     "name": "rollerworks/search-dev",
+    "type": "project",
     "description": "RollerworksSearch monolith development (use separate packages instead)",
     "homepage": "https://rollerworks.github.io/",
-    "type": "project",
     "license": "MIT",
     "authors": [
         {
@@ -17,9 +17,21 @@
     "require": {
         "php": "^7.1",
         "psr/container": "^1.0.0",
-        "symfony/intl": " ^4.4 || ^5.0",
-        "symfony/options-resolver": " ^4.4 || ^5.0",
-        "symfony/property-access": " ^4.4 || ^5.0"
+        "symfony/intl": "^4.4 || ^5.0",
+        "symfony/options-resolver": "^4.4 || ^5.0",
+        "symfony/property-access": "^4.4 || ^5.0"
+    },
+    "replace": {
+        "rollerworks/search": "self.version",
+        "rollerworks/search-api-platform": "self.version",
+        "rollerworks/search-bundle": "self.version",
+        "rollerworks/search-doctrine-dbal": "self.version",
+        "rollerworks/search-doctrine-orm": "self.version",
+        "rollerworks/search-elasticsearch": "self.version",
+        "rollerworks/search-symfony-validator": "self.version"
+    },
+    "conflict": {
+        "moneyphp/money": "<3.2.0"
     },
     "require-dev": {
         "api-platform/core": "^2.4.5",
@@ -48,17 +60,18 @@
     "suggest": {
         "moneyphp/money": "To use the MoneyType"
     },
-    "conflict": {
-        "moneyphp/money": "<3.2.0"
+    "config": {
+        "preferred-install": {
+            "doctrine/dbal": "source",
+            "doctrine/orm": "source",
+            "*": "dist"
+        },
+        "sort-packages": true
     },
-    "replace": {
-        "rollerworks/search": "self.version",
-        "rollerworks/search-api-platform": "self.version",
-        "rollerworks/search-bundle": "self.version",
-        "rollerworks/search-doctrine-dbal": "self.version",
-        "rollerworks/search-doctrine-orm": "self.version",
-        "rollerworks/search-elasticsearch": "self.version",
-        "rollerworks/search-symfony-validator": "self.version"
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -82,18 +95,5 @@
             "ApiPlatform\\Core\\Tests\\": "vendor/api-platform/core/tests",
             "Doctrine\\Tests\\": "vendor/doctrine/dbal/tests/Doctrine/Tests/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
-    },
-    "config": {
-        "preferred-install": {
-            "doctrine/dbal": "source",
-            "doctrine/orm": "source",
-            "*": "dist"
-        },
-        "sort-packages": true
     }
 }
