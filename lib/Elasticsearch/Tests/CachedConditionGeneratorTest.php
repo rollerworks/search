@@ -121,7 +121,7 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
         self::assertEquals($query, $this->cachedConditionGenerator->getQuery());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

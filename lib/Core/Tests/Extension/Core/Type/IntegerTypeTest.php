@@ -88,7 +88,7 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         self::assertFalse($fieldView->vars['grouping']);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

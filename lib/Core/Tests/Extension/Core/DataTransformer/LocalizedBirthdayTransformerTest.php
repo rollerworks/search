@@ -25,7 +25,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class LocalizedBirthdayTransformerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

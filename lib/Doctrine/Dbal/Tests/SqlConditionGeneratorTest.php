@@ -474,7 +474,9 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->expects($this->atLeastOnce())
             ->method('convertColumn')
             ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
-                self::assertArraySubset(['grouping' => true], $options);
+                self::assertArrayHasKey('grouping', $options);
+                self::assertTrue($options['grouping']);
+
                 self::assertEquals('I', $hints->field->alias);
                 self::assertEquals('I.customer', $hints->column);
 
@@ -503,7 +505,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->expects($this->atLeastOnce())
             ->method('convertValue')
             ->willReturnCallback(function ($value, array $options) {
-                self::assertArraySubset(['grouping' => true], $options);
+                self::assertArrayHasKey('grouping', $options);
+                self::assertTrue($options['grouping']);
 
                 return "get_customer_type($value)";
             })
@@ -546,7 +549,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->expects($this->atLeastOnce())
             ->method('convertValue')
             ->willReturnCallback(function ($value, array $passedOptions, ConversionHints $hints) {
-                self::assertArraySubset(['pattern' => 'dd-MM-yy'], $passedOptions);
+                self::assertArrayHasKey('pattern', $passedOptions);
+                self::assertEquals('dd-MM-yy', $passedOptions['pattern']);
 
                 if ($value instanceof \DateTime) {
                     self::assertEquals(2, $hints->conversionStrategy);
@@ -636,7 +640,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->expects($this->atLeastOnce())
             ->method('convertColumn')
             ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
-                self::assertArraySubset(['grouping' => true], $options);
+                self::assertArrayHasKey('grouping', $options);
+                self::assertTrue($options['grouping']);
                 self::assertEquals('I', $hints->field->alias);
                 self::assertEquals('I.customer', $hints->column);
 

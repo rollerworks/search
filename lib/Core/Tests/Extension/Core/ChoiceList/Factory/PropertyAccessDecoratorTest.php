@@ -40,7 +40,7 @@ final class PropertyAccessDecoratorTest extends TestCase
      */
     private $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->decoratedFactory = $this->createMock(ChoiceListFactory::class);
         $this->factory = new PropertyAccessDecorator($this->decoratedFactory);

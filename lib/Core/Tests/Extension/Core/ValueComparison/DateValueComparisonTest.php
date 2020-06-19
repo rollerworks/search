@@ -24,7 +24,7 @@ final class DateValueComparisonTest extends TestCase
     /** @var DateValueComparator */
     private $comparison;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->comparison = new DateValueComparator();
     }

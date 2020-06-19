@@ -64,7 +64,7 @@ abstract class OrmTestCase extends DbalTestCase
      */
     private static $sharedEm;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -115,7 +115,7 @@ abstract class OrmTestCase extends DbalTestCase
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         // Ensure the connection is reset between class-runs
         self::resetSharedConn();
@@ -181,7 +181,7 @@ abstract class OrmTestCase extends DbalTestCase
         );
     }
 
-    protected function onNotSuccessfulTest(\Throwable $e)
+    protected function onNotSuccessfulTest(\Throwable $e): void
     {
         // Ignore deprecation warnings.
         if ($e instanceof AssertionFailedError || ($e instanceof Warning && strpos($e->getMessage(), ' is deprecated,'))) {

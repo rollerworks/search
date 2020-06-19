@@ -19,7 +19,7 @@ use Rollerworks\Component\Search\SearchCondition;
 
 final class ApiPlatformTest extends FunctionalTestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!class_exists(SearchExtension::class)) {
             self::markTestSkipped('rollerworks/search-api-platform is not installed.');

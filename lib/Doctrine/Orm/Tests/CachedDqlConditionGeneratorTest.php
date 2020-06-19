@@ -234,7 +234,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
         self::assertEquals("you = 'me' AND me = 'foo'", $cachedConditionGenerator2->getWhereClause());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

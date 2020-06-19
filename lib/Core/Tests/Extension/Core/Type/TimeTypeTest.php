@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 
+use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\Type\TimeType;
 use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
@@ -26,7 +27,7 @@ final class TimeTypeTest extends SearchIntegrationTestCase
 {
     private $defaultTimezone;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         IntlTestHelper::requireIntl($this, '58.1');
 
@@ -35,7 +36,7 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         $this->defaultTimezone = date_default_timezone_get();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -117,11 +118,10 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('H', $fieldView->vars['pattern']);
     }
 
-    /**
-     * @expectedException \Rollerworks\Component\Search\Exception\InvalidConfigurationException
-     */
     public function testCannotInitializeWithSecondsButWithoutMinutes()
     {
+        $this->expectException(InvalidConfigurationException::class);
+
         $this->getFactory()->createField('time', TimeType::class, [
             'with_minutes' => false,
             'with_seconds' => true,

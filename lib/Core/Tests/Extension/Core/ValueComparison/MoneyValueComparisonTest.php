@@ -27,7 +27,7 @@ final class MoneyValueComparisonTest extends TestCase
     /** @var MoneyValueComparator */
     private $comparison;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->comparison = new MoneyValueComparator();
     }

@@ -113,7 +113,7 @@ class DoctrineOrmFactoryTest extends OrmTestCase
 
     // Missing Test for CachedNativeQueryConditionGenerator
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

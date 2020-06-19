@@ -57,7 +57,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         }
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -85,7 +85,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $this->conn->getConfiguration()->setSQLLogger($this->sqlLoggerStack);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         // Ensure the connection is reset between class-runs
         self::resetSharedConn();
@@ -176,7 +176,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         self::assertNotEmpty($this->conn->query($this->getQuery().$whereClause));
     }
 
-    protected function onNotSuccessfulTest(\Throwable $e)
+    protected function onNotSuccessfulTest(\Throwable $e): void
     {
         // Ignore deprecation warnings.
         if ($e instanceof AssertionFailedError || ($e instanceof Warning && strpos($e->getMessage(), ' is deprecated,'))) {

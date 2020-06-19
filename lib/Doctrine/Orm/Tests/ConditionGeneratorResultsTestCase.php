@@ -50,7 +50,7 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
      */
     private $inputProcessor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

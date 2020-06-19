@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Bundle\SearchBundle;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class TranslatorBasedAliasResolver
 {

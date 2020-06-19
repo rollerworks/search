@@ -38,7 +38,7 @@ final class CachingFactoryDecoratorTest extends TestCase
      */
     private $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->decoratedFactory = $this->createMock(ChoiceListFactory::class);
         $this->factory = new CachingFactoryDecorator($this->decoratedFactory);

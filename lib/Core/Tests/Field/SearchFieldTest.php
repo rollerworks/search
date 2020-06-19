@@ -40,7 +40,7 @@ final class SearchFieldTest extends TestCase
      */
     private $field;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->resolvedType = $this->getMockBuilder(ResolvedFieldType::class)->getMock();
         $this->field = new SearchField('foobar', $this->resolvedType, ['name' => 'value']);

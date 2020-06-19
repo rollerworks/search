@@ -25,7 +25,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class LanguageTypeTest extends SearchIntegrationTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         IntlTestHelper::requireIntl($this, false);
 
@@ -46,9 +46,9 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
 
         $choices = $view->vars['choices'];
 
-        $this->assertContains(new ChoiceView('en', 'en', 'English'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('fr', 'fr', 'French'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('my', 'my', 'Burmese'), $choices, '', false, false);
+        $this->assertContainsEquals(new ChoiceView('en', 'en', 'English'), $choices);
+        $this->assertContainsEquals(new ChoiceView('fr', 'fr', 'French'), $choices);
+        $this->assertContainsEquals(new ChoiceView('my', 'my', 'Burmese'), $choices);
     }
 
     public function testMultipleLanguagesIsNotIncluded()
@@ -59,6 +59,6 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
         $view = $field->createView(new FieldSetView());
         $choices = $view->vars['choices'];
 
-        $this->assertNotContains(new ChoiceView('mul', 'mul', 'Mehrsprachig'), $choices, '', false, false);
+        $this->assertNotContainsEquals(new ChoiceView('mul', 'mul', 'Mehrsprachig'), $choices);
     }
 }

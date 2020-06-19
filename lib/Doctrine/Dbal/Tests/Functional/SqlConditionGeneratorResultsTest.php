@@ -50,7 +50,7 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
      */
     private $inputProcessor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

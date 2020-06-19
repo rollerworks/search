@@ -32,7 +32,6 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -72,7 +71,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(
             [
@@ -179,7 +178,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $this->expectException(UnexpectedTypeException::class);
         $this->expectExceptionMessage('Expected argument of type "string", "array" given');
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
     }
 
     /** @test */
@@ -219,7 +218,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(
             [
@@ -253,7 +252,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         );
 
         $request = new Request([], [], ['_api_resource_class' => Dummy::class]);
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(['_api_resource_class' => Dummy::class], $request->attributes->all());
     }
@@ -278,7 +277,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(['_api_resource_class' => Dummy::class], $request->attributes->all());
     }
@@ -320,7 +319,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(
             [
@@ -378,7 +377,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $cache = new Psr16Cache($arrayCache = new ArrayAdapter())
         );
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(
             [
@@ -434,7 +433,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
             $cache = new Psr16Cache($arrayCache = new ArrayAdapter())
         );
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         self::assertEquals(
             [
@@ -489,7 +488,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($message);
 
-        $listener->onKernelRequest($event = new GetResponseEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
     }
 
     public function provideInvalidConfigurations(): array
