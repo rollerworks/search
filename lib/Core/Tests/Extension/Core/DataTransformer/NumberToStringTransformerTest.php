@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\NumberToStringTr
  */
 final class NumberToStringTransformerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

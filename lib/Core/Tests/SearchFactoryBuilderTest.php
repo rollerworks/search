@@ -27,7 +27,7 @@ final class SearchFactoryBuilderTest extends TestCase
     private $registry;
     private $type;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $factory = new \ReflectionClass(GenericSearchFactory::class);
         $this->registry = $factory->getProperty('registry');

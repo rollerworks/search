@@ -25,7 +25,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class CurrencyTypeTest extends SearchIntegrationTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         IntlTestHelper::requireIntl($this, false);
 
@@ -47,8 +47,8 @@ final class CurrencyTypeTest extends SearchIntegrationTestCase
 
         $choices = $view->vars['choices'];
 
-        $this->assertContains(new ChoiceView('EUR', 'EUR', 'Euro'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('USD', 'USD', 'US Dollar'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('SIT', 'SIT', 'Slovenian Tolar'), $choices, '', false, false);
+        $this->assertContainsEquals(new ChoiceView('EUR', 'EUR', 'Euro'), $choices);
+        $this->assertContainsEquals(new ChoiceView('USD', 'USD', 'US Dollar'), $choices);
+        $this->assertContainsEquals(new ChoiceView('SIT', 'SIT', 'Slovenian Tolar'), $choices);
     }
 }

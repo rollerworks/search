@@ -49,7 +49,7 @@ final class CallbackChoiceLoaderTest extends TestCase
      */
     private static $lazyChoiceList;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$loader = new CallbackChoiceLoader(function () {
             return self::$choices;
@@ -93,7 +93,7 @@ final class CallbackChoiceLoaderTest extends TestCase
         );
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::$loader = null;
         self::$value = null;

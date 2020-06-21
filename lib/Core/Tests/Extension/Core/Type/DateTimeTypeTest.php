@@ -104,7 +104,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         IntlTestHelper::requireIntl($this, '58.1');
 

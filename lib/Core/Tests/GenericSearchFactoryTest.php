@@ -47,7 +47,7 @@ final class GenericSearchFactoryTest extends TestCase
      */
     private $fieldConfig;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fieldSetRegistry = $this->createMock(FieldSetRegistry::class);
         $this->registry = $this->createMock(TypeRegistry::class);

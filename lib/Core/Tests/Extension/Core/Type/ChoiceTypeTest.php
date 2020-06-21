@@ -54,7 +54,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -67,7 +67,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ];
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 

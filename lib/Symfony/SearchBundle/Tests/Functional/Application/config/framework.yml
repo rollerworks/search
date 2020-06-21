@@ -8,7 +8,6 @@ framework:
     form:                false
     csrf_protection:     false
     validation:          { enable_annotations: false }
-    templating:          false
     default_locale:      en
     session:
         storage_id: session.storage.filesystem

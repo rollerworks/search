@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\ApiPlatform\EventListener;
 use ApiPlatform\Core\Util\ErrorFormatGuesser;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\Serializer\SerializerInterface;
 
 final class InvalidSearchConditionExceptionListener
@@ -33,9 +33,10 @@ final class InvalidSearchConditionExceptionListener
     /**
      * Returns a list of errors normalized in the Hydra format.
      */
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
+
         if (!$exception instanceof InvalidSearchConditionException) {
             return;
         }

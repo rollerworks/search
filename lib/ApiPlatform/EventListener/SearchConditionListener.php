@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 /**
  * SearchConditionListener handles search conditions provided with the Request query.
@@ -61,7 +61,7 @@ final class SearchConditionListener
      * This listener is expected to be run after the Api EntryPoint but before ReadListener
      * on the kernel.request event.
      */
-    public function onKernelRequest(GetResponseEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
 

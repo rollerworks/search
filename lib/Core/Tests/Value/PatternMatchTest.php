@@ -24,7 +24,7 @@ final class PatternMatchTest extends TestCase
     /** @var PatternMatch */
     private $value;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->value = new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS);
     }

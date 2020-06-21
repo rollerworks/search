@@ -23,7 +23,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class NumberToLocalizedStringTransformerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

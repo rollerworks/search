@@ -25,7 +25,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class TimezoneTypeTest extends SearchIntegrationTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         IntlTestHelper::requireIntl($this, false);
 
@@ -47,9 +47,9 @@ final class TimezoneTypeTest extends SearchIntegrationTestCase
         $choices = $view->vars['choices'];
 
         $this->assertArrayHasKey('Africa', $choices);
-        $this->assertContains(new ChoiceView('Africa/Kinshasa', 'Africa/Kinshasa', 'Kinshasa'), $choices['Africa'], '', false, false);
+        $this->assertContainsEquals(new ChoiceView('Africa/Kinshasa', 'Africa/Kinshasa', 'Kinshasa'), $choices['Africa']);
 
         $this->assertArrayHasKey('America', $choices);
-        $this->assertContains(new ChoiceView('America/New_York', 'America/New_York', 'New York'), $choices['America'], '', false, false);
+        $this->assertContainsEquals(new ChoiceView('America/New_York', 'America/New_York', 'New York'), $choices['America']);
     }
 }

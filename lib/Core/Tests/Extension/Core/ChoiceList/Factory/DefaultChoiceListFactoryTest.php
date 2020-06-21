@@ -92,7 +92,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
             : new DefaultChoiceListFactoryTest_Castable('Group 2');
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->obj1 = (object) [
             'label' => 'A',

@@ -20,27 +20,26 @@
         "php": "^7.1",
         "psr/simple-cache": "^1.0.0",
         "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA13",
-        "symfony/framework-bundle": "^4.3",
-        "symfony/twig-bundle": "^3.4.2 || ^4.0.2"
+        "symfony/framework-bundle": "^4.4 || ^5.0",
+        "symfony/twig-bundle": "^4.4 || ^5.0"
     },
     "conflict": {
         "doctrine/doctrine-bundle": "<1.1",
         "rollerworks/search-doctrine-dbal": "<2.0.0-ALPHA13",
         "rollerworks/search-doctrine-orm": "<2.0.0-ALPHA13",
-        "rollerworks/search-symfony-validator": "<2.0.0-ALPHA13",
-        "symfony/psr-http-message-bridge": "<1.0.0"
+        "rollerworks/search-symfony-validator": "<2.0.0-ALPHA13"
     },
     "require-dev": {
         "matthiasnoback/symfony-dependency-injection-test": "^2.0.0",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.8",
         "phpunit/phpunit": "^6.5.4",
         "rollerworks/search-symfony-validator": "^2.0@dev,>=2.0.0-ALPHA13",
-        "symfony/asset": "^3.4.2 || ^4.0.2",
-        "symfony/browser-kit": "^3.4.2 || ^4.0.2",
-        "symfony/dom-crawler": "^3.4.2 || ^4.0.2",
-        "symfony/phpunit-bridge": "^4.3",
-        "symfony/routing": "^3.4.2 || ^4.0.2",
-        "symfony/templating": "^3.4.2 || ^4.0.2"
+        "symfony/asset": "^3.4.2 || ^4.0.2 || ^5.0",
+        "symfony/browser-kit": "^3.4.2 || ^4.0.2 || ^5.0",
+        "symfony/dom-crawler": "^3.4.2 || ^4.0.2 || ^5.0",
+        "symfony/phpunit-bridge": "^4.3 || ^5.0",
+        "symfony/routing": "^3.4.2 || ^4.0.2 || ^5.0",
+        "symfony/templating": "^3.4.2 || ^4.0.2 || ^5.0"
     },
     "config": {
         "sort-packages": true

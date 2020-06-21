@@ -25,7 +25,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class CountryTypeTest extends SearchIntegrationTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         IntlTestHelper::requireIntl($this, false);
 
@@ -46,11 +46,11 @@ final class CountryTypeTest extends SearchIntegrationTestCase
         $choices = $view->vars['choices'];
 
         // Don't check objects for identity
-        $this->assertContains(new ChoiceView('DE', 'DE', 'Germany'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('GB', 'GB', 'United Kingdom'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('US', 'US', 'United States'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('FR', 'FR', 'France'), $choices, '', false, false);
-        $this->assertContains(new ChoiceView('MY', 'MY', 'Malaysia'), $choices, '', false, false);
+        $this->assertContainsEquals(new ChoiceView('DE', 'DE', 'Germany'), $choices);
+        $this->assertContainsEquals(new ChoiceView('GB', 'GB', 'United Kingdom'), $choices);
+        $this->assertContainsEquals(new ChoiceView('US', 'US', 'United States'), $choices);
+        $this->assertContainsEquals(new ChoiceView('FR', 'FR', 'France'), $choices);
+        $this->assertContainsEquals(new ChoiceView('MY', 'MY', 'Malaysia'), $choices);
     }
 
     public function testUnknownCountryIsNotIncluded()
@@ -68,6 +68,6 @@ final class CountryTypeTest extends SearchIntegrationTestCase
             }
         }
 
-        self::assertContains('AF', $choices[0]->value ?? 'ZZ');
+        self::assertStringContainsString('AF', $choices[0]->value ?? 'ZZ');
     }
 }

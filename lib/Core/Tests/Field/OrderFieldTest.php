@@ -36,7 +36,7 @@ final class OrderFieldTest extends TestCase
      */
     private $field;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->resolvedType = $this->getMockBuilder(ResolvedFieldType::class)->getMock();
         $this->field = new OrderField('@foobar', $this->resolvedType, ['name' => 'value']);

@@ -36,7 +36,7 @@ final class SearchConditionSerializerTest extends TestCase
     /** @var GenericFieldSet */
     private $fieldSet;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $field = $this->createMock(FieldConfig::class);
         $field->expects(self::any())->method('getName')->willReturn('id');

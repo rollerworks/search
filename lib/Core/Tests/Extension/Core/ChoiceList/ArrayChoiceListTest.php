@@ -25,7 +25,7 @@ final class ArrayChoiceListTest extends AbstractChoiceListTest
 {
     private $object;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new \stdClass();
 

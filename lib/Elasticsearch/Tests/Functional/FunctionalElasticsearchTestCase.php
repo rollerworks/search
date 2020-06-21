@@ -36,7 +36,7 @@ use Rollerworks\Component\Search\Tests\Elasticsearch\ElasticsearchTestCase;
  */
 abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $mappings = $this->getMappings();
         $documents = $this->getDocuments();

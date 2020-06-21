@@ -24,7 +24,7 @@ final class CompareTest extends TestCase
     /** @var Compare */
     private $value;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->value = new Compare(10, '>');
     }

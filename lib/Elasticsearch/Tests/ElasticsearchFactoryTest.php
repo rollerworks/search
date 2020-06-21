@@ -51,7 +51,7 @@ class ElasticsearchFactoryTest extends ElasticsearchTestCase
         $this->assertInstanceOf(CachedConditionGenerator::class, $cacheConditionGenerator);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

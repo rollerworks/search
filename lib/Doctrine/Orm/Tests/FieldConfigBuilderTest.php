@@ -38,7 +38,7 @@ final class FieldConfigBuilderTest extends TestCase
      */
     private $searchFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -269,7 +269,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         self::assertEquals("you = 'me' AND me = 'foo'", $cachedConditionGenerator2->getWhereClause());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

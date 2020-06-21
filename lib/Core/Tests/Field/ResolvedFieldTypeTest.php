@@ -60,7 +60,7 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private $resolvedType;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->parentType = $this->getMockFieldType();
         $this->type = $this->getMockFieldType();

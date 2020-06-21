@@ -15,10 +15,10 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle;
 use FOS\ElasticaBundle\FOSElasticaBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -57,7 +57,6 @@ class AppKernel extends Kernel
         ];
 
         if (class_exists(DoctrineBundle::class)) {
-            $bundles[] = new DoctrineCacheBundle();
             $bundles[] = new DoctrineBundle();
         }
 
@@ -71,6 +70,11 @@ class AppKernel extends Kernel
         }
 
         return $bundles;
+    }
+
+    protected function build(ContainerBuilder $container)
+    {
+        $container->setParameter('kernel.root_dir', __DIR__);
     }
 
     public function getRootDir()

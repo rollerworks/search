@@ -6,3 +6,4 @@
 build/**
 *.phar
 var/
+.phpunit.result.cache

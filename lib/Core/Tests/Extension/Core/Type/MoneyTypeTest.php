@@ -30,7 +30,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class MoneyTypeTest extends SearchIntegrationTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         // we test against different locales, so we need the full
         // implementation

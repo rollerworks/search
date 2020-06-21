@@ -25,7 +25,7 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
     protected $dateTime;
     protected $dateTimeWithoutSeconds;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -33,7 +33,7 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         $this->dateTimeWithoutSeconds = new \DateTime('2010-02-03 04:05:00 UTC');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->dateTime = null;
         $this->dateTimeWithoutSeconds = null;

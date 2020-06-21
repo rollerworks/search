@@ -33,7 +33,7 @@ final class GenericFieldSetBuilderTest extends TestCase
      */
     private $builder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // Prophecy binds the callback to the ObjectProphecy.
         $test = $this;
