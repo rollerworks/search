@@ -26,9 +26,6 @@ final class FieldConfigBuilder
     /** @var FieldSet */
     private $fieldSet;
 
-    /** @var bool */
-    private $native;
-
     /** @var EntityManagerInterface */
     private $entityManager;
 
@@ -44,7 +41,6 @@ final class FieldConfigBuilder
     {
         $this->entityManager = $entityManager;
         $this->fieldSet = $fieldSet;
-        $this->native = $native;
     }
 
     public function setDefaultEntity(string $entity, string $alias)
@@ -75,7 +71,7 @@ final class FieldConfigBuilder
             $mappingName,
             $this->fieldSet->get($fieldName),
             $this->getMappingType($mappingName, $entity, $property, $type),
-            $this->native ? $this->entityManager->getClassMetadata($entity)->getColumnName($property) : $property,
+            $property,
             $alias ?? $this->defaultAlias
         );
     }
@@ -98,17 +94,11 @@ final class FieldConfigBuilder
         return $resolvedFields;
     }
 
-    private function getEntityAndProperty($fieldName, string $entity, string $property): array
+    private function getEntityAndProperty(string $fieldName, string $entity, string $property): array
     {
         $metadata = $this->entityManager->getClassMetadata($entity);
 
         if (!$metadata->hasAssociation($property)) {
-            return [$entity, $property];
-        }
-
-        // Referencing a JOIN column is only possible for native, and only when it's a
-        // SingleJoinColumn.
-        if ($this->native && $metadata->isAssociationWithSingleJoinColumn($property)) {
             return [$entity, $property];
         }
 

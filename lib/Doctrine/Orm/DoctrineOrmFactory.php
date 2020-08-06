@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
-use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Psr\SimpleCache\CacheInterface as Cache;
@@ -44,29 +43,21 @@ class DoctrineOrmFactory
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option (when present).
      *
-     * @param NativeQuery|Query|QueryBuilder $query           Doctrine ORM (Native)Query object
-     * @param SearchCondition                $searchCondition SearchCondition object
-     *
-     * @return NativeQueryConditionGenerator|DqlConditionGenerator
+     * @param Query|QueryBuilder $query           Doctrine ORM (Native)Query object
+     * @param SearchCondition    $searchCondition SearchCondition object
      */
-    public function createConditionGenerator($query, SearchCondition $searchCondition): ConditionGenerator
+    public function createConditionGenerator($query, SearchCondition $searchCondition): DqlConditionGenerator
     {
-        if ($query instanceof NativeQuery) {
-            return new NativeQueryConditionGenerator($query, $searchCondition);
-        }
-
-        if ($query instanceof Query || $query instanceof QueryBuilder) {
-            return new DqlConditionGenerator($query, $searchCondition);
-        }
+        return new DqlConditionGenerator($query, $searchCondition);
     }
 
     /**
      * Creates a new CachedConditionGenerator instance for the ConditionGenerator.
      *
-     * @param DqlConditionGenerator|NativeQueryConditionGenerator $conditionGenerator
-     * @param int|\DateInterval|null                              $ttl                Optional. The TTL value of this item. If no value is sent and
-     *                                                                                the driver supports TTL then the library may set a default value
-     *                                                                                for it or let the driver take care of that.
+     * @param DqlConditionGenerator  $conditionGenerator
+     * @param int|\DateInterval|null $ttl                Optional. The TTL value of this item. If no value is sent and
+     *                                                   the driver supports TTL then the library may set a default value
+     *                                                   for it or let the driver take care of that.
      */
     public function createCachedConditionGenerator(ConditionGenerator $conditionGenerator, $ttl = null): ConditionGenerator
     {
@@ -74,12 +65,6 @@ class DoctrineOrmFactory
             return $conditionGenerator;
         }
 
-        if ($conditionGenerator instanceof DqlConditionGenerator) {
-            return new CachedDqlConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
-        }
-
-        if ($conditionGenerator instanceof NativeQueryConditionGenerator) {
-            return new CachedNativeQueryConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
-        }
+        return new CachedDqlConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
     }
 }

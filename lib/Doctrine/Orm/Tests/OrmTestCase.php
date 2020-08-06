@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
@@ -137,7 +136,7 @@ abstract class OrmTestCase extends DbalTestCase
     /**
      * Returns the string for the ConditionGenerator.
      *
-     * @return Query|NativeQuery
+     * @return Query
      */
     protected function getQuery()
     {

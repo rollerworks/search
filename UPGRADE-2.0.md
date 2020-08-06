@@ -3,6 +3,9 @@ UPGRADE FROM 2.0-ALPHA21 to 2.0-ALPHA22
 
  * The `$forceNew` argument in `SearchConditionBuilder::field()` is deprecated and will
    be removed in v2.0.0-BETA1, use `overwriteField()` instead.
+   
+ * Support for Doctrine ORM NativeQuery was removed, use the Doctrine DBAL 
+   condition-generator instead for this usage.
 
 UPGRADE FROM 2.0-ALPHA19 to 2.0-ALPHA20
 =======================================
