@@ -6,6 +6,8 @@ UPGRADE FROM 2.0-ALPHA21 to 2.0-ALPHA22
    
  * Support for Doctrine ORM NativeQuery was removed, use the Doctrine DBAL 
    condition-generator instead for this usage.
+   
+ * Support for SQLite was removed in Doctrine DBAL and ORM.
 
 UPGRADE FROM 2.0-ALPHA19 to 2.0-ALPHA20
 =======================================

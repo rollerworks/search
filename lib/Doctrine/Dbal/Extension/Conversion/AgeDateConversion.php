@@ -65,8 +65,7 @@ class AgeDateConversion implements StrategySupportedConversion, ColumnConversion
         $convertMap['drizzle'] = $convertMap['mysql'];
         $convertMap['mssql'] = 'DATEDIFF(hour, %1$s, GETDATE())/8766';
         $convertMap['oracle'] = 'trunc((months_between(sysdate, (sysdate - %1$s)))/12)';
-        $convertMap['sqlite'] = 'search_conversion_age(%1$s)';
-        $convertMap['mock'] = $convertMap['sqlite'];
+        $convertMap['mock'] = 'search_conversion_age(%1$s)';
 
         if (isset($convertMap[$platform])) {
             return sprintf($convertMap[$platform], $column);

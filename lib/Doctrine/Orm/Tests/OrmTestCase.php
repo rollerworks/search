@@ -22,7 +22,6 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Psr\SimpleCache\CacheInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
 use Rollerworks\Component\Search\Doctrine\Orm\AbstractConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion;
@@ -68,8 +67,6 @@ abstract class OrmTestCase extends DbalTestCase
         parent::setUp();
 
         if (!isset(self::$sharedConn)) {
-            $GLOBALS['db_event_subscribers'] = SqliteConnectionSubscriber::class;
-
             $config = Setup::createAnnotationMetadataConfiguration([__DIR__.'/Fixtures/Entity'], true, null, null, false);
             $config->addCustomStringFunction(
                 'RW_SEARCH_FIELD_CONVERSION',

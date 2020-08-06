@@ -73,13 +73,11 @@ in-docker-install-lowest:
 
 in-docker-test:
 	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose
-	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration phpunit/sqlite.xml
 	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration phpunit/pgsql.xml
 	SYMFONY_DEPRECATIONS_HELPER=weak vendor/bin/phpunit --verbose --configuration phpunit/mysql.xml
 
 in-docker-test-coverage:
 	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --coverage-php build/cov/coverage-phpunit.cov
-	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration phpunit/sqlite.xml --coverage-php build/cov/coverage-phpunit-sqlite.cov
 	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration phpunit/pgsql.xml --coverage-php build/cov/coverage-phpunit-pgsql.cov
 	SYMFONY_DEPRECATIONS_HELPER=weak phpdbg -qrr vendor/bin/phpunit --verbose --configuration phpunit/mysql.xml --coverage-php build/cov/coverage-phpunit-mysql.cov
 

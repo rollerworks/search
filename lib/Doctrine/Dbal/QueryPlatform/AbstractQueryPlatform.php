@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
  * The AbstractQueryPlatform provides a shared base functionality
  * for all the query platforms.
  *
- * Note that is class is also used by the Doctrine ORM processor and therefor
+ * Note that is class is also used by the Doctrine ORM processor and therefore
  * methods and properties must be protected and easy to overwrite.
  */
 abstract class AbstractQueryPlatform implements QueryPlatform

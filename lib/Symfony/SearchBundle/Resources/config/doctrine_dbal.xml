@@ -26,9 +26,5 @@
                 <service class="Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\MoneyValueConversion" />
             </argument>
         </service>
-
-        <service id="rollerworks_search.doctrine_dbal.event_subscriber.sqlite_connection" class="Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber">
-            <tag name="doctrine.event_subscriber" />
-        </service>
     </services>
 </container>

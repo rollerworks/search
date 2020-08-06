@@ -307,20 +307,10 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             $conditionGenerator->getWhereClause()
         );
 
-        if ('sqlite' === $this->conn->getDatabasePlatform()->getName()) {
-            $this->assertDqlCompiles(
-                $conditionGenerator,
-                "SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.first_name LIKE '%foo' ESCAPE '\\' OR c1_.first_name LIKE '%fo\\''o' ESCAPE '\\' OR c1_.first_name LIKE '%fo''o' ESCAPE '\\' OR c1_.first_name LIKE '%fo''''o' ESCAPE '\\') AND LOWER(c1_.first_name) NOT LIKE LOWER('bar%') ESCAPE '\\'))"
-            );
-        } else {
-            $rexP = 'postgresql' === $this->conn->getDatabasePlatform()->getName() ? '~' : 'REGEXP';
-            $rexPInsensitive = 'postgresql' === $this->conn->getDatabasePlatform()->getName() ? '~*' : 'REGEXP BINARY';
-
-            $this->assertDqlCompiles(
-                $conditionGenerator,
-                'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.first_name LIKE '.$this->conn->quote('%foo').' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo\\'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo''o").' ESCAPE '.$this->conn->quote('\\').') AND LOWER(c1_.first_name) NOT LIKE LOWER('.$this->conn->quote('bar%').') ESCAPE '.$this->conn->quote('\\').'))'
-            );
-        }
+        $this->assertDqlCompiles(
+            $conditionGenerator,
+            'SELECT i0_.invoice_id AS invoice_id0, i0_.label AS label1, i0_.pubdate AS pubdate2, i0_.status AS status3, i0_.price_total AS price_total4, i0_.customer AS customer5, i0_.parent_id AS parent_id6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE (((c1_.first_name LIKE '.$this->conn->quote('%foo').' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo\\'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo'o").' ESCAPE '.$this->conn->quote('\\').' OR c1_.first_name LIKE '.$this->conn->quote("%fo''o").' ESCAPE '.$this->conn->quote('\\').') AND LOWER(c1_.first_name) NOT LIKE LOWER('.$this->conn->quote('bar%').') ESCAPE '.$this->conn->quote('\\').'))'
+        );
     }
 
     public function testSubGroups()

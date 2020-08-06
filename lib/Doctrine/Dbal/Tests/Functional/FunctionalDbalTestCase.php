@@ -20,7 +20,6 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
-use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -62,8 +61,6 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         parent::setUp();
 
         if (!isset(self::$sharedConn)) {
-            $GLOBALS['db_event_subscribers'] = SqliteConnectionSubscriber::class;
-
             self::$sharedConn = TestUtil::getConnection();
 
             $schema = new DbSchema();
