@@ -30,9 +30,6 @@ class DoctrineOrmFactory
      */
     private $cacheDriver;
 
-    /**
-     * @param Cache $cacheDriver
-     */
     public function __construct(Cache $cacheDriver = null)
     {
         $this->cacheDriver = $cacheDriver;
@@ -43,8 +40,7 @@ class DoctrineOrmFactory
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option (when present).
      *
-     * @param Query|QueryBuilder $query           Doctrine ORM (Native)Query object
-     * @param SearchCondition    $searchCondition SearchCondition object
+     * @param Query|QueryBuilder $query
      */
     public function createConditionGenerator($query, SearchCondition $searchCondition): DqlConditionGenerator
     {
@@ -54,10 +50,9 @@ class DoctrineOrmFactory
     /**
      * Creates a new CachedConditionGenerator instance for the ConditionGenerator.
      *
-     * @param DqlConditionGenerator  $conditionGenerator
-     * @param int|\DateInterval|null $ttl                Optional. The TTL value of this item. If no value is sent and
-     *                                                   the driver supports TTL then the library may set a default value
-     *                                                   for it or let the driver take care of that.
+     * @param int|\DateInterval|null $ttl Optional. The TTL value of this item. If no value is sent and
+     *                                    the driver supports TTL then the library may set a default value
+     *                                    for it or let the driver take care of that.
      */
     public function createCachedConditionGenerator(ConditionGenerator $conditionGenerator, $ttl = null): ConditionGenerator
     {

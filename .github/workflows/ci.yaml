@@ -10,6 +10,7 @@ env:
     ES_HTTP_PORT: '59200'
     ELASTICSEARCH_HOST: 'localhost'
     ELASTICSEARCH_PORT: '59200'
+    DB_HOST: 127.0.0.1
 
 jobs:
     test:
@@ -89,9 +90,8 @@ jobs:
                     SYMFONY_DEPRECATIONS_HELPER: weak
                 run: |
                     vendor/bin/phpunit --verbose
-                    vendor/bin/phpunit --verbose --configuration .github/phpunit/sqlite.xml
-                    vendor/bin/phpunit --verbose --configuration .github/phpunit/pgsql.xml
-                    vendor/bin/phpunit --verbose --configuration .github/phpunit/mysql.xml
+                    vendor/bin/phpunit --verbose --configuration phpunit/pgsql.xml
+                    vendor/bin/phpunit --verbose --configuration phpunit/mysql.xml
 
     lint:
         name: PHP-QA

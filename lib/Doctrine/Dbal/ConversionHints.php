@@ -14,10 +14,18 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\AbstractQueryPlatform;
+use Rollerworks\Component\Search\Value\ValueHolder;
 
 class ConversionHints
 {
+    public const CONTEXT_RANGE_LOWER_BOUND = 'range.lower_bound';
+    public const CONTEXT_RANGE_UPPER_BOUND = 'range.upper_bound';
+    public const CONTEXT_SIMPLE_VALUE = 'simple_value';
+    public const CONTEXT_COMPARISON = 'comparison';
+
     /**
      * @var QueryField
      */
@@ -29,12 +37,55 @@ class ConversionHints
     public $connection;
 
     /**
-     * @var int
+     * @var string
      */
-    public $conversionStrategy = 0;
+    public $column;
 
     /**
      * @var string
      */
-    public $column;
+    public $context;
+
+    /**
+     * @var mixed|ValueHolder
+     */
+    public $originalValue;
+
+    /**
+     * @var AbstractQueryPlatform
+     */
+    private $queryPlatform;
+
+    public function __construct(AbstractQueryPlatform $queryPlatform)
+    {
+        $this->queryPlatform = $queryPlatform;
+    }
+
+    /**
+     * Returns a parameter-name to reference a value.
+     */
+    public function createParamReferenceFor($value, Type $type = null): string
+    {
+        return $this->queryPlatform->createParamReferenceFor($value, $type);
+    }
+
+    /**
+     * Returns the value that is currently being processed (in context).
+     *
+     * The $this->originalValue might return a value-holder or actual
+     * processing value depending on the context.
+     */
+    public function getProcessingValue()
+    {
+        switch ($this->context) {
+            case self::CONTEXT_SIMPLE_VALUE:
+                return $this->originalValue;
+            case self::CONTEXT_COMPARISON:
+                return $this->originalValue->value;
+            case self::CONTEXT_RANGE_LOWER_BOUND:
+                return $this->originalValue->getLower();
+            case self::CONTEXT_RANGE_UPPER_BOUND:
+                return $this->originalValue->getUpper();
+        }
+    }
 }

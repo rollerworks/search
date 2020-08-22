@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
+use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
@@ -58,7 +60,17 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer IN(2, 5)))', $conditionGenerator->getWhereClause());
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((I.customer = :search_0 OR I.customer = :search_1)))',
+            [':search_0' => [2, Type::getType('integer')], ':search_1' => [5, Type::getType('integer')]]
+        );
+    }
+
+    private function assertGeneratedQueryEquals(ConditionGenerator $conditionGenerator, string $query, array $params): void
+    {
+        self::assertEquals($query, $conditionGenerator->getWhereClause());
+        self::assertEquals($params, $conditionGenerator->getParameters()->toArray());
     }
 
     public function testQueryWithPrepend()
@@ -72,7 +84,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('WHERE ((I.customer IN(2, 5)))', $conditionGenerator->getWhereClause('WHERE '));
+        $this->assertEquals(
+            'WHERE (((I.customer = :search_0 OR I.customer = :search_1)))',
+            $conditionGenerator->getWhereClause('WHERE ')
+        );
     }
 
     public function testEmptyQueryWithPrepend()
@@ -112,7 +127,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('WHERE ((I.status IN(1, 2))) AND ((I.customer IN(2, 5)))', $conditionGenerator->getWhereClause('WHERE '));
+        $this->assertEquals(
+            'WHERE (((I.status = :search_0 OR I.status = :search_1))) AND (((I.customer = :search_2 OR I.customer = :search_3)))',
+            $conditionGenerator->getWhereClause('WHERE ')
+        );
     }
 
     public function testEmptyQueryWithPrependAndPrimaryCond()
@@ -138,7 +156,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('WHERE ((I.status IN(1, 2)))', $conditionGenerator->getWhereClause('WHERE '));
+        $this->assertEquals('WHERE (((I.status = :search_0 OR I.status = :search_1)))', $conditionGenerator->getWhereClause('WHERE '));
     }
 
     public function testQueryWithMultipleFields()
@@ -156,7 +174,16 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer IN(2, 5)) AND (I.status IN(2, 5)))', $conditionGenerator->getWhereClause());
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((I.customer = :search_0 OR I.customer = :search_1)) AND ((I.status = :search_2 OR I.status = :search_3)))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+                ':search_2' => [2, Type::getType('integer')],
+                ':search_3' => [5, Type::getType('integer')],
+            ]
+        );
     }
 
     public function testQueryWithCombinedField()
@@ -169,10 +196,19 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         ->getSearchCondition();
 
         $conditionGenerator = $this->getConditionGenerator($condition);
-        $conditionGenerator->setField('customer#1', 'id');
-        $conditionGenerator->setField('customer#2', 'number2');
+        $conditionGenerator->setField('customer#1', 'id', null, 'integer');
+        $conditionGenerator->setField('customer#2', 'number2', null, 'integer');
 
-        $this->assertEquals('(((id IN(2, 5) OR number2 IN(2, 5))))', $conditionGenerator->getWhereClause());
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((id = :search_0 OR id = :search_1 OR number2 = :search_2 OR number2 = :search_3)))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+                ':search_2' => [2, Type::getType('integer')],
+                ':search_3' => [5, Type::getType('integer')],
+            ]
+        );
     }
 
     public function testQueryWithCombinedFieldAndCustomAlias()
@@ -185,10 +221,19 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         ->getSearchCondition();
 
         $conditionGenerator = $this->getConditionGenerator($condition);
-        $conditionGenerator->setField('customer#1', 'id');
+        $conditionGenerator->setField('customer#1', 'id', null, 'integer');
         $conditionGenerator->setField('customer#2', 'number2', 'C', 'string');
 
-        $this->assertEquals('(((id IN(2, 5) OR C.number2 IN(2, 5))))', $conditionGenerator->getWhereClause());
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((id = :search_0 OR id = :search_1 OR C.number2 = :search_2 OR C.number2 = :search_3)))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+                ':search_2' => [2, Type::getType('string')],
+                ':search_3' => [5, Type::getType('string')],
+            ]
+        );
     }
 
     public function testEmptyResult()
@@ -211,7 +256,14 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer NOT IN(2, 5)))', $conditionGenerator->getWhereClause());
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((I.customer <> :search_0 AND I.customer <> :search_1)))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+            ]
+        );
     }
 
     public function testIncludesAndExcludes()
@@ -225,7 +277,14 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer IN(2) AND I.customer NOT IN(5)))', $conditionGenerator->getWhereClause());
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '((I.customer = :search_0 AND I.customer <> :search_1))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+            ]
+        );
     }
 
     public function testRanges()
@@ -241,10 +300,20 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            '((((I.customer >= 2 AND I.customer <= 5) OR (I.customer >= 10 AND I.customer <= 20) OR '.
-            '(I.customer > 60 AND I.customer <= 70) OR (I.customer >= 100 AND I.customer < 150))))',
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '((((I.customer >= :search_0 AND I.customer <= :search_1) OR (I.customer >= :search_2 AND I.customer <= :search_3) OR '.
+            '(I.customer > :search_4 AND I.customer <= :search_5) OR (I.customer >= :search_6 AND I.customer < :search_7))))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+                ':search_2' => [10, Type::getType('integer')],
+                ':search_3' => [20, Type::getType('integer')],
+                ':search_4' => [60, Type::getType('integer')],
+                ':search_5' => [70, Type::getType('integer')],
+                ':search_6' => [100, Type::getType('integer')],
+                ':search_7' => [150, Type::getType('integer')],
+            ]
         );
     }
 
@@ -261,10 +330,21 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            '((((I.customer <= 2 OR I.customer >= 5) AND (I.customer <= 10 OR I.customer >= 20) AND '.
-            '(I.customer < 60 OR I.customer >= 70) AND (I.customer <= 100 OR I.customer > 150))))',
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '((((I.customer <= :search_0 OR I.customer >= :search_1) AND (I.customer <= :search_2 OR '.
+            'I.customer >= :search_3) AND (I.customer < :search_4 OR I.customer >= :search_5) AND '.
+            '(I.customer <= :search_6 OR I.customer > :search_7))))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+                ':search_2' => [10, Type::getType('integer')],
+                ':search_3' => [20, Type::getType('integer')],
+                ':search_4' => [60, Type::getType('integer')],
+                ':search_5' => [70, Type::getType('integer')],
+                ':search_6' => [100, Type::getType('integer')],
+                ':search_7' => [150, Type::getType('integer')],
+            ]
         );
     }
 
@@ -278,7 +358,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((I.customer > 2))', $conditionGenerator->getWhereClause());
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '((I.customer > :search_0))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+            ]
+        );
     }
 
     public function testMultipleComparisons()
@@ -292,9 +378,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            '(((I.customer > 2 AND I.customer < 10)))',
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((I.customer > :search_0 AND I.customer < :search_1)))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [10, Type::getType('integer')],
+            ]
         );
     }
 
@@ -319,9 +409,15 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            '((((I.customer IN(20) OR (I.customer > 2 AND I.customer < 10)))) OR ((I.customer > 30)))',
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '((((I.customer = :search_0 OR (I.customer > :search_1 AND I.customer < :search_2)))) OR ((I.customer > :search_3)))',
+            [
+                ':search_0' => [20, Type::getType('integer')],
+                ':search_1' => [2, Type::getType('integer')],
+                ':search_2' => [10, Type::getType('integer')],
+                ':search_3' => [30, Type::getType('integer')],
+            ]
         );
     }
 
@@ -336,9 +432,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            '((I.customer <> 2 AND I.customer <> 5))',
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '((I.customer <> :search_0 AND I.customer <> :search_1))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+            ]
         );
     }
 
@@ -355,9 +455,15 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            '(((I.customer > 30 AND I.customer < 50) AND I.customer <> 35 AND I.customer <> 45))',
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((I.customer > :search_0 AND I.customer < :search_1) AND I.customer <> :search_2 AND I.customer <> :search_3))',
+            [
+                ':search_0' => [30, Type::getType('integer')],
+                ':search_1' => [50, Type::getType('integer')],
+                ':search_2' => [35, Type::getType('integer')],
+                ':search_3' => [45, Type::getType('integer')],
+            ]
         );
     }
 
@@ -377,11 +483,18 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            "(((C.name LIKE '%foo' ESCAPE '\\' OR C.name LIKE '%fo\\'o' ESCAPE '\\' OR C.name = 'My name' OR ".
-            "LOWER(C.name) = LOWER('Spider')) AND (LOWER(C.name) NOT LIKE LOWER('bar%') ESCAPE '\\' AND C.name <> 'Last' ".
-            "AND LOWER(C.name) <> LOWER('Piggy'))))",
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            "(((C.name LIKE '%' || :search_0 OR C.name LIKE '%' || :search_1 OR C.name = :search_2 OR LOWER(C.name) = LOWER(:search_3)) AND (LOWER(C.name) NOT LIKE LOWER(:search_4 || '%') AND C.name <> :search_5 AND LOWER(C.name) <> LOWER(:search_6))))",
+            [
+                ':search_0' => ['foo', Type::getType('text')],
+                ':search_1' => ['fo\\\'o', Type::getType('text')],
+                ':search_2' => ['My name', Type::getType('text')],
+                ':search_3' => ['Spider', Type::getType('text')],
+                ':search_4' => ['bar', Type::getType('text')],
+                ':search_5' => ['Last', Type::getType('text')],
+                ':search_6' => ['Piggy', Type::getType('text')],
+            ]
         );
     }
 
@@ -398,9 +511,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            '(((I.customer IN(2))) OR ((I.customer IN(3))))',
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((I.customer = :search_0)) OR ((I.customer = :search_1)))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [3, Type::getType('integer')],
+            ]
         );
     }
 
@@ -419,9 +536,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            "(((I.customer IN(2))) AND (((C.name LIKE '%foo' ESCAPE '\\'))))",
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            "(((I.customer = :search_0)) AND (((C.name LIKE '%' || :search_1))))",
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => ['foo', Type::getType('text')],
+            ]
         );
     }
 
@@ -438,9 +559,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            "((I.customer IN(2)) OR (C.name LIKE '%foo' ESCAPE '\\'))",
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            "((I.customer = :search_0) OR (C.name LIKE '%' || :search_1))",
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => ['foo', Type::getType('text')],
+            ]
         );
     }
 
@@ -461,9 +586,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
-            "((((I.customer IN(2)) OR (C.name LIKE '%foo' ESCAPE '\\'))))",
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            "((((I.customer = :search_0) OR (C.name LIKE '%' || :search_1))))",
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => ['foo', Type::getType('text')],
+            ]
         );
     }
 
@@ -495,7 +624,15 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         ->getSearchCondition();
 
         $conditionGenerator = $this->getConditionGenerator($condition);
-        self::assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $conditionGenerator->getWhereClause());
+
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((CAST(I.customer AS customer_type) = :search_0 OR CAST(I.customer AS customer_type) = :search_1)))',
+            [
+                ':search_0' => [2, Type::getType('integer')],
+                ':search_1' => [5, Type::getType('integer')],
+            ]
+        );
     }
 
     public function testValueConversion()
@@ -504,9 +641,11 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertValue')
-            ->willReturnCallback(function ($value, array $options) {
+            ->willReturnCallback(function ($value, array $options, ConversionHints $hints) {
                 self::assertArrayHasKey('grouping', $options);
                 self::assertTrue($options['grouping']);
+
+                $value = $hints->createParamReferenceFor($value);
 
                 return "get_customer_type($value)";
             })
@@ -523,28 +662,20 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         ->getSearchCondition();
 
         $conditionGenerator = $this->getConditionGenerator($condition);
-        self::assertEquals('(((I.customer = get_customer_type(2) OR I.customer = get_customer_type(5))))', $conditionGenerator->getWhereClause());
+
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((I.customer = get_customer_type(:search_0) OR I.customer = get_customer_type(:search_1))))',
+            [
+                ':search_0' => [2, null],
+                ':search_1' => [5, null],
+            ]
+        );
     }
 
     public function testConversionStrategyValue()
     {
-        $converter = $this->createMock(ValueConversionStrategy::class);
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('getConversionStrategy')
-            ->willReturnCallback(function ($value) {
-                if (!$value instanceof \DateTime && !\is_int($value)) {
-                    throw new \InvalidArgumentException('Only integer/string and DateTime are accepted.');
-                }
-
-                if ($value instanceof \DateTime) {
-                    return 2;
-                }
-
-                return 1;
-            })
-        ;
-
+        $converter = $this->createMock(ValueConversion::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertValue')
@@ -553,14 +684,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 self::assertEquals('dd-MM-yy', $passedOptions['pattern']);
 
                 if ($value instanceof \DateTime) {
-                    self::assertEquals(2, $hints->conversionStrategy);
-
-                    return 'CAST('.$hints->connection->quote($value->format('Y-m-d')).' AS AGE)';
+                    return 'CAST('.$hints->createParamReferenceFor($value->format('Y-m-d'), Type::getType('string')).' AS AGE)';
                 }
 
-                self::assertEquals(1, $hints->conversionStrategy);
-
-                return $value;
+                return $hints->createParamReferenceFor($value, Type::getType('integer'));
             })
         ;
 
@@ -575,40 +702,27 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         ->getSearchCondition();
 
         $conditionGenerator = $this->getConditionGenerator($condition);
-        self::assertEquals(
-            "(((C.birthday = 18 OR C.birthday = CAST('2001-01-15' AS AGE))))",
-            $conditionGenerator->getWhereClause()
+
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((C.birthday = :search_0 OR C.birthday = CAST(:search_1 AS AGE))))',
+            [
+                ':search_0' => [18, Type::getType('integer')],
+                ':search_1' => ['2001-01-15', Type::getType('string')],
+            ]
         );
     }
 
     public function testConversionStrategyColumn()
     {
-        $converter = $this->createMock(ColumnConversionStrategy::class);
-        $converter
-            ->expects($this->atLeastOnce())
-            ->method('getConversionStrategy')
-            ->willReturnCallback(function ($value) {
-                if (!\is_string($value) && !\is_int($value)) {
-                    throw new \InvalidArgumentException('Only integer/string is accepted.');
-                }
-
-                if (\is_string($value)) {
-                    return 2;
-                }
-
-                return 1;
-            })
-        ;
-
+        $converter = $this->createMock(ColumnConversion::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('convertColumn')
             ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
-                if (2 === $hints->conversionStrategy) {
+                if (\is_int($hints->originalValue)) {
                     return "search_conversion_age($column)";
                 }
-
-                self::assertEquals(1, $hints->conversionStrategy);
 
                 return $column;
             })
@@ -627,9 +741,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         $conditionGenerator = $this->getConditionGenerator($condition);
         $conditionGenerator->setField('customer_birthday', 'birthday', 'C', 'string');
 
-        self::assertEquals(
-            "(((C.birthday = 18 OR search_conversion_age(C.birthday) = '2001-01-15')))",
-            $conditionGenerator->getWhereClause()
+        $this->assertGeneratedQueryEquals(
+            $conditionGenerator,
+            '(((search_conversion_age(C.birthday) = :search_0 OR C.birthday = :search_1)))',
+            [
+                ':search_0' => [18, Type::getType('string')],
+                ':search_1' => ['2001-01-15', Type::getType('string')],
+            ]
         );
     }
 
@@ -665,6 +783,6 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         ->getSearchCondition();
 
         $conditionGenerator = $this->getConditionGenerator($condition);
-        self::assertEquals('((CAST(I.customer AS customer_type) IN(2, 5)))', $conditionGenerator->getWhereClause());
+        self::assertEquals('(((CAST(I.customer AS customer_type) = :search_0 OR CAST(I.customer AS customer_type) = :search_1)))', $conditionGenerator->getWhereClause());
     }
 }

@@ -54,10 +54,6 @@ final class SearchExtension implements QueryCollectionExtensionInterface
             return;
         }
 
-        if (!method_exists($queryBuilder, 'setHint')) {
-            return;
-        }
-
         $context = $request->attributes->get('_api_search_context');
         $configuration = $request->attributes->get('_api_search_config');
         $configPath = "{$resourceClass}#attributes[rollerworks_search][contexts][{$context}][doctrine_orm]";

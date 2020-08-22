@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query as DqlQuery;
 use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Rollerworks\Component\Search\Doctrine\Orm\QueryPlatform\DqlQueryPlatform;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\SearchCondition;
 
@@ -34,68 +34,99 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * Keep the following in mind when using conversions.
  *
- *  * Conversions are performed per search field and must be stateless,
- *    they receive the db-type and connection information for the conversion process.
- *  * Conversions apply at the SQL level, meaning they must be platform specific.
- *  * Conversion results must be properly escaped to prevent SQL injections.
- *  * Conversions require the correct query-hint to be set.
+ *  * Conversions are performed per search field and must be stateless, they receive the db-type
+ *    and connection information for the conversion process.
+ *  * Unlike DBAL conversions the conversion must be DQL (not SQL)
+ *  * Values must be registered as parameters (using the ConversionHints)
+ *  * Conversion results must be properly escaped to prevent DQL injections.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
  * @final
  */
-class DqlConditionGenerator extends AbstractConditionGenerator
+class DqlConditionGenerator implements ConditionGenerator
 {
+    /**
+     * @var SearchCondition
+     */
+    private $searchCondition;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * @var string
+     */
+    private $whereClause;
+
+    /**
+     * @var FieldConfigBuilder
+     */
+    private $fieldsConfig;
+
+    /**
+     * @var ArrayCollection
+     */
+    private $parameters;
+
     /**
      * @var DqlQuery|QueryBuilder
      */
     private $query;
 
-    /**
-     * @var array
-     */
-    private $parameters = [];
-
-    /**
-     * @var QueryPlatform
-     */
-    private $nativePlatform;
-
-    /**
-     * @param DqlQuery|QueryBuilder $query Doctrine ORM Query
-     */
     public function __construct($query, SearchCondition $searchCondition)
     {
-        if ($query instanceof QueryBuilder) {
-            if (!method_exists($query, 'setHint')) {
-                throw new InvalidArgumentException(sprintf('An "%s" instance was provided but method setHint is not implemented in "%s".', QueryBuilder::class, \get_class($query)));
-            }
-        } elseif (!$query instanceof DqlQuery) {
-            throw new UnexpectedTypeException($query, [DqlQuery::class, QueryBuilder::class.' (with QueryHint support)']);
+        if (!$query instanceof DqlQuery && !$query instanceof QueryBuilder) {
+            throw new UnexpectedTypeException($query, [DqlQuery::class, QueryBuilder::class]);
         }
 
-        parent::__construct($searchCondition, $query->getEntityManager());
-
+        $this->entityManager = $query->getEntityManager();
+        $this->fieldsConfig = new FieldConfigBuilder($this->entityManager, $searchCondition->getFieldSet());
+        $this->searchCondition = $searchCondition;
+        $this->parameters = new ArrayCollection();
         $this->query = $query;
     }
 
+    public function setDefaultEntity(string $entity, string $alias)
+    {
+        $this->guardNotGenerated();
+        $this->fieldsConfig->setDefaultEntity($entity, $alias);
+
+        return $this;
+    }
+
     /**
-     * {@inheritdoc}
-     *
-     * Note: For SQL conversions to work properly you need to set the required
-     * hints using getQueryHintName() and getQueryHintValue().
+     * @throws BadMethodCallException When the where-clause is already generated
      */
+    protected function guardNotGenerated()
+    {
+        if (null !== $this->whereClause) {
+            throw new BadMethodCallException(
+                'ConditionGenerator configuration methods cannot be accessed anymore once the where-clause is generated.'
+            );
+        }
+    }
+
+    public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null)
+    {
+        $this->guardNotGenerated();
+        $this->fieldsConfig->setField($fieldName, $property, $alias, $entity, $dbType);
+
+        return $this;
+    }
+
     public function getWhereClause(string $prependQuery = ''): string
     {
         if (null === $this->whereClause) {
             $fields = $this->fieldsConfig->getFields();
-            $platform = new DqlQueryPlatform($this->entityManager);
             $connection = $this->entityManager->getConnection();
+            $platform = new DqlQueryPlatform($connection);
             $queryGenerator = new QueryGenerator($connection, $platform, $fields);
 
-            $this->nativePlatform = $this->getQueryPlatform($connection);
             $this->whereClause = $queryGenerator->getWhereClause($this->searchCondition);
-            $this->parameters = $platform->getEmbeddedValues();
+            $this->parameters = $platform->getParameters();
         }
 
         if ('' !== $this->whereClause) {
@@ -119,47 +150,46 @@ class DqlConditionGenerator extends AbstractConditionGenerator
             $this->query->setDQL($this->query->getDQL().$whereCase);
         }
 
-        $this->query->setHint($this->getQueryHintName(), $this->getQueryHintValue());
+        foreach ($this->parameters as $name => [$value, $type]) {
+            $this->query->setParameter($name, $value, $type);
+        }
 
         return $this;
     }
 
-    /**
-     * Returns the Query-hint name for the query object.
-     *
-     * The Query-hint is used for conversions.
-     */
-    public function getQueryHintName(): string
-    {
-        return 'rws_conversion_hint';
-    }
-
-    /**
-     * Returns the Query-hint value for the query object.
-     *
-     * The Query hint is used for conversions.
-     */
-    public function getQueryHintValue(): SqlConversionInfo
-    {
-        if (null === $this->whereClause) {
-            throw new BadMethodCallException(
-                'Unable to get query-hint value for ConditionGenerator. Call getWhereClause() before calling this method.'
-            );
-        }
-
-        return new SqlConversionInfo($this->nativePlatform, $this->parameters, $this->fieldsConfig->getFieldsForHint());
-    }
-
-    /**
-     * @internal
-     */
-    public function getParameters(): array
+    public function getParameters(): ArrayCollection
     {
         return $this->parameters;
     }
 
     /**
      * @internal
+     */
+    public function getSearchCondition(): SearchCondition
+    {
+        return $this->searchCondition;
+    }
+
+    /**
+     * @internal
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @internal
+     */
+    public function getFieldsConfig(): FieldConfigBuilder
+    {
+        return $this->fieldsConfig;
+    }
+
+    /**
+     * @internal
+     *
+     * @return DqlQuery|QueryBuilder
      */
     public function getQuery()
     {

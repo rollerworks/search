@@ -40,7 +40,7 @@ Querying the database
 As you already know RollerworksSearch uses a ``SearchFactory`` for bootstrapping
 the search system. This factory however doesn't know about integration extensions.
 
-To Query a database with Doctrine DBAL extension, you use the
+To Query a database with the Doctrine DBAL extension, you use the
 :class:`Rollerworks\\Component\\Search\\Doctrine\\Dbal\\DoctrineDbalFactory`.
 
 .. note::
@@ -80,7 +80,7 @@ Using the ConditionGenerator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A ConditionGenerator generates an SQL Where-clause for a relational database
-like PostgreSQL, MySQL, MSSQL, SQLite or Oracle OCI.
+like PostgreSQL, MySQL, MSSQL, or Oracle OCI.
 
 .. caution::
 
@@ -88,7 +88,7 @@ like PostgreSQL, MySQL, MSSQL, SQLite or Oracle OCI.
     So reusing a ConditionGenerator is not possible.
 
     Secondly, the generated query is only valid for the give Database driver.
-    Meaning that when you generated a query with the SQLite database driver
+    Meaning that when you generated a query with the PostgreSQL database driver
     this query will not work on MySQL.
 
 First create a ``ConditionGenerator``::
@@ -199,7 +199,9 @@ Generating the Condition
     // Add the Where-clause
     $query .= $whereClause;
 
-    $statement = $connection->query($query);
+    $statement = $connection->prepare($query);
+    $conditionGenerator->bindParameters($statement);
+    $statement->execute();
 
     // Get all the records
     // See http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/data-retrieval-and-manipulation.html#data-retrieval
@@ -223,6 +225,7 @@ Generating the Condition
         $query .= $whereClause;
 
         $statement = $connection->prepare($query);
+        $conditionGenerator->bindParameters($statement);
         $statement->bindValue(1, $id);
         $statement->execute();
 
@@ -255,6 +258,7 @@ with only the first and/or last name.
     $query .= $whereClause;
 
     $statement = $connection->prepare($query);
+    $conditionGenerator->bindParameters($statement);
     $statement->execute();
 
 Caching the Where-clause
@@ -263,12 +267,12 @@ Caching the Where-clause
 Generating a Where-clause may require quite some time and system resources,
 which is why it's recommended to cache the generated query for future usage.
 
-Fortunately the factory allows to create a CachedConditionGenerator
+Fortunately the factory allows to create a ``CachedConditionGenerator``
 which can handle caching of the ConditionGenerator for you.
 
 Plus, usage is no different then using the ``SqlConditionGenerator``,
-the CachedConditionGenerator decorates the SqlConditionGenerator and can
-be configured very similar::
+the ``CachedConditionGenerator`` decorates the ``SqlConditionGenerator``
+and can be configured very similar::
 
     // ...
 
@@ -288,7 +292,8 @@ be configured very similar::
     // Add the Where-clause
     $query .= $whereClause;
 
-    $statement = $connection->query($query);
+    $statement = $connection->prepare($query);
+    $cacheConditionGenerator->bindParameters($statement);
 
 The cache-key is a hashed (sha256) combination of the SearchCondition
 (root ValuesGroup and FieldSet set-name) and configured field mappings.

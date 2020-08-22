@@ -13,7 +13,11 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\Parameter;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
@@ -37,16 +41,16 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
     protected $cachedConditionGenerator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|CacheInterface
+     * @var MockObject|CacheInterface
      */
     protected $cacheDriver;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|DqlConditionGenerator
+     * @var DqlConditionGenerator
      */
     protected $conditionGenerator;
 
-    public const CACHE_KEY = '8dbca2a85403b7afbece9461df29c567cf32dfda2c10a75b5aff4d6ac44e4c84';
+    public const CACHE_KEY = 'fe836bd05eeafce1d549fcd8451f7190277f1b995420bead723e98ac721f2089';
 
     public function testGetWhereClauseNoCache()
     {
@@ -63,9 +67,20 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('set')
-            ->with(self::CACHE_KEY, ['((C.id IN(2, 5)))', []], 60);
+            ->with(
+                self::CACHE_KEY,
+                [
+                    '(((C.id = :search_0 OR C.id = :search_1)))',
+                    [
+                        ':search_0' => [2, 'integer'],
+                        ':search_1' => [5, 'integer'],
+                    ],
+                ],
+                60
+            );
 
-        self::assertEquals('WHERE ((C.id IN(2, 5)))', $this->cachedConditionGenerator->getWhereClause('WHERE '));
+        self::assertEquals('(((C.id = :search_0 OR C.id = :search_1)))', $this->cachedConditionGenerator->getWhereClause());
+        self::assertEquals(new ArrayCollection([':search_0' => [2, Type::getType('integer')], ':search_1' => [5, Type::getType('integer')]]), $this->cachedConditionGenerator->getParameters());
     }
 
     public function testGetWhereClauseWithCache()
@@ -78,14 +93,14 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->expects(self::once())
             ->method('get')
             ->with(self::CACHE_KEY)
-            ->willReturn(["me = 'foo'", ['1' => 'he']]);
+            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
 
         $this->cacheDriver
             ->expects(self::never())
             ->method('set');
 
         self::assertEquals("me = 'foo'", $this->cachedConditionGenerator->getWhereClause());
-        self::assertEquals(['1' => 'he'], $this->cachedConditionGenerator->getQueryHintValue()->parameters);
+        self::assertEquals(new ArrayCollection([':search' => [1, Type::getType('integer')]]), $this->cachedConditionGenerator->getParameters());
     }
 
     public function testGetWhereWithPrepend()
@@ -98,13 +113,14 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->expects(self::once())
             ->method('get')
             ->with(self::CACHE_KEY)
-            ->willReturn(["me = 'foo'", []]);
+            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
 
         $this->cacheDriver
             ->expects(self::never())
             ->method('set');
 
-        self::assertEquals("WHERE me = 'foo'", $this->cachedConditionGenerator->getWhereClause('WHERE '));
+        self::assertEquals("me = 'foo'", $this->cachedConditionGenerator->getWhereClause());
+        self::assertEquals(new ArrayCollection([':search' => [1, Type::getType('integer')]]), $this->cachedConditionGenerator->getParameters());
     }
 
     public function testGetEmptyWhereWithPrepend()
@@ -132,7 +148,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('a9c044cceecfd09b772d1190e8c2cc32b11c59d08b7d20b4b4459bab8f9b4bd6')
+            ->with('f8813fdfdea9d74adea380e30645c5e2705d3b4114dc5fbf252e63e583ea598d')
             ->willReturn(null);
 
         $this->cacheDriver
@@ -140,6 +156,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->method('set');
 
         self::assertEquals('', $this->cachedConditionGenerator->getWhereClause('WHERE '));
+        self::assertEquals(new ArrayCollection(), $this->cachedConditionGenerator->getParameters());
     }
 
     public function testUpdateQueryWithPrepend()
@@ -147,11 +164,12 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
         $whereCase = $this->cachedConditionGenerator->getWhereClause();
         $this->cachedConditionGenerator->updateQuery();
 
-        $this->assertEquals('((C.id IN(2, 5)))', $whereCase);
+        $this->assertEquals('(((C.id = :search_0 OR C.id = :search_1)))', $whereCase);
         $this->assertEquals(
-            'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ((C.id IN(2, 5)))',
+            'SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE (((C.id = :search_0 OR C.id = :search_1)))',
             $this->query->getDQL()
         );
+        self::assertEquals(new ArrayCollection([new Parameter('search_0', 2, Type::getType('integer')), new Parameter('search_1', 5, Type::getType('integer'))]), $this->conditionGenerator->getQuery()->getParameters());
     }
 
     public function testUpdateQueryWithNoResult()
@@ -179,7 +197,7 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('a9c044cceecfd09b772d1190e8c2cc32b11c59d08b7d20b4b4459bab8f9b4bd6')
+            ->with('f8813fdfdea9d74adea380e30645c5e2705d3b4114dc5fbf252e63e583ea598d')
             ->willReturn(null);
 
         $this->cacheDriver
@@ -201,8 +219,8 @@ class CachedDqlConditionGeneratorTest extends OrmTestCase
     public function testGetWhereClauseWithCacheAndPrimaryCond()
     {
         $cacheDriverProphecy = $this->prophesize(CacheInterface::class);
-        $cacheDriverProphecy->get('41329a2e34ac65573fb097e858a5b12685b0327e3e55b5bb48902e4731b42afa')->willReturn(["me = 'foo'", ['1' => 'he']]);
-        $cacheDriverProphecy->get('a91ba1ea3289d6d2ad5caa7ef160c78fa52f0e20c305cc90c4d3cea8b7938cb4')->willReturn(["you = 'me' AND me = 'foo'", ['1' => 'he']]);
+        $cacheDriverProphecy->get('7fbf724b9ed73837313684319ec3d5772a53c6c0373dbf90a880e383900e5e07')->willReturn(["me = 'foo'", ['1' => 'he']]);
+        $cacheDriverProphecy->get('044d0466ebd4264c4e33c64a0e341df225657353316869049ab3c24cbba86ffa')->willReturn(["you = 'me' AND me = 'foo'", ['1' => 'he']]);
         $cacheDriver = $cacheDriverProphecy->reveal();
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())

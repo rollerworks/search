@@ -14,93 +14,41 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Orm\QueryPlatform;
 
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\EntityManagerInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
-use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\AbstractQueryPlatform;
-use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
+use Rollerworks\Component\Search\Value\PatternMatch;
 
 final class DqlQueryPlatform extends AbstractQueryPlatform
 {
-    /**
-     * @var array
-     */
-    private $embeddedValues = [];
-
-    /**
-     * @var int
-     */
-    private $currentEmbeddedValuesIndex = 0;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function getPatternMatcher(PatternMatch $patternMatch, string $column): string
     {
-        parent::__construct($entityManager->getConnection());
-    }
+        if (\in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {
+            $value = $this->createParamReferenceFor($patternMatch->getValue(), Type::getType('text'));
 
-    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0, string $column = null): string
-    {
-        $mappingName = $mappingConfig->mappingName;
+            if ($patternMatch->isCaseInsensitive()) {
+                $column = "LOWER($column)";
+                $value = "LOWER($value)";
+            }
 
-        if (isset($this->fieldsMappingCache[$mappingName][$strategy])) {
-            return $this->fieldsMappingCache[$mappingName][$strategy];
+            return $column.($patternMatch->isExclusive() ? ' <>' : ' =')." $value";
         }
 
-        if (null === $column) {
-            $column = $mappingConfig->column;
+        $patternMap = [
+            PatternMatch::PATTERN_STARTS_WITH => "CONCAT('%%', %s)",
+            PatternMatch::PATTERN_NOT_STARTS_WITH => "CONCAT('%%', %s)",
+            PatternMatch::PATTERN_CONTAINS => "CONCAT('%%', %s, '%%')",
+            PatternMatch::PATTERN_NOT_CONTAINS => "CONCAT('%%', %s, '%%')",
+            PatternMatch::PATTERN_ENDS_WITH => "CONCAT(%s, '%%')",
+            PatternMatch::PATTERN_NOT_ENDS_WITH => "CONCAT(%s, '%%')",
+        ];
+
+        $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
+        $value = sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, Type::getType('text')));
+
+        if ($patternMatch->isCaseInsensitive()) {
+            $column = "LOWER($column)";
+            $value = "LOWER($value)";
         }
 
-        $this->fieldsMappingCache[$mappingName][$strategy] = $column;
-
-        if ($mappingConfig->columnConversion instanceof ColumnConversion) {
-            $this->fieldsMappingCache[$mappingName][$strategy] = sprintf(
-                "RW_SEARCH_FIELD_CONVERSION('%s', %s, %d)",
-                $mappingName,
-                $column,
-                $strategy
-            );
-        }
-
-        return $this->fieldsMappingCache[$mappingName][$strategy];
-    }
-
-    /**
-     * @return mixed[]
-     *
-     * @internal
-     */
-    public function getEmbeddedValues(): array
-    {
-        return $this->embeddedValues;
-    }
-
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
-    {
-        if ($mappingConfig->valueConversion instanceof ValueConversion) {
-            $this->embeddedValues[++$this->currentEmbeddedValuesIndex] = $value;
-
-            return sprintf(
-                "RW_SEARCH_VALUE_CONVERSION('%s', %s, %s, %s)",
-                $mappingConfig->mappingName,
-                $column,
-                $this->currentEmbeddedValuesIndex,
-                $strategy
-            );
-        }
-
-        return $this->quoteValue(
-            $mappingConfig->dbType->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
-            $mappingConfig->dbType
-        );
-    }
-
-    protected function quoteValue($value, Type $type): string
-    {
-        if (\is_bool($value)) {
-            return $value ? 'true' : 'false';
-        } elseif (is_scalar($value) && ctype_digit((string) $value)) {
-            return (string) $value;
-        }
-
-        return "'".str_replace("'", "''", $value)."'";
+        return $column.($patternMatch->isExclusive() ? ' NOT' : '')." LIKE $value";
     }
 }

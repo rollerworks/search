@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\DBAL\Types\Type as DbType;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
-use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
@@ -27,7 +26,7 @@ use Rollerworks\Component\Search\Field\FieldConfig;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class QueryField implements \Serializable
+class QueryField implements \Serializable
 {
     /**
      * @var string
@@ -50,19 +49,14 @@ final class QueryField implements \Serializable
     public $column;
 
     /**
-     * @var ColumnConversion|StrategySupportedConversion|null
+     * @var ColumnConversion|null
      */
     public $columnConversion;
 
     /**
-     * @var ValueConversion|StrategySupportedConversion|null
+     * @var ValueConversion|null
      */
     public $valueConversion;
-
-    /**
-     * @var bool
-     */
-    public $strategyEnabled;
 
     /**
      * @var string
@@ -84,21 +78,7 @@ final class QueryField implements \Serializable
         $this->column = ($alias ? $alias.'.' : '').$column;
         $this->dbType = $dbType;
 
-        $converter = $fieldConfig->getOption('doctrine_dbal_conversion');
-
-        if ($converter instanceof \Closure) {
-            $converter = $converter();
-        }
-
-        if ($converter instanceof ColumnConversion) {
-            $this->columnConversion = $converter;
-        }
-
-        if ($converter instanceof ValueConversion) {
-            $this->valueConversion = $converter;
-        }
-
-        $this->strategyEnabled = $converter instanceof StrategySupportedConversion;
+        $this->initConversions($fieldConfig);
     }
 
     public function serialize()
@@ -115,5 +95,22 @@ final class QueryField implements \Serializable
     public function unserialize($serialized)
     {
         // noop
+    }
+
+    protected function initConversions(FieldConfig $fieldConfig): void
+    {
+        $converter = $fieldConfig->getOption('doctrine_dbal_conversion');
+
+        if ($converter instanceof \Closure) {
+            $converter = $converter();
+        }
+
+        if ($converter instanceof ColumnConversion) {
+            $this->columnConversion = $converter;
+        }
+
+        if ($converter instanceof ValueConversion) {
+            $this->valueConversion = $converter;
+        }
     }
 }

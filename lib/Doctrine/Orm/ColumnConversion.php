@@ -11,11 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Dbal;
+namespace Rollerworks\Component\Search\Doctrine\Orm;
+
+use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 
 /**
  * A ColumnConversion allows to wrap the query's column in a custom
- * SQL statement (as-is).
+ * DQL statement (as-is).
  *
  * This interface can be combined with the ValueConversion interface.
  *
@@ -24,10 +26,7 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 interface ColumnConversion
 {
     /**
-     * Return the $column wrapped inside an SQL statement like: MY_FUNCTION(column).
-     *
-     * The returned result must a be a platform specific SQL statement
-     * that can be used as a column in query.
+     * Return the $column wrapped inside an DQL statement like: MY_FUNCTION(column).
      *
      * @param string          $column  The column name and table alias, eg. i.id
      * @param array           $options Options of the Field configuration

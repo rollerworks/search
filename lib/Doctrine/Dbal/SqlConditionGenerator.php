@@ -13,10 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Statement;
 use Doctrine\DBAL\Types\Type as MappingType;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
+use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\AbstractQueryPlatform;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\SqlQueryPlatform;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\FieldSet;
@@ -67,11 +70,17 @@ final class SqlConditionGenerator implements ConditionGenerator
      */
     private $connection;
 
+    /**
+     * @var ArrayCollection
+     */
+    private $parameters;
+
     public function __construct(Connection $connection, SearchCondition $searchCondition)
     {
         $this->searchCondition = $searchCondition;
         $this->fieldSet = $searchCondition->getFieldSet();
         $this->connection = $connection;
+        $this->parameters = new ArrayCollection();
     }
 
     public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string'): self
@@ -85,7 +94,7 @@ final class SqlConditionGenerator implements ConditionGenerator
         $mappingIdx = null;
 
         if (false !== strpos($fieldName, '#')) {
-            list($fieldName, $mappingIdx) = explode('#', $fieldName, 2);
+            [$fieldName, $mappingIdx] = explode('#', $fieldName, 2);
             unset($this->fields[$fieldName][null]);
         } else {
             $this->fields[$fieldName] = [];
@@ -105,9 +114,10 @@ final class SqlConditionGenerator implements ConditionGenerator
     public function getWhereClause(string $prependQuery = ''): string
     {
         if (null === $this->whereClause) {
-            $this->whereClause = (new QueryGenerator(
-                $this->connection, $this->getQueryPlatform(), $this->fields
-            ))->getWhereClause($this->searchCondition);
+            $queryGenerator = new QueryGenerator($this->connection, $this->getQueryPlatform(), $this->fields);
+
+            $this->whereClause = $queryGenerator->getWhereClause($this->searchCondition);
+            $this->parameters = $queryGenerator->getParameters();
         }
 
         if ('' !== $this->whereClause) {
@@ -115,6 +125,18 @@ final class SqlConditionGenerator implements ConditionGenerator
         }
 
         return '';
+    }
+
+    public function bindParameters(Statement $statement): void
+    {
+        foreach ($this->parameters as $name => [$value, $type]) {
+            $statement->bindValue($name, $value, $type);
+        }
+    }
+
+    public function getParameters(): ArrayCollection
+    {
+        return $this->parameters;
     }
 
     public function getFieldsMapping(): array
@@ -127,7 +149,7 @@ final class SqlConditionGenerator implements ConditionGenerator
         return $this->searchCondition;
     }
 
-    private function getQueryPlatform(): QueryPlatform
+    private function getQueryPlatform(): AbstractQueryPlatform
     {
         $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';

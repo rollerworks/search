@@ -22,10 +22,16 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Psr\SimpleCache\CacheInterface;
-use Rollerworks\Component\Search\Doctrine\Orm\AbstractConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Orm\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
-use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion;
-use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\AgeFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CountChildrenFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\MoneyCastFunction;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\BirthdayTypeExtension;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\ChildCountType;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\FieldTypeExtension;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\MoneyTypeExtension;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -68,18 +74,16 @@ abstract class OrmTestCase extends DbalTestCase
 
         if (!isset(self::$sharedConn)) {
             $config = Setup::createAnnotationMetadataConfiguration([__DIR__.'/Fixtures/Entity'], true, null, null, false);
-            $config->addCustomStringFunction(
-                'RW_SEARCH_FIELD_CONVERSION',
-                SqlFieldConversion::class
-            );
-
-            $config->addCustomStringFunction(
-                'RW_SEARCH_VALUE_CONVERSION',
-                SqlValueConversion::class
-            );
 
             self::$sharedConn = TestUtil::getConnection();
             self::$sharedEm = EntityManager::create(self::$sharedConn, $config);
+
+            $emConfig = self::$sharedEm->getConfiguration();
+
+            $emConfig->addCustomStringFunction('SEARCH_CONVERSION_CAST', CastFunction::class);
+            $emConfig->addCustomNumericFunction('SEARCH_CONVERSION_AGE', AgeFunction::class);
+            $emConfig->addCustomNumericFunction('SEARCH_COUNT_CHILDREN', CountChildrenFunction::class);
+            $emConfig->addCustomNumericFunction('SEARCH_MONEY_AS_NUMERIC', MoneyCastFunction::class);
 
             $schemaTool = new SchemaTool(self::$sharedEm);
             $schemaTool->dropDatabase();
@@ -122,6 +126,16 @@ abstract class OrmTestCase extends DbalTestCase
         return new DoctrineOrmFactory($this->createMock(CacheInterface::class));
     }
 
+    protected function getTypeExtensions(): array
+    {
+        return [
+            new BirthdayTypeExtension(),
+            new ChildCountType(),
+            new FieldTypeExtension(),
+            new MoneyTypeExtension(),
+        ];
+    }
+
     /**
      * @return SchemaRecord[]
      */
@@ -142,7 +156,7 @@ abstract class OrmTestCase extends DbalTestCase
     /**
      * Configure fields of the ConditionGenerator.
      */
-    protected function configureConditionGenerator(AbstractConditionGenerator $conditionGenerator)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
     }
 

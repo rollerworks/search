@@ -21,9 +21,9 @@
     ],
     "require": {
         "php": "^7.1",
-        "doctrine/dbal": "^2.5.5",
+        "doctrine/dbal": "^2.8",
         "psr/simple-cache": "^1.0.0",
-        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA13"
+        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA22"
     },
     "require-dev": {
         "moneyphp/money": "^3.0.7",

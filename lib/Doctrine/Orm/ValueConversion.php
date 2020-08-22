@@ -11,21 +11,25 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Doctrine\Dbal;
+namespace Rollerworks\Component\Search\Doctrine\Orm;
+
+use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 
 /**
  * A ValueConversion allows to convert the value "model" to a valid
- * SQL statement to be used a column value.
+ * DQL statement to be used a column value.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 interface ValueConversion
 {
     /**
-     * Returns the converted value as an SQL statement.
+     * Returns the converted value as an DQL statement.
      *
-     * The returned result must a be a platform specific SQL statement
-     * that can be used as a column's value.
+     * The returned result must a be a valid DQL statement that can be used
+     * as a column's value.
+     *
+     * When using custom functions these need to be registered before usage.
      *
      * Used values must be registered as parameters using `$hints->createParamReferenceFor($value)`
      * with an option DBAL Type as second argument (converted afterwards).

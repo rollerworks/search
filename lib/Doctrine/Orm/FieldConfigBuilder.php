@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\DBAL\Types\Type as MappingType;
 use Doctrine\ORM\EntityManagerInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\FieldSet;
 
 /**
@@ -37,7 +36,7 @@ final class FieldConfigBuilder
     /** @var string */
     private $defaultAlias;
 
-    public function __construct(EntityManagerInterface $entityManager, FieldSet $fieldSet, bool $native = false)
+    public function __construct(EntityManagerInterface $entityManager, FieldSet $fieldSet)
     {
         $this->entityManager = $entityManager;
         $this->fieldSet = $fieldSet;
@@ -67,7 +66,7 @@ final class FieldConfigBuilder
             $property
         );
 
-        $this->fields[$fieldName][$mappingIdx] = new QueryField(
+        $this->fields[$fieldName][$mappingIdx] = new OrmQueryField(
             $mappingName,
             $this->fieldSet->get($fieldName),
             $this->getMappingType($mappingName, $entity, $property, $type),

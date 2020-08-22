@@ -42,6 +42,19 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
         return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
     }
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if (isset($_SERVER['DB_HOST'])) {
+            $GLOBALS['db_host'] = $_SERVER['DB_HOST'];
+        }
+
+        if (isset($_SERVER['DB_PORT'])) {
+            $GLOBALS['db_port'] = $_SERVER['DB_PORT'];
+        }
+    }
+
     protected function getExtensions(): array
     {
         return [new DoctrineDbalExtension()];

@@ -13,12 +13,11 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
-use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
-use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
 /**
@@ -28,64 +27,63 @@ use Rollerworks\Component\Search\Value\PatternMatch;
  * Note that is class is also used by the Doctrine ORM processor and therefore
  * methods and properties must be protected and easy to overwrite.
  */
-abstract class AbstractQueryPlatform implements QueryPlatform
+abstract class AbstractQueryPlatform
 {
-    /**
-     * @var array[]
-     */
-    protected $fieldsMappingCache = [];
-
     /**
      * @var Connection
      */
     protected $connection;
 
+    /** @var ArrayCollection<string,array> */
+    private $parameters;
+
+    /** @var int */
+    private $parameterIdx = -1;
+
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+        $this->parameters = new ArrayCollection();
     }
 
-    public function getValueAsSql($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
+    public function getValueAsSql($value, QueryField $mappingConfig, ConversionHints $hints): string
     {
-        if ($mappingConfig->valueConversion) {
-            return $this->convertSqlValue($value, $mappingConfig, $column, $strategy);
-        }
-
-        return $this->quoteValue(
-            $mappingConfig->dbType->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()),
-            $mappingConfig->dbType
-        );
-    }
-
-    public function getFieldColumn(QueryField $mappingConfig, int $strategy = 0, string $column = null): string
-    {
-        $mappingName = $mappingConfig->mappingName;
-
-        if (isset($this->fieldsMappingCache[$mappingName][$strategy])) {
-            return $this->fieldsMappingCache[$mappingName][$strategy];
-        }
-
-        if (null === $column) {
-            $column = $mappingConfig->column;
-        }
-
-        $this->fieldsMappingCache[$mappingName][$strategy] = $column;
-
-        if ($mappingConfig->columnConversion instanceof ColumnConversion) {
-            $this->fieldsMappingCache[$mappingName][$strategy] = $mappingConfig->columnConversion->convertColumn(
-                $column,
+        if ($mappingConfig->valueConversion !== null) {
+            return $mappingConfig->valueConversion->convertValue(
+                $value,
                 $mappingConfig->fieldConfig->getOptions(),
-                $this->getConversionHints($mappingConfig, $column, $strategy)
+                $hints
             );
         }
 
-        return $this->fieldsMappingCache[$mappingName][$strategy];
+        return $this->createParamReferenceFor($value, $mappingConfig->dbType);
+    }
+
+    public function createParamReferenceFor($value, Type $type = null): string
+    {
+        $name = ':search_'.(++$this->parameterIdx);
+        $this->parameters->set($name, [$value, $type]);
+
+        return $name;
+    }
+
+    public function getFieldColumn(QueryField $mappingConfig, string $column, ConversionHints $hints): string
+    {
+        if ($mappingConfig->columnConversion !== null) {
+            return $mappingConfig->columnConversion->convertColumn(
+                $column,
+                $mappingConfig->fieldConfig->getOptions(),
+                $hints
+            );
+        }
+
+        return $column;
     }
 
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string
     {
         if (\in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {
-            $value = $this->connection->quote($patternMatch->getValue());
+            $value = $this->createParamReferenceFor($patternMatch->getValue(), Type::getType('text'));
 
             if ($patternMatch->isCaseInsensitive()) {
                 $column = "LOWER($column)";
@@ -96,41 +94,23 @@ abstract class AbstractQueryPlatform implements QueryPlatform
         }
 
         $patternMap = [
-            PatternMatch::PATTERN_STARTS_WITH => '%%%s',
-            PatternMatch::PATTERN_NOT_STARTS_WITH => '%%%s',
-            PatternMatch::PATTERN_CONTAINS => '%%%s%%',
-            PatternMatch::PATTERN_NOT_CONTAINS => '%%%s%%',
-            PatternMatch::PATTERN_ENDS_WITH => '%s%%',
-            PatternMatch::PATTERN_NOT_ENDS_WITH => '%s%%',
+            PatternMatch::PATTERN_STARTS_WITH => ["'%%'", '%s'],
+            PatternMatch::PATTERN_NOT_STARTS_WITH => ["'%%'", '%s'],
+            PatternMatch::PATTERN_CONTAINS => ["'%%'", '%s', "'%%'"],
+            PatternMatch::PATTERN_NOT_CONTAINS => ["'%%'", '%s', "'%%'"],
+            PatternMatch::PATTERN_ENDS_WITH => ['%s', "'%%'"],
+            PatternMatch::PATTERN_NOT_ENDS_WITH => ['%s', "'%%'"],
         ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = $this->quoteValue(sprintf($patternMap[$patternMatch->getType()], $value), Type::getType('text'));
-        $escape = $this->quoteValue('\\', Type::getType('text'));
+        $value = sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, Type::getType('text')));
 
         if ($patternMatch->isCaseInsensitive()) {
             $column = "LOWER($column)";
             $value = "LOWER($value)";
         }
 
-        return $column.($patternMatch->isExclusive() ? ' NOT' : '')." LIKE $value ESCAPE $escape";
-    }
-
-    public function convertSqlValue($value, QueryField $mappingConfig, string $column, int $strategy = 0): string
-    {
-        return (string) $mappingConfig->valueConversion->convertValue(
-            $value,
-            $mappingConfig->fieldConfig->getOptions(),
-            $this->getConversionHints($mappingConfig, $column, $strategy)
-        );
-    }
-
-    /**
-     * @param mixed $value
-     */
-    protected function quoteValue($value, Type $type): string
-    {
-        return (string) $this->connection->quote($value, $type->getBindingType());
+        return $column.($patternMatch->isExclusive() ? ' NOT' : '')." LIKE $value";
     }
 
     /**
@@ -141,14 +121,8 @@ abstract class AbstractQueryPlatform implements QueryPlatform
         return '%_';
     }
 
-    protected function getConversionHints(QueryField $mappingConfig, string $column, int $strategy = 0): ConversionHints
+    public function getParameters(): ArrayCollection
     {
-        $hints = new ConversionHints();
-        $hints->field = $mappingConfig;
-        $hints->column = $column;
-        $hints->connection = $this->connection;
-        $hints->conversionStrategy = $strategy;
-
-        return $hints;
+        return $this->parameters;
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.5/phpunit.xsd"
-         colors="true"
+         xsi:noNamespaceSchemaLocation="../vendor/phpunit/phpunit/phpunit.xsd"
+         colors="true" verbose="true"
          bootstrap="../vendor/autoload.php"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
@@ -15,19 +15,12 @@
         <ini name="intl.error_level" value="0"/>
         <ini name="memory_limit" value="-1"/>
 
-        <var name="db_type" value="pdo_mysql"/>
-        <var name="db_host" value="mariadb-server"/>
-        <var name="db_username" value="root"/>
-        <var name="db_password" value="nope"/>
-        <var name="db_name" value="search_tests"/>
-        <var name="db_port" value="3306"/>
-
-        <!-- These parameters are not really used, but they are need for the Doctrine TestUtil -->
-        <var name="tmpdb_type" value="mysqli"/>
-        <var name="tmpdb_host" value="mariadb-server"/>
-        <var name="tmpdb_username" value="root"/>
-        <var name="tmpdb_password" value="nope"/>
-        <var name="tmpdb_port" value="3306"/>
+        <var name="db_driver" value="pdo_mysql" />
+        <var name="db_host" value="mariadb-server" />
+        <var name="db_user" value="root" />
+        <var name="db_password" value="nope" />
+        <var name="db_dbname" value="search_tests" />
+        <var name="db_port" value="3306" />
     </php>
 
     <testsuites>
@@ -35,4 +28,19 @@
             <directory>../lib/Doctrine/</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>../lib</directory>
+            <exclude>
+                <directory>../vendor/</directory>
+                <directory>../lib/*/Tests/</directory>
+                <directory>../lib/*/*/Tests/</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <listeners>
+        <listener class="\Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+    </listeners>
 </phpunit>
