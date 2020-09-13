@@ -1,4 +1,4 @@
-UPGRADE FROM 2.0-ALPHA21 to 2.0-ALPHA22
+UPGRADE FROM 2.0-ALPHA21 to 2.0-ALPHA23
 =======================================
 
  * The `$forceNew` argument in `SearchConditionBuilder::field()` is deprecated and will

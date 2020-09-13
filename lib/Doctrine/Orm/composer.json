@@ -22,8 +22,8 @@
     "require": {
         "php": "^7.1",
         "doctrine/orm": "^2.6",
-        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA22",
-        "rollerworks/search-doctrine-dbal": "^2.0@dev,>=2.0.0-ALPHA22"
+        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA23",
+        "rollerworks/search-doctrine-dbal": "^2.0@dev,>=2.0.0-ALPHA23"
     },
     "require-dev": {
         "moneyphp/money": "^3.0.7",
