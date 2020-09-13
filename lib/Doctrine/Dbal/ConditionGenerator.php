@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Statement;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\SearchCondition;
@@ -39,6 +41,19 @@ interface ConditionGenerator
      *                             clause is empty.
      */
     public function getWhereClause(string $prependQuery = ''): string;
+
+    /**
+     * Binds the WHERE-statement parameters at the Doctrine DBAL Statement.
+     *
+     * Note: PDO directly is not supported due to a limitation in how
+     * types are handled.
+     */
+    public function bindParameters(Statement $statement): void;
+
+    /**
+     * Returns the value-parameters (to be used when executing).
+     */
+    public function getParameters(): ArrayCollection;
 
     /**
      * Set the search field to database table-column mapping configuration.

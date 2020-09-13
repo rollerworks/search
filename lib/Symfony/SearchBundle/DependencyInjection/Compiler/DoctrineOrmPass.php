@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection\Compiler;
 
-use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion;
-use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\AgeFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CountChildrenFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\MoneyCastFunction;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -44,8 +46,10 @@ final class DoctrineOrmPass implements CompilerPassInterface
 
         foreach ($entityManagers as $entityManager) {
             $ormConfigDef = $container->findDefinition('doctrine.orm.'.$entityManager.'_configuration');
-            $ormConfigDef->addMethodCall('addCustomStringFunction', ['RW_SEARCH_FIELD_CONVERSION', SqlFieldConversion::class]);
-            $ormConfigDef->addMethodCall('addCustomStringFunction', ['RW_SEARCH_VALUE_CONVERSION', SqlValueConversion::class]);
+            $ormConfigDef->addMethodCall('addCustomStringFunction', ['SEARCH_CONVERSION_CAST', CastFunction::class]);
+            $ormConfigDef->addMethodCall('addCustomNumericFunction', ['SEARCH_CONVERSION_AGE', AgeFunction::class]);
+            $ormConfigDef->addMethodCall('addCustomNumericFunction', ['SEARCH_COUNT_CHILDREN', CountChildrenFunction::class]);
+            $ormConfigDef->addMethodCall('addCustomNumericFunction', ['SEARCH_MONEY_AS_NUMERIC', MoneyCastFunction::class]);
         }
     }
 }

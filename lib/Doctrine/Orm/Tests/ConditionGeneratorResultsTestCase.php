@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Rollerworks\Component\Search\Doctrine\Orm\AbstractConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Orm\ConditionGenerator;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
@@ -139,7 +139,7 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
         ];
     }
 
-    protected function configureConditionGenerator(AbstractConditionGenerator $conditionGenerator)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
     {
         $conditionGenerator->setDefaultEntity(self::INVOICE_CLASS, 'I');
         $conditionGenerator->setField('id', 'id');

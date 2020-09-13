@@ -27,16 +27,12 @@ interface ValueConversion
      * The returned result must a be a platform specific SQL statement
      * that can be used as a column's value.
      *
-     * Caution: It's important to properly escape any values used in the returned
-     * statement, as they are used as-is in the SQL query!
-     *
-     * The returned result is NOT for a prepared statement value binding.
+     * Used values must be registered as parameters using `$hints->createParamReferenceFor($value)`
+     * with an option DBAL Type as second argument (converted afterwards).
      *
      * @param mixed           $value   The "model" value format
      * @param array           $options Options of the Field configuration
      * @param ConversionHints $hints   Special information for the conversion process
-     *
-     * @return string|int|float String or any value that can be used in a string
      */
-    public function convertValue($value, array $options, ConversionHints $hints);
+    public function convertValue($value, array $options, ConversionHints $hints): string;
 }

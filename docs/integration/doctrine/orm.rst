@@ -61,8 +61,6 @@ To Query a database with Doctrine ORM extension, you use the
 The ``DoctrineOrmFactory`` class provides an entry point for creating
 :class:`Rollerworks\\Component\\Search\\Doctrine\\Orm\\DqlConditionGenerator`,
 :class:`Rollerworks\\Component\\Search\\Doctrine\\Orm\\CachedDqlConditionGenerator`,
-:class:`Rollerworks\\Component\\Search\\Doctrine\\Orm\\NativeQueryConditionGenerator` and
-:class:`Rollerworks\\Component\\Search\\Doctrine\\Orm\\CachedNativeQueryConditionGenerator`
 object instances.
 
 Initiating the ``DoctrineDbalFactory`` is as simple as::
@@ -82,12 +80,8 @@ See also: :doc:`/reference/caching`
 Using the ConditionGenerator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Depending on whether you use a ``Doctrine\ORM\Query`` or ``Doctrine\ORM\NativeQuery``
-the returned ConditionGenerator will be different.
-
-Both ConditionGenerators implement the same interface and API but the Where-clause
-they will generate is completely different. Eg. you get an DQL or a platform
-specific SQL condition.
+The ConditionGenerator supports both ``Doctrine\ORM\Query`` and ``Doctrine\ORM\QueryBuilder``,
+for NativeQuery use the Doctrine DBAL ConditionGenerator instead.
 
 .. caution::
 
@@ -96,7 +90,7 @@ specific SQL condition.
 
     Secondly, the generated query is only valid for the give query dialect
     or Database driver. Meaning that when you generated a query with the
-    SQLite database driver this query will not work on MySQL.
+    PostgreSQL database driver this query will not work on MySQL.
 
 First create a ``ConditionGenerator``::
 
@@ -211,16 +205,12 @@ the ConditionGenerator will fail with an exception.
     When using DQL, the column mapping of a field must point to the entity
     field that owns the value (not reference another Entity object).
 
-    So if you have an ``Invoice`` Entity with a ``customer`` (``Customer``
+    Given you have an ``Invoice`` Entity with a ``customer`` (``Customer``
     Entity) reference, the ``Customer`` Entity owns the the actual value
     and the field must point to the ``Customer.id`` field, **not**
     ``Invoice.customer``.
 
     If you point to a Join association the generator will throw an exception.
-    This limitation only applies for DQL and not NativeQuery.
-
-    In NativeQuery you must provide the ``$type`` as this cannot be
-    automatically resolved.
 
 The ``$type`` (when given) must correspond to a Doctrine DBAL
 support type. So instead of using ``varchar`` you use ``string``.
@@ -273,7 +263,7 @@ Generating the Condition
 Now to apply the generated condition on the query you have two options;
 
 You can use ``updateQuery`` which updates the query for you and sets
-the Query-hints for DQL, but only when there is an actual condition generated::
+parameters, but only when there is an actual condition generated::
 
     // ...
 
@@ -285,27 +275,8 @@ the Query-hints for DQL, but only when there is an actual condition generated::
     // use ` AND ` instead, this will be placed before the generated condition.
     $conditionGenerator->updateQuery(' AND ');
 
-Or if you want to do more with the generated condition, you can update
-the query yourself::
-
-    ...
-
-    // The ' WHERE ' value is placed before the generated where-clause,
-    // but only when there is actual where-clause, else it returns an empty string.
-    $whereClause = $conditionGenerator->getWhereClause(' WHERE ');
-
-    if (!empty($whereClause)) {
-        $query->setDql($query.$whereClause);
-
-        // The QueryHints are only needed for DQL Queries
-        // the NativeWhereBuilder doesn't have these method.
-        $query->setHint($conditionGenerator->getQueryHintName(), $conditionGenerator->getQueryHintValue());
-    }
-
-Effectively the two samples do the same, except that ``getQueryHintName``
-and ``getQueryHintValue`` don't exist for the ``NativeQueryConditionGenerator``.
-
-**Don't use ``updateQuery`` and the second example together, use only of the two.**
+Note that when you passed a ``QueryBuilder`` instance the prepend argument is ignored,
+as the builder handles this itself.
 
 .. tip::
 
@@ -387,12 +358,6 @@ Plus, usage is no different then using a regular ConditionGenerator,
 the CachedConditionGenerator decorates the ConditionGenerator and can
 be configured very similar.
 
-.. note::
-
-    There are two different CachedConditionGenerators, one for the
-    ``DqlConditionGenerator`` and one for the
-    ``NativeQueryConditionGenerator``.
-
 .. code-block:: php
     :linenos:
 
@@ -431,29 +396,15 @@ be configured very similar.
 
     $users = $statement->getResult();
 
-Conversions
------------
-
-Conversions for Doctrine ORM are similar to the DataTransformers
-used for transforming user-input to a normalized data format. Except that
-the transformation happens in a single direction.
-
-Field and Value Conversions are handled by the :doc:`Doctrine DBAL extension <dbal>`.
-You can read more about them in the :doc:`conversions` chapter.
-
-.. note::
-
-    Custom DQL-functions with the ``Column`` parameter receive the resolved
-    entity-alias and column-name that the Query parser has generated. Because
-    these functions only receive the column name of the current entity field
-    it's impossible to know the table and column aliases of other fields.
-
 Next Steps
 ----------
 
 Now that you have completed the basic installation and configuration,
 and know how to query the database for results. You are ready to learn
 about more advanced features and usages of this extension.
+
+You may have noticed the word "conversions", now it's time learn more
+about this! :doc:`conversions_orm`.
 
 And if you get stuck with querying, there is a :doc:`Troubleshooter <troubleshooting>`
 to help you. Good luck.

@@ -20,7 +20,6 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
-use Rollerworks\Component\Search\Doctrine\Dbal\EventSubscriber\SqliteConnectionSubscriber;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -61,9 +60,18 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     {
         parent::setUp();
 
-        if (!isset(self::$sharedConn)) {
-            $GLOBALS['db_event_subscribers'] = SqliteConnectionSubscriber::class;
+        if (!isset(
+            $GLOBALS['db_driver'],
+            $GLOBALS['db_host'],
+            $GLOBALS['db_user'],
+            $GLOBALS['db_password'],
+            $GLOBALS['db_dbname'],
+            $GLOBALS['db_port']
+        )) {
+            self::markTestSkipped('GLOBAL variables not enabled');
+        }
 
+        if (!isset(self::$sharedConn)) {
             self::$sharedConn = TestUtil::getConnection();
 
             $schema = new DbSchema();
@@ -142,7 +150,18 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $this->configureConditionGenerator($conditionGenerator);
 
         $whereClause = $conditionGenerator->getWhereClause();
-        $statement = $this->conn->query($this->getQuery().$whereClause);
+        $statement = $this->conn->prepare($this->getQuery().$whereClause);
+
+        $paramsString = '';
+        $platform = $this->conn->getDatabasePlatform();
+
+        foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
+            $statement->bindValue($name, $value, $type);
+
+            $paramsString .= sprintf("%s: %s\n", $name, $type === null ? get_debug_type($value) : $type->convertToDatabaseValue($value, $platform));
+        }
+
+        $statement->execute();
 
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $idRows = array_map(
@@ -158,7 +177,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $this->assertEquals(
             $ids,
             array_merge([], array_unique($idRows)),
-            sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s", print_r($rows, true), $whereClause)
+            sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s\nAnd params: %s", print_r($rows, true), $whereClause, $paramsString)
         );
     }
 
@@ -172,8 +191,12 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         }
 
         $whereClause = $conditionGenerator->getWhereClause();
+        $statement = $this->conn->prepare($this->getQuery().$whereClause);
 
-        self::assertNotEmpty($this->conn->query($this->getQuery().$whereClause));
+        $conditionGenerator->bindParameters($statement);
+        $statement->execute();
+
+        self::assertNotNull($statement);
     }
 
     protected function onNotSuccessfulTest(\Throwable $e): void

@@ -38,4 +38,5 @@ If you need this, consider using :doc:`/integration/elasticsearch`.
     dbal
     orm
     conversions
+    conversions_orm
     troubleshooting

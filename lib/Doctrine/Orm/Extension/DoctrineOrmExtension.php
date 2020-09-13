@@ -13,13 +13,19 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Orm;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Rollerworks\Component\Search\AbstractExtension;
-use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlFieldConversion;
-use Rollerworks\Component\Search\Doctrine\Orm\Functions\SqlValueConversion;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\AgeFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CountChildrenFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\MoneyCastFunction;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\BirthdayTypeExtension;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\ChildCountType;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\FieldTypeExtension;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\MoneyTypeExtension;
 
-class DoctrineOrmExtension extends AbstractExtension
+final class DoctrineOrmExtension extends AbstractExtension
 {
     /**
      * @param string[] $managerNames A list manager names for which to enable this extension
@@ -31,8 +37,20 @@ class DoctrineOrmExtension extends AbstractExtension
             $manager = $registry->getManager($managerName);
             $emConfig = $manager->getConfiguration();
 
-            $emConfig->addCustomStringFunction('RW_SEARCH_FIELD_CONVERSION', SqlFieldConversion::class);
-            $emConfig->addCustomStringFunction('RW_SEARCH_VALUE_CONVERSION', SqlValueConversion::class);
+            $emConfig->addCustomStringFunction('SEARCH_CONVERSION_CAST', CastFunction::class);
+            $emConfig->addCustomNumericFunction('SEARCH_CONVERSION_AGE', AgeFunction::class);
+            $emConfig->addCustomNumericFunction('SEARCH_COUNT_CHILDREN', CountChildrenFunction::class);
+            $emConfig->addCustomNumericFunction('SEARCH_MONEY_AS_NUMERIC', MoneyCastFunction::class);
         }
+    }
+
+    protected function loadTypesExtensions(): array
+    {
+        return [
+            new BirthdayTypeExtension(),
+            new ChildCountType(),
+            new FieldTypeExtension(),
+            new MoneyTypeExtension(),
+        ];
     }
 }

@@ -13,19 +13,20 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 
-use Doctrine\DBAL\Types\Type as DbType;
+use Doctrine\DBAL\Types\Types as DbType;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
-use Rollerworks\Component\Search\Doctrine\Dbal\StrategySupportedConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
 
-class MoneyValueConversion implements ValueConversion, ColumnConversion, StrategySupportedConversion
+final class MoneyValueConversion implements ValueConversion, ColumnConversion
 {
+    /** @var DecimalMoneyFormatter */
     private $formatter;
+
+    /** @var ISOCurrencies */
     private $currencies;
 
     public function __construct()
@@ -34,43 +35,32 @@ class MoneyValueConversion implements ValueConversion, ColumnConversion, Strateg
         $this->formatter = new DecimalMoneyFormatter($this->currencies);
     }
 
+    /**
+     * @param MoneyValue $value
+     */
     public function convertValue($value, array $options, ConversionHints $hints): string
     {
-        if (!$value instanceof MoneyValue) {
-            throw new UnexpectedTypeException($value, MoneyValue::class);
-        }
+        $sqlValue = $hints->createParamReferenceFor($this->formatter->format($value->value));
+        $castType = $this->getCastType($this->currencies->subunitFor($value->value->getCurrency()), $hints);
 
-        $sqlValue = $hints->connection->quote($this->formatter->format($value->value));
-        $castType = $this->getCastType($hints->conversionStrategy, $hints);
-
-        // https://github.com/rollerworks/rollerworks-search-doctrine-dbal/issues/9
         return "CAST({$sqlValue} AS {$castType})";
     }
 
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
-        if (DbType::DECIMAL === $hints->field->dbType->getName()) {
+        if ($hints->field->dbType->getName() === DbType::DECIMAL) {
             return $column;
         }
 
         $substr = $hints->connection->getDatabasePlatform()->getSubstringExpression($column, 5);
-        $castType = $this->getCastType($hints->conversionStrategy, $hints);
+        $castType = $this->getCastType($this->currencies->subunitFor($hints->getProcessingValue()->value->getCurrency()), $hints);
 
         return "CAST($substr AS $castType)";
     }
 
-    public function getConversionStrategy($value, array $options, ConversionHints $hints): int
-    {
-        if (!$value instanceof MoneyValue) {
-            throw new UnexpectedTypeException($value, MoneyValue::class);
-        }
-
-        return $this->currencies->subunitFor($value->value->getCurrency());
-    }
-
     private function getCastType(int $scale, ConversionHints $hints): string
     {
-        if (false !== strpos($hints->connection->getDatabasePlatform()->getName(), 'mysql')) {
+        if (strpos($hints->connection->getDatabasePlatform()->getName(), 'mysql') !== false) {
             return "DECIMAL(10, {$scale})";
         }
 

@@ -13,9 +13,6 @@ If you are still not getting any results check the following:
 #. Using multiple tables (with JOIN) will only work when all the tables
    have a positive match, try using ``LEFT JOIN`` to ignore any missing
    matches.
-#. Are you using any custom Conversions? Check if they are missing quotes
-   or are quoting an integer value. *SQLIte doesn't work well with quoted
-   integer values.*
 #. Try using a smaller SearchCondition and make sure the values you are
    searching are actually existent.
 

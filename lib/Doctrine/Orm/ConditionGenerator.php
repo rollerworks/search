@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 
@@ -104,4 +105,6 @@ interface ConditionGenerator
      *                             clause is empty. Default is ' WHERE '
      */
     public function updateQuery(string $prependQuery = ' WHERE ');
+
+    public function getParameters(): ArrayCollection;
 }

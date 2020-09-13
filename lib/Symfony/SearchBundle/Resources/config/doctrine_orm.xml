@@ -8,5 +8,21 @@
         <service id="rollerworks_search.doctrine_orm.factory" class="Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory" public="true">
             <argument type="service" id="rollerworks_search.doctrine.cache" on-invalid="null" />
         </service>
+
+        <service id="Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\FieldTypeExtension" public="false">
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType" />
+        </service>
+
+        <service id="Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\BirthdayTypeExtension" public="false">
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\BirthdayType" />
+        </service>
+
+        <service id="Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\ChildCountType" public="false">
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Doctrine\Dbal\Type\ChildCountType" />
+        </service>
+
+        <service id="Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\MoneyTypeExtension" public="false">
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\MoneyType" />
+        </service>
     </services>
 </container>

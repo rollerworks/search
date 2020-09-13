@@ -28,7 +28,6 @@ parameters:
 
         # False positive
         - '#Call to an undefined method DateTimeInterface\:\:setTimezone\(\)#'
-        - '#Result of \|\| is always true#'
         - '#Negated boolean expression is always false#'
 
         ## Symony Config
@@ -36,6 +35,5 @@ parameters:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:#'
 
         ## Doctrine
-        - '#Call to an undefined method Doctrine\\DBAL\\Driver\\PDOConnection\:\:sqliteCreateFunction\(\)#'
-        - '#Parameter \#2 \$type of method Doctrine\\DBAL\\Connection\:\:quote\(\) expects ([^\s]+)#'
         - '#Call to an undefined method Rollerworks\\Component\\Search\\Doctrine\\Orm\\ConditionGenerator\:\:get[a-zA-Z]+#'
+        - '#Instanceof between Doctrine\\ORM\\Query and Doctrine\\ORM\\QueryBuilder will always evaluate to false#'

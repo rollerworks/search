@@ -3,6 +3,61 @@ UPGRADE FROM 2.0-ALPHA21 to 2.0-ALPHA22
 
  * The `$forceNew` argument in `SearchConditionBuilder::field()` is deprecated and will
    be removed in v2.0.0-BETA1, use `overwriteField()` instead.
+    
+### Doctrine DBAL
+
+ * Support for SQLite was removed in Doctrine DBAL.
+
+ * Values are no longer embedded but are now provided as parameters,
+   make sure to bind these before executing the query.
+   
+   Before:
+   
+   ```php
+   $whereClause = $conditionGenerator->getWhereClause();
+   $statement = $connection->execute('SELECT * FROM tableName '.$whereClause);
+   
+   $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+   ```
+   
+   Now:
+   
+   ```php
+   $whereClause = $conditionGenerator->getWhereClause();
+   $statement = $connection->prepare('SELECT * FROM tableName '.$whereClause);
+   
+   $conditionGenerator->bindParameters($statement);
+
+   $statement->execute();
+   
+   $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+   ```
+   
+ * The `Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion::convertValue()` method
+   now expects a `string` type is returned, and requires a return-type.
+   
+ * Conversion strategies was changed to return a different column/value
+   statement rather than keeping all strategies cached.
+   
+   Use the `ConversionHint` new parameters and helper method to determine
+   the value for the Column.
+
+### Doctrine ORM
+   
+ * Support for Doctrine ORM NativeQuery was removed, use the Doctrine DBAL
+   condition-generator instead for this usage.
+    
+ * Values are no longer embedded but are now provided as parameters,
+   make sure to bind these before executing the query.
+   
+   Note: Using the `updateQuery()` method already performs the binding process.
+   
+ * Doctrine DBAL conversions are no longer applied, instead the Doctrine ORM
+   integration now has it's own conversion API with a much more powerful integration.
+   
+   **Note:** Any functions used in the conversion-generated DQL must be registered
+   with the EntityManager configuration, refer to the Doctrine ORM manual for details. 
+   
 
 UPGRADE FROM 2.0-ALPHA19 to 2.0-ALPHA20
 =======================================

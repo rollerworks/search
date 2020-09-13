@@ -17,8 +17,7 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
  * A ColumnConversion allows to wrap the query's column in a custom
  * SQL statement (as-is).
  *
- * This interface can be combined with the ValueConversion interface
- * and ConversionStrategy interface.
+ * This interface can be combined with the ValueConversion interface.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -29,9 +28,6 @@ interface ColumnConversion
      *
      * The returned result must a be a platform specific SQL statement
      * that can be used as a column in query.
-     *
-     * Caution: It's important to properly escape any values used in the returned
-     * statement, as they are used as-is!
      *
      * @param string          $column  The column name and table alias, eg. i.id
      * @param array           $options Options of the Field configuration

@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\DBAL\Types\Type as MappingType;
 use Doctrine\ORM\EntityManagerInterface;
-use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\FieldSet;
 
 /**
@@ -25,9 +24,6 @@ final class FieldConfigBuilder
 {
     /** @var FieldSet */
     private $fieldSet;
-
-    /** @var bool */
-    private $native;
 
     /** @var EntityManagerInterface */
     private $entityManager;
@@ -40,11 +36,10 @@ final class FieldConfigBuilder
     /** @var string */
     private $defaultAlias;
 
-    public function __construct(EntityManagerInterface $entityManager, FieldSet $fieldSet, bool $native = false)
+    public function __construct(EntityManagerInterface $entityManager, FieldSet $fieldSet)
     {
         $this->entityManager = $entityManager;
         $this->fieldSet = $fieldSet;
-        $this->native = $native;
     }
 
     public function setDefaultEntity(string $entity, string $alias)
@@ -71,11 +66,11 @@ final class FieldConfigBuilder
             $property
         );
 
-        $this->fields[$fieldName][$mappingIdx] = new QueryField(
+        $this->fields[$fieldName][$mappingIdx] = new OrmQueryField(
             $mappingName,
             $this->fieldSet->get($fieldName),
             $this->getMappingType($mappingName, $entity, $property, $type),
-            $this->native ? $this->entityManager->getClassMetadata($entity)->getColumnName($property) : $property,
+            $property,
             $alias ?? $this->defaultAlias
         );
     }
@@ -98,17 +93,11 @@ final class FieldConfigBuilder
         return $resolvedFields;
     }
 
-    private function getEntityAndProperty($fieldName, string $entity, string $property): array
+    private function getEntityAndProperty(string $fieldName, string $entity, string $property): array
     {
         $metadata = $this->entityManager->getClassMetadata($entity);
 
         if (!$metadata->hasAssociation($property)) {
-            return [$entity, $property];
-        }
-
-        // Referencing a JOIN column is only possible for native, and only when it's a
-        // SingleJoinColumn.
-        if ($this->native && $metadata->isAssociationWithSingleJoinColumn($property)) {
             return [$entity, $property];
         }
 

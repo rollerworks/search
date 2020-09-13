@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
+use Doctrine\DBAL\Statement;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
-/***
+/**
  * Handles caching of a Doctrine DBAL ConditionGenerator.
  *
  * Instead of using the ConditionGenerator directly you should use the
@@ -30,27 +31,12 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class CachedConditionGenerator implements ConditionGenerator
+final class CachedConditionGenerator extends AbstractCachedConditionGenerator implements ConditionGenerator
 {
-    /**
-     * @var Cache
-     */
-    private $cacheDriver;
-
-    /**
-     * @var int|\DateInterval|null
-     */
-    private $cacheLifeTime;
-
     /**
      * @var ConditionGenerator
      */
     private $conditionGenerator;
-
-    /**
-     * @var string|null
-     */
-    private $cacheKey;
 
     /**
      * @var string
@@ -58,17 +44,11 @@ final class CachedConditionGenerator implements ConditionGenerator
     private $whereClause;
 
     /**
-     * @param ConditionGenerator     $conditionGenerator The actual ConditionGenerator to use when no cache exists
-     * @param Cache                  $cacheDriver        PSR-16 SimpleCache instance. Use a custom pool to ease
-     *                                                   purging invalidated items
-     * @param int|\DateInterval|null $ttl                Optional. The TTL value of this item. If no value is sent and
-     *                                                   the driver supports TTL then the library may set a default value
-     *                                                   for it or let the driver take care of that.
+     * @param ConditionGenerator $conditionGenerator The actual ConditionGenerator to use when no cache exists
      */
-    public function __construct(ConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = 0)
+    public function __construct(ConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = null)
     {
-        $this->cacheDriver = $cacheDriver;
-        $this->cacheLifeTime = $ttl;
+        parent::__construct($cacheDriver, $ttl);
         $this->conditionGenerator = $conditionGenerator;
     }
 
@@ -82,12 +62,20 @@ final class CachedConditionGenerator implements ConditionGenerator
     {
         if (null === $this->whereClause) {
             $cacheKey = $this->getCacheKey();
+            $cached = $this->getFromCache($cacheKey);
 
-            if ($this->cacheDriver->has($cacheKey)) {
-                $this->whereClause = $this->cacheDriver->get($cacheKey);
+            if ($cached !== null) {
+                $this->whereClause = $cached[0];
+                $this->parameters = $cached[1];
             } else {
                 $this->whereClause = $this->conditionGenerator->getWhereClause();
-                $this->cacheDriver->set($cacheKey, $this->whereClause, $this->cacheLifeTime);
+                $this->parameters = $this->conditionGenerator->getParameters();
+
+                $this->cacheDriver->set(
+                    $cacheKey,
+                    [$this->whereClause, $this->packParameters($this->parameters)],
+                    $this->cacheLifeTime
+                );
             }
         }
 
@@ -96,6 +84,13 @@ final class CachedConditionGenerator implements ConditionGenerator
         }
 
         return '';
+    }
+
+    public function bindParameters(Statement $statement): void
+    {
+        foreach ($this->parameters as $name => [$value, $type]) {
+            $statement->bindValue($name, $value, $type);
+        }
     }
 
     public function getSearchCondition(): SearchCondition
@@ -119,6 +114,7 @@ final class CachedConditionGenerator implements ConditionGenerator
     {
         if (null === $this->cacheKey) {
             $searchCondition = $this->conditionGenerator->getSearchCondition();
+
             $this->cacheKey = hash(
                 'sha256',
                 $searchCondition->getFieldSet()->getSetName().
