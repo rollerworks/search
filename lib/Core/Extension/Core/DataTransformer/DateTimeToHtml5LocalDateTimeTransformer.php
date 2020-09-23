@@ -25,16 +25,16 @@ final class DateTimeToHtml5LocalDateTimeTransformer extends BaseDateTimeTransfor
     public const HTML5_FORMAT = 'Y-m-d\\TH:i:s';
 
     /**
-     * Transforms a \DateTime into a local date and time string.
+     * Transforms a \DateTimeImmutable into a local date and time string.
      *
      * According to the HTML standard, the input string of a datetime-local
      * input is a RFC3339 date followed by 'T', followed by a RFC3339 time.
      * https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-local-date-and-time-string
      *
-     * @param \DateTimeInterface|null $dateTime
+     * @param \DateTimeImmutable|null $dateTime
      *
      * @throws TransformationFailedException If the given value is not an
-     *                                       instance of \DateTime or \DateTimeInterface
+     *                                       instance of \DateTimeImmutable
      *
      * @return string The formatted date
      */
@@ -44,8 +44,8 @@ final class DateTimeToHtml5LocalDateTimeTransformer extends BaseDateTimeTransfor
             return '';
         }
 
-        if (!$dateTime instanceof \DateTimeInterface) {
-            throw new TransformationFailedException('Expected a \DateTime or \DateTimeInterface.');
+        if (!$dateTime instanceof \DateTimeImmutable) {
+            throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
         if ($this->inputTimezone !== $this->outputTimezone) {
@@ -60,7 +60,7 @@ final class DateTimeToHtml5LocalDateTimeTransformer extends BaseDateTimeTransfor
     }
 
     /**
-     * Transforms a local date and time string into a \DateTime.
+     * Transforms a local date and time string into a \DateTimeImmutable.
      *
      * When transforming back to DateTime the regex is slightly laxer, taking into
      * account rules for parsing a local date and time string
@@ -71,7 +71,7 @@ final class DateTimeToHtml5LocalDateTimeTransformer extends BaseDateTimeTransfor
      * @throws TransformationFailedException If the given value is not a string,
      *                                       if the value could not be transformed
      */
-    public function reverseTransform($dateTimeLocal): ?\DateTimeInterface
+    public function reverseTransform($dateTimeLocal): ?\DateTimeImmutable
     {
         if (!\is_string($dateTimeLocal)) {
             throw new TransformationFailedException('Expected a string.');

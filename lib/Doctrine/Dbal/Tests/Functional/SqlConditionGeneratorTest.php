@@ -340,7 +340,7 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
 
     public function testConversionStrategy()
     {
-        $date = new \DateTime('2001-01-15', new \DateTimeZone('UTC'));
+        $date = new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC'));
 
         $fieldSet = $this->getFieldSet(false);
         $fieldSet->add('customer_birthday', BirthdayType::class);

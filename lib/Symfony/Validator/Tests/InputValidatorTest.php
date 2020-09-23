@@ -53,7 +53,7 @@ final class InputValidatorTest extends SearchIntegrationTestCase
         $fieldSet->add('date', DateType::class, [
             'constraints' => [
                 new Assert\Range(
-                    ['min' => new \DateTime('2014-12-20 14:35:05 UTC')]
+                    ['min' => new \DateTimeImmutable('2014-12-20 14:35:05 UTC')]
                 ),
             ],
         ]);
@@ -84,9 +84,9 @@ final class InputValidatorTest extends SearchIntegrationTestCase
         $errorList2 = new ErrorList();
         $this->validator->initializeContext($fieldSet->get('date'), $errorList2);
 
-        $this->validator->validate($d1 = new \DateTime('2014-12-13 14:35:05 UTC'), 'simple', '2014-12-13 14:35:05', 'simpleValues[0]');
-        $this->validator->validate($d2 = new \DateTime('2014-12-21 14:35:05 UTC'), 'simple', '2014-12-17 14:35:05', 'simpleValues[1]');
-        $this->validator->validate($d3 = new \DateTime('2014-12-10 14:35:05 UTC'), 'simple', '2014-12-10 14:35:05', 'simpleValues[2]');
+        $this->validator->validate($d1 = new \DateTimeImmutable('2014-12-13 14:35:05 UTC'), 'simple', '2014-12-13 14:35:05', 'simpleValues[0]');
+        $this->validator->validate($d2 = new \DateTimeImmutable('2014-12-21 14:35:05 UTC'), 'simple', '2014-12-17 14:35:05', 'simpleValues[1]');
+        $this->validator->validate($d3 = new \DateTimeImmutable('2014-12-10 14:35:05 UTC'), 'simple', '2014-12-10 14:35:05', 'simpleValues[2]');
 
         $errorList3 = new ErrorList();
         $this->validator->initializeContext($fieldSet->get('type'), $errorList3);
@@ -101,7 +101,7 @@ final class InputValidatorTest extends SearchIntegrationTestCase
             $errorList
         );
 
-        $minDate = self::formatDateTime(new \DateTime('2014-12-20 14:35:05 UTC'));
+        $minDate = self::formatDateTime(new \DateTimeImmutable('2014-12-20 14:35:05 UTC'));
 
         $this->assertContainsErrors(
             [
@@ -151,7 +151,7 @@ final class InputValidatorTest extends SearchIntegrationTestCase
     }
 
     /**
-     * @param \DateTimeInterface $value
+     * @param \DateTimeImmutable $value
      *
      * @return string
      */

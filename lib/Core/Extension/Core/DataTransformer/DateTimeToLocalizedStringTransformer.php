@@ -66,9 +66,9 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a normalized date into a localized date string/array.
      *
-     * @param \DateTimeInterface|null $dateTime
+     * @param \DateTimeImmutable|null $dateTime
      *
-     * @throws TransformationFailedException if the given value is not a \DateTimeInterface
+     * @throws TransformationFailedException if the given value is not a \DateTimeImmutable
      *                                       or if the date could not be transformed
      *
      * @return string Localized date string
@@ -79,8 +79,8 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             return '';
         }
 
-        if (!$dateTime instanceof \DateTimeInterface) {
-            throw new TransformationFailedException('Expected a \DateTimeInterface.');
+        if (!$dateTime instanceof \DateTimeImmutable) {
+            throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
         $value = $this->getIntlDateFormatter()->format($dateTime->getTimestamp());
@@ -100,7 +100,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      * @throws TransformationFailedException if the given value is not a string,
      *                                       if the date could not be parsed
      */
-    public function reverseTransform($value): ?\DateTimeInterface
+    public function reverseTransform($value): ?\DateTimeImmutable
     {
         if (!\is_string($value)) {
             throw new TransformationFailedException('Expected a string.');
@@ -126,20 +126,20 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         try {
             if ($dateOnly) {
                 // we only care about year-month-date, which has been delivered as a timestamp pointing to UTC midnight
-                return new \DateTime(gmdate('Y-m-d', $timestamp), new \DateTimeZone($this->inputTimezone));
+                return new \DateTimeImmutable(gmdate('Y-m-d', $timestamp), new \DateTimeZone($this->inputTimezone));
             }
 
             // read timestamp into DateTime object - the formatter delivers a timestamp
-            $dateTime = new \DateTime(sprintf('@%s', $timestamp));
+            $dateTime = new \DateTimeImmutable(sprintf('@%s', $timestamp));
             // set timezone separately, as it would be ignored if set via the constructor,
             // see http://php.net/manual/en/datetime.construct.php
-            $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
+            $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
         } catch (\Exception $e) {
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
         }
 
         if ($this->outputTimezone !== $this->inputTimezone) {
-            $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
+            $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
         }
 
         return $dateTime;

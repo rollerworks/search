@@ -31,7 +31,7 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02', '2010-06-02')
-            ->successfullyTransformsTo(new \DateTime('2010-06-02'))
+            ->successfullyTransformsTo(new \DateTimeImmutable('2010-06-02'))
             ->andReverseTransformsTo('2010-06-02', '2010-06-02');
 
         FieldTransformationAssertion::assertThat($field)
@@ -47,7 +47,7 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02', '2010-06-02')
-            ->successfullyTransformsTo(new \DateTime('2010-06-02'))
+            ->successfullyTransformsTo(new \DateTimeImmutable('2010-06-02'))
             ->andReverseTransformsTo('2010-06-02', '2010-06-02');
 
         FieldTransformationAssertion::assertThat($field)
@@ -73,7 +73,7 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
             'pattern' => 'yyyy-MM-dd',
         ]);
 
-        $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
+        $currentDate = new \DateTimeImmutable('now + 1 day', new \DateTimeZone('UTC'));
 
         FieldTransformationAssertion::assertThat($field)->withInput($currentDate->format('Y-m-d'))->failsToTransforms();
     }
@@ -85,8 +85,8 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
             'allow_future_date' => true,
         ]);
 
-        $currentDate = new \DateTime('now + 1 day', new \DateTimeZone('UTC'));
-        $currentDate->setTime(0, 0, 0);
+        $currentDate = new \DateTimeImmutable('now + 1 day', new \DateTimeZone('UTC'));
+        $currentDate = $currentDate->setTime(0, 0, 0);
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput($currentDate->format('Y-m-d'))

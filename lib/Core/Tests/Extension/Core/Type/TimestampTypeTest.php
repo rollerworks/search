@@ -29,10 +29,10 @@ final class TimestampTypeTest extends SearchIntegrationTestCase
             'view_timezone' => 'America/New_York',
         ]);
 
-        $output = new \DateTime('2010-02-03 04:05:06 America/New_York');
+        $output = new \DateTimeImmutable('2010-02-03 04:05:06 America/New_York');
         $input = $output->format('U');
 
-        $output->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
+        $output = $output->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput($input)

@@ -33,7 +33,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             'html5' => true,
         ]);
 
-        $outputTime = new \DateTime('2010-06-02 03:04:00 Pacific/Tahiti');
+        $outputTime = new \DateTimeImmutable('2010-06-02 03:04:00 Pacific/Tahiti');
         $outputTime->setTimezone(new \DateTimeZone('America/New_York'));
 
         FieldTransformationAssertion::assertThat($field)
@@ -48,7 +48,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             'pattern' => 'MM*yyyy*dd HH:mm',
         ]);
 
-        $outputTime = new \DateTime('2010-06-02T13:12:00.000000+0000');
+        $outputTime = new \DateTimeImmutable('2010-06-02T13:12:00.000000+0000');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput($outputTime->format('m*Y*d H:i'), $outputTime->format('c'))
@@ -64,7 +64,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             'time_format' => \IntlDateFormatter::SHORT,
         ]);
 
-        $outputTime = new \DateTime('2010-06-02 03:04:00 UTC');
+        $outputTime = new \DateTimeImmutable('2010-06-02 03:04:00 UTC');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('Jun 2, 2010, 3:04 AM', '2010-06-02T03:04:00Z')

@@ -44,7 +44,7 @@ final class CompareTest extends TestCase
     /** @test */
     public function it_allows_an_object_as_value()
     {
-        $value = new \DateTime();
+        $value = new \DateTimeImmutable();
 
         $this->value = new Compare($value, '<');
 

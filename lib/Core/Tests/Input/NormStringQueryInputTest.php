@@ -122,7 +122,7 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
         $values->addSimpleValue('value2');
         $expectedGroup->addField('name', $values);
 
-        $date = new \DateTime('2014-12-16 00:00:00 UTC');
+        $date = new \DateTimeImmutable('2014-12-16 00:00:00 UTC');
 
         $values = new ValuesBag();
         $values->addSimpleValue($date);

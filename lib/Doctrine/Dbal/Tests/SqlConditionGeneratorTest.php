@@ -683,7 +683,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 self::assertArrayHasKey('pattern', $passedOptions);
                 self::assertEquals('dd-MM-yy', $passedOptions['pattern']);
 
-                if ($value instanceof \DateTime) {
+                if ($value instanceof \DateTimeImmutable) {
                     return 'CAST('.$hints->createParamReferenceFor($value->format('Y-m-d'), Type::getType('string')).' AS AGE)';
                 }
 
@@ -697,7 +697,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         $condition = SearchConditionBuilder::create($fieldSet->getFieldSet())
             ->field('customer_birthday')
                 ->addSimpleValue(18)
-                ->addSimpleValue(new \DateTime('2001-01-15', new \DateTimeZone('UTC')))
+                ->addSimpleValue(new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC')))
             ->end()
         ->getSearchCondition();
 

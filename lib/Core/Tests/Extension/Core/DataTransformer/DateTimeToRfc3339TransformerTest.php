@@ -29,8 +29,8 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
     {
         parent::setUp();
 
-        $this->dateTime = new \DateTime('2010-02-03 04:05:06 UTC');
-        $this->dateTimeWithoutSeconds = new \DateTime('2010-02-03 04:05:00 UTC');
+        $this->dateTime = new \DateTimeImmutable('2010-02-03 04:05:06 UTC');
+        $this->dateTimeWithoutSeconds = new \DateTimeImmutable('2010-02-03 04:05:00 UTC');
     }
 
     protected function tearDown(): void
@@ -68,7 +68,7 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
     {
         $transformer = new DateTimeToRfc3339Transformer($fromTz, $toTz);
 
-        self::assertSame($to, $transformer->transform(null !== $from ? new \DateTime($from) : null));
+        self::assertSame($to, $transformer->transform(null !== $from ? new \DateTimeImmutable($from) : null));
     }
 
     /**
@@ -98,7 +98,7 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         $transformer = new DateTimeToRfc3339Transformer($toTz, $fromTz);
 
         if (null !== $to) {
-            self::assertEquals(new \DateTime($to), $transformer->reverseTransform($from));
+            self::assertEquals(new \DateTimeImmutable($to), $transformer->reverseTransform($from));
         } else {
             self::assertSame($to, $transformer->reverseTransform($from));
         }

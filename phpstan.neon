@@ -27,7 +27,6 @@ parameters:
         - '#expects array<Rollerworks\\Component\\Search\\Value\\[a-z]+>, array<Rollerworks\\Component\\Search\\Value\\ValueHolder> given#i'
 
         # False positive
-        - '#Call to an undefined method DateTimeInterface\:\:setTimezone\(\)#'
         - '#Negated boolean expression is always false#'
 
         ## Symony Config

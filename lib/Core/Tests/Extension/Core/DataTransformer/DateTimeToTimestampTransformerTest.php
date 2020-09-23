@@ -29,7 +29,7 @@ final class DateTimeToTimestampTransformerTest extends TestCase
     {
         $transformer = new DateTimeToTimestampTransformer('UTC', 'UTC');
 
-        $input = new \DateTime('2010-02-03 04:05:06 UTC');
+        $input = new \DateTimeImmutable('2010-02-03 04:05:06 UTC');
         $output = $input->format('U');
 
         self::assertEquals($output, $transformer->transform($input));
@@ -46,7 +46,7 @@ final class DateTimeToTimestampTransformerTest extends TestCase
     {
         $transformer = new DateTimeToTimestampTransformer('Asia/Hong_Kong', 'America/New_York');
 
-        $input = new \DateTime('2010-02-03 04:05:06 America/New_York');
+        $input = new \DateTimeImmutable('2010-02-03 04:05:06 America/New_York');
         $output = $input->format('U');
         $input->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 
@@ -57,7 +57,7 @@ final class DateTimeToTimestampTransformerTest extends TestCase
     {
         $transformer = new DateTimeToTimestampTransformer('Asia/Hong_Kong', 'UTC');
 
-        $input = new \DateTime('2010-02-03 04:05:06 Asia/Hong_Kong');
+        $input = new \DateTimeImmutable('2010-02-03 04:05:06 Asia/Hong_Kong');
 
         $dateTime = clone $input;
         $dateTime->setTimezone(new \DateTimeZone('UTC'));
@@ -90,7 +90,7 @@ final class DateTimeToTimestampTransformerTest extends TestCase
     {
         $reverseTransformer = new DateTimeToTimestampTransformer('UTC', 'UTC');
 
-        $output = new \DateTime('2010-02-03 04:05:06 UTC');
+        $output = new \DateTimeImmutable('2010-02-03 04:05:06 UTC');
         $input = $output->format('U');
 
         self::assertDateTimeEquals($output, $reverseTransformer->reverseTransform($input));
@@ -107,7 +107,7 @@ final class DateTimeToTimestampTransformerTest extends TestCase
     {
         $reverseTransformer = new DateTimeToTimestampTransformer('Asia/Hong_Kong', 'America/New_York');
 
-        $output = new \DateTime('2010-02-03 04:05:06 America/New_York');
+        $output = new \DateTimeImmutable('2010-02-03 04:05:06 America/New_York');
         $input = $output->format('U');
         $output->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 

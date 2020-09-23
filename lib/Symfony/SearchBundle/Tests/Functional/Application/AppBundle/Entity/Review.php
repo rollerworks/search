@@ -74,7 +74,7 @@ class Review
     private $author;
 
     /**
-     * @var \DateTime Author the author of the review
+     * @var \DateTimeImmutable Author the author of the review
      *
      * @ORM\Column(nullable=true, type="datetime")
      */
@@ -139,7 +139,7 @@ class Review
         return $this->publicationDate;
     }
 
-    public function setPublicationDate(\DateTime $publicationDate)
+    public function setPublicationDate(\DateTimeImmutable $publicationDate)
     {
         $this->publicationDate = $publicationDate;
     }
