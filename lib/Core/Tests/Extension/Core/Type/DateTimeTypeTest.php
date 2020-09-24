@@ -30,7 +30,6 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             'model_timezone' => 'America/New_York',
             'view_timezone' => 'Pacific/Tahiti',
             'pattern' => 'yyyy-MM-dd\'T\'HH:mm:ssZZZZZ',
-            'html5' => true,
         ]);
 
         $outputTime = new \DateTimeImmutable('2010-06-02 03:04:00 Pacific/Tahiti');
@@ -39,7 +38,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00-10:00')
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00');
+            ->andReverseTransformsTo('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00-10:00');
     }
 
     public function testPatternCanBeConfigured()

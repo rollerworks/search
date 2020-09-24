@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
-use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToHtml5LocalDateTimeTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
 use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueValueComparator;
@@ -25,7 +24,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- * @author Bernhard Schussek <bschussek@gmail.com>
  */
 final class DateTimeType extends BaseDateTimeType
 {
@@ -61,21 +59,12 @@ final class DateTimeType extends BaseDateTimeType
             )
         );
 
-        if ($options['html5']) {
-            $config->setNormTransformer(
-                new DateTimeToHtml5LocalDateTimeTransformer(
-                    $options['model_timezone'],
-                    $options['view_timezone']
-                )
-            );
-        } else {
-            $config->setNormTransformer(
-                new DateTimeToRfc3339Transformer(
-                    $options['model_timezone'],
-                    $options['view_timezone']
-                )
-            );
-        }
+        $config->setNormTransformer(
+            new DateTimeToRfc3339Transformer(
+                $options['model_timezone'],
+                $options['view_timezone']
+            )
+        );
     }
 
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
@@ -105,14 +94,12 @@ final class DateTimeType extends BaseDateTimeType
                 'pattern' => null,
                 'date_format' => self::DEFAULT_DATE_FORMAT,
                 'time_format' => self::DEFAULT_TIME_FORMAT,
-                'html5' => false,
             ]
         );
 
         $resolver->setAllowedTypes('pattern', ['string', 'null']);
         $resolver->setAllowedTypes('date_format', ['int']);
         $resolver->setAllowedTypes('time_format', ['int']);
-        $resolver->setAllowedTypes('html5', 'bool');
     }
 
     public function getBlockPrefix(): string
