@@ -105,7 +105,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $values->addSimpleValue('value2');
         $expectedGroup->addField('name', $values);
 
-        $date = new \DateTime('2014-12-16 00:00:00 UTC');
+        $date = new \DateTimeImmutable('2014-12-16 00:00:00 UTC');
 
         $values = new ValuesBag();
         $values->addSimpleValue($date);
@@ -138,7 +138,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $values->addSimpleValue('value2');
         $expectedGroup->addField('name', $values);
 
-        $date = new \DateTime('2014-12-16 00:00:00 UTC');
+        $date = new \DateTimeImmutable('2014-12-16 00:00:00 UTC');
 
         $values = new ValuesBag();
         $values->addSimpleValue($date);
@@ -175,8 +175,8 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $values->add(new ExcludedRange(50, 70));
         $expectedGroup->addField('id', $values);
 
-        $date = new \DateTime('2014-12-16 00:00:00 UTC');
-        $date2 = new \DateTime('2014-12-20 00:00:00 UTC');
+        $date = new \DateTimeImmutable('2014-12-16 00:00:00 UTC');
+        $date2 = new \DateTimeImmutable('2014-12-20 00:00:00 UTC');
 
         $values = new ValuesBag();
         $values->add(new Range($date, $date2, true, true));
@@ -211,7 +211,7 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $values->add(new Compare(8, '>='));
         $expectedGroup->addField('id', $values);
 
-        $date = new \DateTime('2014-12-16 00:00:00 UTC');
+        $date = new \DateTimeImmutable('2014-12-16 00:00:00 UTC');
 
         $values = new ValuesBag();
         $values->add(new Compare($date, '>='));

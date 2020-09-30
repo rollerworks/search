@@ -39,8 +39,8 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
 
         \Locale::setDefault('de_AT');
 
-        $this->dateTime = new \DateTime('2010-02-03 04:05:06 UTC');
-        $this->dateTimeWithoutSeconds = new \DateTime('2010-02-03 04:05:00 UTC');
+        $this->dateTime = new \DateTimeImmutable('2010-02-03 04:05:06 UTC');
+        $this->dateTimeWithoutSeconds = new \DateTimeImmutable('2010-02-03 04:05:00 UTC');
     }
 
     protected function tearDown(): void
@@ -105,7 +105,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
             $pattern
         );
 
-        $input = new \DateTime($input);
+        $input = new \DateTimeImmutable($input);
 
         self::assertEquals($output, $transformer->transform($input));
     }
@@ -137,10 +137,8 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
     {
         $transformer = new DateTimeToLocalizedStringTransformer('America/New_York', 'Asia/Hong_Kong');
 
-        $input = new \DateTime('2010-02-03 04:05:06 America/New_York');
-
-        $dateTime = clone $input;
-        $dateTime->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
+        $input = new \DateTimeImmutable('2010-02-03 04:05:06 America/New_York');
+        $dateTime = $input->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 
         self::assertEquals($dateTime->format('d.m.Y, H:i'), $transformer->transform($input));
     }
@@ -152,7 +150,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new DateTimeToLocalizedStringTransformer();
 
-        $dateTime = new \DateTime('2010-02-03 04:05');
+        $dateTime = new \DateTimeImmutable('2010-02-03 04:05');
 
         self::assertEquals(
             $dateTime->format('c'),
@@ -213,7 +211,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
             $pattern
         );
 
-        $output = new \DateTime($output);
+        $output = new \DateTimeImmutable($output);
 
         self::assertEquals($output, $transformer->reverseTransform($input));
     }
@@ -238,7 +236,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
     {
         $transformer = new DateTimeToLocalizedStringTransformer('America/New_York', 'Asia/Hong_Kong');
 
-        $dateTime = new \DateTime('2010-02-03 04:05:00 Asia/Hong_Kong');
+        $dateTime = new \DateTimeImmutable('2010-02-03 04:05:00 Asia/Hong_Kong');
         $dateTime->setTimezone(new \DateTimeZone('America/New_York'));
 
         self::assertDateTimeEquals($dateTime, $transformer->reverseTransform('03.02.2010, 04:05'));
@@ -256,7 +254,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
         $transformer = new DateTimeToLocalizedStringTransformer('Europe/Rome', 'Europe/Rome', \IntlDateFormatter::FULL, \IntlDateFormatter::FULL, \IntlDateFormatter::GREGORIAN, 'dd/MM/yyyy');
 
         self::assertDateTimeEquals(
-            new \DateTime('1978-05-28', new \DateTimeZone('Europe/Rome')),
+            new \DateTimeImmutable('1978-05-28', new \DateTimeZone('Europe/Rome')),
             $transformer->reverseTransform('28/05/1978')
         );
     }
@@ -266,7 +264,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
         $transformer = new DateTimeToLocalizedStringTransformer('Europe/Rome', 'Europe/Rome', \IntlDateFormatter::FULL, \IntlDateFormatter::FULL, \IntlDateFormatter::GREGORIAN, "'day': dd 'month': MM 'year': yyyy");
 
         self::assertDateTimeEquals(
-            new \DateTime('1978-05-28', new \DateTimeZone('Europe/Rome')),
+            new \DateTimeImmutable('1978-05-28', new \DateTimeZone('Europe/Rome')),
             $transformer->reverseTransform('day: 28 month: 05 year: 1978')
         );
     }

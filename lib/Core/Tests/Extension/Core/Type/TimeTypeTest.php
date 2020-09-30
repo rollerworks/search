@@ -47,7 +47,7 @@ final class TimeTypeTest extends SearchIntegrationTestCase
     {
         $field = $this->getFactory()->createField('time', TimeType::class);
 
-        $outputTime = new \DateTime('1970-01-01 03:04:00 UTC');
+        $outputTime = new \DateTimeImmutable('1970-01-01 03:04:00 UTC');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('03:04')
@@ -59,7 +59,7 @@ final class TimeTypeTest extends SearchIntegrationTestCase
     {
         $field = $this->getFactory()->createField('time', TimeType::class, ['with_seconds' => true]);
 
-        $outputTime = new \DateTime('1970-01-01 03:04:05 UTC');
+        $outputTime = new \DateTimeImmutable('1970-01-01 03:04:05 UTC');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('03:04:05')

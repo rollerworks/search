@@ -51,7 +51,7 @@ final class SearchConditionSerializerTest extends TestCase
 
     public function testSerializeUnSerialize()
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
 
         $fieldId = new ValuesBag();
         $fieldId->addSimpleValue(10);

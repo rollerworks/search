@@ -50,13 +50,14 @@ final class LocalizedBirthdayTransformer implements DataTransformer
             return $result;
         }
 
-        if ($transformer = $this->dateTransformer) {
-            $value = $transformer->transform($value);
-        }
-
-        return $value;
+        return $this->dateTransformer->transform($value);
     }
 
+    /**
+     * @param int|string $value
+     *
+     * @return int|\DateTimeImmutable
+     */
     public function reverseTransform($value)
     {
         $value = $this->transformWhenInteger($value);
@@ -69,14 +70,11 @@ final class LocalizedBirthdayTransformer implements DataTransformer
             return $value;
         }
 
-        if ($transformer = $this->dateTransformer) {
-            $value = $transformer->reverseTransform($value);
-        }
+        $value = $this->dateTransformer->reverseTransform($value);
 
         // Force the UTC timezone with 00:00:00 for correct comparison.
-        $value = clone $value;
-        $value->setTimezone(new \DateTimeZone('UTC'));
-        $value->setTime(0, 0, 0);
+        $value = $value->setTimezone(new \DateTimeZone('UTC'));
+        $value = $value->setTime(0, 0, 0);
 
         if (!$this->allowFutureDate) {
             $this->validateDate($value);
@@ -106,13 +104,13 @@ final class LocalizedBirthdayTransformer implements DataTransformer
         return $result;
     }
 
-    private function validateDate(\DateTimeInterface $value)
+    private function validateDate(\DateTimeImmutable $value)
     {
         static $currentDate;
 
         if (!$currentDate) {
-            $currentDate = new \DateTime('now', new \DateTimeZone('UTC'));
-            $currentDate->setTime(0, 0, 0);
+            $currentDate = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+            $currentDate = $currentDate->setTime(0, 0, 0);
         }
 
         if ($value > $currentDate) {

@@ -69,7 +69,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     /** @test */
     public function it_transforms_with_date()
     {
-        $date = new \DateTime('2010-03-05 00:00:00 UTC');
+        $date = new \DateTimeImmutable('2010-03-05 00:00:00 UTC');
 
         $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform('2010-03-05')->willReturn($date);
@@ -87,7 +87,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     /** @test */
     public function it_allows_disabled_age()
     {
-        $date = new \DateTime('2010-03-05 00:00:00 UTC');
+        $date = new \DateTimeImmutable('2010-03-05 00:00:00 UTC');
 
         $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform('2010-03-05')->willReturn($date);
@@ -118,7 +118,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     /** @test */
     public function it_disallows_date_in_the_future_by_default()
     {
-        $dateObj = new \DateTime('tomorrow');
+        $dateObj = new \DateTimeImmutable('tomorrow');
 
         $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform($dateObj->format('Y-m-d'))->willReturn($dateObj);
@@ -134,7 +134,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     /** @test */
     public function it_allows_date_in_the_future_when_enabled()
     {
-        $dateObj = new \DateTime('tomorrow');
+        $dateObj = new \DateTimeImmutable('tomorrow');
 
         $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform($dateObj->format('Y-m-d'))->willReturn($dateObj);

@@ -21,8 +21,8 @@ use Rollerworks\Component\Search\ValueComparator;
 class DateValueComparator implements ValueComparator
 {
     /**
-     * @param \DateTimeInterface $higher
-     * @param \DateTimeInterface $lower
+     * @param \DateTimeImmutable $higher
+     * @param \DateTimeImmutable $lower
      */
     public function isHigher($higher, $lower, array $options): bool
     {
@@ -30,8 +30,8 @@ class DateValueComparator implements ValueComparator
     }
 
     /**
-     * @param \DateTimeInterface $lower
-     * @param \DateTimeInterface $higher
+     * @param \DateTimeImmutable $lower
+     * @param \DateTimeImmutable $higher
      */
     public function isLower($lower, $higher, array $options): bool
     {
@@ -39,8 +39,8 @@ class DateValueComparator implements ValueComparator
     }
 
     /**
-     * @param \DateTimeInterface $value
-     * @param \DateTimeInterface $nextValue
+     * @param \DateTimeImmutable $value
+     * @param \DateTimeImmutable $nextValue
      */
     public function isEqual($value, $nextValue, array $options): bool
     {

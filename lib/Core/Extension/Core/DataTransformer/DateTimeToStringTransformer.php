@@ -40,9 +40,9 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
     private $parseFormat;
 
     /**
-     * Transforms a \DateTime instance to a string.
+     * Transforms a \DateTimeImmutable instance to a string.
      *
-     * @see \DateTime::format() for supported formats
+     * @see \DateTimeImmutable::format() for supported formats
      */
     public function __construct(string $inputTimezone = null, string $outputTimezone = null, string $format = 'Y-m-d H:i:s')
     {
@@ -67,9 +67,9 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      * Transforms a DateTime object into a date string with the configured format
      * and timezone.
      *
-     * @param \DateTimeInterface|null $dateTime
+     * @param \DateTimeImmutable|null $dateTime
      *
-     * @throws TransformationFailedException If the given value is not a \DateTimeInterface
+     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
      *
      * @return string A value as produced by PHP's date() function
      */
@@ -79,8 +79,8 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
             return '';
         }
 
-        if (!$dateTime instanceof \DateTimeInterface) {
-            throw new TransformationFailedException('Expected a \DateTimeInterface.');
+        if (!$dateTime instanceof \DateTimeImmutable) {
+            throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
         if (!$dateTime instanceof \DateTimeImmutable) {
@@ -100,7 +100,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      * @throws TransformationFailedException If the given value is not a string,
      *                                       or could not be transformed
      */
-    public function reverseTransform($value): ?\DateTimeInterface
+    public function reverseTransform($value): ?\DateTimeImmutable
     {
         if (empty($value)) {
             return null;
@@ -111,9 +111,9 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
         }
 
         $outputTz = new \DateTimeZone($this->outputTimezone);
-        $dateTime = \DateTime::createFromFormat($this->parseFormat, $value, $outputTz);
+        $dateTime = \DateTimeImmutable::createFromFormat($this->parseFormat, $value, $outputTz);
 
-        $lastErrors = \DateTime::getLastErrors();
+        $lastErrors = \DateTimeImmutable::getLastErrors();
 
         if (0 < $lastErrors['warning_count'] || 0 < $lastErrors['error_count']) {
             throw new TransformationFailedException(implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors']))));
@@ -121,7 +121,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
 
         try {
             if ($this->inputTimezone !== $this->outputTimezone) {
-                $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
+                $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
             }
         } catch (\Exception $e) {
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);

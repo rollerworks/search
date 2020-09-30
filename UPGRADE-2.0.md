@@ -1,3 +1,9 @@
+UPGRADE FROM 2.0-ALPHA23 to 2.0-ALPHA24
+=======================================
+
+ * The `html5` option for the `DateTimeType` has been removed.
+   Only the RFC3339 for the norm-input format is supported now.
+
 UPGRADE FROM 2.0-ALPHA21 to 2.0-ALPHA23
 =======================================
 

@@ -40,10 +40,10 @@ final class AgeConversionTest extends FunctionalDbalTestCase
     {
         return [
             SchemaRecord::create('site_user', ['id' => 'integer', 'birthday' => 'date'])
-                ->add([1, new \DateTime('2001-01-15', new \DateTimeZone('UTC'))])
-                ->add([2, new \DateTime('2001-05-15', new \DateTimeZone('UTC'))])
-                ->add([3, new \DateTime('2001-10-15', new \DateTimeZone('UTC'))])
-                ->add([4, new \DateTime('-5 years', new \DateTimeZone('UTC'))])
+                ->add([1, new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC'))])
+                ->add([2, new \DateTimeImmutable('2001-05-15', new \DateTimeZone('UTC'))])
+                ->add([3, new \DateTimeImmutable('2001-10-15', new \DateTimeZone('UTC'))])
+                ->add([4, new \DateTimeImmutable('-5 years', new \DateTimeZone('UTC'))])
             ->end(),
         ];
     }
@@ -71,8 +71,8 @@ final class AgeConversionTest extends FunctionalDbalTestCase
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('birthday')
-                ->addSimpleValue(new \DateTime('2001-01-15', new \DateTimeZone('UTC')))
-                ->addSimpleValue(new \DateTime('2001-10-15', new \DateTimeZone('UTC')))
+                ->addSimpleValue(new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC')))
+                ->addSimpleValue(new \DateTimeImmutable('2001-10-15', new \DateTimeZone('UTC')))
             ->end()
             ->getSearchCondition()
         ;

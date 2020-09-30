@@ -97,7 +97,7 @@ class Book
     private $author;
 
     /**
-     * @var \DateTime The date on which the CreativeWork was created or the item was added to a DataFeed
+     * @var \DateTimeImmutable The date on which the CreativeWork was created or the item was added to a DataFeed
      *
      * @Assert\Date
      * @Assert\NotNull

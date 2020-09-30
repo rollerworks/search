@@ -82,7 +82,7 @@ class Dummy
     public $dummyBoolean;
 
     /**
-     * @var \DateTime A dummy date
+     * @var \DateTimeImmutable A dummy date
      *
      * @ORM\Column(type="datetime", nullable=true)
      * @Assert\DateTime
@@ -184,7 +184,7 @@ class Dummy
     {
     }
 
-    public function setDummyDate(\DateTime $dummyDate = null)
+    public function setDummyDate(\DateTimeImmutable $dummyDate = null)
     {
         $this->dummyDate = $dummyDate;
     }

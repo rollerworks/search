@@ -32,8 +32,8 @@ final class DateValueComparisonTest extends TestCase
     /** @test */
     public function it_returns_true_when_dates_equal()
     {
-        $date1 = new \DateTime('2013-09-21 12:46:00');
-        $date2 = new \DateTime('2013-09-21 12:46:00');
+        $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
+        $date2 = new \DateTimeImmutable('2013-09-21 12:46:00');
 
         self::assertTrue($this->comparison->isEqual($date1, $date2, []));
     }
@@ -41,13 +41,13 @@ final class DateValueComparisonTest extends TestCase
     /** @test */
     public function it_returns_false_when_dates_are_not_equal()
     {
-        $date1 = new \DateTime('2013-09-21 12:46:00');
-        $date2 = new \DateTime('2013-09-22 12:46:00');
+        $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
+        $date2 = new \DateTimeImmutable('2013-09-22 12:46:00');
 
         self::assertFalse($this->comparison->isEqual($date1, $date2, []));
 
-        $date1 = new \DateTime('2013-09-21 12:46:00');
-        $date2 = new \DateTime('2013-09-21 12:40:00');
+        $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
+        $date2 = new \DateTimeImmutable('2013-09-21 12:40:00');
 
         self::assertFalse($this->comparison->isEqual($date1, $date2, []));
     }
@@ -55,8 +55,8 @@ final class DateValueComparisonTest extends TestCase
     /** @test */
     public function it_returns_true_when_first_date_is_higher()
     {
-        $date1 = new \DateTime('2013-09-23 12:46:00');
-        $date2 = new \DateTime('2013-09-21 12:46:00');
+        $date1 = new \DateTimeImmutable('2013-09-23 12:46:00');
+        $date2 = new \DateTimeImmutable('2013-09-21 12:46:00');
 
         self::assertTrue($this->comparison->isHigher($date1, $date2, []));
     }
@@ -64,8 +64,8 @@ final class DateValueComparisonTest extends TestCase
     /** @test */
     public function it_returns_true_when_first_date_is_lower()
     {
-        $date1 = new \DateTime('2013-09-21 12:46:00');
-        $date2 = new \DateTime('2013-09-23 12:46:00');
+        $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
+        $date2 = new \DateTimeImmutable('2013-09-23 12:46:00');
 
         self::assertTrue($this->comparison->isLower($date1, $date2, []));
     }

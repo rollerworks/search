@@ -30,7 +30,7 @@ final class DateTypeTest extends SearchIntegrationTestCase
             'pattern' => 'MM*yyyy*dd',
         ]);
 
-        $outputTime = new \DateTime('2010-06-02T00:00:00.000000+0000');
+        $outputTime = new \DateTimeImmutable('2010-06-02T00:00:00.000000+0000');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput($outputTime->format('m*Y*d'), $outputTime->format('Y-m-d'))

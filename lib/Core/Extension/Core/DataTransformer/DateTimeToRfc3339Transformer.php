@@ -23,9 +23,9 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
     /**
      * Transforms a normalized date into a localized date.
      *
-     * @param \DateTimeInterface|null $dateTime
+     * @param \DateTimeImmutable|null $dateTime
      *
-     * @throws TransformationFailedException If the given value is not a \DateTimeInterface
+     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
      *
      * @return string The formatted date
      */
@@ -35,15 +35,11 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
             return '';
         }
 
-        if (!$dateTime instanceof \DateTimeInterface) {
-            throw new TransformationFailedException('Expected a \DateTimeInterface.');
+        if (!$dateTime instanceof \DateTimeImmutable) {
+            throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
         if ($this->inputTimezone !== $this->outputTimezone) {
-            if (!$dateTime instanceof \DateTimeImmutable) {
-                $dateTime = clone $dateTime;
-            }
-
             $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
         }
 
@@ -58,7 +54,7 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
      * @throws TransformationFailedException If the given value is not a string,
      *                                       if the value could not be transformed
      */
-    public function reverseTransform($rfc3339): ?\DateTimeInterface
+    public function reverseTransform($rfc3339): ?\DateTimeImmutable
     {
         if (!\is_string($rfc3339)) {
             throw new TransformationFailedException('Expected a string.');
@@ -73,13 +69,13 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
         }
 
         try {
-            $dateTime = new \DateTime($rfc3339);
+            $dateTime = new \DateTimeImmutable($rfc3339);
         } catch (\Exception $e) {
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);
         }
 
         if ($this->inputTimezone !== $dateTime->getTimezone()->getName()) {
-            $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
+            $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
         }
 
         if (!checkdate((int) $matches[2], (int) $matches[3], (int) $matches[1])) {

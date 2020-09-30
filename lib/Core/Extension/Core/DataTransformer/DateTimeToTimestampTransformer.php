@@ -26,9 +26,9 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a DateTime object into a timestamp in the configured timezone.
      *
-     * @param \DateTimeInterface|null $dateTime
+     * @param \DateTimeImmutable|null $dateTime
      *
-     * @throws TransformationFailedException If the given value is not a \DateTimeInterface
+     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
      *
      * @return int|null A timestamp
      */
@@ -38,8 +38,8 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
             return null;
         }
 
-        if (!$dateTime instanceof \DateTimeInterface) {
-            throw new TransformationFailedException('Expected a \DateTimeInterface.');
+        if (!$dateTime instanceof \DateTimeImmutable) {
+            throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
         return $dateTime->getTimestamp();
@@ -53,7 +53,7 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      * @throws TransformationFailedException If the given value is not a timestamp
      *                                       or if the given timestamp is invalid
      */
-    public function reverseTransform($value): ?\DateTime
+    public function reverseTransform($value): ?\DateTimeImmutable
     {
         if (null === $value) {
             return null;
@@ -64,12 +64,12 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
         }
 
         try {
-            $dateTime = new \DateTime();
-            $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
-            $dateTime->setTimestamp((int) $value);
+            $dateTime = new \DateTimeImmutable();
+            $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
+            $dateTime = $dateTime->setTimestamp((int) $value);
 
             if ($this->inputTimezone !== $this->outputTimezone) {
-                $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
+                $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
             }
         } catch (\Exception $e) {
             throw new TransformationFailedException($e->getMessage(), $e->getCode(), $e);

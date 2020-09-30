@@ -96,7 +96,7 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
     protected function getDbRecords()
     {
         $date = function ($input) {
-            return new \DateTime($input, new \DateTimeZone('UTC'));
+            return new \DateTimeImmutable($input, new \DateTimeZone('UTC'));
         };
 
         return [
