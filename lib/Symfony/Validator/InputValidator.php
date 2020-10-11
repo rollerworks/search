@@ -56,7 +56,7 @@ final class InputValidator implements Validator
 
     public function validate($value, string $type, $originalValue, string $path): bool
     {
-        if (null === $this->constraints) {
+        if ($this->constraints === null) {
             return true;
         }
 
@@ -73,6 +73,6 @@ final class InputValidator implements Validator
             );
         }
 
-        return !\count($violations);
+        return ! \count($violations);
     }
 }

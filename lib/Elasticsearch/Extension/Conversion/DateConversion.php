@@ -43,25 +43,30 @@ class DateConversion implements ValueConversion, QueryConversion
 
     public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array
     {
-        if (!\is_array($value) && !$value instanceof Range && !$value instanceof Compare) {
+        if (! \is_array($value) && ! $value instanceof Range && ! $value instanceof Compare) {
             return $this->generateDateRange($propertyName, new Range($value, $value));
         }
 
         $query = [];
+
         switch ($hints->context) {
             case QueryPreparationHints::CONTEXT_RANGE_VALUES:
             case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
                 // already a Range
                 /** @var Range $value */
                 $query = [Generator::QUERY_RANGE => [$propertyName => Generator::generateRangeParams($value)]];
+
                 break;
+
             case QueryPreparationHints::CONTEXT_COMPARISON:
                 /** @var Compare $value */
                 $operator = Generator::translateComparison($value->getOperator());
                 $query = [
                     Generator::QUERY_RANGE => [$propertyName => [$operator => $value->getValue()]],
                 ];
+
                 break;
+
             default:
             case QueryPreparationHints::CONTEXT_SIMPLE_VALUES:
             case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
@@ -70,6 +75,7 @@ class DateConversion implements ValueConversion, QueryConversion
                     $dateRange = $this->generateDateRange($propertyName, new Range($singleValue, $singleValue));
                     $query[Generator::QUERY_BOOL][Generator::CONDITION_OR][] = $dateRange;
                 }
+
                 break;
         }
 

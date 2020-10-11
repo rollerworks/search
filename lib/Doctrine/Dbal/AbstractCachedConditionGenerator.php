@@ -25,7 +25,7 @@ abstract class AbstractCachedConditionGenerator
     protected $cacheDriver;
 
     /**
-     * @var int|\DateInterval|null
+     * @var \DateInterval|int|null
      */
     protected $cacheLifeTime;
 
@@ -42,7 +42,7 @@ abstract class AbstractCachedConditionGenerator
     /**
      * @param Cache                  $cacheDriver PSR-16 SimpleCache instance. Use a custom pool to ease
      *                                            purging invalidated items
-     * @param int|\DateInterval|null $ttl         Optional. The TTL value of this item. If no value is sent and
+     * @param \DateInterval|int|null $ttl         Optional. The TTL value of this item. If no value is sent and
      *                                            the driver supports TTL then the library may set a default
      *                                            value for it or let the driver take care of that.
      */
@@ -57,7 +57,7 @@ abstract class AbstractCachedConditionGenerator
     {
         $cached = $this->cacheDriver->get($cacheKey);
 
-        if (!\is_array($cached) || !isset($cached[0], $cached[1]) || !\is_string($cached[0]) || !\is_array($cached[1])) {
+        if (! \is_array($cached) || ! isset($cached[0], $cached[1]) || ! \is_string($cached[0]) || ! \is_array($cached[1])) {
             return null;
         }
 

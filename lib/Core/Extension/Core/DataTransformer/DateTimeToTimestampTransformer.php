@@ -34,11 +34,11 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      */
     public function transform($dateTime): ?int
     {
-        if (null === $dateTime) {
+        if ($dateTime === null) {
             return null;
         }
 
-        if (!$dateTime instanceof \DateTimeImmutable) {
+        if (! $dateTime instanceof \DateTimeImmutable) {
             throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
@@ -48,18 +48,18 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a timestamp in the configured timezone into a DateTime object.
      *
-     * @param string|int|null $value A timestamp
+     * @param int|string|null $value A timestamp
      *
      * @throws TransformationFailedException If the given value is not a timestamp
      *                                       or if the given timestamp is invalid
      */
     public function reverseTransform($value): ?\DateTimeImmutable
     {
-        if (null === $value) {
+        if ($value === null) {
             return null;
         }
 
-        if (!is_numeric($value)) {
+        if (! \is_numeric($value)) {
             throw new TransformationFailedException('Expected a numeric.');
         }
 

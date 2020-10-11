@@ -68,9 +68,9 @@ class ValuesGroup implements \Serializable
      */
     public function getGroup(int $index): self
     {
-        if (!isset($this->groups[$index])) {
+        if (! isset($this->groups[$index])) {
             throw new InvalidArgumentException(
-                sprintf('Unable to get none existent group: "%d"', $index)
+                \sprintf('Unable to get none existent group: "%d"', $index)
             );
         }
 
@@ -125,9 +125,9 @@ class ValuesGroup implements \Serializable
      */
     public function getField(string $name): ValuesBag
     {
-        if (!isset($this->fields[$name])) {
+        if (! isset($this->fields[$name])) {
             throw new InvalidArgumentException(
-                sprintf('Unable to get none existent field: "%s"', $name)
+                \sprintf('Unable to get none existent field: "%s"', $name)
             );
         }
 
@@ -179,8 +179,8 @@ class ValuesGroup implements \Serializable
      */
     public function setGroupLogical(string $groupLogical)
     {
-        if (!\in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
-            throw new InvalidArgumentException(sprintf('Unsupported group logical "%s".', $groupLogical));
+        if (! \in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
+            throw new InvalidArgumentException(\sprintf('Unsupported group logical "%s".', $groupLogical));
         }
 
         $this->groupLogical = $groupLogical;
@@ -190,7 +190,7 @@ class ValuesGroup implements \Serializable
 
     public function serialize(): string
     {
-        return serialize(
+        return \serialize(
             [
                 $this->groupLogical,
                 $this->groups,
@@ -201,11 +201,11 @@ class ValuesGroup implements \Serializable
 
     public function unserialize($serialized): void
     {
-        $data = unserialize($serialized);
+        $data = \unserialize($serialized);
 
-        list(
+        [
             $this->groupLogical,
             $this->groups,
-            $this->fields) = $data;
+            $this->fields] = $data;
     }
 }

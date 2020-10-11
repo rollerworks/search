@@ -24,7 +24,7 @@ use Rollerworks\Component\Search\Loader\InputProcessorLoader;
 final class InputProcessorLoaderTest extends TestCase
 {
     /** @test */
-    public function it_lazily_loads_an_input_processor()
+    public function it_lazily_loads_an_input_processor(): void
     {
         $loader = InputProcessorLoader::create();
         $processor = $loader->get('json');
@@ -36,7 +36,7 @@ final class InputProcessorLoaderTest extends TestCase
      * @dataProvider provideProcessors
      * @test
      */
-    public function it_can_load_bundled_processor(string $alias, string $className)
+    public function it_can_load_bundled_processor(string $alias, string $className): void
     {
         $loader = InputProcessorLoader::create();
 
@@ -53,7 +53,7 @@ final class InputProcessorLoaderTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_for_unsupported_processor()
+    public function it_fails_for_unsupported_processor(): void
     {
         $loader = InputProcessorLoader::create();
 

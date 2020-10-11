@@ -35,10 +35,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class SearchConditionListenerTest extends SearchIntegrationTestCase
+/**
+ * @internal
+ */
+final class SearchConditionListenerTest extends SearchIntegrationTestCase
 {
     /** @test */
-    public function it_sets_search_condition_and_config_for_empty_qeury()
+    public function it_sets_search_condition_and_config_for_empty_qeury(): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -89,7 +92,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_sets_search_condition_and_config_for_json_query()
+    public function it_sets_search_condition_and_config_for_json_query(): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -139,10 +142,8 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
     }
 
-    /**
-     * @test
-     */
-    public function it_requires_a_string_search_condition()
+    /** @test */
+    public function it_requires_a_string_search_condition(): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -182,7 +183,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_sets_search_condition_and_config_for_context()
+    public function it_sets_search_condition_and_config_for_context(): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -236,7 +237,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_does_nothing_when_no_metadata_is_set()
+    public function it_does_nothing_when_no_metadata_is_set(): void
     {
         $dummyMetadata = new ResourceMetadata('dummy', 'dummy', '#dummy');
 
@@ -258,7 +259,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_does_nothing_not_cacheable_requests()
+    public function it_does_nothing_not_cacheable_requests(): void
     {
         $httpKernel = $this->createMock(HttpKernelInterface::class);
 
@@ -283,7 +284,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_maps_configuration_processor_configuration()
+    public function it_maps_configuration_processor_configuration(): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -340,7 +341,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_stores_cached_result_when_configured()
+    public function it_stores_cached_result_when_configured(): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -399,7 +400,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_does_not_store_cached_result_when_ttl_is_unconfigured()
+    public function it_does_not_store_cached_result_when_ttl_is_unconfigured(): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -457,7 +458,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
      * @test
      * @dataProvider provideInvalidConfigurations
      */
-    public function it_errors_when_context_configuration_is_invalid(string $message, array $config)
+    public function it_errors_when_context_configuration_is_invalid(string $message, array $config): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -497,7 +498,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         return [
             'context with missing fieldset' => [
-                'Search context "_any" is incorrectly configured for Resource "'.$resourceClass.'#attributes[rollerworks_search]", missing a "fieldset" reference.',
+                'Search context "_any" is incorrectly configured for Resource "' . $resourceClass . '#attributes[rollerworks_search]", missing a "fieldset" reference.',
                 [
                     'rollerworks_search' => [
                         'contexts' => [
@@ -509,7 +510,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
                 ],
             ],
             'unsupported processor option' => [
-                'Processor option "foo" is not supported for Resource "'.$resourceClass.'".',
+                'Processor option "foo" is not supported for Resource "' . $resourceClass . '".',
                 [
                     'rollerworks_search' => [
                         'contexts' => [
@@ -522,7 +523,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
                 ],
             ],
             'unregistered context' => [
-                'Search context "_any" is not supported for Resource "'.$resourceClass.'#attributes[rollerworks_search][contexts]", supported: "foo", "bar".',
+                'Search context "_any" is not supported for Resource "' . $resourceClass . '#attributes[rollerworks_search][contexts]", supported: "foo", "bar".',
                 [
                     'rollerworks_search' => [
                         'contexts' => [
@@ -539,7 +540,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
                 ],
             ],
             'contexts' => [
-                'Resource "'.$resourceClass.'#attributes[rollerworks_search]" is missing a contexts array. Add a "contexts" array with at least one entry.',
+                'Resource "' . $resourceClass . '#attributes[rollerworks_search]" is missing a contexts array. Add a "contexts" array with at least one entry.',
                 [
                     'rollerworks_search' => [
                         '_contexts' => [
@@ -568,7 +569,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT)->shouldBeCalled();
-        $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT.Dummy::class)->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT . Dummy::class)->shouldBeCalled();
 
         return $eventDispatcherProphecy->reveal();
     }
@@ -577,7 +578,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT)->shouldNotBeCalled();
-        $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT.Dummy::class)->shouldNotBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT . Dummy::class)->shouldNotBeCalled();
 
         return $eventDispatcherProphecy->reveal();
     }
@@ -587,7 +588,7 @@ class SearchConditionListenerTest extends SearchIntegrationTestCase
         return new InputProcessorLoader(
             new ClosureContainer(
                 [
-                    $name => function () use ($inputProcessor) {
+                    $name => static function () use ($inputProcessor) {
                         return $inputProcessor;
                     },
                 ]

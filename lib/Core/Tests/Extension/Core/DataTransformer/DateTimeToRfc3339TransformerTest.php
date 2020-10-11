@@ -53,7 +53,7 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
 
     public function reverseTransformProvider()
     {
-        return array_merge($this->allProvider(), [
+        return \array_merge($this->allProvider(), [
             // format without seconds, as appears in some browsers
             ['UTC', 'UTC', '2010-02-03 04:05:00 UTC', '2010-02-03T04:05Z'],
             ['America/New_York', 'Asia/Hong_Kong', '2010-02-03 04:05:00 America/New_York', '2010-02-03T17:05+08:00'],
@@ -63,25 +63,30 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
 
     /**
      * @dataProvider allProvider
+     *
+     * @test
      */
-    public function testTransform($fromTz, $toTz, $from, $to)
+    public function transform($fromTz, $toTz, $from, $to): void
     {
         $transformer = new DateTimeToRfc3339Transformer($fromTz, $toTz);
 
-        self::assertSame($to, $transformer->transform(null !== $from ? new \DateTimeImmutable($from) : null));
+        self::assertSame($to, $transformer->transform($from !== null ? new \DateTimeImmutable($from) : null));
     }
 
     /**
      * @dataProvider allProvider
+     *
+     * @test
      */
-    public function testTransformDateTimeImmutable($fromTz, $toTz, $from, $to)
+    public function transform_date_time_immutable($fromTz, $toTz, $from, $to): void
     {
         $transformer = new DateTimeToRfc3339Transformer($fromTz, $toTz);
 
-        self::assertSame($to, $transformer->transform(null !== $from ? new \DateTimeImmutable($from) : null));
+        self::assertSame($to, $transformer->transform($from !== null ? new \DateTimeImmutable($from) : null));
     }
 
-    public function testTransformRequiresValidDateTime()
+    /** @test */
+    public function transform_requires_valid_date_time(): void
     {
         $transformer = new DateTimeToRfc3339Transformer();
 
@@ -92,19 +97,22 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
 
     /**
      * @dataProvider reverseTransformProvider
+     *
+     * @test
      */
-    public function testReverseTransform($toTz, $fromTz, $to, $from)
+    public function reverse_transform($toTz, $fromTz, $to, $from): void
     {
         $transformer = new DateTimeToRfc3339Transformer($toTz, $fromTz);
 
-        if (null !== $to) {
+        if ($to !== null) {
             self::assertEquals(new \DateTimeImmutable($to), $transformer->reverseTransform($from));
         } else {
             self::assertSame($to, $transformer->reverseTransform($from));
         }
     }
 
-    public function testReverseTransformRequiresString()
+    /** @test */
+    public function reverse_transform_requires_string(): void
     {
         $transformer = new DateTimeToRfc3339Transformer();
 
@@ -113,7 +121,8 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         $transformer->reverseTransform(12345);
     }
 
-    public function testReverseTransformWithNonExistingDate()
+    /** @test */
+    public function reverse_transform_with_non_existing_date(): void
     {
         $transformer = new DateTimeToRfc3339Transformer('UTC', 'UTC');
 
@@ -122,7 +131,8 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         $transformer->reverseTransform('2010-04-31T04:05Z');
     }
 
-    public function testReverseTransformExpectsValidDateString()
+    /** @test */
+    public function reverse_transform_expects_valid_date_string(): void
     {
         $transformer = new DateTimeToRfc3339Transformer('UTC', 'UTC');
 

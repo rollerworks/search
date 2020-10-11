@@ -36,7 +36,7 @@ final class CachingInputProcessor implements InputProcessor
     private $ttl;
 
     /**
-     * @param int|\DateInterval|null $ttl Optional. The TTL value of this item. If no value is sent and
+     * @param \DateInterval|int|null $ttl Optional. The TTL value of this item. If no value is sent and
      *                                    the driver supports TTL then the library may set a default value
      *                                    for it or let the driver take care of that.
      */
@@ -61,7 +61,7 @@ final class CachingInputProcessor implements InputProcessor
 
             $result = $this->inputProcessor->process($config, $input);
 
-            if (!$result->isEmpty()) {
+            if (! $result->isEmpty()) {
                 $this->cache->set($cacheKey, $this->conditionSerializer->serialize($result));
             }
 
@@ -73,6 +73,6 @@ final class CachingInputProcessor implements InputProcessor
 
     private function getConditionCacheKey(ProcessorConfig $config, string $input): string
     {
-        return hash('sha256', $config->getFieldSet()->getSetName().'~'.$input.'~'.\get_class($this->inputProcessor));
+        return \hash('sha256', $config->getFieldSet()->getSetName() . '~' . $input . '~' . \get_class($this->inputProcessor));
     }
 }

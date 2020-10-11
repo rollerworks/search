@@ -55,9 +55,9 @@ final class LazyExtension implements SearchExtension
 
     public function getType(string $name): FieldType
     {
-        if (!$this->typeContainer->has($name)) {
+        if (! $this->typeContainer->has($name)) {
             throw new InvalidArgumentException(
-                sprintf('The field type "%s" is not registered with the service container.', $name)
+                \sprintf('The field type "%s" is not registered with the service container.', $name)
             );
         }
 
@@ -80,7 +80,7 @@ final class LazyExtension implements SearchExtension
                 // validate result of getExtendedType() to ensure it is consistent with the service definition
                 if ($extension->getExtendedType() !== $name) {
                     throw new InvalidArgumentException(
-                        sprintf('The extended type specified for the service "%s" does not match the actual extended type. Expected "%s", given "%s".',
+                        \sprintf('The extended type specified for the service "%s" does not match the actual extended type. Expected "%s", given "%s".',
                             $extensionId,
                             $name,
                             $extension->getExtendedType()

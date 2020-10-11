@@ -32,7 +32,8 @@ final class CountryTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    public function testCountriesAreSelectable()
+    /** @test */
+    public function countries_are_selectable(): void
     {
         $field = $field = $this->getFactory()->createField('choice', CountryType::class);
         $field->finalizeConfig();
@@ -46,14 +47,15 @@ final class CountryTypeTest extends SearchIntegrationTestCase
         $choices = $view->vars['choices'];
 
         // Don't check objects for identity
-        $this->assertContainsEquals(new ChoiceView('DE', 'DE', 'Germany'), $choices);
-        $this->assertContainsEquals(new ChoiceView('GB', 'GB', 'United Kingdom'), $choices);
-        $this->assertContainsEquals(new ChoiceView('US', 'US', 'United States'), $choices);
-        $this->assertContainsEquals(new ChoiceView('FR', 'FR', 'France'), $choices);
-        $this->assertContainsEquals(new ChoiceView('MY', 'MY', 'Malaysia'), $choices);
+        self::assertContainsEquals(new ChoiceView('DE', 'DE', 'Germany'), $choices);
+        self::assertContainsEquals(new ChoiceView('GB', 'GB', 'United Kingdom'), $choices);
+        self::assertContainsEquals(new ChoiceView('US', 'US', 'United States'), $choices);
+        self::assertContainsEquals(new ChoiceView('FR', 'FR', 'France'), $choices);
+        self::assertContainsEquals(new ChoiceView('MY', 'MY', 'Malaysia'), $choices);
     }
 
-    public function testUnknownCountryIsNotIncluded()
+    /** @test */
+    public function unknown_country_is_not_included(): void
     {
         $field = $field = $this->getFactory()->createField('choice', CountryType::class);
         $field->finalizeConfig();
@@ -63,8 +65,8 @@ final class CountryTypeTest extends SearchIntegrationTestCase
         $choices = $view->vars['choices'];
 
         foreach ($choices as $choice) {
-            if ('ZZ' === $choice->value) {
-                $this->fail('Should not contain choice "ZZ"');
+            if ($choice->value === 'ZZ') {
+                self::fail('Should not contain choice "ZZ"');
             }
         }
 

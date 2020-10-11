@@ -45,7 +45,7 @@ final class FieldTransformationAssertion
         }
 
         $this->inputView = (string) $inputView;
-        $this->inputNorm = null === $inputNorm ? $this->inputView : (string) $inputNorm;
+        $this->inputNorm = $inputNorm === null ? $this->inputView : (string) $inputNorm;
 
         return $this;
     }
@@ -54,20 +54,20 @@ final class FieldTransformationAssertion
     {
         $normValue = $viewValue = null;
 
-        if (null === $this->inputView) {
+        if ($this->inputView === null) {
             throw new \LogicException('withInput() must be called first.');
         }
 
         try {
             $viewValue = $this->viewToModel($this->inputView);
         } catch (TransformationFailedException $e) {
-            Assert::fail('View->model: '.$e->getMessage()."\n".$e->getTraceAsString());
+            Assert::fail('View->model: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         try {
             $normValue = $this->normToModel($this->inputNorm);
         } catch (TransformationFailedException $e) {
-            Assert::fail('Norm->model: '.$e->getMessage()."\n".$e->getTraceAsString());
+            Assert::fail('Norm->model: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         Assert::assertEquals($model, $viewValue, 'View->model value does not equal');
@@ -81,7 +81,7 @@ final class FieldTransformationAssertion
 
     public function failsToTransforms(): void
     {
-        if (null === $this->inputView) {
+        if ($this->inputView === null) {
             throw new \LogicException('withInput() must be called first.');
         }
 
@@ -92,7 +92,7 @@ final class FieldTransformationAssertion
         try {
             $this->modelToView($this->inputView);
 
-            Assert::fail(sprintf('Expected view-input "%s" to be invalid', $this->inputView));
+            Assert::fail(\sprintf('Expected view-input "%s" to be invalid', $this->inputView));
         } catch (TransformationFailedException $e) {
             Assert::assertTrue(true); // no-op
         }
@@ -100,30 +100,30 @@ final class FieldTransformationAssertion
         try {
             $this->modelToNorm($this->inputNorm);
 
-            Assert::fail(sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
+            Assert::fail(\sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
         } catch (TransformationFailedException $e) {
             Assert::assertTrue(true); // no-op
         }
     }
 
-    public function andReverseTransformsTo($expectedView = null, $expectedNorm = null)
+    public function andReverseTransformsTo($expectedView = null, $expectedNorm = null): void
     {
         $normValue = $viewValue = null;
 
-        if (!$this->transformed) {
+        if (! $this->transformed) {
             throw new \LogicException('successfullyTransformsTo() must be called first.');
         }
 
         try {
             $viewValue = $this->modelToView($this->model);
         } catch (TransformationFailedException $e) {
-            Assert::fail('Model->view: '.$e->getMessage()."\n".$e->getTraceAsString());
+            Assert::fail('Model->view: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         try {
             $normValue = $this->modelToNorm($this->model);
         } catch (TransformationFailedException $e) {
-            Assert::fail('Model->norm: '.$e->getMessage()."\n".$e->getTraceAsString());
+            Assert::fail('Model->norm: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         Assert::assertEquals($expectedView, $viewValue, 'View value does not equal');
@@ -132,8 +132,8 @@ final class FieldTransformationAssertion
 
     private function viewToModel($value)
     {
-        if (!$transformer = $this->field->getViewTransformer()) {
-            return '' === $value ? null : $value;
+        if (! $transformer = $this->field->getViewTransformer()) {
+            return $value === '' ? null : $value;
         }
 
         return $transformer->reverseTransform($value);
@@ -145,7 +145,7 @@ final class FieldTransformationAssertion
 
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
-        if (null === $value || !$transformer) {
+        if ($value === null || ! $transformer) {
             return (string) $value;
         }
 
@@ -158,7 +158,7 @@ final class FieldTransformationAssertion
 
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
-        if (null === $value || !$transformer) {
+        if ($value === null || ! $transformer) {
             return (string) $value;
         }
 
@@ -171,7 +171,7 @@ final class FieldTransformationAssertion
 
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
-        if (null === $value || !$transformer) {
+        if ($value === null || ! $transformer) {
             return (string) $value;
         }
 

@@ -65,7 +65,7 @@ final class SearchConditionListener
     {
         $request = $event->getRequest();
 
-        if (!$request->isMethodCacheable() || !$request->attributes->has('_api_resource_class')) {
+        if (! $request->isMethodCacheable() || ! $request->attributes->has('_api_resource_class')) {
             return;
         }
 
@@ -86,7 +86,7 @@ final class SearchConditionListener
 
         // First Dispatch a specific event to for this resource-class and then a generic one for ease of listening.
         // Note. If propagation is stopped for specific listener the generic listener is ignored.
-        $this->eventDispatcher->dispatch($conditionEvent, SearchConditionEvent::SEARCH_CONDITION_EVENT.$resourceClass);
+        $this->eventDispatcher->dispatch($conditionEvent, SearchConditionEvent::SEARCH_CONDITION_EVENT . $resourceClass);
         $this->eventDispatcher->dispatch($conditionEvent, SearchConditionEvent::SEARCH_CONDITION_EVENT);
 
         $request->attributes->set('_api_search_condition', $condition);
@@ -96,32 +96,32 @@ final class SearchConditionListener
     {
         if (empty($searchConfig['contexts'])) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Resource "%s" is missing a contexts array. Add a "contexts" array with at least one entry.',
-                    $resourceClass.'#attributes[rollerworks_search]'
+                    $resourceClass . '#attributes[rollerworks_search]'
                 )
             );
         }
 
         $context = $request->attributes->get('_api_search_context', '_any');
 
-        if (!isset($searchConfig['contexts'][$context])) {
+        if (! isset($searchConfig['contexts'][$context])) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Search context "%s" is not supported for Resource "%s", supported: "%s".',
                     $context,
-                    $resourceClass.'#attributes[rollerworks_search][contexts]',
-                    implode('", "', array_keys($searchConfig['contexts']))
+                    $resourceClass . '#attributes[rollerworks_search][contexts]',
+                    \implode('", "', \array_keys($searchConfig['contexts']))
                 )
             );
         }
 
         if (empty($searchConfig['contexts'][$context]) || empty($searchConfig['contexts'][$context]['fieldset'])) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Search context "%s" is incorrectly configured for Resource "%s", missing a "fieldset" reference.',
                     $context,
-                    $resourceClass.'#attributes[rollerworks_search]'
+                    $resourceClass . '#attributes[rollerworks_search]'
                 )
             );
         }
@@ -139,13 +139,13 @@ final class SearchConditionListener
         }
 
         foreach ($options['processor'] as $option => $value) {
-            $method = 'set'.ucfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $option))));
+            $method = 'set' . \ucfirst(\str_replace(' ', '', \ucwords(\str_replace('_', ' ', $option))));
 
-            if (!method_exists($config, $method)) {
-                throw new RuntimeException(sprintf('Processor option "%s" is not supported for Resource "%s".', $option, $resourceClass));
+            if (! \method_exists($config, $method)) {
+                throw new RuntimeException(\sprintf('Processor option "%s" is not supported for Resource "%s".', $option, $resourceClass));
             }
 
-            if (ctype_digit($value)) {
+            if (\ctype_digit($value)) {
                 $value = (int) $value;
             }
 
@@ -157,7 +157,7 @@ final class SearchConditionListener
     {
         $input = $request->query->get('search', '');
 
-        if (!\is_string($input)) {
+        if (! \is_string($input)) {
             throw new UnexpectedTypeException($input, 'string');
         }
 
@@ -165,7 +165,7 @@ final class SearchConditionListener
 
         $inputProcessor = $this->inputProcessorLoader->get($format);
 
-        if (null !== $this->cache && null !== $ttl = $config->getCacheTTL()) {
+        if ($this->cache !== null && null !== $ttl = $config->getCacheTTL()) {
             $inputProcessor = new CachingInputProcessor(
                 $this->cache,
                 $this->searchFactory->getSerializer(),

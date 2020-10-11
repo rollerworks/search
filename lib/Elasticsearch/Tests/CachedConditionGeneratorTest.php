@@ -25,8 +25,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  * Class CachedConditionGeneratorTest.
  *
  * @group cache
+ *
+ * @internal
  */
-class CachedConditionGeneratorTest extends ElasticsearchTestCase
+final class CachedConditionGeneratorTest extends ElasticsearchTestCase
 {
     /**
      * @var CachedConditionGenerator
@@ -43,14 +45,15 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
      */
     private $conditionGenerator;
 
-    public function testGetQueryNoCache()
+    /** @test */
+    public function get_query_no_cache(): void
     {
         $cacheKey = '';
         $this->cacheDriver
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('has')
             ->with(
-                self::callback(function (string $key) use (&$cacheKey) {
+                self::callback(static function (string $key) use (&$cacheKey) {
                     $cacheKey = $key;
 
                     return true;
@@ -61,14 +64,14 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
         $query = $this->mockQuery();
 
         $this->cacheDriver
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('get');
         $this->cacheDriver
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('set')
             ->with(
                 self::callback(
-                    function (string $key) use (&$cacheKey) {
+                    static function (string $key) use (&$cacheKey) {
                         return $cacheKey === $key;
                     }
                 ),
@@ -77,24 +80,25 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
             );
 
         $this->conditionGenerator
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getQuery')
             ->willReturn($query);
 
         self::assertEquals($query, $this->cachedConditionGenerator->getQuery());
     }
 
-    public function testGetQueryWithCache()
+    /** @test */
+    public function get_query_with_cache(): void
     {
         $cacheKey = '';
 
         $query = $this->mockQuery();
 
         $this->cacheDriver
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('has')
             ->with(
-                self::callback(function (string $key) use (&$cacheKey) {
+                self::callback(static function (string $key) use (&$cacheKey) {
                     $cacheKey = $key;
 
                     return true;
@@ -102,13 +106,13 @@ class CachedConditionGeneratorTest extends ElasticsearchTestCase
             )
             ->willReturn(true);
         $this->cacheDriver
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('set');
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
             ->with(
-                self::callback(function (string $key) use (&$cacheKey) {
+                self::callback(static function (string $key) use (&$cacheKey) {
                     return $cacheKey === $key;
                 })
             )

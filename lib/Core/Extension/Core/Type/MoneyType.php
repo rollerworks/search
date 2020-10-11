@@ -36,7 +36,7 @@ final class MoneyType extends AbstractFieldType
 
     public function __construct()
     {
-        if (!class_exists(IntlMoneyParser::class)) {
+        if (! \class_exists(IntlMoneyParser::class)) {
             throw new \RuntimeException('Unable to use MoneyType without the "moneyphp/money" library.');
         }
 
@@ -75,14 +75,14 @@ final class MoneyType extends AbstractFieldType
                 'grouping' => false,
                 'default_currency' => 'EUR',
                 'increase_by' => 'cents',
-                NormStringQueryInput::FIELD_LEXER_OPTION_NAME => function (StringLexer $lexer, string $allowedNext): string {
+                NormStringQueryInput::FIELD_LEXER_OPTION_NAME => static function (StringLexer $lexer, string $allowedNext): string {
                     if ($lexer->isGlimpse('"')) {
                         return $lexer->stringValue($allowedNext);
                     }
 
                     return $lexer->expects('/([A-Z]{3} )?(-?(\d+)?(\.\d+)?)/As', 'Money format as CUR xx.xx. Eg. EUR 12.00');
                 },
-                StringQueryInput::FIELD_LEXER_OPTION_NAME => function (StringLexer $lexer, string $allowedNext): string {
+                StringQueryInput::FIELD_LEXER_OPTION_NAME => static function (StringLexer $lexer, string $allowedNext): string {
                     if ($lexer->isGlimpse('"')) {
                         return $lexer->stringValue($allowedNext);
                     }
@@ -95,11 +95,11 @@ final class MoneyType extends AbstractFieldType
                     return $lexer->expects('/\p{Sc}?(\xc2\xa0|\h)?-?\p{N}+((\xc2\xa0|\h|\.)\p{N}{2,3})*-?((\xc2\xa0|\h)?\p{Sc})?/Aus', 'MoneyFormat');
                 },
 
-                StringQueryInput::VALUE_EXPORTER_OPTION_NAME => function ($value, callable $transformer, FieldConfig $config) {
+                StringQueryInput::VALUE_EXPORTER_OPTION_NAME => static function ($value, callable $transformer, FieldConfig $config) {
                     $transformedValue = $transformer($value, $config);
 
-                    if (false !== strpos($transformedValue, ',')) {
-                        $transformedValue = '"'.$transformedValue.'"';
+                    if (\mb_strpos($transformedValue, ',') !== false) {
+                        $transformedValue = '"' . $transformedValue . '"';
                     }
 
                     return $transformedValue;

@@ -24,10 +24,8 @@ use Rollerworks\Component\Search\Value\ValuesBag;
  */
 final class ValuesBagTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_allows_adding_simple_values()
+    /** @test */
+    public function it_allows_adding_simple_values(): void
     {
         $valuesBag = new ValuesBag();
         $valuesBag->addSimpleValue('value');
@@ -37,10 +35,8 @@ final class ValuesBagTest extends TestCase
         self::assertEquals(['value', 'value2'], $valuesBag->getSimpleValues());
     }
 
-    /**
-     * @test
-     */
-    public function it_allows_adding_values()
+    /** @test */
+    public function it_allows_adding_values(): void
     {
         $valuesBag = new ValuesBag();
         $valuesBag->add($val1 = new Range(10, 20));
@@ -57,10 +53,8 @@ final class ValuesBagTest extends TestCase
         self::assertEquals([], $valuesBag->get(PatternMatch::class));
     }
 
-    /**
-     * @test
-     */
-    public function it_allows_removing_values()
+    /** @test */
+    public function it_allows_removing_values(): void
     {
         $valuesBag = new ValuesBag();
         $valuesBag->add($val1 = new Range(10, 20));
@@ -78,10 +72,8 @@ final class ValuesBagTest extends TestCase
         self::assertEquals([$val2], $valuesBag->get(Compare::class));
     }
 
-    /**
-     * @test
-     */
-    public function it_allows_removing_simple_values()
+    /** @test */
+    public function it_allows_removing_simple_values(): void
     {
         $valuesBag = new ValuesBag();
         $valuesBag->addSimpleValue('value');
@@ -93,10 +85,8 @@ final class ValuesBagTest extends TestCase
         self::assertEquals([1 => 'value2'], $valuesBag->getSimpleValues());
     }
 
-    /**
-     * @test
-     */
-    public function it_allows_adding_excluded_simple_values()
+    /** @test */
+    public function it_allows_adding_excluded_simple_values(): void
     {
         $valuesBag = new ValuesBag();
         $valuesBag->addExcludedSimpleValue('value');
@@ -106,10 +96,8 @@ final class ValuesBagTest extends TestCase
         self::assertEquals(['value', 'value2'], $valuesBag->getExcludedSimpleValues());
     }
 
-    /**
-     * @test
-     */
-    public function it_allows_removing_excluded_simple_values()
+    /** @test */
+    public function it_allows_removing_excluded_simple_values(): void
     {
         $valuesBag = new ValuesBag();
         $valuesBag->addExcludedSimpleValue('value');

@@ -34,15 +34,15 @@ final class ChoiceToLabelTransformer implements DataTransformer
 
     public function transform($choice)
     {
-        if (null === $this->choiceListView->choicesByLabel) {
+        if ($this->choiceListView->choicesByLabel === null) {
             $this->choiceListView->initChoicesByLabel();
         }
 
         $value = $this->choiceList->getValuesForChoices([$choice]);
-        $value = current($value);
+        $value = \current($value);
 
-        if (!\array_key_exists($value, $this->choiceListView->labelsByValue)) {
-            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $choice));
+        if (! \array_key_exists($value, $this->choiceListView->labelsByValue)) {
+            throw new TransformationFailedException(\sprintf('The choice "%s" does not exist or is not unique', $choice));
         }
 
         return $this->choiceListView->labelsByValue[$value];
@@ -50,20 +50,20 @@ final class ChoiceToLabelTransformer implements DataTransformer
 
     public function reverseTransform($value)
     {
-        if (null !== $value && !\is_string($value)) {
+        if ($value !== null && ! \is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return null;
         }
 
-        if (null === $this->choiceListView->choicesByLabel) {
+        if ($this->choiceListView->choicesByLabel === null) {
             $this->choiceListView->initChoicesByLabel();
         }
 
-        if (!\array_key_exists($value, $this->choiceListView->choicesByLabel)) {
-            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $value));
+        if (! \array_key_exists($value, $this->choiceListView->choicesByLabel)) {
+            throw new TransformationFailedException(\sprintf('The choice "%s" does not exist or is not unique', $value));
         }
 
         return $this->choiceListView->choicesByLabel[$value]->data;

@@ -71,7 +71,7 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
             'geo',
             TextType::class,
             [
-                NormStringQueryInput::FIELD_LEXER_OPTION_NAME => function (StringLexer $lexer): string {
+                NormStringQueryInput::FIELD_LEXER_OPTION_NAME => static function (StringLexer $lexer): string {
                     $result = $lexer->expects('(');
                     $result .= $lexer->expects('/-?\d+,\h*-?\d+/A', 'Geographic points 12,24');
                     $result .= $lexer->expects(')');
@@ -110,7 +110,7 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
      * @test
      * @dataProvider provideMultipleValues
      */
-    public function it_processes_multiple_fields(string $input)
+    public function it_processes_multiple_fields(string $input): void
     {
         $processor = new NormStringQueryInput();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -140,10 +140,8 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
         ];
     }
 
-    /**
-     * @test
-     */
-    public function it_processes_with_customer_value_lexer()
+    /** @test */
+    public function it_processes_with_customer_value_lexer(): void
     {
         $processor = new NormStringQueryInput();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -160,10 +158,8 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
         $this->assertConditionEquals('geo: (12,24), >(12,24), (12,24)~(12,25);', $condition, $processor, $config);
     }
 
-    /**
-     * @test
-     */
-    public function it_errors_when_the_field_does_not_exist_in_fieldset()
+    /** @test */
+    public function it_errors_when_the_field_does_not_exist_in_fieldset(): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -174,7 +170,7 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
             $processor = new NormStringQueryInput();
             $processor->process($config, 'field2: value;');
 
-            $this->fail('Condition should be invalid.');
+            self::fail('Condition should be invalid.');
         } catch (\Exception $e) {
             /* @var InvalidSearchConditionException $e */
             self::detectSystemException($e);

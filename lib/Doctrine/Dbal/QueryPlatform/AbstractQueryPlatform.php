@@ -61,7 +61,7 @@ abstract class AbstractQueryPlatform
 
     public function createParamReferenceFor($value, Type $type = null): string
     {
-        $name = ':search_'.(++$this->parameterIdx);
+        $name = ':search_' . (++$this->parameterIdx);
         $this->parameters->set($name, [$value, $type]);
 
         return $name;
@@ -86,11 +86,11 @@ abstract class AbstractQueryPlatform
             $value = $this->createParamReferenceFor($patternMatch->getValue(), Type::getType('text'));
 
             if ($patternMatch->isCaseInsensitive()) {
-                $column = "LOWER($column)";
-                $value = "LOWER($value)";
+                $column = "LOWER({$column})";
+                $value = "LOWER({$value})";
             }
 
-            return $column.($patternMatch->isExclusive() ? ' <>' : ' =')." $value";
+            return $column . ($patternMatch->isExclusive() ? ' <>' : ' =') . " {$value}";
         }
 
         $patternMap = [
@@ -102,15 +102,15 @@ abstract class AbstractQueryPlatform
             PatternMatch::PATTERN_NOT_ENDS_WITH => ['%s', "'%%'"],
         ];
 
-        $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, Type::getType('text')));
+        $value = \addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
+        $value = \sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, Type::getType('text')));
 
         if ($patternMatch->isCaseInsensitive()) {
-            $column = "LOWER($column)";
-            $value = "LOWER($value)";
+            $column = "LOWER({$column})";
+            $value = "LOWER({$value})";
         }
 
-        return $column.($patternMatch->isExclusive() ? ' NOT' : '')." LIKE $value";
+        return $column . ($patternMatch->isExclusive() ? ' NOT' : '') . " LIKE {$value}";
     }
 
     /**

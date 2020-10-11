@@ -21,7 +21,7 @@ final class UnsupportedFieldSetException extends InvalidArgumentException
     public function __construct(array $expected, string $provided)
     {
         parent::__construct(
-            sprintf('FieldSet "%s" was not expected, expected one of "%s"', $provided, implode('", "', $expected))
+            \sprintf('FieldSet "%s" was not expected, expected one of "%s"', $provided, \implode('", "', $expected))
         );
     }
 }

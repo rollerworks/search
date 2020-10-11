@@ -18,10 +18,13 @@ use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\ApiPlatform\Metadata\DefaultConfigurationMetadataFactory;
 
+/**
+ * @internal
+ */
 final class DefaultConfigurationMetadataFactoryTest extends TestCase
 {
     /** @test */
-    public function it_merges_defaults_into_all_configs()
+    public function it_merges_defaults_into_all_configs(): void
     {
         $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
             'rollerworks_search' => [
@@ -81,7 +84,7 @@ final class DefaultConfigurationMetadataFactoryTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_without_updating_when_no_defaults_were_set()
+    public function it_returns_without_updating_when_no_defaults_were_set(): void
     {
         $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
             'rollerworks_search' => [
@@ -110,7 +113,7 @@ final class DefaultConfigurationMetadataFactoryTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_without_updating_when_no_search_config_was_set()
+    public function it_returns_without_updating_when_no_search_config_was_set(): void
     {
         $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
             'contexts' => [

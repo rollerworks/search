@@ -38,7 +38,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     {
         static $moneyParser;
 
-        if (!$moneyParser) {
+        if (! $moneyParser) {
             $currencies = new ISOCurrencies();
             $moneyParser = new DecimalMoneyParser($currencies);
         }
@@ -61,8 +61,10 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testTransform($from, $to, $locale)
+    public function transform($from, $to, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -71,7 +73,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
-        if (null !== $from) {
+        if ($from !== null) {
             $from = new MoneyValue($this->parseMoneyAsDecimal($from));
         }
 
@@ -80,8 +82,10 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testTransformWithoutCurrency($from, $to, $locale)
+    public function transform_without_currency($from, $to, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -90,16 +94,17 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
-        if (null !== $from) {
+        if ($from !== null) {
             $from = new MoneyValue($this->parseMoneyAsDecimal($from), false);
         }
 
-        $to = preg_replace('#(\s?\p{Sc}\s?)#u', '', $to);
+        $to = \preg_replace('#(\s?\p{Sc}\s?)#u', '', $to);
 
         self::assertEquals($to, $transformer->transform($from));
     }
 
-    public function testTransformWithoutCurrencyAndDifferentDefaultCurrency()
+    /** @test */
+    public function transform_without_currency_and_different_default_currency(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -126,8 +131,10 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformationsWithGrouping
+     *
+     * @test
      */
-    public function testTransformWithGrouping($from, $to, $locale)
+    public function transform_with_grouping($from, $to, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -142,8 +149,10 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testReverseTransform($to, $from, $locale)
+    public function reverse_transform($to, $from, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, '58.1');
@@ -152,7 +161,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
-        if (null !== $to) {
+        if ($to !== null) {
             $to = new MoneyValue($this->parseMoneyAsDecimal($to));
         }
 
@@ -161,18 +170,20 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testReverseTransformWithoutCurrency($to, $from, $locale)
+    public function reverse_transform_without_currency($to, $from, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
 
         \Locale::setDefault($locale);
 
-        $from = preg_replace('#(\s?\p{Sc}\s?)#u', '', $from);
+        $from = \preg_replace('#(\s?\p{Sc}\s?)#u', '', $from);
         $transformer = new MoneyToLocalizedStringTransformer('USD');
 
-        if (null !== $to) {
+        if ($to !== null) {
             $to = new MoneyValue($this->parseMoneyAsDecimal($to, 'USD'), false);
         }
 
@@ -181,8 +192,10 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformationsWithGrouping
+     *
+     * @test
      */
-    public function testReverseTransformWithGrouping($to, $from, $locale)
+    public function reverse_transform_with_grouping($to, $from, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, '58.1');
@@ -197,8 +210,10 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @see https://github.com/symfony/symfony/issues/7609
+     *
+     * @test
      */
-    public function testReverseTransformWithGroupingAndFixedSpaces()
+    public function reverse_transform_with_grouping_and_fixed_spaces(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -213,7 +228,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    public function testReverseTransformWithGroupingButWithoutGroupSeparator()
+    /** @test */
+    public function reverse_transform_with_grouping_but_without_group_separator(): void
     {
         // Since we test against "de_AT", we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -234,7 +250,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    public function testDecimalSeparatorMayBeDotIfGroupingSeparatorIsNotDot()
+    /** @test */
+    public function decimal_separator_may_be_dot_if_grouping_separator_is_not_dot(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -266,7 +283,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    public function testDecimalSeparatorMayNotBeDotIfGroupingSeparatorIsDot()
+    /** @test */
+    public function decimal_separator_may_not_be_dot_if_grouping_separator_is_dot(): void
     {
         // Since we test against "de_DE", we need the full implementation
         IntlTestHelper::requireFullIntl($this, '58.1');
@@ -280,7 +298,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1.234.5');
     }
 
-    public function testDecimalSeparatorMayNotBeDotIfGroupingSeparatorIsDotWithNoGroupSep()
+    /** @test */
+    public function decimal_separator_may_not_be_dot_if_grouping_separator_is_dot_with_no_group_sep(): void
     {
         // Since we test against "de_DE", we need the full implementation
         IntlTestHelper::requireFullIntl($this, '58.1');
@@ -294,7 +313,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1234.5');
     }
 
-    public function testDecimalSeparatorMayBeDotIfGroupingSeparatorIsDotButNoGroupingUsed()
+    /** @test */
+    public function decimal_separator_may_be_dot_if_grouping_separator_is_dot_but_no_grouping_used(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, '58.1');
@@ -313,7 +333,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    public function testDecimalSeparatorMayBeCommaIfGroupingSeparatorIsNotComma()
+    /** @test */
+    public function decimal_separator_may_be_comma_if_grouping_separator_is_not_comma(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, '58.1');
@@ -345,7 +366,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    public function testDecimalSeparatorMayNotBeCommaIfGroupingSeparatorIsComma()
+    /** @test */
+    public function decimal_separator_may_not_be_comma_if_grouping_separator_is_comma(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR', true);
 
@@ -354,7 +376,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1,234,5');
     }
 
-    public function testDecimalSeparatorMayNotBeCommaIfGroupingSeparatorIsCommaWithNoGroupSep()
+    /** @test */
+    public function decimal_separator_may_not_be_comma_if_grouping_separator_is_comma_with_no_group_sep(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR', true);
 
@@ -363,7 +386,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1234,5');
     }
 
-    public function testDecimalSeparatorMayBeCommaIfGroupingSeparatorIsCommaButNoGroupingUsed()
+    /** @test */
+    public function decimal_separator_may_be_comma_if_grouping_separator_is_comma_but_no_grouping_used(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
@@ -378,7 +402,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    public function testTransformExpectsMoneyValue()
+    /** @test */
+    public function transform_expects_money_value(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
@@ -387,7 +412,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->transform('foo');
     }
 
-    public function testReverseTransformExpectsString()
+    /** @test */
+    public function reverse_transform_expects_string(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
@@ -396,7 +422,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform(1);
     }
 
-    public function testReverseTransformExpectsValidNumber()
+    /** @test */
+    public function reverse_transform_expects_valid_number(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
@@ -405,7 +432,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('foo');
     }
 
-    public function testReverseTransformDisallowsNaN()
+    /** @test */
+    public function reverse_transform_disallows_na_n(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
@@ -414,7 +442,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('NaN');
     }
 
-    public function testReverseTransformDisallowsNaN2()
+    /** @test */
+    public function reverse_transform_disallows_na_n2(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
@@ -423,7 +452,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('nan');
     }
 
-    public function testReverseTransformDisallowsInfinity()
+    /** @test */
+    public function reverse_transform_disallows_infinity(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
@@ -432,7 +462,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞');
     }
 
-    public function testReverseTransformDisallowsInfinity2()
+    /** @test */
+    public function reverse_transform_disallows_infinity2(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 
@@ -441,7 +472,8 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞,123');
     }
 
-    public function testReverseTransformDisallowsNegativeInfinity()
+    /** @test */
+    public function reverse_transform_disallows_negative_infinity(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
 

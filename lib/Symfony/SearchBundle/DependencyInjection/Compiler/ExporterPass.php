@@ -28,9 +28,9 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  */
 final class ExporterPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('rollerworks_search.exporter_loader')) {
+        if (! $container->hasDefinition('rollerworks_search.exporter_loader')) {
             return;
         }
 
@@ -38,8 +38,8 @@ final class ExporterPass implements CompilerPassInterface
         $exportersServices = [];
 
         foreach ($container->findTaggedServiceIds('rollerworks_search.condition_exporter') as $serviceId => $tag) {
-            if (!isset($tag[0]['format'])) {
-                throw new InvalidArgumentException(sprintf('"rollerworks_search.condition_exporter" tagged services must have the format configured using the format attribute, none was configured for the "%s" service.', $serviceId));
+            if (! isset($tag[0]['format'])) {
+                throw new InvalidArgumentException(\sprintf('"rollerworks_search.condition_exporter" tagged services must have the format configured using the format attribute, none was configured for the "%s" service.', $serviceId));
             }
 
             $exporters[$tag[0]['format']] = $serviceId;

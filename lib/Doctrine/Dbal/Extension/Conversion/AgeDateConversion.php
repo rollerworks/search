@@ -23,7 +23,7 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
         if ($hints->getProcessingValue() instanceof \DateTimeImmutable) {
-            return "CAST($column AS DATE)";
+            return "CAST({$column} AS DATE)";
         }
 
         $platform = $hints->connection->getDatabasePlatform()->getName();
@@ -37,11 +37,11 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
         $convertMap['mock'] = 'search_conversion_age(%1$s)';
 
         if (isset($convertMap[$platform])) {
-            return sprintf($convertMap[$platform], $column);
+            return \sprintf($convertMap[$platform], $column);
         }
 
         throw new \RuntimeException(
-            sprintf('Unsupported platform "%s" for AgeDateConversion.', $platform)
+            \sprintf('Unsupported platform "%s" for AgeDateConversion.', $platform)
         );
     }
 

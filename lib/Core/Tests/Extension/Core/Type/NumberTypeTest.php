@@ -24,7 +24,8 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class NumberTypeTest extends SearchIntegrationTestCase
 {
-    public function testCastsToInteger()
+    /** @test */
+    public function casts_to_integer(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class);
 
@@ -49,7 +50,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('-1');
     }
 
-    public function testWrongInputFails()
+    /** @test */
+    public function wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('integer', NumberType::class);
 
@@ -58,7 +60,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
             ->failsToTransforms();
     }
 
-    public function testDefaultFormatting()
+    /** @test */
+    public function default_formatting(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class);
 
@@ -73,7 +76,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('12345,679', '12345.679');
     }
 
-    public function testNonWesternFormatting()
+    /** @test */
+    public function non_western_formatting(): void
     {
         \Locale::setDefault('ar');
 
@@ -90,7 +94,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('١٢٣٤٥٫٦٧٩', '12345.679');
     }
 
-    public function testDefaultFormattingWithGrouping()
+    /** @test */
+    public function default_formatting_with_grouping(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class, ['grouping' => true]);
 
@@ -105,7 +110,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('12.345,679', '12345.679');
     }
 
-    public function testDefaultFormattingWithPrecision()
+    /** @test */
+    public function default_formatting_with_precision(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class, ['scale' => 2]);
 
@@ -120,7 +126,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('12345,67', '12345.67');
     }
 
-    public function testDefaultFormattingWithRounding()
+    /** @test */
+    public function default_formatting_with_rounding(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class, [
             'scale' => 0, 'rounding_mode' => \NumberFormatter::ROUND_UP,
@@ -137,7 +144,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('12345');
     }
 
-    public function testViewIsConfiguredProperly()
+    /** @test */
+    public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class, [
             'scale' => 0, 'grouping' => false,

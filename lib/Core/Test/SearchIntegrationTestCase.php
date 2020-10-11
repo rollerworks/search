@@ -53,7 +53,7 @@ abstract class SearchIntegrationTestCase extends TestCase
 
     protected function getFactory(): SearchFactory
     {
-        if (null === $this->searchFactory) {
+        if ($this->searchFactory === null) {
             $this->factoryBuilder->addExtensions($this->getExtensions());
             $this->factoryBuilder->addTypes($this->getTypes());
             $this->factoryBuilder->addTypeExtensions($this->getTypeExtensions());
@@ -92,11 +92,11 @@ abstract class SearchIntegrationTestCase extends TestCase
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
-    protected static function assertConditionsEquals(SearchCondition $expectedCondition, SearchCondition $actualCondition)
+    protected static function assertConditionsEquals(SearchCondition $expectedCondition, SearchCondition $actualCondition): void
     {
         try {
             // First try the "simple" method, it's possible this fails due to index mismatches.
-            self::assertEquals($expectedCondition, $actualCondition);
+            static::assertEquals($expectedCondition, $actualCondition);
         } catch (\Exception $e) {
             // No need for custom implementations here.
             // The reindexValuesGroup can be used for custom implementations (when needed).
@@ -105,7 +105,7 @@ abstract class SearchIntegrationTestCase extends TestCase
                 self::reindexValuesGroup($actualCondition->getValuesGroup())
             );
 
-            self::assertEquals($expectedCondition, $actualCondition);
+            static::assertEquals($expectedCondition, $actualCondition);
         }
     }
 
@@ -130,7 +130,7 @@ abstract class SearchIntegrationTestCase extends TestCase
 
             // use array_merge to renumber indexes and prevent mismatches.
             foreach ($valuesBag->all() as $type => $values) {
-                foreach (array_merge([], $values) as $value) {
+                foreach (\array_merge([], $values) as $value) {
                     $newValuesBag->add($value);
                 }
             }
@@ -141,29 +141,29 @@ abstract class SearchIntegrationTestCase extends TestCase
         return $newValuesGroup;
     }
 
-    protected function assertConditionEquals($input, SearchCondition $condition, InputProcessor $processor, ProcessorConfig $config)
+    protected function assertConditionEquals($input, SearchCondition $condition, InputProcessor $processor, ProcessorConfig $config): void
     {
         try {
-            self::assertEquals($condition, $processor->process($config, $input));
+            static::assertEquals($condition, $processor->process($config, $input));
         } catch (\Exception $e) {
             InputProcessorTestCase::detectSystemException($e);
 
             if (\function_exists('dump')) {
                 dump($e);
             } else {
-                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.'.PHP_EOL;
+                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
-                echo \get_class($e).'::'.(string) $e;
+                echo \get_class($e) . '::' . (string) $e;
             }
 
-            $this->fail('Condition contains errors.');
+            static::fail('Condition contains errors.');
         }
     }
 
-    protected static function detectSystemException(\Exception $exception)
+    protected static function detectSystemException(\Exception $exception): void
     {
-        if (!$exception instanceof SearchException) {
+        if (! $exception instanceof SearchException) {
             throw $exception;
         }
     }

@@ -26,8 +26,6 @@ interface ConditionExporter
      * The returned format can be anything, as long as it's possible
      * to 're-import' the exported search condition with a compatible
      * input processor.
-     *
-     * @return mixed
      */
     public function exportCondition(SearchCondition $condition);
 }

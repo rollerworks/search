@@ -24,7 +24,8 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class DateTypeTest extends SearchIntegrationTestCase
 {
-    public function testPatternCanBeConfigured()
+    /** @test */
+    public function pattern_can_be_configured(): void
     {
         $field = $this->getFactory()->createField('datetime', DateType::class, [
             'pattern' => 'MM*yyyy*dd',
@@ -38,7 +39,8 @@ final class DateTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('06*2010*02', '2010-06-02');
     }
 
-    public function testInvalidInputShouldFailTransformation()
+    /** @test */
+    public function invalid_input_should_fail_transformation(): void
     {
         $field = $this->getFactory()->createField('datetime', DateType::class, [
             'pattern' => 'MM-yyyy-dd',
@@ -53,7 +55,8 @@ final class DateTypeTest extends SearchIntegrationTestCase
             ->failsToTransforms();
     }
 
-    public function testViewIsConfiguredProperlyWithoutExplicitPattern()
+    /** @test */
+    public function view_is_configured_properly_without_explicit_pattern(): void
     {
         $field = $this->getFactory()->createField('datetime', DateType::class, [
             'format' => \IntlDateFormatter::SHORT,
@@ -65,11 +68,12 @@ final class DateTypeTest extends SearchIntegrationTestCase
         self::assertArrayHasKey('timezone', $fieldView->vars);
         self::assertArrayHasKey('pattern', $fieldView->vars);
 
-        self::assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
+        self::assertEquals(\date_default_timezone_get(), $fieldView->vars['timezone']);
         self::assertEquals('M/d/yy', $fieldView->vars['pattern']);
     }
 
-    public function testViewIsConfiguredProperly()
+    /** @test */
+    public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField('datetime', DateType::class, [
             'pattern' => 'MM-yyyy-dd',
@@ -81,7 +85,7 @@ final class DateTypeTest extends SearchIntegrationTestCase
         self::assertArrayHasKey('timezone', $fieldView->vars);
         self::assertArrayHasKey('pattern', $fieldView->vars);
 
-        self::assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
+        self::assertEquals(\date_default_timezone_get(), $fieldView->vars['timezone']);
         self::assertEquals('MM-yyyy-dd', $fieldView->vars['pattern']);
     }
 

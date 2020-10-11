@@ -32,11 +32,13 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @group unit
+ *
+ * @internal
  */
 final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
 {
     /** @test */
-    public function it_throws_a_logic_exception_if_referencing_a_field_not_in_fieldset()
+    public function it_throws_a_logic_exception_if_referencing_a_field_not_in_fieldset(): void
     {
         $this->expectException(UnknownFieldException::class);
 
@@ -55,7 +57,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_an_match_all_query_for_empty_condition()
+    public function it_generates_an_match_all_query_for_empty_condition(): void
     {
         $condition = $this->createCondition()->getSearchCondition();
         $generator = new QueryConditionGenerator($condition);
@@ -72,7 +74,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_a_structure_of_root_level_fields()
+    public function it_generates_a_structure_of_root_level_fields(): void
     {
         $condition = $this->createCondition()
             ->field('id')
@@ -118,7 +120,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_a_structure_with_or()
+    public function it_generates_a_structure_with_or(): void
     {
         $condition = $this->createCondition()
             ->group(ValuesGroup::GROUP_LOGICAL_OR)
@@ -197,7 +199,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_a_structure_of_root_level_fields_with_excludes()
+    public function it_generates_a_structure_of_root_level_fields_with_excludes(): void
     {
         $condition = $this->createCondition()
             ->field('id')
@@ -235,7 +237,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_a_simple_structure_of_nested_fields()
+    public function it_generates_a_simple_structure_of_nested_fields(): void
     {
         $condition = $this->createCondition()
             ->field('id')
@@ -289,7 +291,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_a_structure_with_excludes()
+    public function it_generates_a_structure_with_excludes(): void
     {
         $condition = $this->createCondition()
             ->field('id')
@@ -341,7 +343,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_a_structure_with_comparisons()
+    public function it_generates_a_structure_with_comparisons(): void
     {
         $condition = $this->createCondition()
             ->field('id')
@@ -396,7 +398,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_a_structure_with_PatternMatchers()
+    public function it_generates_a_structure_with__pattern_matchers(): void
     {
         $condition = $this->createCondition()
             ->field('name')
@@ -478,7 +480,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_generates_a_structure_with_nested_queries()
+    public function it_generates_a_structure_with_nested_queries(): void
     {
         $condition = $this->createCondition()
             ->field('name')
@@ -524,7 +526,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_applies_the_primaryCondition_without_a_query()
+    public function it_applies_the_primary_condition_without_a_query(): void
     {
         $primaryCondition = new SearchPrimaryCondition(
             $this->createCondition()
@@ -568,7 +570,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_applies_the_primaryCondition_with_a_query()
+    public function it_applies_the_primary_condition_with_a_query(): void
     {
         $primaryCondition = new SearchPrimaryCondition(
             $this->createCondition()
@@ -637,7 +639,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_looks_up_by_child_document()
+    public function it_looks_up_by_child_document(): void
     {
         $condition = $this
             ->createCondition()
@@ -684,7 +686,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_adds_contextual_params()
+    public function it_adds_contextual_params(): void
     {
         $condition = $this
             ->createCondition()
@@ -727,7 +729,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_adds_contextual_params_to_primary_query()
+    public function it_adds_contextual_params_to_primary_query(): void
     {
         $primaryCondition = new SearchPrimaryCondition(
             $this->createCondition()
@@ -800,7 +802,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_adds_contextual_conditions_for_has_child_query()
+    public function it_adds_contextual_conditions_for_has_child_query(): void
     {
         $condition = $this
             ->createCondition()
@@ -883,7 +885,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_adds_sort()
+    public function it_adds_sort(): void
     {
         $condition = $this
             ->createCondition(true)
@@ -912,7 +914,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_adds_sort_from_primary_condition()
+    public function it_adds_sort_from_primary_condition(): void
     {
         $primaryCondition = new SearchPrimaryCondition(
             $this->createCondition(true)
@@ -951,7 +953,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_adds_sort_for_has_child_query()
+    public function it_adds_sort_for_has_child_query(): void
     {
         $condition = $this
             ->createCondition(true)
@@ -991,7 +993,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_merges_has_child_queries_from_conditional_order_queries()
+    public function it_merges_has_child_queries_from_conditional_order_queries(): void
     {
         $condition = $this
             ->createCondition(true)
@@ -1046,7 +1048,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_adds_additional_options_for_nested_queries()
+    public function it_adds_additional_options_for_nested_queries(): void
     {
         $condition = $this->createCondition()
             ->field('name')
@@ -1087,7 +1089,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_merges_single_level_nested_queries()
+    public function it_merges_single_level_nested_queries(): void
     {
         $condition = $this->createCondition()
             ->field('name')
@@ -1144,9 +1146,9 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_merges_multiple_level_nested_queries()
+    public function it_merges_multiple_level_nested_queries(): void
     {
-        $this->markTestIncomplete(
+        self::markTestIncomplete(
             'This test has not been implemented yet. Read #268.'
         );
 
@@ -1232,6 +1234,7 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     private function createSearchOrder(array $fields): SearchOrder
     {
         $valuesGroup = new ValuesGroup();
+
         foreach ($fields as $field => $direction) {
             $valuesBag = new ValuesBag();
             $valuesBag->addSimpleValue($direction);
@@ -1246,16 +1249,18 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
      * @param string[]       $expected
      * @param FieldMapping[] $mappings
      */
-    private static function assertSearch(array $expected, array $mappings)
+    private static function assertSearch(array $expected, array $mappings): void
     {
         $actual = [];
+
         foreach ($mappings as $mapping) {
             $search = null;
+
             if ($mapping->indexName) {
-                $search = '/'.$mapping->indexName;
+                $search = '/' . $mapping->indexName;
 
                 if ($mapping->typeName) {
-                    $search .= '/'.$mapping->typeName;
+                    $search .= '/' . $mapping->typeName;
                 }
             }
 
@@ -1264,25 +1269,26 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             }
         }
 
-        sort($expected);
-        sort($actual);
+        \sort($expected);
+        \sort($actual);
 
-        self::assertEquals($expected, array_unique($actual));
+        self::assertEquals($expected, \array_unique($actual));
     }
 
     /**
      * @param string[]       $expected
      * @param FieldMapping[] $mappings
      */
-    private static function assertMapping(array $expected, array $mappings)
+    private static function assertMapping(array $expected, array $mappings): void
     {
         $actual = [];
+
         foreach ($mappings as $mapping) {
             $actual[] = $mapping->fieldName;
         }
 
-        sort($expected);
-        sort($actual);
+        \sort($expected);
+        \sort($actual);
 
         self::assertEquals($expected, $actual);
     }

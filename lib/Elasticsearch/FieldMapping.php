@@ -68,6 +68,7 @@ final class FieldMapping implements \Serializable
         if ($converter instanceof ValueConversion) {
             $this->valueConversion = $converter;
         }
+
         if ($converter instanceof QueryConversion) {
             $this->queryConversion = $converter;
         }
@@ -95,42 +96,44 @@ final class FieldMapping implements \Serializable
         $propertyName = $property;
         $nested = false;
         $join = false;
-        if (false !== strpos($property, '#')) {
-            [$path, $propertyName] = explode('#', $property);
 
-            $path = trim($path, '/');
+        if (\mb_strpos($property, '#') !== false) {
+            [$path, $propertyName] = \explode('#', $property);
+
+            $path = \trim($path, '/');
             $indexName = $path;
-            if (false !== strpos($path, '/')) {
-                [$indexName, $typeName] = explode('/', $path);
+
+            if (\mb_strpos($path, '/') !== false) {
+                [$indexName, $typeName] = \explode('/', $path);
             }
         }
 
-        if (false !== strpos($property, '>')) {
-            $tokens = explode('>', $propertyName);
+        if (\mb_strpos($property, '>') !== false) {
+            $tokens = \explode('>', $propertyName);
 
             // last token is the property name
-            $propertyName = trim(array_pop($tokens), '.');
+            $propertyName = \trim(\array_pop($tokens), '.');
 
             foreach ($tokens as $type) {
-                $type = trim($type, '.');
-                $join = compact('type', 'join');
+                $type = \trim($type, '.');
+                $join = \compact('type', 'join');
             }
         }
 
-        if (false !== strpos($propertyName, '[]')) {
-            $tokens = explode('[]', $propertyName);
+        if (\mb_strpos($propertyName, '[]') !== false) {
+            $tokens = \explode('[]', $propertyName);
 
             // last token is the property name
-            $propertyName = trim(array_pop($tokens), '.');
-            $propertyName = trim(end($tokens), '.').'.'.$propertyName;
+            $propertyName = \trim(\array_pop($tokens), '.');
+            $propertyName = \trim(\end($tokens), '.') . '.' . $propertyName;
 
             foreach ($tokens as $path) {
-                $path = trim($path, '.');
-                $nested = compact('path', 'nested');
+                $path = \trim($path, '.');
+                $nested = \compact('path', 'nested');
             }
         }
 
-        return compact('indexName', 'typeName', 'propertyName', 'nested', 'join');
+        return \compact('indexName', 'typeName', 'propertyName', 'nested', 'join');
     }
 
     private function expandConditions(array $conditions, FieldConfig $fieldConfig): array
@@ -138,13 +141,13 @@ final class FieldMapping implements \Serializable
         if (OrderField::isOrder($this->fieldName) && $this->join) {
             // sorting by has_child query is special
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html#_sorting
-            $property = $this->indexName.($this->typeName ? '/'.$this->typeName : '').'#'.$this->join['type'].'>';
+            $property = $this->indexName . ($this->typeName ? '/' . $this->typeName : '') . '#' . $this->join['type'] . '>';
 
             $scoreQuery = new self('_', $property, $fieldConfig, [], ['score_mode' => 'max']);
             $scoreQuery->propertyQuery = [
                 QueryConditionGenerator::QUERY_FUNCTION_SCORE => [
                     QueryConditionGenerator::QUERY_SCRIPT_SCORE => [
-                        QueryConditionGenerator::QUERY_SCRIPT => sprintf('%1$s * doc["%2$s"].value', QueryConditionGenerator::SORT_SCORE, $this->propertyName),
+                        QueryConditionGenerator::QUERY_SCRIPT => \sprintf('%1$s * doc["%2$s"].value', QueryConditionGenerator::SORT_SCORE, $this->propertyName),
                     ],
                 ],
             ];
@@ -156,7 +159,7 @@ final class FieldMapping implements \Serializable
 
     public function serialize()
     {
-        return serialize(
+        return \serialize(
             [
                 'field_name' => $this->fieldName,
                 'index_name' => $this->indexName,

@@ -42,7 +42,7 @@ final class TimezoneType extends AbstractFieldType implements ChoiceLoader
 
     public function loadChoiceList(callable $value = null): ChoiceList
     {
-        if (null !== $this->choiceList) {
+        if ($this->choiceList !== null) {
             return $this->choiceList;
         }
 
@@ -69,11 +69,11 @@ final class TimezoneType extends AbstractFieldType implements ChoiceLoader
         $timezones = [];
 
         foreach (\DateTimeZone::listIdentifiers() as $timezone) {
-            $parts = explode('/', $timezone);
+            $parts = \explode('/', $timezone);
 
             if (\count($parts) > 2) {
                 $region = $parts[0];
-                $name = $parts[1].' - '.$parts[2];
+                $name = $parts[1] . ' - ' . $parts[2];
             } elseif (\count($parts) > 1) {
                 $region = $parts[0];
                 $name = $parts[1];
@@ -82,7 +82,7 @@ final class TimezoneType extends AbstractFieldType implements ChoiceLoader
                 $name = $parts[0];
             }
 
-            $timezones[$region][str_replace('_', ' ', $name)] = $timezone;
+            $timezones[$region][\str_replace('_', ' ', $name)] = $timezone;
         }
 
         return $timezones;

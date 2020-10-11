@@ -44,7 +44,7 @@ class ProcessorConfig
     private $fieldSet;
 
     /**
-     * @var int|\DateInterval|null
+     * @var \DateInterval|int|null
      */
     private $cacheTTL;
 
@@ -64,7 +64,7 @@ class ProcessorConfig
     /**
      * Set the maximum group nesting level.
      */
-    public function setMaxNestingLevel(int $maxNestingLevel)
+    public function setMaxNestingLevel(int $maxNestingLevel): void
     {
         $this->maxNestingLevel = $maxNestingLevel;
     }
@@ -80,7 +80,7 @@ class ProcessorConfig
     /**
      * Set the maximum number of values per group.
      */
-    public function setMaxValues(int $maxValues)
+    public function setMaxValues(int $maxValues): void
     {
         $this->maxValues = $maxValues;
     }
@@ -99,7 +99,7 @@ class ProcessorConfig
      * To calculate an absolute maximum use following formula:
      * maxGroups * maxNestingLevel.
      */
-    public function setMaxGroups(int $maxGroups)
+    public function setMaxGroups(int $maxGroups): void
     {
         $this->maxGroups = $maxGroups;
     }
@@ -113,7 +113,7 @@ class ProcessorConfig
     }
 
     /**
-     * @param int|\DateInterval|null $cacheTTL
+     * @param \DateInterval|int|null $cacheTTL
      *
      * @return ProcessorConfig
      */
@@ -125,7 +125,7 @@ class ProcessorConfig
     }
 
     /**
-     * @return int|\DateInterval|null
+     * @return \DateInterval|int|null
      */
     public function getCacheTTL()
     {

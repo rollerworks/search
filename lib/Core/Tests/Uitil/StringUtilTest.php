@@ -23,12 +23,14 @@ final class StringUtilTest extends TestCase
 {
     /**
      * @dataProvider fqcnToBlockPrefixProvider
+     *
+     * @test
      */
-    public function testFqcnToBlockPrefix($fqcn, $expectedBlockPrefix)
+    public function fqcn_to_block_prefix($fqcn, $expectedBlockPrefix): void
     {
         $blockPrefix = StringUtil::fqcnToBlockPrefix($fqcn);
 
-        $this->assertSame($expectedBlockPrefix, $blockPrefix);
+        self::assertSame($expectedBlockPrefix, $blockPrefix);
     }
 
     public function fqcnToBlockPrefixProvider()

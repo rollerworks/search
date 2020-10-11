@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class RollerworksSearchBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new Compiler\ExtensionPass());
         $container->addCompilerPass(new Compiler\InputProcessorPass());

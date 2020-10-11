@@ -43,7 +43,7 @@ final class GenericTypeRegistry implements TypeRegistry
     public function __construct(array $extensions, ResolvedFieldTypeFactory $resolvedTypeFactory)
     {
         foreach ($extensions as $extension) {
-            if (!$extension instanceof SearchExtension) {
+            if (! $extension instanceof SearchExtension) {
                 throw new UnexpectedTypeException($extension, SearchExtension::class);
             }
         }
@@ -54,7 +54,7 @@ final class GenericTypeRegistry implements TypeRegistry
 
     public function getType(string $name): ResolvedFieldType
     {
-        if (!isset($this->types[$name])) {
+        if (! isset($this->types[$name])) {
             $type = null;
 
             foreach ($this->extensions as $extension) {
@@ -65,10 +65,10 @@ final class GenericTypeRegistry implements TypeRegistry
                 }
             }
 
-            if (!$type) {
+            if (! $type) {
                 // Support fully-qualified class names.
-                if (!class_exists($name) || !\in_array(FieldType::class, class_implements($name), true)) {
-                    throw new InvalidArgumentException(sprintf('Could not load type "%s"', $name));
+                if (! \class_exists($name) || ! \in_array(FieldType::class, \class_implements($name), true)) {
+                    throw new InvalidArgumentException(\sprintf('Could not load type "%s"', $name));
                 }
 
                 $type = new $name();
@@ -108,7 +108,7 @@ final class GenericTypeRegistry implements TypeRegistry
         $typeExtensions = [];
 
         foreach ($this->extensions as $extension) {
-            $typeExtensions = array_merge(
+            $typeExtensions = \array_merge(
                 $typeExtensions,
                 $extension->getTypeExtensions($fqcn)
             );

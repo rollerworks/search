@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\Field\FieldTypeExtension;
 final class LazyExtensionTest extends TestCase
 {
     /** @test */
-    public function it_allows_creating_without_types()
+    public function it_allows_creating_without_types(): void
     {
         $extension = LazyExtension::create([]);
 
@@ -37,11 +37,11 @@ final class LazyExtensionTest extends TestCase
     }
 
     /** @test */
-    public function it_loads_registered_type()
+    public function it_loads_registered_type(): void
     {
         $extension = LazyExtension::create(
             [
-                TextType::class => function () {
+                TextType::class => static function () {
                     return new TextType();
                 },
             ]
@@ -53,20 +53,20 @@ final class LazyExtensionTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_when_requested_type_is_not_registered()
+    public function it_fails_when_requested_type_is_not_registered(): void
     {
         $extension = LazyExtension::create([]);
 
         self::assertFalse($extension->hasType(TextType::class));
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The field type "'.TextType::class.'" is not registered with the service container.');
+        $this->expectExceptionMessage('The field type "' . TextType::class . '" is not registered with the service container.');
 
         $extension->getType(TextType::class);
     }
 
     /** @test */
-    public function it_loads_type_extensions()
+    public function it_loads_type_extensions(): void
     {
         $typeExtension1 = $this->createTypeExtension(TextType::class);
         $typeExtension2 = $this->createTypeExtension(TextType::class);
@@ -74,7 +74,7 @@ final class LazyExtensionTest extends TestCase
 
         $extension = LazyExtension::create(
             [
-                TextType::class => function () {
+                TextType::class => static function () {
                     return new TextType();
                 },
             ],
@@ -94,13 +94,13 @@ final class LazyExtensionTest extends TestCase
     }
 
     /** @test */
-    public function it_checks_type_extension_parent_equality()
+    public function it_checks_type_extension_parent_equality(): void
     {
         $typeExtension1 = $this->createTypeExtension(TextType::class);
 
         $extension = LazyExtension::create(
             [
-                TextType::class => function () {
+                TextType::class => static function () {
                     return new TextType();
                 },
             ],
@@ -111,7 +111,7 @@ final class LazyExtensionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            sprintf(
+            \sprintf(
                 'The extended type specified for the service "%s" does not match the actual extended type. Expected "%s", given "%s".',
                 'extension_1',
                 IntegerType::class,

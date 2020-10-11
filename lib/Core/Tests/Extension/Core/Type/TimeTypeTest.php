@@ -33,17 +33,18 @@ final class TimeTypeTest extends SearchIntegrationTestCase
 
         parent::setUp();
 
-        $this->defaultTimezone = date_default_timezone_get();
+        $this->defaultTimezone = \date_default_timezone_get();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
 
-        date_default_timezone_set($this->defaultTimezone);
+        \date_default_timezone_set($this->defaultTimezone);
     }
 
-    public function testCanTransformTimeWithoutSeconds()
+    /** @test */
+    public function can_transform_time_without_seconds(): void
     {
         $field = $this->getFactory()->createField('time', TimeType::class);
 
@@ -55,7 +56,8 @@ final class TimeTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('03:04');
     }
 
-    public function testCanTransformTimeWithSeconds()
+    /** @test */
+    public function can_transform_time_with_seconds(): void
     {
         $field = $this->getFactory()->createField('time', TimeType::class, ['with_seconds' => true]);
 
@@ -67,7 +69,8 @@ final class TimeTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('03:04:05');
     }
 
-    public function testViewIsConfiguredProperlyWithMinutesAndSeconds()
+    /** @test */
+    public function view_is_configured_properly_with_minutes_and_seconds(): void
     {
         $field = $this->getFactory()->createField('datetime', TimeType::class, [
             'with_minutes' => true,
@@ -84,7 +87,8 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('H:i:s', $fieldView->vars['pattern']);
     }
 
-    public function testViewIsConfiguredProperlyWithMinutesAndNoSeconds()
+    /** @test */
+    public function view_is_configured_properly_with_minutes_and_no_seconds(): void
     {
         $field = $this->getFactory()->createField('datetime', TimeType::class, [
             'with_minutes' => true,
@@ -101,7 +105,8 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('H:i', $fieldView->vars['pattern']);
     }
 
-    public function testViewIsConfiguredProperlyWithNoMinutesAndNoSeconds()
+    /** @test */
+    public function view_is_configured_properly_with_no_minutes_and_no_seconds(): void
     {
         $field = $this->getFactory()->createField('datetime', TimeType::class, [
             'with_minutes' => false,
@@ -118,7 +123,8 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('H', $fieldView->vars['pattern']);
     }
 
-    public function testCannotInitializeWithSecondsButWithoutMinutes()
+    /** @test */
+    public function cannot_initialize_with_seconds_but_without_minutes(): void
     {
         $this->expectException(InvalidConfigurationException::class);
 

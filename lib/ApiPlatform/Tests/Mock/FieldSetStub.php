@@ -46,6 +46,6 @@ final class FieldSetStub implements FieldSet
 
     public function isPrivate(string $name): bool
     {
-        return '_' === $name[0];
+        return $name[0] === '_';
     }
 }

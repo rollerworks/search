@@ -78,10 +78,10 @@ class SearchField implements FieldConfig
      */
     public function __construct(string $name, ResolvedFieldType $type, array $options = [])
     {
-        if (!preg_match('/^_?[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
+        if (! \preg_match('/^_?[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
             throw new InvalidArgumentException(
-                sprintf(
-                    'The name "%s" contains illegal characters. Name must start with a letter or underscore '.
+                \sprintf(
+                    'The name "%s" contains illegal characters. Name must start with a letter or underscore ' .
                     'and only contain letters, digits, numbers, underscores ("_") and hyphens ("-").',
                     $name
                 )
@@ -192,11 +192,11 @@ class SearchField implements FieldConfig
             return;
         }
 
-        if (null === $this->valueComparator) {
+        if ($this->valueComparator === null) {
             foreach ($this->supportedValueTypes as $type => $supported) {
-                if ($supported && isset(class_implements($type)[RequiresComparatorValueHolder::class])) {
+                if ($supported && isset(\class_implements($type)[RequiresComparatorValueHolder::class])) {
                     throw new InvalidConfigurationException(
-                        sprintf(
+                        \sprintf(
                             'Supported value-type "%s" requires a value comparator but none is set for field "%s" with type "%s".',
                             $type,
                             $this->getName(),
@@ -236,7 +236,7 @@ class SearchField implements FieldConfig
 
     public function createView(FieldSetView $fieldSet): SearchFieldView
     {
-        if (!$this->locked) {
+        if (! $this->locked) {
             throw new BadMethodCallException(
                 'Unable to create SearchFieldView when configuration is not locked.'
             );

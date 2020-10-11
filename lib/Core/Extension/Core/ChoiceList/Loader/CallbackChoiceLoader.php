@@ -49,7 +49,7 @@ final class CallbackChoiceLoader implements ChoiceLoader
 
     public function loadChoiceList(callable $value = null): ChoiceList
     {
-        if (null !== $this->choiceList) {
+        if ($this->choiceList !== null) {
             return $this->choiceList;
         }
 

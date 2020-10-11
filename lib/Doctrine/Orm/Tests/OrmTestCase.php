@@ -74,8 +74,8 @@ abstract class OrmTestCase extends DbalTestCase
     {
         parent::setUp();
 
-        if (!isset(self::$sharedConn)) {
-            $config = Setup::createAnnotationMetadataConfiguration([__DIR__.'/Fixtures/Entity'], true, null, null, false);
+        if (! isset(self::$sharedConn)) {
+            $config = Setup::createAnnotationMetadataConfiguration([__DIR__ . '/Fixtures/Entity'], true, null, null, false);
 
             self::$sharedConn = TestUtil::getConnection();
             self::$sharedEm = EntityManager::create(self::$sharedConn, $config);
@@ -109,7 +109,7 @@ abstract class OrmTestCase extends DbalTestCase
         $this->conn->getConfiguration()->setSQLLogger($this->sqlLoggerStack);
     }
 
-    protected static function resetSharedConn()
+    protected static function resetSharedConn(): void
     {
         if (self::$sharedConn) {
             self::$sharedConn->close();
@@ -160,14 +160,14 @@ abstract class OrmTestCase extends DbalTestCase
     /**
      * Configure fields of the ConditionGenerator.
      */
-    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
     {
     }
 
     /**
      * @throws \Doctrine\DBAL\DBALException
      */
-    protected function assertRecordsAreFound(SearchCondition $condition, array $ids)
+    protected function assertRecordsAreFound(SearchCondition $condition, array $ids): void
     {
         $query = $this->getQuery();
 
@@ -181,26 +181,26 @@ abstract class OrmTestCase extends DbalTestCase
         $platform = $this->conn->getDatabasePlatform();
 
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
-            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
         $rows = $query->getArrayResult();
-        $idRows = array_map(
-            function ($value) {
+        $idRows = \array_map(
+            static function ($value) {
                 return $value['id'];
             },
             $rows
         );
 
-        sort($ids);
-        sort($idRows);
+        \sort($ids);
+        \sort($idRows);
 
-        self::assertEquals(
+        static::assertEquals(
             $ids,
-            array_merge([], array_unique($idRows)),
-            sprintf(
+            \array_merge([], \array_unique($idRows)),
+            \sprintf(
                 "Found these records instead: \n%s\nWith WHERE-clause: %s\nSQL: %s\nAnd params: %s",
-                print_r($rows, true),
+                \print_r($rows, true),
                 $whereClause,
                 $query->getSQL(),
                 $paramsString
@@ -211,7 +211,7 @@ abstract class OrmTestCase extends DbalTestCase
     protected function onNotSuccessfulTest(\Throwable $e): void
     {
         // Ignore deprecation warnings.
-        if ($e instanceof AssertionFailedError || ($e instanceof Warning && strpos($e->getMessage(), ' is deprecated,'))) {
+        if ($e instanceof AssertionFailedError || ($e instanceof Warning && \mb_strpos($e->getMessage(), ' is deprecated,'))) {
             throw $e;
         }
 
@@ -219,19 +219,19 @@ abstract class OrmTestCase extends DbalTestCase
             $queries = '';
             $i = \count($this->sqlLoggerStack->queries);
 
-            foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
-                $params = array_map(
-                    function ($p) {
+            foreach (\array_reverse($this->sqlLoggerStack->queries) as $query) {
+                $params = \array_map(
+                    static function ($p) {
                         if (\is_object($p)) {
                             return \get_class($p);
                         }
 
-                        return "'".var_export($p, true)."'";
+                        return "'" . \var_export($p, true) . "'";
                     },
                     $query['params'] ?: []
                 );
 
-                $queries .= ($i + 1).". SQL: '".$query['sql']."' Params: ".implode(', ', $params).PHP_EOL;
+                $queries .= ($i + 1) . ". SQL: '" . $query['sql'] . "' Params: " . \implode(', ', $params) . PHP_EOL;
                 --$i;
             }
 
@@ -240,22 +240,22 @@ abstract class OrmTestCase extends DbalTestCase
 
             foreach ($trace as $part) {
                 if (isset($part['file'])) {
-                    if (strpos($part['file'], 'PHPUnit/') !== false) {
+                    if (\mb_strpos($part['file'], 'PHPUnit/') !== false) {
                         // Beginning with PHPUnit files we don't print the trace anymore.
                         break;
                     }
 
-                    $traceMsg .= $part['file'].':'.$part['line'].PHP_EOL;
+                    $traceMsg .= $part['file'] . ':' . $part['line'] . PHP_EOL;
                 }
             }
 
             $message =
-                '['.\get_class($e).'] '.
-                $e->getMessage().
-                PHP_EOL.PHP_EOL.
-                'With queries:'.PHP_EOL.
-                $queries.PHP_EOL.
-                'Trace:'.PHP_EOL.
+                '[' . \get_class($e) . '] ' .
+                $e->getMessage() .
+                PHP_EOL . PHP_EOL .
+                'With queries:' . PHP_EOL .
+                $queries . PHP_EOL .
+                'Trace:' . PHP_EOL .
                 $traceMsg;
 
             throw new Exception($message, (int) $e->getCode(), $e instanceof \Exception ? $e : null);

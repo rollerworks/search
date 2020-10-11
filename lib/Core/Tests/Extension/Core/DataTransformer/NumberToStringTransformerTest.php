@@ -42,20 +42,23 @@ final class NumberToStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testTransform($from, string $to)
+    public function transform($from, string $to): void
     {
         $transformer = new NumberToStringTransformer();
 
-        $this->assertSame($to, $transformer->transform($from));
+        self::assertSame($to, $transformer->transform($from));
     }
 
-    public function testTransformWithScale()
+    /** @test */
+    public function transform_with_scale(): void
     {
         $transformer = new NumberToStringTransformer(2);
 
-        $this->assertSame('1234.5', $transformer->transform(1234.5));
-        $this->assertSame('678.92', $transformer->transform(678.916));
+        self::assertSame('1234.5', $transformer->transform(1234.5));
+        self::assertSame('678.92', $transformer->transform(678.916));
     }
 
     public function transformWithRoundingProvider()
@@ -149,29 +152,34 @@ final class NumberToStringTransformerTest extends TestCase
 
     /**
      * @dataProvider transformWithRoundingProvider
+     *
+     * @test
      */
-    public function testTransformWithRounding(int $scale, $input, string $output, int $roundingMode)
+    public function transform_with_rounding(int $scale, $input, string $output, int $roundingMode): void
     {
         $transformer = new NumberToStringTransformer($scale, false, $roundingMode);
 
-        $this->assertEquals($output, $transformer->transform($input));
+        self::assertEquals($output, $transformer->transform($input));
     }
 
-    public function testTransformDoesNotRoundIfNoScale()
+    /** @test */
+    public function transform_does_not_round_if_no_scale(): void
     {
         $transformer = new NumberToStringTransformer(null, false, NumberToStringTransformer::ROUND_DOWN);
 
-        $this->assertEquals('1234.547', $transformer->transform(1234.547));
+        self::assertEquals('1234.547', $transformer->transform(1234.547));
     }
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testReverseTransform($to, $from)
+    public function reverse_transform($to, $from): void
     {
         $transformer = new NumberToStringTransformer();
 
-        $this->assertEquals($to, $transformer->reverseTransform($from));
+        self::assertEquals($to, $transformer->reverseTransform($from));
     }
 
     public function reverseTransformWithRoundingProvider()
@@ -265,22 +273,26 @@ final class NumberToStringTransformerTest extends TestCase
 
     /**
      * @dataProvider reverseTransformWithRoundingProvider
+     *
+     * @test
      */
-    public function testReverseTransformWithRounding(int $scale, string $input, $output, int $roundingMode)
+    public function reverse_transform_with_rounding(int $scale, string $input, $output, int $roundingMode): void
     {
         $transformer = new NumberToStringTransformer($scale, false, $roundingMode);
 
-        $this->assertEquals($output, $transformer->reverseTransform($input));
+        self::assertEquals($output, $transformer->reverseTransform($input));
     }
 
-    public function testReverseTransformDoesNotRoundIfNoScale()
+    /** @test */
+    public function reverse_transform_does_not_round_if_no_scale(): void
     {
         $transformer = new NumberToStringTransformer(null, false, NumberToStringTransformer::ROUND_DOWN);
 
-        $this->assertEquals(1234.547, $transformer->reverseTransform('1234.547'));
+        self::assertEquals(1234.547, $transformer->reverseTransform('1234.547'));
     }
 
-    public function testTransformExpectsNumeric()
+    /** @test */
+    public function transform_expects_numeric(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -289,7 +301,8 @@ final class NumberToStringTransformerTest extends TestCase
         $transformer->transform('foo');
     }
 
-    public function testReverseTransformExpectsScalar()
+    /** @test */
+    public function reverse_transform_expects_scalar(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -298,7 +311,8 @@ final class NumberToStringTransformerTest extends TestCase
         $transformer->reverseTransform(['1']);
     }
 
-    public function testReverseTransformExpectsValidNumber()
+    /** @test */
+    public function reverse_transform_expects_valid_number(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -309,8 +323,10 @@ final class NumberToStringTransformerTest extends TestCase
 
     /**
      * @see https://github.com/symfony/symfony/issues/3161
+     *
+     * @test
      */
-    public function testReverseTransformDisallowsNaN()
+    public function reverse_transform_disallows_na_n(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -319,7 +335,8 @@ final class NumberToStringTransformerTest extends TestCase
         $transformer->reverseTransform('NaN');
     }
 
-    public function testReverseTransformDisallowsNaN2()
+    /** @test */
+    public function reverse_transform_disallows_na_n2(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -328,7 +345,8 @@ final class NumberToStringTransformerTest extends TestCase
         $transformer->reverseTransform('nan');
     }
 
-    public function testReverseTransformDisallowsInfinity()
+    /** @test */
+    public function reverse_transform_disallows_infinity(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -337,7 +355,8 @@ final class NumberToStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞');
     }
 
-    public function testReverseTransformDisallowsInfinity2()
+    /** @test */
+    public function reverse_transform_disallows_infinity2(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -346,7 +365,8 @@ final class NumberToStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞,123');
     }
 
-    public function testReverseTransformDisallowsNegativeInfinity()
+    /** @test */
+    public function reverse_transform_disallows_negative_infinity(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -355,7 +375,8 @@ final class NumberToStringTransformerTest extends TestCase
         $transformer->reverseTransform('-∞');
     }
 
-    public function testReverseTransformDisallowsLeadingExtraCharacters()
+    /** @test */
+    public function reverse_transform_disallows_leading_extra_characters(): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -364,18 +385,20 @@ final class NumberToStringTransformerTest extends TestCase
         $transformer->reverseTransform('foo123');
     }
 
-    public function testReverseTransformBigInt()
+    /** @test */
+    public function reverse_transform_big_int(): void
     {
         $transformer = new NumberToStringTransformer();
 
-        $this->assertEquals(PHP_INT_MAX - 1, (int) $transformer->reverseTransform((string) (PHP_INT_MAX - 1)));
+        self::assertEquals(PHP_INT_MAX - 1, (int) $transformer->reverseTransform((string) (PHP_INT_MAX - 1)));
     }
 
-    public function testReverseTransformSmallInt()
+    /** @test */
+    public function reverse_transform_small_int(): void
     {
         $transformer = new NumberToStringTransformer();
 
-        $this->assertSame(1.0, $transformer->reverseTransform('1.0'));
-        $this->assertSame(1, $transformer->reverseTransform('1'));
+        self::assertSame(1.0, $transformer->reverseTransform('1.0'));
+        self::assertSame(1, $transformer->reverseTransform('1'));
     }
 }

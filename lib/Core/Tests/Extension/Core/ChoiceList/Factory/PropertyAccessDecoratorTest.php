@@ -46,49 +46,52 @@ final class PropertyAccessDecoratorTest extends TestCase
         $this->factory = new PropertyAccessDecorator($this->decoratedFactory);
     }
 
-    private static function assertChoiceListEquals(ChoiceList $list, $expectedValue = 'value')
+    private static function assertChoiceListEquals(ChoiceList $list, $expectedValue = 'value'): void
     {
         self::assertSame([$expectedValue ?? 0 => $expectedValue], $list->getChoices(), 'Choices are not the same');
         self::assertSame([0 => $expectedValue ?? '0'], $list->getStructuredValues(), 'StructuredValues are not the same');
         self::assertSame([$expectedValue ?? 0 => 0], $list->getOriginalKeys(), 'Originals are not the same');
     }
 
-    public function testCreateFromChoicesPropertyPath()
+    /** @test */
+    public function create_from_choices_property_path(): void
     {
         $choices = [(object) ['property' => 'value']];
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createListFromChoices')
-            ->with($choices, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($choices, $callback) {
-                return new ArrayChoiceList(array_map($callback, $choices));
+            ->with($choices, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($choices, $callback) {
+                return new ArrayChoiceList(\array_map($callback, $choices));
             });
 
         self::assertChoiceListEquals($this->factory->createListFromChoices($choices, 'property'));
     }
 
-    public function testCreateFromChoicesPropertyPathInstance()
+    /** @test */
+    public function create_from_choices_property_path_instance(): void
     {
         $choices = [(object) ['property' => 'value']];
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createListFromChoices')
-            ->with($choices, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($choices, $callback) {
-                return new ArrayChoiceList(array_map($callback, $choices));
+            ->with($choices, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($choices, $callback) {
+                return new ArrayChoiceList(\array_map($callback, $choices));
             });
 
         self::assertChoiceListEquals($this->factory->createListFromChoices($choices, new PropertyPath('property')));
     }
 
-    public function testCreateFromLoaderPropertyPath()
+    /** @test */
+    public function create_from_loader_property_path(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createListFromLoader')
-            ->with($loader, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($loader, $callback) {
+            ->with($loader, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($loader, $callback) {
                 return new ArrayChoiceList([$callback((object) ['property' => 'value'])]);
             });
 
@@ -96,44 +99,49 @@ final class PropertyAccessDecoratorTest extends TestCase
     }
 
     // https://github.com/symfony/symfony/issues/5494
-    public function testCreateFromChoicesAssumeNullIfValuePropertyPathUnreadable()
+
+    /** @test */
+    public function create_from_choices_assume_null_if_value_property_path_unreadable(): void
     {
         $choices = [null];
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createListFromChoices')
-            ->with($choices, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($choices, $callback) {
-                return new ArrayChoiceList(array_map($callback, $choices));
+            ->with($choices, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($choices, $callback) {
+                return new ArrayChoiceList(\array_map($callback, $choices));
             });
 
         self::assertChoiceListEquals($this->factory->createListFromChoices($choices, 'property'), null);
     }
 
     // https://github.com/symfony/symfony/issues/5494
-    public function testCreateFromChoiceLoaderAssumeNullIfValuePropertyPathUnreadable()
+
+    /** @test */
+    public function create_from_choice_loader_assume_null_if_value_property_path_unreadable(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
         $list = null;
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createListFromLoader')
-            ->with($loader, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($loader, $callback) {
+            ->with($loader, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($loader, $callback) {
                 return new ArrayChoiceList([$callback(null)]);
             });
 
         self::assertChoiceListEquals($this->factory->createListFromLoader($loader, 'property'), null);
     }
 
-    public function testCreateFromLoaderPropertyPathInstance()
+    /** @test */
+    public function create_from_loader_property_path_instance(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createListFromLoader')
-            ->with($loader, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($loader, $callback) {
+            ->with($loader, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($loader, $callback) {
                 return new ArrayChoiceList([$callback((object) ['property' => 'value'])]);
             });
 
@@ -144,18 +152,19 @@ final class PropertyAccessDecoratorTest extends TestCase
     // to the tests. Symfony originally returned the value as-is, but RollerworksSearch
     // uses strict return types.
 
-    public function testCreateViewPreferredChoicesAsPropertyPath()
+    /** @test */
+    public function create_view_preferred_choices_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred) {
+            ->with($list, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred) {
                 return new ChoiceListView([], [$preferred((object) ['property' => true])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView([], [0 => true]),
             $this->factory->createView(
                 $list,
@@ -164,18 +173,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewPreferredChoicesAsPropertyPathInstance()
+    /** @test */
+    public function create_view_preferred_choices_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred) {
+            ->with($list, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred) {
                 return new ChoiceListView([], [$preferred((object) ['property' => true])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView([], [0 => true]),
             $this->factory->createView(
                 $list,
@@ -185,18 +195,20 @@ final class PropertyAccessDecoratorTest extends TestCase
     }
 
     // https://github.com/symfony/symfony/issues/5494
-    public function testCreateViewAssumeNullIfPreferredChoicesPropertyPathUnreadable()
+
+    /** @test */
+    public function create_view_assume_null_if_preferred_choices_property_path_unreadable(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred) {
+            ->with($list, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred) {
                 return new ChoiceListView([], [$preferred((object) ['category' => null])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView([], [0 => false]),
             $this->factory->createView(
                 $list,
@@ -205,18 +217,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewLabelsAsPropertyPath()
+    /** @test */
+    public function create_view_labels_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label) {
+            ->with($list, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label) {
                 return new ChoiceListView([$label((object) ['property' => 'label'])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(['label']),
             $this->factory->createView(
                 $list,
@@ -226,18 +239,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewLabelsAsPropertyPathInstance()
+    /** @test */
+    public function create_view_labels_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label) {
+            ->with($list, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label) {
                 return new ChoiceListView([$label((object) ['property' => 'label'])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(['label']),
             $this->factory->createView(
                 $list,
@@ -247,18 +261,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewIndicesAsPropertyPath()
+    /** @test */
+    public function create_view_indices_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label, $index) {
+            ->with($list, null, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label, $index) {
                 return new ChoiceListView([$index((object) ['property' => 'index'])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(['index']),
             $this->factory->createView(
                 $list,
@@ -269,18 +284,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewIndicesAsPropertyPathInstance()
+    /** @test */
+    public function create_view_indices_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label, $index) {
+            ->with($list, null, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label, $index) {
                 return new ChoiceListView([$index((object) ['property' => 'index'])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(['index']),
             $this->factory->createView(
                 $list,
@@ -291,18 +307,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewGroupsAsPropertyPath()
+    /** @test */
+    public function create_view_groups_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, null, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label, $index, $groupBy) {
+            ->with($list, null, null, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label, $index, $groupBy) {
                 return new ChoiceListView([$groupBy((object) ['property' => 'group'])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(['group']),
             $this->factory->createView(
                 $list,
@@ -314,18 +331,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewGroupsAsPropertyPathInstance()
+    /** @test */
+    public function create_view_groups_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, null, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label, $index, $groupBy) {
+            ->with($list, null, null, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label, $index, $groupBy) {
                 return new ChoiceListView([$groupBy((object) ['property' => 'group'])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(['group']),
             $this->factory->createView(
                 $list,
@@ -338,18 +356,20 @@ final class PropertyAccessDecoratorTest extends TestCase
     }
 
     // https://github.com/symfony/symfony/issues/5494
-    public function testCreateViewAssumeNullIfGroupsPropertyPathUnreadable()
+
+    /** @test */
+    public function create_view_assume_null_if_groups_property_path_unreadable(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, null, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label, $index, $groupBy) {
+            ->with($list, null, null, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label, $index, $groupBy) {
                 return new ChoiceListView([$groupBy((object) ['group' => null])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView([null]),
             $this->factory->createView(
                 $list,
@@ -361,18 +381,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewAttrAsPropertyPath()
+    /** @test */
+    public function create_view_attr_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, null, null, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label, $index, $groupBy, $attr) {
+            ->with($list, null, null, null, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label, $index, $groupBy, $attr) {
                 return new ChoiceListView([$attr((object) ['property' => 'attr'])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(['attr']),
             $this->factory->createView(
                 $list,
@@ -385,18 +406,19 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    public function testCreateViewAttrAsPropertyPathInstance()
+    /** @test */
+    public function create_view_attr_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
 
-        $this->decoratedFactory->expects($this->once())
+        $this->decoratedFactory->expects(self::once())
             ->method('createView')
-            ->with($list, null, null, null, null, $this->isInstanceOf('\Closure'))
-            ->willReturnCallback(function ($list, $preferred, $label, $index, $groupBy, $attr) {
+            ->with($list, null, null, null, null, self::isInstanceOf('\Closure'))
+            ->willReturnCallback(static function ($list, $preferred, $label, $index, $groupBy, $attr) {
                 return new ChoiceListView([$attr((object) ['property' => 'attr'])]);
             });
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(['attr']),
             $this->factory->createView(
                 $list,

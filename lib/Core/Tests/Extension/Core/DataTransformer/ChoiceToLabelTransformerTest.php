@@ -25,10 +25,8 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToLabelTra
  */
 final class ChoiceToLabelTransformerTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_transforms_label_to_choice()
+    /** @test */
+    public function it_transforms_label_to_choice(): void
     {
         $choiceList = new ArrayChoiceList([null, 1, 2, 3, 4, 5, 6]);
         $choices = new ChoiceListView(
@@ -57,10 +55,8 @@ final class ChoiceToLabelTransformerTest extends TestCase
         self::assertSame('unknown', $transformer->transform(null));
     }
 
-    /**
-     * @test
-     */
-    public function it_reverse_transforms_label_to_choice()
+    /** @test */
+    public function it_reverse_transforms_label_to_choice(): void
     {
         $choiceList = new ArrayChoiceList([null, 1, 2, 3, 4, $val5 = new \stdClass(), 6]);
         $choices = new ChoiceListView(

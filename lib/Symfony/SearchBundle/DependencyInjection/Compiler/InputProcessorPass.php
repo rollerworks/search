@@ -28,9 +28,9 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  */
 final class InputProcessorPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('rollerworks_search.input_loader')) {
+        if (! $container->hasDefinition('rollerworks_search.input_loader')) {
             return;
         }
 
@@ -38,8 +38,8 @@ final class InputProcessorPass implements CompilerPassInterface
         $inputProcessorServices = [];
 
         foreach ($container->findTaggedServiceIds('rollerworks_search.input_processor') as $serviceId => $tag) {
-            if (!isset($tag[0]['format'])) {
-                throw new InvalidArgumentException(sprintf('"rollerworks_search.input_processor" tagged services must have the format configured using the format attribute, none was configured for the "%s" service.', $serviceId));
+            if (! isset($tag[0]['format'])) {
+                throw new InvalidArgumentException(\sprintf('"rollerworks_search.input_processor" tagged services must have the format configured using the format attribute, none was configured for the "%s" service.', $serviceId));
             }
 
             $inputProcessorServices[$serviceId] = new ServiceClosureArgument(new Reference($serviceId));

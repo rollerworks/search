@@ -33,6 +33,6 @@ final class IntegerToStringTransformer extends NumberToStringTransformer
     {
         $result = parent::reverseTransform($value);
 
-        return null !== $result ? (int) $result : null;
+        return $result !== null ? (int) $result : null;
     }
 }

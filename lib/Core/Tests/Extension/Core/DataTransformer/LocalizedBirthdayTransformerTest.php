@@ -33,7 +33,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     }
 
     /** @test */
-    public function it_transforms_age_to_integer()
+    public function it_transforms_age_to_integer(): void
     {
         $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform(Argument::any())->shouldNotBeCalled();
@@ -49,7 +49,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     }
 
     /** @test */
-    public function it_transforms_ar_localized_age_to_integer()
+    public function it_transforms_ar_localized_age_to_integer(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -67,7 +67,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     }
 
     /** @test */
-    public function it_transforms_with_date()
+    public function it_transforms_with_date(): void
     {
         $date = new \DateTimeImmutable('2010-03-05 00:00:00 UTC');
 
@@ -85,7 +85,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     }
 
     /** @test */
-    public function it_allows_disabled_age()
+    public function it_allows_disabled_age(): void
     {
         $date = new \DateTimeImmutable('2010-03-05 00:00:00 UTC');
 
@@ -101,7 +101,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         try {
             $transformer->reverseTransform('18');
 
-            $this->fail('Age should not be reverseTransformed.');
+            self::fail('Age should not be reverseTransformed.');
         } catch (TransformationFailedException $e) {
             self::assertEquals('Age support is not enabled.', $e->getMessage());
         }
@@ -109,14 +109,14 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         try {
             $transformer->transform(18);
 
-            $this->fail('Age should not be transformed.');
+            self::fail('Age should not be transformed.');
         } catch (TransformationFailedException $e) {
             self::assertEquals('Age support is not enabled.', $e->getMessage());
         }
     }
 
     /** @test */
-    public function it_disallows_date_in_the_future_by_default()
+    public function it_disallows_date_in_the_future_by_default(): void
     {
         $dateObj = new \DateTimeImmutable('tomorrow');
 
@@ -126,13 +126,13 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         $transformer = new LocalizedBirthdayTransformer($dateTransformer->reveal());
 
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage(sprintf('Date "%s" is higher then current date ', $dateObj->format('Y-m-d')));
+        $this->expectExceptionMessage(\sprintf('Date "%s" is higher then current date ', $dateObj->format('Y-m-d')));
 
         $transformer->reverseTransform($dateObj->format('Y-m-d'));
     }
 
     /** @test */
-    public function it_allows_date_in_the_future_when_enabled()
+    public function it_allows_date_in_the_future_when_enabled(): void
     {
         $dateObj = new \DateTimeImmutable('tomorrow');
 

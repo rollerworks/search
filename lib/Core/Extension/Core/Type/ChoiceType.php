@@ -61,20 +61,20 @@ final class ChoiceType extends AbstractFieldType
         $config->setAttribute('choice_list_view', $choiceListView);
 
         // Force label when values are not constant.
-        if (!$choiceList->isValuesConstant()) {
+        if (! $choiceList->isValuesConstant()) {
             $options['view_format'] = 'label';
             $options['norm_format'] = 'label';
         }
 
-        if ('label' === $options['view_format']) {
+        if ($options['view_format'] === 'label') {
             $config->setViewTransformer(new ChoiceToLabelTransformer($choiceList, $choiceListView));
-        } elseif ('value' === $options['view_format']) {
+        } elseif ($options['view_format'] === 'value') {
             $config->setViewTransformer(new ChoiceToValueTransformer($choiceList));
         }
 
-        if ('label' === $options['norm_format']) {
+        if ($options['norm_format'] === 'label') {
             $config->setNormTransformer(new ChoiceToLabelTransformer($choiceList, $choiceListView));
-        } elseif ('value' === $options['norm_format']) {
+        } elseif ($options['norm_format'] === 'value') {
             $config->setNormTransformer(new ChoiceToValueTransformer($choiceList));
         }
     }
@@ -84,7 +84,7 @@ final class ChoiceType extends AbstractFieldType
         /** @var ChoiceListView $choiceListView */
         $choiceListView = $config->getAttribute('choice_list_view');
 
-        $view->vars = array_replace($view->vars, [
+        $view->vars = \array_replace($view->vars, [
             'preferred_choices' => $choiceListView->preferredChoices,
             'choices' => $choiceListView->choices,
             'separator' => '-------------------',
@@ -94,8 +94,8 @@ final class ChoiceType extends AbstractFieldType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $choiceTranslationDomainNormalizer = function (Options $options, $choiceTranslationDomain) {
-            if (true === $choiceTranslationDomain) {
+        $choiceTranslationDomainNormalizer = static function (Options $options, $choiceTranslationDomain) {
+            if ($choiceTranslationDomain === true) {
                 return $options['translation_domain'];
             }
 
@@ -134,14 +134,14 @@ final class ChoiceType extends AbstractFieldType
         $resolver->setAllowedValues('norm_format', ['auto', 'label', 'value']);
         $resolver->setNormalizer(
             'view_format',
-            function (Options $options, $value) {
-                return 'auto' === $value ? 'label' : $value;
+            static function (Options $options, $value) {
+                return $value === 'auto' ? 'label' : $value;
             }
         );
         $resolver->setNormalizer(
             'norm_format',
-            function (Options $options, $value) {
-                return 'auto' === $value ? 'value' : $value;
+            static function (Options $options, $value) {
+                return $value === 'auto' ? 'value' : $value;
             }
         );
     }
@@ -153,7 +153,7 @@ final class ChoiceType extends AbstractFieldType
 
     private function createChoiceList(array $options): ChoiceList
     {
-        if (null !== $options['choice_loader']) {
+        if ($options['choice_loader'] !== null) {
             return $this->choiceListFactory->createListFromLoader(
                 $options['choice_loader'],
                 $options['choice_value']
@@ -161,7 +161,7 @@ final class ChoiceType extends AbstractFieldType
         }
 
         // Harden against NULL values
-        $choices = null !== $options['choices'] ? $options['choices'] : [];
+        $choices = $options['choices'] !== null ? $options['choices'] : [];
 
         return $this->choiceListFactory->createListFromChoices($choices, $options['choice_value']);
     }

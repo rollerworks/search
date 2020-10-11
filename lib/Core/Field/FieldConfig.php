@@ -110,10 +110,6 @@ interface FieldConfig
 
     /**
      * Returns the value of a specific option.
-     *
-     * @param mixed $default
-     *
-     * @return mixed
      */
     public function getOption(string $name, $default = null);
 
@@ -124,8 +120,6 @@ interface FieldConfig
 
     /**
      * Sets the value for an attribute.
-     *
-     * @param mixed $value
      */
     public function setAttribute(string $name, $value);
 
@@ -150,8 +144,6 @@ interface FieldConfig
      * Returns the value of the given attribute.
      *
      * @param mixed $default The value returned if the attribute does not exist
-     *
-     * @return mixed
      */
     public function getAttribute(string $name, $default = null);
 }

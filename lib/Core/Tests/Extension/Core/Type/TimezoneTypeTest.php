@@ -32,7 +32,8 @@ final class TimezoneTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    public function testCurrenciesAreSelectable()
+    /** @test */
+    public function currencies_are_selectable(): void
     {
         $field = $field = $this->getFactory()->createField('choice', TimezoneType::class);
         $field->finalizeConfig();
@@ -46,10 +47,10 @@ final class TimezoneTypeTest extends SearchIntegrationTestCase
 
         $choices = $view->vars['choices'];
 
-        $this->assertArrayHasKey('Africa', $choices);
-        $this->assertContainsEquals(new ChoiceView('Africa/Kinshasa', 'Africa/Kinshasa', 'Kinshasa'), $choices['Africa']);
+        self::assertArrayHasKey('Africa', $choices);
+        self::assertContainsEquals(new ChoiceView('Africa/Kinshasa', 'Africa/Kinshasa', 'Kinshasa'), $choices['Africa']);
 
-        $this->assertArrayHasKey('America', $choices);
-        $this->assertContainsEquals(new ChoiceView('America/New_York', 'America/New_York', 'New York'), $choices['America']);
+        self::assertArrayHasKey('America', $choices);
+        self::assertContainsEquals(new ChoiceView('America/New_York', 'America/New_York', 'New York'), $choices['America']);
     }
 }

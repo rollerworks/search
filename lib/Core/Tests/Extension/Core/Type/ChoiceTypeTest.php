@@ -74,7 +74,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $this->objectChoices = null;
     }
 
-    public function testChoicesOptionExpectsArrayOrTraversable()
+    /** @test */
+    public function choices_option_expects_array_or_traversable(): void
     {
         $this->expectException(InvalidOptionsException::class);
 
@@ -83,7 +84,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
     }
 
-    public function testChoiceListOptionExpectsChoiceList()
+    /** @test */
+    public function choice_list_option_expects_choice_list(): void
     {
         $this->expectException(InvalidOptionsException::class);
 
@@ -92,13 +94,15 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
     }
 
-    public function testChoiceListAndChoicesCanBeEmpty()
+    /** @test */
+    public function choice_list_and_choices_can_be_empty(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class);
         self::assertEquals([], $field->getOption('choices'));
     }
 
-    public function testChoiceListWithScalarValues()
+    /** @test */
+    public function choice_list_with_scalar_values(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->scalarChoices,
@@ -122,12 +126,13 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
 
-        $this->assertSame('1', $view->vars['choices'][0]->value);
-        $this->assertSame('0', $view->vars['choices'][1]->value);
-        $this->assertSame('', $view->vars['choices'][2]->value);
+        self::assertSame('1', $view->vars['choices'][0]->value);
+        self::assertSame('0', $view->vars['choices'][1]->value);
+        self::assertSame('', $view->vars['choices'][2]->value);
     }
 
-    public function testChoiceListWithScalarValuesAndNormFormatLabel()
+    /** @test */
+    public function choice_list_with_scalar_values_and_norm_format_label(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->scalarChoices,
@@ -152,12 +157,13 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
 
-        $this->assertSame('1', $view->vars['choices'][0]->value);
-        $this->assertSame('0', $view->vars['choices'][1]->value);
-        $this->assertSame('', $view->vars['choices'][2]->value);
+        self::assertSame('1', $view->vars['choices'][0]->value);
+        self::assertSame('0', $view->vars['choices'][1]->value);
+        self::assertSame('', $view->vars['choices'][2]->value);
     }
 
-    public function testChoiceListWithScalarValuesAndFalseAsPreferredChoice()
+    /** @test */
+    public function choice_list_with_scalar_values_and_false_as_preferred_choice(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->scalarChoices,
@@ -167,10 +173,11 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
 
-        $this->assertEquals('No', $view->vars['preferred_choices'][1]->label, 'False value should be preferred.');
+        self::assertEquals('No', $view->vars['preferred_choices'][1]->label, 'False value should be preferred.');
     }
 
-    public function testObjectChoices()
+    /** @test */
+    public function object_choices(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->objectChoices,
@@ -184,7 +191,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo($this->objectChoices[2]->name, $this->objectChoices[2]->id);
     }
 
-    public function testValueViewFormatIsValue()
+    /** @test */
+    public function value_view_format_is_value(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->objectChoices,
@@ -202,7 +210,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $view = $field->createView(new FieldSetView());
 
         // Ensure widget views still have the label.
-        $this->assertEquals([
+        self::assertEquals([
             new ChoiceView($this->objectChoices[0], '1', 'Bernhard'),
             new ChoiceView($this->objectChoices[1], '2', 'Fabien'),
             new ChoiceView($this->objectChoices[2], '3', 'Kris'),
@@ -211,7 +219,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ], $view->vars['choices']);
     }
 
-    public function testArrayChoices()
+    /** @test */
+    public function array_choices(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->choices,
@@ -223,7 +232,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('Fabien', 'b');
     }
 
-    public function testPassChoicesToView()
+    /** @test */
+    public function pass_choices_to_view(): void
     {
         $choices = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'];
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
@@ -233,7 +243,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
 
-        $this->assertEquals([
+        self::assertEquals([
             new ChoiceView('a', 'a', 'A'),
             new ChoiceView('b', 'b', 'B'),
             new ChoiceView('c', 'c', 'C'),
@@ -241,7 +251,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ], $view->vars['choices']);
     }
 
-    public function testPassPreferredChoicesToView()
+    /** @test */
+    public function pass_preferred_choices_to_view(): void
     {
         $choices = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'];
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
@@ -252,18 +263,19 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
 
-        $this->assertEquals([
+        self::assertEquals([
             0 => new ChoiceView('a', 'a', 'A'),
             2 => new ChoiceView('c', 'c', 'C'),
         ], $view->vars['choices']);
 
-        $this->assertEquals([
+        self::assertEquals([
             1 => new ChoiceView('b', 'b', 'B'),
             3 => new ChoiceView('d', 'd', 'D'),
         ], $view->vars['preferred_choices']);
     }
 
-    public function testPassHierarchicalChoicesToView()
+    /** @test */
+    public function pass_hierarchical_choices_to_view(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->groupedChoices,
@@ -273,7 +285,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
 
-        $this->assertEquals([
+        self::assertEquals([
             'Symfony' => new ChoiceGroupView('Symfony', [
                 0 => new ChoiceView('a', 'a', 'Bernhard'),
                 2 => new ChoiceView('c', 'c', 'Kris'),
@@ -283,7 +295,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
             ]),
         ], $view->vars['choices']);
 
-        $this->assertEquals([
+        self::assertEquals([
             'Symfony' => new ChoiceGroupView('Symfony', [
                 1 => new ChoiceView('b', 'b', 'Fabien'),
             ]),

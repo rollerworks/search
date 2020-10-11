@@ -27,10 +27,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 final class DoctrineOrmPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasParameter('rollerworks_search.doctrine.orm.entity_managers') ||
-            !$container->hasParameter('doctrine.default_entity_manager')
+        if (! $container->hasParameter('rollerworks_search.doctrine.orm.entity_managers') ||
+            ! $container->hasParameter('doctrine.default_entity_manager')
         ) {
             return;
         }
@@ -40,12 +40,12 @@ final class DoctrineOrmPass implements CompilerPassInterface
         );
 
         // Assume Doctrine ORM is not enabled in the DoctrineBundle
-        if (['default'] === $entityManagers && !$container->hasDefinition('doctrine.orm.default_configuration')) {
+        if (['default'] === $entityManagers && ! $container->hasDefinition('doctrine.orm.default_configuration')) {
             return;
         }
 
         foreach ($entityManagers as $entityManager) {
-            $ormConfigDef = $container->findDefinition('doctrine.orm.'.$entityManager.'_configuration');
+            $ormConfigDef = $container->findDefinition('doctrine.orm.' . $entityManager . '_configuration');
             $ormConfigDef->addMethodCall('addCustomStringFunction', ['SEARCH_CONVERSION_CAST', CastFunction::class]);
             $ormConfigDef->addMethodCall('addCustomNumericFunction', ['SEARCH_CONVERSION_AGE', AgeFunction::class]);
             $ormConfigDef->addMethodCall('addCustomNumericFunction', ['SEARCH_COUNT_CHILDREN', CountChildrenFunction::class]);

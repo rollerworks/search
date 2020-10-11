@@ -39,7 +39,7 @@ final class TimeType extends AbstractFieldType
     {
         $format = 'H';
 
-        if ($options['with_seconds'] && !$options['with_minutes']) {
+        if ($options['with_seconds'] && ! $options['with_minutes']) {
             throw new InvalidConfigurationException('You can not disable minutes if you have enabled seconds.');
         }
 

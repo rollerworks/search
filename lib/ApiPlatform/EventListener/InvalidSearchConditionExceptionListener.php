@@ -33,11 +33,11 @@ final class InvalidSearchConditionExceptionListener
     /**
      * Returns a list of errors normalized in the Hydra format.
      */
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
 
-        if (!$exception instanceof InvalidSearchConditionException) {
+        if (! $exception instanceof InvalidSearchConditionException) {
             return;
         }
 
@@ -47,7 +47,7 @@ final class InvalidSearchConditionExceptionListener
                 $this->serializer->serialize($exception, $format['key']),
                 Response::HTTP_BAD_REQUEST,
                 [
-                    'Content-Type' => sprintf('%s; charset=utf-8', $format['value'][0]),
+                    'Content-Type' => \sprintf('%s; charset=utf-8', $format['value'][0]),
                     'X-Content-Type-Options' => 'nosniff',
                     'X-Frame-Options' => 'deny',
                 ]

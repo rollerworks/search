@@ -38,10 +38,10 @@ class DateTimeConversion extends DateConversion
             $value->locale('en');
 
             if ($value->invert === 1) {
-                return 'now-'.implode('-', $this->getIntervalUnits($value));
+                return 'now-' . \implode('-', $this->getIntervalUnits($value));
             }
 
-            return 'now+'.implode('+', $this->getIntervalUnits($value));
+            return 'now+' . \implode('+', $this->getIntervalUnits($value));
         }
 
         return parent::convertValue($value);
@@ -64,7 +64,7 @@ class DateTimeConversion extends DateConversion
 
         foreach ($formats as $long => $short) {
             if ($intervalUnits[$long] > 0) {
-                $units[] = $intervalUnits[$long].$short;
+                $units[] = $intervalUnits[$long] . $short;
             }
         }
 

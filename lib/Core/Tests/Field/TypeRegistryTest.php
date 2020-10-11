@@ -30,10 +30,8 @@ use Rollerworks\Component\Search\Tests\Fixtures\FooType;
  */
 final class TypeRegistryTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_loads_types_from_extensions()
+    /** @test */
+    public function it_loads_types_from_extensions(): void
     {
         $extension = new PreloadedExtension([FooType::class => $fooType = new FooType()]);
         $extension2 = new PreloadedExtension([FooSubType::class => $fooSubType = new FooSubType()]);
@@ -57,10 +55,8 @@ final class TypeRegistryTest extends TestCase
         self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(BarType::class));
     }
 
-    /**
-     * @test
-     */
-    public function it_loads_type_extensions()
+    /** @test */
+    public function it_loads_type_extensions(): void
     {
         $extension = new PreloadedExtension([FooType::class => $fooType = new FooType()]);
         $extension2 = new PreloadedExtension(
@@ -95,7 +91,7 @@ final class TypeRegistryTest extends TestCase
     private function createResolvedTypeMock(FieldType $type): ResolvedFieldType
     {
         $resolvedType = $this->createMock(ResolvedFieldType::class);
-        $resolvedType->expects($this->any())->method('getInnerType')->willReturn($type);
+        $resolvedType->expects(self::any())->method('getInnerType')->willReturn($type);
 
         return $resolvedType;
     }
@@ -103,7 +99,7 @@ final class TypeRegistryTest extends TestCase
     private function createTypeExtensionMock(string $name): FieldTypeExtension
     {
         $fieldExtension = $this->createMock(FieldTypeExtension::class);
-        $fieldExtension->expects($this->any())->method('getExtendedType')->willReturn($name);
+        $fieldExtension->expects(self::any())->method('getExtendedType')->willReturn($name);
 
         return $fieldExtension;
     }

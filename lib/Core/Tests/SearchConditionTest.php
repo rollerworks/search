@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class SearchConditionTest extends TestCase
 {
     /** @test */
-    public function it_can_check_if_FieldSet_is_supported()
+    public function it_can_check_if__field_set_is_supported(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
         $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
@@ -41,7 +41,7 @@ final class SearchConditionTest extends TestCase
     }
 
     /** @test */
-    public function it_gives_an_exception_when_checked_FieldSet_is_not_supported()
+    public function it_gives_an_exception_when_checked__field_set_is_not_supported(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
         $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
@@ -55,7 +55,7 @@ final class SearchConditionTest extends TestCase
     }
 
     /** @test */
-    public function it_allows_setting_a_primary_condition()
+    public function it_allows_setting_a_primary_condition(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
         $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
@@ -69,7 +69,7 @@ final class SearchConditionTest extends TestCase
     }
 
     /** @test */
-    public function it_allows_unsetting_the_primary_condition()
+    public function it_allows_unsetting_the_primary_condition(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
         $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');

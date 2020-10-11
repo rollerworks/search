@@ -48,7 +48,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
      */
     protected $query;
 
-    protected static function resetSharedConn()
+    protected static function resetSharedConn(): void
     {
         if (self::$sharedConn) {
             self::$sharedConn->close();
@@ -60,7 +60,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     {
         parent::setUp();
 
-        if (!isset(
+        if (! isset(
             $GLOBALS['db_driver'],
             $GLOBALS['db_host'],
             $GLOBALS['db_user'],
@@ -68,10 +68,10 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             $GLOBALS['db_dbname'],
             $GLOBALS['db_port']
         )) {
-            self::markTestSkipped('GLOBAL variables not enabled');
+            static::markTestSkipped('GLOBAL variables not enabled');
         }
 
-        if (!isset(self::$sharedConn)) {
+        if (! isset(self::$sharedConn)) {
             self::$sharedConn = TestUtil::getConnection();
 
             $schema = new DbSchema();
@@ -99,7 +99,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         self::resetSharedConn();
     }
 
-    protected function setUpDbSchema(DbSchema $schema)
+    protected function setUpDbSchema(DbSchema $schema): void
     {
         $invoiceTable = $schema->createTable('invoice');
         $invoiceTable->addOption('collate', 'utf8_bin');
@@ -137,20 +137,20 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     /**
      * Configure fields of the ConditionGenerator.
      */
-    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
     {
     }
 
     /**
      * @throws \Doctrine\DBAL\DBALException
      */
-    protected function assertRecordsAreFound(SearchCondition $condition, array $ids)
+    protected function assertRecordsAreFound(SearchCondition $condition, array $ids): void
     {
         $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->conn, $condition);
         $this->configureConditionGenerator($conditionGenerator);
 
         $whereClause = $conditionGenerator->getWhereClause();
-        $statement = $this->conn->prepare($this->getQuery().$whereClause);
+        $statement = $this->conn->prepare($this->getQuery() . $whereClause);
 
         $paramsString = '';
         $platform = $this->conn->getDatabasePlatform();
@@ -158,30 +158,30 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
             $statement->bindValue($name, $value, $type);
 
-            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
         $statement->execute();
 
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $idRows = array_map(
-            function ($value) {
+        $idRows = \array_map(
+            static function ($value) {
                 return $value['id'];
             },
             $rows
         );
 
-        sort($ids);
-        sort($idRows);
+        \sort($ids);
+        \sort($idRows);
 
-        $this->assertEquals(
+        static::assertEquals(
             $ids,
-            array_merge([], array_unique($idRows)),
-            sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s\nAnd params: %s", print_r($rows, true), $whereClause, $paramsString)
+            \array_merge([], \array_unique($idRows)),
+            \sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s\nAnd params: %s", \print_r($rows, true), $whereClause, $paramsString)
         );
     }
 
-    protected function assertQueryIsExecutable($conditionOrWhere, string $expectedSql = '', ?array $parameters = null)
+    protected function assertQueryIsExecutable($conditionOrWhere, string $expectedSql = '', ?array $parameters = null): void
     {
         if ($conditionOrWhere instanceof SearchCondition) {
             $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->conn, $conditionOrWhere);
@@ -191,28 +191,28 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         }
 
         $whereClause = $conditionGenerator->getWhereClause();
-        $statement = $this->conn->prepare($this->getQuery().$whereClause);
+        $statement = $this->conn->prepare($this->getQuery() . $whereClause);
 
         $conditionGenerator->bindParameters($statement);
         $statement->execute();
 
-        self::assertNotNull($statement);
+        static::assertNotNull($statement);
 
         if ($expectedSql !== '') {
-            $expectedSql = preg_replace('/\s+/', ' ', trim($expectedSql));
+            $expectedSql = \preg_replace('/\s+/', ' ', \trim($expectedSql));
 
-            self::assertEquals($expectedSql, preg_replace('/\s+/', ' ', trim($whereClause)));
+            static::assertEquals($expectedSql, \preg_replace('/\s+/', ' ', \trim($whereClause)));
         }
 
         if ($parameters !== null) {
-            self::assertEquals($parameters, $conditionGenerator->getParameters()->toArray());
+            static::assertEquals($parameters, $conditionGenerator->getParameters()->toArray());
         }
     }
 
     protected function onNotSuccessfulTest(\Throwable $e): void
     {
         // Ignore deprecation warnings.
-        if ($e instanceof AssertionFailedError || ($e instanceof Warning && strpos($e->getMessage(), ' is deprecated,'))) {
+        if ($e instanceof AssertionFailedError || ($e instanceof Warning && \mb_strpos($e->getMessage(), ' is deprecated,'))) {
             throw $e;
         }
 
@@ -220,19 +220,19 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             $queries = '';
             $i = \count($this->sqlLoggerStack->queries);
 
-            foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
-                $params = array_map(
-                    function ($p) {
+            foreach (\array_reverse($this->sqlLoggerStack->queries) as $query) {
+                $params = \array_map(
+                    static function ($p) {
                         if (\is_object($p)) {
                             return \get_class($p);
                         }
 
-                        return "'".var_export($p, true)."'";
+                        return "'" . \var_export($p, true) . "'";
                     },
                     $query['params'] ?: []
                 );
 
-                $queries .= ($i + 1).". SQL: '".$query['sql']."' Params: ".implode(', ', $params).PHP_EOL;
+                $queries .= ($i + 1) . ". SQL: '" . $query['sql'] . "' Params: " . \implode(', ', $params) . PHP_EOL;
                 --$i;
             }
 
@@ -241,22 +241,22 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
             foreach ($trace as $part) {
                 if (isset($part['file'])) {
-                    if (strpos($part['file'], 'PHPUnit/') !== false) {
+                    if (\mb_strpos($part['file'], 'PHPUnit/') !== false) {
                         // Beginning with PHPUnit files we don't print the trace anymore.
                         break;
                     }
 
-                    $traceMsg .= $part['file'].':'.$part['line'].PHP_EOL;
+                    $traceMsg .= $part['file'] . ':' . $part['line'] . PHP_EOL;
                 }
             }
 
             $message =
-                '['.\get_class($e).'] '.
-                $e->getMessage().
-                PHP_EOL.PHP_EOL.
-                'With queries:'.PHP_EOL.
-                $queries.PHP_EOL.
-                'Trace:'.PHP_EOL.
+                '[' . \get_class($e) . '] ' .
+                $e->getMessage() .
+                PHP_EOL . PHP_EOL .
+                'With queries:' . PHP_EOL .
+                $queries . PHP_EOL .
+                'Trace:' . PHP_EOL .
                 $traceMsg;
 
             throw new Exception($message, (int) $e->getCode(), $e);

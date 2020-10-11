@@ -23,15 +23,15 @@ final class ConditionStructureByViewBuilder extends ConditionStructureBuilder
 {
     protected function inputToNorm($value, string $path)
     {
-        if (null === $this->inputTransformer) {
+        if ($this->inputTransformer === null) {
             $this->inputTransformer = $this->fieldConfig->getViewTransformer() ?? false;
         }
 
-        if (!$this->inputTransformer) {
-            if (null !== $value && !is_scalar($value)) {
+        if (! $this->inputTransformer) {
+            if ($value !== null && ! \is_scalar($value)) {
                 $e = new \RuntimeException(
-                    sprintf(
-                        'View value of type %s is not a scalar value or null and not cannot be '.
+                    \sprintf(
+                        'View value of type %s is not a scalar value or null and not cannot be ' .
                         'converted to a string. You must set a ViewTransformer for field "%s" with type "%s".',
                         \gettype($value),
                         $this->fieldConfig->getName(),
@@ -53,7 +53,7 @@ final class ConditionStructureByViewBuilder extends ConditionStructureBuilder
                 return null;
             }
 
-            return '' === $value ? null : $value;
+            return $value === '' ? null : $value;
         }
 
         try {

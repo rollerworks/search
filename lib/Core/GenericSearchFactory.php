@@ -34,7 +34,7 @@ final class GenericSearchFactory implements SearchFactory
 
     public function createFieldSet($configurator): FieldSet
     {
-        if (!$configurator instanceof FieldSetConfigurator) {
+        if (! $configurator instanceof FieldSetConfigurator) {
             $configurator = $this->fieldSetRegistry->getConfigurator($configurator);
         }
 

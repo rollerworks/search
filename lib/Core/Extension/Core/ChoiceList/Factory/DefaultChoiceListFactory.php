@@ -45,14 +45,14 @@ final class DefaultChoiceListFactory implements ChoiceListFactory
         $choices = $list->getChoices();
         $keys = $list->getOriginalKeys();
 
-        if (!\is_callable($preferredChoices) && !empty($preferredChoices)) {
-            $preferredChoices = function ($choice) use ($preferredChoices) {
-                return false !== array_search($choice, $preferredChoices, true);
+        if (! \is_callable($preferredChoices) && ! empty($preferredChoices)) {
+            $preferredChoices = static function ($choice) use ($preferredChoices) {
+                return \array_search($choice, $preferredChoices, true) !== false;
             };
         }
 
         // The names are generated from an incrementing integer by default
-        if (null === $index) {
+        if ($index === null) {
             $index = 0;
         }
 
@@ -92,13 +92,13 @@ final class DefaultChoiceListFactory implements ChoiceListFactory
         // Remove any empty group view that may have been created by
         // addChoiceViewGroupedBy()
         foreach ($preferredViews as $key => $view) {
-            if ($view instanceof ChoiceGroupView && 0 === \count($view->choices)) {
+            if ($view instanceof ChoiceGroupView && \count($view->choices) === 0) {
                 unset($preferredViews[$key]);
             }
         }
 
         foreach ($otherViews as $key => $view) {
-            if ($view instanceof ChoiceGroupView && 0 === \count($view->choices)) {
+            if ($view instanceof ChoiceGroupView && \count($view->choices) === 0) {
                 unset($otherViews[$key]);
             }
         }
@@ -114,14 +114,14 @@ final class DefaultChoiceListFactory implements ChoiceListFactory
         $nextIndex = \is_int($index) ? $index++ : \call_user_func($index, $choice, $key, $value);
 
         // BC normalize label to accept a false value
-        if (null === $label) {
+        if ($label === null) {
             // If the labels are null, use the original choice key by default
             $label = (string) $key;
-        } elseif (false !== $label) {
+        } elseif ($label !== false) {
             // If "choice_label" is set to false and "expanded" is true, the value false
             // should be passed on to the "label" option of the checkboxes/radio buttons
             $dynamicLabel = \call_user_func($label, $choice, $key, $value);
-            $label = false === $dynamicLabel ? false : (string) $dynamicLabel;
+            $label = $dynamicLabel === false ? false : (string) $dynamicLabel;
         }
 
         $view = new ChoiceView(
@@ -144,7 +144,7 @@ final class DefaultChoiceListFactory implements ChoiceListFactory
     private static function addChoiceViewsGroupedBy($groupBy, $label, $choices, $keys, &$index, $attr, $isPreferred, &$preferredViews, &$otherViews): void
     {
         foreach ($groupBy as $key => $value) {
-            if (null === $value) {
+            if ($value === null) {
                 continue;
             }
 
@@ -195,7 +195,7 @@ final class DefaultChoiceListFactory implements ChoiceListFactory
     {
         $groupLabel = \call_user_func($groupBy, $choice, $keys[$value], $value);
 
-        if (null === $groupLabel) {
+        if ($groupLabel === null) {
             // If the callable returns null, don't group the choice
             self::addChoiceView(
                 $choice,
@@ -216,7 +216,7 @@ final class DefaultChoiceListFactory implements ChoiceListFactory
 
         // Initialize the group views if necessary. Unnecessarily built group
         // views will be cleaned up at the end of createView()
-        if (!isset($preferredViews[$groupLabel])) {
+        if (! isset($preferredViews[$groupLabel])) {
             $preferredViews[$groupLabel] = new ChoiceGroupView($groupLabel);
             $otherViews[$groupLabel] = new ChoiceGroupView($groupLabel);
         }

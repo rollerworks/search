@@ -59,7 +59,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
 
     /**
      * @param array|\Traversable                $choices The choices
-     * @param callable|string|PropertyPath|null $value   The callable or path for
+     * @param callable|PropertyPath|string|null $value   The callable or path for
      *                                                   generating the choice values
      */
     public function createListFromChoices($choices, $value = null): ChoiceList
@@ -70,7 +70,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
 
         if ($value instanceof PropertyPath) {
             $accessor = $this->propertyAccessor;
-            $value = function ($choice) use ($accessor, $value) {
+            $value = static function ($choice) use ($accessor, $value) {
                 // The callable may be invoked with a non-object/array value
                 // when such values are passed to
                 // ChoiceList::getValuesForChoices(). Handle this case
@@ -86,7 +86,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
 
     /**
      * @param ChoiceLoader                      $loader The choice loader
-     * @param callable|string|PropertyPath|null $value  The callable or path for
+     * @param callable|PropertyPath|string|null $value  The callable or path for
      *                                                  generating the choice values
      */
     public function createListFromLoader(ChoiceLoader $loader, $value = null): ChoiceList
@@ -97,7 +97,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
 
         if ($value instanceof PropertyPath) {
             $accessor = $this->propertyAccessor;
-            $value = function ($choice) use ($accessor, $value) {
+            $value = static function ($choice) use ($accessor, $value) {
                 // The callable may be invoked with a non-object/array value
                 // when such values are passed to
                 // ChoiceList::getValuesForChoices(). Handle this case
@@ -113,11 +113,11 @@ final class PropertyAccessDecorator implements ChoiceListFactory
 
     /**
      * @param ChoiceList                              $list             The choice list
-     * @param array|callable|string|PropertyPath|null $preferredChoices The preferred choices
-     * @param callable|string|PropertyPath|null       $label            The callable or path generating the choice labels
-     * @param callable|string|PropertyPath|null       $index            The callable or path generating the view indices
-     * @param callable|string|PropertyPath|null       $groupBy          The callable or path generating the group names
-     * @param array|callable|string|PropertyPath|null $attr             The callable or path generating the HTML attributes
+     * @param array|callable|PropertyPath|string|null $preferredChoices The preferred choices
+     * @param callable|PropertyPath|string|null       $label            The callable or path generating the choice labels
+     * @param callable|PropertyPath|string|null       $index            The callable or path generating the view indices
+     * @param callable|PropertyPath|string|null       $groupBy          The callable or path generating the group names
+     * @param array|callable|PropertyPath|string|null $attr             The callable or path generating the HTML attributes
      */
     public function createView(ChoiceList $list, $preferredChoices = null, $label = null, $index = null, $groupBy = null, $attr = null): ChoiceListView
     {
@@ -128,7 +128,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
         }
 
         if ($label instanceof PropertyPath) {
-            $label = function ($choice) use ($accessor, $label) {
+            $label = static function ($choice) use ($accessor, $label) {
                 return $accessor->getValue($choice, $label);
             };
         }
@@ -138,7 +138,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
         }
 
         if ($preferredChoices instanceof PropertyPath) {
-            $preferredChoices = function ($choice) use ($accessor, $preferredChoices) {
+            $preferredChoices = static function ($choice) use ($accessor, $preferredChoices) {
                 try {
                     return $accessor->getValue($choice, $preferredChoices);
                 } catch (UnexpectedTypeException $e) {
@@ -153,7 +153,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
         }
 
         if ($index instanceof PropertyPath) {
-            $index = function ($choice) use ($accessor, $index) {
+            $index = static function ($choice) use ($accessor, $index) {
                 return $accessor->getValue($choice, $index);
             };
         }
@@ -163,7 +163,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
         }
 
         if ($groupBy instanceof PropertyPath) {
-            $groupBy = function ($choice) use ($accessor, $groupBy) {
+            $groupBy = static function ($choice) use ($accessor, $groupBy) {
                 try {
                     return $accessor->getValue($choice, $groupBy);
                 } catch (UnexpectedTypeException $e) {
@@ -177,7 +177,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
         }
 
         if ($attr instanceof PropertyPath) {
-            $attr = function ($choice) use ($accessor, $attr) {
+            $attr = static function ($choice) use ($accessor, $attr) {
                 return $accessor->getValue($choice, $attr);
             };
         }

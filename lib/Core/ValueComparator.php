@@ -24,25 +24,16 @@ interface ValueComparator
 {
     /**
      * Returns whether the first value is higher then the second value.
-     *
-     * @param mixed $higher
-     * @param mixed $lower
      */
     public function isHigher($higher, $lower, array $options): bool;
 
     /**
      * Returns whether the first value is lower then the second value.
-     *
-     * @param mixed $lower
-     * @param mixed $higher
      */
     public function isLower($lower, $higher, array $options): bool;
 
     /**
      * Returns whether the first value equals the second value.
-     *
-     * @param mixed $value
-     * @param mixed $nextValue
      */
     public function isEqual($value, $nextValue, array $options): bool;
 }

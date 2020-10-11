@@ -21,14 +21,13 @@ final class Compare implements RequiresComparatorValueHolder
     public const OPERATORS = ['>=', '<=', '<>', '<', '>'];
 
     /**
-     * @param mixed  $value
      * @param string $operator
      */
     public function __construct($value, $operator)
     {
-        if (!\in_array($operator, self::OPERATORS, true)) {
+        if (! \in_array($operator, self::OPERATORS, true)) {
             throw new \InvalidArgumentException(
-                sprintf('Unknown operator "%s".', $operator)
+                \sprintf('Unknown operator "%s".', $operator)
             );
         }
 
@@ -41,9 +40,6 @@ final class Compare implements RequiresComparatorValueHolder
         return $this->operator;
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue()
     {
         return $this->value;

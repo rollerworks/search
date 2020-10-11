@@ -32,7 +32,8 @@ final class CurrencyTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    public function testCurrenciesAreSelectable()
+    /** @test */
+    public function currencies_are_selectable(): void
     {
         $field = $field = $this->getFactory()->createField('choice', CurrencyType::class);
         $field->finalizeConfig();
@@ -47,8 +48,8 @@ final class CurrencyTypeTest extends SearchIntegrationTestCase
 
         $choices = $view->vars['choices'];
 
-        $this->assertContainsEquals(new ChoiceView('EUR', 'EUR', 'Euro'), $choices);
-        $this->assertContainsEquals(new ChoiceView('USD', 'USD', 'US Dollar'), $choices);
-        $this->assertContainsEquals(new ChoiceView('SIT', 'SIT', 'Slovenian Tolar'), $choices);
+        self::assertContainsEquals(new ChoiceView('EUR', 'EUR', 'Euro'), $choices);
+        self::assertContainsEquals(new ChoiceView('USD', 'USD', 'US Dollar'), $choices);
+        self::assertContainsEquals(new ChoiceView('SIT', 'SIT', 'Slovenian Tolar'), $choices);
     }
 }

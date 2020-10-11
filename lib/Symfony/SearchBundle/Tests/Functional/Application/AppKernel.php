@@ -28,12 +28,12 @@ class AppKernel extends Kernel
 
     public function __construct($config, $debug = true)
     {
-        if (!(new Filesystem())->isAbsolutePath($config)) {
-            $config = __DIR__.'/config/'.$config;
+        if (! (new Filesystem())->isAbsolutePath($config)) {
+            $config = __DIR__ . '/config/' . $config;
         }
 
-        if (!file_exists($config)) {
-            throw new \RuntimeException(sprintf('The config file "%s" does not exist.', $config));
+        if (! \file_exists($config)) {
+            throw new \RuntimeException(\sprintf('The config file "%s" does not exist.', $config));
         }
 
         $this->config = $config;
@@ -43,7 +43,7 @@ class AppKernel extends Kernel
 
     public function getName()
     {
-        return 'RSearch'.substr(sha1($this->config), 0, 3);
+        return 'RSearch' . \mb_substr(\sha1($this->config), 0, 3);
     }
 
     public function registerBundles()
@@ -56,15 +56,15 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
         ];
 
-        if (class_exists(DoctrineBundle::class)) {
+        if (\class_exists(DoctrineBundle::class)) {
             $bundles[] = new DoctrineBundle();
         }
 
-        if (class_exists(FOSElasticaBundle::class)) {
+        if (\class_exists(FOSElasticaBundle::class)) {
             $bundles[] = new FOSElasticaBundle();
         }
 
-        if ('api_platform.yml' === substr($this->config, -16)) {
+        if (\mb_substr($this->config, -16) === 'api_platform.yml') {
             $bundles[] = new TwigBundle();
             $bundles[] = new ApiPlatformBundle();
         }
@@ -72,31 +72,31 @@ class AppKernel extends Kernel
         return $bundles;
     }
 
-    protected function build(ContainerBuilder $container)
+    protected function build(ContainerBuilder $container): void
     {
         $container->setParameter('kernel.root_dir', __DIR__);
     }
 
     public function getRootDir()
     {
-        if (null === $this->rootDir) {
-            $this->rootDir = str_replace('\\', '/', __DIR__);
+        if ($this->rootDir === null) {
+            $this->rootDir = \str_replace('\\', '/', __DIR__);
         }
 
         return $this->rootDir;
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load($this->config);
     }
 
     public function getCacheDir()
     {
-        if (false === $tmpDir = getenv('TMPDIR')) {
-            $tmpDir = sys_get_temp_dir();
+        if (false === $tmpDir = \getenv('TMPDIR')) {
+            $tmpDir = \sys_get_temp_dir();
         }
 
-        return rtrim($tmpDir, '/\\').'/rollerworks-search-'.sha1(__DIR__).'/'.substr(sha1($this->config), 0, 6);
+        return \rtrim($tmpDir, '/\\') . '/rollerworks-search-' . \sha1(__DIR__) . '/' . \mb_substr(\sha1($this->config), 0, 6);
     }
 }

@@ -47,7 +47,7 @@ class SearchConditionSerializer
     {
         $setName = $searchCondition->getFieldSet()->getSetName();
 
-        return [$setName, serialize($searchCondition->getValuesGroup())];
+        return [$setName, \serialize($searchCondition->getValuesGroup())];
     }
 
     /**
@@ -60,7 +60,7 @@ class SearchConditionSerializer
      */
     public function unserialize(array $searchCondition): SearchCondition
     {
-        if (2 !== \count($searchCondition) || !isset($searchCondition[0], $searchCondition[1])) {
+        if (\count($searchCondition) !== 2 || ! isset($searchCondition[0], $searchCondition[1])) {
             throw new InvalidArgumentException(
                 'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
             );
@@ -69,7 +69,7 @@ class SearchConditionSerializer
         $fieldSet = $this->searchFactory->createFieldSet($searchCondition[0]);
 
         // FIXME This needs safe serialzing with error handling
-        if (false === $group = unserialize($searchCondition[1])) {
+        if (false === $group = \unserialize($searchCondition[1])) {
             throw new InvalidArgumentException('Unable to unserialize invalid value.');
         }
 

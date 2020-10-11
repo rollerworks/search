@@ -42,8 +42,8 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $documents = $this->getDocuments();
 
         foreach ($mappings as $name => $properties) {
-            if (false === \array_key_exists($name, $documents)) {
-                throw new \RuntimeException(sprintf('No documents for mapping "%1$s" defined', $name));
+            if (\array_key_exists($name, $documents) === false) {
+                throw new \RuntimeException(\sprintf('No documents for mapping "%1$s" defined', $name));
             }
             $data = $documents[$name];
             $this->createDocuments($name, $properties, $data);
@@ -56,38 +56,38 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     {
         return [
             'customers' => [
-                    'type' => ['type' => 'join', 'relations' => ['customer' => 'note']],
-                    'first_name' => ['type' => 'text'],
-                    'last_name' => ['type' => 'text'],
-                    'full_name' => ['type' => 'text', 'boost' => 2, 'fields' => ['keyword' => ['type' => 'keyword']]],
-                    'birthday' => ['type' => 'date'],
-                    'pubdate' => ['type' => 'date'],
-                    'comment' => ['type' => 'text'],
-                ],
+                'type' => ['type' => 'join', 'relations' => ['customer' => 'note']],
+                'first_name' => ['type' => 'text'],
+                'last_name' => ['type' => 'text'],
+                'full_name' => ['type' => 'text', 'boost' => 2, 'fields' => ['keyword' => ['type' => 'keyword']]],
+                'birthday' => ['type' => 'date'],
+                'pubdate' => ['type' => 'date'],
+                'comment' => ['type' => 'text'],
+            ],
             'invoices' => [
-                    'customer' => [
-                        'type' => 'object',
-                        'properties' => [
-                            'id' => ['type' => 'integer'],
-                            'full_name' => ['type' => 'text', 'fields' => ['keyword' => ['type' => 'keyword']]],
-                            'birthday' => ['type' => 'date'],
-                        ],
-                    ],
-                    'label' => ['type' => 'string'],
-                    'pubdate' => ['type' => 'date'],
-                    'pubdatetime' => ['type' => 'date'],
-                    'status' => ['type' => 'integer'],
-                    'price_total' => ['type' => 'integer'],
-                    'items' => [
-                        'type' => 'nested',
-                        'properties' => [
-                            'label' => ['type' => 'string'],
-                            'quantity' => ['type' => 'integer'],
-                            'price' => ['type' => 'integer'],
-                            'total' => ['type' => 'integer'],
-                        ],
+                'customer' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'id' => ['type' => 'integer'],
+                        'full_name' => ['type' => 'text', 'fields' => ['keyword' => ['type' => 'keyword']]],
+                        'birthday' => ['type' => 'date'],
                     ],
                 ],
+                'label' => ['type' => 'string'],
+                'pubdate' => ['type' => 'date'],
+                'pubdatetime' => ['type' => 'date'],
+                'status' => ['type' => 'integer'],
+                'price_total' => ['type' => 'integer'],
+                'items' => [
+                    'type' => 'nested',
+                    'properties' => [
+                        'label' => ['type' => 'string'],
+                        'quantity' => ['type' => 'integer'],
+                        'price' => ['type' => 'integer'],
+                        'total' => ['type' => 'integer'],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -156,12 +156,12 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     {
         // TODO: extract settings to config file, add proper logger
         return new Client([
-            'host' => getenv('ELASTICSEARCH_HOST') ?: 'elasticsearch',
-            'port' => getenv('ELASTICSEARCH_PORT') ?: 9200,
+            'host' => \getenv('ELASTICSEARCH_HOST') ?: 'elasticsearch',
+            'port' => \getenv('ELASTICSEARCH_PORT') ?: 9200,
         ]);
     }
 
-    protected function createDocuments(string $name, array $properties, array $data)
+    protected function createDocuments(string $name, array $properties, array $data): void
     {
         // index
         $client = $this->getClient();
@@ -176,10 +176,11 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $mapping->send();
 
         // documents
-        if (false === empty($data)) {
+        if (empty($data) === false) {
             $documents = [];
+
             foreach ($data as $id => $item) {
-                $normalized = array_combine(array_keys($properties), $item);
+                $normalized = \array_combine(\array_keys($properties), $item);
                 $document = new Document($id, $normalized);
 
                 if (isset($normalized['type']['parent'])) {
@@ -229,7 +230,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         return $builder->getFieldSet('invoice');
     }
 
-    protected function configureConditionGenerator(QueryConditionGenerator $conditionGenerator)
+    protected function configureConditionGenerator(QueryConditionGenerator $conditionGenerator): void
     {
         // customer
         $conditionGenerator->registerField('customer-comment', 'customers/customers/#note>comment');
@@ -278,7 +279,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     /**
      * @param int[] $expectedIds
      */
-    protected function assertDocumentsAreFound(SearchCondition $condition, array $expectedIds)
+    protected function assertDocumentsAreFound(SearchCondition $condition, array $expectedIds): void
     {
         $conditionGenerator = new QueryConditionGenerator($condition);
         $this->configureConditionGenerator($conditionGenerator);
@@ -287,6 +288,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $query = $conditionGenerator->getQuery();
 
         $search = new Search($this->getClient());
+
         foreach ($mappings as $mapping) {
             $search
                 ->addIndex($mapping->indexName)
@@ -296,31 +298,31 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         try {
             $results = $search->search($query);
             $documents = $results->getDocuments();
-            $foundIds = array_map(
-                function (Document $document) {
+            $foundIds = \array_map(
+                static function (Document $document) {
                     return $document->getId();
                 },
                 $documents
             );
         } catch (ResponseException $exception) {
-            $this->fail(sprintf(
+            static::fail(\sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $search->getPath(),
-                json_encode($query->toArray(), JSON_PRETTY_PRINT)
+                \json_encode($query->toArray(), JSON_PRETTY_PRINT)
             ));
 
             return;
         }
 
-        $this->assertEquals(
+        static::assertEquals(
             $expectedIds,
             $foundIds,
-            sprintf(
+            \sprintf(
                 "Found these records instead: \n%s\n"
-                ."With query: ---------------------\n%s\n---------------------------------\n",
-                print_r($documents, true),
-                json_encode($query->toArray(), JSON_PRETTY_PRINT)
+                . "With query: ---------------------\n%s\n---------------------------------\n",
+                \print_r($documents, true),
+                \json_encode($query->toArray(), JSON_PRETTY_PRINT)
             )
         );
     }

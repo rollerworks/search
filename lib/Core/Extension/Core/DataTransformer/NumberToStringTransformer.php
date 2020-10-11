@@ -25,18 +25,18 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
     /**
      * Transforms a number type into number.
      *
-     * @param int|float|string|null $value Number value
+     * @param float|int|string|null $value Number value
      *
      * @throws TransformationFailedException If the given value is not numeric
      *                                       or if the value can not be transformed
      */
     public function transform($value): string
     {
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return '';
         }
 
-        if (!is_numeric($value)) {
+        if (! \is_numeric($value)) {
             throw new TransformationFailedException('Expected a numeric or null.');
         }
 
@@ -55,26 +55,26 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed
      *
-     * @return int|float|null The numeric value
+     * @return float|int|null The numeric value
      */
     public function reverseTransform($value)
     {
-        if (!is_scalar($value)) {
+        if (! \is_scalar($value)) {
             throw new TransformationFailedException('Expected a scalar.');
         }
 
-        if ('' === $value) {
+        if ($value === '') {
             return null;
         }
 
         $result = $value;
 
-        if (!is_numeric($result)) {
+        if (! \is_numeric($result)) {
             throw new TransformationFailedException('Value is not numeric.');
         }
 
         if (\is_string($result)) {
-            if (false !== mb_strpos($result, '.')) {
+            if (\mb_strpos($result, '.') !== false) {
                 $result = (float) $result;
             } else {
                 $result = (int) $result;

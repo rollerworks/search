@@ -13,18 +13,23 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional;
 
+/**
+ * @internal
+ */
 final class SearchProcessorTest extends FunctionalTestCase
 {
-    public function testEmptySearchCodeIsValid()
+    /** @test */
+    public function empty_search_code_is_valid(): void
     {
         $client = self::newClient(['config' => 'search_processor.yml']);
 
         $client->request('GET', '/search');
 
-        $this->assertEquals('VALID: EMPTY', $client->getResponse()->getContent());
+        self::assertEquals('VALID: EMPTY', $client->getResponse()->getContent());
     }
 
-    public function testPostCondition()
+    /** @test */
+    public function post_condition(): void
     {
         $client = self::newClient(['config' => 'search_processor.yml']);
 
@@ -42,12 +47,13 @@ final class SearchProcessorTest extends FunctionalTestCase
         );
     }
 
-    public function testInvalidConditionHasErrors()
+    /** @test */
+    public function invalid_condition_has_errors(): void
     {
         $client = self::newClient(['config' => 'search_processor.yml']);
 
         $client->request('GET', '/search?search=first-name%3A%20user%3B');
 
-        $this->assertEquals('INVALID: <ul><li>Field first-name is not registered in the FieldSet or available as alias.</li></ul>', $client->getResponse()->getContent());
+        self::assertEquals('INVALID: <ul><li>Field first-name is not registered in the FieldSet or available as alias.</li></ul>', $client->getResponse()->getContent());
     }
 }

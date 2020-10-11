@@ -75,7 +75,7 @@ class QueryField implements \Serializable
 
         $this->alias = $alias;
         $this->tableColumn = $column;
-        $this->column = ($alias ? $alias.'.' : '').$column;
+        $this->column = ($alias ? $alias . '.' : '') . $column;
         $this->dbType = $dbType;
 
         $this->initConversions($fieldConfig);
@@ -83,7 +83,7 @@ class QueryField implements \Serializable
 
     public function serialize()
     {
-        return serialize(
+        return \serialize(
             [
                 'mapping_name' => $this->mappingName,
                 'field' => $this->fieldConfig->getName(),
@@ -92,7 +92,7 @@ class QueryField implements \Serializable
         );
     }
 
-    public function unserialize($serialized)
+    public function unserialize($serialized): void
     {
         // noop
     }

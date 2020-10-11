@@ -34,6 +34,9 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class DqlConditionGeneratorTest extends OrmTestCase
 {
     protected function getFieldSet(bool $build = true)
@@ -48,12 +51,12 @@ final class DqlConditionGeneratorTest extends OrmTestCase
     private function getConditionGenerator(SearchCondition $condition, $query = null, $noMapping = false)
     {
         if ($query === null) {
-            $query = $this->em->createQuery('SELECT I FROM '.ECommerceInvoice::class.' I JOIN I.customer C');
+            $query = $this->em->createQuery('SELECT I FROM ' . ECommerceInvoice::class . ' I JOIN I.customer C');
         }
 
         $conditionGenerator = $this->getOrmFactory()->createConditionGenerator($query, $condition);
 
-        if (!$noMapping) {
+        if (! $noMapping) {
             $conditionGenerator->setDefaultEntity(self::INVOICE_CLASS, 'I');
             $conditionGenerator->setField('id', 'id', null, null, 'smallint');
             $conditionGenerator->setField('status', 'status');
@@ -69,7 +72,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
         return $conditionGenerator;
     }
 
-    public function testSimpleQuery()
+    /** @test */
+    public function simple_query(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -80,7 +84,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('(((C.id = :search_0 OR C.id = :search_1)))', $conditionGenerator->getWhereClause());
+        self::assertEquals('(((C.id = :search_0 OR C.id = :search_1)))', $conditionGenerator->getWhereClause());
         $this->assertDqlCompiles(
             $conditionGenerator,
             <<<'SQL'
@@ -104,7 +108,8 @@ SQL
         );
     }
 
-    public function testQueryWithMultipleFields()
+    /** @test */
+    public function query_with_multiple_fields(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -119,7 +124,7 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('(((C.id = :search_0 OR C.id = :search_1)) AND ((I.status = :search_2 OR I.status = :search_3)))', $conditionGenerator->getWhereClause());
+        self::assertEquals('(((C.id = :search_0 OR C.id = :search_1)) AND ((I.status = :search_2 OR I.status = :search_3)))', $conditionGenerator->getWhereClause());
         $this->assertDqlCompiles(
             $conditionGenerator,
             <<<'SQL'
@@ -146,16 +151,18 @@ SQL
         );
     }
 
-    public function testEmptyResult()
+    /** @test */
+    public function empty_result(): void
     {
         $condition = new SearchCondition($this->getFieldSet(), new ValuesGroup());
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('', $conditionGenerator->getWhereClause());
+        self::assertEquals('', $conditionGenerator->getWhereClause());
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testExcludes()
+    /** @test */
+    public function excludes(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -166,11 +173,12 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('(((C.id <> :search_0 AND C.id <> :search_1)))', $conditionGenerator->getWhereClause());
+        self::assertEquals('(((C.id <> :search_0 AND C.id <> :search_1)))', $conditionGenerator->getWhereClause());
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testIncludesAndExcludes()
+    /** @test */
+    public function includes_and_excludes(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -181,11 +189,12 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((C.id = :search_0 AND C.id <> :search_1))', $conditionGenerator->getWhereClause());
+        self::assertEquals('((C.id = :search_0 AND C.id <> :search_1))', $conditionGenerator->getWhereClause());
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testRanges()
+    /** @test */
+    public function ranges(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -198,14 +207,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             '((((C.id >= :search_0 AND C.id <= :search_1) OR (C.id >= :search_2 AND C.id <= :search_3) OR (C.id > :search_4 AND C.id <= :search_5) OR (C.id >= :search_6 AND C.id < :search_7))))',
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testExcludedRanges()
+    /** @test */
+    public function excluded_ranges(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -218,14 +228,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             '((((C.id <= :search_0 OR C.id >= :search_1) AND (C.id <= :search_2 OR C.id >= :search_3) AND (C.id < :search_4 OR C.id >= :search_5) AND (C.id <= :search_6 OR C.id > :search_7))))',
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testSingleComparison()
+    /** @test */
+    public function single_comparison(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -235,11 +246,12 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((C.id > :search_0))', $conditionGenerator->getWhereClause());
+        self::assertEquals('((C.id > :search_0))', $conditionGenerator->getWhereClause());
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testMultipleComparisons()
+    /** @test */
+    public function multiple_comparisons(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -250,14 +262,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             '(((C.id > :search_0 AND C.id < :search_1)))',
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testMultipleComparisonsWithGroups()
+    /** @test */
+    public function multiple_comparisons_with_groups(): void
     {
         // Use two subgroups here as the comparisons are AND to each other
         // but applying them in the head group would ignore subgroups
@@ -278,14 +291,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             '((((C.id = :search_0 OR (C.id > :search_1 AND C.id < :search_2)))) OR ((C.id > :search_3)))',
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testExcludingComparisons()
+    /** @test */
+    public function excluding_comparisons(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -296,14 +310,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             '((C.id <> :search_0 AND C.id <> :search_1))',
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testExcludingComparisonsWithNormal()
+    /** @test */
+    public function excluding_comparisons_with_normal(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -316,14 +331,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             '(((C.id > :search_0 AND C.id < :search_1) AND C.id <> :search_2 AND C.id <> :search_3))',
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testPatternMatchers()
+    /** @test */
+    public function pattern_matchers(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer_first_name')
@@ -337,7 +353,7 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             "(((C.firstName LIKE CONCAT('%', :search_0) OR C.firstName LIKE CONCAT('%', :search_1) OR C.firstName LIKE CONCAT('%', :search_2) OR C.firstName LIKE CONCAT('%', :search_3)) AND LOWER(C.firstName) NOT LIKE LOWER(CONCAT(:search_4, '%'))))",
             $conditionGenerator->getWhereClause()
         );
@@ -368,7 +384,8 @@ SQL
         }
     }
 
-    public function testSubGroups()
+    /** @test */
+    public function sub_groups(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->group()
@@ -385,14 +402,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             '(((C.id = :search_0)) OR ((C.id = :search_1)))',
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testSubGroupWithRootCondition()
+    /** @test */
+    public function sub_group_with_root_condition(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -407,14 +425,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             "(((C.id = :search_0)) AND ((((C.firstName LIKE CONCAT('%', :search_1) OR C.lastName LIKE CONCAT('%', :search_2))))))",
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testOrGroupRoot()
+    /** @test */
+    public function or_group_root(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet(), ValuesGroup::GROUP_LOGICAL_OR)
             ->field('customer')
@@ -427,14 +446,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             "((C.id = :search_0) OR (C.firstName LIKE CONCAT('%', :search_1)))",
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testSubOrGroup()
+    /** @test */
+    public function sub_or_group(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->group()
@@ -451,27 +471,27 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             "((((C.id = :search_0) OR (C.firstName LIKE CONCAT('%', :search_1)))))",
             $conditionGenerator->getWhereClause()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testColumnConversion()
+    /** @test */
+    public function column_conversion(): void
     {
         $converter = $this->createMock(ColumnConversion::class);
         $converter
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('convertColumn')
-            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+            ->willReturnCallback(static function ($column, array $options, ConversionHints $hints) {
                 self::assertArrayHasKey('grouping', $options);
                 self::assertTrue($options['grouping']);
                 self::assertEquals('C.id', $hints->column);
 
-                return "SEARCH_CONVERSION_CAST($column, 'customer_type')";
-            })
-        ;
+                return "SEARCH_CONVERSION_CAST({$column}, 'customer_type')";
+            });
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_orm_conversion' => $converter]);
@@ -499,7 +519,8 @@ SQL
         );
     }
 
-    public function testValueConversion()
+    /** @test */
+    public function value_conversion(): void
     {
         $emConfig = $this->em->getConfiguration();
         $emConfig->addCustomStringFunction('GET_CUSTOMER_TYPE', GetCustomerTypeFunction::class);
@@ -508,15 +529,14 @@ SQL
         $converter
             ->expects(self::atLeastOnce())
             ->method('convertValue')
-            ->willReturnCallback(function ($value, array $options, ConversionHints $hints) {
+            ->willReturnCallback(static function ($value, array $options, ConversionHints $hints) {
                 self::assertArrayHasKey('grouping', $options);
                 self::assertTrue($options['grouping']);
 
                 $value = $hints->createParamReferenceFor($value);
 
-                return "get_customer_type($value)";
-            })
-        ;
+                return "get_customer_type({$value})";
+            });
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_orm_conversion' => $converter]);
@@ -529,14 +549,15 @@ SQL
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('((C.id = get_customer_type(:search_0)))', $conditionGenerator->getWhereClause());
+        self::assertEquals('((C.id = get_customer_type(:search_0)))', $conditionGenerator->getWhereClause());
         $this->assertDqlCompiles(
             $conditionGenerator,
             'SELECT i0_.invoice_id AS invoice_id_0, i0_.label AS label_1, i0_.pubdate AS pubdate_2, i0_.status AS status_3, i0_.price_total AS price_total_4, i0_.customer AS customer_5, i0_.parent_id AS parent_id_6 FROM invoices i0_ INNER JOIN customers c1_ ON i0_.customer = c1_.id WHERE ((c1_.id = get_customer_type(?)))'
         );
     }
 
-    public function testUpdateQueryWithQueryBuilder()
+    /** @test */
+    public function update_query_with_query_builder(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -552,11 +573,12 @@ SQL
         $whereCase = $conditionGenerator->getWhereClause();
 
         $this->assertDqlCompiles($conditionGenerator, '', [':search_0' => [2, Type::getType('integer')]]);
-        $this->assertEquals('((C.id = :search_0))', $whereCase);
-        $this->assertEquals('SELECT C FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer C WHERE ((C.id = :search_0))', $qb->getDQL());
+        self::assertEquals('((C.id = :search_0))', $whereCase);
+        self::assertEquals('SELECT C FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer C WHERE ((C.id = :search_0))', $qb->getDQL());
     }
 
-    public function testUpdateQueryWithNoResult()
+    /** @test */
+    public function update_query_with_no_result(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())->getSearchCondition();
         $conditionGenerator = $this->getConditionGenerator($condition);
@@ -564,15 +586,16 @@ SQL
         $whereCase = $conditionGenerator->getWhereClause();
         $conditionGenerator->updateQuery(' WHERE ');
 
-        $this->assertEquals('', $whereCase);
-        $this->assertEquals(
+        self::assertEquals('', $whereCase);
+        self::assertEquals(
             'SELECT I FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C',
             $conditionGenerator->getQuery()->getDQL()
         );
         $this->assertDqlCompiles($conditionGenerator);
     }
 
-    public function testQueryWithPrependAndPrimaryCond()
+    /** @test */
+    public function query_with_prepend_and_primary_cond(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -598,14 +621,15 @@ SQL
         $whereCase = $conditionGenerator->getWhereClause('WHERE ');
         $conditionGenerator->updateQuery();
 
-        $this->assertEquals('WHERE (((I.status = :search_0 OR I.status = :search_1))) AND (((C.id = :search_2 OR C.id = :search_3)))', $whereCase);
-        $this->assertEquals(
+        self::assertEquals('WHERE (((I.status = :search_0 OR I.status = :search_1))) AND (((C.id = :search_2 OR C.id = :search_3)))', $whereCase);
+        self::assertEquals(
             'SELECT I FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE (((I.status = :search_0 OR I.status = :search_1))) AND (((C.id = :search_2 OR C.id = :search_3)))',
             $conditionGenerator->getQuery()->getDQL()
         );
     }
 
-    public function testEmptyQueryWithPrependAndPrimaryCond()
+    /** @test */
+    public function empty_query_with_prepend_and_primary_cond(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('id2')
@@ -629,14 +653,14 @@ SQL
         $conditionGenerator = $this->getConditionGenerator($condition);
         $conditionGenerator->updateQuery();
 
-        $this->assertEquals('WHERE (((I.status = :search_0 OR I.status = :search_1)))', $conditionGenerator->getWhereClause('WHERE '));
-        $this->assertEquals(
+        self::assertEquals('WHERE (((I.status = :search_0 OR I.status = :search_1)))', $conditionGenerator->getWhereClause('WHERE '));
+        self::assertEquals(
             'SELECT I FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE (((I.status = :search_0 OR I.status = :search_1)))',
             $conditionGenerator->getQuery()->getDQL()
         );
     }
 
-    private function assertDqlCompiles(DqlConditionGenerator $conditionGenerator, string $expectedSql = '', ?array $parameters = null)
+    private function assertDqlCompiles(DqlConditionGenerator $conditionGenerator, string $expectedSql = '', ?array $parameters = null): void
     {
         $conditionGenerator->updateQuery();
 
@@ -654,13 +678,13 @@ SQL
             $sql = $query->getSQL();
 
             if ($expectedSql !== '') {
-                $expectedSql = preg_replace('/\s+/', ' ', trim($expectedSql));
-                $sql = preg_replace('/\s+/', ' ', trim($sql));
+                $expectedSql = \preg_replace('/\s+/', ' ', \trim($expectedSql));
+                $sql = \preg_replace('/\s+/', ' ', \trim($sql));
 
                 self::assertEquals($expectedSql, $sql);
             }
         } catch (QueryException $e) {
-            $this->fail('Compile error: '.$e->getMessage().' with Query: '.$conditionGenerator->getQuery()->getDQL());
+            self::fail('Compile error: ' . $e->getMessage() . ' with Query: ' . $conditionGenerator->getQuery()->getDQL());
         }
     }
 }

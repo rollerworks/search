@@ -86,24 +86,25 @@ final class JsonInput extends AbstractInput
 
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
-        if (!\is_string($input)) {
+        if (! \is_string($input)) {
             throw new UnexpectedTypeException($input, 'string');
         }
 
-        $input = trim($input);
+        $input = \trim($input);
 
         $fieldSet = $config->getFieldSet();
+
         if (empty($input)) {
             return new SearchCondition($fieldSet, new ValuesGroup());
         }
 
-        $array = json_decode($input, true, 512, \JSON_BIGINT_AS_STRING);
+        $array = \json_decode($input, true, 512, \JSON_BIGINT_AS_STRING);
 
-        if (json_last_error() !== \JSON_ERROR_NONE) {
+        if (\json_last_error() !== \JSON_ERROR_NONE) {
             throw new InvalidSearchConditionException([
                 ConditionErrorMessage::rawMessage(
                     $input,
-                    'Input does not contain valid JSON: '."\n".json_last_error_msg(),
+                    'Input does not contain valid JSON: ' . "\n" . \json_last_error_msg(),
                     $input
                 ),
             ]);
@@ -143,7 +144,7 @@ final class JsonInput extends AbstractInput
         return $condition;
     }
 
-    private function processGroup(array $group)
+    private function processGroup(array $group): void
     {
         $this->processFields($group['fields'] ?? []);
 
@@ -154,7 +155,7 @@ final class JsonInput extends AbstractInput
         }
     }
 
-    private function processFields(array $values)
+    private function processFields(array $values): void
     {
         foreach ($values as $name => $value) {
             if ($this->config->getFieldSet()->isPrivate($name)) {
@@ -172,7 +173,7 @@ final class JsonInput extends AbstractInput
             }
 
             foreach ($value['ranges'] ?? [] as $index => $range) {
-                $this->assertValueArrayHasKeys($range, ['lower', 'upper'], "[ranges][$index]");
+                $this->assertValueArrayHasKeys($range, ['lower', 'upper'], "[ranges][{$index}]");
 
                 $this->structureBuilder->rangeValue(
                     $range['lower'],
@@ -184,7 +185,7 @@ final class JsonInput extends AbstractInput
             }
 
             foreach ($value['excluded-ranges'] ?? [] as $index => $range) {
-                $this->assertValueArrayHasKeys($range, ['lower', 'upper'], "[excluded-ranges][$index]");
+                $this->assertValueArrayHasKeys($range, ['lower', 'upper'], "[excluded-ranges][{$index}]");
 
                 $this->structureBuilder->excludedRangeValue(
                     $range['lower'],
@@ -196,21 +197,21 @@ final class JsonInput extends AbstractInput
             }
 
             foreach ($value['comparisons'] ?? [] as $index => $comparison) {
-                $this->assertValueArrayHasKeys($comparison, ['value', 'operator'], "[comparisons][$index]");
+                $this->assertValueArrayHasKeys($comparison, ['value', 'operator'], "[comparisons][{$index}]");
                 $this->structureBuilder->comparisonValue(
                     $comparison['operator'],
                     $comparison['value'],
-                    ["[comparisons][$index]", '[operator]', '[value]']
+                    ["[comparisons][{$index}]", '[operator]', '[value]']
                 );
             }
 
             foreach ($value['pattern-matchers'] ?? [] as $index => $matcher) {
-                $this->assertValueArrayHasKeys($matcher, ['value', 'type'], "[pattern-matchers][$index]");
+                $this->assertValueArrayHasKeys($matcher, ['value', 'type'], "[pattern-matchers][{$index}]");
                 $this->structureBuilder->patterMatchValue(
                     $matcher['type'],
                     $matcher['value'],
                     ($matcher['case-insensitive'] ?? false),
-                    ["[pattern-matchers][$index]", '[value]', '[type]']
+                    ["[pattern-matchers][{$index}]", '[value]', '[type]']
                 );
             }
 
@@ -222,7 +223,7 @@ final class JsonInput extends AbstractInput
     {
         $order = $array['order'] ?? [];
 
-        if ([] === $order) {
+        if ($order === []) {
             /** @var FieldConfig $field */
             foreach ($fieldSet->all() as $name => $field) {
                 if (OrderField::isOrder($name) && null !== $direction = $field->getOption('default')) {
@@ -233,6 +234,7 @@ final class JsonInput extends AbstractInput
             }
 
             $orderValuesGroup = $this->orderStructureBuilder->getRootGroup();
+
             if ($orderValuesGroup->countValues() > 0) {
                 $condition->setOrder(new SearchOrder($orderValuesGroup));
             }
@@ -241,7 +243,7 @@ final class JsonInput extends AbstractInput
         }
 
         foreach ($order as $name => $direction) {
-            $this->orderStructureBuilder->field('@'.$name, '[order][%s]');
+            $this->orderStructureBuilder->field('@' . $name, '[order][%s]');
             $this->orderStructureBuilder->simpleValue($direction, '');
             $this->orderStructureBuilder->endValues();
         }
@@ -250,29 +252,29 @@ final class JsonInput extends AbstractInput
         $condition->setOrder($orderCondition);
     }
 
-    private function assertValueArrayHasKeys($array, array $requiredKeys, string $path)
+    private function assertValueArrayHasKeys($array, array $requiredKeys, string $path): void
     {
-        if (!\is_array($array)) {
-            throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()).$path,
-                sprintf('Expected value-structure to be an array, got %s instead.', \gettype($array))
+        if (! \is_array($array)) {
+            throw new InputProcessorException(\implode('', $this->structureBuilder->getCurrentPath()) . $path,
+                \sprintf('Expected value-structure to be an array, got %s instead.', \gettype($array))
             );
         }
 
         $missingKeys = [];
 
         foreach ($requiredKeys as $key) {
-            if (!\array_key_exists($key, $array)) {
+            if (! \array_key_exists($key, $array)) {
                 $missingKeys[] = $key;
             }
         }
 
         if ($missingKeys) {
-            throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()).$path,
-                sprintf(
-                    'Expected value-structure to contain the following keys: %s. '.
+            throw new InputProcessorException(\implode('', $this->structureBuilder->getCurrentPath()) . $path,
+                \sprintf(
+                    'Expected value-structure to contain the following keys: %s. ' .
                     'But the following keys are missing: %s.',
-                    implode(', ', $requiredKeys),
-                    implode(', ', $missingKeys)
+                    \implode(', ', $requiredKeys),
+                    \implode(', ', $missingKeys)
                 )
             );
         }

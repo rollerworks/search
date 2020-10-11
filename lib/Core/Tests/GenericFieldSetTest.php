@@ -24,10 +24,8 @@ use Rollerworks\Component\Search\GenericFieldSet;
  */
 final class GenericFieldSetTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_gets_a_field()
+    /** @test */
+    public function it_gets_a_field(): void
     {
         $fieldSet = new GenericFieldSet([
             'id' => $idField = $this->createFieldMock('id'),
@@ -42,10 +40,8 @@ final class GenericFieldSetTest extends TestCase
         self::assertFalse($fieldSet->has('foo'));
     }
 
-    /**
-     * @test
-     */
-    public function it_creates_a_view()
+    /** @test */
+    public function it_creates_a_view(): void
     {
         $fieldSet = new GenericFieldSet([
             'id' => $idField = $this->createFieldMock('id', true),
@@ -66,10 +62,8 @@ final class GenericFieldSetTest extends TestCase
         self::assertEquals($expectedView, $view);
     }
 
-    /**
-     * @test
-     */
-    public function it_creates_a_view_with_builder()
+    /** @test */
+    public function it_creates_a_view_with_builder(): void
     {
         $fieldSet = new GenericFieldSet(
             [
@@ -77,7 +71,7 @@ final class GenericFieldSetTest extends TestCase
                 'name' => $nameField = $this->createFieldMock('name', true),
             ],
             'test',
-            function (FieldSetView $view) {
+            static function (FieldSetView $view): void {
                 $view->vars['name'] = 'something';
             }
         );
@@ -108,7 +102,7 @@ final class GenericFieldSetTest extends TestCase
         if ($withView) {
             $field->expects(self::once())
                 ->method('createView')
-                ->willReturnCallback(function (FieldSetView $view) use ($name) {
+                ->willReturnCallback(static function (FieldSetView $view) use ($name) {
                     $fieldView = new SearchFieldView($view);
                     $fieldView->vars['name'] = $name;
 

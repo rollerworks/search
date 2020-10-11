@@ -50,13 +50,13 @@ class ElasticsearchFactory
     /**
      * Creates a new CachedConditionGenerator instance for the given ConditionGenerator.
      *
-     * @param int|\DateInterval|null $ttl Optional. The TTL value of this item. If no value is sent and
+     * @param \DateInterval|int|null $ttl Optional. The TTL value of this item. If no value is sent and
      *                                    the driver supports TTL then the library may set a default value
      *                                    for it or let the driver take care of that.
      */
     public function createCachedConditionGenerator(ConditionGenerator $conditionGenerator, $ttl = 0): ConditionGenerator
     {
-        if (null === $this->cacheDriver) {
+        if ($this->cacheDriver === null) {
             return $conditionGenerator;
         }
 

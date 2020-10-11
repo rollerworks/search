@@ -42,7 +42,7 @@ class ChoiceGroupView implements \IteratorAggregate
     }
 
     /**
-     * @return ChoiceGroupView[]|ChoiceView[]|\ArrayIterator
+     * @return \ArrayIterator|ChoiceGroupView[]|ChoiceView[]
      */
     public function getIterator()
     {

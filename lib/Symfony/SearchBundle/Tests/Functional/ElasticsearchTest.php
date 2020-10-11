@@ -15,11 +15,15 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Functional;
 
 use Rollerworks\Component\Search\Elasticsearch\ElasticsearchFactory;
 
+/**
+ * @internal
+ */
 final class ElasticsearchTest extends FunctionalTestCase
 {
-    public function testElasticsearchFactoryIsAccessible()
+    /** @test */
+    public function elasticsearch_factory_is_accessible(): void
     {
-        if (!class_exists(ElasticsearchFactory::class)) {
+        if (! \class_exists(ElasticsearchFactory::class)) {
             self::markTestSkipped('rollerworks/search-elasticsearch is not installed');
         }
 

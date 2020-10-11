@@ -52,7 +52,7 @@ final class CachingFactoryDecorator implements ChoiceListFactory
     public function createListFromChoices($choices, $value = null): ChoiceList
     {
         if ($choices instanceof \Traversable) {
-            $choices = iterator_to_array($choices);
+            $choices = \iterator_to_array($choices);
         }
 
         // The value is not validated on purpose. The decorated factory may
@@ -65,7 +65,7 @@ final class CachingFactoryDecorator implements ChoiceListFactory
 
         $hash = self::generateHash([$flatChoices, $value], 'fromChoices');
 
-        if (!isset($this->lists[$hash])) {
+        if (! isset($this->lists[$hash])) {
             $this->lists[$hash] = $this->decoratedFactory->createListFromChoices($choices, $value);
         }
 
@@ -76,7 +76,7 @@ final class CachingFactoryDecorator implements ChoiceListFactory
     {
         $hash = self::generateHash([$loader, $value], 'fromLoader');
 
-        if (!isset($this->lists[$hash])) {
+        if (! isset($this->lists[$hash])) {
             $this->lists[$hash] = $this->decoratedFactory->createListFromLoader($loader, $value);
         }
 
@@ -89,7 +89,7 @@ final class CachingFactoryDecorator implements ChoiceListFactory
         // factory may decide which input to accept and which not.
         $hash = self::generateHash([$list, $preferredChoices, $label, $index, $groupBy, $attr]);
 
-        if (!isset($this->views[$hash])) {
+        if (! isset($this->views[$hash])) {
             $this->views[$hash] = $this->decoratedFactory->createView(
                 $list,
                 $preferredChoices,
@@ -117,16 +117,16 @@ final class CachingFactoryDecorator implements ChoiceListFactory
     private static function generateHash($value, string $namespace = ''): string
     {
         if (\is_object($value)) {
-            $value = spl_object_hash($value);
+            $value = \spl_object_hash($value);
         } elseif (\is_array($value)) {
-            array_walk_recursive($value, function (&$v) {
+            \array_walk_recursive($value, static function (&$v): void {
                 if (\is_object($v)) {
-                    $v = spl_object_hash($v);
+                    $v = \spl_object_hash($v);
                 }
             });
         }
 
-        return hash('sha256', $namespace.':'.serialize($value));
+        return \hash('sha256', $namespace . ':' . \serialize($value));
     }
 
     /**
@@ -137,7 +137,7 @@ final class CachingFactoryDecorator implements ChoiceListFactory
      */
     private static function flatten(array $array, &$output): void
     {
-        if (null === $output) {
+        if ($output === null) {
             $output = [];
         }
 

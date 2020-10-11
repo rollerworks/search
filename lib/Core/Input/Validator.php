@@ -33,9 +33,6 @@ interface Validator
 
     /**
      * Validates and returns whether the value is valid.
-     *
-     * @param mixed $value
-     * @param mixed $originalValue
      */
     public function validate($value, string $type, $originalValue, string $path): bool;
 }

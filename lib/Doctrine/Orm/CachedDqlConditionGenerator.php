@@ -57,6 +57,7 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
 
     /**
      * @param ConditionGenerator $conditionGenerator The actual ConditionGenerator to use when no cache exists
+     * @param mixed|null         $ttl
      */
     public function __construct(ConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = null)
     {
@@ -90,7 +91,7 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
         }
 
         if ($this->whereClause !== '') {
-            return $prependQuery.$this->whereClause;
+            return $prependQuery . $this->whereClause;
         }
 
         return '';
@@ -98,19 +99,19 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
 
     private function getCacheKey(): string
     {
-        if (null === $this->cacheKey) {
+        if ($this->cacheKey === null) {
             $searchCondition = $this->conditionGenerator->getSearchCondition();
 
-            $this->cacheKey = hash(
+            $this->cacheKey = \hash(
                 'sha256',
-                "dql\n".
-                $searchCondition->getFieldSet()->getSetName().
-                "\n".
-                serialize($searchCondition->getValuesGroup()).
-                "\n".
-                serialize($searchCondition->getPrimaryCondition()).
-                "\n".
-                serialize($this->conditionGenerator->getFieldsConfig()->getFields())
+                "dql\n" .
+                $searchCondition->getFieldSet()->getSetName() .
+                "\n" .
+                \serialize($searchCondition->getValuesGroup()) .
+                "\n" .
+                \serialize($searchCondition->getPrimaryCondition()) .
+                "\n" .
+                \serialize($this->conditionGenerator->getFieldsConfig()->getFields())
             );
         }
 
@@ -125,7 +126,7 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
             if ($this->query instanceof QueryBuilder) {
                 $this->query->andWhere($this->getWhereClause());
             } else {
-                $this->query->setDQL($this->query->getDQL().$whereCase);
+                $this->query->setDQL($this->query->getDQL() . $whereCase);
             }
 
             $this->bindParameters();
@@ -152,9 +153,9 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
     /**
      * @throws BadMethodCallException When the where-clause is already generated
      */
-    private function guardNotGenerated()
+    private function guardNotGenerated(): void
     {
-        if (null !== $this->whereClause) {
+        if ($this->whereClause !== null) {
             throw new BadMethodCallException(
                 'ConditionGenerator configuration methods cannot be accessed anymore once the where-clause is generated.'
             );

@@ -93,15 +93,15 @@ final class SqlConditionGenerator implements ConditionGenerator
 
         $mappingIdx = null;
 
-        if (false !== strpos($fieldName, '#')) {
-            [$fieldName, $mappingIdx] = explode('#', $fieldName, 2);
+        if (\mb_strpos($fieldName, '#') !== false) {
+            [$fieldName, $mappingIdx] = \explode('#', $fieldName, 2);
             unset($this->fields[$fieldName][null]);
         } else {
             $this->fields[$fieldName] = [];
         }
 
         $this->fields[$fieldName][$mappingIdx] = new QueryField(
-            $fieldName.(null !== $mappingIdx ? "#$mappingIdx" : ''),
+            $fieldName . ($mappingIdx !== null ? "#{$mappingIdx}" : ''),
             $this->fieldSet->get($fieldName),
             MappingType::getType($type),
             $column,
@@ -113,15 +113,15 @@ final class SqlConditionGenerator implements ConditionGenerator
 
     public function getWhereClause(string $prependQuery = ''): string
     {
-        if (null === $this->whereClause) {
+        if ($this->whereClause === null) {
             $queryGenerator = new QueryGenerator($this->connection, $this->getQueryPlatform(), $this->fields);
 
             $this->whereClause = $queryGenerator->getWhereClause($this->searchCondition);
             $this->parameters = $queryGenerator->getParameters();
         }
 
-        if ('' !== $this->whereClause) {
-            return $prependQuery.$this->whereClause;
+        if ($this->whereClause !== '') {
+            return $prependQuery . $this->whereClause;
         }
 
         return '';
@@ -151,10 +151,10 @@ final class SqlConditionGenerator implements ConditionGenerator
 
     private function getQueryPlatform(): AbstractQueryPlatform
     {
-        $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
-        $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\'.$dbPlatform.'QueryPlatform';
+        $dbPlatform = \ucfirst($this->connection->getDatabasePlatform()->getName());
+        $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\' . $dbPlatform . 'QueryPlatform';
 
-        if (!class_exists($platformClass)) {
+        if (! \class_exists($platformClass)) {
             $platformClass = SqlQueryPlatform::class;
         }
 

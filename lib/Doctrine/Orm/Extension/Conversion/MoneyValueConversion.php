@@ -43,7 +43,7 @@ final class MoneyValueConversion implements ValueConversion, ColumnConversion
         $sqlValue = $hints->createParamReferenceFor($this->formatter->format($value->value));
         $scale = $this->currencies->subunitFor($value->value->getCurrency());
 
-        return "SEARCH_MONEY_AS_NUMERIC({$sqlValue}, $scale)";
+        return "SEARCH_MONEY_AS_NUMERIC({$sqlValue}, {$scale})";
     }
 
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
@@ -54,6 +54,6 @@ final class MoneyValueConversion implements ValueConversion, ColumnConversion
 
         $scale = $this->currencies->subunitFor($hints->getProcessingValue()->getCurrency());
 
-        return "SUBSTRING(SEARCH_MONEY_AS_NUMERIC($column, $scale), 5))";
+        return "SUBSTRING(SEARCH_MONEY_AS_NUMERIC({$column}, {$scale}), 5))";
     }
 }

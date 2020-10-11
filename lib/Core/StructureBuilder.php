@@ -42,22 +42,17 @@ interface StructureBuilder
     public function excludedSimpleValue($value, string $path): void;
 
     /**
-     * @param mixed $lower
-     * @param mixed $upper
-     * @param array $path  [path, lower-path-pattern, upper-path-pattern]
+     * @param array $path [path, lower-path-pattern, upper-path-pattern]
      */
     public function rangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void;
 
     /**
-     * @param mixed $lower
-     * @param mixed $upper
-     * @param array $path  [path, lower-path-pattern, upper-path-pattern]
+     * @param array $path [path, lower-path-pattern, upper-path-pattern]
      */
     public function excludedRangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void;
 
     /**
      * @param string $operator
-     * @param mixed  $value
      * @param array  $path     [base-path, operator-path, value-path]
      */
     public function comparisonValue($operator, $value, array $path): void;

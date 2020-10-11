@@ -67,7 +67,7 @@ abstract class AbstractInput implements InputProcessor
         }
     }
 
-    protected function validateGroupsCount(int $count, string $path)
+    protected function validateGroupsCount(int $count, string $path): void
     {
         if ($count > $this->config->getMaxGroups()) {
             throw new GroupsOverflowException($this->config->getMaxGroups(), $path);
@@ -77,7 +77,7 @@ abstract class AbstractInput implements InputProcessor
     /**
      * This method is called after processing and helps with finding bugs.
      */
-    protected function assertLevel0()
+    protected function assertLevel0(): void
     {
         if ($this->level > 0) {
             throw new \RuntimeException('Level nesting is not reset to 0, please report this bug.');

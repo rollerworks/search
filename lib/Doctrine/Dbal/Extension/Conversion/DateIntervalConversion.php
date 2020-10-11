@@ -36,20 +36,20 @@ final class DateIntervalConversion implements ValueConversion
         $value->locale('en');
 
         if ($platform === 'postgresql' || $platform === 'mock') {
-            $intervalString = 'CAST('.$hints->createParamReferenceFor($value->forHumans()).' AS interval)';
+            $intervalString = 'CAST(' . $hints->createParamReferenceFor($value->forHumans()) . ' AS interval)';
         } elseif ($platform === 'mysql' || $platform === 'drizzle') {
             $intervalString = self::convertForMysql($value);
         } else {
             throw new \RuntimeException(
-                sprintf('Unsupported platform "%s" for DateIntervalConversion.', $platform)
+                \sprintf('Unsupported platform "%s" for DateIntervalConversion.', $platform)
             );
         }
 
         if ($value->invert === 1) {
-            return 'NOW() - '.$intervalString;
+            return 'NOW() - ' . $intervalString;
         }
 
-        return 'NOW() + '.$intervalString;
+        return 'NOW() + ' . $intervalString;
     }
 
     public static function convertForMysql(CarbonInterval $value): string
@@ -59,13 +59,13 @@ final class DateIntervalConversion implements ValueConversion
         $handler = static function (array $units) use ($negative) {
             foreach ($units as &$value) {
                 // MySQL doesn't support plural names.
-                $value = strtoupper(rtrim($value, 's'));
+                $value = \mb_strtoupper(\rtrim($value, 's'));
             }
 
-            return implode(($negative ? ' - INTERVAL ' : ' + INTERVAL '), $units);
+            return \implode(($negative ? ' - INTERVAL ' : ' + INTERVAL '), $units);
         };
 
         // Note. Don't use parameters here, values are already pre-formatted.
-        return 'INTERVAL '.$value->forHumans(['join' => $handler]);
+        return 'INTERVAL ' . $value->forHumans(['join' => $handler]);
     }
 }

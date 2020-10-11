@@ -22,7 +22,8 @@ use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
  */
 final class BirthdayTypeTest extends SearchIntegrationTestCase
 {
-    public function testDateOnlyInput()
+    /** @test */
+    public function date_only_input(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'pattern' => 'yyyy-MM-dd',
@@ -39,7 +40,8 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
             ->failsToTransforms();
     }
 
-    public function testAllowAgeInput()
+    /** @test */
+    public function allow_age_input(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'pattern' => 'yyyy-MM-dd',
@@ -56,7 +58,8 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('15');
     }
 
-    public function testWrongInputFails()
+    /** @test */
+    public function wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'allow_age' => true,
@@ -67,7 +70,8 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)->withInput('+21')->failsToTransforms();
     }
 
-    public function testAgeInTheFutureFails()
+    /** @test */
+    public function age_in_the_future_fails(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'pattern' => 'yyyy-MM-dd',
@@ -78,7 +82,8 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)->withInput($currentDate->format('Y-m-d'))->failsToTransforms();
     }
 
-    public function testAgeInFutureWorksWhenAllowed()
+    /** @test */
+    public function age_in_future_works_when_allowed(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
             'pattern' => 'yyyy-MM-dd',

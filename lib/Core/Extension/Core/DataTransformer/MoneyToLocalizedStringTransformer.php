@@ -48,20 +48,20 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
      */
     public function transform($value): ?string
     {
-        if (null === $value) {
+        if ($value === null) {
             return '';
         }
 
-        if (!$value instanceof MoneyValue) {
+        if (! $value instanceof MoneyValue) {
             throw new TransformationFailedException('Expected a MoneyValue object.');
         }
 
         $result = (new IntlMoneyFormatter($this->getNumberFormatter(), new ISOCurrencies()))->format($value->value);
 
         // Convert fixed spaces to normal ones
-        $result = str_replace(["\xc2\xa0", "\xe2\x80\xaf"], ' ', $result);
+        $result = \str_replace(["\xc2\xa0", "\xe2\x80\xaf"], ' ', $result);
 
-        if (!$value->withCurrency) {
+        if (! $value->withCurrency) {
             $result = $this->removeCurrencySymbol($result, (string) $value->value->getCurrency());
         }
 
@@ -78,46 +78,46 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
      */
     public function reverseTransform($value): ?MoneyValue
     {
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return null;
         }
 
-        if (!\is_string($value)) {
+        if (! \is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if ('NaN' === $value) {
+        if ($value === 'NaN') {
             throw new TransformationFailedException('"NaN" is not a valid number');
         }
 
-        if (false !== mb_strpos($value, '∞')) {
+        if (\mb_strpos($value, '∞') !== false) {
             throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
         }
 
         // Convert normal spaces to fixed spaces.
-        $value = str_replace(' ', "\xc2\xa0", $value);
+        $value = \str_replace(' ', "\xc2\xa0", $value);
 
         $formatter = $this->getNumberFormatter();
 
         $groupSep = $formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
         $decSep = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
-        $withCurrency = (bool) preg_match('#\p{Sc}#u', $value);
+        $withCurrency = (bool) \preg_match('#\p{Sc}#u', $value);
 
         // Some locales use the space as group separation.
         // The ICU data confirms this, but since v58.1 this can no longer be parsed
         // in the currency format. Unless you use DECIMAL which doesn't work
         // for currency. So... simple remove the spaces between numbers.
-        $value = preg_replace("/(\\p{N})\xc2\xa0(\\p{N})/u", '$1$2', $value);
+        $value = \preg_replace("/(\\p{N})\xc2\xa0(\\p{N})/u", '$1$2', $value);
 
-        if ('.' !== $decSep && (!$this->grouping || '.' !== $groupSep)) {
-            $value = str_replace('.', $decSep, $value);
+        if ($decSep !== '.' && (! $this->grouping || $groupSep !== '.')) {
+            $value = \str_replace('.', $decSep, $value);
         }
 
-        if (',' !== $decSep && (!$this->grouping || ',' !== $groupSep)) {
-            $value = str_replace(',', $decSep, $value);
+        if ($decSep !== ',' && (! $this->grouping || $groupSep !== ',')) {
+            $value = \str_replace(',', $decSep, $value);
         }
 
-        if (!$withCurrency) {
+        if (! $withCurrency) {
             $value = $this->addCurrencySymbol($value);
         }
 
@@ -151,34 +151,34 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
         $currency = $currency ?? $this->defaultCurrency;
         $locale = \Locale::getDefault();
 
-        if (!isset(self::$patterns[$locale])) {
+        if (! isset(self::$patterns[$locale])) {
             self::$patterns[$locale] = [];
         }
 
-        if (!isset(self::$patterns[$locale][$currency])) {
+        if (! isset(self::$patterns[$locale][$currency])) {
             $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
             $pattern = $formatter->formatCurrency(123.00, $currency);
 
             // 1=left-position currency, 2=left-space, 3=right-space, 4=left-position currency.
             // With non latin number scripts.
-            preg_match(
+            \preg_match(
                 '/^([^\s\xc2\xa0]*)([\s\xc2\xa0]*)\p{N}{3}(?:[,.]\p{N}+)?([\s\xc2\xa0]*)([^\s\xc2\xa0]*)$/iu',
                 $pattern,
                 $matches
             );
 
-            if (!empty($matches[1])) {
-                self::$patterns[$locale][$currency] = ['%1$s'.$matches[2].'%2$s', $matches[1]];
-            } elseif (!empty($matches[4])) {
-                self::$patterns[$locale][$currency] = ['%2$s'.$matches[3].'%1$s', $matches[4]];
+            if (! empty($matches[1])) {
+                self::$patterns[$locale][$currency] = ['%1$s' . $matches[2] . '%2$s', $matches[1]];
+            } elseif (! empty($matches[4])) {
+                self::$patterns[$locale][$currency] = ['%2$s' . $matches[3] . '%1$s', $matches[4]];
             } else {
                 throw new \InvalidArgumentException(
-                    sprintf('Locale "%s" with currency "%s" does not provide a currency position.', $locale, $currency)
+                    \sprintf('Locale "%s" with currency "%s" does not provide a currency position.', $locale, $currency)
                 );
             }
         }
 
-        return sprintf(self::$patterns[$locale][$currency][0], self::$patterns[$locale][$currency][1], $value);
+        return \sprintf(self::$patterns[$locale][$currency][0], self::$patterns[$locale][$currency][1], $value);
     }
 
     /**
@@ -192,11 +192,11 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
     {
         $locale = \Locale::getDefault();
 
-        if (!isset(self::$patterns[$locale][$currency])) {
+        if (! isset(self::$patterns[$locale][$currency])) {
             // Initialize the cache, ignore return.
             $this->addCurrencySymbol('123', $currency);
         }
 
-        return preg_replace('#(\s?'.preg_quote(self::$patterns[$locale][$currency][1], '#').'\s?)#u', '', $value);
+        return \preg_replace('#(\s?' . \preg_quote(self::$patterns[$locale][$currency][1], '#') . '\s?)#u', '', $value);
     }
 }

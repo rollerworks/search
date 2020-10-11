@@ -47,21 +47,22 @@ final class LazyChoiceListTest extends TestCase
     {
         $this->loadedList = $this->createMock(ChoiceList::class);
         $this->loader = $this->createMock(ChoiceLoader::class);
-        $this->value = function () {
+        $this->value = static function (): void {
         };
 
         $this->list = new LazyChoiceList($this->loader, $this->value);
     }
 
-    public function testGetChoiceLoadersLoadsList()
+    /** @test */
+    public function get_choice_loaders_loads_list(): void
     {
-        $this->loader->expects($this->exactly(2))
+        $this->loader->expects(self::exactly(2))
             ->method('loadChoiceList')
             ->with($this->value)
             ->willReturn($this->loadedList);
 
         // The same list is returned by the loader
-        $this->loadedList->expects($this->exactly(2))
+        $this->loadedList->expects(self::exactly(2))
             ->method('getChoices')
             ->willReturn(['RESULT']);
 
@@ -69,15 +70,16 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getChoices());
     }
 
-    public function testGetValuesLoadsLoadedList()
+    /** @test */
+    public function get_values_loads_loaded_list(): void
     {
-        $this->loader->expects($this->exactly(2))
+        $this->loader->expects(self::exactly(2))
             ->method('loadChoiceList')
             ->with($this->value)
             ->willReturn($this->loadedList);
 
         // The same list is returned by the loader
-        $this->loadedList->expects($this->exactly(2))
+        $this->loadedList->expects(self::exactly(2))
             ->method('getValues')
             ->willReturn(['RESULT']);
 
@@ -85,15 +87,16 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getValues());
     }
 
-    public function testGetStructuredValuesLoadsLoadedLis()
+    /** @test */
+    public function get_structured_values_loads_loaded_lis(): void
     {
-        $this->loader->expects($this->exactly(2))
+        $this->loader->expects(self::exactly(2))
             ->method('loadChoiceList')
             ->with($this->value)
             ->willReturn($this->loadedList);
 
         // The same list is returned by the loader
-        $this->loadedList->expects($this->exactly(2))
+        $this->loadedList->expects(self::exactly(2))
             ->method('getStructuredValues')
             ->willReturn(['RESULT']);
 
@@ -101,15 +104,16 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getStructuredValues());
     }
 
-    public function testGetOriginalKeysLoadsLoadedList()
+    /** @test */
+    public function get_original_keys_loads_loaded_list(): void
     {
-        $this->loader->expects($this->exactly(2))
+        $this->loader->expects(self::exactly(2))
             ->method('loadChoiceList')
             ->with($this->value)
             ->willReturn($this->loadedList);
 
         // The same list is returned by the loader
-        $this->loadedList->expects($this->exactly(2))
+        $this->loadedList->expects(self::exactly(2))
             ->method('getOriginalKeys')
             ->willReturn(['RESULT']);
 
@@ -117,9 +121,10 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getOriginalKeys());
     }
 
-    public function testGetChoicesForValuesForwardsCall()
+    /** @test */
+    public function get_choices_for_values_forwards_call(): void
     {
-        $this->loader->expects($this->exactly(2))
+        $this->loader->expects(self::exactly(2))
             ->method('loadChoicesForValues')
             ->with(['a', 'b'])
             ->willReturn(['RESULT']);
@@ -128,9 +133,10 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getChoicesForValues(['a', 'b']));
     }
 
-    public function testGetValuesForChoicesUsesLoadedList()
+    /** @test */
+    public function get_values_for_choices_uses_loaded_list(): void
     {
-        $this->loader->expects($this->exactly(2))
+        $this->loader->expects(self::exactly(2))
             ->method('loadValuesForChoices')
             ->with(['a', 'b'])
             ->willReturn(['RESULT']);

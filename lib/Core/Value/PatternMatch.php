@@ -38,14 +38,14 @@ final class PatternMatch implements ValueHolder
      */
     public function __construct(string $value, string $patternType, bool $caseInsensitive = false)
     {
-        $typeConst = __CLASS__.'::PATTERN_'.strtoupper($patternType);
+        $typeConst = __CLASS__ . '::PATTERN_' . \mb_strtoupper($patternType);
 
-        if (!\defined($typeConst)) {
-            throw new InvalidArgumentException(sprintf('Unknown PatternMatch type "%s".', $patternType));
+        if (! \defined($typeConst)) {
+            throw new InvalidArgumentException(\sprintf('Unknown PatternMatch type "%s".', $patternType));
         }
 
         $this->value = $value;
-        $this->patternType = strtoupper($patternType);
+        $this->patternType = \mb_strtoupper($patternType);
         $this->caseInsensitive = $caseInsensitive;
     }
 

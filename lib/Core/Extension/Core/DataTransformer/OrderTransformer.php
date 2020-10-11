@@ -46,50 +46,47 @@ final class OrderTransformer implements DataTransformer
         $this->default = $default;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function transform($value)
     {
-        if (null !== $value && !\is_string($value)) {
+        if ($value !== null && ! \is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if (null === $value) {
+        if ($value === null) {
             return '';
         }
 
         return $value;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function reverseTransform($value)
     {
-        if (null !== $value && !\is_string($value)) {
+        if ($value !== null && ! \is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if ('' === $value) {
+        if ($value === '') {
             return null;
         }
 
         switch ($this->case) {
             case self::CASE_LOWERCASE:
-                $value = mb_strtolower($value);
+                $value = \mb_strtolower($value);
+
                 break;
+
             case self::CASE_UPPERCASE:
-                $value = mb_strtoupper($value);
+                $value = \mb_strtoupper($value);
+
                 break;
         }
 
-        if (!isset($this->alias[$value])) {
+        if (! isset($this->alias[$value])) {
             throw new TransformationFailedException(
-                sprintf(
+                \sprintf(
                     'Invalid sort direction "%1$s" specified, expected one of: "%2$s"',
                     $value,
-                    implode('", "', array_keys($this->alias))
+                    \implode('", "', \array_keys($this->alias))
                 )
             );
         }

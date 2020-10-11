@@ -43,19 +43,19 @@ final class FieldConfigBuilder
         $this->fieldSet = $fieldSet;
     }
 
-    public function setDefaultEntity(string $entity, string $alias)
+    public function setDefaultEntity(string $entity, string $alias): void
     {
         $this->defaultEntity = $this->entityManager->getClassMetadata($entity)->getName();
         $this->defaultAlias = $alias;
     }
 
-    public function setField(string $mappingName, string $property, string $alias = null, string $entity = null, string $type = null)
+    public function setField(string $mappingName, string $property, string $alias = null, string $entity = null, string $type = null): void
     {
         $mappingIdx = null;
         $fieldName = $mappingName;
 
-        if (false !== strpos($mappingName, '#')) {
-            [$fieldName, $mappingIdx] = explode('#', $mappingName, 2);
+        if (\mb_strpos($mappingName, '#') !== false) {
+            [$fieldName, $mappingIdx] = \explode('#', $mappingName, 2);
             unset($this->fields[$fieldName][null]);
         } else {
             $this->fields[$fieldName] = [];
@@ -91,17 +91,17 @@ final class FieldConfigBuilder
     {
         $metadata = $this->entityManager->getClassMetadata($entity);
 
-        if (!$metadata->hasAssociation($property)) {
+        if (! $metadata->hasAssociation($property)) {
             return [$entity, $property];
         }
 
         throw new \RuntimeException(
-            sprintf(
-                'Entity field "%s"#%s is a JOIN association, you must explicitly set the '.
-                'entity alias and column mapping for search field "%s" to point to the (head) reference and the '.
-                'entity field you want to use, this entity field must be owned by the entity '.
-                '(not reference another entity). If the entity field is used in a many-to-many relation you must '.
-                'reference the targetEntity that is set on the ManyToMany mapping and use the entity field of '.
+            \sprintf(
+                'Entity field "%s"#%s is a JOIN association, you must explicitly set the ' .
+                'entity alias and column mapping for search field "%s" to point to the (head) reference and the ' .
+                'entity field you want to use, this entity field must be owned by the entity ' .
+                '(not reference another entity). If the entity field is used in a many-to-many relation you must ' .
+                'reference the targetEntity that is set on the ManyToMany mapping and use the entity field of ' .
                 'that entity.',
                 $entity,
                 $property,
@@ -112,15 +112,15 @@ final class FieldConfigBuilder
 
     private function getMappingType(string $fieldName, string $entity, string $propertyName, ?string $type = null): MappingType
     {
-        if (!$type) {
+        if (! $type) {
             /** @var object|string|null $type */
             $type = $this->entityManager->getClassMetadata($entity)->getTypeOfField($propertyName);
         }
 
-        if (null === $type) {
+        if ($type === null) {
             throw new \RuntimeException(
-                sprintf(
-                    'Unable to determine DBAL type of field-mapping "%s" with entity reference "%s"#%s. '.
+                \sprintf(
+                    'Unable to determine DBAL type of field-mapping "%s" with entity reference "%s"#%s. ' .
                     'Configure an explicit dbal type for the field.',
                     $fieldName,
                     $entity,

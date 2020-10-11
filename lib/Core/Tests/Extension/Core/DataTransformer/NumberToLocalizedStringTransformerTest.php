@@ -45,8 +45,10 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testTransform($from, $to, $locale)
+    public function transform($from, $to, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -55,7 +57,7 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new NumberToLocalizedStringTransformer();
 
-        $this->assertSame($to, $transformer->transform($from));
+        self::assertSame($to, $transformer->transform($from));
     }
 
     public function provideTransformationsWithGrouping()
@@ -71,8 +73,10 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformationsWithGrouping
+     *
+     * @test
      */
-    public function testTransformWithGrouping($from, $to, $locale)
+    public function transform_with_grouping($from, $to, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -81,10 +85,11 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
-        $this->assertSame($to, $transformer->transform($from));
+        self::assertSame($to, $transformer->transform($from));
     }
 
-    public function testTransformWithScale()
+    /** @test */
+    public function transform_with_scale(): void
     {
         // Since we test against "de_AT", we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -93,8 +98,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new NumberToLocalizedStringTransformer(2);
 
-        $this->assertEquals('1234,50', $transformer->transform(1234.5));
-        $this->assertEquals('678,92', $transformer->transform(678.916));
+        self::assertEquals('1234,50', $transformer->transform(1234.5));
+        self::assertEquals('678,92', $transformer->transform(678.916));
     }
 
     public function transformWithRoundingProvider()
@@ -188,8 +193,10 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider transformWithRoundingProvider
+     *
+     * @test
      */
-    public function testTransformWithRounding($scale, $input, $output, $roundingMode)
+    public function transform_with_rounding($scale, $input, $output, $roundingMode): void
     {
         // Since we test against "de_AT", we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -198,10 +205,11 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new NumberToLocalizedStringTransformer($scale, null, $roundingMode);
 
-        $this->assertEquals($output, $transformer->transform($input));
+        self::assertEquals($output, $transformer->transform($input));
     }
 
-    public function testTransformDoesNotRoundIfNoScale()
+    /** @test */
+    public function transform_does_not_round_if_no_scale(): void
     {
         // Since we test against "de_AT", we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -210,13 +218,15 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new NumberToLocalizedStringTransformer(null, null, NumberToLocalizedStringTransformer::ROUND_DOWN);
 
-        $this->assertEquals('1234,547', $transformer->transform(1234.547));
+        self::assertEquals('1234,547', $transformer->transform(1234.547));
     }
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testReverseTransform($to, $from, $locale)
+    public function reverse_transform($to, $from, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -225,13 +235,15 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new NumberToLocalizedStringTransformer();
 
-        $this->assertEquals($to, $transformer->reverseTransform($from));
+        self::assertEquals($to, $transformer->reverseTransform($from));
     }
 
     /**
      * @dataProvider provideTransformationsWithGrouping
+     *
+     * @test
      */
-    public function testReverseTransformWithGrouping($to, $from, $locale)
+    public function reverse_transform_with_grouping($to, $from, $locale): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -240,13 +252,15 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
-        $this->assertEquals($to, $transformer->reverseTransform($from));
+        self::assertEquals($to, $transformer->reverseTransform($from));
     }
 
     /**
      * @see https://github.com/symfony/symfony/issues/7609
+     *
+     * @test
      */
-    public function testReverseTransformWithGroupingAndFixedSpaces()
+    public function reverse_transform_with_grouping_and_fixed_spaces(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -255,10 +269,11 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
-        $this->assertEquals(1234.5, $transformer->reverseTransform("1\xc2\xa0234,5"));
+        self::assertEquals(1234.5, $transformer->reverseTransform("1\xc2\xa0234,5"));
     }
 
-    public function testReverseTransformWithGroupingButWithoutGroupSeparator()
+    /** @test */
+    public function reverse_transform_with_grouping_but_without_group_separator(): void
     {
         // Since we test against "de_AT", we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -268,8 +283,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
         // omit group separator
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(12345.912, $transformer->reverseTransform('12345,912'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
+        self::assertEquals(12345.912, $transformer->reverseTransform('12345,912'));
     }
 
     public function reverseTransformWithRoundingProvider()
@@ -363,22 +378,26 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @dataProvider reverseTransformWithRoundingProvider
+     *
+     * @test
      */
-    public function testReverseTransformWithRounding($scale, $input, $output, $roundingMode)
+    public function reverse_transform_with_rounding($scale, $input, $output, $roundingMode): void
     {
         $transformer = new NumberToLocalizedStringTransformer($scale, null, $roundingMode);
 
-        $this->assertEquals($output, $transformer->reverseTransform($input));
+        self::assertEquals($output, $transformer->reverseTransform($input));
     }
 
-    public function testReverseTransformDoesNotRoundIfNoScale()
+    /** @test */
+    public function reverse_transform_does_not_round_if_no_scale(): void
     {
         $transformer = new NumberToLocalizedStringTransformer(null, null, NumberToLocalizedStringTransformer::ROUND_DOWN);
 
-        $this->assertEquals(1234.547, $transformer->reverseTransform('1234,547'));
+        self::assertEquals(1234.547, $transformer->reverseTransform('1234,547'));
     }
 
-    public function testDecimalSeparatorMayBeDotIfGroupingSeparatorIsNotDot()
+    /** @test */
+    public function decimal_separator_may_be_dot_if_grouping_separator_is_not_dot(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -387,15 +406,16 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
         // completely valid format
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1 234,5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1 234,5'));
         // accept dots
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1 234.5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1 234.5'));
         // omit group separator
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
     }
 
-    public function testDecimalSeparatorMayNotBeDotIfGroupingSeparatorIsDot()
+    /** @test */
+    public function decimal_separator_may_not_be_dot_if_grouping_separator_is_dot(): void
     {
         // Since we test against "de_DE", we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -409,7 +429,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1.234.5');
     }
 
-    public function testDecimalSeparatorMayNotBeDotIfGroupingSeparatorIsDotWithNoGroupSep()
+    /** @test */
+    public function decimal_separator_may_not_be_dot_if_grouping_separator_is_dot_with_no_group_sep(): void
     {
         // Since we test against "de_DE", we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -423,7 +444,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1234.5');
     }
 
-    public function testDecimalSeparatorMayBeDotIfGroupingSeparatorIsDotButNoGroupingUsed()
+    /** @test */
+    public function decimal_separator_may_be_dot_if_grouping_separator_is_dot_but_no_grouping_used(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -431,11 +453,12 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         \Locale::setDefault('fr');
         $transformer = new NumberToLocalizedStringTransformer();
 
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
     }
 
-    public function testDecimalSeparatorMayBeCommaIfGroupingSeparatorIsNotComma()
+    /** @test */
+    public function decimal_separator_may_be_comma_if_grouping_separator_is_not_comma(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -444,15 +467,16 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
         // completely valid format
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1 234.5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1 234.5'));
         // accept commas
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1 234,5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1 234,5'));
         // omit group separator
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
     }
 
-    public function testDecimalSeparatorMayNotBeCommaIfGroupingSeparatorIsComma()
+    /** @test */
+    public function decimal_separator_may_not_be_comma_if_grouping_separator_is_comma(): void
     {
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
@@ -461,7 +485,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1,234,5');
     }
 
-    public function testDecimalSeparatorMayNotBeCommaIfGroupingSeparatorIsCommaWithNoGroupSep()
+    /** @test */
+    public function decimal_separator_may_not_be_comma_if_grouping_separator_is_comma_with_no_group_sep(): void
     {
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
@@ -470,15 +495,17 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1234,5');
     }
 
-    public function testDecimalSeparatorMayBeCommaIfGroupingSeparatorIsCommaButNoGroupingUsed()
+    /** @test */
+    public function decimal_separator_may_be_comma_if_grouping_separator_is_comma_but_no_grouping_used(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
+        self::assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
     }
 
-    public function testTransformExpectsNumeric()
+    /** @test */
+    public function transform_expects_numeric(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -487,7 +514,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->transform('foo');
     }
 
-    public function testReverseTransformExpectsString()
+    /** @test */
+    public function reverse_transform_expects_string(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -496,7 +524,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform(1);
     }
 
-    public function testReverseTransformExpectsValidNumber()
+    /** @test */
+    public function reverse_transform_expects_valid_number(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -507,8 +536,10 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
     /**
      * @see https://github.com/symfony/symfony/issues/3161
+     *
+     * @test
      */
-    public function testReverseTransformDisallowsNaN()
+    public function reverse_transform_disallows_na_n(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -517,7 +548,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('NaN');
     }
 
-    public function testReverseTransformDisallowsNaN2()
+    /** @test */
+    public function reverse_transform_disallows_na_n2(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -526,7 +558,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('nan');
     }
 
-    public function testReverseTransformDisallowsInfinity()
+    /** @test */
+    public function reverse_transform_disallows_infinity(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -535,7 +568,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞');
     }
 
-    public function testReverseTransformDisallowsInfinity2()
+    /** @test */
+    public function reverse_transform_disallows_infinity2(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -544,7 +578,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞,123');
     }
 
-    public function testReverseTransformDisallowsNegativeInfinity()
+    /** @test */
+    public function reverse_transform_disallows_negative_infinity(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -553,7 +588,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('-∞');
     }
 
-    public function testReverseTransformDisallowsLeadingExtraCharacters()
+    /** @test */
+    public function reverse_transform_disallows_leading_extra_characters(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -562,7 +598,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('foo123');
     }
 
-    public function testReverseTransformDisallowsCenteredExtraCharacters()
+    /** @test */
+    public function reverse_transform_disallows_centered_extra_characters(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -572,7 +609,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('12foo3');
     }
 
-    public function testReverseTransformDisallowsCenteredExtraCharactersMultibyte()
+    /** @test */
+    public function reverse_transform_disallows_centered_extra_characters_multibyte(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -587,7 +625,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform("12\xc2\xa0345,67foo8");
     }
 
-    public function testReverseTransformIgnoresTrailingSpacesInExceptionMessage()
+    /** @test */
+    public function reverse_transform_ignores_trailing_spaces_in_exception_message(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -602,7 +641,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform("12\xc2\xa0345,67foo8  \xc2\xa0\t");
     }
 
-    public function testReverseTransformDisallowsTrailingExtraCharacters()
+    /** @test */
+    public function reverse_transform_disallows_trailing_extra_characters(): void
     {
         $transformer = new NumberToLocalizedStringTransformer();
 
@@ -612,7 +652,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('123foo');
     }
 
-    public function testReverseTransformDisallowsTrailingExtraCharactersMultibyte()
+    /** @test */
+    public function reverse_transform_disallows_trailing_extra_characters_multibyte(): void
     {
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, false);
@@ -627,17 +668,19 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform("12\xc2\xa0345,678foo");
     }
 
-    public function testReverseTransformBigInt()
+    /** @test */
+    public function reverse_transform_big_int(): void
     {
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
-        $this->assertEquals(PHP_INT_MAX - 1, (int) $transformer->reverseTransform((string) (PHP_INT_MAX - 1)));
+        self::assertEquals(PHP_INT_MAX - 1, (int) $transformer->reverseTransform((string) (PHP_INT_MAX - 1)));
     }
 
-    public function testReverseTransformSmallInt()
+    /** @test */
+    public function reverse_transform_small_int(): void
     {
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
-        $this->assertSame(1.0, $transformer->reverseTransform('1'));
+        self::assertSame(1.0, $transformer->reverseTransform('1'));
     }
 }

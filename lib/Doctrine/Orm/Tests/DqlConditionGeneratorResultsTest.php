@@ -13,11 +13,14 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+/**
+ * @internal
+ */
 final class DqlConditionGeneratorResultsTest extends ConditionGeneratorResultsTestCase
 {
     protected function getQuery()
     {
-        $query = <<<DQL
+        $query = <<<'DQL'
 SELECT
     I
 FROM

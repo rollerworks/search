@@ -22,7 +22,8 @@ use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
  */
 final class TimestampTypeTest extends SearchIntegrationTestCase
 {
-    public function testTransformWithDifferentTimezones()
+    /** @test */
+    public function transform_with_different_timezones(): void
     {
         $field = $this->getFactory()->createField('datetime', TimestampType::class, [
             'model_timezone' => 'Asia/Hong_Kong',
@@ -40,7 +41,8 @@ final class TimestampTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo($input);
     }
 
-    public function testInvalidInputShouldFailTransformation()
+    /** @test */
+    public function invalid_input_should_fail_transformation(): void
     {
         $field = $this->getFactory()->createField('datetime', TimestampType::class);
 

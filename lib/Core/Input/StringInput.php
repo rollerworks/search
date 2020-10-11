@@ -171,11 +171,11 @@ abstract class StringInput extends AbstractInput
      */
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
-        if (!\is_string($input)) {
+        if (! \is_string($input)) {
             throw new UnexpectedTypeException($input, 'string');
         }
 
-        $input = trim($input);
+        $input = \trim($input);
 
         $fieldSet = $config->getFieldSet();
         $condition = null;
@@ -191,6 +191,7 @@ abstract class StringInput extends AbstractInput
             $condition = new SearchCondition($fieldSet, $this->structureBuilder->getRootGroup());
 
             $orderValuesGroup = $this->orderStructureBuilder->getRootGroup();
+
             if ($orderValuesGroup->countValues() > 0) {
                 $condition->setOrder(new SearchOrder($orderValuesGroup));
             }
@@ -228,15 +229,15 @@ abstract class StringInput extends AbstractInput
 
         // If the first part is a group then ignore the match, let fieldValuesPairs() handle the
         // group logical on this own.
-        if (!$this->lexer->isGlimpse('/[*&]?\s*\(/A')) {
-            $logical = null !== $this->lexer->matchOptional('*') ? ValuesGroup::GROUP_LOGICAL_OR : ValuesGroup::GROUP_LOGICAL_AND;
+        if (! $this->lexer->isGlimpse('/[*&]?\s*\(/A')) {
+            $logical = $this->lexer->matchOptional('*') !== null ? ValuesGroup::GROUP_LOGICAL_OR : ValuesGroup::GROUP_LOGICAL_AND;
             $this->structureBuilder->getRootGroup()->setGroupLogical($logical);
         }
 
         $this->lexer->skipEmptyLines();
         $this->fieldValuesPairs();
 
-        if (!$this->orderStructureBuilder->getRootGroup()->countValues()) {
+        if (! $this->orderStructureBuilder->getRootGroup()->countValues()) {
             /** @var FieldConfig $field */
             foreach ($fieldSet->all() as $name => $field) {
                 if (OrderField::isOrder($name) && null !== $direction = $field->getOption('default')) {
@@ -250,7 +251,7 @@ abstract class StringInput extends AbstractInput
 
     private function fieldValuesPairs(bool $inGroup = false): void
     {
-        while (!$this->lexer->isEnd()) {
+        while (! $this->lexer->isEnd()) {
             if ($this->lexer->isGlimpse('/[*&]?\s*\(/A')) {
                 ++$this->level;
                 $this->fieldGroup();
@@ -285,7 +286,7 @@ abstract class StringInput extends AbstractInput
 
     private function fieldGroup(): void
     {
-        $logical = null !== $this->lexer->matchOptional('*') ? ValuesGroup::GROUP_LOGICAL_OR : ValuesGroup::GROUP_LOGICAL_AND;
+        $logical = $this->lexer->matchOptional('*') !== null ? ValuesGroup::GROUP_LOGICAL_OR : ValuesGroup::GROUP_LOGICAL_AND;
         $this->structureBuilder->enterGroup($logical, '[%d]');
 
         $this->lexer->skipWhitespace();
@@ -315,23 +316,25 @@ abstract class StringInput extends AbstractInput
         $hasValues = false;
         $pathVal = '[{pos}]';
 
-        while (!$this->lexer->isEnd() && !$this->lexer->isGlimpse('/[);]/A')) {
+        while (! $this->lexer->isEnd() && ! $this->lexer->isGlimpse('/[);]/A')) {
             $valueType = $this->lexer->detectValueType($name);
 
             switch ($valueType) {
                 case StringLexer::COMPARE:
-                    list($operator, $value) = $this->lexer->comparisonValue($name);
+                    [$operator, $value] = $this->lexer->comparisonValue($name);
                     $structureBuilder->comparisonValue($operator, $value, [$pathVal, '', '']);
+
                     break;
 
                     case StringLexer::PATTERN_MATCH:
-                    list($caseInsensitive, $type, $value) = $this->lexer->patternMatchValue();
+                    [$caseInsensitive, $type, $value] = $this->lexer->patternMatchValue();
                     $structureBuilder->patterMatchValue($type, $value, $caseInsensitive, [$pathVal, '', '']);
+
                     break;
 
                 case StringLexer::RANGE:
-                    $negative = null !== $this->lexer->matchOptional('!');
-                    list($lowerInclusive, $lowerBound, $upperBound, $upperInclusive) = $this->lexer->rangeValue($name);
+                    $negative = $this->lexer->matchOptional('!') !== null;
+                    [$lowerInclusive, $lowerBound, $upperBound, $upperInclusive] = $this->lexer->rangeValue($name);
 
                     if ($negative) {
                         $structureBuilder->excludedRangeValue(
@@ -350,18 +353,20 @@ abstract class StringInput extends AbstractInput
                             [$pathVal, '[lower]', '[upper]']
                         );
                     }
+
                     break;
 
                 case StringLexer::SIMPLE_VALUE:
-                    if (null !== $this->lexer->matchOptional('!')) {
+                    if ($this->lexer->matchOptional('!') !== null) {
                         $structureBuilder->excludedSimpleValue($this->lexer->valuePart($name), $pathVal);
                     } else {
                         $structureBuilder->simpleValue($this->lexer->valuePart($name), $pathVal);
                     }
+
                     break;
             }
 
-            if (null !== $this->lexer->matchOptional(',') && $this->lexer->isGlimpse(';')) {
+            if ($this->lexer->matchOptional(',') !== null && $this->lexer->isGlimpse(';')) {
                 throw $this->lexer->createFormatException(StringLexerException::INCORRECT_VALUES_SEPARATOR);
             }
 
@@ -371,7 +376,7 @@ abstract class StringInput extends AbstractInput
             $hasValues = true;
         }
 
-        if (!$hasValues) {
+        if (! $hasValues) {
             throw $this->lexer->createFormatException(StringLexerException::FIELD_REQUIRES_VALUES);
         }
 

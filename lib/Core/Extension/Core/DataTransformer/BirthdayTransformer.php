@@ -47,7 +47,7 @@ final class BirthdayTransformer implements DataTransformer
     public function transform($value)
     {
         if (\is_int($value)) {
-            if (!$this->allowAge) {
+            if (! $this->allowAge) {
                 throw new TransformationFailedException('Age support is not enabled.');
             }
 
@@ -62,7 +62,7 @@ final class BirthdayTransformer implements DataTransformer
         $value = $this->transformWhenInteger($value);
 
         if (\is_int($value)) {
-            if (!$this->allowAge) {
+            if (! $this->allowAge) {
                 throw new TransformationFailedException('Age support is not enabled.');
             }
 
@@ -75,7 +75,7 @@ final class BirthdayTransformer implements DataTransformer
         $value = $value->setTimezone(new \DateTimeZone('UTC'));
         $value = $value->setTime(0, 0, 0);
 
-        if (!$this->allowFutureDate) {
+        if (! $this->allowFutureDate) {
             $this->validateDate($value);
         }
 
@@ -84,7 +84,7 @@ final class BirthdayTransformer implements DataTransformer
 
     private function transformWhenInteger($value)
     {
-        if (ctype_digit($value)) {
+        if (\ctype_digit($value)) {
             return (int) $value;
         }
 
@@ -95,14 +95,14 @@ final class BirthdayTransformer implements DataTransformer
     {
         static $currentDate;
 
-        if (!$currentDate) {
+        if (! $currentDate) {
             $currentDate = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
             $currentDate = $currentDate->setTime(0, 0);
         }
 
         if ($value > $currentDate) {
             throw new TransformationFailedException(
-                sprintf(
+                \sprintf(
                     'Date "%s" is higher then current date "%s". Are you a time traveler?',
                     $value->format('Y-m-d'),
                     $currentDate->format('Y-m-d')

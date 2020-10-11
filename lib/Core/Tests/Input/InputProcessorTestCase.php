@@ -54,6 +54,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $fieldSet->add('name', TextType::class);
         $fieldSet->add('lastname', TextType::class);
         $fieldSet->add('date', DateType::class, ['pattern' => 'MM-dd-yyyy']);
+
         if ($order) {
             $fieldSet->add('@date', OrderFieldType::class, ['case' => OrderTransformer::CASE_LOWERCASE,  'alias' => ['up' => 'ASC', 'down' => 'DESC'], 'default' => 'down']);
             $fieldSet->add('@id', OrderFieldType::class, ['default' => 'up']);
@@ -81,12 +82,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     }
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideEmptyInputTests
      */
-    public function it_processes_an_empty_input($input)
+    public function it_processes_an_empty_input($input): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -103,12 +102,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideEmptyInputTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideSingleValuePairTests
      */
-    public function it_processes_values($input, array $order = [])
+    public function it_processes_values($input, array $order = []): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet(true, true));
@@ -116,7 +113,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
         $expectedGroup = new ValuesGroup();
 
-        if (!\in_array($input, ['', '[]'], true)) {
+        if (! \in_array($input, ['', '[]'], true)) {
             $values = new ValuesBag();
             $values->addSimpleValue('value');
             $values->addSimpleValue('value2');
@@ -131,6 +128,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
         if ($order) {
             $expectedOrderGroup = new ValuesGroup();
+
             foreach ($order as $name => $direction) {
                 $orderValueBag = new ValuesBag();
                 $orderValueBag->addSimpleValue($direction);
@@ -148,12 +146,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideSingleValuePairTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideMultipleValues
      */
-    public function it_processes_multiple_fields($input)
+    public function it_processes_multiple_fields($input): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -182,12 +178,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideMultipleValues();
 
     /**
-     * @param mixed $input
-     *
      * @dataProvider provideRangeValues
      * @test
      */
-    public function it_processes_range_values($input)
+    public function it_processes_range_values($input): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -220,12 +214,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideRangeValues();
 
     /**
-     * @param mixed $input
-     *
      * @dataProvider provideComparisonValues
      * @test
      */
-    public function it_processes_comparisons($input)
+    public function it_processes_comparisons($input): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -257,12 +249,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideComparisonValues();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideMatcherValues
      */
-    public function it_processes_matchers($input)
+    public function it_processes_matchers($input): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -291,12 +281,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideMatcherValues();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideGroupTests
      */
-    public function it_processes_groups($input)
+    public function it_processes_groups($input): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -335,12 +323,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideGroupTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideRootLogicalTests
      */
-    public function it_processes_root_logical($input, string $logical = ValuesGroup::GROUP_LOGICAL_AND)
+    public function it_processes_root_logical($input, string $logical = ValuesGroup::GROUP_LOGICAL_AND): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -363,12 +349,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideRootLogicalTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideMultipleSubGroupTests
      */
-    public function it_processes_multiple_subgroups($input)
+    public function it_processes_multiple_subgroups($input): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -402,12 +386,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideMultipleSubGroupTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideNestedGroupTests
      */
-    public function it_processes_nested_subgroups($input)
+    public function it_processes_nested_subgroups($input): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -435,12 +417,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideNestedGroupTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideValueOverflowTests
      */
-    public function it_errors_when_maximum_values_count_is_exceeded($input, string $fieldName, string $path)
+    public function it_errors_when_maximum_values_count_is_exceeded($input, string $fieldName, string $path): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxValues(3);
@@ -457,12 +437,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideValueOverflowTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideGroupsOverflowTests
      */
-    public function it_errors_when_maximum_groups_count_is_exceeded($input, string $path)
+    public function it_errors_when_maximum_groups_count_is_exceeded($input, string $path): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxGroups(3);
@@ -481,12 +459,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * This tests ensures a private field will throw an UnknownFieldException.
      *
-     * @param mixed $input
-     *
      * @test
      * @dataProvider providePrivateFieldTests
      */
-    public function it_errors_when_private_field_was_used($input, string $fieldName)
+    public function it_errors_when_private_field_was_used($input, string $fieldName): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -502,12 +478,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function providePrivateFieldTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideNestingLevelExceededTests
      */
-    public function it_errors_when_maximum_nesting_level_is_reached($input, string $path)
+    public function it_errors_when_maximum_nesting_level_is_reached($input, string $path): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxNestingLevel(1);
@@ -524,12 +498,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideNestingLevelExceededTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideUnknownFieldTests
      */
-    public function it_errors_when_the_field_does_not_exist_in_fieldset($input)
+    public function it_errors_when_the_field_does_not_exist_in_fieldset($input): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -545,12 +517,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideUnknownFieldTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideUnsupportedValueTypeExceptionTests
      */
-    public function it_errors_when_the_field_does_not_support_the_value_type($input, string $fieldName, string $valueType)
+    public function it_errors_when_the_field_does_not_support_the_value_type($input, string $fieldName, string $valueType): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -566,12 +536,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideUnsupportedValueTypeExceptionTests();
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideInvalidRangeTests
      */
-    public function it_errors_when_a_range_has_invalid_bounds($input, array $path)
+    public function it_errors_when_a_range_has_invalid_bounds($input, array $path): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -589,13 +557,12 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideInvalidRangeTests();
 
     /**
-     * @param mixed                   $input
      * @param ConditionErrorMessage[] $errors
      *
      * @test
      * @dataProvider provideInvalidValueTests
      */
-    public function it_errors_when_transformation_fails($input, array $errors)
+    public function it_errors_when_transformation_fails($input, array $errors): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -608,13 +575,12 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideInvalidValueTests();
 
     /**
-     * @param mixed                   $input
      * @param ConditionErrorMessage[] $errors
      *
      * @test
      * @dataProvider provideNestedErrorsTests
      */
-    public function it_checks_nested_fields($input, array $errors)
+    public function it_checks_nested_fields($input, array $errors): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
         $config->setMaxNestingLevel(10);
@@ -628,21 +594,20 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     abstract public function provideNestedErrorsTests();
 
     /**
-     * @param mixed                   $input
      * @param ConditionErrorMessage[] $errors
      */
-    protected function assertConditionContainsErrorsWithoutCause($input, ProcessorConfig $config, array $errors)
+    protected function assertConditionContainsErrorsWithoutCause($input, ProcessorConfig $config, array $errors): void
     {
         $processor = $this->getProcessor();
 
         try {
             $processor->process($config, $input);
 
-            $this->fail('Condition should be invalid.');
+            static::fail('Condition should be invalid.');
         } catch (\Exception $e) {
             /* @var InvalidSearchConditionException $e */
             self::detectSystemException($e);
-            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
+            static::assertInstanceOf(InvalidSearchConditionException::class, $e);
 
             $errorsList = $e->getErrors();
 
@@ -655,27 +620,26 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 $error->cause = null;
             }
 
-            self::assertEquals($errors, $errorsList);
+            static::assertEquals($errors, $errorsList);
         }
     }
 
     /**
-     * @param mixed                   $input
      * @param ConditionErrorMessage[] $errors
      */
-    protected function assertConditionContainsErrors($input, ProcessorConfig $config, array $errors)
+    protected function assertConditionContainsErrors($input, ProcessorConfig $config, array $errors): void
     {
         $processor = $this->getProcessor();
 
         try {
             $processor->process($config, $input);
 
-            $this->fail('Condition should be invalid.');
+            static::fail('Condition should be invalid.');
         } catch (\Exception $e) {
             /* @var InvalidSearchConditionException $e */
             self::detectSystemException($e);
-            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
-            self::assertEquals($errors, $e->getErrors());
+            static::assertInstanceOf(InvalidSearchConditionException::class, $e);
+            static::assertEquals($errors, $e->getErrors());
         }
     }
 }

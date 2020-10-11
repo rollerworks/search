@@ -25,11 +25,11 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
             $value = $this->createParamReferenceFor($patternMatch->getValue(), Type::getType('text'));
 
             if ($patternMatch->isCaseInsensitive()) {
-                $column = "LOWER($column)";
-                $value = "LOWER($value)";
+                $column = "LOWER({$column})";
+                $value = "LOWER({$value})";
             }
 
-            return $column.($patternMatch->isExclusive() ? ' <>' : ' =')." $value";
+            return $column . ($patternMatch->isExclusive() ? ' <>' : ' =') . " {$value}";
         }
 
         $patternMap = [
@@ -41,14 +41,14 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
             PatternMatch::PATTERN_NOT_ENDS_WITH => "CONCAT(%s, '%%')",
         ];
 
-        $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, Type::getType('text')));
+        $value = \addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
+        $value = \sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, Type::getType('text')));
 
         if ($patternMatch->isCaseInsensitive()) {
-            $column = "LOWER($column)";
-            $value = "LOWER($value)";
+            $column = "LOWER({$column})";
+            $value = "LOWER({$value})";
         }
 
-        return $column.($patternMatch->isExclusive() ? ' NOT' : '')." LIKE $value";
+        return $column . ($patternMatch->isExclusive() ? ' NOT' : '') . " LIKE {$value}";
     }
 }

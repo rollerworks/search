@@ -24,14 +24,16 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class IntegerTypeTest extends SearchIntegrationTestCase
 {
-    public function testCreate()
+    /** @test */
+    public function create(): void
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
 
         self::assertFalse($field->getOption('grouping'));
     }
 
-    public function testCastsToInteger()
+    /** @test */
+    public function casts_to_integer(): void
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
 
@@ -51,7 +53,8 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('-1');
     }
 
-    public function testNonWesternFormatting()
+    /** @test */
+    public function non_western_formatting(): void
     {
         \Locale::setDefault('ar');
 
@@ -63,14 +66,16 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('١٢٣٤٥', '12345');
     }
 
-    public function testWrongInputFails()
+    /** @test */
+    public function wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
 
         FieldTransformationAssertion::assertThat($field)->withInput('foo')->failsToTransforms();
     }
 
-    public function testViewIsConfiguredProperly()
+    /** @test */
+    public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField(
             'integer',

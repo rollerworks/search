@@ -94,7 +94,7 @@ final class SearchFactoryBuilder
      */
     public function addExtensions(array $extensions)
     {
-        $this->extensions = array_merge($this->extensions, $extensions);
+        $this->extensions = \array_merge($this->extensions, $extensions);
 
         return $this;
     }

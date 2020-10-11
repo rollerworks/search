@@ -25,7 +25,8 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class DateTimeTypeTest extends SearchIntegrationTestCase
 {
-    public function testViewTimezoneCanBeTransformedToModelTimezone()
+    /** @test */
+    public function view_timezone_can_be_transformed_to_model_timezone(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'model_timezone' => 'America/New_York',
@@ -44,7 +45,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('This value is not a valid datetime.', $field->getOption('invalid_message'));
     }
 
-    public function testPatternCanBeConfigured()
+    /** @test */
+    public function pattern_can_be_configured(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'pattern' => 'MM*yyyy*dd HH:mm',
@@ -58,7 +60,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('06*2010*02 13:12', '2010-06-02T13:12:00Z');
     }
 
-    public function testTimeFormatCanBeConfigurable()
+    /** @test */
+    public function time_format_can_be_configurable(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'model_timezone' => 'UTC',
@@ -74,7 +77,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('Jun 2, 2010, 3:04 AM', '2010-06-02T03:04:00Z');
     }
 
-    public function testInvalidInputShouldFailTransformation()
+    /** @test */
+    public function invalid_input_should_fail_transformation(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'pattern' => 'MM-yyyy-dd',
@@ -93,7 +97,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             ->failsToTransforms();
     }
 
-    public function testViewIsConfiguredProperly()
+    /** @test */
+    public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
             'date_format' => \IntlDateFormatter::SHORT,
@@ -106,11 +111,12 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         self::assertArrayHasKey('timezone', $fieldView->vars);
         self::assertArrayHasKey('pattern', $fieldView->vars);
 
-        self::assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
+        self::assertEquals(\date_default_timezone_get(), $fieldView->vars['timezone']);
         self::assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
     }
 
-    public function testIntervalValidInput()
+    /** @test */
+    public function interval_valid_input(): void
     {
         \Locale::setDefault('nl');
 
@@ -129,7 +135,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('This value is not a valid datetime or date interval.', $field->getOption('invalid_message'));
     }
 
-    public function testIntervalValidInputInRtl()
+    /** @test */
+    public function interval_valid_input_in_rtl(): void
     {
         \Locale::setDefault('ar');
 
@@ -146,7 +153,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('-3 أيام ساعتين', '-3 days 2 hours');
     }
 
-    public function testIntervalValidInputWithIsoFormat()
+    /** @test */
+    public function interval_valid_input_with_iso_format(): void
     {
         \Locale::setDefault('nl');
 
@@ -158,7 +166,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('2 jaar 1 week', '2 years 1 week');
     }
 
-    public function testIntervalWithTimeFormatCanBeConfigurable()
+    /** @test */
+    public function interval_with_time_format_can_be_configurable(): void
     {
         \Locale::setDefault('nl');
 
@@ -187,7 +196,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
             ->andReverseTransformsTo('');
     }
 
-    public function testIntervalWrongInputFails()
+    /** @test */
+    public function interval_wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, ['allow_relative' => true]);
 

@@ -24,7 +24,7 @@ use Rollerworks\Component\Search\Loader\ConditionExporterLoader;
 final class ConditionExporterLoaderTest extends TestCase
 {
     /** @test */
-    public function it_lazily_loads_a_condition_exporter()
+    public function it_lazily_loads_a_condition_exporter(): void
     {
         $loader = ConditionExporterLoader::create();
         $processor = $loader->get('json');
@@ -36,7 +36,7 @@ final class ConditionExporterLoaderTest extends TestCase
      * @dataProvider provideProcessors
      * @test
      */
-    public function it_can_load_bundled_processor(string $alias, string $className)
+    public function it_can_load_bundled_processor(string $alias, string $className): void
     {
         $loader = ConditionExporterLoader::create();
 
@@ -53,7 +53,7 @@ final class ConditionExporterLoaderTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_for_unsupported_processor()
+    public function it_fails_for_unsupported_processor(): void
     {
         $loader = ConditionExporterLoader::create();
 

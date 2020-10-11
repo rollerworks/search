@@ -16,11 +16,15 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Functional;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 
+/**
+ * @internal
+ */
 final class DoctrineTest extends FunctionalTestCase
 {
-    public function testDoctrineDbalFactoryIsAccessible()
+    /** @test */
+    public function doctrine_dbal_factory_is_accessible(): void
     {
-        if (!class_exists(DoctrineDbalFactory::class)) {
+        if (! \class_exists(DoctrineDbalFactory::class)) {
             self::markTestSkipped('rollerworks/search-doctrine-dbal is not installed');
         }
 
@@ -32,9 +36,10 @@ final class DoctrineTest extends FunctionalTestCase
         self::assertInstanceOf(DoctrineDbalFactory::class, $container->get('rollerworks_search.doctrine_dbal.factory'));
     }
 
-    public function testDoctrineOrmFactoryIsAccessible()
+    /** @test */
+    public function doctrine_orm_factory_is_accessible(): void
     {
-        if (!class_exists(DoctrineOrmFactory::class)) {
+        if (! \class_exists(DoctrineOrmFactory::class)) {
             self::markTestSkipped('rollerworks/search-doctrine-orm is not installed');
         }
 

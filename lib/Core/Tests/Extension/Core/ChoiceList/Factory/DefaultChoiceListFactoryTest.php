@@ -51,10 +51,13 @@ final class DefaultChoiceListFactoryTest extends TestCase
         switch ($choice) {
             case 'a':
                 return 'a';
+
             case 'b':
                 return 'b';
+
             case 'c':
                 return '1';
+
             case 'd':
                 return '2';
         }
@@ -141,7 +144,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    public function testCreateFromChoicesEmpty()
+    /** @test */
+    public function create_from_choices_empty(): void
     {
         $list = $this->factory->createListFromChoices([]);
 
@@ -149,7 +153,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         self::assertSame([], $list->getValues());
     }
 
-    public function testCreateFromChoicesFlat()
+    /** @test */
+    public function create_from_choices_flat(): void
     {
         $list = $this->factory->createListFromChoices(
             ['A' => $this->obj1, 'B' => $this->obj2, 'C' => $this->obj3, 'D' => $this->obj4]
@@ -158,7 +163,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithGeneratedValues($list);
     }
 
-    public function testCreateFromChoicesFlatTraversable()
+    /** @test */
+    public function create_from_choices_flat_traversable(): void
     {
         $list = $this->factory->createListFromChoices(
             new \ArrayIterator(['A' => $this->obj1, 'B' => $this->obj2, 'C' => $this->obj3, 'D' => $this->obj4])
@@ -167,7 +173,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithGeneratedValues($list);
     }
 
-    public function testCreateFromChoicesFlatValuesAsCallable()
+    /** @test */
+    public function create_from_choices_flat_values_as_callable(): void
     {
         $list = $this->factory->createListFromChoices(
             ['A' => $this->obj1, 'B' => $this->obj2, 'C' => $this->obj3, 'D' => $this->obj4],
@@ -177,11 +184,12 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithCustomValues($list);
     }
 
-    public function testCreateFromChoicesFlatValuesAsClosure()
+    /** @test */
+    public function create_from_choices_flat_values_as_closure(): void
     {
         $list = $this->factory->createListFromChoices(
             ['A' => $this->obj1, 'B' => $this->obj2, 'C' => $this->obj3, 'D' => $this->obj4],
-            function ($object) {
+            static function ($object) {
                 return $object->value;
             }
         );
@@ -189,7 +197,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithCustomValues($list);
     }
 
-    public function testCreateFromChoicesGrouped()
+    /** @test */
+    public function create_from_choices_grouped(): void
     {
         $list = $this->factory->createListFromChoices(
             [
@@ -201,19 +210,21 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithGeneratedValues($list);
     }
 
-    public function testCreateFromChoicesGroupedTraversable()
+    /** @test */
+    public function create_from_choices_grouped_traversable(): void
     {
         $list = $this->factory->createListFromChoices(
             new \ArrayIterator([
-                    'Group 1' => ['A' => $this->obj1, 'B' => $this->obj2],
-                    'Group 2' => ['C' => $this->obj3, 'D' => $this->obj4],
-                ])
+                'Group 1' => ['A' => $this->obj1, 'B' => $this->obj2],
+                'Group 2' => ['C' => $this->obj3, 'D' => $this->obj4],
+            ])
         );
 
         $this->assertObjectListWithGeneratedValues($list);
     }
 
-    public function testCreateFromChoicesGroupedValuesAsCallable()
+    /** @test */
+    public function create_from_choices_grouped_values_as_callable(): void
     {
         $list = $this->factory->createListFromChoices(
             [
@@ -226,14 +237,15 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithCustomValues($list);
     }
 
-    public function testCreateFromChoicesGroupedValuesAsClosure()
+    /** @test */
+    public function create_from_choices_grouped_values_as_closure(): void
     {
         $list = $this->factory->createListFromChoices(
             [
                 'Group 1' => ['A' => $this->obj1, 'B' => $this->obj2],
                 'Group 2' => ['C' => $this->obj3, 'D' => $this->obj4],
             ],
-            function ($object) {
+            static function ($object) {
                 return $object->value;
             }
         );
@@ -241,31 +253,34 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithCustomValues($list);
     }
 
-    public function testCreateFromLoader()
+    /** @test */
+    public function create_from_loader(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
 
         $list = $this->factory->createListFromLoader($loader);
 
-        $this->assertEquals(new LazyChoiceList($loader), $list);
+        self::assertEquals(new LazyChoiceList($loader), $list);
     }
 
-    public function testCreateFromLoaderWithValues()
+    /** @test */
+    public function create_from_loader_with_values(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
 
-        $value = function () {
+        $value = static function (): void {
         };
         $list = $this->factory->createListFromLoader($loader, $value);
 
-        $this->assertEquals(new LazyChoiceList($loader, $value), $list);
+        self::assertEquals(new LazyChoiceList($loader, $value), $list);
     }
 
-    public function testCreateViewFlat()
+    /** @test */
+    public function create_view_flat(): void
     {
         $view = $this->factory->createView($this->list);
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(
                 [
                     0 => new ChoiceView($this->obj1, '0', 'A'),
@@ -278,7 +293,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    public function testCreateViewFlatPreferredChoices()
+    /** @test */
+    public function create_view_flat_preferred_choices(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -288,14 +304,15 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatPreferredChoicesEmptyArray()
+    /** @test */
+    public function create_view_flat_preferred_choices_empty_array(): void
     {
         $view = $this->factory->createView(
             $this->list,
             []
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(
                 [
                     0 => new ChoiceView($this->obj1, '0', 'A'),
@@ -308,7 +325,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    public function testCreateViewFlatPreferredChoicesAsCallable()
+    /** @test */
+    public function create_view_flat_preferred_choices_as_callable(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -318,14 +336,15 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatPreferredChoicesAsClosure()
+    /** @test */
+    public function create_view_flat_preferred_choices_as_closure(): void
     {
         $obj2 = $this->obj2;
         $obj3 = $this->obj3;
 
         $view = $this->factory->createView(
             $this->list,
-            function ($object) use ($obj2, $obj3) {
+            static function ($object) use ($obj2, $obj3) {
                 return $obj2 === $object || $obj3 === $object;
             }
         );
@@ -333,31 +352,34 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatPreferredChoicesClosureReceivesKey()
+    /** @test */
+    public function create_view_flat_preferred_choices_closure_receives_key(): void
     {
         $view = $this->factory->createView(
             $this->list,
-            function ($object, $key) {
-                return 'B' === $key || 'C' === $key;
+            static function ($object, $key) {
+                return $key === 'B' || $key === 'C';
             }
         );
 
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatPreferredChoicesClosureReceivesValue()
+    /** @test */
+    public function create_view_flat_preferred_choices_closure_receives_value(): void
     {
         $view = $this->factory->createView(
             $this->list,
-            function ($object, $key, $value) {
-                return '1' === $value || '2' === $value;
+            static function ($object, $key, $value) {
+                return $value === '1' || $value === '2';
             }
         );
 
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatLabelAsCallable()
+    /** @test */
+    public function create_view_flat_label_as_callable(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -368,12 +390,13 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatLabelAsClosure()
+    /** @test */
+    public function create_view_flat_label_as_closure(): void
     {
         $view = $this->factory->createView(
             $this->list,
             [$this->obj2, $this->obj3],
-            function ($object) {
+            static function ($object) {
                 return $object->label;
             }
         );
@@ -381,12 +404,13 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatLabelClosureReceivesKey()
+    /** @test */
+    public function create_view_flat_label_closure_receives_key(): void
     {
         $view = $this->factory->createView(
             $this->list,
             [$this->obj2, $this->obj3],
-            function ($object, $key) {
+            static function ($object, $key) {
                 return $key;
             }
         );
@@ -394,16 +418,20 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatLabelClosureReceivesValue()
+    /** @test */
+    public function create_view_flat_label_closure_receives_value(): void
     {
         $view = $this->factory->createView(
             $this->list,
             [$this->obj2, $this->obj3],
-            function ($object, $key, $value) {
+            static function ($object, $key, $value) {
                 switch ($value) {
                     case '0': return 'A';
+
                     case '1': return 'B';
+
                     case '2': return 'C';
+
                     case '3': return 'D';
                 }
             }
@@ -412,7 +440,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatIndexAsCallable()
+    /** @test */
+    public function create_view_flat_index_as_callable(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -424,13 +453,14 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithCustomIndices($view);
     }
 
-    public function testCreateViewFlatIndexAsClosure()
+    /** @test */
+    public function create_view_flat_index_as_closure(): void
     {
         $view = $this->factory->createView(
             $this->list,
             [$this->obj2, $this->obj3],
             null, // label
-            function ($object) {
+            static function ($object) {
                 return $object->index;
             }
         );
@@ -438,17 +468,21 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithCustomIndices($view);
     }
 
-    public function testCreateViewFlatIndexClosureReceivesKey()
+    /** @test */
+    public function create_view_flat_index_closure_receives_key(): void
     {
         $view = $this->factory->createView(
             $this->list,
             [$this->obj2, $this->obj3],
             null, // label
-            function ($object, $key) {
+            static function ($object, $key) {
                 switch ($key) {
                     case 'A': return 'w';
+
                     case 'B': return 'x';
+
                     case 'C': return 'y';
+
                     case 'D': return 'z';
                 }
             }
@@ -457,17 +491,21 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithCustomIndices($view);
     }
 
-    public function testCreateViewFlatIndexClosureReceivesValue()
+    /** @test */
+    public function create_view_flat_index_closure_receives_value(): void
     {
         $view = $this->factory->createView(
             $this->list,
             [$this->obj2, $this->obj3],
             null, // label
-            function ($object, $key, $value) {
+            static function ($object, $key, $value) {
                 switch ($value) {
                     case '0': return 'w';
+
                     case '1': return 'x';
+
                     case '2': return 'y';
+
                     case '3': return 'z';
                 }
             }
@@ -476,7 +514,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithCustomIndices($view);
     }
 
-    public function testCreateViewFlatGroupByOriginalStructure()
+    /** @test */
+    public function create_view_flat_group_by_original_structure(): void
     {
         $list = new ArrayChoiceList([
             'Group 1' => ['A' => $this->obj1, 'B' => $this->obj2],
@@ -492,7 +531,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    public function testCreateViewFlatGroupByEmpty()
+    /** @test */
+    public function create_view_flat_group_by_empty(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -505,7 +545,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatGroupByAsCallable()
+    /** @test */
+    public function create_view_flat_group_by_as_callable(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -518,7 +559,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    public function testCreateViewFlatGroupByObjectThatCanBeCastToString()
+    /** @test */
+    public function create_view_flat_group_by_object_that_can_be_cast_to_string(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -531,7 +573,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    public function testCreateViewFlatGroupByAsClosure()
+    /** @test */
+    public function create_view_flat_group_by_as_closure(): void
     {
         $obj1 = $this->obj1;
         $obj2 = $this->obj2;
@@ -541,7 +584,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
             [$this->obj2, $this->obj3],
             null, // label
             null, // index
-            function ($object) use ($obj1, $obj2) {
+            static function ($object) use ($obj1, $obj2) {
                 return $obj1 === $object || $obj2 === $object ? 'Group 1' : 'Group 2';
             }
         );
@@ -549,37 +592,40 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    public function testCreateViewFlatGroupByClosureReceivesKey()
+    /** @test */
+    public function create_view_flat_group_by_closure_receives_key(): void
     {
         $view = $this->factory->createView(
             $this->list,
             [$this->obj2, $this->obj3],
             null, // label
             null, // index
-            function ($object, $key) {
-                return 'A' === $key || 'B' === $key ? 'Group 1' : 'Group 2';
+            static function ($object, $key) {
+                return $key === 'A' || $key === 'B' ? 'Group 1' : 'Group 2';
             }
         );
 
         $this->assertGroupedView($view);
     }
 
-    public function testCreateViewFlatGroupByClosureReceivesValue()
+    /** @test */
+    public function create_view_flat_group_by_closure_receives_value(): void
     {
         $view = $this->factory->createView(
             $this->list,
             [$this->obj2, $this->obj3],
             null, // label
             null, // index
-            function ($object, $key, $value) {
-                return '0' === $value || '1' === $value ? 'Group 1' : 'Group 2';
+            static function ($object, $key, $value) {
+                return $value === '0' || $value === '1' ? 'Group 1' : 'Group 2';
             }
         );
 
         $this->assertGroupedView($view);
     }
 
-    public function testCreateViewFlatAttrAsArray()
+    /** @test */
+    public function create_view_flat_attr_as_array(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -596,7 +642,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    public function testCreateViewFlatAttrEmpty()
+    /** @test */
+    public function create_view_flat_attr_empty(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -610,7 +657,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    public function testCreateViewFlatAttrAsCallable()
+    /** @test */
+    public function create_view_flat_attr_as_callable(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -624,7 +672,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    public function testCreateViewFlatAttrAsClosure()
+    /** @test */
+    public function create_view_flat_attr_as_closure(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -632,7 +681,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
             null, // label
             null, // index
             null, // group
-            function ($object) {
+            static function ($object) {
                 return $object->attr;
             }
         );
@@ -640,7 +689,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    public function testCreateViewFlatAttrClosureReceivesKey()
+    /** @test */
+    public function create_view_flat_attr_closure_receives_key(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -648,10 +698,12 @@ final class DefaultChoiceListFactoryTest extends TestCase
             null, // label
             null, // index
             null, // group
-            function ($object, $key) {
+            static function ($object, $key) {
                 switch ($key) {
                     case 'B': return ['attr1' => 'value1'];
+
                     case 'C': return ['attr2' => 'value2'];
+
                     default: return [];
                 }
             }
@@ -660,7 +712,8 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    public function testCreateViewFlatAttrClosureReceivesValue()
+    /** @test */
+    public function create_view_flat_attr_closure_receives_value(): void
     {
         $view = $this->factory->createView(
             $this->list,
@@ -668,10 +721,12 @@ final class DefaultChoiceListFactoryTest extends TestCase
             null, // label
             null, // index
             null, // group
-            function ($object, $key, $value) {
+            static function ($object, $key, $value) {
                 switch ($value) {
                     case '1': return ['attr1' => 'value1'];
+
                     case '2': return ['attr2' => 'value2'];
+
                     default: return [];
                 }
             }
@@ -680,7 +735,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    private function assertObjectListWithGeneratedValues(ChoiceList $list)
+    private function assertObjectListWithGeneratedValues(ChoiceList $list): void
     {
         self::assertSame(['0', '1', '2', '3'], $list->getValues());
 
@@ -699,7 +754,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
         ], $list->getOriginalKeys());
     }
 
-    private function assertScalarListWithCustomValues(ChoiceList $list)
+    private function assertScalarListWithCustomValues(ChoiceList $list): void
     {
         self::assertSame(['a', 'b', '1', '2'], $list->getValues());
 
@@ -724,7 +779,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    private function assertObjectListWithCustomValues(ChoiceList $list)
+    private function assertObjectListWithCustomValues(ChoiceList $list): void
     {
         self::assertSame(['a', 'b', '1', '2'], $list->getValues());
 
@@ -749,9 +804,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    private function assertFlatView($view)
+    private function assertFlatView($view): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(
                 [
                     0 => new ChoiceView($this->obj1, '0', 'A'),
@@ -766,9 +821,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    private function assertFlatViewWithCustomIndices($view)
+    private function assertFlatViewWithCustomIndices($view): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(
                 [
                     'w' => new ChoiceView($this->obj1, '0', 'A'),
@@ -783,9 +838,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    private function assertFlatViewWithAttr($view)
+    private function assertFlatViewWithAttr($view): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(
                 [
                     0 => new ChoiceView($this->obj1, '0', 'A'),
@@ -810,9 +865,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    private function assertGroupedView($view)
+    private function assertGroupedView($view): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ChoiceListView(
                 [
                     'Group 1' => new ChoiceGroupView(

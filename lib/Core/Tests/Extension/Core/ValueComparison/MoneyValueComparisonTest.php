@@ -33,7 +33,7 @@ final class MoneyValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_true_equal()
+    public function it_returns_true_equal(): void
     {
         $value1 = new MoneyValue(Money::EUR(1200));
         $value2 = new MoneyValue(Money::EUR(1200));
@@ -47,7 +47,7 @@ final class MoneyValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_false_when_not_equal()
+    public function it_returns_false_when_not_equal(): void
     {
         $value1 = new MoneyValue(Money::EUR(1200));
         $value2 = new MoneyValue(Money::EUR(1215));
@@ -62,7 +62,7 @@ final class MoneyValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_true_when_first_value_is_higher()
+    public function it_returns_true_when_first_value_is_higher(): void
     {
         $value1 = new MoneyValue(Money::EUR(1500));
         $value2 = new MoneyValue(Money::EUR(1200));
@@ -76,7 +76,7 @@ final class MoneyValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_true_when_first_value_is_lower()
+    public function it_returns_true_when_first_value_is_lower(): void
     {
         $value1 = new MoneyValue(Money::EUR(1000));
         $value2 = new MoneyValue(Money::EUR(1200));
@@ -90,7 +90,7 @@ final class MoneyValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_false_when_first_value_is_not_higher()
+    public function it_returns_false_when_first_value_is_not_higher(): void
     {
         $value1 = new MoneyValue(Money::EUR(1200));
         $value2 = new MoneyValue(Money::EUR(1500));
@@ -105,7 +105,7 @@ final class MoneyValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_false_when_first_value_is_not_lower()
+    public function it_returns_false_when_first_value_is_not_lower(): void
     {
         $value1 = new MoneyValue(Money::EUR(1200));
         $value2 = new MoneyValue(Money::EUR(1000));

@@ -44,7 +44,7 @@ final class DateType extends BaseDateTimeType
         $config->setValueTypeSupport(Range::class, true);
         $config->setValueTypeSupport(Compare::class, true);
 
-        if (null === $options['pattern']) {
+        if ($options['pattern'] === null) {
             $this->validateFormat('format', $options['format']);
         } else {
             $this->validateDateFormat('pattern', $options['pattern']);
@@ -77,7 +77,7 @@ final class DateType extends BaseDateTimeType
     {
         $pattern = $options['pattern'];
 
-        if (null === $pattern) {
+        if ($pattern === null) {
             $pattern = \IntlDateFormatter::create(
                 \Locale::getDefault(),
                 $options['format'],
@@ -88,7 +88,7 @@ final class DateType extends BaseDateTimeType
         }
 
         $view->vars['html5'] = $options['html5'];
-        $view->vars['timezone'] = $options['view_timezone'] ?? date_default_timezone_get();
+        $view->vars['timezone'] = $options['view_timezone'] ?? \date_default_timezone_get();
         $view->vars['pattern'] = $pattern;
     }
 

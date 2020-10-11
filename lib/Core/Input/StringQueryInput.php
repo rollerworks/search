@@ -38,7 +38,7 @@ final class StringQueryInput extends StringInput
     public function __construct(Validator $validator = null, callable $labelResolver = null)
     {
         parent::__construct($validator);
-        $this->labelResolver = $labelResolver ?? function (FieldConfig $field) {
+        $this->labelResolver = $labelResolver ?? static function (FieldConfig $field) {
             return $field->getOption('label', $field->getName());
         };
     }

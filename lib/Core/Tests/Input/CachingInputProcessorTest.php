@@ -28,10 +28,13 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 
-class CachingInputProcessorTest extends TestCase
+/**
+ * @internal
+ */
+final class CachingInputProcessorTest extends TestCase
 {
     /** @test */
-    public function it_ignores_caching_for_non_string_input()
+    public function it_ignores_caching_for_non_string_input(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
         $inputProcessor = new SpyingInputProcessor();
@@ -46,7 +49,7 @@ class CachingInputProcessorTest extends TestCase
     }
 
     /** @test */
-    public function it_processes_with_no_existing_cache()
+    public function it_processes_with_no_existing_cache(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
         $serializer
@@ -66,7 +69,7 @@ class CachingInputProcessorTest extends TestCase
     }
 
     /** @test */
-    public function it_uses_cached_version_when_cache_is_valid()
+    public function it_uses_cached_version_when_cache_is_valid(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
         $serializer
@@ -91,7 +94,7 @@ class CachingInputProcessorTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_processed_result_in_cache()
+    public function it_stores_processed_result_in_cache(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
         $serializer
@@ -126,7 +129,7 @@ class CachingInputProcessorTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_store_empty_condition()
+    public function it_does_not_store_empty_condition(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
         $serializer
@@ -155,7 +158,7 @@ class CachingInputProcessorTest extends TestCase
     }
 
     /** @test */
-    public function it_separates_caches_by_processor_class()
+    public function it_separates_caches_by_processor_class(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
         $serializer

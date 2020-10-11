@@ -49,7 +49,7 @@ final class GenericFieldSet implements FieldSetWithView
 
     public function get(string $name): FieldConfig
     {
-        if (!isset($this->fields[$name])) {
+        if (! isset($this->fields[$name])) {
             throw new UnknownFieldException($name);
         }
 
@@ -73,7 +73,7 @@ final class GenericFieldSet implements FieldSetWithView
 
     public function isPrivate(string $name): bool
     {
-        return '_' === $name[0];
+        return $name[0] === '_';
     }
 
     public function createView(): FieldSetView
@@ -84,7 +84,7 @@ final class GenericFieldSet implements FieldSetWithView
             $view->fields[$name] = $field->createView($view);
         }
 
-        if (null !== $this->viewBuilder) {
+        if ($this->viewBuilder !== null) {
             \call_user_func($this->viewBuilder, $view);
         }
 

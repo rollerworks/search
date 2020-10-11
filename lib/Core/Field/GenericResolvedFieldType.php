@@ -43,7 +43,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
     public function __construct(FieldType $innerType, array $typeExtensions = [], ?ResolvedFieldType $parent = null)
     {
         foreach ($typeExtensions as $extension) {
-            if (!$extension instanceof FieldTypeExtension) {
+            if (! $extension instanceof FieldTypeExtension) {
                 throw new UnexpectedTypeException($extension, FieldTypeExtension::class);
             }
         }
@@ -77,7 +77,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
 
     public function buildType(FieldConfig $config, array $options): void
     {
-        if (null !== $this->parent) {
+        if ($this->parent !== null) {
             $this->parent->buildType($config, $options);
         }
 
@@ -91,7 +91,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
     public function createFieldView(FieldConfig $config, FieldSetView $view): SearchFieldView
     {
         $view = $this->newView($view);
-        $view->vars = array_merge($view->vars, [
+        $view->vars = \array_merge($view->vars, [
             'name' => $config->getName(),
             'accept_ranges' => $config->supportValueType(Range::class),
             'accept_compares' => $config->supportValueType(Compare::class),
@@ -103,7 +103,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
 
     public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
-        if (null !== $this->parent) {
+        if ($this->parent !== null) {
             $this->parent->buildFieldView($view, $config, $options);
         }
 
@@ -121,8 +121,8 @@ class GenericResolvedFieldType implements ResolvedFieldType
 
     public function getOptionsResolver(): OptionsResolver
     {
-        if (null === $this->optionsResolver) {
-            if (null !== $this->parent) {
+        if ($this->optionsResolver === null) {
+            if ($this->parent !== null) {
                 $this->optionsResolver = clone $this->parent->getOptionsResolver();
             } else {
                 $this->optionsResolver = new OptionsResolver();

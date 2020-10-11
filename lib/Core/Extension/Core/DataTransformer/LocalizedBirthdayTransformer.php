@@ -36,7 +36,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
     public function transform($value)
     {
         if (\is_int($value)) {
-            if (!$this->allowAge) {
+            if (! $this->allowAge) {
                 throw new TransformationFailedException('Age support is not enabled.');
             }
 
@@ -56,14 +56,14 @@ final class LocalizedBirthdayTransformer implements DataTransformer
     /**
      * @param int|string $value
      *
-     * @return int|\DateTimeImmutable
+     * @return \DateTimeImmutable|int
      */
     public function reverseTransform($value)
     {
         $value = $this->transformWhenInteger($value);
 
         if (\is_int($value)) {
-            if (!$this->allowAge) {
+            if (! $this->allowAge) {
                 throw new TransformationFailedException('Age support is not enabled.');
             }
 
@@ -76,7 +76,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
         $value = $value->setTimezone(new \DateTimeZone('UTC'));
         $value = $value->setTime(0, 0, 0);
 
-        if (!$this->allowFutureDate) {
+        if (! $this->allowFutureDate) {
             $this->validateDate($value);
         }
 
@@ -85,7 +85,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
 
     private function transformWhenInteger($value)
     {
-        if (!preg_match('/^\p{N}+$/u', (string) $value)) {
+        if (! \preg_match('/^\p{N}+$/u', (string) $value)) {
             return $value;
         }
 
@@ -104,18 +104,18 @@ final class LocalizedBirthdayTransformer implements DataTransformer
         return $result;
     }
 
-    private function validateDate(\DateTimeImmutable $value)
+    private function validateDate(\DateTimeImmutable $value): void
     {
         static $currentDate;
 
-        if (!$currentDate) {
+        if (! $currentDate) {
             $currentDate = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
             $currentDate = $currentDate->setTime(0, 0, 0);
         }
 
         if ($value > $currentDate) {
             throw new TransformationFailedException(
-                sprintf(
+                \sprintf(
                     'Date "%s" is higher then current date "%s". Are you a time traveler?',
                     $value->format('Y-m-d'),
                     $currentDate->format('Y-m-d')
@@ -129,7 +129,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
         /** @var \NumberFormatter $formatter */
         static $formatter;
 
-        if (!$formatter || $formatter->getLocale() !== \Locale::getDefault()) {
+        if (! $formatter || $formatter->getLocale() !== \Locale::getDefault()) {
             $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::TYPE_INT32);
             $formatter->setAttribute(\NumberFormatter::GROUPING_USED, 0);
         }

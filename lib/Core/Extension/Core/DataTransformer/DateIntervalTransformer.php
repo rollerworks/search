@@ -42,7 +42,7 @@ final class DateIntervalTransformer implements DataTransformer
             return '';
         }
 
-        if (!$value instanceof CarbonInterval) {
+        if (! $value instanceof CarbonInterval) {
             throw new TransformationFailedException('Expected a CarbonInterval instance or null.');
         }
 
@@ -61,7 +61,7 @@ final class DateIntervalTransformer implements DataTransformer
      */
     public function reverseTransform($value): ?CarbonInterval
     {
-        if (!is_scalar($value)) {
+        if (! \is_scalar($value)) {
             throw new TransformationFailedException('Expected a scalar.');
         }
 
@@ -85,29 +85,29 @@ final class DateIntervalTransformer implements DataTransformer
 
     private function translateNumberWords(string $timeString): string
     {
-        $timeString = strtr($timeString, ['’' => "'"]);
+        $timeString = \strtr($timeString, ['’' => "'"]);
 
         $translator = Translator::get($this->fromLocale);
         $translations = $translator->getMessages();
 
-        if (!isset($translations[$this->fromLocale])) {
+        if (! isset($translations[$this->fromLocale])) {
             return $timeString;
         }
 
         $messages = $translations[$this->fromLocale];
 
         foreach (['year', 'month', 'week', 'day', 'hour', 'minute', 'second'] as $item) {
-            foreach (explode('|', $messages[$item]) as $idx => $messagePart) {
-                if (preg_match('/[:%](count|time)/', $messagePart)) {
+            foreach (\explode('|', $messages[$item]) as $idx => $messagePart) {
+                if (\preg_match('/[:%](count|time)/', $messagePart)) {
                     continue;
                 }
 
                 if ($messagePart[0] === '{') {
-                    $idx = (int) substr($messagePart, 1, strpos($messagePart, '}'));
+                    $idx = (int) \mb_substr($messagePart, 1, \mb_strpos($messagePart, '}'));
                 }
 
-                $messagePart = static::cleanWordFromTranslationString($messagePart);
-                $timeString = str_replace($messagePart, $idx.' '.$item, $timeString);
+                $messagePart = self::cleanWordFromTranslationString($messagePart);
+                $timeString = \str_replace($messagePart, $idx . ' ' . $item, $timeString);
             }
         }
 
@@ -119,10 +119,10 @@ final class DateIntervalTransformer implements DataTransformer
      */
     private static function cleanWordFromTranslationString(string $word): string
     {
-        $word = str_replace([':count', '%count', ':time'], '', $word);
-        $word = strtr($word, ['’' => "'"]);
-        $word = preg_replace('/({\d+(,(\d+|Inf))?}|[\[\]]\d+(,(\d+|Inf))?[\[\]])/', '', $word);
+        $word = \str_replace([':count', '%count', ':time'], '', $word);
+        $word = \strtr($word, ['’' => "'"]);
+        $word = \preg_replace('/({\d+(,(\d+|Inf))?}|[\[\]]\d+(,(\d+|Inf))?[\[\]])/', '', $word);
 
-        return trim($word);
+        return \trim($word);
     }
 }

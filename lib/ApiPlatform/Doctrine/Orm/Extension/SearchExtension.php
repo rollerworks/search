@@ -43,14 +43,14 @@ final class SearchExtension implements QueryCollectionExtensionInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if (!$request) {
+        if (! $request) {
             return;
         }
 
         /** @var SearchCondition|null $condition */
         $condition = $request->attributes->get('_api_search_condition');
 
-        if (null === $condition) {
+        if ($condition === null) {
             return;
         }
 
@@ -83,7 +83,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
         $configPath .= '[relations]';
 
         if (isset($configuration['relations']['o'])) {
-            throw new RuntimeException(sprintf('Invalid configuration for "%s", relation name "o" is already used for the root.', $configPath));
+            throw new RuntimeException(\sprintf('Invalid configuration for "%s", relation name "o" is already used for the root.', $configPath));
         }
 
         foreach ($configuration['relations'] as $alias => $config) {
@@ -92,11 +92,11 @@ final class SearchExtension implements QueryCollectionExtensionInterface
             ArrayKeysValidator::assertOnlyKeys($config, ['join', 'entity', 'type', 'conditionType', 'condition', 'index'], $path);
             ArrayKeysValidator::assertKeysExists($config, ['join', 'entity'], $path);
 
-            if (!method_exists($queryBuilder, ($config['type'] = $config['type'] ?? 'left').'Join')) {
-                throw new RuntimeException(sprintf('Invalid value for "%s", type "%s" is not supported. Use left, right or inner.', $path.'[type]', $config['type']));
+            if (! \method_exists($queryBuilder, ($config['type'] = $config['type'] ?? 'left') . 'Join')) {
+                throw new RuntimeException(\sprintf('Invalid value for "%s", type "%s" is not supported. Use left, right or inner.', $path . '[type]', $config['type']));
             }
 
-            $queryBuilder->{$config['type'].'Join'}(
+            $queryBuilder->{$config['type'] . 'Join'}(
                 $config['join'],
                 $alias,
                 $config['conditionType'] ?? null,
@@ -111,7 +111,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
         $configuration['relations']['o']['entity'] = $resourceClass;
 
         foreach ($configuration['mappings'] as $mappingName => $mapping) {
-            if (!\is_array($mapping)) {
+            if (! \is_array($mapping)) {
                 $mapping = [
                     'alias' => 'o',
                     'property' => $mapping,
@@ -126,8 +126,8 @@ final class SearchExtension implements QueryCollectionExtensionInterface
             ArrayKeysValidator::assertOnlyKeys($mapping, ['property', 'alias', 'type'], $path);
             ArrayKeysValidator::assertKeysExists($mapping, ['property'], $path);
 
-            if (!isset($configuration['relations'][$mapping['alias']])) {
-                throw new RuntimeException(sprintf('Invalid value for "%s", alias "%s" is not registered in the "relations".', $path.'[alias]', $mapping['alias']));
+            if (! isset($configuration['relations'][$mapping['alias']])) {
+                throw new RuntimeException(\sprintf('Invalid value for "%s", alias "%s" is not registered in the "relations".', $path . '[alias]', $mapping['alias']));
             }
 
             $conditionGenerator->setField(

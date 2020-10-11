@@ -16,10 +16,13 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Functional;
 use Rollerworks\Bundle\SearchBundle\Tests\Fixtures\FieldSet\UserFieldSet;
 use Rollerworks\Component\Search\SearchFactory;
 
+/**
+ * @internal
+ */
 final class BootTest extends FunctionalTestCase
 {
     /** @test */
-    public function it_can_boot_the_application()
+    public function it_can_boot_the_application(): void
     {
         $client = self::newClient();
         $client->getKernel()->boot();

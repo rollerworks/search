@@ -26,11 +26,11 @@ class ParameterBag
 
     public function setParameter(string $name, $value): void
     {
-        $this->parameters['{'.$name.'}'] = $value;
+        $this->parameters['{' . $name . '}'] = $value;
     }
 
     public function injectParameters($template): string
     {
-        return str_replace(array_keys($this->parameters), array_values($this->parameters), $template);
+        return \str_replace(\array_keys($this->parameters), \array_values($this->parameters), $template);
     }
 }

@@ -32,7 +32,7 @@ final class JsonExporter extends AbstractExporter
 {
     public function exportCondition(SearchCondition $condition): string
     {
-        return (string) json_encode($this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true));
+        return (string) \json_encode($this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true));
     }
 
     protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): array
@@ -41,7 +41,7 @@ final class JsonExporter extends AbstractExporter
         $fields = $valuesGroup->getFields();
 
         foreach ($fields as $name => $values) {
-            if ($fieldSet->isPrivate($name) || 0 === $values->count()) {
+            if ($fieldSet->isPrivate($name) || $values->count() === 0) {
                 continue;
             }
 
@@ -57,7 +57,7 @@ final class JsonExporter extends AbstractExporter
             $result['groups'][] = $this->exportGroup($group, $fieldSet, false);
         }
 
-        if (isset($result['fields']) && ValuesGroup::GROUP_LOGICAL_OR === $valuesGroup->getGroupLogical()) {
+        if (isset($result['fields']) && $valuesGroup->getGroupLogical() === ValuesGroup::GROUP_LOGICAL_OR) {
             $result['logical-case'] = 'OR';
         }
 
@@ -113,11 +113,11 @@ final class JsonExporter extends AbstractExporter
             'upper' => $this->modelToNorm($range->getUpper(), $field),
         ];
 
-        if (!$range->isLowerInclusive()) {
+        if (! $range->isLowerInclusive()) {
             $result['inclusive-lower'] = false;
         }
 
-        if (!$range->isUpperInclusive()) {
+        if (! $range->isUpperInclusive()) {
             $result['inclusive-upper'] = false;
         }
 

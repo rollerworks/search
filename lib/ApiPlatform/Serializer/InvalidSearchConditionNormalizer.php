@@ -40,10 +40,7 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
         $this->serializePayloadFields = $serializePayloadFields;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         $list = new ConstraintViolationList();
 
@@ -64,19 +61,19 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
             $list->add($violation);
         }
 
-        list($messages, $violations) = $this->getMessagesAndViolations($list);
+        [$messages, $violations] = $this->getMessagesAndViolations($list);
 
         return [
             'type' => $context['type'] ?? 'https://tools.ietf.org/html/rfc2616#section-10',
             'title' => $context['title'] ?? 'An error occurred',
-            'detail' => $messages ? implode("\n", $messages) : (string) $object,
+            'detail' => $messages ? \implode("\n", $messages) : (string) $object,
             'violations' => $violations,
         ];
     }
 
-    public function supportsNormalization($data, $format = null): bool
+    public function supportsNormalization($data, string $format = null): bool
     {
-        return self::FORMAT === $format && $data instanceof InvalidSearchConditionException;
+        return $format === self::FORMAT && $data instanceof InvalidSearchConditionException;
     }
 
     /**
@@ -95,14 +92,15 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
             ];
 
             $constraint = $violation->getConstraint();
+
             if ($this->serializePayloadFields && $constraint && $constraint->payload) {
                 // If some fields are whitelisted, only them are added
-                $payloadFields = null === $this->serializePayloadFields ? $constraint->payload : array_intersect_key($constraint->payload, array_flip($this->serializePayloadFields));
+                $payloadFields = $this->serializePayloadFields === null ? $constraint->payload : \array_intersect_key($constraint->payload, \array_flip($this->serializePayloadFields));
                 $payloadFields && $violationData['payload'] = $payloadFields;
             }
 
             $violations[] = $violationData;
-            $messages[] = ($violationData['propertyPath'] ? "{$violationData['propertyPath']}: " : '').$violationData['message'];
+            $messages[] = ($violationData['propertyPath'] ? "{$violationData['propertyPath']}: " : '') . $violationData['message'];
         }
 
         return [$messages, $violations];

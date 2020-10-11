@@ -51,7 +51,8 @@ final class GenericFieldSetBuilderTest extends TestCase
         $this->builder = new GenericFieldSetBuilder($factory->reveal());
     }
 
-    public function testAddFields()
+    /** @test */
+    public function add_fields(): void
     {
         $this->builder->add('id', FooType::class);
         $this->builder->add('name', BarType::class);
@@ -60,14 +61,16 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertTrue($this->builder->has('name'));
     }
 
-    public function testAlwaysGivesAResolvedField()
+    /** @test */
+    public function always_gives_a_resolved_field(): void
     {
         $this->builder->add('id', FooType::class, ['foo' => 'bar']);
 
         $this->assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
     }
 
-    public function testSetPreConfiguredField()
+    /** @test */
+    public function set_pre_configured_field(): void
     {
         $field = $this->prophesize(FieldConfig::class);
         $field->getName()->willReturn('id');
@@ -80,7 +83,8 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertSame($field, $this->builder->get('id'));
     }
 
-    public function testRemoveField()
+    /** @test */
+    public function remove_field(): void
     {
         $this->builder->add('id', FooType::class);
         $this->builder->add('name', 'text');
@@ -91,7 +95,8 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertFalse($this->builder->has('id'));
     }
 
-    public function testGetBuildFieldSet()
+    /** @test */
+    public function get_build_field_set(): void
     {
         $this->builder->add('id', FooType::class, ['max' => 5000]);
         $this->builder->add('gid', FooType::class);
@@ -103,7 +108,7 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertFieldConfigurationEquals($fieldSet->get('gid'), 'gid', FooType::class);
     }
 
-    private function assertBuilderFieldConfigurationEquals(string $name, string $type, array $options = [])
+    private function assertBuilderFieldConfigurationEquals(string $name, string $type, array $options = []): void
     {
         self::assertInstanceOf(FieldConfig::class, $field = $this->builder->get($name));
         self::assertEquals($name, $field->getName());
@@ -111,7 +116,7 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertEquals($options, $field->getOptions());
     }
 
-    private static function assertFieldConfigurationEquals(FieldConfig $field, string $name, string $type, array $options = [])
+    private static function assertFieldConfigurationEquals(FieldConfig $field, string $name, string $type, array $options = []): void
     {
         self::assertEquals($name, $field->getName());
         self::assertInstanceOf($type, $field->getType()->getInnerType());

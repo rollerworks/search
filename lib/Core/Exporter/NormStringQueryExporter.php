@@ -28,7 +28,7 @@ final class NormStringQueryExporter extends StringExporter
     {
         $valueExporter = $field->getOption(NormStringQueryInput::VALUE_EXPORTER_OPTION_NAME);
 
-        if (true === $valueExporter) {
+        if ($valueExporter === true) {
             return $this->modelToNorm($value, $field);
         }
 

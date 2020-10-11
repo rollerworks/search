@@ -78,7 +78,7 @@ class DqlConditionGenerator implements ConditionGenerator
 
     public function __construct($query, SearchCondition $searchCondition)
     {
-        if (!$query instanceof DqlQuery && !$query instanceof QueryBuilder) {
+        if (! $query instanceof DqlQuery && ! $query instanceof QueryBuilder) {
             throw new UnexpectedTypeException($query, [DqlQuery::class, QueryBuilder::class]);
         }
 
@@ -100,9 +100,9 @@ class DqlConditionGenerator implements ConditionGenerator
     /**
      * @throws BadMethodCallException When the where-clause is already generated
      */
-    protected function guardNotGenerated()
+    protected function guardNotGenerated(): void
     {
-        if (null !== $this->whereClause) {
+        if ($this->whereClause !== null) {
             throw new BadMethodCallException(
                 'ConditionGenerator configuration methods cannot be accessed anymore once the where-clause is generated.'
             );
@@ -119,7 +119,7 @@ class DqlConditionGenerator implements ConditionGenerator
 
     public function getWhereClause(string $prependQuery = ''): string
     {
-        if (null === $this->whereClause) {
+        if ($this->whereClause === null) {
             $fields = $this->fieldsConfig->getFields();
             $connection = $this->entityManager->getConnection();
             $platform = new DqlQueryPlatform($connection);
@@ -129,8 +129,8 @@ class DqlConditionGenerator implements ConditionGenerator
             $this->parameters = $platform->getParameters();
         }
 
-        if ('' !== $this->whereClause) {
-            return $prependQuery.$this->whereClause;
+        if ($this->whereClause !== '') {
+            return $prependQuery . $this->whereClause;
         }
 
         return '';
@@ -140,14 +140,14 @@ class DqlConditionGenerator implements ConditionGenerator
     {
         $whereCase = $this->getWhereClause($prependQuery);
 
-        if ('' === $whereCase) {
+        if ($whereCase === '') {
             return $this;
         }
 
         if ($this->query instanceof QueryBuilder) {
             $this->query->andWhere($this->getWhereClause());
         } else {
-            $this->query->setDQL($this->query->getDQL().$whereCase);
+            $this->query->setDQL($this->query->getDQL() . $whereCase);
         }
 
         foreach ($this->parameters as $name => [$value, $type]) {

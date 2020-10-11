@@ -70,7 +70,7 @@ final class BirthdayType extends AbstractFieldType
         $resolver->setDefaults([
             'allow_age' => true,
             'allow_future_date' => false,
-            'invalid_message' => function (Options $options) {
+            'invalid_message' => static function (Options $options) {
                 if ($options['allow_age']) {
                     return 'This value is not a valid birthday or age.';
                 }

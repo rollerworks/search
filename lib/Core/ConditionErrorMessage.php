@@ -55,9 +55,6 @@ final class ConditionErrorMessage
      */
     public $messagePluralization;
 
-    /**
-     * @var mixed
-     */
     public $cause;
 
     /**
@@ -92,7 +89,7 @@ final class ConditionErrorMessage
     {
         return new static(
             $path,
-            strtr($messageTemplate, $messageParameters),
+            \strtr($messageTemplate, $messageParameters),
             $messageTemplate,
             $messageParameters,
             $messagePluralization,

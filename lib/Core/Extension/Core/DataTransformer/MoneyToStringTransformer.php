@@ -49,23 +49,23 @@ final class MoneyToStringTransformer implements DataTransformer
      */
     public function transform($value): ?string
     {
-        if (null === $value) {
+        if ($value === null) {
             return '';
         }
 
-        if (!$value instanceof MoneyValue) {
+        if (! $value instanceof MoneyValue) {
             throw new TransformationFailedException('Expected a MoneyValue object.');
         }
 
-        if (!$this->formatter) {
+        if (! $this->formatter) {
             $this->formatter = new DecimalMoneyFormatter(new ISOCurrencies());
         }
 
-        if (!$value->withCurrency) {
+        if (! $value->withCurrency) {
             return $this->formatter->format($value->value);
         }
 
-        return ((string) $value->value->getCurrency()).' '.$this->formatter->format($value->value);
+        return ((string) $value->value->getCurrency()) . ' ' . $this->formatter->format($value->value);
     }
 
     /**
@@ -78,23 +78,23 @@ final class MoneyToStringTransformer implements DataTransformer
      */
     public function reverseTransform($value): ?MoneyValue
     {
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return null;
         }
 
-        if (!\is_string($value)) {
+        if (! \is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 
         $withCurrency = true;
         $result = $value;
 
-        if (false !== mb_strpos($value, ' ')) {
-            list($currency, $result) = explode(' ', $value, 2);
+        if (\mb_strpos($value, ' ') !== false) {
+            [$currency, $result] = \explode(' ', $value, 2);
 
-            if (mb_strlen($currency) !== 3) {
+            if (\mb_strlen($currency) !== 3) {
                 throw new TransformationFailedException(
-                    sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
+                    \sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
                 );
             }
 
@@ -104,7 +104,7 @@ final class MoneyToStringTransformer implements DataTransformer
             $currency = $this->defaultCurrency;
         }
 
-        if (!$this->moneyParser) {
+        if (! $this->moneyParser) {
             $this->moneyParser = new DecimalMoneyParser(new ISOCurrencies());
         }
 

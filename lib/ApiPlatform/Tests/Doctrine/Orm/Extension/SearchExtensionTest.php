@@ -32,9 +32,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /** @internal */
-class SearchExtensionTest extends TestCase
+final class SearchExtensionTest extends TestCase
 {
-    public function testApplyToCollectionWithValidCondition()
+    /** @test */
+    public function apply_to_collection_with_valid_condition(): void
     {
         $searchCondition = $this->createCondition();
 
@@ -73,7 +74,8 @@ class SearchExtensionTest extends TestCase
         $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, 'get');
     }
 
-    public function testApplyToCollectionWithRelations()
+    /** @test */
+    public function apply_to_collection_with_relations(): void
     {
         $searchCondition = $this->createCondition();
 
@@ -131,8 +133,10 @@ class SearchExtensionTest extends TestCase
 
     /**
      * @dataProvider provideInvalidConfigurations
+     *
+     * @test
      */
-    public function testApplyToCollectionGivesExceptionWhenConfigIsInValid(string $message, array $config)
+    public function apply_to_collection_gives_exception_when_config_is_in_valid(string $message, array $config): void
     {
         $searchCondition = $this->createCondition();
 
@@ -170,7 +174,7 @@ class SearchExtensionTest extends TestCase
 
         return [
             [
-                'Config "'.$resourceClass.'#attributes[rollerworks_search][contexts][dummy][doctrine_orm][relations][r]" is missing "entity", got "join".',
+                'Config "' . $resourceClass . '#attributes[rollerworks_search][contexts][dummy][doctrine_orm][relations][r]" is missing "entity", got "join".',
                 [
                     'mappings' => [
                         'dummy-id' => 'id',
@@ -181,7 +185,7 @@ class SearchExtensionTest extends TestCase
                 ],
             ],
             [
-                'Config "'.$resourceClass.'#attributes[rollerworks_search][contexts][dummy][doctrine_orm][mappings][fiend-name]" accepts only "property", "alias", "type", got "field", "alias".',
+                'Config "' . $resourceClass . '#attributes[rollerworks_search][contexts][dummy][doctrine_orm][mappings][fiend-name]" accepts only "property", "alias", "type", got "field", "alias".',
                 [
                     'mappings' => [
                         'dummy-id' => 'id',
@@ -190,7 +194,7 @@ class SearchExtensionTest extends TestCase
                 ],
             ],
             [
-                'Config "'.$resourceClass.'#attributes[rollerworks_search][contexts][dummy][doctrine_orm][mappings][fiend-name]" is missing "property", got "alias".',
+                'Config "' . $resourceClass . '#attributes[rollerworks_search][contexts][dummy][doctrine_orm][mappings][fiend-name]" is missing "property", got "alias".',
                 [
                     'mappings' => [
                         'dummy-id' => 'id',
@@ -202,7 +206,7 @@ class SearchExtensionTest extends TestCase
                 ],
             ],
             [
-                'Invalid value for "'.$resourceClass.'#attributes[rollerworks_search][contexts][dummy][doctrine_orm][mappings][fiend-name][alias]", alias "r" is not registered in the "relations".',
+                'Invalid value for "' . $resourceClass . '#attributes[rollerworks_search][contexts][dummy][doctrine_orm][mappings][fiend-name][alias]", alias "r" is not registered in the "relations".',
                 [
                     'mappings' => [
                         'fiend-name' => ['property' => 'name', 'alias' => 'r'],
@@ -210,7 +214,7 @@ class SearchExtensionTest extends TestCase
                 ],
             ],
             [
-                'Invalid configuration for "'.$resourceClass.'#attributes[rollerworks_search][contexts][dummy][doctrine_orm][relations]", relation name "o" is already used for the root.',
+                'Invalid configuration for "' . $resourceClass . '#attributes[rollerworks_search][contexts][dummy][doctrine_orm][relations]", relation name "o" is already used for the root.',
                 [
                     'mappings' => [
                         'dummy-id' => 'id',
@@ -222,7 +226,7 @@ class SearchExtensionTest extends TestCase
                 ],
             ],
             [
-                $resourceClass.'#attributes[rollerworks_search][contexts][dummy][doctrine_orm][relations][r][type]", type "outer" is not supported. Use left, right or inner.',
+                $resourceClass . '#attributes[rollerworks_search][contexts][dummy][doctrine_orm][relations][r][type]", type "outer" is not supported. Use left, right or inner.',
                 [
                     'mappings' => [
                         'dummy-id' => 'id',
@@ -236,7 +240,8 @@ class SearchExtensionTest extends TestCase
         ];
     }
 
-    public function testApplyToCollectionWithoutCondition()
+    /** @test */
+    public function apply_to_collection_without_condition(): void
     {
         $ormFactoryProphecy = $this->prophesize(DoctrineOrmFactory::class);
         $ormFactoryProphecy->createCachedConditionGenerator(Argument::any())->shouldNotBeCalled();

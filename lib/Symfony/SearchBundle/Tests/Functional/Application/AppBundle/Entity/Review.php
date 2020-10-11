@@ -109,7 +109,7 @@ class Review
         return $this->body;
     }
 
-    public function setBody(string $body)
+    public function setBody(string $body): void
     {
         $this->body = $body;
     }
@@ -119,7 +119,7 @@ class Review
         return $this->book;
     }
 
-    public function setBook(Book $book)
+    public function setBook(Book $book): void
     {
         $this->book = $book;
     }
@@ -129,7 +129,7 @@ class Review
         return $this->author;
     }
 
-    public function setAuthor(string $author)
+    public function setAuthor(string $author): void
     {
         $this->author = $author;
     }
@@ -139,7 +139,7 @@ class Review
         return $this->publicationDate;
     }
 
-    public function setPublicationDate(\DateTimeImmutable $publicationDate)
+    public function setPublicationDate(\DateTimeImmutable $publicationDate): void
     {
         $this->publicationDate = $publicationDate;
     }

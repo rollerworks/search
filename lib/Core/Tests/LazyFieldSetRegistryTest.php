@@ -24,17 +24,17 @@ use Rollerworks\Component\Search\LazyFieldSetRegistry;
 final class LazyFieldSetRegistryTest extends TestCase
 {
     /** @test */
-    public function it_loads_configurator_lazily()
+    public function it_loads_configurator_lazily(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => function () use ($configurator) {
+                'set' => static function () use ($configurator) {
                     return $configurator;
                 },
-                'set2' => function () use ($configurator2) {
+                'set2' => static function () use ($configurator2) {
                     return $configurator2;
                 },
             ]
@@ -55,14 +55,14 @@ final class LazyFieldSetRegistryTest extends TestCase
     }
 
     /** @test */
-    public function it_loads_configurator_by_fqcn()
+    public function it_loads_configurator_by_fqcn(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => function () use ($configurator) {
+                'set' => static function () use ($configurator) {
                     return $configurator;
                 },
             ]
@@ -79,7 +79,7 @@ final class LazyFieldSetRegistryTest extends TestCase
     }
 
     /** @test */
-    public function it_checks_registered_before_className()
+    public function it_checks_registered_before_class_name(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
@@ -87,10 +87,10 @@ final class LazyFieldSetRegistryTest extends TestCase
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => function () use ($configurator) {
+                'set' => static function () use ($configurator) {
                     return $configurator;
                 },
-                $name => function () use ($configurator2) {
+                $name => static function () use ($configurator2) {
                     return $configurator2;
                 },
             ]
@@ -107,14 +107,14 @@ final class LazyFieldSetRegistryTest extends TestCase
     }
 
     /** @test */
-    public function it_errors_when_configurator_is_not_registered_and_class_is_a_configurator()
+    public function it_errors_when_configurator_is_not_registered_and_class_is_a_configurator(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = \stdClass::class;
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => function () use ($configurator) {
+                'set' => static function () use ($configurator) {
                     return $configurator;
                 },
             ]
@@ -133,14 +133,14 @@ final class LazyFieldSetRegistryTest extends TestCase
     }
 
     /** @test */
-    public function it_errors_when_configurator_is_not_registered_class_does_not_exist()
+    public function it_errors_when_configurator_is_not_registered_class_does_not_exist(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = 'f4394832948_foobar_cow';
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => function () use ($configurator) {
+                'set' => static function () use ($configurator) {
                     return $configurator;
                 },
             ]

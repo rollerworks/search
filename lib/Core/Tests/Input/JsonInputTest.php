@@ -32,10 +32,8 @@ final class JsonInputTest extends InputProcessorTestCase
         return new JsonInput();
     }
 
-    /**
-     * @test
-     */
-    public function it_errors_on_invalid_json()
+    /** @test */
+    public function it_errors_on_invalid_json(): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
         $error = ConditionErrorMessage::rawMessage(
@@ -58,7 +56,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'name' => [
@@ -74,7 +72,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 ['@date' => 'ASC'],
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'name' => [
@@ -87,7 +85,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 ['@date' => 'DESC', '@id' => 'ASC'],
             ],
             [
-                json_encode(
+                \json_encode(
                     []
                 ),
                 ['@date' => 'DESC', '@id' => 'ASC'],
@@ -99,7 +97,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'name' => [
@@ -119,7 +117,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'id' => [
@@ -149,7 +147,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'id' => [
@@ -177,7 +175,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'name' => [
@@ -204,7 +202,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'name' => [
@@ -238,7 +236,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'name' => [
@@ -249,7 +247,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 ),
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'logical-case' => 'AND',
                         'fields' => [
@@ -261,7 +259,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 ),
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'logical-case' => 'OR',
                         'fields' => [
@@ -280,7 +278,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [
@@ -308,7 +306,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [
@@ -333,7 +331,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'name' => [
@@ -346,7 +344,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 '[fields][name][simple-values][3]',
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [
@@ -363,7 +361,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 '[groups][0][fields][name][simple-values][3]',
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [
@@ -384,7 +382,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 '[groups][0][groups][0][fields][name][simple-values][3]',
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [
@@ -418,7 +416,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [
@@ -455,7 +453,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 '',
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [
@@ -517,7 +515,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [
@@ -543,7 +541,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             '_id' => [
@@ -555,7 +553,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 '_id',
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'id' => [
@@ -576,7 +574,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'field2' => [
@@ -593,7 +591,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'no-range-field' => [
@@ -603,10 +601,10 @@ final class JsonInputTest extends InputProcessorTestCase
                     ]
                 ),
                 'no-range-field',
-               Range::class,
+                Range::class,
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'no-range-field' => [
@@ -619,7 +617,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 Range::class,
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'no-compares-field' => [
@@ -632,7 +630,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 Compare::class,
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'no-matchers-field' => [
@@ -654,7 +652,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'id' => [
@@ -670,7 +668,7 @@ final class JsonInputTest extends InputProcessorTestCase
                 ['[fields][id][ranges][0]', '[fields][id][ranges][2]'],
             ],
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'id' => [
@@ -692,7 +690,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'fields' => [
                             'id' => [
@@ -715,7 +713,7 @@ final class JsonInputTest extends InputProcessorTestCase
     {
         return [
             [
-                json_encode(
+                \json_encode(
                     [
                         'groups' => [
                             [

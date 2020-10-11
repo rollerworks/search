@@ -35,7 +35,7 @@ abstract class FunctionalTestCase extends WebTestCase
      */
     protected static function newClient(array $options = [], array $server = [])
     {
-        $client = static::createClient(array_merge(['config' => 'default.yml'], $options), $server);
+        $client = static::createClient(\array_merge(['config' => 'default.yml'], $options), $server);
 
         $warmer = $client->getContainer()->get('cache_warmer');
         $warmer->warmUp($client->getContainer()->getParameter('kernel.cache_dir'));

@@ -55,7 +55,7 @@ final class OrderStructureBuilder implements StructureBuilder
     /**
      * False when not set, null when undetected (lazy loaded).
      *
-     * @var DataTransformer|bool|null
+     * @var bool|DataTransformer|null
      */
     private $inputTransformer;
 
@@ -95,7 +95,7 @@ final class OrderStructureBuilder implements StructureBuilder
 
     public function field(string $name, string $path): void
     {
-        if (!$this->valuesGroup->hasField($name)) {
+        if (! $this->valuesGroup->hasField($name)) {
             $this->valuesGroup->addField($name, new ValuesBag());
         }
 
@@ -108,7 +108,7 @@ final class OrderStructureBuilder implements StructureBuilder
 
     public function simpleValue($value, string $path): void
     {
-        if (null === $this->valuesBag) {
+        if ($this->valuesBag === null) {
             throw new \LogicException('Cannot add value to unknown bag');
         }
 
@@ -116,7 +116,7 @@ final class OrderStructureBuilder implements StructureBuilder
             throw new ValuesOverflowException($this->fieldConfig->getName(), 1, $path);
         }
 
-        if (null !== ($modelVal = $this->inputToNorm($value, $path))) {
+        if (($modelVal = $this->inputToNorm($value, $path)) !== null) {
             $this->validator->validate($modelVal, 'simple', $value, $path);
         }
 
@@ -129,9 +129,7 @@ final class OrderStructureBuilder implements StructureBuilder
     }
 
     /**
-     * @param mixed $lower
-     * @param mixed $upper
-     * @param array $path  [path, lower-path-pattern, upper-path-pattern]
+     * @param array $path [path, lower-path-pattern, upper-path-pattern]
      */
     public function rangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
@@ -139,9 +137,7 @@ final class OrderStructureBuilder implements StructureBuilder
     }
 
     /**
-     * @param mixed $lower
-     * @param mixed $upper
-     * @param array $path  [path, lower-path-pattern, upper-path-pattern]
+     * @param array $path [path, lower-path-pattern, upper-path-pattern]
      */
     public function excludedRangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
@@ -150,7 +146,6 @@ final class OrderStructureBuilder implements StructureBuilder
 
     /**
      * @param string $operator
-     * @param mixed  $value
      * @param array  $path     [base-path, operator-path, value-path]
      */
     public function comparisonValue($operator, $value, array $path): void
@@ -182,22 +177,20 @@ final class OrderStructureBuilder implements StructureBuilder
     /**
      * Reverse transforms a value if a value transformer is set.
      *
-     * @param mixed $value
-     *
      * @return mixed returns null when the value is empty or invalid.
      *               Note: When the value is invalid an error is registered
      */
     private function inputToNorm($value, string $path)
     {
-        if (null === $this->inputTransformer) {
+        if ($this->inputTransformer === null) {
             $this->inputTransformer = $this->fieldConfig->getNormTransformer() ?? false;
         }
 
-        if (false === $this->inputTransformer) {
-            if (null !== $value && !is_scalar($value)) {
+        if ($this->inputTransformer === false) {
+            if ($value !== null && ! \is_scalar($value)) {
                 $e = new \RuntimeException(
-                    sprintf(
-                        'Norm value of type %s is not a scalar value or null and not cannot be '.
+                    \sprintf(
+                        'Norm value of type %s is not a scalar value or null and not cannot be ' .
                         'converted to a string. You must set a NormTransformer for field "%s" with type "%s".',
                         \gettype($value),
                         $this->fieldConfig->getName(),
@@ -219,7 +212,7 @@ final class OrderStructureBuilder implements StructureBuilder
                 return null;
             }
 
-            return '' === $value ? null : $value;
+            return $value === '' ? null : $value;
         }
 
         try {

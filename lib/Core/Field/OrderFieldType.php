@@ -21,17 +21,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class OrderFieldType implements FieldType
 {
-    /**
-     * @inheritdoc
-     */
     public function getParent(): ?string
     {
         return null;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -48,9 +42,6 @@ final class OrderFieldType implements FieldType
         $resolver->setAllowedTypes('default', ['null', 'string']);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function buildType(FieldConfig $config, array $options): void
     {
         $transformer = new OrderTransformer($options['alias'], $options['case'], $options['default']);
@@ -59,16 +50,10 @@ final class OrderFieldType implements FieldType
         $config->setViewTransformer($transformer);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
     {
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getBlockPrefix(): string
     {
         return 'order';

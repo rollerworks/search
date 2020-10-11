@@ -17,10 +17,6 @@ interface ValueConversion
 {
     /**
      * Returns the converted value as a valid Elasticsearch value.
-     *
-     * @param mixed $value
-     *
-     * @return mixed
      */
     public function convertValue($value);
 }

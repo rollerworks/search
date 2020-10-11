@@ -30,7 +30,7 @@ final class MoneyToStringTransformerTest extends TestCase
     {
         static $moneyParser;
 
-        if (!$moneyParser) {
+        if (! $moneyParser) {
             $currencies = new ISOCurrencies();
             $moneyParser = new DecimalMoneyParser($currencies);
         }
@@ -52,12 +52,14 @@ final class MoneyToStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testTransform($from, $to)
+    public function transform($from, $to): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
-        if (null !== $from) {
+        if ($from !== null) {
             $from = new MoneyValue($this->parseMoneyAsDecimal($from));
         }
 
@@ -66,28 +68,32 @@ final class MoneyToStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testTransformWithoutCurrency($from, $to)
+    public function transform_without_currency($from, $to): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
-        if (null !== $from) {
+        if ($from !== null) {
             $from = new MoneyValue($this->parseMoneyAsDecimal($from), false);
         }
 
-        $to = mb_substr($to, 4);
+        $to = \mb_substr($to, 4);
 
         self::assertEquals($to, $transformer->transform($from));
     }
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testReverseTransform($to, $from)
+    public function reverse_transform($to, $from): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
-        if (null !== $to) {
+        if ($to !== null) {
             $to = new MoneyValue($this->parseMoneyAsDecimal($to));
         }
 
@@ -96,20 +102,23 @@ final class MoneyToStringTransformerTest extends TestCase
 
     /**
      * @dataProvider provideTransformations
+     *
+     * @test
      */
-    public function testReverseTransformWithoutCurrency($to, $from)
+    public function reverse_transform_without_currency($to, $from): void
     {
         $transformer = new MoneyToStringTransformer('USD');
 
-        if (null !== $to) {
+        if ($to !== null) {
             $to = new MoneyValue($this->parseMoneyAsDecimal($to, 'USD'), false);
-            $from = mb_substr($from, 4);
+            $from = \mb_substr($from, 4);
         }
 
         self::assertEquals($to, $transformer->reverseTransform($from));
     }
 
-    public function testTransformExpectsMoneyValue()
+    /** @test */
+    public function transform_expects_money_value(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -118,7 +127,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->transform('foo');
     }
 
-    public function testReverseTransformExpectsString()
+    /** @test */
+    public function reverse_transform_expects_string(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -127,7 +137,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform(1);
     }
 
-    public function testReverseTransformExpectsValidNumber()
+    /** @test */
+    public function reverse_transform_expects_valid_number(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -136,7 +147,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('foo');
     }
 
-    public function testReverseTransformDisallowsNaN()
+    /** @test */
+    public function reverse_transform_disallows_na_n(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -145,7 +157,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('NaN');
     }
 
-    public function testReverseTransformDisallowsNaN2()
+    /** @test */
+    public function reverse_transform_disallows_na_n2(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -154,7 +167,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('nan');
     }
 
-    public function testReverseTransformDisallowsInfinity()
+    /** @test */
+    public function reverse_transform_disallows_infinity(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -163,7 +177,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞');
     }
 
-    public function testReverseTransformDisallowsInfinity2()
+    /** @test */
+    public function reverse_transform_disallows_infinity2(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -172,7 +187,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞,123');
     }
 
-    public function testReverseTransformDisallowsNegativeInfinity()
+    /** @test */
+    public function reverse_transform_disallows_negative_infinity(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -181,7 +197,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('-∞');
     }
 
-    public function testReverseTransformExpectsValidNumberOrCurrencyWithNumber()
+    /** @test */
+    public function reverse_transform_expects_valid_number_or_currency_with_number(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -191,7 +208,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('fool 12.00');
     }
 
-    public function testReverseTransformExpectsValidNumberOrCurrencyWithNumber2()
+    /** @test */
+    public function reverse_transform_expects_valid_number_or_currency_with_number2(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 
@@ -201,7 +219,8 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('fo ol 12.00');
     }
 
-    public function testReverseTransformExpectsCurrencyWithNumber()
+    /** @test */
+    public function reverse_transform_expects_currency_with_number(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
 

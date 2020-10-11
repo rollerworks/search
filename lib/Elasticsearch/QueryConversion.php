@@ -23,8 +23,6 @@ interface QueryConversion
      *
      * If null is returned, no query conversion has taken place,
      * use whatever is proper in the current context.
-     *
-     * @param mixed $value
      */
     public function convertQuery(string $propertyName, $value, QueryPreparationHints $hints): ?array;
 }

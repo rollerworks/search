@@ -35,9 +35,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /** @internal */
-class SearchExtensionTest extends TestCase
+final class SearchExtensionTest extends TestCase
 {
-    public function testApplyToCollectionWithValidCondition()
+    /** @test */
+    public function apply_to_collection_with_valid_condition(): void
     {
         $query = new Query(['query' => ['bool' => ['must' => 'foo']]]);
         $ids = [3, 1, 5];
@@ -128,6 +129,7 @@ class SearchExtensionTest extends TestCase
     private function createResponse($ids): Response
     {
         $response = [];
+
         foreach ($ids as $id) {
             $response['hits']['hits'][]['_id'] = $id;
         }

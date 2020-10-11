@@ -32,7 +32,8 @@ final class LocaleTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    public function testCurrenciesAreSelectable()
+    /** @test */
+    public function currencies_are_selectable(): void
     {
         $field = $field = $this->getFactory()->createField('choice', LocaleType::class);
         $field->finalizeConfig();
@@ -47,8 +48,8 @@ final class LocaleTypeTest extends SearchIntegrationTestCase
 
         $choices = $view->vars['choices'];
 
-        $this->assertContainsEquals(new ChoiceView('en', 'en', 'English'), $choices);
-        $this->assertContainsEquals(new ChoiceView('en_GB', 'en_GB', 'English (United Kingdom)'), $choices);
-        $this->assertContainsEquals(new ChoiceView('zh_Hant_MO', 'zh_Hant_MO', 'Chinese (Traditional, Macao SAR China)'), $choices);
+        self::assertContainsEquals(new ChoiceView('en', 'en', 'English'), $choices);
+        self::assertContainsEquals(new ChoiceView('en_GB', 'en_GB', 'English (United Kingdom)'), $choices);
+        self::assertContainsEquals(new ChoiceView('zh_Hant_MO', 'zh_Hant_MO', 'Chinese (Traditional, Macao SAR China)'), $choices);
     }
 }

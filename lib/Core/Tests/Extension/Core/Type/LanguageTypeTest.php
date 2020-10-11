@@ -32,7 +32,8 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    public function testChoicesAreSelectable()
+    /** @test */
+    public function choices_are_selectable(): void
     {
         $field = $field = $this->getFactory()->createField('choice', LanguageType::class);
         $field->finalizeConfig();
@@ -46,12 +47,13 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
 
         $choices = $view->vars['choices'];
 
-        $this->assertContainsEquals(new ChoiceView('en', 'en', 'English'), $choices);
-        $this->assertContainsEquals(new ChoiceView('fr', 'fr', 'French'), $choices);
-        $this->assertContainsEquals(new ChoiceView('my', 'my', 'Burmese'), $choices);
+        self::assertContainsEquals(new ChoiceView('en', 'en', 'English'), $choices);
+        self::assertContainsEquals(new ChoiceView('fr', 'fr', 'French'), $choices);
+        self::assertContainsEquals(new ChoiceView('my', 'my', 'Burmese'), $choices);
     }
 
-    public function testMultipleLanguagesIsNotIncluded()
+    /** @test */
+    public function multiple_languages_is_not_included(): void
     {
         $field = $field = $this->getFactory()->createField('choice', LanguageType::class);
         $field->finalizeConfig();
@@ -59,6 +61,6 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
         $view = $field->createView(new FieldSetView());
         $choices = $view->vars['choices'];
 
-        $this->assertNotContainsEquals(new ChoiceView('mul', 'mul', 'Mehrsprachig'), $choices);
+        self::assertNotContainsEquals(new ChoiceView('mul', 'mul', 'Mehrsprachig'), $choices);
     }
 }

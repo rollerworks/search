@@ -94,6 +94,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     public function registerField(string $fieldName, string $property, array $conditions = [], array $options = [])
     {
         $conditionMappings = [];
+
         foreach ($conditions as $condition => $value) {
             $conditionMapping = new FieldMapping($fieldName, $this->injectParameters($condition), $this->fieldSet->get($fieldName), [], $options);
             $conditionMapping->propertyValue = $this->injectParameters($value);
@@ -116,13 +117,13 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
         $this->processOrder($this->searchCondition->getOrder(), $orderClause, $orderCondition);
 
-        if (null !== ($primaryCondition = $this->searchCondition->getPrimaryCondition())) {
+        if (($primaryCondition = $this->searchCondition->getPrimaryCondition()) !== null) {
             $primaryConditionGroupCondition = $this->processGroup($primaryCondition->getValuesGroup(), true);
 
             $this->processOrder($primaryCondition->getOrder(), $orderClause, $orderCondition, true);
         }
 
-        $rootGroupCondition = array_values(array_filter([
+        $rootGroupCondition = \array_values(\array_filter([
             $primaryConditionGroupCondition,
             $rootGroupCondition,
             $orderCondition,
@@ -131,10 +132,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         if (\count($rootGroupCondition) > 1) {
             $rootGroupCondition = [self::QUERY_BOOL => [self::CONDITION_AND => $rootGroupCondition]];
         } else {
-            $rootGroupCondition = current($rootGroupCondition);
+            $rootGroupCondition = \current($rootGroupCondition);
         }
 
-        return new Query(array_filter([self::QUERY => $rootGroupCondition, self::SORT => $orderClause]));
+        return new Query(\array_filter([self::QUERY => $rootGroupCondition, self::SORT => $orderClause]));
     }
 
     public function getMappings(): array
@@ -148,17 +149,17 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             $this->getGroupMappings($primaryCondition->getValuesGroup(), $mappings);
         }
 
-        if ([] === $mappings) {
+        if ($mappings === []) {
             if (null !== $searchOrder = $this->searchCondition->getOrder()) {
                 $this->getGroupMappings($searchOrder->getValuesGroup(), $mappings);
             }
 
-            if (null !== $primaryCondition && null !== $primarySearchOrder = $primaryCondition->getOrder()) {
+            if ($primaryCondition !== null && null !== $primarySearchOrder = $primaryCondition->getOrder()) {
                 $this->getGroupMappings($primarySearchOrder->getValuesGroup(), $mappings);
             }
         }
 
-        return array_values($mappings);
+        return \array_values($mappings);
     }
 
     public function getSearchCondition(): SearchCondition
@@ -215,14 +216,15 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     private function processGroup(ValuesGroup $group, bool $injectParams = false): array
     {
         // Note: Excludes are `must_not`, for includes `must` (AND) or `should` (OR) is used. Subgroups use `must`.
-        $includingType = ValuesGroup::GROUP_LOGICAL_AND === $group->getGroupLogical()
+        $includingType = $group->getGroupLogical() === ValuesGroup::GROUP_LOGICAL_AND
             ? self::CONDITION_AND
             : self::CONDITION_OR;
 
         $bool = [];
         $hints = new QueryPreparationHints();
+
         foreach ($group->getFields() as $fieldName => $valuesBag) {
-            if (!isset($this->mappings[$fieldName])) {
+            if (! isset($this->mappings[$fieldName])) {
                 throw new UnknownFieldException($fieldName);
             }
             $mapping = $this->mappings[$fieldName];
@@ -234,7 +236,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             $join = $mapping->join;
             $options = $mapping->options;
 
-            $hints->identifier = (self::PROPERTY_ID === $propertyName);
+            $hints->identifier = ($propertyName === self::PROPERTY_ID);
 
             $conditions = $this->processMappingConditions($mapping, $hints, $injectParams);
 
@@ -254,6 +256,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $options
                 ));
             }
+
             if ($valuesBag->hasExcludedSimpleValues()) {
                 $hints->context = QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES;
                 $this->mergeQuery($bool, self::CONDITION_NOT, $this->prepareProcessedValuesQuery(
@@ -279,6 +282,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                     $this->mergeQuery($bool, $includingType, $this->prepareQuery($propertyName, $range, $hints, $queryConverter, $nested, $join, $conditions, $options));
                 }
             }
+
             if ($valuesBag->has(ExcludedRange::class)) {
                 /** @var Range $range */
                 foreach ($valuesBag->get(ExcludedRange::class) as $range) {
@@ -294,7 +298,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 foreach ($valuesBag->get(Compare::class) as $compare) {
                     $hints->context = QueryPreparationHints::CONTEXT_COMPARISON;
                     $compare = $this->convertCompareValue($compare, $valueConverter, $injectParams);
-                    $localIncludingType = self::COMPARISON_UNEQUAL === $compare->getOperator() ? self::CONDITION_NOT : $includingType;
+                    $localIncludingType = $compare->getOperator() === self::COMPARISON_UNEQUAL ? self::CONDITION_NOT : $includingType;
                     $this->mergeQuery($bool, $localIncludingType, $this->prepareQuery($propertyName, $compare, $hints, $queryConverter, $nested, $join, $conditions, $options));
                 }
             }
@@ -314,12 +318,12 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         foreach ($group->getGroups() as $subGroup) {
             $subGroupCondition = $this->processGroup($subGroup, $injectParams);
 
-            if ([] !== $subGroupCondition) {
+            if ($subGroupCondition !== []) {
                 $bool[$includingType][] = $subGroupCondition;
             }
         }
 
-        if ([] === $bool) {
+        if ($bool === []) {
             return [];
         }
 
@@ -328,20 +332,22 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
     private function processOrder(?SearchOrder $order, array &$clause, array &$conditions, bool $injectParams = false): void
     {
-        if (null === $order) {
+        if ($order === null) {
             return;
         }
 
         $orderGroup = $order->getValuesGroup();
         $hints = new QueryPreparationHints();
         $hints->context = QueryPreparationHints::CONTEXT_ORDER;
+
         foreach ($orderGroup->getFields() as $fieldName => $valuesBag) {
             $mapping = $this->mappings[$fieldName];
 
             // apply conditions from order fields
             $mappingConditions = $this->processMappingConditions($mapping, $hints, $injectParams);
+
             if ($mappingConditions) {
-                if (!isset($conditions[self::QUERY_BOOL])) {
+                if (! isset($conditions[self::QUERY_BOOL])) {
                     $conditions[self::QUERY_BOOL] = [];
                 }
 
@@ -354,28 +360,23 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html#_sorting
             $propertyName = $mapping->join ? self::SORT_SCORE : $mapping->propertyName;
 
-            $clause = array_merge_recursive(
+            $clause = \array_merge_recursive(
                 $clause,
                 $mapping->options,
                 [
                     $propertyName => [
-                        self::SORT_ORDER => current($valuesBag->getSimpleValues()),
+                        self::SORT_ORDER => \current($valuesBag->getSimpleValues()),
                     ],
                 ]
             );
         }
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return mixed
-     */
     private function convertValue($value, ?ValueConversion $converter, bool $injectParams)
     {
         $value = $injectParams ? $this->injectParameters($value) : $value;
 
-        if (null === $converter) {
+        if ($converter === null) {
             return $value;
         }
 
@@ -418,8 +419,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     private function prepareProcessedValuesQuery(string $propertyName, array $values, QueryPreparationHints $hints, $queryConverter, $valueConverter, $nested, $join, bool $injectParams, array $conditions = [], array $options = []): array
     {
         $convertedValues = $values;
+
         if ($hints->context !== QueryPreparationHints::CONTEXT_PRECONDITION_QUERY) {
             $convertedValues = [];
+
             foreach ($values as $value) {
                 $convertedValues[] = $this->convertValue($value, $valueConverter, $injectParams);
             }
@@ -429,27 +432,28 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     }
 
     /**
-     * @param mixed      $value
      * @param array|bool $nested
      * @param array|bool $join
      */
     private function prepareQuery(string $propertyName, $value, QueryPreparationHints $hints, ?QueryConversion $converter, $nested, $join, array $conditions = [], array $options = []): array
     {
-        if (null === $converter || null === ($query = $converter->convertQuery($propertyName, $value, $hints))) {
+        if ($converter === null || ($query = $converter->convertQuery($propertyName, $value, $hints)) === null) {
             switch ($hints->context) {
                 case QueryPreparationHints::CONTEXT_RANGE_VALUES:
                 case QueryPreparationHints::CONTEXT_EXCLUDED_RANGE_VALUES:
                     $query = [self::QUERY_RANGE => [$propertyName => static::generateRangeParams($value)]];
+
                     if ($hints->identifier) {
                         // IDs cannot be queries by range in Elasticsearch, use ids query
                         // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
                         /** @var Range $value */
                         $query = [
                             self::QUERY_IDS => [
-                                self::QUERY_VALUES => range($value->getLower(), $value->getUpper()),
+                                self::QUERY_VALUES => \range($value->getLower(), $value->getUpper()),
                             ],
                         ];
                     }
+
                     break;
 
                 case QueryPreparationHints::CONTEXT_COMPARISON:
@@ -459,28 +463,32 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                         $propertyName => [$operator => $value->getValue()],
                     ];
 
-                    if (self::COMPARISON_UNEQUAL === $value->getOperator()) {
+                    if ($value->getOperator() === self::COMPARISON_UNEQUAL) {
                         $query = [
                             self::QUERY_TERM => [
                                 $propertyName => [self::QUERY_VALUE => $value->getValue()],
                             ],
                         ];
                     }
+
                     break;
 
                 case QueryPreparationHints::CONTEXT_PATTERN_MATCH:
                     /** @var PatternMatch $value */
                     $query = $this->preparePatternMatch($propertyName, $value);
+
                     break;
 
                 case QueryPreparationHints::CONTEXT_ORDER:
                     $query = [
                         self::QUERY_TERMS => [$propertyName => $value],
                     ];
+
                     break;
 
                 case QueryPreparationHints::CONTEXT_PRECONDITION_QUERY:
                     $query = $value;
+
                     break;
 
                 default:
@@ -488,28 +496,30 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 case QueryPreparationHints::CONTEXT_EXCLUDED_SIMPLE_VALUES:
                     // simple values
                     $query = [self::QUERY_TERMS => [$propertyName => $value]];
+
                     if ($hints->identifier) {
                         $query = [self::QUERY_IDS => [self::QUERY_VALUES => $value]];
                     }
+
                     break;
             }
         }
 
         if ($nested) {
-            while (false !== $nested) {
+            while ($nested !== false) {
                 $path = $nested[self::QUERY_PATH];
                 $query = [
-                    self::QUERY_NESTED => array_replace_recursive(compact('path', 'query'), $options),
+                    self::QUERY_NESTED => \array_replace_recursive(\compact('path', 'query'), $options),
                 ];
                 $nested = $nested['nested'];
             }
         }
 
         if ($join) {
-            while (false !== $join) {
+            while ($join !== false) {
                 $type = $join[self::QUERY_TYPE];
                 $query = [
-                    self::QUERY_HAS_CHILD => array_replace_recursive(compact('type', 'query'), $options),
+                    self::QUERY_HAS_CHILD => \array_replace_recursive(\compact('type', 'query'), $options),
                 ];
                 $join = $join['join'];
             }
@@ -521,33 +531,39 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     private function preparePatternMatch(string $propertyName, PatternMatch $patternMatch): array
     {
         $query = [];
+
         switch ($patternMatch->getType()) {
             // Faster then Wildcard but less accurate.
             // XXX Allow to configure `fuzzy`, `operator`, `zero_terms_query` and `cutoff_frequency` (TextType).
             case PatternMatch::PATTERN_CONTAINS:
             case PatternMatch::PATTERN_NOT_CONTAINS:
                 $query[self::QUERY_MATCH] = [$propertyName => [self::QUERY => $patternMatch->getValue()]];
+
                 break;
 
             case PatternMatch::PATTERN_STARTS_WITH:
             case PatternMatch::PATTERN_NOT_STARTS_WITH:
                 $query[self::QUERY_PREFIX] = [$propertyName => [self::QUERY_VALUE => $patternMatch->getValue()]];
+
                 break;
 
             case PatternMatch::PATTERN_ENDS_WITH:
             case PatternMatch::PATTERN_NOT_ENDS_WITH:
                 $query[self::QUERY_WILDCARD] = [
-                    $propertyName => [self::QUERY_VALUE => '?'.addcslashes($patternMatch->getValue(), '?*')],
+                    $propertyName => [self::QUERY_VALUE => '?' . \addcslashes($patternMatch->getValue(), '?*')],
                 ];
+
                 break;
 
             case PatternMatch::PATTERN_EQUALS:
             case PatternMatch::PATTERN_NOT_EQUALS:
                 $query[self::QUERY_TERM] = [$propertyName => [self::QUERY_VALUE => $patternMatch->getValue()]];
+
                 break;
 
             default:
-                $message = sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
+                $message = \sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
+
                 throw new BadMethodCallException($message);
         }
 
@@ -556,12 +572,12 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
     private function injectParameters($template)
     {
-        if (null === $this->parameterBag) {
+        if ($this->parameterBag === null) {
             return $template;
         }
 
         if (\is_array($template)) {
-            return array_map([$this->parameterBag, 'injectParameters'], $template);
+            return \array_map([$this->parameterBag, 'injectParameters'], $template);
         }
 
         return $this->parameterBag->injectParameters($template);
@@ -569,7 +585,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
     private function injectConditions(array $query, array $conditions): array
     {
-        if ([] === $conditions) {
+        if ($conditions === []) {
             return $query ?? [];
         }
 
@@ -636,7 +652,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     private function processMappingConditions(FieldMapping $mapping, QueryPreparationHints $hints, bool $injectParams): array
     {
         $conditions = [];
-        if ([] !== $mapping->conditions) {
+
+        if ($mapping->conditions !== []) {
             foreach ($mapping->conditions as $mappingCondition) {
                 if ($mappingCondition->propertyQuery) {
                     $hints->context = QueryPreparationHints::CONTEXT_PRECONDITION_QUERY;
@@ -664,13 +681,13 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         return $conditions;
     }
 
-    private function mergeQuery(array &$bool, string $condition, array $query)
+    private function mergeQuery(array &$bool, string $condition, array $query): void
     {
-        if (isset($query[self::QUERY_HAS_CHILD]) && isset($bool[$condition])) {
+        if (isset($query[self::QUERY_HAS_CHILD], $bool[$condition])) {
             foreach ($bool[$condition] as &$previousQuery) {
                 if (isset($previousQuery[self::QUERY_HAS_CHILD])
                     && $previousQuery[self::QUERY_HAS_CHILD][self::QUERY_TYPE] === $query[self::QUERY_HAS_CHILD][self::QUERY_TYPE]) {
-                    $previousQuery[self::QUERY_HAS_CHILD] = array_replace(
+                    $previousQuery[self::QUERY_HAS_CHILD] = \array_replace(
                         $previousQuery[self::QUERY_HAS_CHILD],
                         $query[self::QUERY_HAS_CHILD],
                         [
@@ -678,7 +695,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                         ]
                     );
 
-                    if (!isset($previousQuery[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL])) {
+                    if (! isset($previousQuery[self::QUERY_HAS_CHILD][self::QUERY][self::QUERY_BOOL])) {
                         $previousQuery[self::QUERY_HAS_CHILD][self::QUERY] = [
                             self::QUERY_BOOL => [
                                 $condition => [
@@ -694,11 +711,11 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 }
             }
             unset($previousQuery);
-        } elseif (isset($query[self::QUERY_NESTED]) && isset($bool[$condition])) {
+        } elseif (isset($query[self::QUERY_NESTED], $bool[$condition])) {
             foreach ($bool[$condition] as &$previousQuery) {
                 if (isset($previousQuery[self::QUERY_NESTED])
                     && $previousQuery[self::QUERY_NESTED][self::QUERY_PATH] === $query[self::QUERY_NESTED][self::QUERY_PATH]) {
-                    $previousQuery[self::QUERY_NESTED] = array_replace(
+                    $previousQuery[self::QUERY_NESTED] = \array_replace(
                         $previousQuery[self::QUERY_NESTED],
                         $query[self::QUERY_NESTED],
                         [
@@ -706,7 +723,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                         ]
                     );
 
-                    if (!isset($previousQuery[self::QUERY_NESTED][self::QUERY][self::QUERY_BOOL])) {
+                    if (! isset($previousQuery[self::QUERY_NESTED][self::QUERY][self::QUERY_BOOL])) {
                         $previousQuery[self::QUERY_NESTED][self::QUERY] = [
                             self::QUERY_BOOL => [
                                 $condition => [

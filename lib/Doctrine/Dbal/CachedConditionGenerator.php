@@ -45,6 +45,7 @@ final class CachedConditionGenerator extends AbstractCachedConditionGenerator im
 
     /**
      * @param ConditionGenerator $conditionGenerator The actual ConditionGenerator to use when no cache exists
+     * @param mixed|null         $ttl
      */
     public function __construct(ConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = null)
     {
@@ -60,7 +61,7 @@ final class CachedConditionGenerator extends AbstractCachedConditionGenerator im
      */
     public function getWhereClause(string $prependQuery = ''): string
     {
-        if (null === $this->whereClause) {
+        if ($this->whereClause === null) {
             $cacheKey = $this->getCacheKey();
             $cached = $this->getFromCache($cacheKey);
 
@@ -79,8 +80,8 @@ final class CachedConditionGenerator extends AbstractCachedConditionGenerator im
             }
         }
 
-        if ('' !== $this->whereClause) {
-            return $prependQuery.$this->whereClause;
+        if ($this->whereClause !== '') {
+            return $prependQuery . $this->whereClause;
         }
 
         return '';
@@ -112,18 +113,18 @@ final class CachedConditionGenerator extends AbstractCachedConditionGenerator im
 
     private function getCacheKey(): string
     {
-        if (null === $this->cacheKey) {
+        if ($this->cacheKey === null) {
             $searchCondition = $this->conditionGenerator->getSearchCondition();
 
-            $this->cacheKey = hash(
+            $this->cacheKey = \hash(
                 'sha256',
-                $searchCondition->getFieldSet()->getSetName().
-                "\n".
-                serialize($searchCondition->getValuesGroup()).
-                "\n".
-                serialize($searchCondition->getPrimaryCondition()).
-                "\n".
-                serialize($this->conditionGenerator->getFieldsMapping())
+                $searchCondition->getFieldSet()->getSetName() .
+                "\n" .
+                \serialize($searchCondition->getValuesGroup()) .
+                "\n" .
+                \serialize($searchCondition->getPrimaryCondition()) .
+                "\n" .
+                \serialize($this->conditionGenerator->getFieldsMapping())
             );
         }
 

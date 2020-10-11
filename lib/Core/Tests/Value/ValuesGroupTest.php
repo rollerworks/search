@@ -22,10 +22,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class ValuesGroupTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_contains_no_values_when_initialized()
+    /** @test */
+    public function it_contains_no_values_when_initialized(): void
     {
         $valuesGroup = new ValuesGroup();
 
@@ -33,10 +31,8 @@ final class ValuesGroupTest extends TestCase
         self::assertFalse($valuesGroup->hasField('user'));
     }
 
-    /**
-     * @test
-     */
-    public function it_should_allow_adding_values()
+    /** @test */
+    public function it_should_allow_adding_values(): void
     {
         $valuesGroup = new ValuesGroup();
 
@@ -51,10 +47,8 @@ final class ValuesGroupTest extends TestCase
         self::assertFalse($valuesGroup->hasField('foo'));
     }
 
-    /**
-     * @test
-     */
-    public function it_should_allow_removing_values()
+    /** @test */
+    public function it_should_allow_removing_values(): void
     {
         $valuesGroup = new ValuesGroup();
 
@@ -69,10 +63,8 @@ final class ValuesGroupTest extends TestCase
         self::assertEquals(['date' => $field2], $valuesGroup->getFields());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_have_subgroups()
+    /** @test */
+    public function it_should_have_subgroups(): void
     {
         $valuesGroup = new ValuesGroup();
 
@@ -80,10 +72,8 @@ final class ValuesGroupTest extends TestCase
         self::assertEquals([], $valuesGroup->getGroups());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_allow_adding_subgroups()
+    /** @test */
+    public function it_should_allow_adding_subgroups(): void
     {
         $valuesGroup = new ValuesGroup();
 
@@ -97,10 +87,8 @@ final class ValuesGroupTest extends TestCase
         self::assertEquals([$group, $group2], $valuesGroup->getGroups());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_allow_removing_subgroups()
+    /** @test */
+    public function it_should_allow_removing_subgroups(): void
     {
         $valuesGroup = new ValuesGroup();
 
@@ -116,10 +104,8 @@ final class ValuesGroupTest extends TestCase
         self::assertEquals([1 => $group2], $valuesGroup->getGroups());
     }
 
-    /**
-     * @test
-     */
-    public function it_allows_getting_subgroups()
+    /** @test */
+    public function it_allows_getting_subgroups(): void
     {
         $valuesGroup = new ValuesGroup();
 

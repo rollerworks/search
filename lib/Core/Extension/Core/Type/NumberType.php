@@ -87,8 +87,8 @@ final class NumberType extends AbstractFieldType
 
         $resolver->setAllowedTypes('scale', ['null', 'int']);
         $resolver->setAllowedTypes('html5', 'bool');
-        $resolver->setNormalizer('grouping', function (Options $options, $value) {
-            if (true === $value && $options['html5']) {
+        $resolver->setNormalizer('grouping', static function (Options $options, $value) {
+            if ($value === true && $options['html5']) {
                 throw new \LogicException('Cannot use the "grouping" option when the "html5" option is enabled.');
             }
 

@@ -49,7 +49,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
             'geo',
             TextType::class,
             [
-                StringQueryInput::FIELD_LEXER_OPTION_NAME => function (StringLexer $lexer): string {
+                StringQueryInput::FIELD_LEXER_OPTION_NAME => static function (StringLexer $lexer): string {
                     $result = $lexer->expects('(');
                     $result .= $lexer->expects('/-?\d+,\h*-?\d+/A', 'Geographic points 12,24');
                     $result .= $lexer->expects(')');
@@ -85,14 +85,12 @@ final class StringQueryInputTest extends InputProcessorTestCase
     }
 
     /**
-     * @param mixed $input
-     *
      * @test
      * @dataProvider provideAliasedFieldsTests
      */
-    public function it_processes_aliased_fields($input)
+    public function it_processes_aliased_fields($input): void
     {
-        $labelResolver = function (FieldConfig $field) {
+        $labelResolver = static function (FieldConfig $field) {
             $name = $field->getName();
 
             if ($name === 'name') {
@@ -118,10 +116,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
-    /**
-     * @test
-     */
-    public function it_expects_a_string_input()
+    /** @test */
+    public function it_expects_a_string_input(): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -137,7 +133,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
      *
      * @test
      */
-    public function it_parses_fieldNames_with_dash()
+    public function it_parses_field_names_with_dash(): void
     {
         $fieldSet = $this->getFieldSet(false)->add('field-1', TextType::class)->getFieldSet();
 
@@ -157,10 +153,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
         self::assertEquals($condition, $processor->process($config, 'field-1: value, value2'));
     }
 
-    /**
-     * @test
-     */
-    public function it_parses_a_quoted_value()
+    /** @test */
+    public function it_parses_a_quoted_value(): void
     {
         $processor = $this->getProcessor();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -177,7 +171,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
         self::assertEquals($condition, $processor->process($config, 'name: "value", "value""2", "!foo";'));
     }
 
-    public function testPatternMatchLexerNoEndLessLoop()
+    /** @test */
+    public function pattern_match_lexer_no_end_less_loop(): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -188,7 +183,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
     }
 
     /** @test */
-    public function it_fails_with_unbound_values_and_no_default_field()
+    public function it_fails_with_unbound_values_and_no_default_field(): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
@@ -198,10 +193,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionContainsErrors('value;', $config, [$error]);
     }
 
-    /**
-     * @test
-     */
-    public function it_processes_with_customer_value_lexer()
+    /** @test */
+    public function it_processes_with_customer_value_lexer(): void
     {
         $processor = new StringQueryInput();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -222,7 +215,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
      * @test
      * @dataProvider provideQueryExceptionTests
      */
-    public function it_errors_when_the_syntax_is_invalid(string $input, StringLexerException $exception)
+    public function it_errors_when_the_syntax_is_invalid(string $input, StringLexerException $exception): void
     {
         $fieldSet = $this->getFieldSet(false)->add('field1', TextType::class)->getFieldSet();
         $config = new ProcessorConfig($fieldSet);
@@ -291,7 +284,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
      *
      * @see https://github.com/rollerworks/search/issues/246
      */
-    public function it_parses_group_logical_when_group_is_provided_first_in()
+    public function it_parses_group_logical_when_group_is_provided_first_in(): void
     {
         $fieldSet = $this->getFactory()->createFieldSetBuilder();
         $fieldSet->add('title', TextType::class);

@@ -53,7 +53,7 @@ final class DateTimeType extends BaseDateTimeType
         $config->setValueTypeSupport(Range::class, true);
         $config->setValueTypeSupport(Compare::class, true);
 
-        if (null === $options['pattern']) {
+        if ($options['pattern'] === null) {
             $this->validateFormat('date_format', $options['date_format']);
             $this->validateFormat('time_format', $options['time_format']);
         }
@@ -113,7 +113,7 @@ final class DateTimeType extends BaseDateTimeType
     {
         $pattern = $options['pattern'];
 
-        if (null === $pattern) {
+        if ($pattern === null) {
             $pattern = \IntlDateFormatter::create(
                 \Locale::getDefault(),
                 $options['date_format'],
@@ -123,7 +123,7 @@ final class DateTimeType extends BaseDateTimeType
             )->getPattern();
         }
 
-        $view->vars['timezone'] = $options['view_timezone'] ?: date_default_timezone_get();
+        $view->vars['timezone'] = $options['view_timezone'] ?: \date_default_timezone_get();
         $view->vars['allow_relative'] = $options['allow_relative'];
         $view->vars['pattern'] = $pattern;
     }

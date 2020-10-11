@@ -28,9 +28,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RollerworksSearchExtension extends Extension implements PrependExtensionInterface
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
         $loader->load('input_processor.xml');
         $loader->load('condition_exporter.xml');
@@ -61,11 +61,11 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
             $loader->load('elasticsearch.xml');
         }
 
-        if (interface_exists(ValidatorInterface::class)) {
+        if (\interface_exists(ValidatorInterface::class)) {
             $loader->load('input_validator.xml');
         }
 
-        if (class_exists(Translator::class)) {
+        if (\class_exists(Translator::class)) {
             $loader->load('translator_alias_resolver.xml');
         }
 
@@ -75,8 +75,9 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
             if ($this->isConfigEnabled($container, $config['api_platform']['doctrine_orm'])) {
                 $loader->load('api_platform_doctrine_orm.xml');
             }
+
             if ($this->isConfigEnabled($container, $config['api_platform']['elasticsearch'])) {
-                if (!$this->isConfigEnabled($container, $config['elasticsearch'])) {
+                if (! $this->isConfigEnabled($container, $config['elasticsearch'])) {
                     throw new LogicException('API Platform Elasticsearch support cannot be enabled as Elasticsearch is not enabled');
                 }
                 $loader->load('api_platform_elasticsearch.xml');
@@ -89,7 +90,7 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
         return new Configuration();
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $container->prependExtensionConfig('framework', [
             'cache' => [
@@ -102,11 +103,11 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
             ],
         ]);
 
-        if (class_exists(Translator::class)) {
+        if (\class_exists(Translator::class)) {
             $container->prependExtensionConfig('framework', [
                 'translator' => [
                     'paths' => [
-                        \dirname((new \ReflectionClass(FieldSet::class))->getFileName()).'/Resources/translations',
+                        \dirname((new \ReflectionClass(FieldSet::class))->getFileName()) . '/Resources/translations',
                     ],
                 ],
             ]);

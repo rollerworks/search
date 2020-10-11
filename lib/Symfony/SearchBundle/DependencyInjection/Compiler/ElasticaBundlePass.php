@@ -21,9 +21,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class ElasticaBundlePass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->has('fos_elastica.client')) {
+        if (! $container->has('fos_elastica.client')) {
             return;
         }
 

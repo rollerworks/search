@@ -21,8 +21,8 @@ use Rollerworks\Component\Search\ValueComparator;
 final class NumberValueComparator implements ValueComparator
 {
     /**
-     * @param int|float $higher
-     * @param int|float $lower
+     * @param float|int $higher
+     * @param float|int $lower
      */
     public function isHigher($higher, $lower, array $options): bool
     {
@@ -30,8 +30,8 @@ final class NumberValueComparator implements ValueComparator
     }
 
     /**
-     * @param int|float $lower
-     * @param int|float $higher
+     * @param float|int $lower
+     * @param float|int $higher
      */
     public function isLower($lower, $higher, array $options): bool
     {
@@ -39,8 +39,8 @@ final class NumberValueComparator implements ValueComparator
     }
 
     /**
-     * @param int|float $value
-     * @param int|float $nextValue
+     * @param float|int $value
+     * @param float|int $nextValue
      */
     public function isEqual($value, $nextValue, array $options): bool
     {

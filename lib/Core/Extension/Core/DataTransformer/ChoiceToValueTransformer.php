@@ -33,25 +33,25 @@ final class ChoiceToValueTransformer implements DataTransformer
     {
         $value = $this->choiceList->getValuesForChoices([$choice]);
 
-        return (string) current($value);
+        return (string) \current($value);
     }
 
     public function reverseTransform($value)
     {
-        if (null !== $value && !\is_string($value)) {
+        if ($value !== null && ! \is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
         }
 
         $choices = $this->choiceList->getChoicesForValues([(string) $value]);
 
-        if (1 !== \count($choices)) {
-            if (null === $value || '' === $value) {
+        if (\count($choices) !== 1) {
+            if ($value === null || $value === '') {
                 return;
             }
 
-            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $value));
+            throw new TransformationFailedException(\sprintf('The choice "%s" does not exist or is not unique', $value));
         }
 
-        return current($choices);
+        return \current($choices);
     }
 }

@@ -22,7 +22,8 @@ use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
  */
 final class TextTypeTest extends SearchIntegrationTestCase
 {
-    public function testAcceptsAnyScalarInput()
+    /** @test */
+    public function accepts_any_scalar_input(): void
     {
         $field = $this->getFactory()->createField('name', TextType::class);
 

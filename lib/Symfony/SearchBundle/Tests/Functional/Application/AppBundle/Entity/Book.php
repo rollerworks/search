@@ -27,19 +27,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     iri="http://schema.org/Book",
  *     attributes={
- *         "rollerworks_search"={
- *             "contexts"={
- *                 "_defaults"={
- *                      "fieldset" = "Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Search\FieldSet\BookFieldSet"
- *                  },
- *                  "_any"={
- *                      "doctrine_orm"={
- *                          "mappings"={
- *                              "id" = "id",
- *                              "title" = "title"
- *                          }
- *                      }
- *                  }
+ *         "rollerworks_search" = {
+ *             "contexts" = {
+ *                 "_defaults" = {
+ *                     "fieldset" = "Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Search\FieldSet\BookFieldSet"
+ *                 },
+ *                 "_any" = {
+ *                     "doctrine_orm" = {
+ *                         "mappings" = {
+ *                             "id" = "id",
+ *                             "title" = "title"
+ *                         }
+ *                     }
+ *                 }
  *             }
  *         }
  *     }
@@ -207,7 +207,7 @@ class Book
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function setTitle($title): void
     {
         $this->title = $title;
     }
@@ -217,7 +217,7 @@ class Book
         return $this->publicationDate;
     }
 
-    public function setPublicationDate($publicationDate)
+    public function setPublicationDate($publicationDate): void
     {
         $this->publicationDate = $publicationDate;
     }

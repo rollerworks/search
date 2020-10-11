@@ -24,7 +24,7 @@ interface SearchFactory
      * Create a new FieldSet instance with the configurator name
      * as FieldSet name.
      *
-     * @param string|FieldSetConfigurator $configurator Configurator for building the FieldSet,
+     * @param FieldSetConfigurator|string $configurator Configurator for building the FieldSet,
      *                                                  a string will be resolved to a configurator
      */
     public function createFieldSet($configurator): FieldSet;

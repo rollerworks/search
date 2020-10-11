@@ -23,15 +23,18 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * Class ElasticsearchFactoryTest.
+ *
+ * @internal
  */
-class ElasticsearchFactoryTest extends ElasticsearchTestCase
+final class ElasticsearchFactoryTest extends ElasticsearchTestCase
 {
     /**
      * @var ElasticsearchFactory
      */
     protected $factory;
 
-    public function testCreateConditionGenerator()
+    /** @test */
+    public function create_condition_generator(): void
     {
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
         $conditionGenerator = $this->factory->createConditionGenerator($searchCondition);
@@ -40,15 +43,16 @@ class ElasticsearchFactoryTest extends ElasticsearchTestCase
         self::assertSame($searchCondition, $conditionGenerator->getSearchCondition());
     }
 
-    public function testCreateCacheConditionGenerator()
+    /** @test */
+    public function create_cache_condition_generator(): void
     {
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
         $conditionGenerator = $this->factory->createConditionGenerator($searchCondition);
-        $this->assertInstanceOf(QueryConditionGenerator::class, $conditionGenerator);
+        self::assertInstanceOf(QueryConditionGenerator::class, $conditionGenerator);
 
         $cacheConditionGenerator = $this->factory->createCachedConditionGenerator($conditionGenerator);
-        $this->assertInstanceOf(CachedConditionGenerator::class, $cacheConditionGenerator);
+        self::assertInstanceOf(CachedConditionGenerator::class, $cacheConditionGenerator);
     }
 
     protected function setUp(): void

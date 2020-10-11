@@ -23,10 +23,12 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 final class AgeConversionTest extends FunctionalDbalTestCase
 {
-    protected function setUpDbSchema(DbSchema $schema)
+    protected function setUpDbSchema(DbSchema $schema): void
     {
         $invoiceTable = $schema->createTable('site_user');
         $invoiceTable->addColumn('id', 'integer');
@@ -53,7 +55,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
         return 'SELECT id FROM site_user AS u WHERE ';
     }
 
-    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
     {
         $conditionGenerator->setField('birthday', 'birthday', 'u', 'date');
     }
@@ -67,27 +69,27 @@ final class AgeConversionTest extends FunctionalDbalTestCase
         return $build ? $fieldSet->getFieldSet('user') : $fieldSet;
     }
 
-    public function testWithDate()
+    /** @test */
+    public function with_date(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('birthday')
                 ->addSimpleValue(new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC')))
                 ->addSimpleValue(new \DateTimeImmutable('2001-10-15', new \DateTimeZone('UTC')))
             ->end()
-            ->getSearchCondition()
-        ;
+            ->getSearchCondition();
 
         $this->assertRecordsAreFound($condition, [1, 3]);
     }
 
-    public function testWithAge()
+    /** @test */
+    public function with_age(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('birthday')
                 ->addSimpleValue(5)
             ->end()
-            ->getSearchCondition()
-        ;
+            ->getSearchCondition();
 
         $this->assertRecordsAreFound($condition, [4]);
     }

@@ -25,6 +25,6 @@ class ChildCountConversion implements ColumnConversion
 {
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
-        return '(SELECT COUNT(*) FROM '.$options['table_name'].' WHERE '.$options['table_column']." = $column)";
+        return '(SELECT COUNT(*) FROM ' . $options['table_name'] . ' WHERE ' . $options['table_column'] . " = {$column})";
     }
 }

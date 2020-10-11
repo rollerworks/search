@@ -35,7 +35,7 @@ final class CountChildrenFunction extends FunctionNode
         $field = $sqlWalker->walkSimpleArithmeticExpression($this->field);
         $column = $sqlWalker->walkSimpleArithmeticExpression($this->column);
 
-        return '(SELECT COUNT(*) FROM '.$table.' WHERE '.$field." = $column)";
+        return '(SELECT COUNT(*) FROM ' . $table . ' WHERE ' . $field . " = {$column})";
     }
 
     public function parse(Parser $parser): void

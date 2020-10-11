@@ -56,10 +56,8 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
-    /**
-     * @test
-     */
-    public function it_exporters_values()
+    /** @test */
+    public function it_exporters_values(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -85,15 +83,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideSingleValuePairTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideSingleValuePairTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_multiple_fields()
+    /** @test */
+    public function it_exporters_multiple_fields(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -118,15 +111,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideMultipleValuesTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideMultipleValuesTest();
 
-    /**
-     * @test
-     */
-    public function it_ignores_private_fields()
+    /** @test */
+    public function it_ignores_private_fields(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -152,15 +140,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertExportEquals($this->provideMultipleValuesTest(), $exporter->exportCondition($condition));
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function providePrivateFieldsTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_range_values()
+    /** @test */
+    public function it_exporters_range_values(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -189,15 +172,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideRangeValuesTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideRangeValuesTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_comparisons()
+    /** @test */
+    public function it_exporters_comparisons(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -224,15 +202,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideComparisonValuesTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideComparisonValuesTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_matchers()
+    /** @test */
+    public function it_exporters_matchers(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -258,15 +231,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideMatcherValuesTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideMatcherValuesTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_groups()
+    /** @test */
+    public function it_exporters_groups(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -301,15 +269,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideGroupTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideGroupTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_multiple_subgroups()
+    /** @test */
+    public function it_exporters_multiple_subgroups(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -339,15 +302,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideMultipleSubGroupTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideMultipleSubGroupTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_nested_subgroups()
+    /** @test */
+    public function it_exporters_nested_subgroups(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -371,15 +329,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideNestedGroupTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideNestedGroupTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_with_empty_fields()
+    /** @test */
+    public function it_exporters_with_empty_fields(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -393,15 +346,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideEmptyValuesTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideEmptyValuesTest();
 
-    /**
-     * @test
-     */
-    public function it_exporters_with_empty_group()
+    /** @test */
+    public function it_exporters_with_empty_group(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());
@@ -416,13 +364,10 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $this->assertConditionEquals($this->provideEmptyGroupTest(), $condition, $processor, $config);
     }
 
-    /**
-     * @return mixed
-     */
     abstract public function provideEmptyGroupTest();
 
-    protected function assertExportEquals($expected, $actual)
+    protected function assertExportEquals($expected, $actual): void
     {
-        self::assertEquals($expected, $actual);
+        static::assertEquals($expected, $actual);
     }
 }

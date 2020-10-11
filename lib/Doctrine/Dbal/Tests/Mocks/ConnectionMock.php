@@ -42,13 +42,15 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
     /**
      * @override
      */
-    public function insert($tableName, array $data, array $types = [])
+    public function insert($tableName, array $data, array $types = []): void
     {
         $this->_inserts[$tableName][] = $data;
     }
 
     /**
      * @override
+     *
+     * @param mixed|null $seqName
      */
     public function lastInsertId($seqName = null)
     {
@@ -65,11 +67,13 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
 
     /**
      * @override
+     *
+     * @param mixed|null $type
      */
     public function quote($input, $type = null)
     {
         if (\is_string($input)) {
-            return "'".$input."'";
+            return "'" . $input . "'";
         }
 
         return $input;
@@ -77,17 +81,17 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
 
     /* Mock API */
 
-    public function setFetchOneResult($fetchOneResult)
+    public function setFetchOneResult($fetchOneResult): void
     {
         $this->_fetchOneResult = $fetchOneResult;
     }
 
-    public function setDatabasePlatform($platform)
+    public function setDatabasePlatform($platform): void
     {
         $this->_platformMock = $platform;
     }
 
-    public function setLastInsertId($id)
+    public function setLastInsertId($id): void
     {
         $this->_lastInsertId = $id;
     }
@@ -97,7 +101,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
         return $this->_inserts;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->_inserts = [];
         $this->_lastInsertId = 0;

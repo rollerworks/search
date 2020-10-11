@@ -23,6 +23,9 @@ use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\SearchFactory;
 
+/**
+ * @internal
+ */
 final class FieldConfigBuilderTest extends TestCase
 {
     public const CUSTOMER_CLASS = Fixtures\Entity\ECommerceCustomer::class;
@@ -94,7 +97,8 @@ final class FieldConfigBuilderTest extends TestCase
         $this->em->getClassMetadata($entityClass)->willReturn($classMetadata->reveal());
     }
 
-    public function testResolveWithDefaultEntity()
+    /** @test */
+    public function resolve_with_default_entity(): void
     {
         $this->getClassMetadata(self::INVOICE_CLASS, [
             'id' => ['type' => 'integer'],
@@ -130,7 +134,8 @@ final class FieldConfigBuilderTest extends TestCase
         self::assertEquals(new QueryField('customer_name#last_name', $fieldSet->get('customer_name'), DbType::getType('string'), 'last_name', 'C'), $fields['customer_name']['last_name']);
     }
 
-    public function testResolveWithFullFieldMapping()
+    /** @test */
+    public function resolve_with_full_field_mapping(): void
     {
         $this->getClassMetadata(self::INVOICE_CLASS, [
             'id' => ['type' => 'integer'],
@@ -156,7 +161,8 @@ final class FieldConfigBuilderTest extends TestCase
         self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), DbType::getType('integer'), 'parent', 'I'), $fields['credit_parent'][0]);
     }
 
-    public function testFailsToResolveWithJoinAssociation()
+    /** @test */
+    public function fails_to_resolve_with_join_association(): void
     {
         $this->getClassMetadata(
             self::INVOICE_CLASS,
@@ -185,12 +191,13 @@ final class FieldConfigBuilderTest extends TestCase
         $fieldConfigBuilder->setField('id', 'id', null, null, 'smallint');
 
         $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Entity field "'.self::INVOICE_CLASS.'"#parent is a JOIN association');
+        $this->expectExceptionMessage('Entity field "' . self::INVOICE_CLASS . '"#parent is a JOIN association');
 
         $fieldConfigBuilder->setField('credit_parent', 'parent', 'I', null, 'parent_id');
     }
 
-    public function testFailsToResolveWithMultiColumnJoinAssociation()
+    /** @test */
+    public function fails_to_resolve_with_multi_column_join_association(): void
     {
         $this->getClassMetadata(
             self::INVOICE_CLASS,
@@ -211,7 +218,7 @@ final class FieldConfigBuilderTest extends TestCase
         $fieldConfigBuilder->setField('id', 'id', 'I', self::INVOICE_CLASS, 'smallint');
 
         $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Entity field "'.self::INVOICE_CLASS.'"#parent is a JOIN association');
+        $this->expectExceptionMessage('Entity field "' . self::INVOICE_CLASS . '"#parent is a JOIN association');
 
         $fieldConfigBuilder->setField('credit_parent#0', 'parent', 'I', self::INVOICE_CLASS);
     }

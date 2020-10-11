@@ -19,8 +19,8 @@ use Rollerworks\Component\Search\ValueComparator;
 final class DateTimeIntervalValueComparator implements ValueComparator
 {
     /**
-     * @param \DateTimeImmutable|CarbonInterval $higher
-     * @param \DateTimeImmutable|CarbonInterval $lower
+     * @param CarbonInterval|\DateTimeImmutable $higher
+     * @param CarbonInterval|\DateTimeImmutable $lower
      */
     public function isHigher($higher, $lower, array $options): bool
     {
@@ -35,7 +35,7 @@ final class DateTimeIntervalValueComparator implements ValueComparator
     }
 
     /**
-     * @param \DateTimeImmutable|CarbonInterval $value
+     * @param CarbonInterval|\DateTimeImmutable $value
      */
     private function ensureDateTime(object $value): \DateTimeImmutable
     {
@@ -47,8 +47,8 @@ final class DateTimeIntervalValueComparator implements ValueComparator
     }
 
     /**
-     * @param \DateTimeImmutable|CarbonInterval $lower
-     * @param \DateTimeImmutable|CarbonInterval $higher
+     * @param CarbonInterval|\DateTimeImmutable $lower
+     * @param CarbonInterval|\DateTimeImmutable $higher
      */
     public function isLower($lower, $higher, array $options): bool
     {
@@ -63,14 +63,14 @@ final class DateTimeIntervalValueComparator implements ValueComparator
     }
 
     /**
-     * @param \DateTimeImmutable|CarbonInterval $value
-     * @param \DateTimeImmutable|CarbonInterval $nextValue
+     * @param CarbonInterval|\DateTimeImmutable $value
+     * @param CarbonInterval|\DateTimeImmutable $nextValue
      */
     public function isEqual($value, $nextValue, array $options): bool
     {
         // Note that only values of the same type can be compared.
         // As an interval is never equal to "now".
-        if (!is_a($value, \get_class($nextValue))) {
+        if (! \is_a($value, \get_class($nextValue))) {
             return false;
         }
 

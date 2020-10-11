@@ -24,25 +24,25 @@ final class CompareTest extends TestCase
     /** @var Compare */
     private $value;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->value = new Compare(10, '>');
     }
 
     /** @test */
-    public function it_has_a_value()
+    public function it_has_a_value(): void
     {
         self::assertEquals(10, $this->value->getValue());
     }
 
     /** @test */
-    public function it_has_an_operator()
+    public function it_has_an_operator(): void
     {
         self::assertEquals('>', $this->value->getOperator());
     }
 
     /** @test */
-    public function it_allows_an_object_as_value()
+    public function it_allows_an_object_as_value(): void
     {
         $value = new \DateTimeImmutable();
 

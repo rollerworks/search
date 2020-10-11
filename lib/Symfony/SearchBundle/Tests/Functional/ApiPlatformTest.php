@@ -17,11 +17,14 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Rollerworks\Component\Search\ApiPlatform\Doctrine\Orm\Extension\SearchExtension;
 use Rollerworks\Component\Search\SearchCondition;
 
+/**
+ * @internal
+ */
 final class ApiPlatformTest extends FunctionalTestCase
 {
     public static function setUpBeforeClass(): void
     {
-        if (!class_exists(SearchExtension::class)) {
+        if (! \class_exists(SearchExtension::class)) {
             self::markTestSkipped('rollerworks/search-api-platform is not installed.');
         }
 
@@ -41,16 +44,18 @@ final class ApiPlatformTest extends FunctionalTestCase
         }
     }
 
-    public function testEmptySearchCodeIsValid()
+    /** @test */
+    public function empty_search_code_is_valid(): void
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
 
         $client->request('GET', '/books.json');
 
-        $this->assertEquals('[]', $client->getResponse()->getContent());
+        self::assertEquals('[]', $client->getResponse()->getContent());
     }
 
-    public function testWithValidCondition()
+    /** @test */
+    public function with_valid_condition(): void
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
         $client->request(
@@ -64,7 +69,8 @@ final class ApiPlatformTest extends FunctionalTestCase
         self::assertEquals('[]', $client->getResponse()->getContent());
     }
 
-    public function testWithValidConditionJson()
+    /** @test */
+    public function with_valid_condition_json(): void
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
         $client->request(
@@ -78,7 +84,8 @@ final class ApiPlatformTest extends FunctionalTestCase
         self::assertEquals('[]', $client->getResponse()->getContent());
     }
 
-    public function testInvalidConditionHasErrorsInJsonFormat()
+    /** @test */
+    public function invalid_condition_has_errors_in_json_format(): void
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
         $client->request(
@@ -96,7 +103,8 @@ final class ApiPlatformTest extends FunctionalTestCase
         );
     }
 
-    public function testInvalidConditionHasErrorsInJsonldFormat()
+    /** @test */
+    public function invalid_condition_has_errors_in_jsonld_format(): void
     {
         $client = self::newClient(['config' => 'api_platform.yml']);
         $client->request(

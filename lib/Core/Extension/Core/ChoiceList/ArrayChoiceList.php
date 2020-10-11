@@ -66,17 +66,17 @@ class ArrayChoiceList implements ChoiceList
     public function __construct($choices, callable $value = null)
     {
         if ($choices instanceof \Traversable) {
-            $choices = iterator_to_array($choices);
+            $choices = \iterator_to_array($choices);
         }
 
-        if (null === $value && $this->castableToString($choices)) {
+        if ($value === null && $this->castableToString($choices)) {
             $this->valuesAreConstant = true;
-            $value = function ($choice) {
-                return false === $choice ? '0' : (string) $choice;
+            $value = static function ($choice) {
+                return $choice === false ? '0' : (string) $choice;
             };
         }
 
-        if (null !== $value) {
+        if ($value !== null) {
             // If a deterministic value generator was passed, use it later
             $this->valueCallback = $value;
             $this->valuesAreConstant = true;
@@ -84,7 +84,7 @@ class ArrayChoiceList implements ChoiceList
             $this->valuesAreConstant = false;
             // Otherwise simply generate incrementing integers as values
             $i = 0;
-            $value = function () use (&$i) {
+            $value = static function () use (&$i) {
                 return $i++;
             };
         }
@@ -106,7 +106,7 @@ class ArrayChoiceList implements ChoiceList
 
     public function getValues(): array
     {
-        return array_map('strval', array_keys($this->choices));
+        return \array_map('strval', \array_keys($this->choices));
     }
 
     public function getStructuredValues(): array
@@ -144,7 +144,7 @@ class ArrayChoiceList implements ChoiceList
                 $givenValues[$i] = (string) \call_user_func($this->valueCallback, $givenChoice);
             }
 
-            return array_intersect($givenValues, array_keys($this->choices));
+            return \array_intersect($givenValues, \array_keys($this->choices));
         }
 
         // Otherwise compare choices by identity
@@ -179,7 +179,7 @@ class ArrayChoiceList implements ChoiceList
      */
     private function flatten(array $choices, callable $value, &$choicesByValues, &$keysByValues, &$structuredValues): void
     {
-        if (null === $choicesByValues) {
+        if ($choicesByValues === null) {
             $choicesByValues = [];
             $keysByValues = [];
             $structuredValues = [];
@@ -209,16 +209,18 @@ class ArrayChoiceList implements ChoiceList
     {
         foreach ($choices as $choice) {
             if (\is_array($choice)) {
-                if (!$this->castableToString($choice, $cache)) {
+                if (! $this->castableToString($choice, $cache)) {
                     return false;
                 }
 
                 continue;
-            } elseif (!is_scalar($choice)) {
+            }
+
+            if (! \is_scalar($choice)) {
                 return false;
             }
 
-            $choice = false === $choice ? '0' : (string) $choice;
+            $choice = $choice === false ? '0' : (string) $choice;
 
             if (isset($cache[$choice])) {
                 return false;

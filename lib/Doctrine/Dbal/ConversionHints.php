@@ -80,10 +80,13 @@ class ConversionHints
         switch ($this->context) {
             case self::CONTEXT_SIMPLE_VALUE:
                 return $this->originalValue;
+
             case self::CONTEXT_COMPARISON:
                 return $this->originalValue->value;
+
             case self::CONTEXT_RANGE_LOWER_BOUND:
                 return $this->originalValue->getLower();
+
             case self::CONTEXT_RANGE_UPPER_BOUND:
                 return $this->originalValue->getUpper();
         }

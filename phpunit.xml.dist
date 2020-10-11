@@ -6,6 +6,9 @@
          bootstrap="vendor/autoload.php"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
+         convertErrorsToExceptions="false"
+         convertWarningsToExceptions="false"
+         convertNoticesToExceptions="false"
 >
     <php>
         <ini name="error_reporting" value="-1"/>

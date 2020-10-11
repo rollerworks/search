@@ -28,10 +28,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class NormStringQueryExporterTest extends SearchConditionExporterTestCase
 {
-    /**
-     * @test
-     */
-    public function it_exporters_values()
+    /** @test */
+    public function it_exporters_values(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());

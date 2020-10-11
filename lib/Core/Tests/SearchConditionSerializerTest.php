@@ -49,7 +49,8 @@ final class SearchConditionSerializerTest extends TestCase
         $this->serializer = new SearchConditionSerializer($factory->reveal());
     }
 
-    public function testSerializeUnSerialize()
+    /** @test */
+    public function serialize_un_serialize(): void
     {
         $date = new \DateTimeImmutable();
 
@@ -71,13 +72,14 @@ final class SearchConditionSerializerTest extends TestCase
 
         $searchCondition = new SearchCondition($this->fieldSet, $valuesGroup0);
 
-        $serialized = serialize($this->serializer->serialize($searchCondition));
-        $unSerialized = $this->serializer->unserialize(unserialize($serialized));
+        $serialized = \serialize($this->serializer->serialize($searchCondition));
+        $unSerialized = $this->serializer->unserialize(\unserialize($serialized));
 
         self::assertEquals($searchCondition, $unSerialized);
     }
 
-    public function testUnSerializeMissingFields()
+    /** @test */
+    public function un_serialize_missing_fields(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -87,7 +89,8 @@ final class SearchConditionSerializerTest extends TestCase
         $this->serializer->unserialize(['foobar']);
     }
 
-    public function testUnSerializeWrongField()
+    /** @test */
+    public function un_serialize_wrong_field(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -97,18 +100,19 @@ final class SearchConditionSerializerTest extends TestCase
         $this->serializer->unserialize(['foobar', 'foo' => 'bar']);
     }
 
-    public function testUnSerializeInvalidData()
+    /** @test */
+    public function un_serialize_invalid_data(): void
     {
         try {
             // Disable errors to get the exception
-            error_reporting(0);
+            \error_reporting(0);
 
             $this->expectException(InvalidArgumentException::class);
             $this->expectExceptionMessage('Unable to unserialize invalid value.');
 
             $this->serializer->unserialize(['foobar', '{i-am-invalid}']);
         } finally {
-            error_reporting(1);
+            \error_reporting(1);
         }
     }
 }

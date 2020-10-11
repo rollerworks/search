@@ -23,10 +23,10 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
         if ($hints->getProcessingValue() instanceof \DateTimeImmutable) {
-            return "SEARCH_CONVERSION_CAST($column, 'DATE')";
+            return "SEARCH_CONVERSION_CAST({$column}, 'DATE')";
         }
 
-        return "SEARCH_CONVERSION_AGE($column)";
+        return "SEARCH_CONVERSION_AGE({$column})";
     }
 
     public function convertValue($value, array $options, ConversionHints $hints): string

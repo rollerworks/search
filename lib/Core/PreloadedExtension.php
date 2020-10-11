@@ -38,9 +38,9 @@ final class PreloadedExtension implements SearchExtension
 
     public function getType(string $name): FieldType
     {
-        if (!isset($this->types[$name])) {
+        if (! isset($this->types[$name])) {
             throw new InvalidArgumentException(
-                sprintf('Type "%s" can not be loaded by this extension', $name)
+                \sprintf('Type "%s" can not be loaded by this extension', $name)
             );
         }
 

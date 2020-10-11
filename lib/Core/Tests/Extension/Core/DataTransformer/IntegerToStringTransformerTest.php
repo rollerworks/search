@@ -82,29 +82,33 @@ final class IntegerToStringTransformerTest extends TestCase
 
     /**
      * @dataProvider transformWithRoundingProvider
+     *
+     * @test
      */
-    public function testTransformWithRounding(float $input, string $output, $roundingMode)
+    public function transform_with_rounding(float $input, string $output, $roundingMode): void
     {
         $transformer = new IntegerToStringTransformer($roundingMode);
 
-        $this->assertEquals($output, $transformer->transform($input));
+        self::assertEquals($output, $transformer->transform($input));
     }
 
-    public function testReverseTransform()
+    /** @test */
+    public function reverse_transform(): void
     {
         $transformer = new IntegerToStringTransformer();
 
-        $this->assertEquals(1, $transformer->reverseTransform('1'));
-        $this->assertEquals(1, $transformer->reverseTransform('1.5'));
-        $this->assertEquals(1234, $transformer->reverseTransform('1234.5'));
-        $this->assertEquals(12345, $transformer->reverseTransform('12345.912'));
+        self::assertEquals(1, $transformer->reverseTransform('1'));
+        self::assertEquals(1, $transformer->reverseTransform('1.5'));
+        self::assertEquals(1234, $transformer->reverseTransform('1234.5'));
+        self::assertEquals(12345, $transformer->reverseTransform('12345.912'));
     }
 
-    public function testReverseTransformEmpty()
+    /** @test */
+    public function reverse_transform_empty(): void
     {
         $transformer = new IntegerToStringTransformer();
 
-        $this->assertNull($transformer->reverseTransform(''));
+        self::assertNull($transformer->reverseTransform(''));
     }
 
     public function reverseTransformWithRoundingProvider()
@@ -160,15 +164,18 @@ final class IntegerToStringTransformerTest extends TestCase
 
     /**
      * @dataProvider reverseTransformWithRoundingProvider
+     *
+     * @test
      */
-    public function testReverseTransformWithRounding(string $input, $output, int $roundingMode)
+    public function reverse_transform_with_rounding(string $input, $output, int $roundingMode): void
     {
         $transformer = new IntegerToStringTransformer($roundingMode);
 
-        $this->assertEquals($output, $transformer->reverseTransform($input));
+        self::assertEquals($output, $transformer->reverseTransform($input));
     }
 
-    public function testReverseTransformExpectsScalar()
+    /** @test */
+    public function reverse_transform_expects_scalar(): void
     {
         $transformer = new IntegerToStringTransformer();
 
@@ -177,7 +184,8 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform(['1']);
     }
 
-    public function testReverseTransformExpectsValidNumber()
+    /** @test */
+    public function reverse_transform_expects_valid_number(): void
     {
         $transformer = new IntegerToStringTransformer();
 
@@ -186,7 +194,8 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform('foo');
     }
 
-    public function testReverseTransformDisallowsNaN()
+    /** @test */
+    public function reverse_transform_disallows_na_n(): void
     {
         $transformer = new IntegerToStringTransformer();
 
@@ -195,7 +204,8 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform('NaN');
     }
 
-    public function testReverseTransformDisallowsNaN2()
+    /** @test */
+    public function reverse_transform_disallows_na_n2(): void
     {
         $transformer = new IntegerToStringTransformer();
 
@@ -204,7 +214,8 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform('nan');
     }
 
-    public function testReverseTransformDisallowsInfinity()
+    /** @test */
+    public function reverse_transform_disallows_infinity(): void
     {
         $transformer = new IntegerToStringTransformer();
 
@@ -213,7 +224,8 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞');
     }
 
-    public function testReverseTransformDisallowsNegativeInfinity()
+    /** @test */
+    public function reverse_transform_disallows_negative_infinity(): void
     {
         $transformer = new IntegerToStringTransformer();
 

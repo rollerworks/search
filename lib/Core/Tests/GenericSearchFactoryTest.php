@@ -56,30 +56,28 @@ final class GenericSearchFactoryTest extends TestCase
         $this->factory = new GenericSearchFactory($this->registry, $this->fieldSetRegistry);
     }
 
-    /**
-     * @test
-     */
-    public function create_field_with_type_name()
+    /** @test */
+    public function create_field_with_type_name(): void
     {
         $options = ['a' => '1', 'b' => '2'];
         $resolvedOptions = ['a' => '2', 'b' => '3'];
         $resolvedType = $this->getMockResolvedType();
 
-        $this->registry->expects($this->once())
+        $this->registry->expects(self::once())
             ->method('getType')
             ->with(TextType::class)
             ->willReturn($resolvedType);
 
-        $resolvedType->expects($this->once())
+        $resolvedType->expects(self::once())
             ->method('createField')
             ->with('name', $options)
             ->willReturn($this->fieldConfig);
 
-        $this->fieldConfig->expects($this->any())
+        $this->fieldConfig->expects(self::any())
             ->method('getOptions')
             ->willReturn($resolvedOptions);
 
-        $resolvedType->expects($this->once())
+        $resolvedType->expects(self::once())
             ->method('buildType')
             ->with($this->fieldConfig, $resolvedOptions);
 

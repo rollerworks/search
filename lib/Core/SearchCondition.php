@@ -66,7 +66,7 @@ class SearchCondition
 
     public function isEmpty(): bool
     {
-        return 0 === \count($this->values->getGroups()) && 0 === \count($this->values->getFields());
+        return \count($this->values->getGroups()) === 0 && \count($this->values->getFields()) === 0;
     }
 
     /**
@@ -75,9 +75,9 @@ class SearchCondition
      *
      * @param string ...$name One or more FieldSet names to check for
      */
-    public function assertFieldSetName(string ...$name)
+    public function assertFieldSetName(string ...$name): void
     {
-        if (!\in_array($providedName = $this->fieldSet->getSetName(), $name, true)) {
+        if (! \in_array($providedName = $this->fieldSet->getSetName(), $name, true)) {
             throw new UnsupportedFieldSetException($name, $providedName);
         }
     }

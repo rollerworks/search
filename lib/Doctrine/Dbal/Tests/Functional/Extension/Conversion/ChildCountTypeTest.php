@@ -23,10 +23,12 @@ use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 final class ChildCountTypeTest extends FunctionalDbalTestCase
 {
-    protected function setUpDbSchema(DbSchema $schema)
+    protected function setUpDbSchema(DbSchema $schema): void
     {
         $userTable = $schema->createTable('site_user');
         $userTable->addColumn('id', 'integer');
@@ -63,7 +65,7 @@ final class ChildCountTypeTest extends FunctionalDbalTestCase
         return 'SELECT id FROM site_user AS u WHERE ';
     }
 
-    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
     {
         $conditionGenerator->setField('contact_count', 'id', 'u', 'integer');
     }
@@ -80,14 +82,14 @@ final class ChildCountTypeTest extends FunctionalDbalTestCase
         return $build ? $fieldSet->getFieldSet('user') : $fieldSet;
     }
 
-    public function testMatchesCount()
+    /** @test */
+    public function matches_count(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('contact_count')
                 ->addSimpleValue(2)
             ->end()
-            ->getSearchCondition()
-        ;
+            ->getSearchCondition();
 
         $this->assertRecordsAreFound($condition, [1]);
     }

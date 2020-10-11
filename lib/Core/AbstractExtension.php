@@ -37,13 +37,13 @@ abstract class AbstractExtension implements SearchExtension
 
     public function getType(string $name): FieldType
     {
-        if (null === $this->types) {
+        if ($this->types === null) {
             $this->initTypes();
         }
 
-        if (!isset($this->types[$name])) {
+        if (! isset($this->types[$name])) {
             throw new InvalidArgumentException(
-                sprintf('Type "%s" can not be loaded by this extension', $name)
+                \sprintf('Type "%s" can not be loaded by this extension', $name)
             );
         }
 
@@ -52,7 +52,7 @@ abstract class AbstractExtension implements SearchExtension
 
     public function hasType(string $name): bool
     {
-        if (null === $this->types) {
+        if ($this->types === null) {
             $this->initTypes();
         }
 
@@ -61,7 +61,7 @@ abstract class AbstractExtension implements SearchExtension
 
     public function hasTypeExtensions(string $type): bool
     {
-        if (null === $this->typesExtensions) {
+        if ($this->typesExtensions === null) {
             $this->initTypesExtensions();
         }
 
@@ -70,7 +70,7 @@ abstract class AbstractExtension implements SearchExtension
 
     public function getTypeExtensions(string $type): array
     {
-        if (null === $this->typesExtensions) {
+        if ($this->typesExtensions === null) {
             $this->initTypesExtensions();
         }
 
@@ -96,19 +96,19 @@ abstract class AbstractExtension implements SearchExtension
      * should be overloaded in child class and return array of FieldTypeExtension
      * instances per type: `TypeClassName => [FieldTypeExtensionInterface, ...]`.
      *
-     * @return array<FieldTypeExtension[]>|array
+     * @return array|array<FieldTypeExtension[]>
      */
     protected function loadTypesExtensions(): array
     {
         return [];
     }
 
-    private function initTypes()
+    private function initTypes(): void
     {
         $this->types = [];
 
         foreach ($this->loadTypes() as $type) {
-            if (!$type instanceof FieldType) {
+            if (! $type instanceof FieldType) {
                 throw new UnexpectedTypeException($type, FieldType::class);
             }
 
@@ -116,12 +116,12 @@ abstract class AbstractExtension implements SearchExtension
         }
     }
 
-    private function initTypesExtensions()
+    private function initTypesExtensions(): void
     {
         $this->typesExtensions = [];
 
         foreach ($this->loadTypesExtensions() as $extension) {
-            if (!$extension instanceof FieldTypeExtension) {
+            if (! $extension instanceof FieldTypeExtension) {
                 throw new UnexpectedTypeException($extension, FieldTypeExtension::class);
             }
 

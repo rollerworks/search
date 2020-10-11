@@ -27,7 +27,7 @@ final class MoneyValueComparator implements ValueComparator
      */
     public function isHigher($higher, $lower, array $options): bool
     {
-        if (!$higher->value->isSameCurrency($lower->value)) {
+        if (! $higher->value->isSameCurrency($lower->value)) {
             return false;
         }
 
@@ -40,7 +40,7 @@ final class MoneyValueComparator implements ValueComparator
      */
     public function isLower($lower, $higher, array $options): bool
     {
-        if (!$higher->value->isSameCurrency($lower->value)) {
+        if (! $higher->value->isSameCurrency($lower->value)) {
             return false;
         }
 

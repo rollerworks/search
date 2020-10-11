@@ -36,8 +36,6 @@ class ChoiceView
 
     /**
      * The original choice value.
-     *
-     * @var mixed
      */
     public $data;
 

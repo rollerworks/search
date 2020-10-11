@@ -29,12 +29,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class StringQueryExporterTest extends SearchConditionExporterTestCase
 {
-    /**
-     * @test
-     */
-    public function it_exporters_with_field_label()
+    /** @test */
+    public function it_exporters_with_field_label(): void
     {
-        $labelResolver = function (FieldConfig $field) {
+        $labelResolver = static function (FieldConfig $field) {
             $name = $field->getName();
 
             if ($name === 'name') {
@@ -62,10 +60,8 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         $processor->process($config, 'firstname: value, value2;');
     }
 
-    /**
-     * @test
-     */
-    public function it_exporters_values()
+    /** @test */
+    public function it_exporters_values(): void
     {
         $exporter = $this->getExporter();
         $config = new ProcessorConfig($this->getFieldSet());

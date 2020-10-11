@@ -35,7 +35,7 @@ trait ChoiceLoaderTrait
         }
 
         // If no callable is set, values are the same as choices
-        if (null === $value) {
+        if ($value === null) {
             return $values;
         }
 
@@ -50,7 +50,7 @@ trait ChoiceLoaderTrait
         }
 
         // If no callable is set, choices are the same as values
-        if (null === $value) {
+        if ($value === null) {
             return $choices;
         }
 

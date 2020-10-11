@@ -55,12 +55,12 @@ final class MoneyValueConversion implements ValueConversion, ColumnConversion
         $substr = $hints->connection->getDatabasePlatform()->getSubstringExpression($column, 5);
         $castType = $this->getCastType($this->currencies->subunitFor($hints->getProcessingValue()->value->getCurrency()), $hints);
 
-        return "CAST($substr AS $castType)";
+        return "CAST({$substr} AS {$castType})";
     }
 
     private function getCastType(int $scale, ConversionHints $hints): string
     {
-        if (strpos($hints->connection->getDatabasePlatform()->getName(), 'mysql') !== false) {
+        if (\mb_strpos($hints->connection->getDatabasePlatform()->getName(), 'mysql') !== false) {
             return "DECIMAL(10, {$scale})";
         }
 

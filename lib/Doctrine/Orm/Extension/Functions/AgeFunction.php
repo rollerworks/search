@@ -39,11 +39,11 @@ final class AgeFunction extends FunctionNode
         $convertMap['mock'] = $convertMap['postgresql'];
 
         if (isset($convertMap[$platform])) {
-            return sprintf($convertMap[$platform], $expression);
+            return \sprintf($convertMap[$platform], $expression);
         }
 
         throw new \RuntimeException(
-            sprintf('Unsupported platform "%s" for SEARCH_CONVERSION_AGE.', $platform)
+            \sprintf('Unsupported platform "%s" for SEARCH_CONVERSION_AGE.', $platform)
         );
     }
 

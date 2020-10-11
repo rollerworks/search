@@ -44,7 +44,7 @@ final class DefaultConfigurationMetadataFactory implements ResourceMetadataFacto
         unset($configurations['_defaults']);
 
         foreach ($configurations as $name => $configuration) {
-            $configurations[$name] = array_replace_recursive($searchConfig['contexts']['_defaults'], $configuration);
+            $configurations[$name] = \array_replace_recursive($searchConfig['contexts']['_defaults'], $configuration);
         }
 
         $attributes = $resourceMetadata->getAttributes();

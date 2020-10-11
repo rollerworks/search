@@ -35,7 +35,7 @@ class CachedConditionGenerator implements ConditionGenerator
     private $cacheKey;
 
     /**
-     * @var int|\DateInterval|null
+     * @var \DateInterval|int|null
      */
     private $cacheTtl;
 
@@ -48,7 +48,7 @@ class CachedConditionGenerator implements ConditionGenerator
      * @param ConditionGenerator     $conditionGenerator The actual ConditionGenerator to use when no cache exists
      * @param Cache                  $cacheDriver        PSR-16 SimpleCache instance. Use a custom pool to ease
      *                                                   purging invalidated items
-     * @param int|\DateInterval|null $ttl                Optional. The TTL value of this item. If no value is sent and
+     * @param \DateInterval|int|null $ttl                Optional. The TTL value of this item. If no value is sent and
      *                                                   the driver supports TTL then the library may set a default value
      *                                                   for it or let the driver take care of that.
      */
@@ -68,8 +68,9 @@ class CachedConditionGenerator implements ConditionGenerator
 
     public function getQuery(): Query
     {
-        if (null === $this->query) {
+        if ($this->query === null) {
             $cacheKey = $this->getCacheKey('query');
+
             if ($this->cacheDriver->has($cacheKey)) {
                 $this->query = $this->cacheDriver->get($cacheKey);
             } else {
@@ -97,16 +98,16 @@ class CachedConditionGenerator implements ConditionGenerator
      */
     private function getCacheKey(string $type): string
     {
-        if (null === $this->cacheKey) {
+        if ($this->cacheKey === null) {
             $searchCondition = $this->getSearchCondition();
-            $this->cacheKey = hash(
+            $this->cacheKey = \hash(
                 'sha256',
-                $searchCondition->getFieldSet()->getSetName().
-                "\n".
-                serialize($searchCondition->getValuesGroup()).
-                "\n".
-                serialize($this->conditionGenerator->getMappings()).
-                "\n".
+                $searchCondition->getFieldSet()->getSetName() .
+                "\n" .
+                \serialize($searchCondition->getValuesGroup()) .
+                "\n" .
+                \serialize($this->conditionGenerator->getMappings()) .
+                "\n" .
                 $type
             );
         }

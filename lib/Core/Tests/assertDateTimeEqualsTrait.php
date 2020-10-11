@@ -17,12 +17,12 @@ use PHPUnit\Framework\Assert;
 
 trait assertDateTimeEqualsTrait
 {
-    public static function assertDateTimeEquals(\DateTimeInterface $expected, \DateTimeInterface $actual)
+    public static function assertDateTimeEquals(\DateTimeInterface $expected, \DateTimeInterface $actual): void
     {
         Assert::assertEquals(
             $expected->format('U'),
             $actual->format('U'),
-            $expected->format('c').' <=> '.$actual->format('c')
+            $expected->format('c') . ' <=> ' . $actual->format('c')
         );
     }
 }

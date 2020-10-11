@@ -30,7 +30,7 @@ final class DateValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_true_when_dates_equal()
+    public function it_returns_true_when_dates_equal(): void
     {
         $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
         $date2 = new \DateTimeImmutable('2013-09-21 12:46:00');
@@ -39,7 +39,7 @@ final class DateValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_false_when_dates_are_not_equal()
+    public function it_returns_false_when_dates_are_not_equal(): void
     {
         $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
         $date2 = new \DateTimeImmutable('2013-09-22 12:46:00');
@@ -53,7 +53,7 @@ final class DateValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_true_when_first_date_is_higher()
+    public function it_returns_true_when_first_date_is_higher(): void
     {
         $date1 = new \DateTimeImmutable('2013-09-23 12:46:00');
         $date2 = new \DateTimeImmutable('2013-09-21 12:46:00');
@@ -62,7 +62,7 @@ final class DateValueComparisonTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_true_when_first_date_is_lower()
+    public function it_returns_true_when_first_date_is_lower(): void
     {
         $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
         $date2 = new \DateTimeImmutable('2013-09-23 12:46:00');

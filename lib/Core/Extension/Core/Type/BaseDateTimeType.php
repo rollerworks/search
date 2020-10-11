@@ -33,9 +33,9 @@ abstract class BaseDateTimeType extends AbstractFieldType
 
     protected function validateFormat(string $name, $value): void
     {
-        if (!\in_array($value, self::$acceptedFormats, true)) {
+        if (! \in_array($value, self::$acceptedFormats, true)) {
             throw new InvalidConfigurationException(
-                'The "'.$name.'" option must be one of the IntlDateFormatter constants '.
+                'The "' . $name . '" option must be one of the IntlDateFormatter constants ' .
                 '(FULL, LONG, MEDIUM, SHORT) or the "pattern" option must be a string representing a custom format.'
             );
         }
@@ -43,11 +43,11 @@ abstract class BaseDateTimeType extends AbstractFieldType
 
     protected function validateDateFormat(string $name, string $format): void
     {
-        if (null !== $format &&
-            (false === strpos($format, 'y') || false === strpos($format, 'M') || false === strpos($format, 'd'))
+        if ($format !== null &&
+            (\mb_strpos($format, 'y') === false || \mb_strpos($format, 'M') === false || \mb_strpos($format, 'd') === false)
         ) {
             throw new InvalidConfigurationException(
-                sprintf(
+                \sprintf(
                     'The "%s" option should contain the letters "y", "M" and "d". Its current value is "%s".',
                     $name,
                     $format

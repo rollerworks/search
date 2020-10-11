@@ -46,14 +46,14 @@ class SearchExtension implements QueryCollectionExtensionInterface
         $this->client = $client;
     }
 
-    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
+    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null): void
     {
         $request = $this->requestStack->getCurrentRequest();
 
         /** @var SearchCondition|null $condition */
         $condition = $request->attributes->get('_api_search_condition');
 
-        if (null === $condition) {
+        if ($condition === null) {
             return;
         }
 
@@ -75,13 +75,15 @@ class SearchExtension implements QueryCollectionExtensionInterface
 
         foreach ($configuration['mappings'] as $fieldName => $mapping) {
             $conditions = [];
+
             if (\is_array($mapping)) {
-                ArrayKeysValidator::assertOnlyKeys($mapping, ['property', 'conditions', 'options'], $configPath.'['.$fieldName.']');
-                ArrayKeysValidator::assertKeysExists($mapping, ['property'], $configPath.'['.$fieldName.']');
+                ArrayKeysValidator::assertOnlyKeys($mapping, ['property', 'conditions', 'options'], $configPath . '[' . $fieldName . ']');
+                ArrayKeysValidator::assertKeysExists($mapping, ['property'], $configPath . '[' . $fieldName . ']');
 
                 $conditionMappings = $mapping['conditions'] ?? [];
+
                 foreach ($conditionMappings as $idx => $conditionMapping) {
-                    ArrayKeysValidator::assertOnlyKeys($conditionMapping, ['property', 'value'], $configPath.'['.$fieldName.'][conditions]['.$idx.']');
+                    ArrayKeysValidator::assertOnlyKeys($conditionMapping, ['property', 'value'], $configPath . '[' . $fieldName . '][conditions][' . $idx . ']');
 
                     $conditions[$conditionMapping['property']] = $conditionMapping['value'];
                 }
@@ -92,9 +94,11 @@ class SearchExtension implements QueryCollectionExtensionInterface
         }
 
         $normalizer = null;
+
         if (\array_key_exists('identifiers_normalizer', $configuration)) {
             $normalizer = $configuration['identifiers_normalizer'];
-            if (!\is_callable($normalizer)) {
+
+            if (! \is_callable($normalizer)) {
                 throw new BadMethodCallException('Parameter "identifiers_normalizer" must be a valid callable');
             }
         }
@@ -106,6 +110,7 @@ class SearchExtension implements QueryCollectionExtensionInterface
             $query->setFrom($firstResult);
             $queryBuilder->setFirstResult(null);
         }
+
         if (null !== $maxResults = $queryBuilder->getMaxResults()) {
             $query->setSize($maxResults);
             $queryBuilder->setMaxResults(null);
@@ -113,6 +118,7 @@ class SearchExtension implements QueryCollectionExtensionInterface
 
         $search = new Search($this->client);
         $mappings = $conditionGenerator->getMappings();
+
         foreach ($mappings as $mapping) {
             $index = $this->client->getIndex($mapping->indexName);
             $type = $index->getType($mapping->typeName);
@@ -123,37 +129,37 @@ class SearchExtension implements QueryCollectionExtensionInterface
         $response = $search->search($query);
 
         // NOTE: written like this so we only check if we have a normalizer once
-        if (null !== $normalizer) {
-            $callable = function (Document $document) use ($normalizer) {
+        if ($normalizer !== null) {
+            $callable = static function (Document $document) use ($normalizer) {
                 return \call_user_func($normalizer, $document->getId());
             };
         } else {
-            $callable = function (Document $document) {
+            $callable = static function (Document $document) {
                 return $document->getId();
             };
         }
-        $ids = array_map($callable, $response->getDocuments());
+        $ids = \array_map($callable, $response->getDocuments());
 
         // straight from FOS Elastica Bundle
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $identifier = $this->getIdentifierNames($resourceClass);
 
         // TODO: hack, only works for non-composite PKs
-        $identifier = current($identifier);
+        $identifier = \current($identifier);
         $queryBuilder
             ->andWhere(
                 $queryBuilder
                     ->expr()
-                        ->in($rootAlias.'.'.$identifier, ':ids')
+                        ->in($rootAlias . '.' . $identifier, ':ids')
             )
             ->setParameter('ids', $ids);
 
-        $this->generateOrderByClause($queryBuilder, $rootAlias.'.'.$identifier, $ids);
+        $this->generateOrderByClause($queryBuilder, $rootAlias . '.' . $identifier, $ids);
     }
 
     private function getIdentifierNames(string $class): array
     {
-        if (!\array_key_exists($class, $this->identifierNames)) {
+        if (! \array_key_exists($class, $this->identifierNames)) {
             $manager = $this->registry->getManagerForClass($class);
             $metadata = $manager->getClassMetadata($class);
 
@@ -165,24 +171,25 @@ class SearchExtension implements QueryCollectionExtensionInterface
 
     private function generateOrderByClause(QueryBuilder $queryBuilder, string $identifier, array $ids): void
     {
-        if ([] === $ids) {
+        if ($ids === []) {
             return;
         }
 
         $clause = ['CASE'];
         $last = 0;
+
         foreach ($ids as $idx => $id) {
-            $alias = sprintf('id%1$s', $idx);
+            $alias = \sprintf('id%1$s', $idx);
             $queryBuilder->setParameter($alias, $id);
-            $clause[] = sprintf('WHEN %1$s = :%2$s THEN %3$d', $identifier, $alias, $idx);
+            $clause[] = \sprintf('WHEN %1$s = :%2$s THEN %3$d', $identifier, $alias, $idx);
             ++$last;
         }
-        $clause[] = sprintf('ELSE %1$d', $last);
+        $clause[] = \sprintf('ELSE %1$d', $last);
         $clause[] = 'END';
         $clause[] = 'AS HIDDEN order_by';
 
         $queryBuilder
-            ->addSelect(implode(' ', $clause))
+            ->addSelect(\implode(' ', $clause))
             ->orderBy('order_by', 'ASC');
     }
 }

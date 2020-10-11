@@ -31,6 +31,9 @@ use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class SqlConditionGeneratorTest extends DbalTestCase
 {
     private function getConditionGenerator(SearchCondition $condition, Connection $connection = null)
@@ -49,7 +52,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         return $conditionGenerator;
     }
 
-    public function testSimpleQuery()
+    /** @test */
+    public function simple_query(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -73,7 +77,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         self::assertEquals($params, $conditionGenerator->getParameters()->toArray());
     }
 
-    public function testQueryWithPrepend()
+    /** @test */
+    public function query_with_prepend(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -84,13 +89,14 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             'WHERE (((I.customer = :search_0 OR I.customer = :search_1)))',
             $conditionGenerator->getWhereClause('WHERE ')
         );
     }
 
-    public function testEmptyQueryWithPrepend()
+    /** @test */
+    public function empty_query_with_prepend(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('id')
@@ -101,10 +107,11 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('', $conditionGenerator->getWhereClause('WHERE '));
+        self::assertEquals('', $conditionGenerator->getWhereClause('WHERE '));
     }
 
-    public function testQueryWithPrependAndPrimaryCond()
+    /** @test */
+    public function query_with_prepend_and_primary_cond(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -127,13 +134,14 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals(
+        self::assertEquals(
             'WHERE (((I.status = :search_0 OR I.status = :search_1))) AND (((I.customer = :search_2 OR I.customer = :search_3)))',
             $conditionGenerator->getWhereClause('WHERE ')
         );
     }
 
-    public function testEmptyQueryWithPrependAndPrimaryCond()
+    /** @test */
+    public function empty_query_with_prepend_and_primary_cond(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('id')
@@ -156,10 +164,11 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        $this->assertEquals('WHERE (((I.status = :search_0 OR I.status = :search_1)))', $conditionGenerator->getWhereClause('WHERE '));
+        self::assertEquals('WHERE (((I.status = :search_0 OR I.status = :search_1)))', $conditionGenerator->getWhereClause('WHERE '));
     }
 
-    public function testQueryWithMultipleFields()
+    /** @test */
+    public function query_with_multiple_fields(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -186,7 +195,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testQueryWithCombinedField()
+    /** @test */
+    public function query_with_combined_field(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -211,7 +221,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testQueryWithCombinedFieldAndCustomAlias()
+    /** @test */
+    public function query_with_combined_field_and_custom_alias(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -236,16 +247,18 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testEmptyResult()
+    /** @test */
+    public function empty_result(): void
     {
         $connection = $this->getConnectionMock();
         $condition = new SearchCondition($this->getFieldSet(), new ValuesGroup());
         $conditionGenerator = $this->getConditionGenerator($condition, $connection);
 
-        $this->assertEquals('', $conditionGenerator->getWhereClause());
+        self::assertEquals('', $conditionGenerator->getWhereClause());
     }
 
-    public function testExcludes()
+    /** @test */
+    public function excludes(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -266,7 +279,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testIncludesAndExcludes()
+    /** @test */
+    public function includes_and_excludes(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -287,7 +301,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testRanges()
+    /** @test */
+    public function ranges(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -302,7 +317,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $this->assertGeneratedQueryEquals(
             $conditionGenerator,
-            '((((I.customer >= :search_0 AND I.customer <= :search_1) OR (I.customer >= :search_2 AND I.customer <= :search_3) OR '.
+            '((((I.customer >= :search_0 AND I.customer <= :search_1) OR (I.customer >= :search_2 AND I.customer <= :search_3) OR ' .
             '(I.customer > :search_4 AND I.customer <= :search_5) OR (I.customer >= :search_6 AND I.customer < :search_7))))',
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -317,7 +332,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testExcludedRanges()
+    /** @test */
+    public function excluded_ranges(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -332,8 +348,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         $this->assertGeneratedQueryEquals(
             $conditionGenerator,
-            '((((I.customer <= :search_0 OR I.customer >= :search_1) AND (I.customer <= :search_2 OR '.
-            'I.customer >= :search_3) AND (I.customer < :search_4 OR I.customer >= :search_5) AND '.
+            '((((I.customer <= :search_0 OR I.customer >= :search_1) AND (I.customer <= :search_2 OR ' .
+            'I.customer >= :search_3) AND (I.customer < :search_4 OR I.customer >= :search_5) AND ' .
             '(I.customer <= :search_6 OR I.customer > :search_7))))',
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -348,7 +364,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testSingleComparison()
+    /** @test */
+    public function single_comparison(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -367,7 +384,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testMultipleComparisons()
+    /** @test */
+    public function multiple_comparisons(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -388,7 +406,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testMultipleComparisonsWithGroups()
+    /** @test */
+    public function multiple_comparisons_with_groups(): void
     {
         // Use two subgroups here as the comparisons are AND to each other
         // but applying them in the head group would ignore subgroups
@@ -421,7 +440,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testExcludingComparisons()
+    /** @test */
+    public function excluding_comparisons(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -442,7 +462,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testExcludingComparisonsWithNormal()
+    /** @test */
+    public function excluding_comparisons_with_normal(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -467,7 +488,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testPatternMatchers()
+    /** @test */
+    public function pattern_matchers(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer_name')
@@ -498,7 +520,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testSubGroups()
+    /** @test */
+    public function sub_groups(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->group()
@@ -521,7 +544,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testSubGroupWithRootCondition()
+    /** @test */
+    public function sub_group_with_root_condition(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -546,7 +570,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testOrGroupRoot()
+    /** @test */
+    public function or_group_root(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet(), ValuesGroup::GROUP_LOGICAL_OR)
             ->field('customer')
@@ -569,7 +594,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testSubOrGroup()
+    /** @test */
+    public function sub_or_group(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->group()
@@ -596,22 +622,22 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testColumnConversion()
+    /** @test */
+    public function column_conversion(): void
     {
         $converter = $this->createMock(ColumnConversion::class);
         $converter
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('convertColumn')
-            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+            ->willReturnCallback(static function ($column, array $options, ConversionHints $hints) {
                 self::assertArrayHasKey('grouping', $options);
                 self::assertTrue($options['grouping']);
 
                 self::assertEquals('I', $hints->field->alias);
                 self::assertEquals('I.customer', $hints->column);
 
-                return "CAST($column AS customer_type)";
-            })
-        ;
+                return "CAST({$column} AS customer_type)";
+            });
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
@@ -635,21 +661,21 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testValueConversion()
+    /** @test */
+    public function value_conversion(): void
     {
         $converter = $this->createMock(ValueConversion::class);
         $converter
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('convertValue')
-            ->willReturnCallback(function ($value, array $options, ConversionHints $hints) {
+            ->willReturnCallback(static function ($value, array $options, ConversionHints $hints) {
                 self::assertArrayHasKey('grouping', $options);
                 self::assertTrue($options['grouping']);
 
                 $value = $hints->createParamReferenceFor($value);
 
-                return "get_customer_type($value)";
-            })
-        ;
+                return "get_customer_type({$value})";
+            });
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
@@ -673,23 +699,23 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testConversionStrategyValue()
+    /** @test */
+    public function conversion_strategy_value(): void
     {
         $converter = $this->createMock(ValueConversion::class);
         $converter
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('convertValue')
-            ->willReturnCallback(function ($value, array $passedOptions, ConversionHints $hints) {
+            ->willReturnCallback(static function ($value, array $passedOptions, ConversionHints $hints) {
                 self::assertArrayHasKey('pattern', $passedOptions);
                 self::assertEquals('dd-MM-yy', $passedOptions['pattern']);
 
                 if ($value instanceof \DateTimeImmutable) {
-                    return 'CAST('.$hints->createParamReferenceFor($value->format('Y-m-d'), Type::getType('string')).' AS AGE)';
+                    return 'CAST(' . $hints->createParamReferenceFor($value->format('Y-m-d'), Type::getType('string')) . ' AS AGE)';
                 }
 
                 return $hints->createParamReferenceFor($value, Type::getType('integer'));
-            })
-        ;
+            });
 
         $fieldSet = $this->getFieldSet(false);
         $fieldSet->add('customer_birthday', DateType::class, ['doctrine_dbal_conversion' => $converter, 'pattern' => 'dd-MM-yy']);
@@ -713,20 +739,20 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testConversionStrategyColumn()
+    /** @test */
+    public function conversion_strategy_column(): void
     {
         $converter = $this->createMock(ColumnConversion::class);
         $converter
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('convertColumn')
-            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+            ->willReturnCallback(static function ($column, array $options, ConversionHints $hints) {
                 if (\is_int($hints->originalValue)) {
-                    return "search_conversion_age($column)";
+                    return "search_conversion_age({$column})";
                 }
 
                 return $column;
-            })
-        ;
+            });
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer_birthday', TextType::class, ['doctrine_dbal_conversion' => $converter]);
@@ -751,26 +777,26 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         );
     }
 
-    public function testLazyConversionLoading()
+    /** @test */
+    public function lazy_conversion_loading(): void
     {
         $converter = $this->createMock(ColumnConversion::class);
         $converter
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('convertColumn')
-            ->willReturnCallback(function ($column, array $options, ConversionHints $hints) {
+            ->willReturnCallback(static function ($column, array $options, ConversionHints $hints) {
                 self::assertArrayHasKey('grouping', $options);
                 self::assertTrue($options['grouping']);
                 self::assertEquals('I', $hints->field->alias);
                 self::assertEquals('I.customer', $hints->column);
 
-                return "CAST($column AS customer_type)";
-            })
-        ;
+                return "CAST({$column} AS customer_type)";
+            });
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, [
             'grouping' => true,
-            'doctrine_dbal_conversion' => function () use ($converter) {
+            'doctrine_dbal_conversion' => static function () use ($converter) {
                 return $converter;
             },
         ]);

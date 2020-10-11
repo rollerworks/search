@@ -45,7 +45,7 @@ final class StringLexer
      */
     public function parse(string $data, array $fieldLexers = []): void
     {
-        $this->data = str_replace(["\r\n", "\r"], "\n", $data);
+        $this->data = \str_replace(["\r\n", "\r"], "\n", $data);
         $this->valueLexers = $fieldLexers;
         $this->end = \strlen($this->data);
         $this->lineno = 1;
@@ -60,8 +60,8 @@ final class StringLexer
      */
     public function skipWhitespace(): void
     {
-        if (preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
-            $this->char += mb_strlen($match[0]);
+        if (\preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
+            $this->char += \mb_strlen($match[0]);
             $this->cursor += \strlen($match[0]);
         }
     }
@@ -71,7 +71,7 @@ final class StringLexer
      */
     public function skipEmptyLines(): void
     {
-        if (preg_match('/(?:\s*+)++/A', $this->data, $match, 0, $this->cursor)) {
+        if (\preg_match('/(?:\s*+)++/A', $this->data, $match, 0, $this->cursor)) {
             $this->moveCursor($match[0]);
         }
     }
@@ -85,7 +85,7 @@ final class StringLexer
 
     public function snapshot($force = false): void
     {
-        if (!$force && null !== $this->charSnapshot) {
+        if (! $force && $this->charSnapshot !== null) {
             return;
         }
 
@@ -96,7 +96,7 @@ final class StringLexer
 
     public function restoreCursor(): void
     {
-        if (null === $this->cursorSnapshot) {
+        if ($this->cursorSnapshot === null) {
             throw new \RuntimeException('Unable to restore cursor because no snapshot was stored.');
         }
 
@@ -111,7 +111,7 @@ final class StringLexer
 
     public function isGlimpse(string $data): bool
     {
-        return null !== $this->regexOrSingleChar($data);
+        return $this->regexOrSingleChar($data) !== null;
     }
 
     /**
@@ -128,7 +128,7 @@ final class StringLexer
     {
         $match = $this->regexOrSingleChar($data);
 
-        if (null !== $match) {
+        if ($match !== null) {
             $this->moveCursor($match);
             $this->skipWhitespace();
 
@@ -154,7 +154,7 @@ final class StringLexer
     {
         $match = $this->regexOrSingleChar($data);
 
-        if (null !== $match) {
+        if ($match !== null) {
             $this->moveCursor($match);
             $this->skipWhitespace();
 
@@ -178,8 +178,8 @@ final class StringLexer
             $this->lineno,
             $expected,
             $this->isEnd() ? 'end of string' :
-                ("\n" === $this->data[$this->cursor] ? 'line end' :
-                    mb_substr($this->data, $this->cursor, min(10, $this->end)))
+                ($this->data[$this->cursor] === "\n" ? 'line end' :
+                    \mb_substr($this->data, $this->cursor, \min(10, $this->end)))
         );
     }
 
@@ -206,22 +206,23 @@ final class StringLexer
             throw $this->createSyntaxException('StringValue');
         }
 
-        if ('"' === $this->data[$this->cursor]) {
+        if ($this->data[$this->cursor] === '"') {
             $this->moveCursor('"');
 
-            while ("\n" !== $c = mb_substr($this->data, $this->char, 1)) {
-                if ('"' === $c) {
+            while ("\n" !== $c = \mb_substr($this->data, $this->char, 1)) {
+                if ($c === '"') {
                     if ($this->cursor + 1 === $this->end) {
                         break;
                     }
-                    if ('"' !== mb_substr($this->data, $this->char + 1, 1)) {
+
+                    if (\mb_substr($this->data, $this->char + 1, 1) !== '"') {
                         break;
                     }
 
                     $this->moveCursor($c);
                 }
 
-                $value .= $c = mb_substr($this->data, $this->char, 1);
+                $value .= $c = \mb_substr($this->data, $this->char, 1);
                 $this->moveCursor($c);
 
                 if ($this->cursor === $this->end) {
@@ -229,7 +230,7 @@ final class StringLexer
                 }
             }
 
-            if ("\n" === $c) {
+            if ($c === "\n") {
                 throw $this->createFormatException(StringLexerException::MISSING_END_QUOTE);
             }
 
@@ -238,17 +239,17 @@ final class StringLexer
             $this->skipWhitespace();
 
             // Detect an user error like: "foo"bar"
-            if ($this->cursor < $this->end && !$this->isGlimpse('/['.preg_quote($allowedNext, '/').']/A')) {
+            if ($this->cursor < $this->end && ! $this->isGlimpse('/[' . \preg_quote($allowedNext, '/') . ']/A')) {
                 throw $this->createFormatException(StringLexerException::VALUE_QUOTES_MUST_ESCAPE);
             }
 
             return $value;
         }
 
-        $allowedNextRegex = '/['.preg_quote($allowedNext, '/').']/A';
+        $allowedNextRegex = '/[' . \preg_quote($allowedNext, '/') . ']/A';
 
-        while ($this->cursor < $this->end && "\n" !== $c = mb_substr($this->data, $this->char, 1)) {
-            if ('"' === $c) {
+        while ($this->cursor < $this->end && "\n" !== $c = \mb_substr($this->data, $this->char, 1)) {
+            if ($c === '"') {
                 throw $this->createFormatException(StringLexerException::QUOTED_VALUE_REQUIRE_QUOTING);
             }
 
@@ -264,9 +265,9 @@ final class StringLexer
             $this->moveCursor($c);
         }
 
-        $value = rtrim($value);
+        $value = \rtrim($value);
 
-        if (preg_match('/\s+/', $value)) {
+        if (\preg_match('/\s+/', $value)) {
             throw $this->createFormatException(StringLexerException::SPACES_REQ_QUOTING);
         }
 
@@ -275,7 +276,7 @@ final class StringLexer
 
     public function fieldIdentification(): string
     {
-        return mb_substr(trim($this->expects(self::FIELD_NAME, 'FieldIdentification')), 0, -1);
+        return \mb_substr(\trim($this->expects(self::FIELD_NAME, 'FieldIdentification')), 0, -1);
     }
 
     //
@@ -302,7 +303,7 @@ final class StringLexer
      */
     public function rangeValue(string $name): array
     {
-        $lowerInclusive = '[' === ($this->matchOptional('/[[\]]/A') ?? '[');
+        $lowerInclusive = ($this->matchOptional('/[[\]]/A') ?? '[') === '[';
 
         $this->skipWhitespace();
         $lowerBound = $this->valuePart($name, '~');
@@ -313,7 +314,7 @@ final class StringLexer
         $this->skipWhitespace();
         $upperBound = $this->valuePart($name, '/[[\],;)]/A');
 
-        $upperInclusive = ']' === ($this->matchOptional('/[[\]]/A') ?? ']');
+        $upperInclusive = ($this->matchOptional('/[[\]]/A') ?? ']') === ']';
 
         $this->skipEmptyLines();
 
@@ -348,16 +349,16 @@ final class StringLexer
         $negative = false;
         $caseInsensitive = false;
 
-        if (!preg_match('/([^*<>=]{0,2}\s*)([*<>=])/A', $this->data, $match, 0, $this->cursor)) {
+        if (! \preg_match('/([^*<>=]{0,2}\s*)([*<>=])/A', $this->data, $match, 0, $this->cursor)) {
             throw $this->createSyntaxException('PatternMatch');
         }
 
-        if (preg_match('/\s+/', $match[0])) {
+        if (\preg_match('/\s+/', $match[0])) {
             throw $this->createFormatException(StringLexerException::NO_SPACES_IN_OPERATOR);
         }
 
-        if ('' !== $match[1]) {
-            if (!\in_array($match[1], ['i!', '!i', 'i', '!'], true)) {
+        if ($match[1] !== '') {
+            if (! \in_array($match[1], ['i!', '!i', 'i', '!'], true)) {
                 throw $this->createFormatException(StringLexerException::UNKNOWN_PATTERN_MATCH_FLAG);
             }
 
@@ -372,7 +373,7 @@ final class StringLexer
             '=' => 'EQUALS',
         ];
 
-        $type = ($negative ? 'NOT_' : '').$operatorToTypeMapping[$match[2]];
+        $type = ($negative ? 'NOT_' : '') . $operatorToTypeMapping[$match[2]];
 
         $this->moveCursor($match[0]);
 
@@ -411,7 +412,7 @@ final class StringLexer
 
         $this->matchOptional('!');
 
-        if (null !== $this->matchOptional('/[[\]]/A')) {
+        if ($this->matchOptional('/[[\]]/A') !== null) {
             $this->restoreCursor();
 
             return self::RANGE;
@@ -424,7 +425,7 @@ final class StringLexer
         //
         // A custom lexer that uses the range character should be specific in matching.
         // Or consider using a combiner like `(value ~ something)`.
-        if (null !== $this->matchOptional('~')) {
+        if ($this->matchOptional('~') !== null) {
             $this->restoreCursor();
 
             return self::RANGE;
@@ -445,7 +446,7 @@ final class StringLexer
             return $data === $this->data[$this->cursor] ? $data : null;
         }
 
-        if (preg_match($data, $this->data, $match, 0, $this->cursor)) {
+        if (\preg_match($data, $this->data, $match, 0, $this->cursor)) {
             return $match[0];
         }
 

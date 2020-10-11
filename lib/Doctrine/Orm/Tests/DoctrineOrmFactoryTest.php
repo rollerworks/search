@@ -23,24 +23,28 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @group non-functional
+ *
+ * @internal
  */
-class DoctrineOrmFactoryTest extends OrmTestCase
+final class DoctrineOrmFactoryTest extends OrmTestCase
 {
     /**
      * @var DoctrineOrmFactory
      */
     protected $factory;
 
-    public function testCreateConditionGenerator()
+    /** @test */
+    public function create_condition_generator(): void
     {
         $condition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
         $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
 
         $conditionGenerator = $this->factory->createConditionGenerator($query, $condition);
-        $this->assertInstanceOf(DqlConditionGenerator::class, $conditionGenerator);
+        self::assertInstanceOf(DqlConditionGenerator::class, $conditionGenerator);
     }
 
-    public function testCachedDqlConditionGenerator()
+    /** @test */
+    public function cached_dql_condition_generator(): void
     {
         $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
         $searchCondition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());

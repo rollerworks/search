@@ -26,10 +26,12 @@ use Rollerworks\Component\Search\Value\Range;
 
 /**
  * @group functional
+ *
+ * @internal
  */
 final class MoneyValueConversionTest extends FunctionalDbalTestCase
 {
-    protected function setUpDbSchema(DbSchema $schema)
+    protected function setUpDbSchema(DbSchema $schema): void
     {
         $invoiceTable = $schema->createTable('product');
         $invoiceTable->addColumn('id', 'integer');
@@ -58,7 +60,7 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
         return 'SELECT id FROM product AS p WHERE ';
     }
 
-    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator)
+    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
     {
         $conditionGenerator->setField('price', 'price', 'p', 'string');
         $conditionGenerator->setField('total', 'total', 'p', 'decimal');
@@ -74,40 +76,40 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
         return $build ? $fieldSet->getFieldSet('product') : $fieldSet;
     }
 
-    public function testWithNumericColumn()
+    /** @test */
+    public function with_numeric_column(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('total')
                 ->addSimpleValue(new MoneyValue(Money::EUR('9000')))
                 ->addSimpleValue(new MoneyValue(Money::EUR('10000')))
             ->end()
-            ->getSearchCondition()
-        ;
+            ->getSearchCondition();
 
         $this->assertRecordsAreFound($condition, [3, 4]);
     }
 
-    public function testWithVarcharColumn()
+    /** @test */
+    public function with_varchar_column(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('price')
                 ->addSimpleValue(new MoneyValue(Money::EUR('5000')))
                 ->addSimpleValue(new MoneyValue(Money::EUR('3000')))
             ->end()
-            ->getSearchCondition()
-        ;
+            ->getSearchCondition();
 
         $this->assertRecordsAreFound($condition, [1, 2]);
     }
 
-    public function testWithVarcharColumnAndRange()
+    /** @test */
+    public function with_varchar_column_and_range(): void
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('price')
                 ->add(new Range(new MoneyValue(Money::EUR('3000')), new MoneyValue(Money::EUR('5000')), true, true))
             ->end()
-            ->getSearchCondition()
-        ;
+            ->getSearchCondition();
 
         $this->assertRecordsAreFound($condition, [1, 2]);
     }

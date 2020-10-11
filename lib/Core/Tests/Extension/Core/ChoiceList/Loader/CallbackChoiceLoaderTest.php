@@ -51,11 +51,11 @@ final class CallbackChoiceLoaderTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$loader = new CallbackChoiceLoader(function () {
+        self::$loader = new CallbackChoiceLoader(static function () {
             return self::$choices;
         });
 
-        self::$value = function ($choice) {
+        self::$value = static function ($choice) {
             return isset($choice->value) ? $choice->value : null;
         };
 
@@ -68,14 +68,16 @@ final class CallbackChoiceLoaderTest extends TestCase
         self::$lazyChoiceList = new LazyChoiceList(self::$loader, self::$value);
     }
 
-    public function testLoadChoiceListOnlyOnce()
+    /** @test */
+    public function load_choice_list_only_once(): void
     {
         $loadedChoiceList = self::$loader->loadChoiceList(self::$value);
 
         self::assertSame($loadedChoiceList, self::$loader->loadChoiceList(self::$value));
     }
 
-    public function testLoadChoicesForValuesLoadsChoiceListOnFirstCall()
+    /** @test */
+    public function load_choices_for_values_loads_choice_list_on_first_call(): void
     {
         self::assertSame(
             self::$loader->loadChoicesForValues(self::$choiceValues, self::$value),
@@ -84,7 +86,8 @@ final class CallbackChoiceLoaderTest extends TestCase
         );
     }
 
-    public function testLoadValuesForChoicesLoadsChoiceListOnFirstCall()
+    /** @test */
+    public function load_values_for_choices_loads_choice_list_on_first_call(): void
     {
         self::assertSame(
             self::$loader->loadValuesForChoices(self::$choices, self::$value),

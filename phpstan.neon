@@ -10,9 +10,6 @@ parameters:
     tmpDir: %currentWorkingDirectory%/var/phpstan
     level: 5
 
-    autoload_files:
-        - vendor/autoload.php
-
     paths:
         - ./lib
     excludes_analyse:

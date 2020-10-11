@@ -58,7 +58,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
         // where the time corresponds to the current server time.
         // With "|" and "Y-m-d", "2010-02-03" becomes "2010-02-03 00:00:00",
         // which is at least deterministic and thus used here.
-        if (false === strpos($this->parseFormat, '|')) {
+        if (\mb_strpos($this->parseFormat, '|') === false) {
             $this->parseFormat .= '|';
         }
     }
@@ -75,15 +75,15 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      */
     public function transform($dateTime): string
     {
-        if (null === $dateTime) {
+        if ($dateTime === null) {
             return '';
         }
 
-        if (!$dateTime instanceof \DateTimeImmutable) {
+        if (! $dateTime instanceof \DateTimeImmutable) {
             throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
-        if (!$dateTime instanceof \DateTimeImmutable) {
+        if (! $dateTime instanceof \DateTimeImmutable) {
             $dateTime = clone $dateTime;
         }
 
@@ -106,7 +106,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
             return null;
         }
 
-        if (!\is_string($value)) {
+        if (! \is_string($value)) {
             throw new TransformationFailedException('Expected a string.');
         }
 
@@ -116,7 +116,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
         $lastErrors = \DateTimeImmutable::getLastErrors();
 
         if (0 < $lastErrors['warning_count'] || 0 < $lastErrors['error_count']) {
-            throw new TransformationFailedException(implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors']))));
+            throw new TransformationFailedException(\implode(', ', \array_merge(\array_values($lastErrors['warnings']), \array_values($lastErrors['errors']))));
         }
 
         try {

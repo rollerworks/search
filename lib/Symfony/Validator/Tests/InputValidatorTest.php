@@ -26,6 +26,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validation;
 
+/**
+ * @internal
+ */
 final class InputValidatorTest extends SearchIntegrationTestCase
 {
     private $sfValidator;
@@ -67,10 +70,8 @@ final class InputValidatorTest extends SearchIntegrationTestCase
         return [new ValidatorExtension()];
     }
 
-    /**
-     * @test
-     */
-    public function it_validates_fields_with_constraints()
+    /** @test */
+    public function it_validates_fields_with_constraints(): void
     {
         $fieldSet = $this->getFieldSet();
 
@@ -105,8 +106,8 @@ final class InputValidatorTest extends SearchIntegrationTestCase
 
         $this->assertContainsErrors(
             [
-                new ConditionErrorMessage('simpleValues[0]', 'This value should be '.$minDate.' or more.', 'This value should be {{ limit }} or more.', ['{{ value }}' => self::formatDateTime($d1), '{{ limit }}' => $minDate]),
-                new ConditionErrorMessage('simpleValues[2]', 'This value should be '.$minDate.' or more.', 'This value should be {{ limit }} or more.', ['{{ value }}' => self::formatDateTime($d3), '{{ limit }}' => $minDate]),
+                new ConditionErrorMessage('simpleValues[0]', 'This value should be ' . $minDate . ' or more.', 'This value should be {{ limit }} or more.', ['{{ value }}' => self::formatDateTime($d1), '{{ limit }}' => $minDate]),
+                new ConditionErrorMessage('simpleValues[2]', 'This value should be ' . $minDate . ' or more.', 'This value should be {{ limit }} or more.', ['{{ value }}' => self::formatDateTime($d3), '{{ limit }}' => $minDate]),
             ],
             $errorList2
         );
@@ -114,10 +115,8 @@ final class InputValidatorTest extends SearchIntegrationTestCase
         self::assertEmpty($errorList3);
     }
 
-    /**
-     * @test
-     */
-    public function it_validates_matchers()
+    /** @test */
+    public function it_validates_matchers(): void
     {
         $fieldSet = $this->getFieldSet(false);
         $fieldSet->add('username', TextType::class, ['constraints' => new Assert\NotBlank()]);
@@ -138,7 +137,7 @@ final class InputValidatorTest extends SearchIntegrationTestCase
         );
     }
 
-    private function assertContainsErrors(array $expectedErrors, ErrorList $errors)
+    private function assertContainsErrors(array $expectedErrors, ErrorList $errors): void
     {
         foreach ($errors as $error) {
             self::assertInstanceOf(ConstraintViolation::class, $error->cause);
@@ -157,13 +156,13 @@ final class InputValidatorTest extends SearchIntegrationTestCase
      */
     private static function formatDateTime($value)
     {
-        if (class_exists('IntlDateFormatter')) {
+        if (\class_exists('IntlDateFormatter')) {
             $locale = \Locale::getDefault();
             $formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::SHORT);
 
             // neither the native nor the stub IntlDateFormatter support
             // DateTimeImmutable as of yet
-            if (!$value instanceof \DateTime) {
+            if (! $value instanceof \DateTime) {
                 $value = new \DateTime(
                     $value->format('Y-m-d H:i:s.u e'),
                     $value->getTimezone()

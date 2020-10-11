@@ -75,7 +75,7 @@ final class QueryGenerator
         $query = [];
 
         foreach ($valuesGroup->getFields() as $mappingConfig => $values) {
-            if (!isset($this->fields[$mappingConfig])) {
+            if (! isset($this->fields[$mappingConfig])) {
                 continue;
             }
 
@@ -96,7 +96,7 @@ final class QueryGenerator
 
         // Wrap all the fields as a group
         $finalQuery[] = self::wrapIfNotEmpty(
-            self::implodeWithValue(' '.strtoupper($valuesGroup->getGroupLogical()).' ', $query),
+            self::implodeWithValue(' ' . \mb_strtoupper($valuesGroup->getGroupLogical()) . ' ', $query),
             '(',
             ')'
         );
@@ -110,7 +110,7 @@ final class QueryGenerator
      * @param ValuesGroup[] $groups
      * @param string[]      $query
      */
-    private function processGroups(array $groups, array &$query)
+    private function processGroups(array $groups, array &$query): void
     {
         $groupSql = [];
 
@@ -134,7 +134,7 @@ final class QueryGenerator
             $hints->originalValue = $value;
             $column = $this->queryPlatform->getFieldColumn($mappingConfig, $mappingConfig->column, $hints);
 
-            $query[] = sprintf(
+            $query[] = \sprintf(
                 $patterns[(int) $exclude],
                 $column,
                 $this->queryPlatform->getValueAsSql($value, $mappingConfig, $hints)
@@ -157,7 +157,7 @@ final class QueryGenerator
             $hints->context = ConversionHints::CONTEXT_RANGE_UPPER_BOUND;
             $upperBound = $this->queryPlatform->getValueAsSql($range->getUpper(), $mappingConfig, $hints);
 
-            $query[] = sprintf(
+            $query[] = \sprintf(
                 $this->getRangePattern($range, $exclude),
                 $column,
                 $lowerBound,
@@ -200,14 +200,14 @@ final class QueryGenerator
         $hints->context = ConversionHints::CONTEXT_COMPARISON;
 
         foreach ($compares as $comparison) {
-            if ($exclude !== ('<>' === $comparison->getOperator())) {
+            if ($exclude !== ($comparison->getOperator() === '<>')) {
                 continue;
             }
 
             $hints->originalValue = $comparison;
             $column = $this->queryPlatform->getFieldColumn($mappingConfig, $mappingConfig->column, $hints);
 
-            $valuesQuery[] = sprintf(
+            $valuesQuery[] = \sprintf(
                 '%s %s %s',
                 $column,
                 $comparison->getOperator(),
@@ -219,7 +219,7 @@ final class QueryGenerator
             );
         }
 
-        if (\count($valuesQuery) > 1 && !$exclude) {
+        if (\count($valuesQuery) > 1 && ! $exclude) {
             $query[] = self::implodeValuesWithWrapping(' AND ', $valuesQuery, '(', ')');
         } else {
             $query[] = self::implodeWithValue(' AND ', $valuesQuery);
@@ -252,32 +252,32 @@ final class QueryGenerator
     private static function implodeWithValue(string $glue, array $values): string
     {
         // Remove the empty values
-        $values = array_filter($values, function (string $val): bool {
+        $values = \array_filter($values, static function (string $val): bool {
             return $val !== '';
         });
 
-        if (0 === \count($values)) {
+        if (\count($values) === 0) {
             return '';
         }
 
-        return implode($glue, $values);
+        return \implode($glue, $values);
     }
 
     private static function implodeValuesWithWrapping(string $glue, array $values, string $prefix, string $suffix): string
     {
         // Remove the empty values
-        $values = array_filter($values, function (string $val): bool {
-            return '' !== $val;
+        $values = \array_filter($values, static function (string $val): bool {
+            return $val !== '';
         });
 
-        if (0 === \count($values)) {
+        if (\count($values) === 0) {
             return '';
         }
 
-        $value = implode($glue, $values);
+        $value = \implode($glue, $values);
 
         if (\count($values) > 1) {
-            return $prefix.$value.$suffix;
+            return $prefix . $value . $suffix;
         }
 
         return $value;
@@ -285,14 +285,14 @@ final class QueryGenerator
 
     private static function wrapIfNotEmpty(string $value, string $prefix, string $suffix)
     {
-        if ('' === $value) {
+        if ($value === '') {
             return '';
         }
 
-        return $prefix.$value.$suffix;
+        return $prefix . $value . $suffix;
     }
 
-    private function processFieldValues(ValuesBag $values, QueryField $mappingConfig, array &$inclusiveSqlGroup, array &$exclusiveSqlGroup)
+    private function processFieldValues(ValuesBag $values, QueryField $mappingConfig, array &$inclusiveSqlGroup, array &$exclusiveSqlGroup): void
     {
         $hints = new ConversionHints($this->queryPlatform);
         $hints->field = $mappingConfig;

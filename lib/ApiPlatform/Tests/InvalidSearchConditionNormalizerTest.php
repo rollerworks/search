@@ -20,10 +20,13 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @internal
  */
-class InvalidSearchConditionNormalizerTest extends TestCase
+final class InvalidSearchConditionNormalizerTest extends TestCase
 {
-    public function testSupportNormalization()
+    /** @test */
+    public function support_normalization(): void
     {
         $normalizer = new InvalidSearchConditionNormalizer();
 
@@ -32,7 +35,8 @@ class InvalidSearchConditionNormalizerTest extends TestCase
         self::assertFalse($normalizer->supportsNormalization(new \stdClass(), InvalidSearchConditionNormalizer::FORMAT));
     }
 
-    public function testNormalize()
+    /** @test */
+    public function normalize(): void
     {
         $normalizer = new InvalidSearchConditionNormalizer();
 
@@ -46,16 +50,16 @@ class InvalidSearchConditionNormalizerTest extends TestCase
             'title' => 'An error occurred',
             'detail' => "a: b\n2",
             'violations' => [
-                    [
-                        'propertyPath' => 'a',
-                        'message' => 'b',
-                    ],
-                    [
-                        'propertyPath' => '',
-                        'message' => '2',
-                    ],
+                [
+                    'propertyPath' => 'a',
+                    'message' => 'b',
                 ],
+                [
+                    'propertyPath' => '',
+                    'message' => '2',
+                ],
+            ],
         ];
-        $this->assertEquals($expected, $normalizer->normalize($list));
+        self::assertEquals($expected, $normalizer->normalize($list));
     }
 }

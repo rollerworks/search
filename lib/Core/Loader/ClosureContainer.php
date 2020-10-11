@@ -29,7 +29,7 @@ final class ClosureContainer implements ContainerInterface
     private $values = [];
 
     /**
-     * @param \Closure[]|array $factories
+     * @param array|\Closure[] $factories
      */
     public function __construct(array $factories)
     {
@@ -43,7 +43,7 @@ final class ClosureContainer implements ContainerInterface
 
     public function get($id)
     {
-        if (!isset($this->factories[$id])) {
+        if (! isset($this->factories[$id])) {
             throw new ServiceNotFoundException($id);
         }
 

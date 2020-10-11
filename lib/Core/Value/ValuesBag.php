@@ -27,7 +27,7 @@ class ValuesBag implements \Countable, \Serializable
 
     public function count(?string $type = null): int
     {
-        if (null === $type) {
+        if ($type === null) {
             return $this->valuesCount;
         }
 
@@ -35,9 +35,11 @@ class ValuesBag implements \Countable, \Serializable
             case 'simpleValues':
             case 'simpleValue':
                 return \count($this->simpleValues);
+
             case 'simpleExcludedValues':
             case 'simpleExcludedValue':
                 return \count($this->simpleExcludedValues);
+
             default:
                 return \count($this->values[$type] ?? []);
         }
@@ -45,7 +47,7 @@ class ValuesBag implements \Countable, \Serializable
 
     public function serialize(): string
     {
-        return serialize(
+        return \serialize(
             [
                 $this->simpleValues,
                 $this->simpleExcludedValues,
@@ -57,14 +59,14 @@ class ValuesBag implements \Countable, \Serializable
 
     public function unserialize($serialized): void
     {
-        $data = unserialize($serialized);
+        $data = \unserialize($serialized);
 
-        list(
+        [
             $this->simpleValues,
             $this->simpleExcludedValues,
             $this->values,
             $this->valuesCount
-        ) = $data;
+        ] = $data;
     }
 
     public function getSimpleValues(): array
@@ -73,8 +75,6 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @param mixed $value
-     *
      * @return static
      */
     public function addSimpleValue($value)
@@ -111,8 +111,6 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @param mixed $value
-     *
      * @return static
      */
     public function addExcludedSimpleValue($value)
@@ -151,7 +149,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function get(string $type): array
     {
-        if (!isset($this->values[$type])) {
+        if (! isset($this->values[$type])) {
             return [];
         }
 

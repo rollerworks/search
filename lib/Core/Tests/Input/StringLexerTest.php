@@ -25,13 +25,13 @@ final class StringLexerTest extends TestCase
     private $lexer;
 
     /** @before */
-    public function setUpLexer()
+    public function setUpLexer(): void
     {
         $this->lexer = new StringLexer();
     }
 
     /** @test */
-    public function it_skips_all_whitespace_at_the_beginning()
+    public function it_skips_all_whitespace_at_the_beginning(): void
     {
         $this->lexer->parse("   \nhe:\n there;");
 
@@ -39,7 +39,7 @@ final class StringLexerTest extends TestCase
     }
 
     /** @test */
-    public function skips_whitespace_with_exception_of_new_lines()
+    public function skips_whitespace_with_exception_of_new_lines(): void
     {
         $this->lexer->parse("he:\n there;");
 

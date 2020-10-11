@@ -35,7 +35,7 @@ final class MoneyCastFunction extends FunctionNode
         $expression = $sqlWalker->walkSimpleArithmeticExpression($this->stringPrimary);
         $scale = $this->scale;
 
-        if (strpos($sqlWalker->getConnection()->getDatabasePlatform()->getName(), 'mysql') !== false) {
+        if (\mb_strpos($sqlWalker->getConnection()->getDatabasePlatform()->getName(), 'mysql') !== false) {
             $castType = "DECIMAL(10, {$scale})";
         } else {
             $castType = $sqlWalker->getConnection()->getDatabasePlatform()->getDecimalTypeDeclarationSQL(
@@ -43,7 +43,7 @@ final class MoneyCastFunction extends FunctionNode
             );
         }
 
-        return sprintf('CAST(%s AS %s)', $expression, $castType);
+        return \sprintf('CAST(%s AS %s)', $expression, $castType);
     }
 
     public function parse(Parser $parser): void

@@ -35,8 +35,6 @@ abstract class AbstractExporter implements ConditionExporter
 
     /**
      * @internal
-     *
-     * @param mixed $value
      */
     public function modelToView($value, FieldConfig $field): string
     {
@@ -44,11 +42,11 @@ abstract class AbstractExporter implements ConditionExporter
 
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
-        if (null === $value || !$transformer) {
-            if (null !== $value && !is_scalar($value)) {
+        if ($value === null || ! $transformer) {
+            if ($value !== null && ! \is_scalar($value)) {
                 throw new \RuntimeException(
-                    sprintf(
-                        'Model value of type %s is not a scalar value or null and not cannot be '.
+                    \sprintf(
+                        'Model value of type %s is not a scalar value or null and not cannot be ' .
                         'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
                         \gettype($value),
                         $field->getName(),
@@ -65,8 +63,6 @@ abstract class AbstractExporter implements ConditionExporter
 
     /**
      * @internal
-     *
-     * @param mixed $value
      */
     public function modelToNorm($value, FieldConfig $field): string
     {
@@ -74,11 +70,11 @@ abstract class AbstractExporter implements ConditionExporter
 
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
-        if (null === $value || !$transformer) {
-            if (null !== $value && !is_scalar($value)) {
+        if ($value === null || ! $transformer) {
+            if ($value !== null && ! \is_scalar($value)) {
                 throw new \RuntimeException(
-                    sprintf(
-                        'Model value of type %s is not a scalar value or null and not cannot be '.
+                    \sprintf(
+                        'Model value of type %s is not a scalar value or null and not cannot be ' .
                         'converted to a string. You must set a normTransformer for field "%s" with type "%s".',
                         \gettype($value),
                         $field->getName(),
