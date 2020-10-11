@@ -34,6 +34,15 @@
                 <source>This value is not a valid birthday.</source>
                 <target>Deze waarde is geen geldige geboortedatum.</target>
             </trans-unit>
+            <trans-unit id="9">
+                <source>This value is not a valid datetime or date interval.</source>
+                <target>Deze waarde is geen geldige datum en tijd, of tijdsinterval.</target>
+            </trans-unit>
+
+            <trans-unit id="10">
+                <source>This value is not a valid datetime.</source>
+                <target>Deze waarde is geen geldige datum en tijd.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

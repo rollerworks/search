@@ -158,7 +158,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
             $statement->bindValue($name, $value, $type);
 
-            $paramsString .= sprintf("%s: %s\n", $name, $type === null ? get_debug_type($value) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
         $statement->execute();
@@ -181,7 +181,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         );
     }
 
-    protected function assertQueryIsExecutable($conditionOrWhere)
+    protected function assertQueryIsExecutable($conditionOrWhere, string $expectedSql = '', ?array $parameters = null)
     {
         if ($conditionOrWhere instanceof SearchCondition) {
             $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->conn, $conditionOrWhere);
@@ -197,6 +197,16 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $statement->execute();
 
         self::assertNotNull($statement);
+
+        if ($expectedSql !== '') {
+            $expectedSql = preg_replace('/\s+/', ' ', trim($expectedSql));
+
+            self::assertEquals($expectedSql, preg_replace('/\s+/', ' ', trim($whereClause)));
+        }
+
+        if ($parameters !== null) {
+            self::assertEquals($parameters, $conditionGenerator->getParameters()->toArray());
+        }
     }
 
     protected function onNotSuccessfulTest(\Throwable $e): void

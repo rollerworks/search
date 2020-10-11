@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToTimestampTransformer;
-use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueValueComparator;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueComparator;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Value\Compare;
@@ -31,7 +31,7 @@ final class TimestampType extends AbstractFieldType
 
     public function __construct()
     {
-        $this->valueComparator = new DateTimeValueValueComparator();
+        $this->valueComparator = new DateTimeValueComparator();
     }
 
     public function buildType(FieldConfig $config, array $options): void
