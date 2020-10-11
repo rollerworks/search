@@ -34,6 +34,14 @@
                 <source>This value is not a valid birthday.</source>
                 <target>This value is not a valid birthday.</target>
             </trans-unit>
+            <trans-unit id="9">
+                <source>This value is not a valid datetime or date interval.</source>
+                <target>This value is not a valid datetime or date interval.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>This value is not a valid datetime.</source>
+                <target>This value is not a valid datetime.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -16,6 +16,6 @@ namespace Rollerworks\Component\Search\Extension\Core\ValueComparator;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class DateTimeValueValueComparator extends DateValueComparator
+final class DateTimeValueComparator extends DateValueComparator
 {
 }

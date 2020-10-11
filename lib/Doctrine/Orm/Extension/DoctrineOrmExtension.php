@@ -18,10 +18,12 @@ use Doctrine\Persistence\ManagerRegistry;
 use Rollerworks\Component\Search\AbstractExtension;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\AgeFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastIntervalFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CountChildrenFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\MoneyCastFunction;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\BirthdayTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\ChildCountType;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\DateTimeTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\FieldTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\MoneyTypeExtension;
 
@@ -41,6 +43,7 @@ final class DoctrineOrmExtension extends AbstractExtension
             $emConfig->addCustomNumericFunction('SEARCH_CONVERSION_AGE', AgeFunction::class);
             $emConfig->addCustomNumericFunction('SEARCH_COUNT_CHILDREN', CountChildrenFunction::class);
             $emConfig->addCustomNumericFunction('SEARCH_MONEY_AS_NUMERIC', MoneyCastFunction::class);
+            $emConfig->addCustomNumericFunction('SEARCH_CAST_INTERVAL', CastIntervalFunction::class);
         }
     }
 
@@ -48,6 +51,7 @@ final class DoctrineOrmExtension extends AbstractExtension
     {
         return [
             new BirthdayTypeExtension(),
+            new DateTimeTypeExtension(),
             new ChildCountType(),
             new FieldTypeExtension(),
             new MoneyTypeExtension(),

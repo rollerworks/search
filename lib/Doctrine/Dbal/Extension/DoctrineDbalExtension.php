@@ -23,6 +23,7 @@ class DoctrineDbalExtension extends AbstractExtension
     {
         return [
             new Type\FieldTypeExtension(),
+            new Type\DateTimeTypeExtension(),
             new Type\BirthdayTypeExtension(new AgeDateConversion()),
             new Type\MoneyTypeExtension(new MoneyValueConversion()),
         ];

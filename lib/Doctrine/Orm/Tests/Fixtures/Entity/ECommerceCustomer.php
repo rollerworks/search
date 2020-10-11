@@ -40,4 +40,9 @@ class ECommerceCustomer
      * @ORM\Column(type="date")
      */
     public $birthday;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    public $regdate;
 }

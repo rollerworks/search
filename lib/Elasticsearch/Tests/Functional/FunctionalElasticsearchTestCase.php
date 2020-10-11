@@ -93,6 +93,10 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
 
     protected function getDocuments(): array
     {
+        $date = static function (string $input) {
+            return (new \DateTimeImmutable($input, new \DateTimeZone('UTC')))->format('Y-m-d\TH:i:sP');
+        };
+
         return [
             'customers' => [
                 // customers
@@ -134,6 +138,15 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                     ['label' => 'Cape', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
                     ['label' => 'Cape repair manual', 'quantity' => 1, 'price' => 1000, 'total' => 1000],
                     ['label' => 'Hoof polish', 'quantity' => 3, 'price' => 1000, 'total' => 3000],
+                ]],
+                7 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2019-001', '2015-05-10', $date('-7 days'), 3, 8000, [
+                    ['label' => 'Air Guitar', 'quantity' => 1, 'price' => 8, 'total' => 8],
+                ]],
+                8 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2020-019', '2015-05-10', $date('+15 days'), 3, 8000, [
+                    ['label' => 'Air Guitar', 'quantity' => 1, 'price' => 8, 'total' => 8],
+                ]],
+                9 => [['id' => 1, 'full_name' => 'Peter Pang', 'birthday' => '1980-11-20'], '2021-005', '2015-05-10', $date('+1 year'), 3, 8000, [
+                    ['label' => 'Air Guitar', 'quantity' => 1, 'price' => 8, 'total' => 8],
                 ]],
             ],
         ];
@@ -202,8 +215,8 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $builder->add('label', TextType::class);
         $builder->add('pub-date', DateType::class, ['pattern' => 'yyyy-MM-dd']);
         $builder->add('@pub-date', OrderFieldType::class);
-        $builder->add('pub-date-time', DateTimeType::class, ['pattern' => 'yyyy-MM-dd HH:mm:ss']);
-        $builder->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2]]);
+        $builder->add('pub-date-time', DateTimeType::class, ['pattern' => 'yyyy-MM-dd HH:mm:ss', 'allow_relative' => true]);
+        $builder->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2, 'overdue' => 3]]);
         $builder->add('total', MoneyType::class);
         $builder->add('@total', OrderFieldType::class);
 
@@ -307,7 +320,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 "Found these records instead: \n%s\n"
                 ."With query: ---------------------\n%s\n---------------------------------\n",
                 print_r($documents, true),
-                json_encode($query, JSON_PRETTY_PRINT)
+                json_encode($query->toArray(), JSON_PRETTY_PRINT)
             )
         );
     }

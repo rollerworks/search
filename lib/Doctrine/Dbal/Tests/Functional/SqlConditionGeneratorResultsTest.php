@@ -17,6 +17,7 @@ use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
@@ -95,7 +96,7 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
      */
     protected function getDbRecords()
     {
-        $date = function ($input) {
+        $date = static function (string $input) {
             return new \DateTimeImmutable($input, new \DateTimeZone('UTC'));
         };
 
@@ -115,9 +116,10 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
                 ->add([2, 'Leroy', 'Jenkins', $date('2000-05-15'), $date('2005-05-20')])
                 ->add([3, 'Doctor', 'Who', $date('2005-12-10'), $date('2005-02-20')])
                 ->add([4, 'Spider', 'Pig', $date('2012-06-10'), $date('2012-07-20')])
+                ->add([5, 'Nicklas', 'Cake', $date('1964-01-07'), $date('2006-09-31')])
             ->end(),
 
-            // Two invoices are paid, one is a concept and three are unpaid
+            // Two invoices are paid, one is a concept and three are unpaid, one is overdue
             SchemaRecord::create(
                 'invoice',
                 [
@@ -137,6 +139,10 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
                 ->add([4, 2, '2015-001', $date('2015-05-10'), 1, '50.00']) // 'Leroy', 'Jenkins'
                 ->add([5, 3, '2015-002', $date('2015-05-01'), 1, '215.00']) // 'Doctor', 'Who'
                 ->add([6, 4, '2015-003', $date('2015-05-05'), 1, '55.00']) // 'Spider', 'Pig'
+                // Overdue, with relative dates
+                ->add([7, 5, '2019-001', $date('-7 days'), 3, '80.00']) // 'Nicklas', 'Cake'
+                ->add([8, 5, '2020-019', $date('+15 days'), 3, '70.00']) // 'Nicklas', 'Cake'
+                ->add([9, 5, '2021-005', $date('+1 year'), 3, '70.00']) // 'Nicklas', 'Cake'
             ->end(),
 
             SchemaRecord::create(
@@ -169,6 +175,11 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
                 ->add([10, 6, 'Cape', 1, '10.00', '10.00'])
                 ->add([11, 6, 'Cape repair manual', 1, '10.00', '10.00'])
                 ->add([12, 6, 'Hoof polish', 3, '10.00', '30.00'])
+                // invoice 7
+                ->add([13, 7, 'Bee repellent', 1, '666.00', '666.00'])
+                ->add([14, 7, 'Badge', 1, '10.00', '10.00'])
+                ->add([15, 8, 'Wicker Beads', 5, '3.00', '15.00'])
+                ->add([16, 8, 'A Pair of Cloths', 1, '60.00', '60.00'])
             ->end(),
         ];
     }
@@ -230,8 +241,8 @@ SQL;
         $fieldSet->add('id', IntegerType::class);
         $fieldSet->add('customer', IntegerType::class);
         $fieldSet->add('label', TextType::class);
-        $fieldSet->add('pub-date', DateType::class, ['pattern' => 'yyyy-MM-dd']);
-        $fieldSet->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2]]);
+        $fieldSet->add('pub-date', DateTimeType::class, ['pattern' => 'yyyy-MM-dd', 'allow_relative' => true]);
+        $fieldSet->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2, 'overdue' => 3]]);
         $fieldSet->add('total', MoneyType::class);
 
         // Invoice Details
@@ -264,7 +275,7 @@ SQL;
      */
     public function it_finds_with_range_and_excluding()
     {
-        $this->makeTest('id: 1~7, !2;', [1, 3, 4, 5, 6]);
+        $this->makeTest('id: 1~7[, !2;', [1, 3, 4, 5, 6]);
     }
 
     /**
@@ -281,6 +292,19 @@ SQL;
     public function it_finds_by_customer_birthdays()
     {
         $this->makeTest('customer-birthday: "2000-05-15", "1980-06-10";', [2, 3, 4]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_finds_by_date_relative()
+    {
+        $this->makeTest('pub-date: >"7 days";', [8, 9]);
+        $this->makeTest('pub-date: >"16 days";', [9]);
+        $this->makeTest('pub-date: "14 days" ~ "6 months";', [8]);
+        $this->makeTest('pub-date: >2015-05-10, <"-7 days";', [7]);
+        $this->makeTest('pub-date: >2015-05-10, <"-8 days";', []);
+        $this->makeTest('pub-date: >2015-05-10, >"-1 years", <"6 months";', [7, 8]);
     }
 
     /**

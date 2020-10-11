@@ -13,13 +13,18 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\Type;
 
+use Carbon\CarbonInterval;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateIntervalTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
-use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueValueComparator;
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\MultiTypeDataTransformer;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeIntervalValueComparator;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueComparator;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -30,11 +35,16 @@ final class DateTimeType extends BaseDateTimeType
     public const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
     public const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
 
+    /** @var DateTimeValueComparator */
     private $valueComparator;
+
+    /** @var DateTimeIntervalValueComparator */
+    private $valueComparatorInterval;
 
     public function __construct()
     {
-        $this->valueComparator = new DateTimeValueValueComparator();
+        $this->valueComparator = new DateTimeValueComparator();
+        $this->valueComparatorInterval = new DateTimeIntervalValueComparator();
     }
 
     public function buildType(FieldConfig $config, array $options): void
@@ -48,23 +58,55 @@ final class DateTimeType extends BaseDateTimeType
             $this->validateFormat('time_format', $options['time_format']);
         }
 
-        $config->setViewTransformer(
-            new DateTimeToLocalizedStringTransformer(
-                $options['model_timezone'],
-                $options['view_timezone'],
-                $options['date_format'],
-                $options['time_format'],
-                \IntlDateFormatter::GREGORIAN,
-                $options['pattern']
-            )
-        );
+        if ($options['allow_relative']) {
+            $config->setValueComparator($this->valueComparatorInterval);
 
-        $config->setNormTransformer(
-            new DateTimeToRfc3339Transformer(
-                $options['model_timezone'],
-                $options['view_timezone']
-            )
-        );
+            $config->setViewTransformer(
+                new MultiTypeDataTransformer(
+                    [
+                        CarbonInterval::class => new DateIntervalTransformer(\Locale::getDefault()),
+                        \DateTimeImmutable::class => new DateTimeToLocalizedStringTransformer(
+                            $options['model_timezone'],
+                            $options['view_timezone'],
+                            $options['date_format'],
+                            $options['time_format'],
+                            \IntlDateFormatter::GREGORIAN,
+                            $options['pattern']
+                        ),
+                    ]
+                )
+            );
+
+            $config->setNormTransformer(
+                new MultiTypeDataTransformer(
+                    [
+                        CarbonInterval::class => new DateIntervalTransformer('en'),
+                        \DateTimeImmutable::class => new DateTimeToRfc3339Transformer(
+                            $options['model_timezone'],
+                            $options['view_timezone']
+                        ),
+                    ]
+                )
+            );
+        } else {
+            $config->setViewTransformer(
+                new DateTimeToLocalizedStringTransformer(
+                    $options['model_timezone'],
+                    $options['view_timezone'],
+                    $options['date_format'],
+                    $options['time_format'],
+                    \IntlDateFormatter::GREGORIAN,
+                    $options['pattern']
+                )
+            );
+
+            $config->setNormTransformer(
+                new DateTimeToRfc3339Transformer(
+                    $options['model_timezone'],
+                    $options['view_timezone']
+                )
+            );
+        }
     }
 
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
@@ -82,6 +124,7 @@ final class DateTimeType extends BaseDateTimeType
         }
 
         $view->vars['timezone'] = $options['view_timezone'] ?: date_default_timezone_get();
+        $view->vars['allow_relative'] = $options['allow_relative'];
         $view->vars['pattern'] = $pattern;
     }
 
@@ -92,12 +135,21 @@ final class DateTimeType extends BaseDateTimeType
                 'model_timezone' => 'UTC',
                 'view_timezone' => null,
                 'pattern' => null,
+                'allow_relative' => false,
                 'date_format' => self::DEFAULT_DATE_FORMAT,
                 'time_format' => self::DEFAULT_TIME_FORMAT,
+                'invalid_message' => static function (Options $options) {
+                    if ($options['allow_relative']) {
+                        return 'This value is not a valid datetime or date interval.';
+                    }
+
+                    return 'This value is not a valid datetime.';
+                },
             ]
         );
 
         $resolver->setAllowedTypes('pattern', ['string', 'null']);
+        $resolver->setAllowedTypes('allow_relative', 'bool');
         $resolver->setAllowedTypes('date_format', ['int']);
         $resolver->setAllowedTypes('time_format', ['int']);
     }

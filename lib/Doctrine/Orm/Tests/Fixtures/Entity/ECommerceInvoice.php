@@ -32,7 +32,7 @@ class ECommerceInvoice
     public $label;
 
     /**
-     * @ORM\Column(name="pubdate", type="date", nullable=true)
+     * @ORM\Column(name="pubdate", type="datetime", nullable=true)
      */
     public $date;
 

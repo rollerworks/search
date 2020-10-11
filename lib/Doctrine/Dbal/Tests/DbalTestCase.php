@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as PDOSqlite;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
-use Rollerworks\Component\Search\Extension\Core\Type\DateType;
+use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\DoctrineDbalExtension;
@@ -37,7 +37,7 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
 
         $fieldSet->add('customer', IntegerType::class);
         $fieldSet->add('customer_name', TextType::class);
-        $fieldSet->add('customer_birthday', DateType::class);
+        $fieldSet->add('customer_birthday', DateTimeType::class, ['allow_relative' => true]);
 
         return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
     }

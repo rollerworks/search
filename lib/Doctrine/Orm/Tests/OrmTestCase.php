@@ -26,10 +26,12 @@ use Rollerworks\Component\Search\Doctrine\Orm\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\AgeFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastIntervalFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CountChildrenFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\MoneyCastFunction;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\BirthdayTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\ChildCountType;
+use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\DateTimeTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\FieldTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\MoneyTypeExtension;
 use Rollerworks\Component\Search\SearchCondition;
@@ -84,6 +86,7 @@ abstract class OrmTestCase extends DbalTestCase
             $emConfig->addCustomNumericFunction('SEARCH_CONVERSION_AGE', AgeFunction::class);
             $emConfig->addCustomNumericFunction('SEARCH_COUNT_CHILDREN', CountChildrenFunction::class);
             $emConfig->addCustomNumericFunction('SEARCH_MONEY_AS_NUMERIC', MoneyCastFunction::class);
+            $emConfig->addCustomNumericFunction('SEARCH_CAST_INTERVAL', CastIntervalFunction::class);
 
             $schemaTool = new SchemaTool(self::$sharedEm);
             $schemaTool->dropDatabase();
@@ -130,6 +133,7 @@ abstract class OrmTestCase extends DbalTestCase
     {
         return [
             new BirthdayTypeExtension(),
+            new DateTimeTypeExtension(),
             new ChildCountType(),
             new FieldTypeExtension(),
             new MoneyTypeExtension(),
@@ -173,6 +177,13 @@ abstract class OrmTestCase extends DbalTestCase
         $whereClause = $conditionGenerator->getWhereClause();
         $conditionGenerator->updateQuery();
 
+        $paramsString = '';
+        $platform = $this->conn->getDatabasePlatform();
+
+        foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
+            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+        }
+
         $rows = $query->getArrayResult();
         $idRows = array_map(
             function ($value) {
@@ -184,10 +195,16 @@ abstract class OrmTestCase extends DbalTestCase
         sort($ids);
         sort($idRows);
 
-        $this->assertEquals(
+        self::assertEquals(
             $ids,
             array_merge([], array_unique($idRows)),
-            sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s", print_r($rows, true), $whereClause)
+            sprintf(
+                "Found these records instead: \n%s\nWith WHERE-clause: %s\nSQL: %s\nAnd params: %s",
+                print_r($rows, true),
+                $whereClause,
+                $query->getSQL(),
+                $paramsString
+            )
         );
     }
 

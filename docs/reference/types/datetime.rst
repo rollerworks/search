@@ -10,12 +10,13 @@ The provided input can be provided localized.
 The underlying data is stored as a ``DateTime`` object.
 
 +----------------------+------------------------------------------------------------------------------+
-| Output Data Type     | ``DateTime``                                                                 |
+| Output Data Type     | can be ``DateTimeImmutable`` or ``Carbon\CarbonInterval``                    |
 +----------------------+------------------------------------------------------------------------------+
 | Options              | - `with_seconds`_                                                            |
 |                      | - `with_minutes`_                                                            |
 |                      | - `model_timezone`_                                                          |
 |                      | - `input_timezone`_                                                          |
+|                      | - `allow_relative`_                                                          |
 +----------------------+------------------------------------------------------------------------------+
 | Parent type          | :doc:`field </reference/types/field>`                                        |
 +----------------------+------------------------------------------------------------------------------+

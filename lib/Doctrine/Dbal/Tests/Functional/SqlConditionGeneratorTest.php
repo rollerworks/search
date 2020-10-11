@@ -13,11 +13,15 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
+use Carbon\CarbonInterval;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
+use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\SearchConditionBuilder;
 use Rollerworks\Component\Search\Value\Compare;
@@ -355,5 +359,46 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
         ->getSearchCondition();
 
         $this->assertQueryIsExecutable($condition);
+    }
+
+    public function testConversionStrategy2()
+    {
+        $date = new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC'));
+
+        $fieldSet = $this->getFieldSet(false);
+        $fieldSet->add('customer_birthday', DateTimeType::class, ['allow_relative' => true]);
+
+        $fieldSet = $fieldSet->getFieldSet();
+
+        $condition = SearchConditionBuilder::create($fieldSet)
+            ->field('customer_birthday')
+                ->addSimpleValue(CarbonInterval::fromString('1 year 2 weeks 8 seconds'))
+                ->addSimpleValue(CarbonInterval::fromString('1 year 2 weeks 8 seconds')->invert())
+                ->addSimpleValue($date)
+                ->add(new Range(CarbonInterval::fromString('1 year'), CarbonInterval::fromString('10 year')))
+            ->end()
+        ->getSearchCondition();
+
+        if ($this->conn->getDatabasePlatform()->getName() === 'postgresql') {
+            $this->assertQueryIsExecutable(
+                $condition,
+                '(((c.birthday = NOW() + CAST(:search_0 AS interval) OR c.birthday = NOW() - CAST(:search_1 AS interval) OR c.birthday = :search_2 OR (c.birthday >= NOW() + CAST(:search_3 AS interval) AND c.birthday <= NOW() + CAST(:search_4 AS interval)))))',
+                [
+                    ':search_0' => ['1 year 2 weeks 8 seconds', null],
+                    ':search_1' => ['1 year 2 weeks 8 seconds', null],
+                    ':search_2' => [$date, Type::getType(Types::DATETIME_IMMUTABLE)],
+                    ':search_3' => ['1 year', null],
+                    ':search_4' => ['10 years', null],
+                ]
+            );
+        } elseif (\in_array($this->conn->getDatabasePlatform()->getName(), ['mysql', 'drizzle'], true)) {
+            $this->assertQueryIsExecutable(
+                $condition,
+                '(((c.birthday = NOW() + INTERVAL 1 YEAR + INTERVAL 2 WEEK + INTERVAL 8 SECOND OR c.birthday = NOW() - INTERVAL 1 YEAR - INTERVAL 2 WEEK - INTERVAL 8 SECOND OR c.birthday = :search_0 OR (c.birthday >= NOW() + INTERVAL 1 YEAR AND c.birthday <= NOW() + INTERVAL 10 YEAR))))',
+                [
+                    ':search_0' => [$date, Type::getType(Types::DATETIME_IMMUTABLE)],
+                ]
+            );
+        }
     }
 }

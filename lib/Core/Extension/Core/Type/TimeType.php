@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Extension\Core\Type;
 
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToStringTransformer;
-use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueValueComparator;
+use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateTimeValueComparator;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
@@ -32,7 +32,7 @@ final class TimeType extends AbstractFieldType
 
     public function __construct()
     {
-        $this->valueComparator = new DateTimeValueValueComparator();
+        $this->valueComparator = new DateTimeValueComparator();
     }
 
     public function buildType(FieldConfig $config, array $options): void
