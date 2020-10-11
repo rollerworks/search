@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
+use Rollerworks\Component\Search\Field\FieldType;
+use Rollerworks\Component\Search\Field\FieldTypeExtension;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\FieldSetConfigurator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
@@ -31,6 +34,13 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
         $loader->load('services.xml');
         $loader->load('input_processor.xml');
         $loader->load('condition_exporter.xml');
+
+        $container->registerForAutoconfiguration(FieldType::class)
+            ->addTag('rollerworks_search.type');
+        $container->registerForAutoconfiguration(FieldTypeExtension::class)
+            ->addTag('rollerworks_search.type_extension');
+        $container->registerForAutoconfiguration(FieldSetConfigurator::class)
+            ->addTag('rollerworks_search.fieldset');
 
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
