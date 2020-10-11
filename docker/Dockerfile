@@ -1,13 +1,13 @@
-FROM php:7.2-cli
+FROM php:7.4-cli
 
 ENV BUILD_DEPS="autoconf file g++ gcc libc-dev pkg-config re2c"
-ENV LIB_DEPS="git make unzip ca-certificates zlib1g-dev libpq5 postgresql-server-dev-11"
+ENV LIB_DEPS="git make unzip ca-certificates zlib1g-dev libzip-dev libpq5 postgresql-server-dev-11"
 ENV ICU_RELEASE=60.1
 ENV CXXFLAGS "--std=c++0x"
 
 RUN apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS $LIB_DEPS && rm -rf /var/lib/apt/lists/*
-RUN cd /tmp && curl -Ls http://download.icu-project.org/files/icu4c/$ICU_RELEASE/icu4c-$(echo $ICU_RELEASE | tr '.' '_')-src.tgz > icu4c-src.tgz \
- && cd /tmp && tar xzf icu4c-src.tgz && cd /tmp/icu/source && ./configure && make && make install && rm -rf /tmp/icu /tmp/icu4c-src.tgz
+RUN cd /tmp && curl -Ls https://github.com/unicode-org/icu/releases/download/release-$(echo $ICU_RELEASE | tr '.' '-')/icu4c-$(echo $ICU_RELEASE | tr '.' '_')-src.tgz > icu4c-src.tgz \
+ && cd /tmp && tar xzf icu4c-src.tgz && cd /tmp/icu/source && ./runConfigureICU Linux && make && make install && rm -rf /tmp/icu /tmp/icu4c-src.tgz
 
 RUN echo "date.timezone=Europe/Amsterdam" >> $PHP_INI_DIR/php.ini \
  && echo "memory_limit=-1" >> $PHP_INI_DIR/php.ini \
