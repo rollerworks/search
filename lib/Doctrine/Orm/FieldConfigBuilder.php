@@ -28,6 +28,7 @@ final class FieldConfigBuilder
     /** @var EntityManagerInterface */
     private $entityManager;
 
+    /** @var array<string,array<string,OrmQueryField>> */
     private $fields = [];
 
     /** @var string */
@@ -54,13 +55,13 @@ final class FieldConfigBuilder
         $fieldName = $mappingName;
 
         if (false !== strpos($mappingName, '#')) {
-            list($fieldName, $mappingIdx) = explode('#', $mappingName, 2);
+            [$fieldName, $mappingIdx] = explode('#', $mappingName, 2);
             unset($this->fields[$fieldName][null]);
         } else {
             $this->fields[$fieldName] = [];
         }
 
-        list($entity, $property) = $this->getEntityAndProperty(
+        [$entity, $property] = $this->getEntityAndProperty(
             $mappingName,
             $entity ?? $this->defaultEntity,
             $property
@@ -75,24 +76,17 @@ final class FieldConfigBuilder
         );
     }
 
+    /**
+     * @return array<string,array<string,OrmQueryField>>
+     */
     public function getFields(): array
     {
         return $this->fields;
     }
 
-    public function getFieldsForHint(): array
-    {
-        $resolvedFields = [];
-
-        foreach ($this->fields as $fieldName => $mappings) {
-            foreach ($mappings as $fieldConfig) {
-                $resolvedFields[$fieldConfig->mappingName] = $fieldConfig;
-            }
-        }
-
-        return $resolvedFields;
-    }
-
+    /**
+     * @return array<int,string>
+     */
     private function getEntityAndProperty(string $fieldName, string $entity, string $property): array
     {
         $metadata = $this->entityManager->getClassMetadata($entity);
