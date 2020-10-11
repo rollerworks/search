@@ -1,7 +1,8 @@
-RollerworksSearch API-Platform Bridge
-=====================================
+RollerworksSearch
+=================
 
-[API-Platform](https://github.com/api-platform) integration bridge for [RollerworksSearch][1].
+This package provides the core system of [RollerworksSearch][1].
+*See the main repository for full details and examples.*
 
 If you'd like to contribute to this project, please see the [contributing guide lines][2]
 for more information.
@@ -9,10 +10,10 @@ for more information.
 Installation
 ------------
 
-To install this extension, add the `search-api-platform` to your composer.json
+To install this package, add the `rollerworks/search` to your composer.json
 
 ```bash
-$ php composer.phar require rollerworks/search-api-platform
+$ php composer.phar require rollerworks/search
 ```
 
 License
