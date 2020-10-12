@@ -110,6 +110,8 @@ interface FieldConfig
 
     /**
      * Returns the value of a specific option.
+     *
+     * @param mixed|null $default
      */
     public function getOption(string $name, $default = null);
 

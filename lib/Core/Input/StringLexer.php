@@ -78,9 +78,9 @@ final class StringLexer
 
     public function moveCursor(string $text): void
     {
-        $this->lineno += mb_substr_count($text, "\n");
+        $this->lineno += \mb_substr_count($text, "\n");
         $this->cursor += \strlen($text);
-        $this->char += mb_strlen($text);
+        $this->char += \mb_strlen($text);
     }
 
     public function snapshot($force = false): void
@@ -362,8 +362,8 @@ final class StringLexer
                 throw $this->createFormatException(StringLexerException::UNKNOWN_PATTERN_MATCH_FLAG);
             }
 
-            $negative = false !== strpos($match[1], '!');
-            $caseInsensitive = false !== strpos($match[1], 'i');
+            $negative = \strpos($match[1], '!') !== false;
+            $caseInsensitive = \strpos($match[1], 'i') !== false;
         }
 
         static $operatorToTypeMapping = [
@@ -442,7 +442,7 @@ final class StringLexer
             return null;
         }
 
-        if (1 === \strlen($data)) {
+        if (\strlen($data) === 1) {
             return $data === $this->data[$this->cursor] ? $data : null;
         }
 
