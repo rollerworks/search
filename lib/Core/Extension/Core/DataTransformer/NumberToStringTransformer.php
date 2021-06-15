@@ -40,7 +40,7 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
             throw new TransformationFailedException('Expected a numeric or null.');
         }
 
-        if ($value >= PHP_INT_MAX || $value <= -PHP_INT_MAX) {
+        if ($value >= \PHP_INT_MAX || $value <= -\PHP_INT_MAX) {
             throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
         }
 
@@ -81,7 +81,7 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
             }
         }
 
-        if ($result >= PHP_INT_MAX || $result <= -PHP_INT_MAX) {
+        if ($result >= \PHP_INT_MAX || $result <= -\PHP_INT_MAX) {
             throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
         }
 

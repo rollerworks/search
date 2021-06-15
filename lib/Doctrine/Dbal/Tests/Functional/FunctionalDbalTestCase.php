@@ -158,7 +158,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
             $statement->bindValue($name, $value, $type);
 
-            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : \get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
         $statement->execute();
@@ -232,7 +232,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
                     $query['params'] ?: []
                 );
 
-                $queries .= ($i + 1) . ". SQL: '" . $query['sql'] . "' Params: " . \implode(', ', $params) . PHP_EOL;
+                $queries .= ($i + 1) . ". SQL: '" . $query['sql'] . "' Params: " . \implode(', ', $params) . \PHP_EOL;
                 --$i;
             }
 
@@ -246,17 +246,17 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
                         break;
                     }
 
-                    $traceMsg .= $part['file'] . ':' . $part['line'] . PHP_EOL;
+                    $traceMsg .= $part['file'] . ':' . $part['line'] . \PHP_EOL;
                 }
             }
 
             $message =
                 '[' . \get_class($e) . '] ' .
                 $e->getMessage() .
-                PHP_EOL . PHP_EOL .
-                'With queries:' . PHP_EOL .
-                $queries . PHP_EOL .
-                'Trace:' . PHP_EOL .
+                \PHP_EOL . \PHP_EOL .
+                'With queries:' . \PHP_EOL .
+                $queries . \PHP_EOL .
+                'Trace:' . \PHP_EOL .
                 $traceMsg;
 
             throw new Exception($message, (int) $e->getCode(), $e);

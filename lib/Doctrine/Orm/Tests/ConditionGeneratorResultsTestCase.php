@@ -308,7 +308,7 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
             if (\function_exists('dump')) {
                 dump($e);
             } else {
-                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . PHP_EOL;
+                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
                 echo \get_class($e) . '::' . (string) $e;
@@ -332,7 +332,7 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
             if (\function_exists('dump')) {
                 dump($e);
             } else {
-                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . PHP_EOL;
+                echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
                 echo \get_class($e) . '::' . (string) $e;

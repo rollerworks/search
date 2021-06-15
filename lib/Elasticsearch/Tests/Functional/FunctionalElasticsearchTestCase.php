@@ -309,7 +309,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $search->getPath(),
-                \json_encode($query->toArray(), JSON_PRETTY_PRINT)
+                \json_encode($query->toArray(), \JSON_PRETTY_PRINT)
             ));
 
             return;
@@ -322,7 +322,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 "Found these records instead: \n%s\n"
                 . "With query: ---------------------\n%s\n---------------------------------\n",
                 \print_r($documents, true),
-                \json_encode($query->toArray(), JSON_PRETTY_PRINT)
+                \json_encode($query->toArray(), \JSON_PRETTY_PRINT)
             )
         );
     }

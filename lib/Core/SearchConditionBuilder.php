@@ -84,7 +84,7 @@ final class SearchConditionBuilder
         if ($forceNew) {
             @\trigger_error(
                 'Using $forceNew with true is deprecated since RollerworksSearch v2.0.0-ALPHA22 and will be removed in v2.0.0-BETA1, use overwriteField() instead.',
-                E_USER_DEPRECATED
+                \E_USER_DEPRECATED
             );
 
             return $this->overwriteField($name);

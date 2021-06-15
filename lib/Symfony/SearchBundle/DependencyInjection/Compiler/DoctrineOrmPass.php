@@ -29,8 +29,8 @@ final class DoctrineOrmPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (! $container->hasParameter('rollerworks_search.doctrine.orm.entity_managers') ||
-            ! $container->hasParameter('doctrine.default_entity_manager')
+        if (! $container->hasParameter('rollerworks_search.doctrine.orm.entity_managers')
+            || ! $container->hasParameter('doctrine.default_entity_manager')
         ) {
             return;
         }

@@ -673,7 +673,7 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
     {
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
-        self::assertEquals(PHP_INT_MAX - 1, (int) $transformer->reverseTransform((string) (PHP_INT_MAX - 1)));
+        self::assertEquals(\PHP_INT_MAX - 1, (int) $transformer->reverseTransform((string) (\PHP_INT_MAX - 1)));
     }
 
     /** @test */

@@ -44,7 +44,7 @@ final class MultiTypeDataTransformer implements DataTransformer
             return '';
         }
 
-        $type = get_debug_type($value);
+        $type = \get_debug_type($value);
 
         if (! isset($this->transformers[$type])) {
             throw new TransformationFailedException(\sprintf('Unsupported type "%s".', $type));
@@ -61,7 +61,7 @@ final class MultiTypeDataTransformer implements DataTransformer
             try {
                 return $transformer->reverseTransform($value);
             } catch (Throwable $e) {
-                $finalException = new TransformationFailedException($e->getMessage() . PHP_EOL . $e->getTraceAsString(), $e->getCode(), $finalException);
+                $finalException = new TransformationFailedException($e->getMessage() . \PHP_EOL . $e->getTraceAsString(), $e->getCode(), $finalException);
 
                 continue;
             }

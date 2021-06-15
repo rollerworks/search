@@ -85,8 +85,8 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         $value = $this->getIntlDateFormatter()->format($dateTime->getTimestamp());
 
-        if (intl_get_error_code() != 0) {
-            throw new TransformationFailedException(intl_get_error_message());
+        if (\intl_get_error_code() != 0) {
+            throw new TransformationFailedException(\intl_get_error_message());
         }
 
         return $value;
@@ -116,8 +116,8 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         $timestamp = $this->getIntlDateFormatter($dateOnly)->parse($value);
 
-        if (intl_get_error_code() != 0) {
-            throw new TransformationFailedException(intl_get_error_message());
+        if (\intl_get_error_code() != 0) {
+            throw new TransformationFailedException(\intl_get_error_message());
         }
 
         if ($timestamp > 253402214400) {
@@ -171,7 +171,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         // new \IntlDateFormatter may return null instead of false in case of failure, see https://bugs.php.net/bug.php?id=66323
         if (! $intlDateFormatter) {
-            throw new TransformationFailedException(intl_get_error_message(), intl_get_error_code());
+            throw new TransformationFailedException(\intl_get_error_message(), \intl_get_error_code());
         }
 
         if ($pattern) {
