@@ -25,15 +25,15 @@
     },
     "conflict": {
         "doctrine/doctrine-bundle": "<1.1",
-        "rollerworks/search-doctrine-dbal": "<2.0.0-ALPHA23",
-        "rollerworks/search-doctrine-orm": "<2.0.0-ALPHA23",
-        "rollerworks/search-symfony-validator": "<2.0.0-ALPHA23"
+        "rollerworks/search-doctrine-dbal": "<2.0.0-BETA1",
+        "rollerworks/search-doctrine-orm": "<2.0.0-BETA1",
+        "rollerworks/search-symfony-validator": "<2.0.0-BETA1"
     },
     "require-dev": {
         "matthiasnoback/symfony-dependency-injection-test": "^2.0.0",
         "matthiasnoback/symfony-service-definition-validator": "^1.2.8",
         "phpunit/phpunit": "^6.5.4",
-        "rollerworks/search-symfony-validator": "^2.0@dev,>=2.0.0-ALPHA23",
+        "rollerworks/search-symfony-validator": "^2.0@dev,>=2.0.0-BETA1",
         "symfony/asset": "^3.4.2 || ^4.0.2 || ^5.0",
         "symfony/browser-kit": "^3.4.2 || ^4.0.2 || ^5.0",
         "symfony/dom-crawler": "^3.4.2 || ^4.0.2 || ^5.0",

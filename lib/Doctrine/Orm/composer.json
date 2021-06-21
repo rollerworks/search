@@ -22,8 +22,8 @@
     "require": {
         "php": ">=7.2",
         "doctrine/orm": "^2.6",
-        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA23",
-        "rollerworks/search-doctrine-dbal": "^2.0@dev,>=2.0.0-ALPHA23"
+        "rollerworks/search": "^2.0@dev,>=2.0.0-BETA1",
+        "rollerworks/search-doctrine-dbal": "^2.0@dev,>=2.0.0-BETA1"
     },
     "require-dev": {
         "moneyphp/money": "^3.0.7",
@@ -32,9 +32,6 @@
         "symfony/var-dumper": "^3.4.2 || ^4.0.2 || ^5.0"
     },
     "config": {
-        "platform": {
-            "php": "7.1"
-        },
         "preferred-install": {
             "doctrine/dbal": "source",
             "doctrine/orm": "source",
