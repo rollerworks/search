@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": ">=7.2",
         "api-platform/core": "^2.0.10",
         "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA23",
         "rollerworks/uri-encoder": "^1.1.0 || ^2.0",
