@@ -135,7 +135,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
     protected function getNumberFormatter(): \NumberFormatter
     {
         $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::CURRENCY);
-        $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
+        $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping ? 1 : 0);
 
         return $formatter;
     }

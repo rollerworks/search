@@ -31,6 +31,6 @@ class ParameterBag
 
     public function injectParameters($template): string
     {
-        return \str_replace(\array_keys($this->parameters), \array_values($this->parameters), $template);
+        return \str_replace(\array_keys($this->parameters), \array_values($this->parameters), (string) $template);
     }
 }
