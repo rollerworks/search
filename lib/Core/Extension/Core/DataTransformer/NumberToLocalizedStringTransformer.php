@@ -100,7 +100,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
     /**
      * Transforms a number type into localized number.
      *
-     * @param float|int|null $value Number value
+     * @param float|int|string|null $value Number value
      *
      * @throws TransformationFailedException if the given value is not numeric
      *                                       or if the value can not be transformed
@@ -118,7 +118,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
         }
 
         $formatter = $this->getNumberFormatter();
-        $value = $formatter->format($value);
+        $value = (string) $formatter->format((float) $value);
 
         if (\intl_is_failure($formatter->getErrorCode())) {
             throw new TransformationFailedException($formatter->getErrorMessage());
@@ -221,7 +221,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
             $formatter->setAttribute(\NumberFormatter::ROUNDING_MODE, $this->roundingMode);
         }
 
-        $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping);
+        $formatter->setAttribute(\NumberFormatter::GROUPING_USED, $this->grouping ? 1 : 0);
 
         return $formatter;
     }

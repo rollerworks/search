@@ -19,7 +19,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-versions: ['7.2', '7.3', '7.4']
+                php-versions: ['7.2', '7.3', '7.4', '8.0']
 
         services:
             # https://docs.docker.com/samples/library/postgres/
@@ -81,8 +81,10 @@ jobs:
                 run: |
                     rm -f composer.lock
                     composer global require symfony/flex
-                    composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
 
+                    # ElasticaBundle is not compatible with PHP 8 yet.
+                    if [ "${{ matrix.php-versions }}" = "8.0" ]; then composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi --ignore-platform-req=php; fi
+                    if [ "${{ matrix.php-versions }}" != "8.0" ]; then composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi; fi
             ## —— Tests ✅ ———————————————————————————————————————————————————————————
             -
                 name: Run Tests
