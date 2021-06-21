@@ -22,7 +22,7 @@
     "require": {
         "php": ">=7.2",
         "psr/simple-cache": "^1.0",
-        "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA13",
+        "rollerworks/search": "^2.0@dev,>=2.0.0-BETA1",
         "ruflin/elastica": "^4.0 || ^5.0 || ^6.0"
     },
     "require-dev": {
