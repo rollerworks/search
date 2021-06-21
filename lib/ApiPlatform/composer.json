@@ -20,7 +20,7 @@
         "doctrine/orm": "^2.5.6",
         "phpunit/phpunit": "^6.3",
         "rollerworks/search-doctrine-orm": "^2.0@dev,>=2.0.0-BETA1",
-        "symfony/phpunit-bridge": "^4.3 || ^5.0"
+        "symfony/phpunit-bridge": "^4.4 || ^5.0"
     },
     "extra": {
         "branch-alias": {

@@ -34,12 +34,12 @@
         "matthiasnoback/symfony-service-definition-validator": "^1.2.8",
         "phpunit/phpunit": "^6.5.4",
         "rollerworks/search-symfony-validator": "^2.0@dev,>=2.0.0-BETA1",
-        "symfony/asset": "^3.4.2 || ^4.0.2 || ^5.0",
-        "symfony/browser-kit": "^3.4.2 || ^4.0.2 || ^5.0",
-        "symfony/dom-crawler": "^3.4.2 || ^4.0.2 || ^5.0",
-        "symfony/phpunit-bridge": "^4.3 || ^5.0",
-        "symfony/routing": "^3.4.2 || ^4.0.2 || ^5.0",
-        "symfony/templating": "^3.4.2 || ^4.0.2 || ^5.0"
+        "symfony/asset": "^4.4 || ^5.0",
+        "symfony/browser-kit": "^4.4 || ^5.0",
+        "symfony/dom-crawler": "^4.4 || ^5.0",
+        "symfony/phpunit-bridge": "^4.4 || ^5.0",
+        "symfony/routing": "^4.4 || ^5.0",
+        "symfony/templating": "^4.4 || ^5.0"
     },
     "config": {
         "sort-packages": true
