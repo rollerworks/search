@@ -24,7 +24,6 @@ use Prophecy\Argument;
 use Rollerworks\Component\Search\ApiPlatform\Doctrine\Orm\Extension\SearchExtension;
 use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
-use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
@@ -42,17 +41,13 @@ final class SearchExtensionTest extends TestCase
         $queryBuilderProphecy = $this->prophesize(QueryBuilder::class);
         $queryBuilder = $queryBuilderProphecy->reveal();
 
-        $conditionGeneratorProphecy = $this->prophesize(DqlConditionGenerator::class);
-        $conditionGenerator = $conditionGeneratorProphecy->reveal();
-
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedDqlConditionGenerator::class);
         $cachedConditionGeneratorProphecy->setField('dummy-id', 'id', 'o', Dummy::class, null)->shouldBeCalled();
         $cachedConditionGeneratorProphecy->setField('dummy-name', 'name', 'o', Dummy::class, null)->shouldBeCalled();
-        $cachedConditionGeneratorProphecy->updateQuery()->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->apply()->shouldBeCalled();
 
         $ormFactoryProphecy = $this->prophesize(DoctrineOrmFactory::class);
-        $ormFactoryProphecy->createConditionGenerator($queryBuilder, $searchCondition)->willReturn($conditionGenerator);
-        $ormFactoryProphecy->createCachedConditionGenerator($conditionGenerator)->willReturn($cachedConditionGeneratorProphecy->reveal());
+        $ormFactoryProphecy->createCachedConditionGenerator($queryBuilder, $searchCondition)->willReturn($cachedConditionGeneratorProphecy->reveal());
 
         $request = new Request([], [], [
             '_api_search_condition' => $searchCondition,
@@ -84,20 +79,16 @@ final class SearchExtensionTest extends TestCase
         $queryBuilderProphecy->leftJoin('o.thirdLevel', 't', 'WITH', 't.id = o.id', 'o.id')->shouldBeCalled();
         $queryBuilder = $queryBuilderProphecy->reveal();
 
-        $conditionGeneratorProphecy = $this->prophesize(DqlConditionGenerator::class);
-        $conditionGenerator = $conditionGeneratorProphecy->reveal();
-
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedDqlConditionGenerator::class);
         $cachedConditionGeneratorProphecy->setField('dummy-id', 'id', 'o', RelatedDummy::class, null)->shouldBeCalled();
         $cachedConditionGeneratorProphecy->setField('dummy-name', 'name', 'o', RelatedDummy::class, null)->shouldBeCalled();
         $cachedConditionGeneratorProphecy->setField('fiend-name', 'name', 'r', RelatedDummy::class, null)->shouldBeCalled();
         $cachedConditionGeneratorProphecy->setField('level', 'level', 't', ThirdLevel::class, 'integer')->shouldBeCalled();
 
-        $cachedConditionGeneratorProphecy->updateQuery()->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->apply()->shouldBeCalled();
 
         $ormFactoryProphecy = $this->prophesize(DoctrineOrmFactory::class);
-        $ormFactoryProphecy->createConditionGenerator($queryBuilder, $searchCondition)->willReturn($conditionGenerator);
-        $ormFactoryProphecy->createCachedConditionGenerator($conditionGenerator)->willReturn($cachedConditionGeneratorProphecy->reveal());
+        $ormFactoryProphecy->createCachedConditionGenerator($queryBuilder, $searchCondition)->willReturn($cachedConditionGeneratorProphecy->reveal());
 
         $request = new Request([], [], [
             '_api_search_condition' => $searchCondition,
@@ -143,13 +134,10 @@ final class SearchExtensionTest extends TestCase
         $queryBuilderProphecy = $this->prophesize(QueryBuilder::class);
         $queryBuilder = $queryBuilderProphecy->reveal();
 
-        $conditionGeneratorProphecy = $this->prophesize(DqlConditionGenerator::class);
-        $conditionGenerator = $conditionGeneratorProphecy->reveal();
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedDqlConditionGenerator::class);
 
         $ormFactoryProphecy = $this->prophesize(DoctrineOrmFactory::class);
-        $ormFactoryProphecy->createConditionGenerator($queryBuilder, $searchCondition)->willReturn($conditionGenerator);
-        $ormFactoryProphecy->createCachedConditionGenerator($conditionGenerator)->willReturn($cachedConditionGeneratorProphecy->reveal());
+        $ormFactoryProphecy->createCachedConditionGenerator($queryBuilder, $searchCondition)->willReturn($cachedConditionGeneratorProphecy->reveal());
 
         $request = new Request([], [], [
             '_api_search_condition' => $searchCondition,
@@ -244,7 +232,7 @@ final class SearchExtensionTest extends TestCase
     public function apply_to_collection_without_condition(): void
     {
         $ormFactoryProphecy = $this->prophesize(DoctrineOrmFactory::class);
-        $ormFactoryProphecy->createCachedConditionGenerator(Argument::any())->shouldNotBeCalled();
+        $ormFactoryProphecy->createCachedConditionGenerator(Argument::any(), Argument::any())->shouldNotBeCalled();
 
         $queryBuilderProphecy = $this->prophesize(QueryBuilder::class);
         $queryBuilder = $queryBuilderProphecy->reveal();

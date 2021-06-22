@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Rollerworks\Component\Search\Doctrine\Orm\ConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Orm\FieldConfigBuilder;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
 use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\SearchPrimaryCondition;
@@ -150,10 +151,11 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
         ];
     }
 
-    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
+    protected function configureConditionGenerator(FieldConfigBuilder $conditionGenerator): void
     {
         $conditionGenerator->setDefaultEntity(self::INVOICE_CLASS, 'I');
         $conditionGenerator->setField('id', 'id');
+        $conditionGenerator->setField('@id', 'id');
         $conditionGenerator->setField('label', 'label');
         $conditionGenerator->setField('pub-date', 'date');
         $conditionGenerator->setField('status', 'status');
@@ -184,6 +186,7 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
 
         // Invoice
         $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('@id', OrderFieldType::class);
         $fieldSet->add('customer', IntegerType::class);
         $fieldSet->add('label', TextType::class);
         $fieldSet->add('pub-date', DateTimeType::class, ['pattern' => 'yyyy-MM-dd', 'allow_relative' => true]);
@@ -203,6 +206,13 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
     public function it_finds_with_id(): void
     {
         $this->makeTest('id: 1, 5;', [1, 5]);
+    }
+
+    /** @test */
+    public function it_orders(): void
+    {
+        $this->makeTest('@id: ASC; id: 1, 5;', [1, 5]);
+        $this->makeTest('@id: DESC; id: 1, 5;', [5, 1]);
     }
 
     /** @test */

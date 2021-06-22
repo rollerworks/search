@@ -158,7 +158,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
             $statement->bindValue($name, $value, $type);
 
-            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : \get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
         $statement->execute();

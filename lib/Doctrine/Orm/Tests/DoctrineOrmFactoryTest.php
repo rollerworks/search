@@ -16,9 +16,10 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
-use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Orm\QueryBuilderConditionGenerator;
 use Rollerworks\Component\Search\GenericFieldSet;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -37,20 +38,24 @@ final class DoctrineOrmFactoryTest extends OrmTestCase
     public function create_condition_generator(): void
     {
         $condition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
-        $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
+        $qb = $this->em->createQueryBuilder()
+            ->select('I')
+            ->from(ECommerceInvoice::class, 'I')
+            ->join('I.customer', 'C');
 
-        $conditionGenerator = $this->factory->createConditionGenerator($query, $condition);
-        self::assertInstanceOf(DqlConditionGenerator::class, $conditionGenerator);
+        $conditionGenerator = $this->factory->createConditionGenerator($qb, $condition);
+        self::assertInstanceOf(QueryBuilderConditionGenerator::class, $conditionGenerator);
     }
 
     /** @test */
     public function cached_dql_condition_generator(): void
     {
-        $query = $this->em->createQuery('SELECT I FROM Rollerworks\Component\Search\Tests\Fixtures\Entity\ECommerceInvoice I JOIN I.customer C WHERE ');
+        $qb = $this->em->createQueryBuilder()
+            ->select('I')
+            ->from(ECommerceInvoice::class, 'I')
+            ->join('I.customer', 'C');
         $searchCondition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
-
-        $conditionGenerator = $this->factory->createConditionGenerator($query, $searchCondition);
-        $cachedConditionGenerator = $this->factory->createCachedConditionGenerator($conditionGenerator);
+        $cachedConditionGenerator = $this->factory->createCachedConditionGenerator($qb, $searchCondition);
 
         self::assertInstanceOf(CachedDqlConditionGenerator::class, $cachedConditionGenerator);
     }

@@ -5,6 +5,37 @@ UPGRADE FROM 2.0-BETA1 to 2.0-BETA2
  
  * Support for Symfony below 4.4 was dropped.
 
+### Doctrine ORM
+
+ * Support for passing a `Doctrine\ORM\Query` object in the generators was removed, 
+   pass a `Doctrine\ORM\QueryBuilder` object instead.
+   
+  _This BC change was required to make applying of result-ordering possible without worrying
+   to much about details and edge-cases._
+
+ * The methods `getWhereClause()` and `getParameters()` on the ConditionGenerators were removed.
+   _It's still possible to generate a stand-alone where-clause by using the `DqlConditionGenerator` directly, 
+    but this is not officially supported nor documented._
+
+ * The `createCachedConditionGenerator` of `DoctrineOrmFactory` now expects a
+   a `QueryBuilder` and `SearchCondition` are provided instead of a ConditionGenerator.
+
+   Before:
+   
+      ```php
+      $generator = $ormFactory->createConditionGenerator($query, $searchCondition);
+      $generator = $ormFactory->createCachedConditionGenerator($generator, 60 * 60);
+      ```
+   
+   Now:
+   
+      ```php
+      $generator = $ormFactory->createCachedConditionGenerator($query, $searchCondition, 60 * 60);
+      ```
+   
+ * The `updateQuery()` method on the ConditionGenerators was renamed to `apply()` and no 
+   longer supports a prepend for the query, as the query must now always be a `QueryBuilder`.
+
 UPGRADE FROM 2.0-ALPHA23 to 2.0-ALPHA24
 =======================================
 
