@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Field\OrderField;
+use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -35,9 +39,75 @@ final class SearchConditionBuilder
      */
     private $fieldSet;
 
+    /**
+     * @var ValuesGroup|null
+     */
+    private $order;
+
+    /**
+     * @var self|true|null
+     */
+    private $primaryCondition;
+
     public static function create(FieldSet $fieldSet, string $logical = ValuesGroup::GROUP_LOGICAL_AND): self
     {
         return new self($logical, $fieldSet);
+    }
+
+    /**
+     * Add the result-ordering of the search condition
+     * and returns the SearchConditionBuilder.
+     *
+     * Note: This method can only be used at the root-level of the condition.
+     *
+     * ```
+     * ->order('@name', 'ASC')
+     * ->order('@id', 'DESC')
+     * ->field('name')
+     *   ->addSimpleValue('my value')
+     *   ->addSimpleValue('my value 2')
+     * ->end() // return back to the ValuesGroup
+     * ```
+     *
+     * @return $this
+     */
+    public function order(string $name, string $direction = 'ASC'): self
+    {
+        if ($this->parent && $this->primaryCondition !== true) {
+            throw new BadMethodCallException('Cannot add ordering at nested levels.');
+        }
+
+        if (! OrderField::isOrder($name)) {
+            throw new InvalidArgumentException(\sprintf('Field "%s" is not a valid ordering field. Expected either "@%1$s".', $name));
+        }
+
+        $direction = \strtoupper($direction);
+
+        if ($direction !== 'ASC' && $direction !== 'DESC') {
+            throw new InvalidArgumentException(\sprintf('Invalid direction provided "%s" for field "%s", must be either "ASC" or "DESC" (case insensitive).', $direction, $name));
+        }
+
+        if ($this->order === null) {
+            $this->order = new ValuesGroup();
+        }
+
+        $values = new ValuesBag();
+        $values->addSimpleValue($direction);
+        $this->order->addField($name, $values);
+
+        return $this;
+    }
+
+    /**
+     * Clears all the field sorting-orders (if any).
+     *
+     * @return $this
+     */
+    public function clearOrder(): self
+    {
+        $this->order = null;
+
+        return $this;
     }
 
     /**
@@ -90,6 +160,10 @@ final class SearchConditionBuilder
             return $this->overwriteField($name);
         }
 
+        if (OrderField::isOrder($name)) {
+            throw new InvalidArgumentException(\sprintf('Unable to configure ordering of "%s" with field(), use the order() method instead.', $name));
+        }
+
         if ($this->valuesGroup->hasField($name)) {
             /** @var ValuesBagBuilder $valuesBag */
             $valuesBag = $this->valuesGroup->getField($name);
@@ -135,6 +209,27 @@ final class SearchConditionBuilder
     }
 
     /**
+     * Build a SearchPrimaryCondition structure.
+     *
+     * Note: This will overwrite any existing primary-condition of this builder.
+     *
+     * @return self A SearchConditionBuilder for the primary-condition structure
+     */
+    public function primaryCondition(): self
+    {
+        if ($this->parent) {
+            throw new BadMethodCallException('Cannot add primaryCondition at nested level.');
+        }
+
+        $builder = new self(ValuesGroup::GROUP_LOGICAL_AND, $this->fieldSet, $this);
+        $builder->primaryCondition = true;
+
+        $this->primaryCondition = $builder;
+
+        return $builder;
+    }
+
+    /**
      * Build the SearchCondition object using the groups and fields.
      */
     public function getSearchCondition(): SearchCondition
@@ -148,7 +243,15 @@ final class SearchConditionBuilder
         $rootValuesGroup = new ValuesGroup($this->valuesGroup->getGroupLogical());
         $this->normalizeValueGroup($this->valuesGroup, $rootValuesGroup);
 
-        return new SearchCondition($this->fieldSet, $rootValuesGroup);
+        $searchCondition = new SearchCondition($this->fieldSet, $rootValuesGroup);
+
+        if ($this->order) {
+            $searchCondition->setOrder(new SearchOrder($this->order));
+        }
+
+        $this->buildPrimaryCondition($searchCondition);
+
+        return $searchCondition;
     }
 
     private function __construct(string $logical, FieldSet $fieldSet, self $parent = null)
@@ -174,5 +277,20 @@ final class SearchConditionBuilder
 
             $rootValuesGroup->addField($name, $values);
         }
+    }
+
+    private function buildPrimaryCondition(SearchCondition $searchCondition): void
+    {
+        if (! $this->primaryCondition) {
+            return;
+        }
+
+        $primaryCondition = new SearchPrimaryCondition($this->primaryCondition->valuesGroup);
+
+        if ($this->primaryCondition->order) {
+            $primaryCondition->setOrder(new SearchOrder($this->primaryCondition->order));
+        }
+
+        $searchCondition->setPrimaryCondition($primaryCondition);
     }
 }

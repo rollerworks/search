@@ -7,7 +7,7 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
          convertErrorsToExceptions="false"
-         convertWarningsToExceptions="false"
+         convertWarningsToExceptions="true"
          convertNoticesToExceptions="false"
 >
     <php>

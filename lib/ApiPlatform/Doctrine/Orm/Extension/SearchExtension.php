@@ -66,12 +66,10 @@ final class SearchExtension implements QueryCollectionExtensionInterface
         ArrayKeysValidator::assertOnlyKeys($configuration, ['relations', 'mappings'], $configPath);
         $this->configureRelations($configPath, $configuration, $queryBuilder);
 
-        $conditionGenerator = $this->ormFactory->createCachedConditionGenerator(
-            $this->ormFactory->createConditionGenerator($queryBuilder, $condition)
-        );
+        $conditionGenerator = $this->ormFactory->createCachedConditionGenerator($queryBuilder, $condition);
 
         $this->configureMappings($resourceClass, $configuration, $configPath, $conditionGenerator);
-        $conditionGenerator->updateQuery();
+        $conditionGenerator->apply();
     }
 
     private function configureRelations(string $configPath, array $configuration, QueryBuilder $queryBuilder): void

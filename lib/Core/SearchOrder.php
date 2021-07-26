@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
@@ -24,11 +25,32 @@ final class SearchOrder
 
     public function __construct(ValuesGroup $valuesGroup)
     {
+        if ($valuesGroup->hasGroups()) {
+            throw new InvalidArgumentException('A SearchOrder must have a single-level structure. Only fields with single values are accepted.');
+        }
+
         $this->values = $valuesGroup;
     }
 
     public function getValuesGroup(): ValuesGroup
     {
         return $this->values;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getFields(): array
+    {
+        $fields = [];
+
+        foreach ($this->values->getFields() as $fieldName => $valuesBag) {
+            $direction = \strtolower(\current($valuesBag->getSimpleValues()));
+            \assert($direction === 'desc' || $direction === 'asc');
+
+            $fields[$fieldName] = $direction;
+        }
+
+        return $fields;
     }
 }

@@ -29,7 +29,3 @@ parameters:
         ## Symony Config
         - '# Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given#'
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:#'
-
-        ## Doctrine
-        - '#Call to an undefined method Rollerworks\\Component\\Search\\Doctrine\\Orm\\ConditionGenerator\:\:get[a-zA-Z]+#'
-        - '#Instanceof between Doctrine\\ORM\\Query and Doctrine\\ORM\\QueryBuilder will always evaluate to false#'

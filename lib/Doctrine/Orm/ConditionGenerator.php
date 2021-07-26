@@ -13,9 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\Exception\UnknownFieldException;
+use Doctrine\ORM\QueryBuilder;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * A Doctrine ORM ConditionGenerator generates an DQL/SQL WHERE-clause
@@ -39,9 +38,7 @@ interface ConditionGenerator
      * @param string $entity Entity name (FQCN)
      * @param string $alias  Table alias as used in the query "u" for `FROM Acme:Users AS u`
      *
-     * @throws BadMethodCallException When the where-clause is already generated
-     *
-     * @return static
+     * @return $this
      */
     public function setDefaultEntity(string $entity, string $alias);
 
@@ -74,37 +71,18 @@ interface ConditionGenerator
      * @param string $fieldName Name of the search field as registered in the FieldSet or
      *                          `field-name#mapping-name` to configure a secondary mapping
      * @param string $property  Entity field name
-     * @param string $alias     Table alias as used in the query "u" for `FROM Acme:Users AS u`
+     * @param string $alias     Table alias as used in the query "u" for `FROM Acme\Entity\User AS u`
      * @param string $entity    Entity name (FQCN or Doctrine aliased)
      * @param string $dbType    Doctrine DBAL supported type, eg. string (not text)
      *
-     * @throws UnknownFieldException  When the field is not registered in the fieldset
-     * @throws BadMethodCallException When the where-clause is already generated
-     *
-     * @return static
+     * @return $this
      */
     public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null);
 
     /**
-     * Returns the generated where-clause.
-     *
-     * The Where-clause is wrapped inside a group so it can be safely used
-     * with other conditions.
-     *
-     * @param string $prependQuery Prepend before the generated WHERE clause
-     *                             Eg. " WHERE " or " AND ", ignored when WHERE
-     *                             clause is empty.
+     * Apply the SearchCondition to the QueryBuilder (as an AND-WHERE).
      */
-    public function getWhereClause(string $prependQuery = ''): string;
+    public function apply();
 
-    /**
-     * Updates the configured query object with the where-clause.
-     *
-     * @param string $prependQuery Prepend before the generated WHERE clause
-     *                             Eg. " WHERE " or " AND ", ignored when WHERE
-     *                             clause is empty. Default is ' WHERE '
-     */
-    public function updateQuery(string $prependQuery = ' WHERE ');
-
-    public function getParameters(): ArrayCollection;
+    public function getQueryBuilder(): QueryBuilder;
 }

@@ -13,26 +13,21 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+use Doctrine\ORM\QueryBuilder;
+use Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice;
+
 /**
  * @internal
  */
 final class DqlConditionGeneratorResultsTest extends ConditionGeneratorResultsTestCase
 {
-    protected function getQuery()
+    protected function getQuery(): QueryBuilder
     {
-        $query = <<<'DQL'
-SELECT
-    I
-FROM
-    Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice AS I
-JOIN
-    I.customer AS C
-LEFT JOIN
-    I.children AS IP
-LEFT JOIN
-    I.rows AS R
-DQL;
-
-        return $this->em->createQuery($query);
+        return $this->em->createQueryBuilder()
+            ->select('I')
+            ->from(ECommerceInvoice::class, 'I')
+            ->join('I.customer', 'C')
+            ->leftJoin('I.children', 'IP')
+            ->leftJoin('I.rows', 'R');
     }
 }

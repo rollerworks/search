@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\Parameter;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Tests\TestUtil;
@@ -22,13 +23,14 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Psr\SimpleCache\CacheInterface;
-use Rollerworks\Component\Search\Doctrine\Orm\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
+use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\AgeFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CastIntervalFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\CountChildrenFunction;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\MoneyCastFunction;
+use Rollerworks\Component\Search\Doctrine\Orm\FieldConfigBuilder;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\BirthdayTypeExtension;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\ChildCountType;
 use Rollerworks\Component\Search\Extension\Doctrine\Orm\Type\DateTimeTypeExtension;
@@ -102,8 +104,12 @@ abstract class OrmTestCase extends DbalTestCase
         $this->conn = self::$sharedConn;
         $this->em = self::$sharedEm;
 
-        // Clear the cache between runs
-        $this->em->getConfiguration()->getQueryCacheImpl()->flushAll();
+        // Clear the cache between runs (older versions)
+        $cache = $this->em->getConfiguration()->getQueryCacheImpl();
+
+        if ($cache !== null && \method_exists($cache, 'flushAll')) {
+            $cache->flushAll();
+        }
 
         $this->sqlLoggerStack = new \Doctrine\DBAL\Logging\DebugStack();
         $this->conn->getConfiguration()->setSQLLogger($this->sqlLoggerStack);
@@ -149,18 +155,16 @@ abstract class OrmTestCase extends DbalTestCase
     }
 
     /**
-     * Returns the string for the ConditionGenerator.
-     *
-     * @return Query
+     * Returns the QueryBuilder for the ConditionGenerator.
      */
-    protected function getQuery()
+    protected function getQuery(): QueryBuilder
     {
     }
 
     /**
      * Configure fields of the ConditionGenerator.
      */
-    protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
+    protected function configureConditionGenerator(FieldConfigBuilder $conditionGenerator): void
     {
     }
 
@@ -169,21 +173,43 @@ abstract class OrmTestCase extends DbalTestCase
      */
     protected function assertRecordsAreFound(SearchCondition $condition, array $ids): void
     {
-        $query = $this->getQuery();
+        $qb = $this->getQuery();
 
-        $conditionGenerator = $this->getOrmFactory()->createConditionGenerator($query, $condition);
-        $this->configureConditionGenerator($conditionGenerator);
+        $fieldsConfig = new FieldConfigBuilder($qb->getEntityManager(), $condition->getFieldSet());
+        $this->configureConditionGenerator($fieldsConfig);
 
+        $conditionGenerator = new DqlConditionGenerator($qb->getEntityManager(), $condition, $fieldsConfig);
         $whereClause = $conditionGenerator->getWhereClause();
-        $conditionGenerator->updateQuery();
+
+        $primaryCondition = $condition->getPrimaryCondition();
+
+        if ($primaryCondition !== null) {
+            DqlConditionGenerator::applySortingTo($primaryCondition->getOrder(), $qb, $fieldsConfig);
+        }
+
+        DqlConditionGenerator::applySortingTo($condition->getOrder(), $qb, $fieldsConfig);
+
+        // The return order is undefined with MySQL so make it explicit here.
+        if (\count($qb->getDQLPart('orderBy')) === 0) {
+            $qb->orderBy($qb->getRootAliases()[0] . '.id', 'ASC');
+        }
+
+        if ($whereClause !== '') {
+            $qb->andWhere($whereClause);
+
+            foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
+                $qb->setParameter($name, $value, $type);
+            }
+        }
 
         $paramsString = '';
         $platform = $this->conn->getDatabasePlatform();
 
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
-            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : \get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
+        $query = $qb->getQuery();
         $rows = $query->getArrayResult();
         $idRows = \array_map(
             static function ($value) {
@@ -192,10 +218,7 @@ abstract class OrmTestCase extends DbalTestCase
             $rows
         );
 
-        \sort($ids);
-        \sort($idRows);
-
-        static::assertEquals(
+        static::assertSame(
             $ids,
             \array_merge([], \array_unique($idRows)),
             \sprintf(
@@ -206,6 +229,26 @@ abstract class OrmTestCase extends DbalTestCase
                 $paramsString
             )
         );
+    }
+
+    protected static function assertQueryParametersEquals(?array $parameters, QueryBuilder $qb): void
+    {
+        if ($parameters === null) {
+            return;
+        }
+
+        $actualParameters = $qb->getParameters()->toArray();
+
+        if (\is_object(\reset($actualParameters))) {
+            /** @var Parameter $parameter */
+            foreach ($actualParameters as $idx => $parameter) {
+                unset($actualParameters[$idx]);
+
+                $actualParameters[':' . $parameter->getName()] = [$parameter->getValue(), $parameter->getType()];
+            }
+        }
+
+        static::assertEquals($parameters, $actualParameters);
     }
 
     protected function onNotSuccessfulTest(\Throwable $e): void

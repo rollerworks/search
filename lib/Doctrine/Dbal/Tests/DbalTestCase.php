@@ -20,6 +20,7 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\DoctrineDbalExtension;
+use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks\ConnectionMock;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\Stub\Type\InvoiceLabelType;
@@ -32,10 +33,12 @@ abstract class DbalTestCase extends SearchIntegrationTestCase
         $fieldSet = $this->getFactory()->createFieldSetBuilder();
 
         $fieldSet->add('id', IntegerType::class);
+        $fieldSet->add('@id', OrderFieldType::class);
         $fieldSet->add('label', InvoiceLabelType::class);
         $fieldSet->add('status', InvoiceStatusType::class);
 
         $fieldSet->add('customer', IntegerType::class);
+        $fieldSet->add('@customer', OrderFieldType::class);
         $fieldSet->add('customer_name', TextType::class);
         $fieldSet->add('customer_birthday', DateTimeType::class, ['allow_relative' => true]);
 

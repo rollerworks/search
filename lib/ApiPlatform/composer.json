@@ -12,14 +12,14 @@
     "require": {
         "php": ">=7.2",
         "api-platform/core": "^2.0.10",
-        "rollerworks/search": "^2.0@dev,>=2.0.0-BETA1",
+        "rollerworks/search": "^2.0@dev,>=2.0.0-BETA2",
         "rollerworks/uri-encoder": "^1.1.0 || ^2.0",
         "symfony/http-foundation": "^4.4 || ^5.0"
     },
     "require-dev": {
         "doctrine/orm": "^2.5.6",
         "phpunit/phpunit": "^6.3",
-        "rollerworks/search-doctrine-orm": "^2.0@dev,>=2.0.0-BETA1",
+        "rollerworks/search-doctrine-orm": "^2.0@dev,>=2.0.0-BETA2",
         "symfony/phpunit-bridge": "^4.4 || ^5.0"
     },
     "extra": {

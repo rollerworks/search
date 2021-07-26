@@ -13,17 +13,14 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\Doctrine\Dbal\AbstractCachedConditionGenerator;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
+use Rollerworks\Component\Search\SearchCondition;
 
 /**
- * Handles caching of the Doctrine ORM DqlConditionGenerator.
- *
- * Instead of using the ConditionGenerator directly you should use the
- * CachedConditionGenerator as all related calls are delegated.
+ * SearchCondition Doctrine ORM DQL CachedConditionGenerator.
  *
  * Note: this class should not be relied upon as interface,
  * use the ConditionGenerator interface instead for type hinting
@@ -34,73 +31,123 @@ use Rollerworks\Component\Search\Exception\BadMethodCallException;
  * Caution: Any noticeable changes to your (FieldSet) configuration
  * should purge all cached entries.
  *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ * After the fields are configured call `apply()` to apply
+ * the condition on the QueryBuilder.
  *
  * @final
  */
 class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator implements ConditionGenerator
 {
     /**
-     * @var Query
+     * @var FieldConfigBuilder
      */
-    private $query;
+    private $fieldsConfig;
 
     /**
-     * @var ConditionGenerator
+     * @var SearchCondition
      */
-    private $conditionGenerator;
+    private $searchCondition;
 
     /**
-     * @var string
+     * @var QueryBuilder
      */
-    private $whereClause;
+    private $qb;
+
+    private $isApplied = false;
 
     /**
-     * @param ConditionGenerator $conditionGenerator The actual ConditionGenerator to use when no cache exists
-     * @param mixed|null         $ttl
+     * @param mixed|null $ttl
      */
-    public function __construct(ConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = null)
+    public function __construct(QueryBuilder $query, SearchCondition $searchCondition, Cache $cacheDriver, $ttl = null)
     {
         parent::__construct($cacheDriver, $ttl);
 
-        $this->query = $conditionGenerator->getQuery();
-        $this->conditionGenerator = $conditionGenerator;
+        $this->fieldsConfig = new FieldConfigBuilder($query->getEntityManager(), $searchCondition->getFieldSet());
+        $this->searchCondition = $searchCondition;
+        $this->qb = $query;
     }
 
-    public function getWhereClause(string $prependQuery = ''): string
+    public function setDefaultEntity(string $entity, string $alias)
     {
-        if ($this->whereClause === null) {
-            $cacheKey = $this->getCacheKey();
-            $cached = $this->getFromCache($cacheKey);
+        $this->guardNotGenerated();
+        $this->fieldsConfig->setDefaultEntity($entity, $alias);
 
-            if ($cached !== null) {
-                $this->whereClause = $cached[0];
-                $this->parameters = $cached[1];
-            } else {
-                $this->whereClause = $this->conditionGenerator->getWhereClause();
-                $this->parameters = $this->conditionGenerator->getParameters();
+        return $this;
+    }
 
-                if ($this->whereClause !== '') {
-                    $this->cacheDriver->set(
-                        $cacheKey,
-                        [$this->whereClause, $this->packParameters($this->parameters)],
-                        $this->cacheLifeTime
-                    );
-                }
+    /**
+     * @throws BadMethodCallException When the where-clause is already generated
+     */
+    protected function guardNotGenerated(): void
+    {
+        if ($this->isApplied) {
+            throw new BadMethodCallException('ConditionGenerator configuration cannot be changed once the query is applied.');
+        }
+    }
+
+    public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null)
+    {
+        $this->guardNotGenerated();
+        $this->fieldsConfig->setField($fieldName, $property, $alias, $entity, $dbType);
+
+        return $this;
+    }
+
+    public function apply(): void
+    {
+        if ($this->isApplied) {
+            \trigger_error('SearchCondition was already applied. Ignoring operation.', \E_USER_WARNING);
+
+            return;
+        }
+
+        $this->isApplied = true;
+
+        $cacheKey = $this->getCacheKey();
+        $cached = $this->getFromCache($cacheKey);
+
+        // Note that ordering is not part of the cache as this only applies at the root level
+        // And is handled by Doctrine DQL itself, making it possible to reuse the same condition
+        // with a different ordering.
+
+        if ($cached !== null) {
+            [$whereClause, $parameters] = $cached;
+        } else {
+            $generator = new DqlConditionGenerator($this->qb->getEntityManager(), $this->searchCondition, $this->fieldsConfig);
+            $whereClause = $generator->getWhereClause();
+            $parameters = $generator->getParameters();
+
+            if ($whereClause !== '') {
+                $this->cacheDriver->set(
+                    $cacheKey,
+                    [$whereClause, $this->packParameters($parameters)],
+                    $this->cacheLifeTime
+                );
             }
         }
 
-        if ($this->whereClause !== '') {
-            return $prependQuery . $this->whereClause;
+        if (null !== $primaryCondition = $this->searchCondition->getPrimaryCondition()) {
+            DqlConditionGenerator::applySortingTo($primaryCondition->getOrder(), $this->qb, $this->fieldsConfig);
         }
 
-        return '';
+        DqlConditionGenerator::applySortingTo($this->searchCondition->getOrder(), $this->qb, $this->fieldsConfig);
+
+        if ($whereClause === '') {
+            return;
+        }
+
+        $this->qb->andWhere($whereClause);
+
+        foreach ($parameters as $name => [$value, $type]) {
+            $this->qb->setParameter($name, $value, $type);
+        }
     }
 
     private function getCacheKey(): string
     {
         if ($this->cacheKey === null) {
-            $searchCondition = $this->conditionGenerator->getSearchCondition();
+            $searchCondition = $this->searchCondition;
+            $primaryCondition = $searchCondition->getPrimaryCondition();
 
             $this->cacheKey = \hash(
                 'sha256',
@@ -109,64 +156,17 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
                 "\n" .
                 \serialize($searchCondition->getValuesGroup()) .
                 "\n" .
-                \serialize($searchCondition->getPrimaryCondition()) .
+                \serialize($primaryCondition ? $primaryCondition->getValuesGroup() : null) .
                 "\n" .
-                \serialize($this->conditionGenerator->getFieldsConfig()->getFields())
+                \serialize($this->fieldsConfig->getFields())
             );
         }
 
         return $this->cacheKey;
     }
 
-    public function updateQuery(string $prependQuery = ' WHERE '): self
+    public function getQueryBuilder(): QueryBuilder
     {
-        $whereCase = $this->getWhereClause($prependQuery);
-
-        if ($whereCase !== '') {
-            if ($this->query instanceof QueryBuilder) {
-                $this->query->andWhere($this->getWhereClause());
-            } else {
-                $this->query->setDQL($this->query->getDQL() . $whereCase);
-            }
-
-            $this->bindParameters();
-        }
-
-        return $this;
-    }
-
-    public function bindParameters(): void
-    {
-        foreach ($this->parameters as $name => [$value, $type]) {
-            $this->query->setParameter($name, $value, $type);
-        }
-    }
-
-    public function setDefaultEntity(string $entity, string $alias)
-    {
-        $this->guardNotGenerated();
-        $this->conditionGenerator->setDefaultEntity($entity, $alias);
-
-        return $this;
-    }
-
-    /**
-     * @throws BadMethodCallException When the where-clause is already generated
-     */
-    private function guardNotGenerated(): void
-    {
-        if ($this->whereClause !== null) {
-            throw new BadMethodCallException(
-                'ConditionGenerator configuration methods cannot be accessed anymore once the where-clause is generated.'
-            );
-        }
-    }
-
-    public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null)
-    {
-        $this->guardNotGenerated();
-        $this->conditionGenerator->setField($fieldName, $property, $alias, $entity, $dbType);
-
-        return $this;
+        return $this->qb;
     }
 }

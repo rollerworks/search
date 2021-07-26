@@ -39,8 +39,8 @@ Continue reading to learn how the query the database with a SearchCondition.
 
 .. note::
 
-    Make sure to also enable the ``DoctrineDbalExtension`` because columns and
-    value conversions are provided by DBAL not ORM.
+    Make sure to also enable the ``DoctrineDbalExtension`` because some functionality is
+    provided by DBAL, not ORM.
 
 Querying the database
 ---------------------
@@ -59,7 +59,7 @@ To Query a database with Doctrine ORM extension, you use the
     You use the SearchFactory first, and the the DoctrineOrmFactory second.
 
 The ``DoctrineOrmFactory`` class provides an entry point for creating
-:class:`Rollerworks\\Component\\Search\\Doctrine\\Orm\\DqlConditionGenerator`,
+:class:`Rollerworks\\Component\\Search\\Doctrine\\Orm\\QueryBuilderConditionGenerator`,
 :class:`Rollerworks\\Component\\Search\\Doctrine\\Orm\\CachedDqlConditionGenerator`,
 object instances.
 
@@ -80,17 +80,17 @@ See also: :doc:`/reference/caching`
 Using the ConditionGenerator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ConditionGenerator supports both ``Doctrine\ORM\Query`` and ``Doctrine\ORM\QueryBuilder``,
-for NativeQuery use the Doctrine DBAL ConditionGenerator instead.
+The ConditionGenerator requires a ``Doctrine\ORM\QueryBuilder`` instance,
+for NativeQuery use the :doc:`Doctrine DBAL </integration/doctrine/orm.rst>`
+``ConditionGenerator`` instead.
 
 .. caution::
 
-    A WhereBuilder is configured with the Query object and SearchCondition.
-    So reusing a WhereBuilder is not possible.
+    A ConditionGenerator is configured with the QueryBuilder object and SearchCondition.
+    So reusing a ConditionGenerator instance is not possible.
 
-    Secondly, the generated query is only valid for the give query dialect
-    or Database driver. Meaning that when you generated a query with the
-    PostgreSQL database driver this query will not work on MySQL.
+    Secondly a generated where-clause is only applied once, calling the ``apply()``
+    method twice will raise an PHP ``E_USER_WARNING``.
 
 First create a ``ConditionGenerator``::
 
@@ -99,12 +99,16 @@ First create a ``ConditionGenerator``::
     // Doctrine\ORM\EntityManagerInterface
     $entityManager = ...;
 
-    $statement = $entityManager->createQuery("SELECT i FROM Acme\Entity\Invoice AS i");
+    $qb = $entityManager->createQueryBuilder();
+    $qb
+        ->select('I')
+        ->from(\Acme\Entity\Invoice::class, 'I')
+    ;
 
     // Rollerworks\Component\Search\SearchCondition object
     $searchCondition = ...;
 
-    $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($statement, $searchCondition);
+    $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($qb, $searchCondition);
 
 Before the condition can be generated, the ConditionGenerator needs to know how
 your search fields are mapped to which columns and Entity.
@@ -135,7 +139,7 @@ ConditionGenerator::
      * @param string $fieldName Name of the search field as registered in the FieldSet or
      *                          `field-name#mapping-name` to configure a secondary mapping
      * @param string $property  Entity field name
-     * @param string $alias     Table alias as used in the query "u" for `FROM Acme:Users AS u`
+     * @param string $alias     Table alias as used in the query "u" for `FROM Acme\Entity\Users AS u`
      * @param string $entity    Entity name (FQCN or Doctrine aliased)
      * @param string $dbType    Doctrine DBAL supported type, eg. string (not text)
      *
@@ -147,7 +151,7 @@ ConditionGenerator::
     $conditionGenerator->setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null);
 
 The ``$alias`` and ``$entity`` arguments are marked optional, however they are
-in fact required. A field mapping can not function with an alias an Entity
+in fact required. A field mapping cannot function without an alias and Entity
 class.
 
 But instead of having to supply this for every field you can set a default
@@ -170,39 +174,31 @@ chunks of configuration.
      * method to configure chunks of configuration.
      *
      * @param string $entity Entity name (FQCN or Doctrine aliased)
-     * @param string $alias  Table alias as used in the query "u" for `FROM Acme:Users AS u`
+     * @param string $alias  Table alias as used in the query "u" for `FROM Acme\Entity\Users AS u`
      *
      * @throws BadMethodCallException When the where-clause is already generated
      *
      * @return $this
      */
-    $conditionGenerator->setDefaultEntity('Acme:Invoice', 'I');
+    $conditionGenerator->setDefaultEntity(\Acme\Entity\Invoice, 'I');
     $conditionGenerator->setField('id', 'id');
 
-    $conditionGenerator->setDefaultEntity('Acme:Customer', 'C');
+    $conditionGenerator->setDefaultEntity(\Acme\Entity\Customer::class, 'C');
     $conditionGenerator->setField('customer', 'id', null, null);
+    $conditionGenerator->setField('@customer', 'id'); // Sorting field (must be registered), without this sorting is not processed for this field.
     $conditionGenerator->setField('customer_first_name', 'firstName');
     $conditionGenerator->setField('customer_last_name', 'lastName');
     $conditionGenerator->setField('customer_birthday', 'birthday');
 
-.. note::
-
-    The Entity alias must be properly configured for ``Acme:Invoice`` to
-    work as shown in the following examples.
-
-    .. code-block:: php
-
-        $entityManager->getConfiguration()->addEntityNamespace('Acme', 'Acme\Entity');
-
 Only SearchFields in the FieldSet that have a column-mapping configured
-will be processed. All other SearchFields are ignored.
+will be processed (including sorting fields). All other SearchFields are ignored.
 
 If you try to configure a field-mapping for a unregistered SearchField
 the ConditionGenerator will fail with an exception.
 
 .. caution::
 
-    When using DQL, the column mapping of a field must point to the entity
+    For DQL the column mapping of a field must point to the entity
     field that owns the value (not reference another Entity object).
 
     Given you have an ``Invoice`` Entity with a ``customer`` (``Customer``
@@ -213,7 +209,7 @@ the ConditionGenerator will fail with an exception.
     If you point to a Join association the generator will throw an exception.
 
 The ``$type`` (when given) must correspond to a Doctrine DBAL
-support type. So instead of using ``varchar`` you use ``string``.
+supported type. So instead of using ``varchar`` you use ``string``.
 
 See `Doctrine DBAL Types`_ for a complete list of types and options.
 
@@ -233,50 +229,38 @@ Generating the Condition
     // Doctrine\ORM\EntityManagerInterface
     $entityManager = ...;
 
-    // Note. There's no need to add a 'WHERE' at the end of the query as this can be applied later
-    // An empty SearchCondition produces an empty result, and thus would result in an invalid query.
-    $query = '
-        SELECT
-            i
-        FROM
-            Acme\Entity\User AS u
-        LEFT JOIN
-            u.contacts AS c
-    ';
+    $qb = $entityManager->createQueryBuilder();
+    $qb
+        ->select('I')
+        ->from(\Acme\Entity\Invoice::class, 'I')
+        ->join('I.customer', 'C')
+    ;
 
-    $statement = $entityManager->createQuery($query);
+    // Rollerworks\Component\Search\SearchCondition object
+    $searchCondition = ...;
+
+    $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($qb, $searchCondition);
 
     // Rollerworks\Component\Search\SearchCondition object
     $searchCondition = ...;
 
     $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($statement, $searchCondition);
 
-    $conditionGenerator->setDefaultEntity('Acme:Invoice', 'I');
+    $conditionGenerator->setDefaultEntity(\Acme\Entity\Invoice::class, 'I');
     $conditionGenerator->setField('id', 'id');
 
-    $conditionGenerator->setDefaultEntity('Acme:Customer', 'C');
-    $conditionGenerator->setField('customer', 'id', null, null);
+    $conditionGenerator->setDefaultEntity(\Acme\Entity\Customer, 'C');
+    $conditionGenerator->setField('customer', 'id');
+    $conditionGenerator->setField('@customer', 'id'); // The `@customer` field must be registered as ordering field
     $conditionGenerator->setField('customer_first_name', 'firstName');
     $conditionGenerator->setField('customer_last_name', 'lastName');
     $conditionGenerator->setField('customer_birthday', 'birthday');
 
-Now to apply the generated condition on the query you have two options;
+Now apply the generated condition on the QueryBuilder and get the result::
 
-You can use ``updateQuery`` which updates the query for you and sets
-parameters, but only when there is an actual condition generated::
+    $conditionGenerator->apply();
 
-    // ...
-
-    $conditionGenerator->updateQuery();
-
-    /* ... OR ... */
-
-    // If the query has already has an `WHERE ` part you can
-    // use ` AND ` instead, this will be placed before the generated condition.
-    $conditionGenerator->updateQuery(' AND ');
-
-Note that when you passed a ``QueryBuilder`` instance the prepend argument is ignored,
-as the builder handles this itself.
+    $invoices = $qb->getQuery()->execute();
 
 .. tip::
 
@@ -289,31 +273,23 @@ as the builder handles this itself.
         // Doctrine\ORM\EntityManagerInterface
         $entityManager = ...;
 
-        // Note. There's no need to add a 'WHERE' at the end of the query as this can be applied later
-        // An empty SearchCondition produces an empty result, and thus would result in an invalid query.
-        $query = '
-            SELECT
-                i
-            FROM
-                Acme\Entity\User AS u
-            LEFT JOIN
-                u.contacts AS c
-            WHERE
-                u.id = :user_id
-        ';
-
-        $statement = $entityManager->createQuery($query);
-        $statement->setParameter('user_id', $id);
+        $qb = $entityManager->createQueryBuilder();
+        $qb
+            ->select('I')
+            ->from(\Acme\Entity\Invoice::class, 'I')
+            ->andWhere('C.id = :user_id') // Limit the invoices to a single user. Mapping the 'customer' field has no effect as this condition is primary.
+            ->join('I.customer', 'C')
+            ->setParameter('user_id', $id);
 
         // Rollerworks\Component\Search\SearchCondition object
         $searchCondition = ...;
 
-        $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($statement, $searchCondition);
+        $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($qb, $searchCondition);
         // ...
 
-        $conditionGenerator->updateQuery(' AND '); // note the spaces around the statement
+        $conditionGenerator->apply();
 
-        $users = $statement->getResult();
+        $invoices = $qb->getQuery()->execute();
 
     Or you can use a :ref:`pre_condition`.
 
@@ -324,7 +300,7 @@ Instead of searching in a single column it's possible to search in multiple
 columns for the same SearchField. In practice this will work the same as using
 the same values for other fields.
 
-In the example below SearchField ``name`` will search in both the user's ``first``
+In the example below SearchField ``name`` will search in both the customer's ``first``
 and ``last`` name columns (as ``OR`` case). And it's still possible to search
 with only the first and/or last name.
 
@@ -333,17 +309,29 @@ with only the first and/or last name.
     // Doctrine\ORM\EntityManagerInterface
     $entityManager = ...;
 
-    $statement = $entityManager->createQuery("SELECT u FROM Acme\Entity\User AS u");
+    $qb = $entityManager->createQueryBuilder();
+    $qb
+        ->select('I')
+        ->from(\Acme\Entity\Invoice::class, 'I')
+        ->join('I.customer', 'C')
+        ->setParameter('user_id', $id);
 
     // Rollerworks\Component\Search\SearchCondition object
     $searchCondition = ...;
 
-    $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($statement, $searchCondition);
+    $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($qb, $searchCondition);
+    $conditionGenerator->setDefaultEntity(\Acme\Entity\Customer, 'C');
     $conditionGenerator->setField('name#first', 'first');
     $conditionGenerator->setField('name#last', 'last');
     $conditionGenerator->setField('first-name', 'first');
     $conditionGenerator->setField('last-name', 'last');
-    $conditionGenerator->updateQuery();
+    $conditionGenerator->apply();
+
+.. note::
+
+    Multi field-mapping is not possible for ordering fields, an ordering field
+    always maps to a single field. And must include the leading ``@``-sign
+    like ``@id``.
 
 Caching the Where-clause
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -354,9 +342,8 @@ which is why it's recommended to cache the generated query for future usage.
 Fortunately the factory allows to create a CachedConditionGenerator
 which can handle caching of the ConditionGenerator for you.
 
-Plus, usage is no different then using a regular ConditionGenerator,
-the CachedConditionGenerator decorates the ConditionGenerator and can
-be configured very similar.
+Plus, usage is no different then using a regular ConditionGenerator
+and can be configured very similar.
 
 .. code-block:: php
     :linenos:
@@ -364,37 +351,21 @@ be configured very similar.
     // Doctrine\ORM\EntityManagerInterface
     $entityManager = ...;
 
-    // Note. There's no need to add a 'WHERE' at the end of the query as this can be applied later
-    // An empty SearchCondition produces an empty result, and thus would result in an invalid query.
-    $query = '
-        SELECT
-            i
-        FROM
-            Acme\Entity\User AS u
-        LEFT JOIN
-            u.contacts AS c
-        WHERE
-            u.id = :user_id
-    ';
-
-    $statement = $entityManager->createQuery($query);
-    $statement->setParameter('user_id', $id);
+    $qb = $entityManager->createQueryBuilder();
+    $qb
+        ->select('I')
+        ->from(\Acme\Entity\Invoice::class, 'I')
+        ->join('I.customer', 'C')
+        ->setParameter('user_id', $id);
 
     // Rollerworks\Component\Search\SearchCondition object
     $searchCondition = ...;
 
-    $conditionGenerator = $doctrineOrmFactory->createConditionGenerator($statement, $searchCondition);
+    // The third argument is the cache lifetime in seconds (or anything supported by your cache implementation), null will use the Cache default
+    $conditionGenerator = $doctrineOrmFactory->createCachedConditionGenerator($qb, $searchCondition, null);
     // ...
 
-    // The first parameter is the original ConditionGenerator as described above
-    // The second parameter is the cache lifetime in seconds, null will use the Cache default
-    $cacheWhereBuilder = $doctrineOrmFactory->createCacheWhereBuilder($conditionGenerator, null);
-
-    // Call the updateQuery on the $cacheWhereBuilder NOT the $conditionGenerator itself
-    // as that would break the purpose of having a cache.
-    $cacheWhereBuilder->updateQuery();
-
-    $users = $statement->getResult();
+    $conditionGenerator->apply();
 
 Next Steps
 ----------
