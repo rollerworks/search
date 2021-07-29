@@ -45,28 +45,34 @@ class ValuesBag implements \Countable, \Serializable
         }
     }
 
-    public function serialize(): string
+    public function __serialize(): array
     {
-        return \serialize(
-            [
-                $this->simpleValues,
-                $this->simpleExcludedValues,
-                $this->values,
-                $this->valuesCount,
-            ]
-        );
+        return [
+            'simpleValues' => $this->simpleValues,
+            'simpleExcludedValues' => $this->simpleExcludedValues,
+            'values' => $this->values,
+            'valuesCount' => $this->valuesCount,
+        ];
     }
 
-    public function unserialize($serialized): void
+    public function __unserialize(array $data): void
     {
-        $data = \unserialize($serialized);
-
         [
-            $this->simpleValues,
-            $this->simpleExcludedValues,
-            $this->values,
-            $this->valuesCount
+            'simpleValues' => $this->simpleValues,
+            'simpleExcludedValues' => $this->simpleExcludedValues,
+            'values' => $this->values,
+            'valuesCount' => $this->valuesCount,
         ] = $data;
+    }
+
+    public function serialize(): string
+    {
+        return \serialize($this->__serialize());
+    }
+
+    public function unserialize($data): void
+    {
+        $this->__unserialize(\unserialize($data));
     }
 
     public function getSimpleValues(): array

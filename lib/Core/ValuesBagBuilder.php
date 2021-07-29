@@ -17,8 +17,6 @@ use Rollerworks\Component\Search\Value\ValuesBag;
 
 /**
  * Helper class for the SearchConditionBuilder.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class ValuesBagBuilder extends ValuesBag
 {
@@ -34,10 +32,13 @@ class ValuesBagBuilder extends ValuesBag
         return $this->parent;
     }
 
+    /**
+     * @internal
+     */
     public function toValuesBag(): ValuesBag
     {
         $valuesBag = new ValuesBag();
-        $valuesBag->unserialize($this->serialize());
+        $valuesBag->__unserialize($this->__serialize());
 
         return $valuesBag;
     }

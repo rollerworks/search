@@ -188,24 +188,31 @@ class ValuesGroup implements \Serializable
         return $this;
     }
 
-    public function serialize(): string
+    public function __serialize(): array
     {
-        return \serialize(
-            [
-                $this->groupLogical,
-                $this->groups,
-                $this->fields,
-            ]
-        );
+        return [
+            'groupLogical' => $this->groupLogical,
+            'groups' => $this->groups,
+            'fields' => $this->fields,
+        ];
     }
 
-    public function unserialize($serialized): void
+    public function __unserialize(array $data): void
     {
-        $data = \unserialize($serialized);
-
         [
-            $this->groupLogical,
-            $this->groups,
-            $this->fields] = $data;
+            'groupLogical' => $this->groupLogical,
+            'groups' => $this->groups,
+            'fields' => $this->fields,
+        ] = $data;
+    }
+
+    public function serialize(): string
+    {
+        return \serialize($this->__serialize());
+    }
+
+    public function unserialize($data): void
+    {
+        $this->__unserialize(\unserialize($data));
     }
 }
