@@ -52,7 +52,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
     public function it_transforms_ar_localized_age_to_integer(): void
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this);
 
         \Locale::setDefault('ar');
 
