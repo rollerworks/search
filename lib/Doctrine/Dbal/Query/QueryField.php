@@ -97,6 +97,20 @@ class QueryField implements \Serializable
         // noop
     }
 
+    public function __serialize(): array
+    {
+        return [
+            'mapping_name' => $this->mappingName,
+            'field' => $this->fieldConfig->getName(),
+            'db_type' => $this->dbType->getName(),
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        // noop
+    }
+
     protected function initConversions(FieldConfig $fieldConfig): void
     {
         $converter = $fieldConfig->getOption('doctrine_dbal_conversion');

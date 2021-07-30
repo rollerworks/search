@@ -141,7 +141,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('7bdf48ca3ce581f79fe43359148b2b4f91934d3f2a7b542b1da034c5fdd057af')
+            ->with('62e186fb1789cc8fd59315f3453808771910dae798440eee8b85d83889d5e88a')
             ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
 
         $this->conditionGenerator
@@ -166,7 +166,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('7bdf48ca3ce581f79fe43359148b2b4f91934d3f2a7b542b1da034c5fdd057af')
+            ->with('62e186fb1789cc8fd59315f3453808771910dae798440eee8b85d83889d5e88a')
             ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
 
         $this->conditionGenerator
@@ -190,7 +190,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('7bdf48ca3ce581f79fe43359148b2b4f91934d3f2a7b542b1da034c5fdd057af')
+            ->with('62e186fb1789cc8fd59315f3453808771910dae798440eee8b85d83889d5e88a')
             ->willReturn(['', []]);
 
         $this->conditionGenerator
@@ -260,8 +260,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         $fieldSet = $this->getFieldSet();
 
         $cacheDriver = $this->prophesize(Cache::class);
-        $cacheDriver->get('7503457faa505a978544359616a2b503638538170931ce460b69fcf35566f771')->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
-        $cacheDriver->get('65dc24cc06603327105d067e431b024f9dc0f7573db68fe839b6e244a821c4bb')->willReturn(["you = 'me' AND me = 'foo'", [':search' => [5, 'integer']]]);
+        $cacheDriver->get('cb991a892faabc87fd36502af520e0e1fad70617cf4d11a5dc8ca8feb9417235')->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
+        $cacheDriver->get('aac1029ef411d16c316398274bb01cdad21999c91d6552f6a5afa2a399094415')->willReturn(["you = 'me' AND me = 'foo'", [':search' => [5, 'integer']]]);
 
         $cachedConditionGenerator = $this->createCachedConditionGenerator(
             $cacheDriver->reveal(),
