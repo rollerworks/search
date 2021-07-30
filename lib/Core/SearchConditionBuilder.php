@@ -13,15 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use LogicException;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\OrderField;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-/**
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
- */
 final class SearchConditionBuilder
 {
     /**
@@ -49,16 +47,42 @@ final class SearchConditionBuilder
      */
     private $primaryCondition;
 
+    /**
+     * @param string $logical eg. one of the following ValuesGroup class constants value:
+     *                        GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     */
     public static function create(FieldSet $fieldSet, string $logical = ValuesGroup::GROUP_LOGICAL_AND): self
     {
         return new self($logical, $fieldSet);
     }
 
+    private function __construct(string $logical, FieldSet $fieldSet, self $parent = null)
+    {
+        $this->valuesGroup = new ValuesGroup($logical);
+        $this->parent = $parent;
+        $this->fieldSet = $fieldSet;
+    }
+
     /**
-     * Add the result-ordering of the search condition
+     * @param string $logical eg. one of the following ValuesGroup class constants value:
+     *                        GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     *
+     * @return $this
+     */
+    public function setGroupLogical(string $logical): self
+    {
+        $this->valuesGroup->setGroupLogical($logical);
+
+        return $this;
+    }
+
+    /**
+     * Add the result-ordering of the (primary) search condition
      * and returns the SearchConditionBuilder.
      *
-     * Note: This method can only be used at the root-level of the condition.
+     * Note: This method can only be used at the root-level of the condition,
+     * or at the root-level of a primary condition. Unlike the other methods
+     * this doesn't require calling end() to close the condition level.
      *
      * ```
      * ->order('@name', 'ASC')
@@ -66,8 +90,20 @@ final class SearchConditionBuilder
      * ->field('name')
      *   ->addSimpleValue('my value')
      *   ->addSimpleValue('my value 2')
-     * ->end() // return back to the ValuesGroup
+     * ->end() // return back to the ValuesGroupBuilder or SearchConditionBuilder
      * ```
+     *
+     * Or (with primary condition)
+     *
+     * ```
+     * ->order('@name', 'ASC')
+     * ->primaryCondition()
+     *     ->order('@id', 'DESC')
+     * ->end() // Returns back to the main condition
+     * ```
+     *
+     * @param string $name      The field-name (must be valid known ordering field like @id)
+     * @param string $direction ASC or DESC
      *
      * @return $this
      */
@@ -81,6 +117,7 @@ final class SearchConditionBuilder
             throw new InvalidArgumentException(\sprintf('Field "%s" is not a valid ordering field. Expected either "@%1$s".', $name));
         }
 
+        $this->fieldSet->get($name);
         $direction = \strtoupper($direction);
 
         if ($direction !== 'ASC' && $direction !== 'DESC') {
@@ -111,17 +148,20 @@ final class SearchConditionBuilder
     }
 
     /**
-     * Create a new ValuesGroup and returns the object instance.
+     * Create a new ValuesGroup level and returns a SearchConditionBuilder instance
+     * for for building the nested group structure.
      *
-     * Afterwards the group can be expended with fields or subgroups:
+     * Afterwards the group can be expended with fields or additional subgroups:
      *
      * ```
      * ->group()
      *     ->field('name')
      *         ->...
      *     ->end() // return back to the ValuesGroup.
-     * ->end() // return back to the parent ValuesGroup
+     * ->end() // return back to the parent ValuesGroup level
      * ```
+     *
+     * Note: Groups cannot be altered or removed with the builder after creation.
      *
      * @param string $logical eg. one of the following ValuesGroup class constants value:
      *                        GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
@@ -129,13 +169,14 @@ final class SearchConditionBuilder
     public function group(string $logical = ValuesGroup::GROUP_LOGICAL_AND): self
     {
         $builder = new self($logical, $this->fieldSet, $this);
-        $this->valuesGroup->addGroup($builder->getGroup());
+        $this->valuesGroup->addGroup($builder->valuesGroup);
 
         return $builder;
     }
 
     /**
-     * Add/expend a field's ValuesBag on this ValuesGroup and returns the ValuesBag.
+     * Add/expend a field's ValuesBag on 'this' ValuesGroup and returns
+     * a ValuesBagBuilder for adding values to the field.
      *
      * Note. Values must be in the model format, they are not transformed!
      *
@@ -146,20 +187,11 @@ final class SearchConditionBuilder
      * ->field('name')
      *   ->addSimpleValue('my value')
      *   ->addSimpleValue('my value 2')
-     * ->end() // return back to the ValuesGroup
+     * ->end() // return back to the ValuesGroup level
      * ```
      */
-    public function field(string $name, bool $forceNew = false): ValuesBagBuilder
+    public function field(string $name): ValuesBagBuilder
     {
-        if ($forceNew) {
-            @\trigger_error(
-                'Using $forceNew with true is deprecated since RollerworksSearch v2.0.0-ALPHA22 and will be removed in v2.0.0-BETA1, use overwriteField() instead.',
-                \E_USER_DEPRECATED
-            );
-
-            return $this->overwriteField($name);
-        }
-
         if (OrderField::isOrder($name)) {
             throw new InvalidArgumentException(\sprintf('Unable to configure ordering of "%s" with field(), use the order() method instead.', $name));
         }
@@ -168,6 +200,8 @@ final class SearchConditionBuilder
             /** @var ValuesBagBuilder $valuesBag */
             $valuesBag = $this->valuesGroup->getField($name);
         } else {
+            $this->fieldSet->get($name);
+
             $valuesBag = new ValuesBagBuilder($this);
             $this->valuesGroup->addField($name, $valuesBag);
         }
@@ -176,7 +210,8 @@ final class SearchConditionBuilder
     }
 
     /**
-     * Add/overwrites a field's ValuesBag on this ValuesGroup and returns the ValuesBag.
+     * Add/overwrites a field's ValuesBag on this ValuesGroup and returns
+     * a ValuesBagBuilder for adding values to the field.
      *
      * Note. Values must be in the model format, they are not transformed!
      *
@@ -187,25 +222,30 @@ final class SearchConditionBuilder
      * ->overwriteField('name')
      *   ->addSimpleValue('my value')
      *   ->addSimpleValue('my value 2')
-     * ->end() // return back to the ValuesGroup
+     * ->end() // return back to the ValuesGroup level
      * ```
      */
     public function overwriteField(string $name): ValuesBagBuilder
     {
+        if (OrderField::isOrder($name)) {
+            throw new InvalidArgumentException(\sprintf('Unable to configure ordering of "%s" with overwriteField(), use the order() method instead. Call clearOrder() if you need to remove previously set orderings.', $name));
+        }
+
+        $this->fieldSet->get($name);
+
         $valuesBag = new ValuesBagBuilder($this);
         $this->valuesGroup->addField($name, $valuesBag);
 
         return $valuesBag;
     }
 
+    /**
+     * Close the condition building level (field or group) and return back
+     * to the previous builder level.
+     */
     public function end(): self
     {
         return $this->parent ?? $this;
-    }
-
-    public function getGroup(): ValuesGroup
-    {
-        return $this->valuesGroup;
     }
 
     /**
@@ -230,7 +270,9 @@ final class SearchConditionBuilder
     }
 
     /**
-     * Build the SearchCondition object using the groups and fields.
+     * Build and returns the SearchCondition object using the groups and fields.
+     *
+     * Tip: This method can be called at any level, explicitly calling end() is not required.
      */
     public function getSearchCondition(): SearchCondition
     {
@@ -249,16 +291,9 @@ final class SearchConditionBuilder
             $searchCondition->setOrder(new SearchOrder($this->order));
         }
 
-        $this->buildPrimaryCondition($searchCondition);
+        $searchCondition->setPrimaryCondition($this->getPrimaryCondition());
 
         return $searchCondition;
-    }
-
-    private function __construct(string $logical, FieldSet $fieldSet, self $parent = null)
-    {
-        $this->valuesGroup = new ValuesGroup($logical);
-        $this->parent = $parent;
-        $this->fieldSet = $fieldSet;
     }
 
     private function normalizeValueGroup(ValuesGroup $currentValuesGroup, ValuesGroup $rootValuesGroup): void
@@ -279,18 +314,37 @@ final class SearchConditionBuilder
         }
     }
 
-    private function buildPrimaryCondition(SearchCondition $searchCondition): void
+    /**
+     * Gets the resolved SearchPrimaryCondition (if any).
+     *
+     * This method can be used as an alternative to getSearchCondition()
+     * if you (only) need to get the PrimaryCondition.
+     */
+    public function getPrimaryCondition(): ?SearchPrimaryCondition
     {
         if (! $this->primaryCondition) {
-            return;
+            return null;
         }
 
-        $primaryCondition = new SearchPrimaryCondition($this->primaryCondition->valuesGroup);
+        $rootValuesGroup = new ValuesGroup($this->primaryCondition->valuesGroup->getGroupLogical());
+        $this->normalizeValueGroup($this->primaryCondition->valuesGroup, $rootValuesGroup);
+
+        $primaryCondition = new SearchPrimaryCondition($rootValuesGroup);
 
         if ($this->primaryCondition->order) {
             $primaryCondition->setOrder(new SearchOrder($this->primaryCondition->order));
         }
 
-        $searchCondition->setPrimaryCondition($primaryCondition);
+        return $primaryCondition;
+    }
+
+    public function __serialize(): array
+    {
+        throw new LogicException('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
+    }
+
+    public function __sleep(): array
+    {
+        throw new LogicException('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
     }
 }

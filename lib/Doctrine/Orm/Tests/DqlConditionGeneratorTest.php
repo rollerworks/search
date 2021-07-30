@@ -42,6 +42,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
     protected function getFieldSet(bool $build = true)
     {
         $fieldSet = parent::getFieldSet(false);
+        $fieldSet->add('id2', IntegerType::class);
         $fieldSet->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2]]);
         $fieldSet->add('customer_first_name', TextType::class);
 
