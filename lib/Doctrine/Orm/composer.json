@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "doctrine/orm": "^2.6",
         "rollerworks/search": "^2.0@dev,>=2.0.0-BETA1",
         "rollerworks/search-doctrine-dbal": "^2.0@dev,>=2.0.0-BETA1"

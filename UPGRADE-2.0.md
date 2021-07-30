@@ -1,9 +1,11 @@
 UPGRADE FROM 2.0-BETA1 to 2.0-BETA2
 ===================================
 
- * Support for PHP 7.1 was dropped, you need at least PHP 7.2 or greater.
+ * Support for PHP < 7.4 was dropped.
  
- * Support for Symfony below 4.4 was dropped.
+ * Support for Symfony < 4.4 was dropped.
+
+ * Support for PHPUnit < 9.5 was dropped.
 
 ### Doctrine ORM
 

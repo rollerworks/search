@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "rollerworks/search": "^2.0@dev,>=2.0.0-BETA1",
         "symfony/validator": "^4.4 || ^5.0"
     },

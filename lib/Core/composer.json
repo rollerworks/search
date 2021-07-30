@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "nesbot/carbon": "^2.38",
         "psr/container": "^1.0.0",
         "symfony/intl": "^4.4 || ^5.0",
@@ -33,7 +33,7 @@
     },
     "require-dev": {
         "moneyphp/money": "^3.2.0",
-        "phpunit/phpunit": "^6.5.4",
+        "phpunit/phpunit": "^9.5",
         "symfony/phpunit-bridge": "^4.4 || ^5.0",
         "symfony/var-dumper": "^4.4 || ^5.0"
     },
