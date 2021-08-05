@@ -7,6 +7,14 @@ UPGRADE FROM 2.0-BETA1 to 2.0-BETA2
 
  * Support for PHPUnit < 9.5 was dropped.
 
+### Elasticsearch
+
+ * Support for Elastica 6 was dropped.
+
+ * Support for Elasticsearch 6 was dropped.
+
+   _See the upgrade instructions of Elasticsearch itself for more information._
+
 ### Doctrine ORM
 
  * Support for passing a `Doctrine\ORM\Query` object in the generators was removed, 

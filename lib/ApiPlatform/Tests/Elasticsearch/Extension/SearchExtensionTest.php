@@ -23,6 +23,7 @@ use Elastica\Client;
 use Elastica\Query;
 use Elastica\Response;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Rollerworks\Component\Search\ApiPlatform\Elasticsearch\Extension\SearchExtension;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\Dummy;
 use Rollerworks\Component\Search\Elasticsearch\CachedConditionGenerator;
@@ -80,7 +81,7 @@ final class SearchExtensionTest extends TestCase
         $managerRegistry = $managerRegistryProphecy->reveal();
 
         $elasticaClientProphecy = $this->prophesize(Client::class);
-        $elasticaClientProphecy->request('/_search', 'GET', $query->toArray(), [])->willReturn($elasticaResponse);
+        $elasticaClientProphecy->request('/_search', Argument::in(['POST', 'GET']), $query->toArray(), [])->willReturn($elasticaResponse)->shouldBeCalled();
         $elasticaClient = $elasticaClientProphecy->reveal();
 
         $conditionGeneratorProphecy = $this->prophesize(QueryConditionGenerator::class);

@@ -41,7 +41,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 final class SearchConditionListenerTest extends SearchIntegrationTestCase
 {
     /** @test */
-    public function it_sets_search_condition_and_config_for_empty_qeury(): void
+    public function it_sets_search_condition_and_config_for_empty_query(): void
     {
         $dummyMetadata = new ResourceMetadata(
             'dummy',
@@ -142,7 +142,10 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
         self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group legacy
+     */
     public function it_requires_a_string_search_condition(): void
     {
         $dummyMetadata = new ResourceMetadata(

@@ -1,5 +1,6 @@
 imports:
     - { resource: framework.yml }
+    - { resource: elasticsearch.yml }
 
 framework:
     router:
@@ -49,12 +50,6 @@ doctrine:
                 mappings:
                     AppBundle:  ~
 
-fos_elastica:
-    clients:
-        default: {host: localhost, port: 9200}
-    indexes:
-        app: ~
-
 api_platform:
     title:       API Platform's demo
     description: |
@@ -71,3 +66,10 @@ api_platform:
         yaml:    ['application/x-yaml']
         csv:     ['text/csv']
         html:    ['text/html']
+
+rollerworks_search:
+    api_platform: true
+    elasticsearch: true
+    doctrine:
+        dbal: true
+        orm: true

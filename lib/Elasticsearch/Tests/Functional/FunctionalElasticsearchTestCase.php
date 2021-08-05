@@ -17,7 +17,6 @@ use Elastica\Client;
 use Elastica\Document;
 use Elastica\Exception\ResponseException;
 use Elastica\Search;
-use Elastica\Type\Mapping;
 use Rollerworks\Component\Search\Elasticsearch\QueryConditionGenerator;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
@@ -31,22 +30,28 @@ use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Elasticsearch\ElasticsearchTestCase;
 
-/**
- * Class FunctionalElasticsearchTestCase.
- */
 abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
 {
     protected function setUp(): void
     {
-        $mappings = $this->getMappings();
-        $documents = $this->getDocuments();
+        try {
+            $mappings = $this->getMappings();
+            $documents = $this->getDocuments();
 
-        foreach ($mappings as $name => $properties) {
-            if (\array_key_exists($name, $documents) === false) {
-                throw new \RuntimeException(\sprintf('No documents for mapping "%1$s" defined', $name));
+            foreach ($mappings as $name => $properties) {
+                if (\array_key_exists($name, $documents) === false) {
+                    throw new \RuntimeException(\sprintf('No documents for mapping "%1$s" defined', $name));
+                }
+                $data = $documents[$name];
+                $this->createDocuments($name, $properties, $data);
             }
-            $data = $documents[$name];
-            $this->createDocuments($name, $properties, $data);
+        } catch (ResponseException $exception) {
+            static::fail(\sprintf(
+                "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
+                $exception->getMessage(),
+                $exception->getRequest()->getPath(),
+                \json_encode($exception->getRequest()->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
+            ));
         }
 
         parent::setUp();
@@ -73,7 +78,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                         'birthday' => ['type' => 'date'],
                     ],
                 ],
-                'label' => ['type' => 'string'],
+                'label' => ['type' => 'text'],
                 'pubdate' => ['type' => 'date'],
                 'pubdatetime' => ['type' => 'date'],
                 'status' => ['type' => 'integer'],
@@ -81,7 +86,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 'items' => [
                     'type' => 'nested',
                     'properties' => [
-                        'label' => ['type' => 'string'],
+                        'label' => ['type' => 'text'],
                         'quantity' => ['type' => 'integer'],
                         'price' => ['type' => 'integer'],
                         'total' => ['type' => 'integer'],
@@ -163,33 +168,36 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
 
     protected function createDocuments(string $name, array $properties, array $data): void
     {
-        // index
-        $client = $this->getClient();
-        $index = $client->getIndex($name);
-        $index->create([
-            'mapping.single_type' => true,
-        ], ['recreate' => true]);
-
-        // mapping
-        $type = $index->getType($name);
-        $mapping = new Mapping($type, $properties);
-        $mapping->send();
-
-        // documents
-        if (empty($data) === false) {
-            $documents = [];
-
-            foreach ($data as $id => $item) {
-                $normalized = \array_combine(\array_keys($properties), $item);
-                $document = new Document($id, $normalized);
-
-                if (isset($normalized['type']['parent'])) {
-                    $document->setRouting($normalized['type']['parent']);
-                }
-                $documents[] = $document;
-            }
-            $type->addDocuments($documents);
+        try {
+            // index
+            $client = $this->getClient();
+            $index = $client->getIndex($name);
+            $index->create(['mappings' => ['properties' => $properties]], ['recreate' => true]);
             $index->refresh();
+
+            // documents
+            if (empty($data) === false) {
+                $documents = [];
+
+                foreach ($data as $id => $item) {
+                    $normalized = \array_combine(\array_keys($properties), $item);
+                    $document = new Document((string) $id, $normalized);
+
+                    if (isset($normalized['type']['parent'])) {
+                        $document->setRouting($normalized['type']['parent']);
+                    }
+                    $documents[] = $document;
+                }
+                $index->addDocuments($documents);
+                $index->refresh();
+            }
+        } catch (ResponseException $exception) {
+            static::fail(\sprintf(
+                "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
+                $exception->getMessage(),
+                $exception->getRequest()->getPath(),
+                \json_encode($exception->getRequest()->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
+            ));
         }
     }
 
@@ -203,9 +211,9 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $builder->add('customer-name', TextType::class);
         $builder->add('@customer-name', OrderFieldType::class);
         $builder->add('customer-birthday', BirthdayType::class, ['pattern' => 'yyyy-MM-dd']);
-        $builder->add('@customer-birthday', OrderFieldType::class);
-        $builder->add('@customer-pubdate', OrderFieldType::class);
-        $builder->add('@customer-note-pubdate', OrderFieldType::class);
+        $builder->add('@customer-birthday', OrderFieldType::class, ['type' => BirthdayType::class]);
+        $builder->add('@customer-pubdate', OrderFieldType::class, ['type' => DateType::class]);
+        $builder->add('@customer-note-pubdate', OrderFieldType::class, ['type' => DateType::class]);
         $builder->add('customer-comment', TextType::class);
         $builder->add('customer-comment-restricted', TextType::class);
 
@@ -215,7 +223,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $builder->add('customer', IntegerType::class);
         $builder->add('label', TextType::class);
         $builder->add('pub-date', DateType::class, ['pattern' => 'yyyy-MM-dd']);
-        $builder->add('@pub-date', OrderFieldType::class);
+        $builder->add('@pub-date', OrderFieldType::class, ['type' => DateType::class]);
         $builder->add('pub-date-time', DateTimeType::class, ['pattern' => 'yyyy-MM-dd HH:mm:ss', 'allow_relative' => true]);
         $builder->add('status', ChoiceType::class, ['choices' => ['concept' => 0, 'published' => 1, 'paid' => 2, 'overdue' => 3]]);
         $builder->add('total', MoneyType::class);
@@ -290,9 +298,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         $search = new Search($this->getClient());
 
         foreach ($mappings as $mapping) {
-            $search
-                ->addIndex($mapping->indexName)
-                ->addType($mapping->typeName);
+            $search->addIndex($mapping->indexName);
         }
 
         try {
@@ -300,7 +306,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
             $documents = $results->getDocuments();
             $foundIds = \array_map(
                 static function (Document $document) {
-                    return $document->getId();
+                    return (string) $document->getId();
                 },
                 $documents
             );
@@ -309,20 +315,18 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $search->getPath(),
-                \json_encode($query->toArray(), \JSON_PRETTY_PRINT)
+                \json_encode($query->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
             ));
-
-            return;
         }
 
-        static::assertEquals(
-            $expectedIds,
+        static::assertSame(
+            \array_map('strval', $expectedIds),
             $foundIds,
             \sprintf(
                 "Found these records instead: \n%s\n"
                 . "With query: ---------------------\n%s\n---------------------------------\n",
-                \print_r($documents, true),
-                \json_encode($query->toArray(), \JSON_PRETTY_PRINT)
+                \var_export($documents, true),
+                \json_encode($query->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
             )
         );
     }

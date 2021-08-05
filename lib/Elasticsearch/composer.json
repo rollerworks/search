@@ -23,7 +23,7 @@
         "php": ">=7.4",
         "psr/simple-cache": "^1.0",
         "rollerworks/search": "^2.0@dev,>=2.0.0-BETA1",
-        "ruflin/elastica": "^4.0 || ^5.0 || ^6.0"
+        "ruflin/elastica": "^5.0 || ^6.0"
     },
     "require-dev": {
         "moneyphp/money": "^3.0",

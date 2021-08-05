@@ -32,6 +32,8 @@ final class OrderFieldType implements FieldType
             'default' => null,
             'case' => OrderTransformer::CASE_UPPERCASE,
             'alias' => ['ASC' => 'ASC', 'DESC' => 'DESC'],
+            'type' => null,
+            'type_options' => [],
         ]);
 
         $resolver->setAllowedValues('case', [
@@ -40,6 +42,8 @@ final class OrderFieldType implements FieldType
         ]);
         $resolver->setAllowedTypes('alias', 'array');
         $resolver->setAllowedTypes('default', ['null', 'string']);
+        $resolver->setAllowedTypes('type', ['string', 'null']);
+        $resolver->setAllowedTypes('type_options', ['array']);
     }
 
     public function buildType(FieldConfig $config, array $options): void

@@ -39,6 +39,8 @@ final class FieldMapping implements \Serializable
      */
     public $queryConversion;
 
+    public ?ChildOrderConversion $childOrderConversion = null;
+
     /**
      * @var self[]
      */
@@ -60,18 +62,23 @@ final class FieldMapping implements \Serializable
         $this->nested = $mapping['nested'];
         $this->join = $mapping['join'];
 
-        $this->conditions = $this->expandConditions($conditions, $fieldConfig);
-        $this->options = $options;
-
         $converter = $fieldConfig->getOption('elasticsearch_conversion');
+        $childOrderConverter = $fieldConfig->getOption('elasticsearch_child_order_conversion');
 
         if ($converter instanceof ValueConversion) {
             $this->valueConversion = $converter;
         }
 
+        if ($childOrderConverter instanceof ChildOrderConversion) {
+            $this->childOrderConversion = $childOrderConverter;
+        }
+
         if ($converter instanceof QueryConversion) {
             $this->queryConversion = $converter;
         }
+
+        $this->conditions = $this->expandConditions($conditions, $fieldConfig);
+        $this->options = $options;
     }
 
     /**
@@ -138,16 +145,23 @@ final class FieldMapping implements \Serializable
 
     private function expandConditions(array $conditions, FieldConfig $fieldConfig): array
     {
-        if (OrderField::isOrder($this->fieldName) && $this->join) {
+        if ($this->join && OrderField::isOrder($this->fieldName)) {
             // sorting by has_child query is special
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html#_sorting
             $property = $this->indexName . ($this->typeName ? '/' . $this->typeName : '') . '#' . $this->join['type'] . '>';
+            $queryScript = \sprintf('doc["%s"].value', $this->propertyName);
+
+            if ($this->childOrderConversion !== null) {
+                $queryScript = $this->childOrderConversion->convert($property, $queryScript);
+            }
+
+            $queryScript = \sprintf('%1$s * %2$s', QueryConditionGenerator::SORT_SCORE, $queryScript);
 
             $scoreQuery = new self('_', $property, $fieldConfig, [], ['score_mode' => 'max']);
             $scoreQuery->propertyQuery = [
                 QueryConditionGenerator::QUERY_FUNCTION_SCORE => [
                     QueryConditionGenerator::QUERY_SCRIPT_SCORE => [
-                        QueryConditionGenerator::QUERY_SCRIPT => \sprintf('%1$s * doc["%2$s"].value', QueryConditionGenerator::SORT_SCORE, $this->propertyName),
+                        QueryConditionGenerator::QUERY_SCRIPT => $queryScript,
                     ],
                 ],
             ];
