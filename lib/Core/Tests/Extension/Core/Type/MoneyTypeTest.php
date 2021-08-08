@@ -48,12 +48,12 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('€ 12,20', 'EUR 12.20')
-            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1220)))
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR('1220')))
             ->andReverseTransformsTo('€ 12,20', 'EUR 12.20');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00', '12.00')
-            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200), false))
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR('1200'), false))
             ->andReverseTransformsTo('12,00', '12.00');
     }
 
@@ -66,12 +66,12 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00 €', 'EUR 12.00')
-            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200)))
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR('1200')))
             ->andReverseTransformsTo('12,00 €', 'EUR 12.00');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00', '12.00')
-            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200), false))
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR('1200'), false))
             ->andReverseTransformsTo('12,00', '12.00');
     }
 
@@ -84,22 +84,22 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('¥12,00', 'JPY 12.00')
-            ->successfullyTransformsTo(new MoneyValue(Money::JPY(12)))
+            ->successfullyTransformsTo(new MoneyValue(Money::JPY('12')))
             ->andReverseTransformsTo('¥12', 'JPY 12');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('¥12', 'JPY 12')
-            ->successfullyTransformsTo(new MoneyValue(Money::JPY(12)))
+            ->successfullyTransformsTo(new MoneyValue(Money::JPY('12')))
             ->andReverseTransformsTo('¥12', 'JPY 12');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12', '12.00')
-            ->successfullyTransformsTo(new MoneyValue(Money::JPY(12), false))
+            ->successfullyTransformsTo(new MoneyValue(Money::JPY('12'), false))
             ->andReverseTransformsTo('12', '12');
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('€12.00', 'EUR 12.00')
-            ->successfullyTransformsTo(new MoneyValue(Money::EUR(1200)))
+            ->successfullyTransformsTo(new MoneyValue(Money::EUR('1200')))
             ->andReverseTransformsTo('€12.00', 'EUR 12.00');
     }
 

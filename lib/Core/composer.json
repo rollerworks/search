@@ -32,7 +32,7 @@
         "moneyphp/money": "<3.2.0"
     },
     "require-dev": {
-        "moneyphp/money": "^3.2.0",
+        "moneyphp/money": "^3.2.0 || ^4.0",
         "phpunit/phpunit": "^9.5",
         "symfony/phpunit-bridge": "^4.4 || ^5.0",
         "symfony/var-dumper": "^4.4 || ^5.0"
