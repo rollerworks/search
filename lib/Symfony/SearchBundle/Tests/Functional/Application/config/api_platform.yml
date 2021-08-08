@@ -5,7 +5,7 @@ imports:
 framework:
     router:
         enabled: true
-        resource: "%kernel.root_dir%/config/routing_api.yml"
+        resource: "%kernel.project_dir%/config/routing_api.yml"
         strict_requirements: "%kernel.debug%"
     validation:      { enable_annotations: true }
     serializer:      { enable_annotations: true }
@@ -48,15 +48,20 @@ doctrine:
                 naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
                 auto_mapping: false
                 mappings:
-                    AppBundle:  ~
+                    App:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/AppBundle/Entity'
+                        prefix: 'Rollerworks\\Bundle\\SearchBundle\\Tests\\Functional\\Application\\AppBundle\\Entity'
+                        alias: AppBundle
 
 api_platform:
     title:       API Platform's demo
     description: |
       This is a demo application of the [API Platform](https://api-platform.com) framework.
       [Its source code](https://github.com/api-platform/demo) includes various examples, check it out!
-        mapping:
-            paths: ['%kernel.root_dir%/AppBundle/Entity']
+    mapping:
+        paths: ['%kernel.project_dir%/AppBundle/Entity']
 
     formats:
         jsonld:  ['application/ld+json']

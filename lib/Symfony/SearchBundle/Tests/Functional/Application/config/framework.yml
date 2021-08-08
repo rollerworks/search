@@ -1,17 +1,20 @@
 framework:
-    translator:         { fallback: en }
-    secret:              test
+    translator: { fallback: en }
+    secret: test
     router:
         enabled: false
-        resource: "%kernel.root_dir%/config/routing.yml"
+        resource: "%kernel.project_dir%/config/routing.yml"
         strict_requirements: "%kernel.debug%"
-    form:                false
-    csrf_protection:     false
-    validation:          { enable_annotations: false }
-    default_locale:      en
+    form: false
+    csrf_protection: false
+    validation: { enable_annotations: false }
+    default_locale: en
     session:
-        storage_id: session.storage.filesystem
-    test:                ~
+        handler_id: null
+        cookie_secure: auto
+        cookie_samesite: lax
+        storage_factory_id: "session.storage.factory.mock_file"
+    test: true
     assets: false
 
     cache:

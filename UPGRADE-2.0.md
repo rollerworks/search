@@ -3,7 +3,7 @@ UPGRADE FROM 2.0-BETA1 to 2.0-BETA2
 
  * Support for PHP < 7.4 was dropped.
  
- * Support for Symfony < 4.4 was dropped.
+ * Support for Symfony 4 was dropped.
 
  * Support for PHPUnit < 9.5 was dropped.
 

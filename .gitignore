@@ -5,5 +5,7 @@
 /.php_cs.cache
 build/**
 *.phar
-var/
+/var/
+
 .phpunit.result.cache
+/lib/Symfony/SearchBundle/Tests/Functional/Application/var/
