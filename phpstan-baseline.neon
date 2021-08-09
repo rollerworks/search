@@ -1,0 +1,382 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Validator\\\\ConstraintViolationInterface\\:\\:getConstraint\\(\\)\\.$#"
+			count: 1
+			path: lib/ApiPlatform/Serializer/InvalidSearchConditionNormalizer.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 1
+			path: lib/ApiPlatform/Serializer/InvalidSearchConditionNormalizer.php
+
+		-
+			message: "#^Class ApiPlatform\\\\Core\\\\Tests\\\\Fixtures\\\\TestBundle\\\\Entity\\\\Dummy not found\\.$#"
+			count: 4
+			path: lib/ApiPlatform/Tests/Doctrine/Orm/Extension/SearchExtensionTest.php
+
+		-
+			message: "#^Class ApiPlatform\\\\Core\\\\Tests\\\\Fixtures\\\\TestBundle\\\\Entity\\\\RelatedDummy not found\\.$#"
+			count: 9
+			path: lib/ApiPlatform/Tests/Doctrine/Orm/Extension/SearchExtensionTest.php
+
+		-
+			message: "#^Class ApiPlatform\\\\Core\\\\Tests\\\\Fixtures\\\\TestBundle\\\\Entity\\\\ThirdLevel not found\\.$#"
+			count: 2
+			path: lib/ApiPlatform/Tests/Doctrine/Orm/Extension/SearchExtensionTest.php
+
+		-
+			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\ApiPlatform\\\\Tests\\\\Mock\\\\FieldSetStub\\:\\:get\\(\\) should return Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig but return statement is missing\\.$#"
+			count: 1
+			path: lib/ApiPlatform/Tests/Mock/FieldSetStub.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: lib/Core/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformer.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: lib/Core/Extension/Core/DataTransformer/LocalizedBirthdayTransformer.php
+
+		-
+			message: "#^Parameter \\#1 \\$code of class Money\\\\Currency constructor expects non\\-empty\\-string, string given\\.$#"
+			count: 2
+			path: lib/Core/Extension/Core/DataTransformer/MoneyToStringTransformer.php
+
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertSame\\(\\) with array\\('Group 1' \\=\\> array\\('A' \\=\\> 'a', 'B' \\=\\> 'b'\\), 'Group 2' \\=\\> array\\('C' \\=\\> 'c', 'D' \\=\\> 'd'\\)\\) and array\\<string\\> will always evaluate to false\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/ChoiceList/ArrayChoiceListTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$choices of class Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceListView constructor expects array\\<Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceGroupView\\|Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceView\\>, array\\<int, null\\> given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/ChoiceList/Factory/PropertyAccessDecoratorTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$choices of class Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceListView constructor expects array\\<Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceGroupView\\|Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceView\\>, array\\<int, string\\> given\\.$#"
+			count: 8
+			path: lib/Core/Tests/Extension/Core/ChoiceList/Factory/PropertyAccessDecoratorTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$preferredChoices of class Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceListView constructor expects array\\<Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceGroupView\\|Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceView\\>, array\\<int, false\\> given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/ChoiceList/Factory/PropertyAccessDecoratorTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$preferredChoices of class Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceListView constructor expects array\\<Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceGroupView\\|Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\ChoiceList\\\\View\\\\ChoiceView\\>, array\\<int, true\\> given\\.$#"
+			count: 2
+			path: lib/Core/Tests/Extension/Core/ChoiceList/Factory/PropertyAccessDecoratorTest.php
+
+		-
+			message: "#^Call to method DateTimeImmutable\\:\\:setTimezone\\(\\) on a separate line has no effect\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$dateTime of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\DateTimeToLocalizedStringTransformer\\:\\:transform\\(\\) expects DateTimeImmutable\\|null, float given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$dateTime of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\DateTimeToLocalizedStringTransformer\\:\\:transform\\(\\) expects DateTimeImmutable\\|null, string given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\DateTimeToLocalizedStringTransformer\\:\\:reverseTransform\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertEquals\\(\\) invoked with 7 parameters, 2\\-3 required\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$dateTime of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\DateTimeToRfc3339Transformer\\:\\:transform\\(\\) expects DateTimeImmutable\\|null, string given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToRfc3339TransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$rfc3339 of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\DateTimeToRfc3339Transformer\\:\\:reverseTransform\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToRfc3339TransformerTest.php
+
+		-
+			message: "#^You should use assertNull\\(\\) instead of assertSame\\(null, \\$actual\\)\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToRfc3339TransformerTest.php
+
+		-
+			message: "#^Call to method DateTimeImmutable\\:\\:setTimezone\\(\\) on a separate line has no effect\\.$#"
+			count: 2
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$dateTime of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\DateTimeToStringTransformer\\:\\:transform\\(\\) expects DateTimeImmutable\\|null, string given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\DateTimeToStringTransformer\\:\\:reverseTransform\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToStringTransformerTest.php
+
+		-
+			message: "#^Call to method DateTimeImmutable\\:\\:setTimezone\\(\\) on a separate line has no effect\\.$#"
+			count: 3
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToTimestampTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$dateTime of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\DateTimeToTimestampTransformer\\:\\:transform\\(\\) expects DateTimeImmutable\\|null, string given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/DateTimeToTimestampTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\IntegerToLocalizedStringTransformer\\:\\:reverseTransform\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/IntegerToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\IntegerToStringTransformer\\:\\:reverseTransform\\(\\) expects string, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/IntegerToStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$code of class Money\\\\Currency constructor expects non\\-empty\\-string, string given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\MoneyToLocalizedStringTransformer\\:\\:reverseTransform\\(\\) expects string\\|null, int given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\MoneyToLocalizedStringTransformer\\:\\:transform\\(\\) expects Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\Model\\\\MoneyValue\\|null, string given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$code of class Money\\\\Currency constructor expects non\\-empty\\-string, string given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/MoneyToStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\MoneyToStringTransformer\\:\\:reverseTransform\\(\\) expects string\\|null, int given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/MoneyToStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\MoneyToStringTransformer\\:\\:transform\\(\\) expects Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\Model\\\\MoneyValue\\|null, string given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/MoneyToStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\NumberToLocalizedStringTransformer\\:\\:reverseTransform\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/NumberToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\NumberToStringTransformer\\:\\:reverseTransform\\(\\) expects string, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/DataTransformer/NumberToStringTransformerTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 7
+			path: lib/Core/Tests/Extension/Core/Type/ChoiceTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 2
+			path: lib/Core/Tests/Extension/Core/Type/CountryTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/Type/CurrencyTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/Type/DateTimeTypeTest.php
+
+		-
+			message: "#^Call to method DateTimeImmutable\\:\\:setTimezone\\(\\) on a separate line has no effect\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/Type/DateTimeTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 2
+			path: lib/Core/Tests/Extension/Core/Type/DateTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/Type/IntegerTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 2
+			path: lib/Core/Tests/Extension/Core/Type/LanguageTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/Type/LocaleTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/Type/MoneyTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/Type/NumberTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 3
+			path: lib/Core/Tests/Extension/Core/Type/TimeTypeTest.php
+
+		-
+			message: "#^Call to an undefined method Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\:\\:finalizeConfig\\(\\)\\.$#"
+			count: 1
+			path: lib/Core/Tests/Extension/Core/Type/TimezoneTypeTest.php
+
+		-
+			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Field\\\\ResolvedFieldTypeTest\\:\\:getMockFieldType\\(\\) should return PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldType but returns PHPUnit\\\\Framework\\\\MockObject\\\\MockObject\\.$#"
+			count: 1
+			path: lib/Core/Tests/Field/ResolvedFieldTypeTest.php
+
+		-
+			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\GenericFieldSetTest\\:\\:createFieldMock\\(\\) should return PHPUnit_Framework_MockObject_MockObject but returns PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\.$#"
+			count: 1
+			path: lib/Core/Tests/GenericFieldSetTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$fields of class Rollerworks\\\\Component\\\\Search\\\\GenericFieldSet constructor expects array\\<Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\>, array\\<string, PHPUnit_Framework_MockObject_MockObject\\> given\\.$#"
+			count: 3
+			path: lib/Core/Tests/GenericFieldSetTest.php
+
+		-
+			message: "#^Return typehint of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\GenericFieldSetTest\\:\\:createFieldMock\\(\\) has invalid type PHPUnit_Framework_MockObject_MockObject\\.$#"
+			count: 1
+			path: lib/Core/Tests/GenericFieldSetTest.php
+
+		-
+			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Mock\\\\FieldSetStub\\:\\:get\\(\\) should return Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig but return statement is missing\\.$#"
+			count: 1
+			path: lib/Core/Tests/Mock/FieldSetStub.php
+
+		-
+			message: "#^Parameter \\#1 \\$compares of method Rollerworks\\\\Component\\\\Search\\\\Doctrine\\\\Dbal\\\\Query\\\\QueryGenerator\\:\\:processCompares\\(\\) expects array\\<Rollerworks\\\\Component\\\\Search\\\\Value\\\\Compare\\>, array\\<Rollerworks\\\\Component\\\\Search\\\\Value\\\\ValueHolder\\> given\\.$#"
+			count: 2
+			path: lib/Doctrine/Dbal/Query/QueryGenerator.php
+
+		-
+			message: "#^Parameter \\#1 \\$patternMatchers of method Rollerworks\\\\Component\\\\Search\\\\Doctrine\\\\Dbal\\\\Query\\\\QueryGenerator\\:\\:processPatternMatchers\\(\\) expects array\\<Rollerworks\\\\Component\\\\Search\\\\Value\\\\PatternMatch\\>, array\\<Rollerworks\\\\Component\\\\Search\\\\Value\\\\ValueHolder\\> given\\.$#"
+			count: 2
+			path: lib/Doctrine/Dbal/Query/QueryGenerator.php
+
+		-
+			message: "#^Parameter \\#1 \\$ranges of method Rollerworks\\\\Component\\\\Search\\\\Doctrine\\\\Dbal\\\\Query\\\\QueryGenerator\\:\\:processRanges\\(\\) expects array\\<Rollerworks\\\\Component\\\\Search\\\\Value\\\\Range\\>, array\\<Rollerworks\\\\Component\\\\Search\\\\Value\\\\ValueHolder\\> given\\.$#"
+			count: 2
+			path: lib/Doctrine/Dbal/Query/QueryGenerator.php
+
+		-
+			message: "#^Parameter \\#2 \\$cacheDriver of class Rollerworks\\\\Component\\\\Search\\\\Doctrine\\\\Dbal\\\\CachedConditionGenerator constructor expects Psr\\\\SimpleCache\\\\CacheInterface, PHPUnit\\\\Framework\\\\MockObject\\\\MockObject given\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/CachedConditionGeneratorTest.php
+
+		-
+			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Functional\\\\FunctionalDbalTestCase\\:\\:getQuery\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\ConnectionMock\\:\\:insert\\(\\) should be compatible with return type \\(int\\) of method Doctrine\\\\DBAL\\\\Connection\\:\\:insert\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/ConnectionMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:_getCommonIntegerTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:_getCommonIntegerTypeDeclarationSQL\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getBigIntTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getBigIntTypeDeclarationSQL\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getBlobTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getBlobTypeDeclarationSQL\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getBooleanTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getBooleanTypeDeclarationSQL\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getClobTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getClobTypeDeclarationSQL\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getIntegerTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getIntegerTypeDeclarationSQL\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getSmallIntTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getSmallIntTypeDeclarationSQL\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getVarcharTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getVarcharTypeDeclarationSQL\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getVarcharTypeDeclarationSQLSnippet\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getVarcharTypeDeclarationSQLSnippet\\(\\)$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+
+		-
+			message: "#^Property Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Orm\\\\CachedDqlConditionGeneratorTest\\:\\:\\$cacheDriver \\(PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&Psr\\\\SimpleCache\\\\CacheInterface\\) does not accept Doctrine\\\\Common\\\\Cache\\\\Cache&PHPUnit\\\\Framework\\\\MockObject\\\\MockObject\\.$#"
+			count: 1
+			path: lib/Doctrine/Orm/Tests/CachedDqlConditionGeneratorTest.php
+
+		-
+			message: "#^Offset 0 does not exist on array\\<string, Rollerworks\\\\Component\\\\Search\\\\Doctrine\\\\Orm\\\\OrmQueryField\\>\\.$#"
+			count: 2
+			path: lib/Doctrine/Orm/Tests/FieldConfigBuilderTest.php
+
+		-
+			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Orm\\\\OrmTestCase\\:\\:getQuery\\(\\) should return Doctrine\\\\ORM\\\\QueryBuilder but return statement is missing\\.$#"
+			count: 1
+			path: lib/Doctrine/Orm/Tests/OrmTestCase.php
+
+		-
+			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Elasticsearch\\\\FieldMapping\\:\\:parseProperty\\(\\) should return array\\<string\\> but returns array\\<string, array\\<string, array\\<string, array\\<string, array\\<string, bool\\|string\\>\\|bool\\|string\\>\\|bool\\|string\\>\\|bool\\|string\\>\\|string\\|false\\|null\\>\\.$#"
+			count: 1
+			path: lib/Elasticsearch/FieldMapping.php
+
+		-
+			message: "#^PHPDoc tag @var above assignment does not specify variable name\\.$#"
+			count: 2
+			path: lib/Elasticsearch/Tests/CachedConditionGeneratorTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: lib/Elasticsearch/Tests/QueryConditionGeneratorTest.php
+

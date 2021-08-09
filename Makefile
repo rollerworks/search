@@ -24,8 +24,8 @@ test-coverage: ensure docker-up
 	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr /usr/local/bin/phpcov merge --clover build/logs/clover.xml build/cov"
 	@$(MAKE) docker-down
 
-phpstan: ensure
-	sh -c "${QA_DOCKER_COMMAND} phpstan analyse"
+phpstan:
+	php -d memory_limit=1G vendor/bin/phpstan analyse
 
 cs: ensure
 	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --diff"

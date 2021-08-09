@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Elasticsearch;
 
 use Elastica\Query;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\Elasticsearch\CachedConditionGenerator;
 use Rollerworks\Component\Search\Elasticsearch\ConditionGenerator;
@@ -36,12 +37,12 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
     private $cachedConditionGenerator;
 
     /**
-     * @var Cache|\PHPUnit_Framework_MockObject_MockObject
+     * @var Cache&MockObject
      */
     private $cacheDriver;
 
     /**
-     * @var ConditionGenerator|\PHPUnit_Framework_MockObject_MockObject
+     * @var ConditionGenerator&MockObject
      */
     private $conditionGenerator;
 
