@@ -47,7 +47,7 @@ final class StringLexer
     {
         $this->data = \str_replace(["\r\n", "\r"], "\n", $data);
         $this->valueLexers = $fieldLexers;
-        $this->end = \strlen($this->data);
+        $this->end = mb_strlen($this->data, '8bit');
         $this->lineno = 1;
         $this->cursor = 0;
         $this->char = 0;
@@ -62,7 +62,7 @@ final class StringLexer
     {
         if (\preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
             $this->char += \mb_strlen($match[0]);
-            $this->cursor += \strlen($match[0]);
+            $this->cursor += mb_strlen($match[0], '8bit');
         }
     }
 
@@ -79,8 +79,8 @@ final class StringLexer
     public function moveCursor(string $text): void
     {
         $this->lineno += \mb_substr_count($text, "\n");
-        $this->cursor += \strlen($text);
         $this->char += \mb_strlen($text);
+        $this->cursor += mb_strlen($text, '8bit');
     }
 
     public function snapshot($force = false): void
@@ -209,7 +209,7 @@ final class StringLexer
         if ($this->data[$this->cursor] === '"') {
             $this->moveCursor('"');
 
-            while ("\n" !== $c = \mb_substr($this->data, $this->char, 1)) {
+            while (($c = mb_substr($this->data, $this->char, 1)) !== "\n") {
                 if ($c === '"') {
                     if ($this->cursor + 1 === $this->end) {
                         break;
@@ -362,8 +362,8 @@ final class StringLexer
                 throw $this->createFormatException(StringLexerException::UNKNOWN_PATTERN_MATCH_FLAG);
             }
 
-            $negative = \strpos($match[1], '!') !== false;
-            $caseInsensitive = \strpos($match[1], 'i') !== false;
+            $negative = mb_strpos($match[1], '!') !== false;
+            $caseInsensitive = mb_strpos($match[1], 'i') !== false;
         }
 
         static $operatorToTypeMapping = [
@@ -442,7 +442,7 @@ final class StringLexer
             return null;
         }
 
-        if (\strlen($data) === 1) {
+        if (mb_strlen($data, '8bit') === 1) {
             return $data === $this->data[$this->cursor] ? $data : null;
         }
 
