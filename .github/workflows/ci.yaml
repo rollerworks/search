@@ -125,4 +125,5 @@ jobs:
             -
                 name: Run PHP-QA
                 run: |
-                    make lint
+                    make cs-full-check
+                    vendor/bin/phpstan analyse --memory-limit=-1 --error-format=checkstyle | cs2pr
