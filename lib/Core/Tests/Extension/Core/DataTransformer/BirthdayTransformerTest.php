@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransformer;
@@ -24,6 +25,8 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\BirthdayTransfor
  */
 final class BirthdayTransformerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @test */
     public function it_transforms_age_to_integer(): void
     {

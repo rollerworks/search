@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\GenericFieldSet;
@@ -28,6 +29,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class SearchConditionSerializerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var SearchConditionSerializer
      */

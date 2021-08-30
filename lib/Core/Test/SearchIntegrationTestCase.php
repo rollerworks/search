@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Test;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
@@ -34,6 +35,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 abstract class SearchIntegrationTestCase extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var SearchFactoryBuilder|null
      */

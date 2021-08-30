@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\ResolvedFieldType;
 use Rollerworks\Component\Search\Field\SearchField;
@@ -28,6 +29,8 @@ use Rollerworks\Component\Search\Tests\Fixtures\FooType;
  */
 final class GenericFieldSetBuilderTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var GenericFieldSetBuilder
      */

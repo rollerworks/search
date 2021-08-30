@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\DBAL\Types\Type as DbType;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Rollerworks\Component\Search\Doctrine\Orm\FieldConfigBuilder;
 use Rollerworks\Component\Search\Doctrine\Orm\OrmQueryField as QueryField;
@@ -28,6 +29,8 @@ use Rollerworks\Component\Search\SearchFactory;
  */
 final class FieldConfigBuilderTest extends TestCase
 {
+    use ProphecyTrait;
+
     public const CUSTOMER_CLASS = Fixtures\Entity\ECommerceCustomer::class;
     public const INVOICE_CLASS = Fixtures\Entity\ECommerceInvoice::class;
 
