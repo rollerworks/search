@@ -336,11 +336,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             return;
         }
 
-        $orderGroup = $order->getValuesGroup();
         $hints = new QueryPreparationHints();
         $hints->context = QueryPreparationHints::CONTEXT_ORDER;
 
-        foreach ($orderGroup->getFields() as $fieldName => $valuesBag) {
+        foreach ($order->getFields() as $fieldName => $direction) {
             $mapping = $this->mappings[$fieldName];
 
             // apply conditions from order fields
@@ -365,7 +364,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 $mapping->options,
                 [
                     $propertyName => [
-                        self::SORT_ORDER => \current($valuesBag->getSimpleValues()),
+                        self::SORT_ORDER => $direction,
                     ],
                 ]
             );

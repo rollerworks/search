@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\DataTransformer;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\LocalizedBirthdayTransformer;
@@ -25,6 +26,8 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class LocalizedBirthdayTransformerTest extends TestCase
 {
+    use ProphecyTrait;
+
     protected function setUp(): void
     {
         parent::setUp();

@@ -21,6 +21,7 @@ use ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\ThirdLevel;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\ApiPlatform\Doctrine\Orm\Extension\SearchExtension;
 use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
@@ -33,6 +34,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /** @internal */
 final class SearchExtensionTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @test */
     public function apply_to_collection_with_valid_condition(): void
     {

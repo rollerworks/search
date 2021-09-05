@@ -15,7 +15,9 @@ namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use FOS\ElasticaBundle\FOSElasticaBundle;
+use Rollerworks\Bundle\SearchBundle\RollerworksSearchBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -24,16 +26,18 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
 {
-    private $config;
+    use MicroKernelTrait;
 
-    public function __construct($config, $debug = true)
+    private string $config;
+
+    public function __construct(string $config, $debug = true)
     {
         if (! (new Filesystem())->isAbsolutePath($config)) {
             $config = __DIR__ . '/config/' . $config;
         }
 
-        if (! \file_exists($config)) {
-            throw new \RuntimeException(\sprintf('The config file "%s" does not exist.', $config));
+        if (! file_exists($config)) {
+            throw new \RuntimeException(sprintf('The config file "%s" does not exist.', $config));
         }
 
         $this->config = $config;
@@ -41,30 +45,37 @@ class AppKernel extends Kernel
         parent::__construct('test', $debug);
     }
 
-    public function getName()
+    public function getProjectDir(): string
     {
-        return 'RSearch' . \mb_substr(\sha1($this->config), 0, 3);
+        return __DIR__;
+    }
+
+    protected function getContainerClass(): string
+    {
+        $class = 'RSAppKernel' . ContainerBuilder::hash($this->config);
+        $class = str_replace('\\', '_', $class) . ucfirst($this->environment) . ($this->debug ? 'Debug' : '') . 'Container';
+
+        if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
+            throw new \InvalidArgumentException(sprintf('The environment "%s" contains invalid characters, it can only contain characters allowed in PHP class names.', $this->environment));
+        }
+
+        return $class;
     }
 
     public function registerBundles()
     {
         $bundles = [
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new FrameworkBundle(),
             //new \Symfony\Bundle\TwigBundle\TwigBundle(),
 
-            new \Rollerworks\Bundle\SearchBundle\RollerworksSearchBundle(),
-            new AppBundle\AppBundle(),
+            new RollerworksSearchBundle(),
         ];
 
-        if (\class_exists(DoctrineBundle::class)) {
+        if (class_exists(DoctrineBundle::class)) {
             $bundles[] = new DoctrineBundle();
         }
 
-        if (\class_exists(FOSElasticaBundle::class)) {
-            $bundles[] = new FOSElasticaBundle();
-        }
-
-        if (\mb_substr($this->config, -16) === 'api_platform.yml') {
+        if (mb_substr($this->config, -16) === 'api_platform.yml') {
             $bundles[] = new TwigBundle();
             $bundles[] = new ApiPlatformBundle();
         }
@@ -72,31 +83,13 @@ class AppKernel extends Kernel
         return $bundles;
     }
 
-    protected function build(ContainerBuilder $container): void
-    {
-        $container->setParameter('kernel.root_dir', __DIR__);
-    }
-
-    public function getRootDir()
-    {
-        if ($this->rootDir === null) {
-            $this->rootDir = \str_replace('\\', '/', __DIR__);
-        }
-
-        return $this->rootDir;
-    }
-
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load($this->config);
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
-        if (false === $tmpDir = \getenv('TMPDIR')) {
-            $tmpDir = \sys_get_temp_dir();
-        }
-
-        return \rtrim($tmpDir, '/\\') . '/rollerworks-search-' . \sha1(__DIR__) . '/' . \mb_substr(\sha1($this->config), 0, 6);
+        return $this->getProjectDir() . '/var/cache/' . mb_substr(sha1($this->config), 0, 6);
     }
 }

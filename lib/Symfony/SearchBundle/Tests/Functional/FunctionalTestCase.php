@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class FunctionalTestCase extends WebTestCase
@@ -30,16 +31,13 @@ abstract class FunctionalTestCase extends WebTestCase
         return Application\AppKernel::class;
     }
 
-    /**
-     * @return \Symfony\Bundle\FrameworkBundle\Client
-     */
-    protected static function newClient(array $options = [], array $server = [])
+    protected static function newClient(array $options = [], array $server = []): KernelBrowser
     {
         $client = static::createClient(\array_merge(['config' => 'default.yml'], $options), $server);
 
         $warmer = $client->getContainer()->get('cache_warmer');
-        $warmer->warmUp($client->getContainer()->getParameter('kernel.cache_dir'));
         $warmer->enableOptionalWarmers();
+        $warmer->warmUp($client->getContainer()->getParameter('kernel.cache_dir'));
 
         return $client;
     }

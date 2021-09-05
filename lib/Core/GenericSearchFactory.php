@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\OrderField;
 use Rollerworks\Component\Search\Field\TypeRegistry;
 
 /**
@@ -46,14 +47,26 @@ final class GenericSearchFactory implements SearchFactory
 
     public function createField(string $name, string $type, array $options = []): FieldConfig
     {
-        $type = $this->registry->getType($type);
-        $field = $type->createField($name, $options);
+        if (OrderField::isOrder($name) && isset($options['type'])) {
+            $options = $this->createOptionsForOrderField($name, $options);
+        }
+
+        $resolvedType = $this->registry->getType($type);
+        $field = $resolvedType->createField($name, $options);
 
         // Explicitly call buildType() in order to be able to override either
         // createField() or buildType() in the resolved field type
-        $type->buildType($field, $field->getOptions());
+        $resolvedType->buildType($field, $field->getOptions());
 
         return $field;
+    }
+
+    private function createOptionsForOrderField(string $name, array $options): array
+    {
+        $type = $this->registry->getType($options['type']);
+        $options['type_options'] = $type->getOptionsResolver()->resolve($options['type_options'] ?? []);
+
+        return $options;
     }
 
     public function createFieldSetBuilder(): FieldSetBuilder

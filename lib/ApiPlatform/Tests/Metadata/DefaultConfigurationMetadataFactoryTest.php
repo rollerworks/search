@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\ApiPlatform\Tests\Metadata;
 use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
 use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\ApiPlatform\Metadata\DefaultConfigurationMetadataFactory;
 
 /**
@@ -23,6 +24,8 @@ use Rollerworks\Component\Search\ApiPlatform\Metadata\DefaultConfigurationMetada
  */
 final class DefaultConfigurationMetadataFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @test */
     public function it_merges_defaults_into_all_configs(): void
     {

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Elasticsearch\Extension\Type;
 
+use Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\DateChildOrderConversion;
 use Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\DateConversion;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
@@ -35,6 +36,7 @@ class BirthdayTypeExtension extends AbstractFieldTypeExtension
         $resolver->setDefaults(
             [
                 'elasticsearch_conversion' => $this->conversion,
+                'elasticsearch_child_order_conversion' => new DateChildOrderConversion(),
             ]
         );
     }

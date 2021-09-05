@@ -179,19 +179,19 @@ final class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCas
     /** @test */
     public function it_sorts_by_total(): void
     {
-        $this->makeTest('@total: ASC', [3, 6, 8, 9, 7, 2, 4, 1, 5]);
+        $this->makeTest('@total: ASC', [3, 6, 7, 8, 9, 2, 1, 4, 5]);
     }
 
     /** @test */
     public function it_sorts_by_total_desc(): void
     {
-        $this->makeTest('@total: DESC', [5, 4, 1, 2, 8, 9, 7, 6, 3]);
+        $this->makeTest('@total: DESC', [5, 1, 4, 2, 7, 8, 9, 6, 3]);
     }
 
     /** @test */
     public function it_sorts_by_customer_name(): void
     {
-        $this->makeTest('@customer-name: ASC', [5, 2, 4, 3, 8, 9, 1, 7, 6]);
+        $this->makeTest('@customer-name: ASC', [5, 2, 3, 4, 1, 7, 8, 9, 6]);
     }
 
     /** @test */

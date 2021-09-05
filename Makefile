@@ -1,4 +1,4 @@
-QA_DOCKER_IMAGE=jakzal/phpqa:1.58.9-php7.4-alpine
+QA_DOCKER_IMAGE=jakzal/phpqa:1.59.1-php7.4-alpine
 QA_DOCKER_COMMAND=docker run --init -t --rm --user "$(shell id -u):$(shell id -g)" --volume /tmp/tmp-phpqa-$(shell id -u):/tmp --volume "$(shell pwd):/project" --workdir /project ${QA_DOCKER_IMAGE}
 
 dist: install cs-full phpstan test
@@ -24,8 +24,8 @@ test-coverage: ensure docker-up
 	sh -c "${QA_DOCKER_COMMAND} phpdbg -qrr /usr/local/bin/phpcov merge --clover build/logs/clover.xml build/cov"
 	@$(MAKE) docker-down
 
-phpstan: ensure
-	sh -c "${QA_DOCKER_COMMAND} phpstan analyse"
+phpstan:
+	php -d memory_limit=1G vendor/bin/phpstan analyse
 
 cs: ensure
 	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --diff"

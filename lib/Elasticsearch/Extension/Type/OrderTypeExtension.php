@@ -16,17 +16,18 @@ namespace Rollerworks\Component\Search\Elasticsearch\Extension\Type;
 use Rollerworks\Component\Search\Elasticsearch\ChildOrderConversion;
 use Rollerworks\Component\Search\Elasticsearch\QueryConversion;
 use Rollerworks\Component\Search\Elasticsearch\ValueConversion;
-use Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
+use Rollerworks\Component\Search\Field\OrderFieldType;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FieldTypeExtension extends AbstractFieldTypeExtension
+class OrderTypeExtension extends AbstractFieldTypeExtension
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
-                'elasticsearch_child_order_conversion' => null,
+                'elasticsearch_child_order_conversion' => static fn (Options $options) => $options['type_options']['elasticsearch_child_order_conversion'] ?? null,
                 'elasticsearch_conversion' => null,
             ])
             ->setAllowedTypes('elasticsearch_child_order_conversion', ['null', ChildOrderConversion::class])
@@ -42,6 +43,6 @@ class FieldTypeExtension extends AbstractFieldTypeExtension
 
     public function getExtendedType(): string
     {
-        return SearchFieldType::class;
+        return OrderFieldType::class;
     }
 }

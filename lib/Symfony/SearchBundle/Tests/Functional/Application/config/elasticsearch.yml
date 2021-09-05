@@ -7,3 +7,10 @@ rollerworks_search:
         dbal: false
         orm: false
     elasticsearch: true
+
+services:
+    'Elastica\Client':
+        arguments:
+            - { host: localhost, port: 9200 }
+            - null
+            - '@logger'

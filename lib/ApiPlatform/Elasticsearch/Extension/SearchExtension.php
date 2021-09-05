@@ -19,7 +19,6 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Elastica\Client;
 use Elastica\Document;
-use Elastica\Query;
 use Elastica\Search;
 use Rollerworks\Component\Search\ApiPlatform\ArrayKeysValidator;
 use Rollerworks\Component\Search\Elasticsearch\ElasticsearchFactory;
@@ -121,11 +120,9 @@ class SearchExtension implements QueryCollectionExtensionInterface
 
         foreach ($mappings as $mapping) {
             $index = $this->client->getIndex($mapping->indexName);
-            $type = $index->getType($mapping->typeName);
-            $search
-                ->addIndex($index)
-                ->addType($type);
+            $search->addIndex($index);
         }
+
         $response = $search->search($query);
 
         // NOTE: written like this so we only check if we have a normalizer once

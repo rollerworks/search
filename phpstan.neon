@@ -1,31 +1,27 @@
 includes:
-	- /tools/.composer/vendor-bin/phpstan/vendor/phpstan/phpstan-symfony/extension.neon
-	- /tools/.composer/vendor-bin/phpstan/vendor/phpstan/phpstan-doctrine/extension.neon
-	- /tools/.composer/vendor-bin/phpstan/vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/jangregor/phpstan-prophecy/extension.neon
+
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+    - phpstan-baseline.neon
 
 parameters:
     #reportUnmatchedIgnoredErrors: false
     #checkNullables: false
+    treatPhpDocTypesAsCertain: false
 
     tmpDir: %currentWorkingDirectory%/var/phpstan
     level: 5
 
     paths:
         - ./lib
-    excludes_analyse:
-        - */lib/*/Tests/Fixtures/*
-        - %currentWorkingDirectory%/lib/*/Tests/**
-        - %currentWorkingDirectory%/lib/*/*/Tests/**
+    excludePaths:
+        - lib/*/Tests/Fixtures/*
+        - lib/Symfony/SearchBundle/Tests/Functional/Application
 
     ignoreErrors:
-        # ValueHolder guard there own correctness. A ValuesBag never returns a wrong object (collection).
-        - '#expects Rollerworks\\Component\\Search\\Value\\[a-zA-Z]+, Rollerworks\\Component\\Search\\Value\\ValueHolder given#'
-        - '#Call to an undefined method Rollerworks\\Component\\Search\\Value\\ValueHolder\:\:#'
-        - '#expects array<Rollerworks\\Component\\Search\\Value\\[a-z]+>, array<Rollerworks\\Component\\Search\\Value\\ValueHolder> given#i'
-
-        # False positive
-        - '#Negated boolean expression is always false#'
-
-        ## Symony Config
-        - '# Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given#'
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:#'
+        -
+            path: lib/Symfony/SearchBundle/DependencyInjection/Compiler/ElasticaClientPass.php
+            message: "#^Class JoliCode\\\\Elastically\\\\Client not found\\.$#"

@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Field;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\Field\FieldType;
 use Rollerworks\Component\Search\Field\FieldTypeExtension;
 use Rollerworks\Component\Search\Field\GenericTypeRegistry;
@@ -30,6 +31,8 @@ use Rollerworks\Component\Search\Tests\Fixtures\FooType;
  */
 final class TypeRegistryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @test */
     public function it_loads_types_from_extensions(): void
     {

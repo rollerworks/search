@@ -41,5 +41,11 @@
             <argument type="service" id="Rollerworks\Component\Search\Elasticsearch\Extension\Conversion\CurrencyConversion" />
             <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\MoneyType" />
         </service>
+
+
+        <!-- Elastically -->
+
+
+
     </services>
 </container>
