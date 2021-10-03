@@ -489,6 +489,19 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
+    public function provideInvalidWithMessageValueTests()
+    {
+        return [
+            [
+                'name: foo, 30;',
+                [
+                    new ConditionErrorMessage('[name][0]', 'I explicitly refuse the accept this value.', 'I explicitly refuse the accept this value.', ['value' => 'foo']),
+                    new ConditionErrorMessage('[name][1]', 'I explicitly refuse the accept this value.', 'I explicitly refuse the accept this value.', ['value' => '30']),
+                ],
+            ],
+        ];
+    }
+
     public function provideNestedErrorsTests()
     {
         return [

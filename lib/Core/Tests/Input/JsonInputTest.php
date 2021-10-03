@@ -709,6 +709,27 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
+    public function provideInvalidWithMessageValueTests()
+    {
+        return [
+            [
+                json_encode(
+                    [
+                        'fields' => [
+                            'name' => [
+                                'simple-values' => ['foo', '30'],
+                            ],
+                        ],
+                    ]
+                ),
+                [
+                    new ConditionErrorMessage('[fields][name][simple-values][0]', 'I explicitly refuse the accept this value.', 'I explicitly refuse the accept this value.', ['value' => 'foo']),
+                    new ConditionErrorMessage('[fields][name][simple-values][1]', 'I explicitly refuse the accept this value.', 'I explicitly refuse the accept this value.', ['value' => '30']),
+                ],
+            ],
+        ];
+    }
+
     public function provideNestedErrorsTests()
     {
         return [

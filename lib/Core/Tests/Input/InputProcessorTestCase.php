@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
 use Rollerworks\Component\Search\Exception\ValuesOverflowException;
@@ -24,6 +26,8 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\OrderTransformer
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
+use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
@@ -573,6 +577,62 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      * @return array[]
      */
     abstract public function provideInvalidValueTests();
+
+    /**
+     * @param ConditionErrorMessage[] $errors
+     *
+     * @test
+     * @dataProvider provideInvalidWithMessageValueTests
+     */
+    public function it_errors_with_invalid_message_when_transformation_fails($input, array $errors): void
+    {
+        $alwaysFailTransformer = new class() implements DataTransformer {
+            public function transform($value): void
+            {
+                // No-op
+            }
+
+            public function reverseTransform($value): void
+            {
+                throw new TransformationFailedException('Error.', 0, null, 'I explicitly refuse the accept this value.', ['value' => $value]);
+            }
+        };
+
+        $this->factoryBuilder->addTypeExtensions([
+            new class($alwaysFailTransformer) extends AbstractFieldTypeExtension {
+                private DataTransformer $transformer;
+
+                public function __construct(DataTransformer $transformer)
+                {
+                    $this->transformer = $transformer;
+                }
+
+                public function buildType(FieldConfig $builder, array $options): void
+                {
+                    $builder->setNormTransformer($this->transformer);
+                    $builder->setViewTransformer($this->transformer);
+                }
+
+                public function getExtendedType(): string
+                {
+                    return TextType::class;
+                }
+            },
+        ]);
+
+        $fieldSetBuilder = new GenericFieldSetBuilder($this->getFactory());
+        $fieldSetBuilder->add('name', TextType::class);
+        $fieldSet = $fieldSetBuilder->getFieldSet();
+
+        $config = new ProcessorConfig($fieldSet);
+
+        $this->assertConditionContainsErrorsWithoutCause($input, $config, $errors);
+    }
+
+    /**
+     * @return array[]
+     */
+    abstract public function provideInvalidWithMessageValueTests();
 
     /**
      * @param ConditionErrorMessage[] $errors
